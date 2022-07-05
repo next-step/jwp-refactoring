@@ -43,6 +43,10 @@ public class Order {
         return new Order(orderTable, orderLineItems);
     }
 
+    private void changeOrderLineItem(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.changeOrderLineItem(this));
+    }
+
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
@@ -56,10 +60,6 @@ public class Order {
         if (orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException("완료 상태인 경우 주문 상태를 변경할 수 없습니다.");
         }
-    }
-
-    public void changeOrderLineItem(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.changeOrderLineItem(this));
     }
 
     public Long getId() {
