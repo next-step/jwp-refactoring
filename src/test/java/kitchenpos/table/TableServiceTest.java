@@ -76,7 +76,7 @@ class TableServiceTest {
     @Test
     @Transactional
     @DisplayName("단체로 지정된 테이블의 자리 착석여부 변경시 예외처리")
-    public void changeEmtpyAlreadyInTableGroup() {
+    public void changeEmptyAlreadyInTableGroup() {
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
 
         orderTable.setEmpty(true);
@@ -93,7 +93,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("변경할 테이블의 주문건 중 COOKING 또는 MEAL 상태인 건 존재시 변경 불가")
-    public void changeEmtpyInCookingOrMeal() {
+    public void changeEmptyInCookingOrMeal() {
         orderTable.setEmpty(true);
 
         OrderTable changeOrderTable = new OrderTable();
@@ -122,7 +122,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("0미만 고객수로 변경 시도 시 에러 반환")
-    public void changeNumerOfGuestsUnderZero() {
+    public void changeNumberOfGuestsUnderZero() {
         orderTableRepository.save(orderTable);
         orderTable.setNumberOfGuests(-1);
 
@@ -132,7 +132,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("없는 테이블 고객수 변경 시도 시 에러 반환")
-    public void changeNumerOfGuestsEmptyTable() {
+    public void changeNumberOfGuestsEmptyTable() {
         orderTable.setNumberOfGuests(2);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, OrderTableRequest.of(orderTable))).isInstanceOf(
@@ -142,7 +142,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("테이블 고객수 변경 정상 처리")
-    public void changeNumerOfGuestsSuccess() {
+    public void changeNumberOfGuestsSuccess() {
         orderTable.setEmpty(false);
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
         OrderTable changeOrderTable = new OrderTable();
