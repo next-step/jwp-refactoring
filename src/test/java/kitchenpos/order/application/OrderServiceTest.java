@@ -94,9 +94,8 @@ class OrderServiceTest {
         // given
         Menu 존재하지_않는_메뉴 = 메뉴_생성(3L, "존재하지않는메뉴", 3000L, null);
         OrderLineItem 존재하지_않는_메뉴의_주문_목록 = 주문_목록_생성(주문, 존재하지_않는_메뉴, 2);
-        Long 존재하는_메뉴_개수 = 0L;
-//        주문.setOrderLineItems(Arrays.asList(존재하지_않는_메뉴의_주문_목록));
-        given(menuDao.countByIdIn(anyList())).willReturn(존재하는_메뉴_개수);
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(존재하지_않는_메뉴의_주문_목록));
+        주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
 
         // when then
         assertThatThrownBy(() -> orderService.create(new OrderRequest(주문)))
@@ -107,28 +106,14 @@ class OrderServiceTest {
     @DisplayName("존재하지 않은 주문 테이블로 주문을 생성할 경우 - 오류")
     void createOrderIfNonExistentOrderTable() {
         // given
-//        주문.setOrderLineItems(Arrays.asList(주문_목록_추천_치킨));
-//        given(menuDao.countByIdIn(anyList())).willReturn(반반_치킨_메뉴);
-//        given(orderTableDao.findById(any())).willReturn(Optional.empty());
-//
-//        // when then
-//        assertThatThrownBy(() -> orderService.create(new OrderRequest(주문)))
-//            .isInstanceOf(IllegalArgumentException.class);
-    }
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
+        주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
 
-    @Test
-    @DisplayName("빈 주문 테이블로 주문을 생성할 경우 - 오류")
-    void createOrderIfOrderTableIsEmpty() {
-        // given
-//        OrderTable 빈_주문_테이블 = 주문_테이블_생성(주문_테이블.getId(), 주문_테이블.getNumberOfGuests(), true);
-//
-////        주문.setOrderLineItems(Arrays.asList(주문_목록_추천_치킨));
-//        given(menuDao.countByIdIn(anyList())).willReturn(반반_치킨_메뉴);
-//        given(orderTableDao.findById(any())).willReturn(Optional.of(빈_주문_테이블));
-//
-//        // when then
-//        assertThatThrownBy(() -> orderService.create(new OrderRequest(주문)))
-//            .isInstanceOf(IllegalArgumentException.class);
+        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+
+        // when then
+        assertThatThrownBy(() -> orderService.create(new OrderRequest(주문)))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
