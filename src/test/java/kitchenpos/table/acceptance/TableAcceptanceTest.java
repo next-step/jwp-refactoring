@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.dto.OrderTableGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.OrderTableStatusRequest;
@@ -49,6 +50,20 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_상태_변경_처리됨(response);
     }
 
+    @Test
+    @DisplayName("주문 테이블의 방문 손님 수를 변경한다.")
+    void changeGuest() {
+        // given
+        OrderTableResponse orderTableResponse = 주문_테이블_생성_요청(4, false).as(OrderTableResponse.class);
+        int ten = 10;
+
+        // when
+        ExtractableResponse<Response> response = 주문_테이블_손님수_변경_요청(orderTableResponse.getId(), ten);
+
+        // then
+        주문_테이블_손님수_변경_처리됨(response);
+    }
+
     public static ExtractableResponse<Response> 주문_테이블_생성_요청(int numberOfGuests, boolean empty) {
         OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuests, empty);
 
@@ -75,6 +90,16 @@ public class TableAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 주문_테이블_손님수_변경_요청(Long orderTableId, int numberOfGuests) {
+        OrderTableGuestRequest orderTableGuestRequest = new OrderTableGuestRequest(numberOfGuests);
+
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(orderTableGuestRequest)
+            .when().put("/api/tables/{orderTableId}/number-of-guests", orderTableId)
+            .then().log().all().extract();
+    }
+
     public static void 주문_테이블_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -85,6 +110,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_테이블_상태_변경_처리됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 주문_테이블_손님수_변경_처리됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

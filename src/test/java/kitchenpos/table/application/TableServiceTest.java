@@ -15,6 +15,7 @@ import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.OrderTableStatusRequest;
@@ -39,12 +40,12 @@ class TableServiceTest {
     private TableService tableService;
 
     private OrderTable 주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
+    private OrderTable 비어있는_않은_주문_테이블;
 
     @BeforeEach
     void init() {
         주문_테이블 = 주문_테이블_생성(1L, 4, true);
-        비어있는_주문_테이블 = 주문_테이블_생성(1L, 7, false);
+        비어있는_않은_주문_테이블 = 주문_테이블_생성(2L, 7, false);
     }
 
     @Test
@@ -86,7 +87,7 @@ class TableServiceTest {
         given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
 
         // when
-        OrderTableResponse changedOrderTable = tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_주문_테이블.isEmpty()));
+        OrderTableResponse changedOrderTable = tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_않은_주문_테이블.isEmpty()));
 
         // then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -96,7 +97,7 @@ class TableServiceTest {
     @DisplayName("유효하지 않은 주문 테이블의 빈 테이블 상태를 변경할 경우 - 오류")
     void changeEmptyByNonExistentOrderTable() {
         // given
-        OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 비어있는_주문_테이블.getTableGroup(), 0, false);
+        OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 비어있는_않은_주문_테이블.getTableGroup(), 0, false);
 
         // when then
         assertThatThrownBy(() -> tableService.changeEmpty(테이블_그룹_있는_주문_테이블.getId(), new OrderTableStatusRequest(테이블_그룹_있는_주문_테이블.isEmpty())))
@@ -110,7 +111,7 @@ class TableServiceTest {
         given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.empty());
 
         // when then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_주문_테이블.isEmpty())))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_않은_주문_테이블.isEmpty())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,7 +123,7 @@ class TableServiceTest {
         given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
 
         // when then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_주문_테이블.isEmpty())))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_않은_주문_테이블.isEmpty())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -130,49 +131,23 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문 손님 수를 변경한다.")
     void changeGuest() {
         // given
-        OrderTable 손님_수_변경_테이블 = 주문_테이블_생성(비어있는_주문_테이블.getId(), 4, 비어있는_주문_테이블.isEmpty());
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(비어있는_주문_테이블);
-        given(orderTableDao.findById(비어있는_주문_테이블.getId())).willReturn(Optional.of(비어있는_주문_테이블));
+        given(orderTableDao.findById(비어있는_않은_주문_테이블.getId())).willReturn(Optional.of(비어있는_않은_주문_테이블));
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(비어있는_주문_테이블.getId(), 손님_수_변경_테이블);
+        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(비어있는_않은_주문_테이블.getId(), new OrderTableGuestRequest(5));
 
         // that
-        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(비어있는_주문_테이블.getNumberOfGuests());
-    }
-
-    @Test
-    @DisplayName("주문 테이블의 방문 손님 수를 0명 이하로 변경할 경우 - 오류")
-    void changeNegativeQuantityGuest() {
-        // given
-        OrderTable 손님_수_변경_테이블 = 주문_테이블_생성(비어있는_주문_테이블.getId(), -4, 비어있는_주문_테이블.isEmpty());
-
-        // when then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(비어있는_주문_테이블.getId(), 손님_수_변경_테이블))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(비어있는_않은_주문_테이블.getNumberOfGuests());
     }
 
     @Test
     @DisplayName("유효하지 않은 주문 테이블의 손님 수를 변경할 경우 - 오류")
     void changeGuestByNonExistentOrderTable() {
         // given
-        OrderTable 손님_수_변경_테이블 = 주문_테이블_생성(비어있는_주문_테이블.getId(), 4, 비어있는_주문_테이블.isEmpty());
-        given(orderTableDao.findById(비어있는_주문_테이블.getId())).willReturn(Optional.empty());
+        given(orderTableDao.findById(비어있는_않은_주문_테이블.getId())).willReturn(Optional.empty());
 
         // when then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(비어있는_주문_테이블.getId(), 손님_수_변경_테이블))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("비어 있지 않은 주문 테이블의 손님 수를 변경할 경우 - 오류")
-    void changeGuestOfOrderTableIfEmptyIsTrue() {
-        // given
-        OrderTable 손님_수_변경_테이블 = 주문_테이블_생성(비어있는_주문_테이블.getId(), 4, true);
-        given(orderTableDao.findById(비어있는_주문_테이블.getId())).willReturn(Optional.empty());
-
-        // when then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(비어있는_주문_테이블.getId(), 손님_수_변경_테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(비어있는_않은_주문_테이블.getId(), new OrderTableGuestRequest(10)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

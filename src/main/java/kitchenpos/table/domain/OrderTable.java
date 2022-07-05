@@ -71,10 +71,6 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public void setEmpty(boolean empty) {
         this.empty = empty;
     }
@@ -91,6 +87,18 @@ public class OrderTable {
     public void ungroup() {
         this.tableGroup = null;
         this.empty = true;
+    }
+
+    public void changeGuests(int numberOfGuests) {
+        if(numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if(empty) {
+            throw new IllegalArgumentException();
+        }
+
+        this.numberOfGuests = numberOfGuests;
     }
 
     @Override
