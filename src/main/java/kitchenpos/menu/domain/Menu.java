@@ -1,5 +1,8 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.MenuExceptionType;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,21 +17,42 @@ public class Menu {
     private String name;
     @Embedded
     private MenuPrice price;
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id_id")
-    private MenuGroup menuGroupId;
-    @OneToMany(mappedBy = "seq")
-    private List<MenuProduct> menuProducts;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MenuGroup menuGroup;
+    @Embedded
+    private MenuProducts menuProducts;
 
-    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroupId, final List<MenuProduct> products) {
+    protected Menu() {
+    }
+
+    public Menu(final Long id, final String name, final BigDecimal price, final  MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = MenuPrice.of(price);
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = products;
+        this.menuGroup = menuGroup;
+
     }
-    public static Menu of(final String name, final BigDecimal price, final MenuGroup menuGroupId, final List<MenuProduct> products) {
-        return new Menu(null, name, price, menuGroupId, products);
+
+    public static Menu of(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        return new Menu(null, name, price, menuGroup);
+    }
+
+    public void addMenuProducts(final List<MenuProduct> menuProducts) {
+        MenuProducts products = MenuProducts.of(menuProducts);
+        validate(products);
+        this.menuProducts = products;
+        updateMenuId();
+    }
+
+    private void updateMenuId() {
+        this.menuProducts.getProducts()
+                .forEach(it -> it.updateMenuId(id));
+    }
+
+    private void validate(final MenuProducts menuProducts) {
+        if (!menuProducts.isPossibleCreate(price.getValue())) {
+            throw new MenuException(MenuExceptionType.EXCEED_PRICE);
+        }
     }
 
     public Long getId() {
@@ -43,12 +67,12 @@ public class Menu {
         return price.getValue();
     }
 
-    public MenuGroup getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getProducts();
     }
 
     @Override
@@ -57,7 +81,7 @@ public class Menu {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", menuGroupId=" + menuGroupId +
+                ", menuGroup=" + menuGroup +
                 ", menuProducts=" + menuProducts +
                 '}';
     }
@@ -67,11 +91,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }

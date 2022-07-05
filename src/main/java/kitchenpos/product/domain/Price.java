@@ -6,12 +6,13 @@ import kitchenpos.product.exception.ProductExceptionType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Embeddable
 public class Price {
     private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
 
-    @Column(name = "sprice", nullable = false)
+    @Column(name = "price", nullable = false)
     private BigDecimal value;
 
     protected Price() {
@@ -36,4 +37,23 @@ public class Price {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "Price{" +
+                "value=" + value +
+                '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Price price = (Price) o;
+        return Objects.equals(value, price.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }
