@@ -135,13 +135,15 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회한다.")
     void findAll() {
         // given
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
+        주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
         given(orderDao.findAll()).willReturn(Arrays.asList(주문));
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         // then
-        assertThat(orders).containsExactly(주문);
+        assertThat(orders.size()).isEqualTo(1);
     }
 
     @Test

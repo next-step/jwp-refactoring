@@ -54,15 +54,12 @@ public class OrderService {
         return OrderResponse.from(orderDao.save(order));
     }
 
-    public List<Order> list() {
-//        final List<Order> orders = orderDao.findAll();
-//
-//        for (final Order order : orders) {
-//            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-//        }
-//
-//        return orders;
-        return null;
+    public List<OrderResponse> list() {
+        final List<Order> orders = orderDao.findAll();
+
+        return orders.stream()
+            .map(OrderResponse::new)
+            .collect(Collectors.toList());
     }
 
     @Transactional

@@ -59,6 +59,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성됨(response);
     }
 
+    @Test
+    @DisplayName("주문 목록을 조회한다.")
+    void findAll() {
+        // given
+        OrderLineItemRequest 후라이드_아이템 = 주문_아이템_생성(후라이드_세트_메뉴.getId(), 1);
+
+        // when
+        ExtractableResponse<Response> response = 주문_목록_조회_요청();
+
+        // then
+        주문_목록_조회_요청됨(response);
+    }
+
     public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequestList) {
         OrderRequest orderRequest = new OrderRequest(orderTableId, orderLineItemRequestList);
 
@@ -69,9 +82,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 주문_목록_조회_요청() {
+        return RestAssured.given().log().all()
+            .when().get("/api/orders")
+            .then().log().all().extract();
+    }
+
     public static void 주문_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 주문_목록_조회_요청됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static OrderLineItemRequest 주문_아이템_생성(Long menuId, long quantity) {
