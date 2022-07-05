@@ -44,4 +44,12 @@ public class OrderTableValidator implements OrderValidator {
             throw new IllegalArgumentException("조리 또는 식사 중인 테이블은 단체 지정을 해제할 수 없습니다.");
         }
     }
+
+    @Override
+    public void validateChangeEmpty(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, OrderStatus.findNotCompletionStatus())) {
+            throw new IllegalArgumentException("조리 또는 식사 중인 테이블은 이용 여부를 변경할 수 없습니다.");
+        }
+    }
 }

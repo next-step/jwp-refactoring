@@ -1,10 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.application.OrderTableValidator;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,11 +18,12 @@ import static kitchenpos.domain.TableGroupTest.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableValidator orderTableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -72,29 +72,12 @@ class TableServiceTest {
     }
 
     @Test
-    void 조리_또는_식사_중인_테이블은_이용_여부를_변경할_수_없다() {
-        // given
-        OrderTable orderTable = createOrderTable();
-        given(orderTableRepository.findById(1L))
-                .willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, OrderStatus.findNotCompletionStatus()))
-                .willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() ->
-                tableService.changeEmpty(1L, orderTable)
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("조리 또는 식사 중인 테이블은 이용 여부를 변경할 수 없습니다.");
-    }
-
-    @Test
     void 테이블_이용_여부를_변경한다() {
         // given
         OrderTable orderTable = createOrderTable();
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, OrderStatus.findNotCompletionStatus()))
-                .willReturn(false);
+        willDoNothing().given(orderTableValidator).validateChangeEmpty(1L);
 
         // when
         OrderTable result = tableService.changeEmpty(1L, orderTable);

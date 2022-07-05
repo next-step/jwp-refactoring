@@ -8,4 +8,5 @@ public interface OrderValidator {
 
     void validateOrder(Order order);
     void validateUngroup(List<Long> orderTableIds);
+    void validateChangeEmpty(Long orderTableId);
 }
