@@ -52,10 +52,6 @@ public class TestFixture {
         return OrderTable.of(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())), 1, false);
     }
 
-    public static OrderTable 주문테이블_2_생성() {
-        return OrderTable.of(단체지정_2_생성(Arrays.asList(빈_주문테이블_3_생성())), 1, false);
-    }
-
     public static OrderTable 빈_주문테이블_1_생성() {
         return OrderTable.of(null, 2, true);
     }
@@ -69,10 +65,6 @@ public class TestFixture {
     }
 
     public static TableGroup 단체지정_1_생성(List<OrderTable> orderTables) {
-        return TableGroup.of(orderTables);
-    }
-
-    public static TableGroup 단체지정_2_생성(List<OrderTable> orderTables) {
         return TableGroup.of(orderTables);
     }
 
