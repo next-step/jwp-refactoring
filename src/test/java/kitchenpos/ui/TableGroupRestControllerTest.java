@@ -3,6 +3,8 @@ package kitchenpos.ui;
 import static kitchenpos.utils.MockMvcUtil.as;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성_요청;
 import static kitchenpos.utils.generator.TableGroupFixtureGenerator.테이블_그룹_생성_요청;
+import static kitchenpos.utils.generator.TableGroupFixtureGenerator.테이블_그룹_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -71,5 +73,8 @@ public class TableGroupRestControllerTest extends BaseTest {
         resultActions
             .andDo(print())
             .andExpect(status().isNoContent());
+
+        TableGroupResponse getTableGroupResultActions = as(mockMvcUtil.post(테이블_그룹_조회_요청(savedTableGroup.getId())), TableGroupResponse.class);
+        assertThat(getTableGroupResultActions.getOrderTables()).hasSize(0);
     }
 }

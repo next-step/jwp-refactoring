@@ -42,18 +42,26 @@ public class MockMvcUtil {
         );
     }
 
-    public static <T> MockHttpServletRequestBuilder postRequestBuilder(String urlTemplate, T body, Object... path) throws Exception {
+    public static <T> MockHttpServletRequestBuilder postRequestBuilder(String urlTemplate, T body, Object... path)
+        throws Exception {
         return MockMvcRequestBuilders.post(urlTemplate, path)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(body));
     }
 
-    public static <T> MockHttpServletRequestBuilder putRequestBuilder(String urlTemplate, T body, Object... path) throws Exception {
+    public static <T> MockHttpServletRequestBuilder putRequestBuilder(String urlTemplate, T body, Object... path)
+        throws Exception {
         return MockMvcRequestBuilders.put(urlTemplate, path)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(body));
+    }
+
+    public static MockHttpServletRequestBuilder getRequestBuilder(String urlTemplate, Object... path) {
+        return MockMvcRequestBuilders.get(urlTemplate, path)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON);
     }
 
     public static <T> T as(ResultActions resultActions, Class<T> clazz) throws Exception {

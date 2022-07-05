@@ -1,8 +1,6 @@
 package kitchenpos.application.table;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
@@ -17,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
+
+    public static final String COOKING_OR_MEAL_ORDER_TABLE_DEALLOCATE_ERROR_MESSAGE = "조리중, 식사중인 주문 테이블이 포함되어 있어 단체 지정을 해제 할 수 없습니다.";
 
     private final OrderDao orderDao;
     private final OrderTableRepository orderTableRepository;
@@ -42,22 +42,19 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
-
-        // TODO 오류 파악 및 디버깅이 용이하도록 예외 처리 시 오류 문구 설정
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+        final TableGroup persistGroup = findTableGroupById(tableGroupId);
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(persistGroup.getOrderTablesId(), OrderStatus.cnaNotUngroupStatus())) {
+            throw new IllegalArgumentException(COOKING_OR_MEAL_ORDER_TABLE_DEALLOCATE_ERROR_MESSAGE);
         }
+        persistGroup.deallocateOrderTable();
+    }
 
-        // TODO : 일급 컬렉션 + 변경 감지 + 영속성 전이
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.deallocateTableGroup();
-            orderTableRepository.save(orderTable);
-        }
+    private TableGroup findTableGroupById(final Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+            .orElseThrow(() -> new IllegalArgumentException(COOKING_OR_MEAL_ORDER_TABLE_DEALLOCATE_ERROR_MESSAGE));
+    }
+
+    public TableGroupResponse findById(final Long tableGroupId) {
+        return TableGroupResponse.from(findTableGroupById(tableGroupId));
     }
 }

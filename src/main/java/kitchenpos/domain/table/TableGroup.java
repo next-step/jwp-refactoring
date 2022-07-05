@@ -2,12 +2,11 @@ package kitchenpos.domain.table;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class TableGroup {
@@ -22,8 +21,8 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
 
@@ -32,8 +31,8 @@ public class TableGroup {
     public TableGroup(List<OrderTable> orderTables) {
         validateGroupingTargetOrderTables(orderTables);
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
-        orderTables.forEach(it -> it.allocateTableGroup(this));
+        this.orderTables = new OrderTables(orderTables);
+        this.orderTables.allocateAll(this);
     }
 
     public static TableGroup of(List<Long> orderTablesIds, List<OrderTable> groupingTargetOrderTables) {
@@ -52,10 +51,10 @@ public class TableGroup {
 
     private void validateGroupingTargetOrderTables(final List<OrderTable> gropingTargetTables) {
         if (isContainsAlreadyGroupingOrderTable(gropingTargetTables)) {
-            throw new IllegalArgumentException(CONTAINS_IS_NOT_EMPTY_ORDER_TABLE_ERROR_MESSAGE);
+            throw new IllegalArgumentException(CONTAINS_ALREADY_GROPING_ORDER_TABLE_ERROR_MESSAGE);
         }
         if (isContainsNotEmptyOrderTable(gropingTargetTables)) {
-            throw new IllegalArgumentException(CONTAINS_ALREADY_GROPING_ORDER_TABLE_ERROR_MESSAGE);
+            throw new IllegalArgumentException(CONTAINS_IS_NOT_EMPTY_ORDER_TABLE_ERROR_MESSAGE);
         }
     }
 
@@ -66,7 +65,23 @@ public class TableGroup {
 
     private boolean isContainsAlreadyGroupingOrderTable(final List<OrderTable> gropingTargetTables) {
         return gropingTargetTables.stream()
-            .anyMatch(it -> it.isGroupTable());
+            .anyMatch(OrderTable::isGroupTable);
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
+    }
+
+    public List<Long> getOrderTablesId(){
+        return orderTables.getOrderTablesId();
+    }
+
+    public void deallocateOrderTable() {
+        orderTables.deallocateAll();
     }
 
     public Long getId() {
@@ -75,17 +90,5 @@ public class TableGroup {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 }
