@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableUngroupValidator;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +20,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("단체 지정 관련")
 @SpringBootTest
@@ -31,6 +31,8 @@ class TableGroupServiceTest {
     TableGroupRepository tableGroupRepository;
     @MockBean
     OrderTableRepository orderTableRepository;
+    @MockBean
+    TableUngroupValidator tableUngroupValidator;
 
     Long orderTableId1;
     Long orderTableId2;
@@ -91,5 +93,21 @@ class TableGroupServiceTest {
 
         // then
         assertThat(tableGroup.getGroupTables().isEmpty()).isTrue();
+    }
+
+    @DisplayName("단체 지정을 해제할 수 없다")
+    @Test
+    void invalidUngroup() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable groupedTable1 = new OrderTable(1, true);
+        OrderTable groupedTable2 = new OrderTable(1, true);
+        TableGroup tableGroup = TableGroup.group(Arrays.asList(groupedTable1, groupedTable2));
+        when(tableGroupRepository.findByIdWithOrderTable(tableGroupId)).thenReturn(Optional.of(tableGroup));
+        doThrow(IllegalArgumentException.class).when(tableUngroupValidator).validate(anyList());
+
+        // when then
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupId))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

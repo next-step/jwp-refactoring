@@ -2,11 +2,10 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableUngroupValidator;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.event.TableUngroupEvent;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +18,12 @@ public class TableGroupService {
     private static final String TABLE_GROUP_IS_NOT_EXIST = "지정된 단체를 찾을 수 없습니다";
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
-    private final ApplicationEventPublisher eventPublisher;
+    private final List<TableUngroupValidator> tableUngroupValidators;
 
-    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository, ApplicationEventPublisher eventPublisher) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository, List<TableUngroupValidator> tableUngroupValidators) {
         this.tableGroupRepository = tableGroupRepository;
         this.orderTableRepository = orderTableRepository;
-        this.eventPublisher = eventPublisher;
+        this.tableUngroupValidators = tableUngroupValidators;
     }
 
     @Transactional
@@ -45,7 +44,7 @@ public class TableGroupService {
         List<Long> orderTableIds = tableGroup.getGroupTables().getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        eventPublisher.publishEvent(new TableUngroupEvent(orderTableIds));
+        tableUngroupValidators.forEach(validator -> validator.validate(orderTableIds));
 
         tableGroup.ungroup();
     }

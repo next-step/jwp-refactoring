@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableChangeEmptyValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -17,8 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("주문 테이블 관련")
 @SpringBootTest
@@ -27,6 +27,8 @@ class TableServiceTest {
     TableService tableService;
     @MockBean
     OrderTableRepository orderTableRepository;
+    @MockBean
+    TableChangeEmptyValidator tableChangeEmptyValidator;
 
     Long orderTableId;
     OrderTable orderTable;
@@ -74,6 +76,17 @@ class TableServiceTest {
 
         // then
         assertThat(changedOrderTable.isEmpty()).isTrue();
+    }
+
+    @DisplayName("테이블을 변경할 수 없다")
+    @Test
+    void invalidChangeEmpty() {
+        // given
+        doThrow(IllegalArgumentException.class).when(tableChangeEmptyValidator).validate(orderTableId);
+
+        // when then
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, true))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("없는 주문 테이블은 변경할 수 없다")

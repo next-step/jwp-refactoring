@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableChangeEmptyValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
-import kitchenpos.table.event.TableChangeEmptyEvent;
 import kitchenpos.table.repository.OrderTableRepository;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +16,11 @@ import static java.util.stream.Collectors.toList;
 public class TableService {
     private static final String ORDER_TABLE_IS_NOT_EXIST = "주문테이블이 존재하지 않습니다";
     private final OrderTableRepository orderTableRepository;
-    private final ApplicationEventPublisher eventPublisher;
+    private final List<TableChangeEmptyValidator> tableChangeEmptyValidators;
 
-    public TableService(OrderTableRepository orderTableRepository, ApplicationEventPublisher eventPublisher) {
+    public TableService(OrderTableRepository orderTableRepository, List<TableChangeEmptyValidator> tableChangeEmptyValidators) {
         this.orderTableRepository = orderTableRepository;
-        this.eventPublisher = eventPublisher;
+        this.tableChangeEmptyValidators = tableChangeEmptyValidators;
     }
 
     @Transactional
@@ -41,7 +40,7 @@ public class TableService {
     public TableResponse changeEmpty(final Long orderTableId, final boolean empty) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException(ORDER_TABLE_IS_NOT_EXIST));
-        eventPublisher.publishEvent(new TableChangeEmptyEvent(orderTableId));
+        tableChangeEmptyValidators.forEach(validator -> validator.validate(orderTableId));
         savedOrderTable.changeEmpty(empty);
         return new TableResponse(savedOrderTable);
     }
