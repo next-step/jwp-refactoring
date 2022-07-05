@@ -1,13 +1,10 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static kitchenpos.common.Messages.ORDER_STATUS_CHANGE_CANNOT_COMPLETION;
 
 @Entity
 @Table(name = "orders")
@@ -17,8 +14,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -32,32 +29,25 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        this(orderTable, orderLineItems);
+    private Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        this(orderTableId, orderLineItems);
         this.id = id;
         this.orderStatus = orderStatus;
     }
 
-    private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        validateOrderTable(orderTable);
-        this.orderTable = orderTable;
+    private Order(Long orderTableId, OrderLineItems orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         addOrderLineItems(orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(orderTable, orderLineItems);
+    public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
-    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderLineItems);
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
     private void addOrderLineItems(OrderLineItems orderLineItems) {
@@ -68,10 +58,6 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException(ORDER_STATUS_CHANGE_CANNOT_COMPLETION);
-        }
-
         this.orderStatus = orderStatus;
     }
 
@@ -79,8 +65,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
