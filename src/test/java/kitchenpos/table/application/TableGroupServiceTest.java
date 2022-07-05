@@ -18,7 +18,6 @@ import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupDao;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,25 +1,20 @@
 package kitchenpos.table.application;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.table.domain.OrderTableDao;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.domain.TableGroupDao;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

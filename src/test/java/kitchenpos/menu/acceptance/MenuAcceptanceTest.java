@@ -36,7 +36,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         추천_메뉴 = 메뉴_그룹_생성_요청("추천메뉴").as(MenuGroupResponse.class);
         후라이드_치킨 = 상품_생성_요청("후라이드치킨", 17_000L).as(ProductResponse.class);
 
-        메뉴_후라이드_치킨 = new MenuProductRequest(후라이드_치킨.getId(), 2);
+        메뉴_후라이드_치킨 = 메뉴_상품_생성(후라이드_치킨.getId(), 2);
     }
 
     @Test
@@ -59,7 +59,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회_요청됨(response);
     }
 
-    private static ExtractableResponse<Response> 메뉴_생성_요청(String name, Long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(String name, Long price, Long menuGroupId,
+        List<MenuProductRequest> menuProducts) {
         MenuRequest menuRequest = new MenuRequest(name, new BigDecimal(price), menuGroupId, menuProducts);
 
         return RestAssured.given().log().all()
@@ -83,5 +84,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private static void 메뉴_목록_조회_요청됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static MenuProductRequest 메뉴_상품_생성(Long productId, long quantity) {
+        return new MenuProductRequest(productId, quantity);
     }
 }

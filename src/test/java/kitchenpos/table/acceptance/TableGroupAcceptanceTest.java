@@ -1,12 +1,7 @@
 package kitchenpos.table.acceptance;
 
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_생성_요청;
-import static kitchenpos.table.application.TableServiceTest.테이블_그룹_있는_주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -15,8 +10,6 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
