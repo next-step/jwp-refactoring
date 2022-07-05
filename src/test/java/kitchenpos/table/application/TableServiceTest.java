@@ -71,10 +71,10 @@ class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(주문_테이블));
 
         // when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = tableService.list();
 
         // then
-        assertThat(orderTables).containsExactly(주문_테이블);
+        assertThat(orderTables.size()).isEqualTo(1);
     }
 
     @Test

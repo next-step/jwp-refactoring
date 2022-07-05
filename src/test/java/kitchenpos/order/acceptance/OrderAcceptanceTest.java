@@ -9,7 +9,6 @@ import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.테이블_그
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("주문을 관리한다.")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -98,7 +98,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableId, orderLineItemRequestList);
 
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(orderRequest)
             .when().post("/api/orders")
             .then().log().all().extract();
@@ -114,7 +114,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus);
 
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(orderStatusRequest)
             .when().put("/api/orders/{orderId}/order-status", orderId)
             .then().log().all().extract();

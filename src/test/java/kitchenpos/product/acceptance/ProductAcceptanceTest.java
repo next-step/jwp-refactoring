@@ -3,7 +3,6 @@ package kitchenpos.product.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
@@ -12,6 +11,7 @@ import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("상품을 관리한다.")
 public class ProductAcceptanceTest extends AcceptanceTest {
@@ -39,7 +39,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         ProductRequest productRequest = new ProductRequest(name, new BigDecimal(price));
 
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(productRequest)
             .when().post("/api/products")
             .then().log().all().extract();
@@ -47,7 +47,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private static ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/api/products")
             .then().log().all().extract();
     }

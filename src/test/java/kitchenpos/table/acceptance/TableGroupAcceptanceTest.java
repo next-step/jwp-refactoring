@@ -4,7 +4,6 @@ import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_�
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("테이블 그룹을 관리한다.")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -57,7 +57,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
 
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(tableGroupRequest)
             .when().post("/api/table-groups")
             .then().log().all().extract();

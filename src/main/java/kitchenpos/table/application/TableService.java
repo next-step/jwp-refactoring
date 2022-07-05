@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
@@ -34,8 +35,10 @@ public class TableService {
         return OrderTableResponse.from(saveOrderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableDao.findAll().stream()
+            .map(OrderTableResponse::from)
+            .collect(Collectors.toList());
     }
 
     @Transactional

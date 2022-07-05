@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("메뉴를 관리한다.")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -64,7 +65,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuRequest menuRequest = new MenuRequest(name, new BigDecimal(price), menuGroupId, menuProducts);
 
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(menuRequest)
             .when().post("/api/menus")
             .then().log().all().extract();
@@ -72,7 +73,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/api/menus")
             .then().log().all().extract();
     }
