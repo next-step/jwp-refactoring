@@ -1,14 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderLineItemDao;
-import kitchenpos.order.domain.OrderTableDao;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,10 +24,10 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderLineItemDao orderLineItemDao;
@@ -68,11 +61,11 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         // given
-        given(menuDao.countByIdIn(anyList()))
+        given(menuRepository.countByIdIn(anyList()))
                 .willReturn((long) 주문항목_리스트.size());
         given(orderTableDao.findById(생성할_주문.getOrderTableId()))
                 .willReturn(Optional.of(저장된_주문테이블));
-        given(orderDao.save(생성할_주문))
+        given(orderRepository.save(생성할_주문))
                 .willReturn(저장된_주문);
         given(orderLineItemDao.save(eq(첫번째_주문항목)))
                 .willReturn(첫번째_주문항목);
@@ -102,7 +95,7 @@ class OrderServiceTest {
     void createOrderFailsWhenDuplicateMenu() {
         // given
         Long 유니크한_메뉴개수 = 1L;
-        given(menuDao.countByIdIn(anyList()))
+        given(menuRepository.countByIdIn(anyList()))
                 .willReturn(유니크한_메뉴개수);
 
         // when & then
@@ -115,7 +108,7 @@ class OrderServiceTest {
         // given
         Long 존재하지_않는_주문테이블ID = 1000L;
         생성할_주문 = new Order(존재하지_않는_주문테이블ID, 주문항목_리스트);
-        given(menuDao.countByIdIn(anyList()))
+        given(menuRepository.countByIdIn(anyList()))
                 .willReturn((long) 주문항목_리스트.size());
 
         // when & then
@@ -129,7 +122,7 @@ class OrderServiceTest {
         OrderTable 빈_주문테이블 = new OrderTable(2L, null, 4, true);
         생성할_주문 = new Order(빈_주문테이블.getId(), 주문항목_리스트);
 
-        given(menuDao.countByIdIn(anyList()))
+        given(menuRepository.countByIdIn(anyList()))
                 .willReturn((long) 주문항목_리스트.size());
         given(orderTableDao.findById(생성할_주문.getOrderTableId()))
                 .willReturn(Optional.of(빈_주문테이블));
@@ -143,7 +136,7 @@ class OrderServiceTest {
     void listOrders() {
         // given
         List<Order> 조회할_주문_목록 = Arrays.asList(저장된_주문);
-        given(orderDao.findAll())
+        given(orderRepository.findAll())
                 .willReturn(조회할_주문_목록);
         given(orderLineItemDao.findAllByOrderId(anyLong()))
                 .willReturn(주문항목_리스트);
@@ -162,9 +155,9 @@ class OrderServiceTest {
         Long 상태_변경할_주문ID = 1L;
         Order 상태_변경_전_주문 = new Order(상태_변경할_주문ID, 저장된_주문테이블.getId(), OrderStatus.MEAL.name(), LocalDateTime.now(), 주문항목_리스트);
         Order 상태_변경_후_예상_주문 = new Order(상태_변경할_주문ID, 저장된_주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문항목_리스트);
-        given(orderDao.findById(상태_변경할_주문ID))
+        given(orderRepository.findById(상태_변경할_주문ID))
                 .willReturn(Optional.of(상태_변경_전_주문));
-        given(orderDao.save(any()))
+        given(orderRepository.save(any()))
                 .willReturn(상태_변경_후_예상_주문);
         given(orderLineItemDao.findAllByOrderId(상태_변경할_주문ID))
                 .willReturn(주문항목_리스트);
@@ -190,7 +183,7 @@ class OrderServiceTest {
     void changeOrderStatusFailsWhenCompleted() {
         // given
         Order 완료된_주문 = new Order(1L, 저장된_주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문항목_리스트);
-        given(orderDao.findById(완료된_주문.getId()))
+        given(orderRepository.findById(완료된_주문.getId()))
                 .willReturn(Optional.of(완료된_주문));
 
         // when & then
