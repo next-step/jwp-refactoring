@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -12,17 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderService orderService, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -42,14 +41,19 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 단체입니다."));
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
-
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-                orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
+        validUpGroup(tableGroup);
         tableGroup.changeUnGroup();
+        tableGroupRepository.save(tableGroup);
+    }
+
+    private void validUpGroup(TableGroup tableGroup) {
+        final List<Long> orderTableIds = orderTableRepository.findAllByTableGroupId(tableGroup.getId()).stream()
+                .map(OrderTable::getTableGroupId)
+                .collect(Collectors.toList());
+
+        if (orderService.existsNotCompletesByOrderTableIdIn(orderTableIds)) {
+            throw new IllegalStateException("주문이 완료된 테이블만 그룹 해제가 가능합니다.");
+        }
     }
 
     private void validSizeCheck(List<Long> orderTableIds) {

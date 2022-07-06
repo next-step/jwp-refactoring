@@ -41,15 +41,17 @@ public class TableService {
     public OrderTableResponse changeEmpty(Long id) {
         OrderTable orderTable = orderTableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 값이 존재하지 않습니다."));
-
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("요리 또는 식사 중인 상태일 땐 변경할 수 없습니다.");
-        }
-
+        validChangeEmpty(orderTable);
         orderTable.changeEmpty();
         orderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(orderTable);
+    }
+
+    private void validChangeEmpty(OrderTable orderTable) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("요리 또는 식사 중인 상태일 땐 변경할 수 없습니다.");
+        }
     }
 
     @Transactional
@@ -62,5 +64,10 @@ public class TableService {
         orderTable = orderTableRepository.save(orderTable);
 
         return OrderTableResponse.of(orderTable);
+    }
+
+    public OrderTable findById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블입니다."));
     }
 }

@@ -2,12 +2,10 @@ package kitchenpos.menu.application;
 
 import kitchenpos.global.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -105,8 +103,8 @@ public class MenuService {
         return products;
     }
 
-    private Map<Long, Product> listToMap(List<Product> products) {
-        return products.stream().collect(
-                Collectors.toMap(Product::getId, Function.identity()));
+    public Menu findById(Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴입니다."));
     }
 }
