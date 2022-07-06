@@ -11,14 +11,16 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.event.UngroupTableEventPublisher;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +61,7 @@ public class TableGroup {
     }
 
     public void ungroup() {
+        registerEvent(new UngroupTableEventPublisher(this));
         this.orderTables.ungroup();
     }
 

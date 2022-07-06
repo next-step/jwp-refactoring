@@ -87,3 +87,16 @@ project(':module-menu') {
         testImplementation project(':module-product')
     }
 }
+
+project(':module-table') {
+    bootJar {
+        enabled = false
+    }
+    jar {
+        enabled = true
+    }
+
+    dependencies {
+        implementation project(':module-common')
+    }
+}

@@ -2,7 +2,6 @@ package kitchenpos.table.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.order.dto.OrderTableResponse;
 
 public class TableGroupResponse {
     private Long id;

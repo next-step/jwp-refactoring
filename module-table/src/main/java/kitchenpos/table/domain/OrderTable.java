@@ -7,14 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.exception.EmptyTableException;
-import kitchenpos.exception.ExistGroupTableException;
-import kitchenpos.exception.NotEmptyException;
-import kitchenpos.exception.NotExistException;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.common.exception.EmptyTableException;
+import kitchenpos.common.exception.ExistGroupTableException;
+import kitchenpos.common.exception.NotEmptyException;
+import kitchenpos.common.exception.NotExistException;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.event.ChangeEmptyTableEventPublisher;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +65,7 @@ public class OrderTable {
     }
 
     public void changeEmpty() {
+        registerEvent(new ChangeEmptyTableEventPublisher(this));
         this.empty = true;
     }
 

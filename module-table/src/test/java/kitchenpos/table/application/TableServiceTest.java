@@ -5,19 +5,18 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.exception.NotCompletionStatusException;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.common.exception.NotCompletionStatusException;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,12 +33,9 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
-    @Mock
-    private TableValidator tableValidator;
-
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderTableRepository, tableValidator);
+        tableService = new TableService(orderTableRepository);
 
         orderTable = new OrderTable.Builder()
                 .setId(1L)
@@ -87,7 +83,6 @@ class TableServiceTest {
     void changeEmptyOrderTable() {
         // given
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        doNothing().when(tableValidator).validateNotCompletionOrderTable(any());
         // when
         final OrderTableResponse actual = tableService.changeEmpty(1L);
         // then
@@ -123,8 +118,9 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 요리중이거나 식사중이면 예외 발생")
     void cookingAndMealOrderTable() {
         // given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        doThrow(new NotCompletionStatusException()).when(tableValidator).validateNotCompletionOrderTable(any());
+        final OrderTable mockOrderTable = mock(OrderTable.class);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(mockOrderTable));
+        doThrow(new NotCompletionStatusException()).when(mockOrderTable).changeEmpty();
         // when && then
         assertThatIllegalStateException()
                 .isThrownBy(() -> tableService.changeEmpty(1L));

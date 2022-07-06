@@ -8,8 +8,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import kitchenpos.exception.InvalidTableNumberException;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.common.exception.InvalidTableNumberException;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Embeddable
 public class OrderTables {

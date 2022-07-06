@@ -1,7 +1,6 @@
 package kitchenpos.table.ui;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dto.TableGroupResponse;

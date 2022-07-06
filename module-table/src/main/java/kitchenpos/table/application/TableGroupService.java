@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import kitchenpos.exception.NotExistException;
+import kitchenpos.common.exception.NotExistException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -15,14 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final TableValidator tableValidator;
 
     public TableGroupService(OrderTableRepository orderTableRepository,
-                             TableGroupRepository tableGroupRepository,
-                             TableValidator tableValidator) {
+                             TableGroupRepository tableGroupRepository) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -38,8 +35,6 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup persistTableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(NotExistException::new);
-
-        tableValidator.validateNotCompletionOrderTables(persistTableGroup.getOrderTableIds());
         persistTableGroup.ungroup();
     }
 }

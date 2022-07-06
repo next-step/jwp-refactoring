@@ -3,7 +3,7 @@ package kitchenpos.table.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.exception.InvalidGuestNumberException;
+import kitchenpos.common.exception.InvalidGuestNumberException;
 
 @Embeddable
 public class GuestNumber {

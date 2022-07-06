@@ -1,6 +1,6 @@
 package kitchenpos.table.dto;
 
-import static kitchenpos.common.ValidationMessage.MIN_SIZE_IS_TWO;
+import static kitchenpos.common.message.ValidationMessage.MIN_SIZE_IS_TWO;
 
 import java.time.LocalDateTime;
 import java.util.List;

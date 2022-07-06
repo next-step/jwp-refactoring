@@ -1,15 +1,13 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.common.ErrorMessage.NOT_EXIST_ORDER_TABLE;
+import static kitchenpos.common.message.ErrorMessage.NOT_EXIST_ORDER_TABLE;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.exception.NotCompletionStatusException;
-import kitchenpos.exception.NotExistException;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.common.exception.NotExistException;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final TableValidator tableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository,
-                        TableValidator tableValidator) {
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -42,8 +37,6 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         final OrderTable persistOrderTable = getOrderTable(orderTableId);
-
-        tableValidator.validateNotCompletionOrderTable(orderTableId);
         persistOrderTable.validateExistGroupingTable();
         persistOrderTable.changeEmpty();
         return persistOrderTable.toOrderTableResponse();

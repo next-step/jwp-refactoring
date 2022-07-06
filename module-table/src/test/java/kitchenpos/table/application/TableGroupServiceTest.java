@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -14,11 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import kitchenpos.exception.NotCompletionStatusException;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.common.exception.NotCompletionStatusException;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -44,12 +44,9 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
-    @Mock
-    private TableValidator tableValidator;
-
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, tableValidator);
+        tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         orderTableOf5Guests = new OrderTable.Builder()
                 .setId(1L)
@@ -173,7 +170,6 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        doNothing().when(tableValidator).validateNotCompletionOrderTables(any());
         // when && then
         tableGroupService.ungroup(1L);
     }
@@ -181,10 +177,9 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("식사가 완료되지 않은 상태에서 그룹화된 테이블을 해제시 예외 발생")
     void ungroupCookingAndMealGroupTable() {
-        final TableGroup tableGroup = new TableGroup(1L, null,
-                Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
-        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        doThrow(new NotCompletionStatusException()).when(tableValidator).validateNotCompletionOrderTables(any());
+        final TableGroup mockTableGroup = mock(TableGroup.class);
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(mockTableGroup));
+        doThrow(new NotCompletionStatusException()).when(mockTableGroup).ungroup();
 
         // when && then
         assertThatIllegalStateException()
