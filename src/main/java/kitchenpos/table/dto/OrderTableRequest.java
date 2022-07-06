@@ -1,6 +1,6 @@
-package kitchenpos.ordertable.dto;
+package kitchenpos.table.dto;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableRequest {
     int numberOfGuests;

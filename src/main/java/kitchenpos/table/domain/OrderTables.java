@@ -1,10 +1,9 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.table.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.ordertable.domain.OrderTable;
 
 @Embeddable
 public class OrderTables {

@@ -5,8 +5,8 @@ import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component
