@@ -10,4 +10,4 @@
 - [Gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
 
 ## 📚 Todo List 📚
-- [ ] 멀티 모듈로 구성
+- [x] 멀티 모듈로 구성
