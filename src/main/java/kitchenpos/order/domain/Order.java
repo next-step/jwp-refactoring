@@ -28,7 +28,7 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = new OrderLineItems(orderLineItems);
