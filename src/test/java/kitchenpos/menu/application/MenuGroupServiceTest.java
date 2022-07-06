@@ -2,6 +2,8 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,15 +31,16 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        MenuGroup 생성할_메뉴그룹 = new MenuGroup("커플코스A");
-        given(menuGroupRepository.save(생성할_메뉴그룹))
-                .willReturn(new MenuGroup(1L, "커플코스A"));
+        MenuGroupRequest 생성할_메뉴그룹_요청 = new MenuGroupRequest("커플코스A");
+        MenuGroup 생성할_메뉴그룹 = new MenuGroup(1L, 생성할_메뉴그룹_요청.getName());
+        given(menuGroupRepository.save(any()))
+                .willReturn(생성할_메뉴그룹);
 
         // when
-        MenuGroup 생성된_메뉴그룹 = menuGroupService.create(생성할_메뉴그룹);
+        MenuGroupResponse 생성된_메뉴그룹_응답 = menuGroupService.create(생성할_메뉴그룹_요청);
 
         // then
-        메뉴그룹_생성_성공(생성된_메뉴그룹, 생성할_메뉴그룹);
+        메뉴그룹_생성_성공(생성된_메뉴그룹_응답, 생성할_메뉴그룹_요청);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
@@ -52,21 +56,26 @@ class MenuGroupServiceTest {
                 .willReturn(조회할_메뉴그룹_목록);
 
         // when
-        List<MenuGroup> 조회된_메뉴그룹_목록 = menuGroupService.list();
+        List<MenuGroupResponse> 조회된_메뉴그룹_목록 = menuGroupService.list();
 
         // then
         메뉴그룹_목록_조회_성공(조회된_메뉴그룹_목록, 조회할_메뉴그룹_목록);
     }
 
-    private void 메뉴그룹_생성_성공(MenuGroup actual, MenuGroup expected) {
+    private void 메뉴그룹_생성_성공(MenuGroupResponse actual, MenuGroupRequest expected) {
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
                 () -> assertThat(actual.getName()).isEqualTo(expected.getName())
         );
     }
 
-    private void 메뉴그룹_목록_조회_성공(List<MenuGroup> actual, List<MenuGroup> expected) {
-        assertThat(actual)
-                .containsExactlyElementsOf(expected);
+    private void 메뉴그룹_목록_조회_성공(List<MenuGroupResponse> 조회된_메뉴그룹_목록, List<MenuGroup> 조회할_메뉴그룹_목록) {
+        assertAll(
+                () -> assertThat(조회된_메뉴그룹_목록).hasSize(조회할_메뉴그룹_목록.size()),
+                () -> assertThat(조회된_메뉴그룹_목록.get(0).getId()).isEqualTo(조회할_메뉴그룹_목록.get(0).getId()),
+                () -> assertThat(조회된_메뉴그룹_목록.get(0).getName()).isEqualTo(조회할_메뉴그룹_목록.get(0).getName()),
+                () -> assertThat(조회된_메뉴그룹_목록.get(1).getId()).isEqualTo(조회할_메뉴그룹_목록.get(1).getId()),
+                () -> assertThat(조회된_메뉴그룹_목록.get(1).getName()).isEqualTo(조회할_메뉴그룹_목록.get(1).getName())
+        );
     }
 }
