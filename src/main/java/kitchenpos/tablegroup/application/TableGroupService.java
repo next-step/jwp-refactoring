@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.order.application.OrderService;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -17,24 +17,28 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final OrderService orderService;
-    private final OrderTableRepository orderTableRepository;
+    private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderService orderService, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderService orderService, TableService tableService, TableGroupRepository tableGroupRepository) {
         this.orderService = orderService;
-        this.orderTableRepository = orderTableRepository;
+        this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        validSizeCheck(request.getOrderTableIds());
-        final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(request.getOrderTableIds());
-        validOrderTableSizeIsEqual(orderTables, request.getOrderTableIds());
+        final List<OrderTable> orderTables = createOrderTables(request);
 
         TableGroup tableGroup = TableGroup.of(orderTables);
         final TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(saveTableGroup);
+    }
+
+    private List<OrderTable> createOrderTables(TableGroupRequest request) {
+        return request.getOrderTableIds().stream()
+                .map(id -> tableService.findById(id))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -47,35 +51,12 @@ public class TableGroupService {
     }
 
     private void validUpGroup(TableGroup tableGroup) {
-        final List<Long> orderTableIds = orderTableRepository.findAllByTableGroupId(tableGroup.getId()).stream()
-                .map(OrderTable::getTableGroupId)
+        final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+                .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
         if (orderService.existsNotCompletesByOrderTableIdIn(orderTableIds)) {
             throw new IllegalStateException("주문이 완료된 테이블만 그룹 해제가 가능합니다.");
-        }
-    }
-
-    private void validSizeCheck(List<Long> orderTableIds) {
-        validOrderTableEmpty(orderTableIds);
-        validOrderTableMinSize(orderTableIds);
-    }
-
-    private void validOrderTableEmpty(List<Long> orderTableIds) {
-        if (CollectionUtils.isEmpty(orderTableIds)) {
-            throw new IllegalArgumentException("주문 테이블이 입력되지 않았습니다.");
-        }
-    }
-
-    private void validOrderTableMinSize(List<Long> orderTableIds) {
-        if (orderTableIds.size() < 2) {
-            throw new IllegalArgumentException("총 주문 테이블수는 2보다 작을 수 없습니다.");
-        }
-    }
-
-    private void validOrderTableSizeIsEqual(List<OrderTable> orderTables, List<Long> orderTableIds) {
-        if (orderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException("등록되지 않은 주문테이블이 있습니다.");
         }
     }
 }
