@@ -8,8 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -17,8 +15,7 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @OneToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private Long productId;
     private long quantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
@@ -27,22 +24,22 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Product product, long quantity) {
+    public MenuProduct(Long seq, Long productId, long quantity) {
         this.seq = seq;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Product product, long quantity) {
-       this(null, product, quantity);
+    public MenuProduct(Long productId, long quantity) {
+       this(null, productId, quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public void setMenu(Menu menu) {
@@ -63,11 +60,11 @@ public class MenuProduct {
             return false;
         }
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(product, that.product) && Objects.equals(menu, that.menu);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(productId, that.productId) && Objects.equals(menu, that.menu);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, product, quantity, menu);
+        return Objects.hash(seq, productId, quantity, menu);
     }
 }

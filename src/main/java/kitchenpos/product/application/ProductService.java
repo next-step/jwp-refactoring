@@ -30,4 +30,9 @@ public class ProductService {
     public Product findByIdOrElseThrow(long productId) {
         return productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException());
     }
+
+    public long findPriceByIdOrElseThrow(long productId) {
+        Product product =  productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException());
+        return product.getPrice();
+    }
 }

@@ -43,7 +43,7 @@ public class Menu {
         this.price = Price.of(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = new MenuProducts(menuProducts);
-        this.menuProducts.registerMenuProduct(this, this.price);
+        this.menuProducts.registerMenuProduct(this);
     }
 
     public static Menu of(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {

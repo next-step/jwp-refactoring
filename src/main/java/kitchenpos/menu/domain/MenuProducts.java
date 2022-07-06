@@ -19,18 +19,8 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public void registerMenuProduct(Menu menu, Price price) {
-        validatePrice(price);
+    public void registerMenuProduct(Menu menu) {
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
-    }
-
-    private void validatePrice(Price price) {
-        long priceSum = menuProducts.stream().
-            mapToLong(menuProduct -> menuProduct.getProduct().getPrice() * menuProduct.getQuantity()).
-            sum();
-        if (price.isGreaterThan(priceSum)) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public List<MenuProduct> getMenuProducts() {
