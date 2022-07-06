@@ -68,7 +68,8 @@ class ProductServiceTest {
         진매 = TestProductRequestFactory.create("진라면 이상한 맛", price);
 
         //when & then
-        assertThatThrownBy(() -> productService.create(진매)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(진매)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("가격은 0원 미만으로 설정할 수 없습니다.");
     }
 
     @Test

@@ -19,7 +19,7 @@ public class Price {
 
     public Price(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격은 0원 미만으로 설정할 수 없습니다.");
         }
         this.price = price;
     }

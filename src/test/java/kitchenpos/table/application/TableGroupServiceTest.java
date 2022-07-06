@@ -81,18 +81,20 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("단체 테이블은 주문테이블이 2개 이상이어야 합니다.");
     }
 
     @DisplayName("단체 테이블로 등록할 주문 테이블은 모두 존재해야 한다.")
     @Test
     void createException2() throws Exception {
         // given
-        주문_테이블_1 = new OrderTable(4, true);
-
+        주문_테이블_1 = new OrderTable(4, false);
+        단체_테이블 = TestTableGroupFactory.create(1L, Collections.singletonList(주문_테이블_1));
         // when & then
         assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("요청된 주문 테이블과 등록된 주문 테이블이 일치하지 않습니다.");
     }
 
     @DisplayName("단체 테이블 등록 시 빈 주문 테이블이 있으면 예외가 발생한다")
@@ -103,7 +105,8 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("비어있는 주문 테이블이 존재합니다.");
     }
 
 
@@ -117,7 +120,8 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("단체 테이블 존재합니다.");
     }
 
     @DisplayName("단체 테이블을 해제한다")
@@ -147,6 +151,7 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatThrownBy(() -> unGroupWithGroupEventHandler.handle(new OrderTableUnGroupEvent(단체_테이블)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("COOKING / MEAL 상태는 해제할 수 없습니다.");
     }
 }

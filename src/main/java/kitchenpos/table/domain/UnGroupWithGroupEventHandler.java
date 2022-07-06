@@ -35,7 +35,7 @@ public class UnGroupWithGroupEventHandler {
 
     private void validateExists(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.getCookingAndMeal())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("COOKING / MEAL 상태는 해제할 수 없습니다.");
         }
     }
 }

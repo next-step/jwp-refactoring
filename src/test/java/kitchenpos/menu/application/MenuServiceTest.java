@@ -84,7 +84,9 @@ class MenuServiceTest {
     @CsvSource(value = {"-1", "null"}, nullValues = {"null"})
     void createException1(BigDecimal price) throws Exception {
         // when & then
-        assertThatThrownBy(() -> new Menu("라면메뉴", price, 50L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("라면메뉴", price, 50L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("가격은 0원 미만으로 설정할 수 없습니다.");
     }
 
     @DisplayName("등록되지 않은 메뉴그룹은 예외가 발생한다")
@@ -93,7 +95,8 @@ class MenuServiceTest {
         // given
         given(menuGroupRepository.existsById(any())).willReturn(false);
         // when & then
-        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("메뉴 그룹이 존재하지 않습니다");
     }
 
     @DisplayName("메뉴가격이 메뉴상품 총합보다 높으면 예외가 발생한다")
@@ -104,7 +107,8 @@ class MenuServiceTest {
         given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(진매, 진순이));
         given(menuGroupRepository.existsById(any())).willReturn(true);
         // when & then
-        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("메뉴 가격은 제품 가격의 합을 초과할 수 없습니다");
     }
 
     @DisplayName("등록된 전체 메뉴를 조회한다")

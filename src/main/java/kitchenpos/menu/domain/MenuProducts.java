@@ -51,7 +51,7 @@ public class MenuProducts {
         return menuProducts.stream()
                 .filter(m -> m.getProductId().equals(productId))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 상품이 없습니다."))
                 .getQuantity();
     }
 

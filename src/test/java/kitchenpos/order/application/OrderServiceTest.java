@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.fixture.TestMenuGroupFactory;
-import kitchenpos.fixture.TestProductFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -12,7 +11,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.ValidateWithOrderTableEmptyValidateEventHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,7 +91,8 @@ class OrderServiceTest {
         주문 = new Order(1L);
 
         // when & then
-        assertThatThrownBy(() -> orderValidatorInject.validate(주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderValidatorInject.validate(주문)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 항목이 존재하지 않습니다.");
     }
 
     @DisplayName("주문 항목의 메뉴가 존재하지 않으면 등록할 수 없다")
@@ -103,17 +102,19 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(any())).willReturn(0L);
 
         // when & then
-        assertThatThrownBy(() -> orderValidatorInject.validate(주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderValidatorInject.validate(주문)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록된 메뉴와 요청 메뉴가 일치하지 않습니다.");
     }
 
     @DisplayName("주문 항목의 주문테이블이 존재하지 않으면 등록할 수 없다")
     @Test
     void createException3() throws Exception {
         OrderTableEmptyValidateEvent event = new OrderTableEmptyValidateEvent(주문);
-        given(orderTableRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(anyLong())).willThrow(new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
         // when & then
         assertThatThrownBy(() -> validateWithOrderTableEmptyValidateEventHandler.handle(event))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블을 찾을 수 없습니다.");
     }
 
     @DisplayName("전체 주문목록을 조회할 수 있다")
@@ -153,7 +154,8 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(orderStatus)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문상태가 Completion 입니다.");
     }
 
 

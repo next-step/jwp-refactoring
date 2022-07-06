@@ -43,7 +43,7 @@ public class OrderService {
 
     public Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
     }
 
     @Transactional

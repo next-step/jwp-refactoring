@@ -44,7 +44,7 @@ public class TableGroupService {
     }
 
     public TableGroup findTableGroupById(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new IllegalArgumentException("단체 테이블이 존재하지 않습니다."));
     }
 
     private List<Long> groupIds(TableGroupRequest request) {

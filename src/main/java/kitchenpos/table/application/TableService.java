@@ -55,7 +55,7 @@ public class TableService {
 
     public OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
     }
 
     public OrderTables getOrderTables(List<Long> ids) {

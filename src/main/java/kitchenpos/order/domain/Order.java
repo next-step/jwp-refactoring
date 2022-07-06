@@ -104,7 +104,7 @@ public class Order extends AbstractAggregateRoot<Order> {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (isOrderStatusCompletion()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문상태가 Completion 입니다.");
         }
         this.orderStatus = orderStatus;
     }

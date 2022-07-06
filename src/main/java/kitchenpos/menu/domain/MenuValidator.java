@@ -33,14 +33,14 @@ public class MenuValidator {
 
     private void validateExistsMenuGroup(Menu menu) {
         if (!existsMenuGroupById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다");
         }
     }
 
 
     private void validateProductSize(List<Long> productIds, Products products) {
         if (!products.isSameSize(productIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록된 상품과 일치하지 않습니다");
         }
     }
 
@@ -54,7 +54,7 @@ public class MenuValidator {
 
     private void validateMenuProducts(Menu menu, Products products) {
         if (menu.getPrice().moreExpensiveThan(totalPrice(menu.getMenuProducts(), products))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴 가격은 제품 가격의 합을 초과할 수 없습니다");
         }
     }
 

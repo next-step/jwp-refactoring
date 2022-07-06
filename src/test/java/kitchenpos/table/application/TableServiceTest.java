@@ -2,7 +2,6 @@ package kitchenpos.table.application;
 
 import kitchenpos.fixture.TestOrderTableRequestFactory;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -26,21 +25,20 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-    @Mock
-    private OrderTableRepository orderTableRepositoryMock;
-
     @Mock
     private TableValidator tableValidator;
 
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -64,7 +62,7 @@ class TableServiceTest {
     @Test
     void create() throws Exception {
         // given
-        given(orderTableRepositoryMock.save(any())).willReturn(주문_테이블_1);
+        given(orderTableRepository.save(any())).willReturn(주문_테이블_1);
 
         // when
         OrderTableResponse orderTable = tableService.create(주문_테이블_요청_1);
@@ -77,7 +75,7 @@ class TableServiceTest {
     @Test
     void list() throws Exception {
         // given
-        given(orderTableRepositoryMock.findAll()).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // when
         List<OrderTableResponse> orderTable = tableService.list();
@@ -91,8 +89,8 @@ class TableServiceTest {
     void changeEmpty() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(1L, null, 1, false);
-        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
         doNothing().when(tableValidator).validateEmpty(any());
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문_테이블_1));
 
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(1L, 비움_요청);
@@ -104,14 +102,10 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 존재하지 않으면 비울 수 없다")
     @Test
     void changeEmptyException1() throws Exception {
-        // given
-        given(orderTableRepositoryMock.findById(any())).willThrow(IllegalArgumentException.class);
-
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, 비움_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        // then
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블을 찾을 수 없습니다.");
     }
 
     @DisplayName("단체 테이블이면 비울 수 없다")
@@ -119,7 +113,8 @@ class TableServiceTest {
     void changeEmptyException2() throws Exception {
         // when & then
         assertThatThrownBy(() -> tableValidatorInject.validateEmpty(주문_테이블_1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("단체테이블로 지정된 주문테이블이 있습니다.");
     }
 
     @DisplayName("주문테이블의 주문상태가 COOKING, MEAL 이면 초기화할 수 없다")
@@ -127,18 +122,19 @@ class TableServiceTest {
     void changeEmptyException3() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(3, false);
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willThrow(IllegalArgumentException.class);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> tableValidatorInject.validateEmpty(주문_테이블_1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문테이블의 상태가 COOKING 또는 MEAL 입니다.");
     }
 
     @DisplayName("테이블의 손님 수를 5명에서 10명으로 변경한다")
     @Test
     void changeNumberOfGuests() throws Exception {
         // given
-        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문_테이블_1));
         doNothing().when(tableValidator).validateOrderTableEmpty(any());
 
         // when
@@ -152,12 +148,13 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsException1() throws Exception {
         // given
-        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
         doNothing().when(tableValidator).validateOrderTableEmpty(any());
 
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(-1)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("손님수는 0명 미만으로 설정할 수 없습니다.");
     }
 
     @DisplayName("손님수 변경은 주문 테이블이 비어 있으면 수정할 수 없다")
@@ -165,12 +162,11 @@ class TableServiceTest {
     void changeNumberOfGuestsException3() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(1L, new TableGroup(), 1, true);
-        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
-        doThrow(IllegalArgumentException.class).when(tableValidator).validateOrderTableEmpty(주문_테이블_1);
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(3)))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableValidatorInject.validateOrderTableEmpty(주문_테이블_1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블이 비었습니다.");
     }
 
 

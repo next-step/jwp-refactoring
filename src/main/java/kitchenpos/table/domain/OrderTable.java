@@ -51,7 +51,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
         if (numberOfGuests.lessThenZero()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("손님수는 0명 미만으로 설정할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
     }
@@ -85,12 +85,6 @@ public class OrderTable {
 
     public void changeEmpty(Empty empty) {
         this.empty = empty;
-    }
-
-    public void validateEmptyAndTableGroup() {
-        if (!empty.value() || Objects.nonNull(getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public void changeTableGroup(TableGroup tableGroup) {

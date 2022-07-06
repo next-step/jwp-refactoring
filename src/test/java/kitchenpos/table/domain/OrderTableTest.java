@@ -66,32 +66,4 @@ class OrderTableTest {
         // then
         assertThat(orderTable.isEmpty()).isTrue();
     }
-
-    @Test
-    @DisplayName("테이블이 비었으면 예외가 발생한다")
-    void validateEmptyAndTableGroupEmptyException() {
-        // given
-        OrderTable orderTable = OrderTable.of(orderTableRequest);
-
-        // when
-        orderTable.changeEmpty(true);
-
-        // then
-        orderTable.validateEmptyAndTableGroup();
-    }
-
-    @Test
-    @DisplayName("그룹 테이블이 존재하면 예외가 발생한다")
-    void validateEmptyAndTableGroupGroupExistsException() {
-        // given
-        OrderTable orderTable = OrderTable.of(orderTableRequest);
-
-        // when
-        orderTable.changeTableGroup(new TableGroup());
-
-        // then
-        assertThatThrownBy(orderTable::validateEmptyAndTableGroup)
-                .isInstanceOf(IllegalArgumentException.class);
-
-    }
 }
