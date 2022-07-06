@@ -2,7 +2,8 @@ package kitchenpos.product.domain;
 
 import kitchenpos.product.dto.ProductResponse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Products {

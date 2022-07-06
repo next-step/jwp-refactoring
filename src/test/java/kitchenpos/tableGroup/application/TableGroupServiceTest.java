@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.table.TableGenerator.빈_테이블_변경_API_호출;
 import static kitchenpos.table.TableGenerator.주문_테이블_생성_요청;
 import static kitchenpos.tableGroup.TableGroupGenerator.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.*;

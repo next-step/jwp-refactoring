@@ -2,8 +2,8 @@ package kitchenpos.Acceptance;
 
 import io.restassured.RestAssured;
 import kitchenpos.Acceptance.utils.DatabaseCleanup;
-import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;

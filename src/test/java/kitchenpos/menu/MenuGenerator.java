@@ -4,12 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.utils.RestAssuredRequest;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuCreateRequest;
-import kitchenpos.menuGroup.dto.MenuGroupCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menuGroup.dto.MenuGroupCreateRequest;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -27,14 +28,6 @@ public class MenuGenerator {
 
     public static MenuGroup 메뉴_그룹_생성(String name) {
         return new MenuGroup(name);
-    }
-
-    public static MenuProduct 메뉴_상품_생성(long productId, Quantity quantity) {
-        return new MenuProduct(null, productId, quantity);
-    }
-
-    public static MenuProduct 메뉴_상품_생성(Menu menu, long productId, Quantity quantity) {
-        return new MenuProduct(menu, productId, quantity);
     }
 
     public static MenuProducts 메뉴_상품_목록_생성(List<MenuProduct> menuProducts) {

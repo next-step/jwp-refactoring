@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 

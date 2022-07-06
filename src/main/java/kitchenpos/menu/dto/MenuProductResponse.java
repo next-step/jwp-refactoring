@@ -2,8 +2,6 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 
-import java.math.BigDecimal;
-
 public class MenuProductResponse {
     private Long seq;
     private Long menuId;
