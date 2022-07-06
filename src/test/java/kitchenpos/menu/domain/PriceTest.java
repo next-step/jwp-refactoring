@@ -33,6 +33,6 @@ class PriceTest {
         // when & then
         assertThatThrownBy(() -> Price.from(값))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
-                .hasMessage("가격은 0보다 작을 수 없습니다.");
+                .hasMessage("가격은 0보다 커야 합니다.");
     }
 }
