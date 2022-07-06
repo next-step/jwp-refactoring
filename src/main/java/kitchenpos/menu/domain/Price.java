@@ -8,7 +8,8 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     public static final int ZERO = 0;
-    public static final int DECIMAL = 2;
+    private static final long BASE_QUANTITY = 1L;
+    private static final int DECIMAL = 2;
 
     @Column(name = "price")
     private BigDecimal value = BigDecimal.ZERO;
@@ -40,6 +41,9 @@ public class Price {
     }
 
     public Price multiply(long quantity) {
+        if (quantity == BASE_QUANTITY) {
+            return this;
+        }
         return new Price(value.multiply(BigDecimal.valueOf(quantity)));
     }
 

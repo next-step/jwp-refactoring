@@ -47,4 +47,13 @@ class PriceTest {
         // then
         assertThat(result).isEqualTo(new Price(BigDecimal.valueOf(5000)));
     }
+
+    @Test
+    void 수량_1을_곱할_경우_가격을_그대로_반환한다() {
+        // when
+        Price result = PRICE.multiply(1);
+
+        // then
+        assertThat(result).isEqualTo(PRICE);
+    }
 }
