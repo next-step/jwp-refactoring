@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.order.validator.TableValidatorImpl;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -16,7 +17,6 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
-import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableGroupServiceTest {
 
     @Mock
-    private TableValidator tableValidator;
+    private TableValidatorImpl tableValidatorImpl;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -112,7 +112,7 @@ public class TableGroupServiceTest {
     public void ungroupWithStatus(){
         //given
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(TableGroup.of(createOrderTables())));
-        doThrow(IllegalArgumentException.class).when(tableValidator).validateOrderTableStatus(any());
+        doThrow(IllegalArgumentException.class).when(tableValidatorImpl).validateOrderTableStatus(any());
         //when
         //then
         assertThatThrownBy(() ->  tableGroupService.ungroup(1l)).isInstanceOf(IllegalArgumentException.class);

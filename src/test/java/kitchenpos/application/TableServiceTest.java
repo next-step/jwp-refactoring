@@ -9,13 +9,13 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.order.validator.TableValidatorImpl;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
 
     @Mock
-    private TableValidator tableValidator;
+    private TableValidatorImpl tableValidatorImpl;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -90,7 +90,7 @@ public class TableServiceTest {
         //given
         OrderTable given = new OrderTable(1l,  1, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(given));
-        doThrow(IllegalArgumentException.class).when(tableValidator).validateOrderTableAndOrderStatus(any());
+        doThrow(IllegalArgumentException.class).when(tableValidatorImpl).validateOrderTableAndOrderStatus(any());
         //when
         //then
         assertThatThrownBy(() -> tableService.changeEmpty(1l, OrderTableRequest.of(1, false))).isInstanceOf(IllegalArgumentException.class);
