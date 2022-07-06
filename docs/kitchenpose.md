@@ -43,6 +43,11 @@
 - [X] Menu에 대한 검증 후 Menu가 생성되도록 변경
 - [X] 테스트 코드에서 Reflection으로 Dto 생성하는 부분 수정
 
+### 4단계
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+  - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
 ## 작업목록
 ### 1단계
 - [X] 키친포스 요구사항 작성 
@@ -103,6 +108,17 @@
     - [X] Product
     - [X] Menu
     - [X] Order
+
+### 4단계 
+- [ ] 인수테스트 분리
+- [ ] 모듈 생성
+  - module-core
+  - module-product
+  - module-menu
+  - module-table
+  - module-order
+- [ ] Gradle 빌드 스크립트 작성
+  - test-fixture Plugin 적용
 
 ## 의존성 구성도 첨부
 ### 프로덕션 코드
