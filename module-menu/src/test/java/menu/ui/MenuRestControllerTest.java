@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import common.ui.BaseControllerTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -24,18 +24,11 @@ import menu.dto.MenuResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@ExtendWith(MockitoExtension.class)
-class MenuRestControllerTest {
-
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper = new ObjectMapper();
+class MenuRestControllerTest extends BaseControllerTest {
 
     @Mock
     private MenuService menuService;

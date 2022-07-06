@@ -10,26 +10,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static product.fixture.ProductFixture.상품_요청_데이터_생성;
 import static product.fixture.ProductFixture.상품_응답_데이터_생성;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import common.ui.BaseControllerTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import product.application.ProductService;
 import product.dto.ProductRequestDto;
 
-@ExtendWith(MockitoExtension.class)
-public class ProductRestControllerTest {
-
-    private MockMvc mockMvc;
-    private ObjectMapper objectMapper = new ObjectMapper();
+public class ProductRestControllerTest extends BaseControllerTest {
 
     @Mock
     private ProductService productService;

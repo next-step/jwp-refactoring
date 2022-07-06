@@ -86,6 +86,8 @@ project(':module-product') {
     jar { enabled = true }
     dependencies {
         implementation project(':module-common')
+
+        testImplementation(testFixtures(project(':module-common')))
     }
 }
 
@@ -95,5 +97,7 @@ project(':module-menu') {
     dependencies {
         implementation project(':module-common')
         implementation project(':module-product')
+
+        testImplementation(testFixtures(project(':module-common')))
     }
 }
