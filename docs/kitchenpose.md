@@ -115,14 +115,14 @@
   - [X] product
   - [X] table
   - [X] order
-- [ ] 모듈 생성
+- [X] 모듈 생성 및 파일 이동
   - module-core
   - module-product
   - module-menu
   - module-table
   - module-order
+- [ ] test-fixture Plugin 적용
 - [ ] Gradle 빌드 스크립트 작성
-  - test-fixture Plugin 적용
 
 ## 의존성 구성도 첨부
 ### 프로덕션 코드
