@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -18,12 +19,17 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        MenuGroup menuGroup = menuGroupRepository.save(MenuGroup.of(menuGroupRequest.getName()));
+        MenuGroup saveMenuGroup = menuGroupRepository.save(MenuGroup.of(menuGroupRequest.getName()));
 
-        return MenuGroupResponse.of(menuGroup);
+        return MenuGroupResponse.from(saveMenuGroup);
+
     }
 
     public List<MenuGroupResponse> list() {
-        return MenuGroupResponse.of(menuGroupRepository.findAll());
+        final List<MenuGroup> menuGroups = menuGroupRepository.findAll();
+
+        return menuGroups.stream()
+                .map(MenuGroupResponse::from)
+                .collect(Collectors.toList());
     }
 }
