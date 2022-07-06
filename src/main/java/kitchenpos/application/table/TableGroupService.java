@@ -43,7 +43,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup persistGroup = findTableGroupById(tableGroupId);
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(persistGroup.getOrderTablesIds(), OrderStatus.cnaNotChangeOrderTableStatuses())) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(persistGroup.getOrderTablesIds(), OrderStatus.canNotChangeOrderTableStatuses())) {
             throw new IllegalArgumentException(COOKING_OR_MEAL_ORDER_TABLE_DEALLOCATE_ERROR_MESSAGE);
         }
         persistGroup.deallocateOrderTable();

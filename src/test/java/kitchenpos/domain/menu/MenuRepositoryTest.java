@@ -18,6 +18,7 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 
 @DataJpaTest
 @TestConstructor(autowireMode = AutowireMode.ALL)
+@DisplayName("Repository:Menu")
 class MenuRepositoryTest extends ScenarioTestFixtureGenerator {
 
     private final ProductRepository productRepository;

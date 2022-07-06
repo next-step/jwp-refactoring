@@ -6,7 +6,7 @@ import java.util.List;
 public enum OrderStatus {
     COOKING, MEAL, COMPLETION;
 
-    public static List<OrderStatus> cnaNotChangeOrderTableStatuses() {
+    public static List<OrderStatus> canNotChangeOrderTableStatuses() {
         return Arrays.asList(COOKING, MEAL);
     }
 

@@ -1,6 +1,6 @@
 package kitchenpos.application.table;
 
-import static kitchenpos.domain.order.OrderStatus.cnaNotChangeOrderTableStatuses;
+import static kitchenpos.domain.order.OrderStatus.canNotChangeOrderTableStatuses;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, cnaNotChangeOrderTableStatuses())) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, canNotChangeOrderTableStatuses())) {
             throw new IllegalArgumentException(COOKING_OR_MEAL_ORDER_TABLE_CHANGE_EMPTY_ERROR_MESSAGE);
         }
         persistOrderTable.changeEmpty(orderTable.isEmpty());
