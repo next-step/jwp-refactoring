@@ -10,7 +10,6 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.validator.MenuValidator;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,23 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductService productService;
     private final MenuValidator menuValidator;
 
-    public MenuService(final MenuRepository menuRepository,
-        final MenuGroupRepository menuGroupRepository,
-        final ProductService productService,
-        final MenuValidator menuValidator) {
+    public MenuService(final MenuRepository menuRepository, final ProductService productService, final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
         this.productService = productService;
         this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        validateMenuGroupExist(menuRequest);
+        menuValidator.validateMenuGroupExist(menuRequest);
         menuValidator.validateProduct(Price.of(menuRequest.getPrice()),convertToMenuProduct(menuRequest.getMenuProducts()));
         final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), convertToMenuProduct(menuRequest.getMenuProducts()));
         final Menu savedMenu = menuRepository.save(menu);
@@ -54,9 +48,5 @@ public class MenuService {
         return MenuResponse.toMenuResponses(menus);
     }
 
-    private void validateMenuGroupExist(MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException("그룹이 존재하지 않습니다.");
-        }
-    }
+
 }
