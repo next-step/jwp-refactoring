@@ -15,7 +15,7 @@ import org.springframework.util.ObjectUtils;
 public class MenuProducts {
     private static final int MIE_MENU_PRODUCT_QUANTITY = 1;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "menu")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "menu", orphanRemoval = true)
     private List<MenuProduct> menuProductElements = new ArrayList<>();
 
     protected MenuProducts() {
