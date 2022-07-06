@@ -9,7 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.stream.Stream;
-import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.table.ChangeOrderTableEmptyRequest;
+import kitchenpos.dto.table.ChangeOrderTableNumberOfGuestsRequest;
 import kitchenpos.dto.table.OrderTableResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
@@ -62,11 +63,11 @@ public class TableRestControllerTest extends BaseTest {
         // Given
         OrderTableResponse savedOrderTable = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTableResponse.class);
 
-        OrderTable updateOrderTableEmptyRequest = new OrderTable();
-        updateOrderTableEmptyRequest.changeEmpty(givenEmpty);
+        ChangeOrderTableEmptyRequest changeOrderTableEmptyRequest = new ChangeOrderTableEmptyRequest(givenEmpty);
 
         // When
-        ResultActions resultActions = mockMvcUtil.put(테이블_사용_가능_여부_수정_요청_생성(updateOrderTableEmptyRequest, savedOrderTable.getId()));
+        ResultActions resultActions = mockMvcUtil
+            .put(테이블_사용_가능_여부_수정_요청_생성(changeOrderTableEmptyRequest, savedOrderTable.getId()));
 
         // Then
         resultActions
@@ -96,11 +97,12 @@ public class TableRestControllerTest extends BaseTest {
         final OrderTableResponse savedOrderTable = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTableResponse.class);
 
         final int newNumberOfGuests = 4;
-        OrderTable updateNumberOfGuestsRequest = new OrderTable();
-        updateNumberOfGuestsRequest.changeNumberOfGuests(newNumberOfGuests);
+        ChangeOrderTableNumberOfGuestsRequest changeOrderTableNumberOfGuestsRequest = new ChangeOrderTableNumberOfGuestsRequest(
+            newNumberOfGuests);
 
         // When
-        ResultActions resultActions = mockMvcUtil.put(테이블_객수_수정_요청_생성(updateNumberOfGuestsRequest, savedOrderTable.getId()));
+        ResultActions resultActions = mockMvcUtil
+            .put(테이블_객수_수정_요청_생성(changeOrderTableNumberOfGuestsRequest, savedOrderTable.getId()));
 
         // Then
         resultActions

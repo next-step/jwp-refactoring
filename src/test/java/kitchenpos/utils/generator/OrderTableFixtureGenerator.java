@@ -9,6 +9,8 @@ import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.table.ChangeOrderTableEmptyRequest;
+import kitchenpos.dto.table.ChangeOrderTableNumberOfGuestsRequest;
 import kitchenpos.dto.table.CreateOrderTableRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -51,14 +53,14 @@ public class OrderTableFixtureGenerator {
     }
 
     public static MockHttpServletRequestBuilder 테이블_사용_가능_여부_수정_요청_생성(
-        final OrderTable updateOrderTableEmptyRequest,
+        final ChangeOrderTableEmptyRequest updateOrderTableEmptyRequest,
         final Long savedOrderId
     ) throws Exception {
         return putRequestBuilder(UPDATE_TABLE_EMPTY_URL_TEMPLATE, updateOrderTableEmptyRequest, savedOrderId);
     }
 
     public static MockHttpServletRequestBuilder 테이블_객수_수정_요청_생성(
-        final OrderTable updateNumberOfGuestsRequest,
+        final ChangeOrderTableNumberOfGuestsRequest updateNumberOfGuestsRequest,
         final Long savedOrderId
     ) throws Exception {
         return putRequestBuilder(UPDATE_NUMBER_OF_GUEST_API_URL_TEMPLATE, updateNumberOfGuestsRequest, savedOrderId);

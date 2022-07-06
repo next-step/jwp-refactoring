@@ -31,7 +31,7 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
 
     }
 

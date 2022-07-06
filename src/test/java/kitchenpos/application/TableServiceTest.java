@@ -13,6 +13,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -64,7 +65,7 @@ class TableServiceTest {
             .isEqualTo(주문_테이블_생성_객체.isEmpty());
     }
 
-    private static Stream<Arguments> createOrderTable(){
+    private static Stream<Arguments> createOrderTable() {
         return Stream.of(
             Arguments.of(비어있는_주문_테이블_생성_요청_객체(), "비어 있는 주문 테이블 생성"),
             Arguments.of(비어있지_않은_주문_테이블_생성_요청_객체(), "비어 있지 않은 주문 테이블 생성")
@@ -123,8 +124,12 @@ class TableServiceTest {
     @DisplayName("단체 지정된 주문 테이블의 사용 가능 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsBindingToTableGroup() {
         // Given
-        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
-        givenOrderTable.allocateTableGroup(new TableGroup());
+        OrderTable givenOrderTable = 비어있는_주문_테이블_생성();
+        TableGroup tableGroup = TableGroup.of(
+            Collections.singletonList(givenOrderTable.getId()),
+            Collections.singletonList(givenOrderTable)
+        );
+        givenOrderTable.allocateTableGroup(tableGroup);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
 
         // When & Then

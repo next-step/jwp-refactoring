@@ -24,11 +24,11 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
 
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    private TableGroup(List<OrderTable> orderTables) {
         validateGroupingTargetOrderTables(orderTables);
         this.createdDate = LocalDateTime.now();
         this.orderTables = new OrderTables(orderTables);
