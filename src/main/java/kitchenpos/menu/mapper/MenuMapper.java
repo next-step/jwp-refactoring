@@ -1,30 +1,36 @@
-package kitchenpos.menu.validator;
+package kitchenpos.menu.mapper;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menuGroup.dao.MenuGroupRepository;
 import kitchenpos.product.dao.ProductRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MenuValidator {
+public class MenuMapper {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuValidator(final MenuGroupRepository menuGroupRepository, final ProductRepository productRepository) {
+    public MenuMapper(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }
 
-    public void validateMenu(Menu menu) {
+    public Menu mapFrom(final MenuCreateRequest request) {
+        Menu menu = request.of();
+
         validateMenuGroup(menu.getMenuGroupId());
         validateProduct(menu);
+
+        return menu;
     }
 
     private void validateMenuGroup(Long menuGroupId) {
-        menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("메뉴의 메뉴 그룹이 존재하지 않습니다."));
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new IllegalArgumentException("메뉴의 메뉴 그룹이 존재하지 않습니다.");
+        }
     }
 
     private void validateProduct(Menu menu) {
