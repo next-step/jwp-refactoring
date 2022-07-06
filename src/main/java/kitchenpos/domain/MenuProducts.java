@@ -14,7 +14,6 @@ import org.springframework.util.ObjectUtils;
 @Embeddable
 public class MenuProducts {
     private static final int MIE_MENU_PRODUCT_QUANTITY = 1;
-    private static final int SEQ_START_INDEX = 1;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "menu")
     private List<MenuProduct> menuProductElements = new ArrayList<>();

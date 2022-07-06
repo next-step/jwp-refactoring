@@ -15,7 +15,7 @@ import org.springframework.util.ObjectUtils;
 public class OrderLineItems {
 
     private static final int MIN_ORDER_LINE_NUMBER = 1;
-    private static final int SEQ_START_INDEX = 1;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "order")
     private List<OrderLineItem> orderLineItemElements = new ArrayList<>();
 
