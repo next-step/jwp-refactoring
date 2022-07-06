@@ -36,7 +36,7 @@ public class OrderLineItem {
         this.quantity = Quantity.from(quantity);
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
+    private OrderLineItem(Menu menu, Quantity quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }

@@ -31,7 +31,7 @@ class MenuGroupServiceTest {
     @Test
     void 메뉴_그룹_생성() {
         // given
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("분식");
+        MenuGroupRequest menuGroupRequest = MenuGroupRequest.from("분식");
         given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(new MenuGroup(1L, "분식"));
 
         // when

@@ -8,11 +8,19 @@ public class MenuGroupRequest {
     private MenuGroupRequest() {
     }
 
-    public MenuGroupRequest(String name) {
+    private MenuGroupRequest(String name) {
         this.name = name;
+    }
+
+    public static MenuGroupRequest from(String name) {
+        return new MenuGroupRequest(name);
     }
 
     public MenuGroup toEntity() {
         return new MenuGroup(name);
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -12,7 +12,7 @@ public class NumberOfGuests {
         this(0);
     }
 
-    protected NumberOfGuests(int numberOfGuests) {
+    private NumberOfGuests(int numberOfGuests) {
         validateNumberOfGuests(numberOfGuests);
         this.value = numberOfGuests;
     }

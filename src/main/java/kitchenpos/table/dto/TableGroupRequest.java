@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 public class TableGroupRequest {
     private List<OrderTableRequest> orderTables;
 
-    protected TableGroupRequest() {
+    private TableGroupRequest() {
     }
 
-    public TableGroupRequest(List<OrderTableRequest> orderTables) {
+    private TableGroupRequest(List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }
 

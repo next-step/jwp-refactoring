@@ -27,7 +27,7 @@ public class TableGroup {
         this(id, LocalDateTime.now(), orderTables);
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+    private TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
         validateOrderTables(orderTables);
         this.id = id;
         this.createdDate = createdDate;

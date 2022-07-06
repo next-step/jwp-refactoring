@@ -26,7 +26,7 @@ public class OrderTable {
         this(orderTable.id, orderTable.tableGroupId, orderTable.numberOfGuests, orderTable.empty);
     }
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {

@@ -46,7 +46,7 @@ public class Order {
         this(null, orderTable, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
         this(id, orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
