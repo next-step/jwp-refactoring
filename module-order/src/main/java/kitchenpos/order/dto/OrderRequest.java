@@ -1,13 +1,13 @@
 package kitchenpos.order.dto;
 
-import static kitchenpos.common.ValidationMessage.POSITIVE;
+import static kitchenpos.common.message.ValidationMessage.POSITIVE;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import kitchenpos.common.ValidationMessage;
-import kitchenpos.exception.InvalidMenuNumberException;
+import kitchenpos.common.exception.InvalidMenuNumberException;
+import kitchenpos.common.message.ValidationMessage;
 
 public class OrderRequest {
     @Positive(message = POSITIVE)

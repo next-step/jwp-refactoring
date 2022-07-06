@@ -1,9 +1,5 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.aceeptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.제품_생성_요청;
-import static kitchenpos.acceptance.TableAcceptanceTest.테이블_주문_번호_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -12,18 +8,21 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.utils.RestAssuredHelper;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +31,10 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 인수테스트 기능")
 class OrderAcceptanceTest extends AcceptanceTest {
     private static final String ORDER_URI = "/api/orders";
+    private static final String MENU_URI = "/api/menus";
+    private static final String MENU_GROUPS_URI = "/api/menu-groups";
+    private static final String PRODUCT_URI = "/api/products";
+    private static final String TABLE_URI = "/api/tables";
 
     @BeforeEach
     void setUp() {
@@ -149,5 +152,26 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(주문_상태_변경_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(변경된_주문.getOrderStatus()).isEqualTo(상태.name())
         );
+    }
+
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String 메뉴_그룹명) {
+        final MenuGroupRequest menuGroupRequest = new MenuGroupRequest(메뉴_그룹명);
+        return RestAssuredHelper.post(MENU_GROUPS_URI, menuGroupRequest);
+    }
+
+    public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Long 금액) {
+        final ProductRequest 생성할_제품 = new ProductRequest(제품명, 금액);
+        return RestAssuredHelper.post(PRODUCT_URI, 생성할_제품);
+    }
+
+    public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Long 메뉴_금액, Long 메뉴_그룹_아이디,
+                                                         List<MenuProductRequest> 메뉴_제품들) {
+        final MenuRequest menuRequest = new MenuRequest(메뉴명, 메뉴_금액, 메뉴_그룹_아이디, 메뉴_제품들);
+        return RestAssuredHelper.post(MENU_URI, menuRequest);
+    }
+
+    public static ExtractableResponse<Response> 테이블_주문_번호_생성_요청(Integer 손님수, boolean 빈_테이블_유무) {
+        final OrderTableRequest 요청할_주문_테이블 = new OrderTableRequest(손님수, 빈_테이블_유무);
+        return RestAssuredHelper.post(TABLE_URI, 요청할_주문_테이블);
     }
 }

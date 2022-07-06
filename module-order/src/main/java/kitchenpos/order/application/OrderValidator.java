@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import kitchenpos.exception.InvalidMenuNumberException;
-import kitchenpos.exception.NotExistException;
+import kitchenpos.common.exception.InvalidMenuNumberException;
+import kitchenpos.common.exception.NotExistException;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;

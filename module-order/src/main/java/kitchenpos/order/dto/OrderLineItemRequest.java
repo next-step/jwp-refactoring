@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import static kitchenpos.common.ValidationMessage.POSITIVE;
+import static kitchenpos.common.message.ValidationMessage.POSITIVE;
 
 import javax.validation.constraints.Positive;
 

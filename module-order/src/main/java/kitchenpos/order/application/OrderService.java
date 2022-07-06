@@ -2,10 +2,10 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.exception.NotExistException;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.exception.NotExistException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
