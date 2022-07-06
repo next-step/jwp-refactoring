@@ -11,8 +11,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private TableGroup tableGroup;
+    @Column
+    private Long tableGroupId;
 
     @Column
     private int numberOfGuests;
@@ -34,20 +34,20 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public void addTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void addTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public void changeEmpty(boolean isEmpty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new OrderTableException(OrderTableException.ORDER_TALBE_ALREADY_HAS_GROUP_MSG);
         }
 
@@ -70,8 +70,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -83,7 +83,7 @@ public class OrderTable {
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     @Override

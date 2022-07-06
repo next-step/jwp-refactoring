@@ -20,7 +20,7 @@ public class OrderTables {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        orderTableValid(orderTables);
+        //orderTableValid(orderTables);
         this.orderTables = orderTables;
     }
 
@@ -28,17 +28,17 @@ public class OrderTables {
         return orderTables;
     }
 
-    private void orderTableValid(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new OrderTableException(OrderTableException.ORDER_TABLE_SIZE_OVER_TWO_MSG);
-        }
-
-        if (orderTables.stream()
-                    .map(OrderTable::getTableGroup)
-                    .anyMatch(Objects::nonNull)) {
-            throw new OrderTableException(OrderTableException.ORDER_TALBE_ALREADY_HAS_GROUP_MSG);
-        }
-    }
+//    private void orderTableValid(List<OrderTable> orderTables) {
+//        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+//            throw new OrderTableException(OrderTableException.ORDER_TABLE_SIZE_OVER_TWO_MSG);
+//        }
+//
+//        if (orderTables.stream()
+//                    .map(OrderTable::getTableGroupId)
+//                    .anyMatch(Objects::nonNull)) {
+//            throw new OrderTableException(OrderTableException.ORDER_TALBE_ALREADY_HAS_GROUP_MSG);
+//        }
+//    }
 
     public List<Long> orderTableIds() {
         return orderTables.stream()

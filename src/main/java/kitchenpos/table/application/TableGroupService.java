@@ -17,28 +17,29 @@ import java.util.List;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(final TableGroupRepository tableGroupRepository, TableValidator tableValidator) {
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        //final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        final List<OrderTable> savedOrderTables = tableValidator.findTableAllByIdIn(tableGroupRequest.getOrderTableIds());
 
-        if (savedOrderTables.size() != tableGroupRequest.getOrderTableIds().size()) {
-            throw new IllegalArgumentException();
-        }
+        tableValidator.orderTablesSizeValidation(savedOrderTables, tableGroupRequest);
 
+//        if (savedOrderTables.size() != tableGroupRequest.getOrderTableIds().size()) {
+//            throw new IllegalArgumentException();
+//        }
+        tableValidator.addOrderTableValidation(savedOrderTables);
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.addTableGroup(tableGroup);
+            savedOrderTable.addTableGroup(tableGroup.getId());
         }
 
         return TableGroupResponse.from(tableGroup);
@@ -48,10 +49,11 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                tableGroup.getOrderTables().orderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new OrderStatusException(OrderStatusException.ORDER_STATUS_CAN_NOT_UNGROUP_MSG);
-        }
+        tableValidator.orderStatusByIdsValidate(tableGroup.getOrderTables().orderTableIds());
+//        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+//                tableGroup.getOrderTables().orderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+//            throw new OrderStatusException(OrderStatusException.ORDER_STATUS_CAN_NOT_UNGROUP_MSG);
+//        }
 
         tableGroup.unGroup();
     }
