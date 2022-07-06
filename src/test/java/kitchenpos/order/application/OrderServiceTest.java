@@ -2,6 +2,8 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -63,7 +65,7 @@ class OrderServiceTest {
         // given
         given(menuRepository.countByIdIn(anyList()))
                 .willReturn((long) 주문항목_리스트.size());
-        given(orderTableDao.findById(생성할_주문.getOrderTableId()))
+        given(orderTableRepository.findById(생성할_주문.getOrderTableId()))
                 .willReturn(Optional.of(저장된_주문테이블));
         given(orderRepository.save(생성할_주문))
                 .willReturn(저장된_주문);
@@ -124,7 +126,7 @@ class OrderServiceTest {
 
         given(menuRepository.countByIdIn(anyList()))
                 .willReturn((long) 주문항목_리스트.size());
-        given(orderTableDao.findById(생성할_주문.getOrderTableId()))
+        given(orderTableRepository.findById(생성할_주문.getOrderTableId()))
                 .willReturn(Optional.of(빈_주문테이블));
 
         // when & then

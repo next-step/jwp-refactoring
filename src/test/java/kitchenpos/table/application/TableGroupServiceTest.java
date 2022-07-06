@@ -1,11 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderTableDao;
-import kitchenpos.table.domain.TableGroupDao;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.application.TableGroupService;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,13 +24,13 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Mock
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -67,13 +63,13 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // given
-        given(orderTableDao.findAllByIdIn(anyList()))
+        given(orderTableRepository.findAllByIdIn(anyList()))
                 .willReturn(단체_지정할_테이블_목록);
-        given(tableGroupDao.save(생성할_단체_지정))
+        given(tableGroupRepository.save(생성할_단체_지정))
                 .willReturn(저장된_단체_지정);
-        given(orderTableDao.save(단체_지정할_테이블1))
+        given(orderTableRepository.save(단체_지정할_테이블1))
                 .willReturn(단체_지정된_테이블1);
-        given(orderTableDao.save(단체_지정할_테이블2))
+        given(orderTableRepository.save(단체_지정할_테이블2))
                 .willReturn(단체_지정된_테이블2);
 
         // when
@@ -97,7 +93,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupFailsWhenDuplicateOrderTables() {
         List<OrderTable> 유니크한_주문테이블_목록 = Arrays.asList(단체_지정할_테이블1);
-        given(orderTableDao.findAllByIdIn(anyList()))
+        given(orderTableRepository.findAllByIdIn(anyList()))
                 .willReturn(유니크한_주문테이블_목록);
 
         // when & then
@@ -112,7 +108,7 @@ class TableGroupServiceTest {
         OrderTable 비어있지_않은_테이블 = new OrderTable(2L, null, 6, false);
         단체_지정할_테이블_목록 = Arrays.asList(빈_테이블, 비어있지_않은_테이블);
 
-        given(orderTableDao.findAllByIdIn(anyList()))
+        given(orderTableRepository.findAllByIdIn(anyList()))
                 .willReturn(단체_지정할_테이블_목록);
 
         // when & then
@@ -127,7 +123,7 @@ class TableGroupServiceTest {
         OrderTable 단체_지정된_테이블 = new OrderTable(2L, 1L, 6, true);
         단체_지정할_테이블_목록 = Arrays.asList(단체_저장되지_않은_테이블, 단체_지정된_테이블);
 
-        given(orderTableDao.findAllByIdIn(anyList()))
+        given(orderTableRepository.findAllByIdIn(anyList()))
                 .willReturn(단체_지정할_테이블_목록);
 
         // when & then
@@ -138,9 +134,9 @@ class TableGroupServiceTest {
     @Test
     void ungroupTableGroup() {
         // given
-        given(orderTableDao.findAllByTableGroupId(저장된_단체_지정.getId()))
+        given(orderTableRepository.findAllByTableGroupId(저장된_단체_지정.getId()))
                 .willReturn(단체_지정된_테이블_목록);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(false);
 
         // when & then
@@ -151,9 +147,9 @@ class TableGroupServiceTest {
     @Test
     void ungroupTableGroupFailsWhenCookingOrMealOrderStatus() {
         // given
-        given(orderTableDao.findAllByTableGroupId(anyLong()))
+        given(orderTableRepository.findAllByTableGroupId(anyLong()))
                 .willReturn(단체_지정된_테이블_목록);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
                 .willReturn(true);
 
         // when & then

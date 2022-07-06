@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderTableDao;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.application.TableService;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,10 +25,10 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -46,7 +46,7 @@ class TableServiceTest {
     @Test
     void createOrderTable() {
         // given
-        given(orderTableDao.save(생성할_주문테이블))
+        given(orderTableRepository.save(생성할_주문테이블))
                 .willReturn(저장된_주문테이블);
 
         // when
@@ -61,7 +61,7 @@ class TableServiceTest {
     void listOrderTable() {
         // given
         List<OrderTable> 조회할_주문테이블_목록 = Arrays.asList(저장된_주문테이블);
-        given(orderTableDao.findAll())
+        given(orderTableRepository.findAll())
                 .willReturn(조회할_주문테이블_목록);
 
         // when
@@ -75,11 +75,11 @@ class TableServiceTest {
         // given
         OrderTable 빈_주문테이블 = 주문테이블_생성(1L, null, 4, true);
 
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(저장된_주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
                 .willReturn(false);
-        given(orderTableDao.save(any()))
+        given(orderTableRepository.save(any()))
                 .willReturn(저장된_주문테이블);
 
         // when
@@ -105,7 +105,7 @@ class TableServiceTest {
         // given
         OrderTable 빈_주문테이블 = 주문테이블_생성(1L, null, 4, true);
         OrderTable 단체_지정된_주문테이블 = 주문테이블_생성(1L, 1L, 4, false);
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(단체_지정된_주문테이블));
 
         // when & then
@@ -117,9 +117,9 @@ class TableServiceTest {
     void changeEmptyFailsWhenCookingOrMeal() {
         // given
         OrderTable 빈_주문테이블 = 주문테이블_생성(1L, null, 4, true);
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(저장된_주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList()))
                 .willReturn(true);
 
         // when & then
@@ -131,9 +131,9 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         // given
         OrderTable 손님_수_변경된_주문테이블 = 주문테이블_생성(1L, null, 6, false);
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(저장된_주문테이블));
-        given(orderTableDao.save(any()))
+        given(orderTableRepository.save(any()))
                 .willReturn(손님_수_변경된_주문테이블);
 
         // when
@@ -169,7 +169,7 @@ class TableServiceTest {
     void changeNumberOfGuestsFailsWhenIsEmpty() {
         // given
         OrderTable 빈_주문테이블 = 주문테이블_생성(1L, null, 6, true);
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(빈_주문테이블));
 
         // when & then
