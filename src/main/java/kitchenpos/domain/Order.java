@@ -2,72 +2,98 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.springframework.util.ObjectUtils;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long orderTableId;
-    private String orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
 
-    public Order() {
+    @Embedded
+    private OrderLineItems orderLineItems;
+
+    protected Order() {
 
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                 List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+                 OrderLineItems orderLineItems) {
+        this(orderTableId, orderStatus, orderedTime, orderLineItems);
         this.id = id;
+    }
+
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+                 OrderLineItems orderLineItems) {
+        validateOrderTableId(orderTableId);
+        validateOrderLineItems(orderLineItems);
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                 List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    private void validateOrderTableId(Long orderTableId) {
+        if (ObjectUtils.isEmpty(orderTableId)) {
+            throw new IllegalArgumentException("주문 테이블은 존재 해야합니다");
+        }
+    }
+
+    private void validateOrderLineItems(OrderLineItems orderLineItems) {
+        if (ObjectUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 항목들은 존재 해야합니다.");
+        }
+    }
+
+    public static Order createOrder(Long orderTableId, OrderLineItems orderLineItems) {
+        Order order = new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        orderLineItems.changeOrder(order);
+        return order;
+    }
+
+    public void changOrderStatus(OrderStatus orderStatus) {
+        if (ObjectUtils.isEmpty(orderStatus)) {
+            throw new IllegalArgumentException("변경할 상태값이 없습니다.");
+        }
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException("주문이 완료되어 상태를 변경할 수 없다.");
+        }
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+        return orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.value();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public Long getId() {
+        return id;
     }
+
 }

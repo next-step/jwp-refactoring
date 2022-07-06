@@ -9,8 +9,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -36,11 +38,13 @@ class ProductServiceTest {
     @DisplayName("상품을 등록한다.")
     void menuCreate() {
         //given
-        Product product = new Product(1L, "양념치킨", BigDecimal.ONE);
-        given(productDao.save(product)).willReturn(product);
+        Product product = new Product(1L,"양념치킨", BigDecimal.ONE);
+        given(productRepository.save(product)).willReturn(product);
 
-        final Product createProduct = productService.create(product);
+        //when
+        final ProductResponse createProduct = productService.create(new ProductRequest("양념치킨", BigDecimal.ONE));
 
+        //then
         assertAll(
                 () -> assertThat(createProduct).isNotNull(),
                 () -> assertThat(product.getName()).isEqualTo(createProduct.getName())
@@ -51,20 +55,21 @@ class ProductServiceTest {
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다. (EX) 상품 가격 -1원)")
     @ParameterizedTest
     @MethodSource("잘못된_상품가격")
-    void isNotValidPriceCreateProduct(BigDecimal price) {
+    void isNotValidatePriceCreateProduct(BigDecimal price) {
         //given
-        Product product = new Product(1L, "양념치킨", price);
+        ProductRequest request = new ProductRequest("양념치킨", price);
 
         //when & then
         assertThatIllegalArgumentException().isThrownBy(() ->
-            productService.create(product)
+            productService.create(request)
         );
     }
 
     private static Stream<Arguments> 잘못된_상품가격() {
         return Stream.of(
                 null,
-                Arguments.of(BigDecimal.valueOf(-1))
+                Arguments.of(BigDecimal.valueOf(-1)),
+                Arguments.of(BigDecimal.ZERO)
         );
     }
 
@@ -74,10 +79,10 @@ class ProductServiceTest {
         //givne
         final Product 양념치킨 = new Product(1L, "양념치킨", BigDecimal.valueOf(1000));
         final Product 후라이드치킨 = new Product(2L, "후라이드치킨", BigDecimal.valueOf(2000));
-        given(productDao.findAll()).willReturn(Arrays.asList(양념치킨, 후라이드치킨));
+        given(productRepository.findAll()).willReturn(Arrays.asList(양념치킨, 후라이드치킨));
 
         //when
-        final List<Product> products = productService.list();
+        final List<ProductResponse> products = productService.list();
 
         //then
         assertAll(

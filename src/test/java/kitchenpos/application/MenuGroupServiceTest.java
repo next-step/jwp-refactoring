@@ -7,8 +7,10 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -29,26 +31,26 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록한다")
     void createMenuGroup() {
         //given
-        MenuGroup menuGroup = new MenuGroup("양식");
-        given(menuGroupDao.save(menuGroup)).willReturn(menuGroup);
+        MenuGroupRequest request = new MenuGroupRequest("양식");
+        given(menuGroupRepository.save(MenuGroup.from(request.getName()))).willReturn(MenuGroup.from("양식"));
 
         //when
-        MenuGroup saveMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse saveMenuGroup = menuGroupService.create(request);
 
         //then
-        assertThat(saveMenuGroup.getName()).isEqualTo(menuGroup.getName());
+        assertThat(saveMenuGroup.getName()).isEqualTo(request.getName());
     }
 
     @Test
     @DisplayName("메뉴 그룹 목록을 조회 한다.")
     void retriedMenuGroups() {
         //given
-        MenuGroup 양식 = new MenuGroup("양식");
-        MenuGroup 일식 = new MenuGroup("일식");
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(양식, 일식));
+        MenuGroup 양식 = MenuGroup.from("양식");
+        MenuGroup 일식 = MenuGroup.from("일식");
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(양식, 일식));
 
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         //then
         assertAll("메뉴 그룹 목록을 조회 한다.",
