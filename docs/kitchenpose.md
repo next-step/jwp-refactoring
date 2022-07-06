@@ -124,6 +124,7 @@
 - [X] test-fixture Plugin 적용
 - [X] Gradle 빌드 스크립트 작성
 - [X] 모듈별 테스트시 발생한 오류 수정
+- [X] table 모듈 테스트시 필요한 order runtime 의존성 제거
 
 ## 의존성 구성도 첨부
 ### 프로덕션 코드

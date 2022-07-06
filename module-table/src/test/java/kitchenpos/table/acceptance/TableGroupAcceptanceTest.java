@@ -9,6 +9,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.table.acceptance.behavior.TableContextBehavior;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
+import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -16,9 +17,15 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 class TableGroupAcceptanceTest extends AcceptanceTest {
+    @MockBean
+    TableOrderStatusChecker tableOrderStatusChecker;
 
     OrderTableResponse table1;
     OrderTableResponse table2;

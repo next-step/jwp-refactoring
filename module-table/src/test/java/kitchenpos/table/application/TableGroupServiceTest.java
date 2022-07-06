@@ -7,6 +7,7 @@ import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.behavior.TableContextServiceBehavior;
+import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.CannotMakeTableGroupException;
@@ -14,9 +15,16 @@ import kitchenpos.table.exception.NotExistTableException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 class TableGroupServiceTest extends ServiceTest {
+
+    @MockBean
+    TableOrderStatusChecker tableOrderStatusChecker;
 
     @Autowired
     TableContextServiceBehavior tableContextServiceBehavior;

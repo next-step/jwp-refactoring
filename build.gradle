@@ -62,7 +62,6 @@ project(':module-menu') {
 
 project(':module-table') {
     dependencies {
-        testRuntimeOnly project(':module-order')
         testImplementation testFixtures(project(':module-product'))
         testImplementation testFixtures(project(':module-menu'))
     }

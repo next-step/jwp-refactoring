@@ -9,13 +9,21 @@ import kitchenpos.AcceptanceTest;
 
 import kitchenpos.table.acceptance.behavior.TableContextBehavior;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
+import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 class TableAcceptanceTest extends AcceptanceTest {
+    @MockBean
+    TableOrderStatusChecker tableOrderStatusChecker;
+
     /**
      * When 빈 테이블을 생성한다. Then 빈 테이블이 생성된다. When 테이블을 조회한다. Then 테이블이 조회된다. When 테이블의 상태를 변경한다. Then 테이블의 상태가 변경된다.
      */
