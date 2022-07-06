@@ -28,7 +28,7 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public List<Long> tpMenuIds() {
+    public List<Long> toMenuIds() {
         return orderLineItems.stream()
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());

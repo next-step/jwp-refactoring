@@ -43,6 +43,18 @@ class OrderTest {
     }
 
     @Test
+    @DisplayName("주문 목록이 없이 주문을 생성할 경우 - 오류")
+    void createOrderIfOrderLineItemsIsEmpty() {
+        // given
+        OrderTable 빈_주문_테이블 = 주문_테이블_생성(2L, 4, true);
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList());
+
+        // when then
+        assertThatThrownBy(() -> 주문_생성(1L, 빈_주문_테이블, orderLineItems))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("빈 주문 테이블로 주문을 생성할 경우 - 오류")
     void createOrderIfOrderTableIsEmpty() {
         // given
@@ -76,10 +88,6 @@ class OrderTest {
         // when then
         assertThatThrownBy(() -> 주문.updateOrderStatus(OrderStatus.MEAL.name()))
             .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    public static Order 주문_생성(Long id, OrderTable orderTable) {
-        return new Order(id, orderTable);
     }
 
     public static Order 주문_생성(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {

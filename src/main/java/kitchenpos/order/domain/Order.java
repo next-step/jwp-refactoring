@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -45,27 +46,28 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable) {
-        this(null, orderTable, OrderStatus.COOKING);
-    }
-
-    public Order(Long id, OrderTable orderTable) {
-        this(id, orderTable, OrderStatus.COOKING, new OrderLineItems());
-    }
-
     public Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
         this(id, orderTable, OrderStatus.COOKING, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus) {
-        this(id, orderTable, orderStatus, new OrderLineItems());
-    }
-
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
+        validateOrderLineItemRequestEmpty(orderLineItems);
+
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
+        OrderLineItems orderLineItems = convertToOrderLineItems(orderLineItemList);
+
+        validateOrderTable(orderTable);
+        validateOrderLineItemRequestEmpty(orderLineItems);
+
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
     }
 
@@ -97,14 +99,6 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public void updateOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
     }
@@ -113,5 +107,18 @@ public class Order {
         if(orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private void validateOrderLineItemRequestEmpty(OrderLineItems orderLineItems) {
+        if(orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private OrderLineItems convertToOrderLineItems(List<OrderLineItem> orderLineItems) {
+        for(OrderLineItem orderLineitem: orderLineItems) {
+            orderLineitem.updateOrder(this);
+         }
+        return new OrderLineItems(orderLineItems);
     }
 }

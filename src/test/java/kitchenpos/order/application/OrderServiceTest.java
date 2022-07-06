@@ -15,8 +15,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
@@ -44,10 +44,10 @@ class OrderServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private MenuDao menuDao;
+    private OrderTableDao orderTableDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private MenuService menuService;
 
     @InjectMocks
     private OrderService orderService;
@@ -83,8 +83,8 @@ class OrderServiceTest {
         주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
 
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(menuDao.findById(any())).willReturn(Optional.of(후라이드_세트_메뉴));
+        given(menuService.countByIdIn(anyList())).willReturn(1L);
+        given(menuService.findMenuById(any())).willReturn(후라이드_세트_메뉴);
         given(orderDao.save(any(Order.class))).willReturn(주문);
 
         // when

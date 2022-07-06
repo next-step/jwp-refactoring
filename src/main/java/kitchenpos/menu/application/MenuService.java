@@ -46,15 +46,22 @@ public class MenuService {
 
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
 
-        final Menu savedMenu = menuDao.save(menu);
-
-        return MenuResponse.from(savedMenu);
+        return MenuResponse.from(menuDao.save(menu));
     }
 
     public List<MenuResponse> list() {
         return menuDao.findAll().stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
+    }
+
+    public Menu findMenuById(Long menuId) {
+        return menuDao.findById(menuId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public long countByIdIn(List<Long> menuIds) {
+        return menuDao.countByIdIn(menuIds);
     }
 
     private List<MenuProduct> findMenuProducts(MenuRequest menuRequest) {

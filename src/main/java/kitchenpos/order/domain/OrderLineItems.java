@@ -5,11 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
@@ -21,5 +24,9 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return Collections.unmodifiableList(orderLineItems);
+    }
+
+    public boolean isEmpty() {
+        return CollectionUtils.isEmpty(orderLineItems);
     }
 }
