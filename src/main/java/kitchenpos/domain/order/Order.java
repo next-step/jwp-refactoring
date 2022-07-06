@@ -71,6 +71,20 @@ public class Order {
         }
     }
 
+    public void changeOrderStatus(OrderStatus targetOrderStatus) {
+        validateChangeTargetOrderStatus(targetOrderStatus);
+        this.orderStatus = targetOrderStatus;
+    }
+
+    private void validateChangeTargetOrderStatus(OrderStatus orderStatus) {
+        if (orderStatus == null) {
+            throw new IllegalArgumentException(TARGET_ORDER_STATUS_IS_INVALID_ERROR_MESSAGE);
+        }
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException(TARGET_ORDER_STATUS_IS_ALREADY_COMPLETION_ERROR_MESSAGE);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -89,19 +103,5 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void changeOrderStatus(OrderStatus targetOrderStatus) {
-        validateCangeTargetOrderStatus(targetOrderStatus);
-        this.orderStatus = targetOrderStatus;
-    }
-
-    private void validateCangeTargetOrderStatus(OrderStatus orderStatus) {
-        if (orderStatus == null) {
-            throw new IllegalArgumentException(TARGET_ORDER_STATUS_IS_INVALID_ERROR_MESSAGE);
-        }
-        if (this.orderStatus.isCompletion()) {
-            throw new IllegalArgumentException(TARGET_ORDER_STATUS_IS_ALREADY_COMPLETION_ERROR_MESSAGE);
-        }
     }
 }
