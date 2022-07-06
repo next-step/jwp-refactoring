@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class OrderTable {
 
-    public static final String CHANGE_EMPTY_TARGET_ORDER_TABLE_IS_GROUPED_ERROR_MESSAGE = "테이블 그룹에 할당된 주문 테이블의 좌석 상태는 수정할 수 없습니다.";
+    public static final String TARGET_ORDER_TABLE_IS_GROUPED_ERROR_MESSAGE = "테이블 그룹에 할당된 주문 테이블의 좌석 상태는 수정할 수 없습니다.";
     public static final int MINIMUM_NUMBER_OF_GUESTS_COUNT = 0;
     public static final String LEEN_THAN_MINIMUM_NUMBER_OF_GUEST_COUNT_ERROR_MESSAGE = String
         .format("유효하지 못한 인원 수입니다. %d명 이상 입력해주세요.", MINIMUM_NUMBER_OF_GUESTS_COUNT);
@@ -36,6 +36,7 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
+        validateNumberOfGuestsOverZero(numberOfGuests);
         this.tableGroup = null;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -48,7 +49,7 @@ public class OrderTable {
 
     private void validateTableGroupAllocatedOrderTable() {
         if (isGroupTable()) {
-            throw new IllegalArgumentException(CHANGE_EMPTY_TARGET_ORDER_TABLE_IS_GROUPED_ERROR_MESSAGE);
+            throw new IllegalArgumentException(TARGET_ORDER_TABLE_IS_GROUPED_ERROR_MESSAGE);
         }
     }
 
@@ -75,11 +76,11 @@ public class OrderTable {
     }
 
     public void validateNumberOfGuests(final int numberOfGuests) {
-        validateNumberOfGuestsOverZero();
+        validateNumberOfGuestsOverZero(numberOfGuests);
         validateEmptyOrderTable();
     }
 
-    private void validateNumberOfGuestsOverZero() {
+    private void validateNumberOfGuestsOverZero(final int numberOfGuests) {
         if (numberOfGuests < MINIMUM_NUMBER_OF_GUESTS_COUNT) {
             throw new IllegalArgumentException(LEEN_THAN_MINIMUM_NUMBER_OF_GUEST_COUNT_ERROR_MESSAGE);
         }
