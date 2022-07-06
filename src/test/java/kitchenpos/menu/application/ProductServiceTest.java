@@ -2,6 +2,8 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 
@@ -30,15 +33,16 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        Product 생성할_상품 = new Product("짬뽕", BigDecimal.valueOf(9000));
-        given(productRepository.save(생성할_상품))
-                .willReturn(new Product(1L, "짬뽕", BigDecimal.valueOf(9000)));
+        ProductRequest 생성할_상품_요청 = new ProductRequest("짬뽕", BigDecimal.valueOf(9000));
+        Product 생성할_상품 = new Product(1L, 생성할_상품_요청.getName(), 생성할_상품_요청.getPrice());
+        given(productRepository.save(any()))
+                .willReturn(생성할_상품);
 
         // when
-        Product 생성된_상품 = productService.create(생성할_상품);
+        ProductResponse 생성된_상품_응답 = productService.create(생성할_상품_요청);
 
         // then
-        상품_생성_성공(생성된_상품, 생성할_상품);
+        상품_생성_성공(생성된_상품_응답, 생성할_상품_요청);
     }
 
     @DisplayName("상품 목록을 조회할 수 있다.")
@@ -54,13 +58,13 @@ class ProductServiceTest {
                 .willReturn(조회할_상품_목록);
 
         // when
-        List<Product> 조회된_상품_목록 = productService.list();
+        List<ProductResponse> 조회된_상품_목록_응답 = productService.list();
 
         // then
-        상품_목록_조회_성공(조회된_상품_목록, 조회할_상품_목록);
+        상품_목록_조회_성공(조회된_상품_목록_응답, 조회할_상품_목록);
     }
 
-    private void 상품_생성_성공(Product actual, Product expected) {
+    private void 상품_생성_성공(ProductResponse actual, ProductRequest expected) {
         assertAll(
             () -> assertThat(actual.getId()).isNotNull(),
             () -> assertThat(actual.getName()).isEqualTo(expected.getName()),
@@ -68,8 +72,15 @@ class ProductServiceTest {
         );
     }
 
-    private void 상품_목록_조회_성공(List<Product> 조회된_상품_목록, List<Product> 조회할_상품_목록) {
-        assertThat(조회된_상품_목록)
-                .containsExactlyElementsOf(조회할_상품_목록);
+    private void 상품_목록_조회_성공(List<ProductResponse> 조회된_상품_목록, List<Product> 조회할_상품_목록) {
+        assertAll(
+                () -> assertThat(조회된_상품_목록).hasSize(조회할_상품_목록.size()),
+                () -> assertThat(조회된_상품_목록.get(0).getId()).isEqualTo(조회할_상품_목록.get(0).getId()),
+                () -> assertThat(조회된_상품_목록.get(0).getName()).isEqualTo(조회할_상품_목록.get(0).getName()),
+                () -> assertThat(조회된_상품_목록.get(0).getPrice()).isEqualTo(조회할_상품_목록.get(0).getPrice()),
+                () -> assertThat(조회된_상품_목록.get(1).getId()).isEqualTo(조회할_상품_목록.get(1).getId()),
+                () -> assertThat(조회된_상품_목록.get(1).getName()).isEqualTo(조회할_상품_목록.get(1).getName()),
+                () -> assertThat(조회된_상품_목록.get(1).getPrice()).isEqualTo(조회할_상품_목록.get(1).getPrice())
+        );
     }
 }
