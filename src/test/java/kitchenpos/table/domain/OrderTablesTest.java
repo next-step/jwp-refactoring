@@ -38,10 +38,10 @@ public class OrderTablesTest {
     @DisplayName("그룹 테이블과 요청 테이블 수 오류")
     void exception3() {
         // given
-        final List<OrderTable> requestOrderTables = Arrays.asList(OrderTable.of(0, true));
-        final OrderTables saveTables = OrderTables.of(Arrays.asList(OrderTable.of(0, true), OrderTable.of(0, true)));
+        final List<OrderTable> requestOrderTables = Arrays.asList(OrderTable.of(0, true), OrderTable.of(0, true));
+        final int size = 1;
         // then
-        assertThatThrownBy(() ->saveTables.notMatchCount(requestOrderTables))
+        assertThatThrownBy(() -> TableGroup.of(requestOrderTables, size))
                 .isInstanceOf(TableException.class);
     }
 
@@ -52,7 +52,7 @@ public class OrderTablesTest {
         final OrderTables requestOrderTables = OrderTables.of(Arrays.asList(OrderTable.of(0, true),
                 OrderTable.of(0, true)));
         // when
-        requestOrderTables.updateGroupTableIdAndEmpty(1L);
+        requestOrderTables.updateGroupTableIdAndEmpty(1L, false);
         // then
         assertThat(requestOrderTables.get().stream().allMatch(it -> it.getTableGroupId() == 1L))
                 .isTrue();

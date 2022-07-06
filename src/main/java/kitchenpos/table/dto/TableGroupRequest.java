@@ -1,24 +1,33 @@
 package kitchenpos.table.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TableGroupRequest {
     private final List<OrderTable> list;
 
-    public TableGroupRequest(final List<OrderTable> list) {
+    @JsonCreator
+    public TableGroupRequest(@JsonProperty("list") final List<OrderTable> list) {
         this.list = list;
     }
 
-    public TableGroup toEntity() {
-        return TableGroup.of(list);
+    public List<Long> getOrderTableIds () {
+        return list.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     public List<OrderTable> getList() {
         return list;
+    }
+
+    public int size() {
+        return list.size();
     }
 
     @Override

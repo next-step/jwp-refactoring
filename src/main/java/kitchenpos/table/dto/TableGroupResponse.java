@@ -1,20 +1,25 @@
 package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
 import java.util.Objects;
 
 public class TableGroupResponse {
-    private final String id;
+    private final Long id;
     private final List<OrderTableResponse> orderTables;
 
-    public TableGroupResponse(final String id, final List<OrderTable> orderTables) {
+    public TableGroupResponse(final Long id, final List<OrderTable> orderTables) {
         this.id = id;
         this.orderTables = OrderTableResponse.ofList(orderTables);
     }
 
-    public String getId() {
+    public static TableGroupResponse of (final TableGroup tableGroup) {
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getOrderTables());
+    }
+
+    public Long getId() {
         return id;
     }
 

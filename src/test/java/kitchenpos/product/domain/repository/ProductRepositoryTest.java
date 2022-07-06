@@ -1,5 +1,7 @@
-package kitchenpos.product.domain;
+package kitchenpos.product.domain.repository;
 
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.CreateProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
