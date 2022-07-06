@@ -8,10 +8,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
@@ -36,7 +33,6 @@ class ProductServiceTest {
 
     Product 후라이드;
     Product 양념치킨;
-    MenuRequest 상품;
 
     @BeforeEach
     void setUp() {
@@ -46,9 +42,6 @@ class ProductServiceTest {
     void createProduct() {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
         양념치킨 = new Product("양념치킨", BigDecimal.valueOf(15000));
-
-        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(15000), 1L,
-                Collections.singletonList(new MenuProductRequest(1L, 1L)));
     }
 
     @Test

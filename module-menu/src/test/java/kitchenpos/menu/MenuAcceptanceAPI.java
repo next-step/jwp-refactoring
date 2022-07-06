@@ -10,8 +10,15 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 public class MenuAcceptanceAPI {
+
+    public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
+        ProductRequest productRequest = new ProductRequest(name, price);
+
+        return AcceptanceTest.doPost("/api/products", productRequest);
+    }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
                                                          MenuProduct menuProduct) {

@@ -1,29 +1,20 @@
 package kitchenpos.order;
 
-import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_그룹_생성_요청;
-import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_생성_요청;
 import static kitchenpos.order.OrderAcceptanceAPI.주문_상태_변경;
 import static kitchenpos.order.OrderAcceptanceAPI.주문_생성_요청;
 import static kitchenpos.order.OrderAcceptanceAPI.주문_조회_요청;
-import static kitchenpos.product.ProductAcceptanceAPI.상품_생성_요청;
 import static kitchenpos.table.TableAcceptanceAPI.손님_입장;
 import static kitchenpos.table.TableAcceptanceAPI.테이블_상태_변경_요청;
-import static kitchenpos.table.TableAcceptanceTest.빈자리;
-import static kitchenpos.table.TableAcceptanceTest.사용중;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Collections;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,29 +23,22 @@ import org.springframework.http.HttpStatus;
 
 class OrderAcceptanceTest extends AcceptanceTest {
 
-    Product 상품;
-    MenuGroup 메뉴그룹;
     MenuProduct 메뉴상품;
-    MenuResponse 양념치킨;
     OrderTable 주문테이블;
     OrderLineItem 주문목록;
+    public static boolean 빈자리 = true;
+    public static boolean 사용중 = false;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        상품 = 상품_생성_요청("양념치킨", new BigDecimal(18000)).as(Product.class);
-
-        메뉴그룹 = 메뉴_그룹_생성_요청("추천메뉴").as(MenuGroup.class);
-
-        메뉴상품 = new MenuProduct(상품.getId(), 1L);
-
-        양념치킨 = 메뉴_생성_요청("양념치킨", new BigDecimal(18000), 메뉴그룹.getId(), 메뉴상품).as(MenuResponse.class);
+        메뉴상품 = new MenuProduct(1L, 1L);
 
         주문테이블 = 손님_입장(5, 빈자리).as(OrderTable.class);
         테이블_상태_변경_요청(주문테이블, 사용중);
 
-        주문목록 = new OrderLineItem(양념치킨.getId(), 1L);
+        주문목록 = new OrderLineItem(1L, 1L);
     }
 
     @Test
