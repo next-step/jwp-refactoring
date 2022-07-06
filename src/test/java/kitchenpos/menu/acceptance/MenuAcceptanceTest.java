@@ -6,13 +6,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.util.KitchenPosBehaviors;
 import kitchenpos.menu.acceptance.behavior.MenuContextBehavior;
 import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
 import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.product.acceptance.behavior.ProductContextBehavior;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴생성 및 조회 기능 인수테스트")
     void menuAcceptanceTest() {
         MenuGroup menuGroup = MenuContextBehavior.메뉴그룹_생성됨("치킨");
-        Product product = KitchenPosBehaviors.상품_생성됨("강정치킨", 10000);
+        Product product = ProductContextBehavior.상품_생성됨("강정치킨", 10000);
         MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
         MenuDto menuDto = MenuDtoFixtureFactory.createMenu(menuGroup
                 , "강정치킨 한마리", 10000

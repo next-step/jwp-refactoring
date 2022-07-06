@@ -13,6 +13,7 @@ import kitchenpos.menu.dto.MenuDto;
 public class MenuContextBehavior {
     private MenuContextBehavior() {
     }
+
     public static ExtractableResponse<Response> 메뉴그룹_생성_요청(String name) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);

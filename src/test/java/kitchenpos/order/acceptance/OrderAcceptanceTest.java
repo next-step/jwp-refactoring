@@ -18,6 +18,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.acceptance.behavior.ProductContextBehavior;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
@@ -40,7 +41,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        product = KitchenPosBehaviors.상품_생성됨("상품1", 10000);
+        product = ProductContextBehavior.상품_생성됨("상품1", 10000);
         menuGroup = MenuContextBehavior.메뉴그룹_생성됨("메뉴그룹1");
         MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
         menuDto = MenuContextBehavior.메뉴_생성됨(

@@ -20,33 +20,6 @@ public class KitchenPosBehaviors {
     private KitchenPosBehaviors() {
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(String name, int price) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("price", price);
-
-        return RestAssured
-                .given().contentType(ContentType.JSON).log().all()
-                .when().body(params).post("/api/products")
-                .then().log().all()
-                .extract();
-    }
-
-    public static Product 상품_생성됨(String name, int price) {
-        return 상품_생성_요청(name, price).as(Product.class);
-    }
-
-    public static ExtractableResponse<Response> 상품목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/api/products")
-                .then().log().all()
-                .extract();
-    }
-
-    public static List<Product> 상품목록_조회() {
-        return 상품목록_조회_요청().jsonPath().getList("$", Product.class);
-    }
 
 
     public static ExtractableResponse<Response> 테이블_생성_요청(OrderTableRequest orderTableRequest) {
