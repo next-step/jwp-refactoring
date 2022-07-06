@@ -26,13 +26,10 @@ public class MenuProducts {
     private MenuProducts(List<MenuProduct> menuProductElements) {
         validMenuProducts(menuProductElements);
         this.menuProductElements = menuProductElements;
-        generateSeq(menuProductElements);
-
     }
 
     private MenuProducts(MenuProduct menuProduct) {
         validateProduct(menuProduct);
-        menuProduct.changeSeq(SEQ_START_INDEX);
         menuProductElements.add(menuProduct);
     }
 
@@ -68,12 +65,6 @@ public class MenuProducts {
     private void validateProduct(MenuProduct menuProduct) {
         if (ObjectUtils.isEmpty(menuProduct)) {
             throw new IllegalArgumentException("메뉴상품이 비어있습니다");
-        }
-    }
-    private void generateSeq(List<MenuProduct> menuProductElements) {
-        for (int i = SEQ_START_INDEX; i <= menuProductElements.size(); i++) {
-            final MenuProduct menuProduct = menuProductElements.get(i - SEQ_START_INDEX);
-            menuProduct.changeSeq(i);
         }
     }
 

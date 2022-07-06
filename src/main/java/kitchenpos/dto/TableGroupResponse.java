@@ -11,6 +11,10 @@ public class TableGroupResponse {
     private List<OrderTableResponse> orderTables;
     private LocalDateTime createDate;
 
+    public TableGroupResponse() {
+        
+    }
+
     public TableGroupResponse(TableGroup saveTableGroup) {
         id = saveTableGroup.getId();
         orderTables = generateOrderTableResponse(saveTableGroup.getOrderTables());

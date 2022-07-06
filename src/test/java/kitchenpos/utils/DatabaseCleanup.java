@@ -1,6 +1,7 @@
 package kitchenpos.utils;
 
 import com.google.common.base.CaseFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.Entity;
@@ -19,7 +20,6 @@ public class DatabaseCleanup implements InitializingBean {
     private EntityManager entityManager;
 
     private List<String> tableNames;
-
     @Override
     public void afterPropertiesSet() {
 
@@ -39,14 +39,23 @@ public class DatabaseCleanup implements InitializingBean {
 
     @Transactional
     public void execute() {
+        List<String> seqKeyTable = Arrays.asList("menu_product","order_line_item");
         entityManager.flush();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            keyInit(seqKeyTable, tableName);
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private void keyInit(List<String> seqKeyTable, String tableName) {
+        if (seqKeyTable.contains(tableName)) {
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN SEQ RESTART WITH 1").executeUpdate();
+            return;
+        }
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
     }
 }

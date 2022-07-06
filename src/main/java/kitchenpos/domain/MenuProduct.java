@@ -13,11 +13,10 @@ import org.springframework.util.ObjectUtils;
 @Table(name = "menu_product")
 @Entity
 public class MenuProduct {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private long seq;
+    private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
@@ -38,8 +37,8 @@ public class MenuProduct {
         this.quantity = Quantity.from(quantity);
     }
 
-    public MenuProduct(Long id, Menu menu, Product product, Quantity quantity) {
-        this.id = id;
+    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
+        this.seq = seq;
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
@@ -57,9 +56,6 @@ public class MenuProduct {
 
     public void changeMenu(Menu menu) {
         this.menu = menu;
-    }
-    public void changeSeq(int seq) {
-        this.seq = seq;
     }
 
     public Amount getAmount() {

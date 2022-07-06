@@ -67,7 +67,7 @@ class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         //when
-        final List<OrderTable> list = tableService.list();
+        final List<OrderTableResponse> list = tableService.list();
 
         //then
         assertAll(

@@ -17,7 +17,6 @@ public class OrderLineItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,16 +58,8 @@ public class OrderLineItem {
         return quantity.value();
     }
 
-    public void changeSeq(long seq) {
-        this.seq = seq;
-    }
-
     public Long getSeq() {
         return seq;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void changeOrder(Order order) {

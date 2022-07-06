@@ -26,7 +26,6 @@ public class OrderLineItems {
     private OrderLineItems(List<OrderLineItem> orderLineItemElements) {
         validate(orderLineItemElements);
         this.orderLineItemElements = orderLineItemElements;
-        generateSeq();
     }
 
 
@@ -58,12 +57,5 @@ public class OrderLineItems {
 
     public void changeOrder(Order order) {
         this.orderLineItemElements.forEach((orderLineItem) -> orderLineItem.changeOrder(order));
-    }
-
-
-    private void generateSeq() {
-        for (int i = SEQ_START_INDEX; i <= orderLineItemElements.size(); i++) {
-            orderLineItemElements.get(i - SEQ_START_INDEX).changeSeq(i);
-        }
     }
 }

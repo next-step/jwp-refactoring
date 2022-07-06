@@ -16,7 +16,7 @@ class MenuProductTest {
     @ValueSource(ints = {0, -1})
     void quantityValidate(int value) {
         //given
-        final Product product = new Product("상품", BigDecimal.ZERO);
+        final Product product = new Product("상품", BigDecimal.ONE);
         int quantity = value;
 
         //when & then

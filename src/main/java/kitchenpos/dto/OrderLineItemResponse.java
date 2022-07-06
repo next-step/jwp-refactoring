@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
-    private Long id;
     private Long seq;
     private Long menuId;
     private long quantity;
@@ -13,15 +12,14 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(Long id, Long seq, Long menuId, long quantity) {
-        this.id = id;
+    private OrderLineItemResponse(Long seq, Long menuId, long quantity) {
         this.seq = seq;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemResponse> from(List<OrderLineItem> orderLineItems) {

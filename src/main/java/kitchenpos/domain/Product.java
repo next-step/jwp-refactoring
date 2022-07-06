@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.springframework.util.ObjectUtils;
 
 @Entity
 public class Product {
@@ -25,6 +26,7 @@ public class Product {
     }
 
     private Product(Name name, Price price) {
+        validate(name, price);
         this.name = name;
         this.price = price;
     }
@@ -48,6 +50,17 @@ public class Product {
         this(name, price);
         this.id = id;
     }
+
+
+    private void validate(Name name, Price price) {
+        if (ObjectUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("이름은 필수 입니다.");
+        }
+        if (ObjectUtils.isEmpty(price)) {
+            throw new IllegalArgumentException("가격은 필수 입니다.");
+        }
+    }
+
 
     public Long getId() {
         return id;

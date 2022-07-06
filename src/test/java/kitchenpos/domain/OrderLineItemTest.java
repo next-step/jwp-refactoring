@@ -19,19 +19,6 @@ class OrderLineItemTest {
     }
 
     @Test
-    @DisplayName("순서가 변경 된다.")
-    void changeSeq() {
-        //given
-        OrderLineItem orderLineItem = OrderLineItem.from(1L, 2);
-
-        //when
-        orderLineItem.changeSeq(3);
-
-        //then
-        assertThat(orderLineItem.getSeq()).isEqualTo(3L);
-    }
-
-    @Test
     @DisplayName("주문이 변경 된다.")
     void changeOrder() {
         //given
