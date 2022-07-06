@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.table.acceptance.behavior.TableContextBehavior;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -25,8 +26,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        table1 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
-        table2 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
+        table1 = TableContextBehavior.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
+        table2 = TableContextBehavior.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
     }
 
     /**
@@ -38,11 +39,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     void tableGroupAcceptanceTest() {
         TableGroupRequest tableGroup = TableGroupDtoFixtureFactory.createTableGroup(Lists.newArrayList(table1, table2));
 
-        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블그룹_생성_요청(tableGroup);
+        ExtractableResponse<Response> createResponse = TableContextBehavior.테이블그룹_생성_요청(tableGroup);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         TableGroupResponse savedTableGroup = createResponse.as(TableGroupResponse.class);
-        ExtractableResponse<Response> deleteResponse = KitchenPosBehaviors.테이블그룹_해제_요청(savedTableGroup.getId());
+        ExtractableResponse<Response> deleteResponse = TableContextBehavior.테이블그룹_해제_요청(savedTableGroup.getId());
         assertThat(deleteResponse.statusCode()).isEqualTo(org.springframework.http.HttpStatus.NO_CONTENT.value());
     }
 }

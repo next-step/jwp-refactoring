@@ -1,26 +1,19 @@
-package kitchenpos.acceptance.util;
+package kitchenpos.table.acceptance.behavior;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.acceptance.util.KitchenPosBehaviors;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 
-public class KitchenPosBehaviors {
-    private KitchenPosBehaviors() {
+public class TableContextBehavior {
+    private TableContextBehavior() {
     }
-
-
 
     public static ExtractableResponse<Response> 테이블_생성_요청(OrderTableRequest orderTableRequest) {
         return RestAssured
@@ -43,7 +36,7 @@ public class KitchenPosBehaviors {
     }
 
     public static List<OrderTableResponse> 테이블_목록조회() {
-        ExtractableResponse<Response> response = KitchenPosBehaviors.테이블_목록조회_요청();
+        ExtractableResponse<Response> response = 테이블_목록조회_요청();
         return response.jsonPath().getList("$", OrderTableResponse.class);
     }
 
@@ -82,24 +75,6 @@ public class KitchenPosBehaviors {
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
                 .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 주문_추가_요청(OrderRequest orderRequest) {
-        return RestAssured
-                .given().contentType(ContentType.JSON).log().all()
-                .when().body(orderRequest).post("/api/orders/")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 주문상태변경_요청(Long orderId, OrderRequest param) {
-        String uri = String.format("/api/orders/%d/order-status", orderId);
-
-        return RestAssured
-                .given().contentType(ContentType.JSON).log().all()
-                .when().body(param).put(uri)
                 .then().log().all()
                 .extract();
     }

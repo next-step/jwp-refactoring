@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.table.acceptance.behavior.TableContextBehavior;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -22,10 +23,10 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 생성, 조회, 상태 변경 기능 인수테스트")
     void tableAcceptanceTest() {
         OrderTableRequest table = OrderTableDtoFixtureFactory.createNotEmptyOrderTable(0);
-        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블_생성_요청(table);
+        ExtractableResponse<Response> createResponse = TableContextBehavior.테이블_생성_요청(table);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        List<OrderTableResponse> orderTables = KitchenPosBehaviors.테이블_목록조회();
+        List<OrderTableResponse> orderTables = TableContextBehavior.테이블_목록조회();
         assertThat(orderTables).hasSize(1);
 
         OrderTableResponse savedTable = orderTables.get(0);
@@ -37,21 +38,21 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private void 빈테이블로_변경하고_확인한다(Long orderTableId) {
         OrderTableRequest param = OrderTableDtoFixtureFactory.createParamForChangeEmptyState(false);
-        ExtractableResponse<Response> changeEmptyStateResponse = KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTableId,
+        ExtractableResponse<Response> changeEmptyStateResponse = TableContextBehavior.테이블_공석여부_변경_요청(orderTableId,
                 param);
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        List<OrderTableResponse> orderTables = KitchenPosBehaviors.테이블_목록조회();
+        List<OrderTableResponse> orderTables = TableContextBehavior.테이블_목록조회();
         OrderTableResponse emptyTable = orderTables.get(0);
         assertThat(emptyTable.isEmpty()).isFalse();
     }
 
     private void 인원수를_변경하고_확인한다(Long orderTableId, int numberOfGuests) {
         OrderTableRequest param = OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(numberOfGuests);
-        ExtractableResponse<Response> changeEmptyStateResponse = KitchenPosBehaviors.테이블_인원수_변경_요청(orderTableId, param);
+        ExtractableResponse<Response> changeEmptyStateResponse = TableContextBehavior.테이블_인원수_변경_요청(orderTableId, param);
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        List<OrderTableResponse> orderTables = KitchenPosBehaviors.테이블_목록조회();
+        List<OrderTableResponse> orderTables = TableContextBehavior.테이블_목록조회();
         OrderTableResponse changedTable = orderTables.get(0);
         assertThat(changedTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }

@@ -110,12 +110,11 @@
     - [X] Order
 
 ### 4단계 
-- [ ] 인수테스트 분리
+- [X] 인수테스트 분리
   - [X] menu
   - [X] product
-  - [ ] table
-  - [ ] order
-
+  - [X] table
+  - [X] order
 - [ ] 모듈 생성
   - module-core
   - module-product
