@@ -78,6 +78,6 @@ public class MenuProducts {
     }
 
     public void changeMenu(Menu menu) {
-        this.menuProductElements.forEach((it)-> it.changeMenu(menu));
+        this.menuProductElements.forEach((menuProduct)-> menuProduct.changeMenu(menu));
     }
 }

@@ -92,7 +92,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private void 단체지정된_테이블이_조회됨(TableGroupResponse tableGroup, List<OrderTableResponse> 주문테이블을_조회) {
         final List<OrderTableResponse> collect = 주문테이블을_조회.stream()
-                .filter((it) -> tableGroup.getId().equals(it.getTableGroupId()))
+                .filter((orderTableResponse) -> tableGroup.getId().equals(orderTableResponse.getTableGroupId()))
                 .collect(Collectors.toList());
 
         assertThat(collect).hasSize(tableGroup.getOrderTables().size());
@@ -100,7 +100,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private void 단체지정된_테이블이_조회되지_않음(TableGroupResponse tableGroup, List<OrderTableResponse> 주문테이블을_조회) {
         final List<OrderTableResponse> collect = 주문테이블을_조회.stream()
-                .filter((it) -> tableGroup.getId().equals(it.getTableGroupId()))
+                .filter((orderTableResponse) -> tableGroup.getId().equals(orderTableResponse.getTableGroupId()))
                 .collect(Collectors.toList());
 
         assertThat(collect).hasSize(0);

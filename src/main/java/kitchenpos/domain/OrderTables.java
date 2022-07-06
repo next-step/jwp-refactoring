@@ -36,11 +36,11 @@ public class OrderTables {
         if (isNotAbleGroup(orderTables)) {
             throw new IllegalArgumentException("빈테이블이 존재하거나. 이미 단체석인경우에는 단체석으로 지정할수 없습니디");
         }
-        this.orderTables.forEach((it) -> it.changeTableGroupId(tableGroupId));
+        this.orderTables.forEach((orderTable) -> orderTable.changeTableGroupId(tableGroupId));
     }
 
     public void unGroup() {
-        orderTables.forEach((it)-> it.changeTableGroupId(null));
+        orderTables.forEach((orderTable)-> orderTable.changeTableGroupId(null));
     }
 
     private void validateGroup(List<OrderTable> orderTables) {
@@ -52,7 +52,7 @@ public class OrderTables {
 
     private boolean isNotAbleGroup(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .anyMatch((it) -> it.isEmpty() || Objects.nonNull(it.getTableGroupId()));
+                .anyMatch((orderTable) -> orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId()));
     }
 
     public List<OrderTable> getTables() {

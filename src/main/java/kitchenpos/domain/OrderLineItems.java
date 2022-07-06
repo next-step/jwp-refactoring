@@ -43,7 +43,8 @@ public class OrderLineItems {
     public static OrderLineItems of(List<OrderLineItemRequest> requestList) {
         return new OrderLineItems(requestList
                 .stream()
-                .map((it) -> OrderLineItem.of(it.getMenuId(), it.getQuantity()))
+                .map((orderLineItemRequest) -> OrderLineItem.of(orderLineItemRequest.getMenuId(),
+                        orderLineItemRequest.getQuantity()))
                 .collect(Collectors.toList()));
     }
 
@@ -56,7 +57,7 @@ public class OrderLineItems {
     }
 
     public void changeOrder(Order order) {
-        this.orderLineItemElements.forEach((it) -> it.changeOrder(order));
+        this.orderLineItemElements.forEach((orderLineItem) -> orderLineItem.changeOrder(order));
     }
 
 
