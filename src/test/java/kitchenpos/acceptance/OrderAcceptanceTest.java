@@ -2,14 +2,16 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.product.domain.Product;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,31 +33,27 @@ import static kitchenpos.acceptance.ProductAcceptanceFactory.상품_등록_요�
 
 @DisplayName("주문 관련")
 public class OrderAcceptanceTest extends AcceptanceTest {
-    private OrderTable 주문테이블1;
+    private OrderTableResponse 주문테이블1;
 
-    private Menu 후라이드메뉴;
+    private MenuResponse 후라이드메뉴;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         //테이블
-        주문테이블1 = 주문테이블_등록_요청(false, 5).as(OrderTable.class);
+        주문테이블1 = 주문테이블_등록_요청(false, 5).as(OrderTableResponse.class);
 
         //메뉴
-        Product 후라이드 = 상품_등록_요청("후라이드", 16000).as(Product.class);
+        ProductResponse 후라이드 = 상품_등록_요청("후라이드", 16000).as(ProductResponse.class);
         MenuGroup 두마리메뉴 = 메뉴그룹_등록_요청("두마리메뉴").as(MenuGroup.class);
-        MenuProduct menuProduct = new MenuProduct();
-//        menuProduct.setProductId(후라이드.getId());
-        menuProduct.setQuantity(1);
-//        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPriceBigDecimal(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(Menu.class);
-//        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPriceBigDecimal(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(Menu.class);
+        MenuProductRequest menuProduct = new MenuProductRequest(후라이드.getId(), 1L);
+        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPrice(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(MenuResponse.class);
+        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPrice(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(MenuResponse.class);
     }
 
     @Test
     void 주문을_등록할_수_있다() {
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(후라이드메뉴.getId());
-        주문항목.setQuantity(1);
+        OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
 
         ExtractableResponse<Response> 주문_등록_결과 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목));
 
@@ -72,9 +70,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 메뉴가_등록되지_않았으면_주문을_등록할_수_없다() {
         long 등록되지않은_메뉴아이디 = 999L;
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(등록되지않은_메뉴아이디);
-        주문항목.setQuantity(1);
+        OrderLineItemRequest 주문항목 = new OrderLineItemRequest(등록되지않은_메뉴아이디, 1);
 
         ExtractableResponse<Response> 주문_등록_결과 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목));
 
@@ -84,9 +80,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 주문테이블이_존재하지_않으면_주문을_등록할_수_없다() {
         Long 존재하지않는_주문테이블 = 999L;
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(후라이드메뉴.getId());
-        주문항목.setQuantity(1);
+        OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
 
         ExtractableResponse<Response> 주문_등록_결과 = 주문_등록_요청(존재하지않는_주문테이블, Arrays.asList(주문항목));
 
@@ -96,10 +90,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 빈테이블은_주문을_등록할_수_없다() {
         OrderTable 빈테이블 = 주문테이블_등록_요청(true, 5).as(OrderTable.class);
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(후라이드메뉴.getId());
-        주문항목.setQuantity(1);
-
+        OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
         ExtractableResponse<Response> 주문_등록_결과 = 주문_등록_요청(빈테이블.getId(), Arrays.asList(주문항목));
 
         주문_등록실패(주문_등록_결과);
@@ -115,15 +106,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 주문의_주문상태를_변경할_수_있다() {
-        OrderStatus 주문상태_요리중 = OrderStatus.COOKING;
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(후라이드메뉴.getId());
-        주문항목.setQuantity(1);
-        Order 주문 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목)).as(Order.class);
+        OrderStatus 식사중 = OrderStatus.MEAL ;
+        OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
+        OrderResponse 주문 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목)).as(OrderResponse.class);
 
-        ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(주문, 주문상태_요리중);
+        ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(주문.getId(), 식사중);
 
-        주문_변경성공(주문_변경_결과, 주문상태_요리중);
+        주문_변경성공(주문_변경_결과, 식사중);
     }
 
     @Test
@@ -132,7 +121,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         존재하지않는_주문.setId(999L);
         OrderStatus 주문상태_요리중 = OrderStatus.COOKING;
 
-        ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(존재하지않는_주문, 주문상태_요리중);
+        ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(존재하지않는_주문.getId(), 주문상태_요리중);
 
         주문_변경실패(주문_변경_결과);
     }
@@ -140,13 +129,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 이미완료된_주문의_주문상태를_변경할_수_없다() {
         OrderStatus 주문상태_완료 = OrderStatus.COMPLETION;
-        OrderLineItem 주문항목 = new OrderLineItem();
-        주문항목.setMenuId(후라이드메뉴.getId());
-        주문항목.setQuantity(1);
-        Order 주문 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목)).as(Order.class);
-        ExtractableResponse<Response> 완료상태로_변경 = 주문_상태_변경_요청(주문, 주문상태_완료);
+        OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
+        OrderResponse 주문 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목)).as(OrderResponse.class);
+        ExtractableResponse<Response> 완료상태로_변경 = 주문_상태_변경_요청(주문.getId(), 주문상태_완료);
 
-        ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(주문, 주문상태_완료);
+        ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(주문.getId(), 주문상태_완료);
 
         주문_변경실패(주문_변경_결과);
     }
