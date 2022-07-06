@@ -28,23 +28,13 @@ public class Order {
     protected Order() {
     }
 
-    Order(Long orderTableId) {
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
-    }
-
-    Order(Long orderTableId, OrderStatus orderStatus) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-    }
-
-    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException(ORDER_ITEM_IS_ESSENTIAL);
         }
-        Order order = new Order(orderTableId);
-        orderLineItems.forEach(order::addOrderLineItem);
-        return order;
+        orderLineItems.forEach(this::addOrderLineItem);
     }
 
     public Long getId() {

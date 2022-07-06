@@ -42,6 +42,6 @@ public class OrderRequest {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(toList());
-        return Order.of(orderTableId, items);
+        return new Order(orderTableId, items);
     }
 }
