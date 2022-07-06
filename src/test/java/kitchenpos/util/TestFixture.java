@@ -80,4 +80,28 @@ public class TestFixture {
             e.printStackTrace();
         }
     }
+
+    public static void 주문_테이블_생성(OrderTable orderTable, Long id) {
+        try{
+            Field[] fields = orderTable.getClass().getDeclaredFields();
+            for(Field f : fields){
+                f.setAccessible(true);  //private 변수를 public 변수로 변경
+                if (f.getName().equals("id"))  f.set(orderTable,  id);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void 메뉴_생성(Menu menu) {
+        try{
+            Field[] fields = menu.getClass().getDeclaredFields();
+            for(Field f : fields){
+                f.setAccessible(true);  //private 변수를 public 변수로 변경
+                if (f.getName().equals("id"))  f.set(menu,  1L);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

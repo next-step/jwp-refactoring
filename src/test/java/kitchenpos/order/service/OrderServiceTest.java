@@ -61,7 +61,7 @@ class OrderServiceTest {
         주문항목_2 = OrderLineItem.of(2L, 1L);
         주문항목_생성(주문항목_2, 주문_1);
         주문테이블_1 = OrderTable.of(1L, 2, false);
-        주문_테이블_생성(주문테이블_1);
+        주문_테이블_생성(주문테이블_1, 1L);
         주문_1 = Order.of(주문테이블_1.getId(), Arrays.asList(주문항목_1, 주문항목_2));
         메뉴 = 후라이드_치킨_메뉴_생성(1L, Arrays.asList(후라이드_메뉴_상품_생성()));
         메뉴_생성(메뉴);
@@ -124,7 +124,8 @@ class OrderServiceTest {
         // given
         when(tableService.findById(주문테이블_1.getId()))
                 .thenReturn(주문테이블_1);
-        when(menuService.findById(1L)).thenThrow(new IllegalArgumentException());
+        when(menuService.findById(1L))
+                .thenThrow(new IllegalArgumentException());
 
         // then
         OrderRequest 주문_요청 = new OrderRequest(1L, 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),

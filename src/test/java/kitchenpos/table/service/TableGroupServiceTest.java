@@ -1,6 +1,8 @@
 package kitchenpos.table.service;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.application.TableService;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -33,10 +35,10 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderRepository orderRepository;
+    OrderService orderService;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    TableService tableService;
 
     @Mock
     TableGroupRepository tableGroupRepository;
@@ -59,8 +61,10 @@ class TableGroupServiceTest {
         // given
         OrderTable new_주문테이블1 = 빈_주문테이블_1_생성();
         OrderTable new_주문테이블2 = 빈_주문테이블_2_생성();
-        when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
-                .thenReturn(Arrays.asList(new_주문테이블1, new_주문테이블2));
+        when(tableService.findById(new_주문테이블1.getId()))
+                .thenReturn(new_주문테이블1);
+        when(tableService.findById(new_주문테이블2.getId()))
+                .thenReturn(new_주문테이블2);
         when(tableGroupRepository.save(any()))
                 .thenReturn(TableGroup.of(1L, Arrays.asList(주문테이블1, 주문테이블2)));
 
@@ -101,10 +105,11 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupAndOrderTableNotSave() {
         // given
-        주문테이블1 = 주문테이블_1_생성();
-        when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
-                .thenReturn(Arrays.asList(주문테이블1));
-        TableGroupRequest 단체지정_요청 = new TableGroupRequest(null, Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
+        OrderTable new_주문테이블1 = 빈_주문테이블_1_생성();
+        when(tableService.findById(1L))
+                .thenThrow(new IllegalArgumentException());
+        TableGroupRequest 단체지정_요청 = new TableGroupRequest(1L, Arrays.asList(1L));
+
         // then
         assertThatThrownBy(() -> {
             tableGroupService.create(단체지정_요청);
@@ -115,10 +120,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupAndIsNotTableGroupId() {
         // given
-        주문테이블1 = 주문테이블_1_생성();
-        TableGroupRequest 단체지정_요청 = new TableGroupRequest(1L, Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
-        when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
-                .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroupRequest 단체지정_요청 = new TableGroupRequest(1L, Arrays.asList(1L));
 
         // then
         assertThatThrownBy(() -> {
@@ -130,12 +132,14 @@ class TableGroupServiceTest {
     @Test
     void ungroupTest() {
         // given
+        주문_테이블_생성(주문테이블1, 1L);
+        주문_테이블_생성(주문테이블2, 2L);
         TableGroup 단체지정1 = TableGroup.of(Arrays.asList(주문테이블1, 주문테이블2));
 
         when(tableGroupRepository.findById(단체지정1.getId()))
                 .thenReturn(Optional.of(단체지정1));
-        when(orderTableRepository.findAllByTableGroup(단체지정1))
-                .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        when(orderService.existsNotCompletesByOrderTableIdIn(Arrays.asList(1L, 2L)))
+                .thenReturn(false);
 
         // when
         tableGroupService.ungroup(단체지정1.getId());
@@ -151,15 +155,13 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블 중 `조리`, `식사` 상태인 경우 해제 불가")
     @Test
     void ungroupAndCoolingOrMealStatus() {
+        주문_테이블_생성(주문테이블1, 1L);
+        주문_테이블_생성(주문테이블2, 2L);
         TableGroup 단체지정1 = 단체지정_1_생성(Arrays.asList(주문테이블1, 주문테이블2));
         when(tableGroupRepository.findById(단체지정1.getId()))
                 .thenReturn(Optional.of(단체지정1));
-        when(orderTableRepository.findAllByTableGroup(단체지정1))
-                .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        when(orderRepository.existsByOrderTableInAndOrderStatusIn(
-                Arrays.asList(주문테이블1, 주문테이블2),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
-        )).thenReturn(true);
+        when(orderService.existsNotCompletesByOrderTableIdIn(Arrays.asList(1L, 2L)))
+                .thenReturn(true);
 
         // then
         assertThatThrownBy(() -> {
