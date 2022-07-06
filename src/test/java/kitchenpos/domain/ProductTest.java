@@ -13,8 +13,8 @@ class ProductTest {
     @DisplayName("상품 이름은 공백이면 안됩니다.")
     void nameIsNotNull() {
         assertAll(
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> new Product("")),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> new Product(null))
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> new Product("", BigDecimal.ZERO)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> new Product(null, BigDecimal.ZERO))
         );
     }
 
