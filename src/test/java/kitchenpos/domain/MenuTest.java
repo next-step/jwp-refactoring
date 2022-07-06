@@ -19,7 +19,7 @@ class MenuTest {
         MenuProduct menuProduct1 = new MenuProduct(product1, 1);
         MenuProduct menuProduct2 = new MenuProduct(product2, 2);
 
-        상품들 = MenuProducts.of(Arrays.asList(menuProduct1, menuProduct2));
+        상품들 = MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
     }
 
 

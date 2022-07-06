@@ -36,11 +36,11 @@ public class MenuProducts {
         menuProductElements.add(menuProduct);
     }
 
-    public static MenuProducts of(List<MenuProduct> menuProducts) {
+    public static MenuProducts from(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
 
-    public static MenuProducts of(MenuProduct menuProduct) {
+    public static MenuProducts from(MenuProduct menuProduct) {
         return new MenuProducts(menuProduct);
     }
 

@@ -14,7 +14,7 @@ class MenuProductsTest {
     @DisplayName("메뉴상품은 하나 이상 존재 해야한다.")
     void valid() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> MenuProducts.of(new ArrayList<>()));
+                .isThrownBy(() -> MenuProducts.from(new ArrayList<>()));
     }
 
     @Test
@@ -25,7 +25,7 @@ class MenuProductsTest {
         Product product2 = new Product("상품2", Price.of(30));
         MenuProduct menuProduct1 = new MenuProduct(product1, 1);
         MenuProduct menuProduct2 = new MenuProduct(product2, 2);
-        MenuProducts menuProducts = MenuProducts.of(Arrays.asList(menuProduct1, menuProduct2));
+        MenuProducts menuProducts = MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
 
         //when
         final Amount totalAmount = menuProducts.totalAmount();

@@ -22,7 +22,7 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuResponse of(Menu menu) {
+    public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.getId(),
                 menu.getName(),
                 menu.getPrice(),

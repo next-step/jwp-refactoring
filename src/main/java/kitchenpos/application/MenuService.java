@@ -34,15 +34,20 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.getOne(menuRequest.getMenuGroupId());
 
-        final MenuProducts menuProducts = MenuProducts.of(menuRequest
-                .getMenuProducts()
-                .stream()
-                .map((it) -> MenuProduct.of(productRepository.getOne(it.getProductId()), it.getQuantity()))
-                .collect(Collectors.toList()));
+        final MenuProducts menuProducts = fromMenuProducts(menuRequest);
 
         final Menu savedMenu = menuRepository.save(Menu.createMenu(menuRequest, menuGroup, menuProducts));
 
-        return MenuResponse.of(savedMenu);
+        return MenuResponse.from(savedMenu);
+    }
+
+    private MenuProducts fromMenuProducts(MenuRequest menuRequest) {
+        return MenuProducts.from(menuRequest
+                .getMenuProducts()
+                .stream()
+                .map((productRequest) -> MenuProduct.of(productRepository.getOne(productRequest.getProductId()),
+                        productRequest.getQuantity()))
+                .collect(Collectors.toList()));
     }
 
 
@@ -50,7 +55,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
 
         return menus.stream()
-                .map(MenuResponse::of)
+                .map(MenuResponse::from)
                 .collect(Collectors.toList());
     }
 }

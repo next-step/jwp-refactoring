@@ -119,7 +119,7 @@ class MenuServiceTest {
         MenuProduct menuProduct1 = new MenuProduct(1L,null, product1, Quantity.of(2));
         MenuProduct menuProduct2 = new MenuProduct(2L,null, product2, Quantity.of(1));
         Menu menu = new Menu(1L,"메뉴1", Price.of(2000), MenuGroup.of("메뉴 그룹"),
-                MenuProducts.of(Arrays.asList(menuProduct1, menuProduct2)));
+                MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2)));
         MenuRequest menuRequest = new MenuRequest("메뉴", menu.getPrice().value(), 1L, menuProductRequests1);
 
         given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(menu.getMenuGroup());
@@ -146,9 +146,9 @@ class MenuServiceTest {
         MenuProduct menuProduct2 = new MenuProduct(2L, null, product2, Quantity.of(1));
         MenuProduct menuProduct3 = new MenuProduct(3L, null, product1, Quantity.of(3));
         Menu menu1 = new Menu(1L,"메뉴1", Price.of(2000), MenuGroup.of("메뉴 그룹"),
-                MenuProducts.of(Arrays.asList(menuProduct1, menuProduct2)));
+                MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2)));
         Menu menu2 = new Menu(2L,"메뉴2", Price.of(2000), MenuGroup.of("메뉴 그룹"),
-                MenuProducts.of(Collections.singletonList(menuProduct3)));
+                MenuProducts.from(Collections.singletonList(menuProduct3)));
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu1, menu2));
 
