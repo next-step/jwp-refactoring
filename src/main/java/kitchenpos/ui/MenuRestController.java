@@ -7,6 +7,7 @@ import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,13 @@ public class MenuRestController {
                 ;
     }
 
-    //TODO : 1개 메뉴 조회
+    @GetMapping("/api/menus/{menuId}")
+    public ResponseEntity<MenuResponse> create(@PathVariable Long menuId) {
+        return ResponseEntity.ok()
+                .body(menuService.findByMenuId(menuId))
+                ;
+    }
+
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> list() {

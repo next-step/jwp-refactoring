@@ -3,6 +3,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -11,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -159,5 +162,38 @@ class MenuServiceTest {
         //then
         assertThat(menus).hasSize(2);
         assertThat(menus).extracting("name").contains("메뉴1", "메뉴2");
+    }
+
+
+    @Test
+    @DisplayName("메뉴 단건 조회")
+    void menuSearch() {
+        //given
+        MenuProduct menuProduct1 = new MenuProduct(1L, null, product1, Quantity.from(2));
+        MenuProduct menuProduct2 = new MenuProduct(2L, null, product2, Quantity.from(1));
+
+        Menu menu = new Menu(1L,"메뉴1", Price.from(2000), MenuGroup.from("메뉴 그룹"),
+                MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2)));
+
+        given(menuRepository.findById(1L)).willReturn(Optional.of(menu));
+
+
+        //when
+        final MenuResponse menuResponse = menuService.findByMenuId(1L);
+
+
+        //then
+        assertThat(menuResponse).isNotNull();
+        assertThat(menuResponse.getMenuProducts()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("메뉴가 존재하지 않는다.")
+    void noMenuSearch() {
+        given(menuRepository.findById(1L)).willReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> menuService.findByMenuId(1L))
+                .isInstanceOf(NoSuchElementException.class);
     }
 }

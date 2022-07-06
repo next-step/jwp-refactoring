@@ -8,14 +8,15 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +33,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 생맥주;
     private ProductResponse 닭강정;
     private MenuGroupResponse 일식;
-
-    MenuRequest menu;
+    private ExtractableResponse<Response> 닭강정정식;
 
     @BeforeEach
     public void setUp() {
@@ -61,20 +61,40 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                     //given
                     List<MenuProductRequest> 닭강정정식_상품들 = Arrays.asList(닭강정정식_닭강정, 닭강정정식_생맥주);
                     //given
-                    menu = new MenuRequest("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
+                    MenuRequest menu = new MenuRequest("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
+
+                    //when
+                    닭강정정식 = 메뉴등록을_요청(menu);
+                    메뉴등록이_됨(닭강정정식);
+
+                })
+                , dynamicTest("등록한 메뉴를 조회", () -> {
+                    MenuResponse 닭강정_정식 = 닭강정정식.as(MenuResponse.class);
+                    //when
+                    final ExtractableResponse<Response> retrieveResponse = 메뉴_조회(닭강정_정식.getId());
+                    //then
+                    메뉴가_조회됨(닭강정_정식.getName(), retrieveResponse);
+
+                }),dynamicTest("메뉴를 한개 더 등록을 한다", () -> {
+                    //given
+                    MenuProductRequest 닭강정_단품 = new MenuProductRequest(닭강정.getId(), 1);
+                    MenuRequest menu = new MenuRequest("닭강정정식", BigDecimal.valueOf(1000), 일식.getId(), Collections.singletonList(닭강정_단품));
 
                     //when
                     final ExtractableResponse<Response> createResponse = 메뉴등록을_요청(menu);
+                    //then
                     메뉴등록이_됨(createResponse);
                 })
-                , dynamicTest("등록한 메뉴를 조회", () -> {
-                    //when
+                , dynamicTest("등록한 메뉴들을 조회",() -> {
                     final ExtractableResponse<Response> retrieveResponse = 등록한_메뉴들을_조회();
-                    //then
-                    등록한_메뉴가_조회됨(menu, retrieveResponse);
-
+                    등록한_메뉴들이_조회됨(retrieveResponse);
                 })
         );
+    }
+
+    private void 등록한_메뉴들이_조회됨(ExtractableResponse<Response> retrieveResponse) {
+        assertThat(retrieveResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrieveResponse.jsonPath().getList(".")).hasSize(2);
     }
 
 
@@ -91,8 +111,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private void 메뉴등록이_됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(createResponse.header(HttpHeaders.LOCATION)).isNotEmpty();
-        assertThat(createResponse.jsonPath().getString("name")).isEqualTo("닭강정정식");
-        assertThat(createResponse.jsonPath().getList("menuProducts", MenuProductResponse.class)).hasSize(2);
     }
 
     private ProductResponse 상품이_등록되어_있음(ProductRequest product) {
@@ -109,14 +127,26 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 등록한_메뉴가_조회됨(MenuRequest menu, ExtractableResponse<Response> retrievedResponse) {
-        assertThat(retrievedResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(retrievedResponse.jsonPath().getList("name")).contains(menu.getName());
-    }
-
     private MenuGroupResponse 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {
         return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroupResponse.class);
     }
+
+    private ExtractableResponse<Response> 메뉴_조회(Long menuId) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .pathParam("menuId", menuId)
+                .when().get("/api/menus/{menuId}")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+
+    private void 메뉴가_조회됨(String menuName, ExtractableResponse<Response> retrievedResponse) {
+        assertThat(retrievedResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrievedResponse.as(MenuResponse.class).getName()).isEqualTo(menuName);
+    }
+
 
 
 }

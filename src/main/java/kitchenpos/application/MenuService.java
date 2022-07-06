@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -57,5 +58,13 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MenuResponse findByMenuId(Long menuId) {
+        final Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new NoSuchElementException("해당 메뉴가 존재하지 않습니다"));
+
+        return MenuResponse.from(menu);
     }
 }
