@@ -3,6 +3,7 @@ package kitchenpos.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
@@ -31,8 +32,11 @@ public class TableService {
         return OrderTableResponse.formOrderTable(saveTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableRepository.findAll()
+                .stream()
+                .map(OrderTableResponse::formOrderTable)
+                .collect(Collectors.toList());
     }
 
     @Transactional

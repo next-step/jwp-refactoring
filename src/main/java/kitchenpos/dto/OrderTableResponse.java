@@ -1,7 +1,5 @@
 package kitchenpos.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 
 public class OrderTableResponse {
@@ -27,11 +25,6 @@ public class OrderTableResponse {
                 saveTable.getTableGroupId());
     }
 
-    public static List<OrderTableResponse> of(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .map(OrderTableResponse::formOrderTable)
-                .collect(Collectors.toList());
-    }
 
     public long getId() {
         return id;
