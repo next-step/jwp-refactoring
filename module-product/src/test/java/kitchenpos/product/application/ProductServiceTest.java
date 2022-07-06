@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.product.application.util.ProductContextServiceBehavior;
+import kitchenpos.product.application.behavior.ProductContextServiceBehavior;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.InvalidProductPriceException;
 import org.junit.jupiter.api.Assertions;

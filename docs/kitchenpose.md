@@ -121,8 +121,8 @@
   - module-menu
   - module-table
   - module-order
-- [ ] test-fixture Plugin 적용
-- [ ] Gradle 빌드 스크립트 작성
+- [X] test-fixture Plugin 적용
+- [X] Gradle 빌드 스크립트 작성
 
 ## 의존성 구성도 첨부
 ### 프로덕션 코드
