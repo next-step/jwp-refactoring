@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuProduct;
@@ -59,19 +59,20 @@ class MenuServiceTest {
         반반 = 상품_생성(1L, "반반", 16_000L);
         감자튀김 = 상품_생성(2L, "감자튀김", 3_000L);
         한마리메뉴 = 메뉴_그룹_생성(1L, "한마리메뉴");
-        반반치킨세트 = 메뉴_생성(1L, "반반치킨", 16_000L, 한마리메뉴);
 
-        메뉴반반치킨 = 메뉴_상품_생성(반반치킨세트, 반반, 1L);
-        메뉴감자튀김 = 메뉴_상품_생성(반반치킨세트, 감자튀김, 1L);
+        메뉴반반치킨 = 메뉴_상품_생성(반반, 1L);
+        메뉴감자튀김 = 메뉴_상품_생성(감자튀김, 1L);
+
+        반반치킨세트 = 메뉴_생성(1L, "반반치킨", 16_000L, 한마리메뉴, Arrays.asList(메뉴반반치킨, 메뉴감자튀김));
     }
 
     @Test
     @DisplayName("메뉴를 생성한다.")
     void createMenu() {
         // given
-        반반치킨세트.addMenuProduct(반반, 1L);
         given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
         given(productDao.findById(반반.getId())).willReturn(Optional.of(반반));
+        given(productDao.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(menuDao.save(any(Menu.class))).willReturn(반반치킨세트);
 
         //when
@@ -100,7 +101,6 @@ class MenuServiceTest {
     @DisplayName("유효하지 않은 상품을 가진 메뉴를 생성할 경우 - 오류")
     void notExistProduct() {
         // given
-        반반치킨세트.addMenuProduct(반반, 1L);
         given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
         given(productDao.findById(반반.getId())).willReturn(Optional.empty());
 
@@ -122,11 +122,11 @@ class MenuServiceTest {
         assertThat(menus.size()).isEqualTo(1);
     }
 
-    public static  Menu 메뉴_생성(Long menuId, String name, Long price, MenuGroup menuGroup) {
-        return new Menu(menuId, name, new BigDecimal(price), menuGroup);
+    public static  Menu 메뉴_생성(Long menuId, String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(menuId, name, new BigDecimal(price), menuGroup, menuProducts);
     }
 
-    public static MenuProduct 메뉴_상품_생성(Menu menu, Product product, long quantity) {
-        return new MenuProduct(menu, product, quantity);
+    public static MenuProduct 메뉴_상품_생성(Product product, long quantity) {
+        return new MenuProduct(product, quantity);
     }
 }

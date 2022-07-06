@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
@@ -33,17 +34,42 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(null, name, price, menuGroup);
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        validatePrice(price);
+        MenuProducts products = convertToMenuProducts(menuProducts);
+
+        validateMenuProductsPriceThanMenuPrice(price, products);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = products;
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validatePrice(price);
+        MenuProducts products = convertToMenuProducts(menuProducts);
+
+        validateMenuProductsPriceThanMenuPrice(price, products);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts();
+        this.menuProducts = products;
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
+    }
+
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validatePrice(price);
+        validateMenuProductsPriceThanMenuPrice(price, menuProducts);
+
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
@@ -66,10 +92,14 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    public void addMenuProduct(Product product, long quantity) {
-        menuProducts.add(new MenuProduct(this, product, quantity));
+    private MenuProducts convertToMenuProducts(List<MenuProduct> menuProducts) {
+        List<MenuProduct> products = new ArrayList<>();
 
-        validateMenuProductsPriceThanMenuPrice(price, menuProducts);
+        for(MenuProduct menuProduct: menuProducts) {
+            products.add(new MenuProduct(this, menuProduct.getProduct(), menuProduct.getQuantity()));
+        }
+
+        return new MenuProducts(products);
     }
 
     private void validatePrice(BigDecimal price) {

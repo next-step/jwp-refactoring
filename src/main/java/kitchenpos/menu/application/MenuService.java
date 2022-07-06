@@ -1,8 +1,10 @@
 package kitchenpos.menu.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -40,8 +42,9 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
             .orElseThrow(IllegalArgumentException::new);
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        addMenuProduct(menu, menuRequest);
+        List<MenuProduct> menuProducts = findMenuProducts(menuRequest);
+
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
 
         final Menu savedMenu = menuDao.save(menu);
 
@@ -54,12 +57,16 @@ public class MenuService {
             .collect(Collectors.toList());
     }
 
-    private void addMenuProduct(Menu menu, MenuRequest menuRequest) {
+    private List<MenuProduct> findMenuProducts(MenuRequest menuRequest) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+
         for(MenuProductRequest productRequest: menuRequest.getMenuProducts()) {
             final Product product = findProductById(productRequest.getProductId());
 
-            menu.addMenuProduct(product, productRequest.getQuantity());
+            menuProducts.add(new MenuProduct(product, productRequest.getQuantity()));
         }
+
+        return menuProducts;
     }
 
     private Product findProductById(Long productId) {

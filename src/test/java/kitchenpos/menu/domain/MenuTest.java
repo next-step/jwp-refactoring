@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,7 @@ class MenuTest {
         // given
         추천_메뉴 = new MenuGroup(1L, "추천메뉴");
         후라이드_치킨 = new Product(1L, "후라이드치킨", new BigDecimal(8_500L));
+        메뉴_후라이드_치킨 = new MenuProduct(후라이드_치킨, 2);
     }
 
     @Test
@@ -26,9 +28,9 @@ class MenuTest {
     void invalidPrice() {
         // when then
         assertAll(
-            () -> assertThatThrownBy(() -> new Menu("후라이드+후라이드", new BigDecimal(-6_000L), 추천_메뉴))
+            () -> assertThatThrownBy(() -> new Menu("후라이드+후라이드", new BigDecimal(-6_000L), 추천_메뉴, Arrays.asList(메뉴_후라이드_치킨)))
                 .isInstanceOf(IllegalArgumentException.class),
-            () -> assertThatThrownBy(() -> new Menu("후라이드+후라이드", null, 추천_메뉴))
+            () -> assertThatThrownBy(() -> new Menu("후라이드+후라이드", null, 추천_메뉴, Arrays.asList(메뉴_후라이드_치킨)))
                 .isInstanceOf(IllegalArgumentException.class)
         );
     }
@@ -36,11 +38,8 @@ class MenuTest {
     @Test
     @DisplayName("메뉴의 가격이 메뉴 상품 금액의 합보다 클 경우 - 오류")
     void inCaseOfMenuProductsPriceThanMenuPrice() {
-        // given
-        Menu menu = new Menu("후라이드+후라이드", new BigDecimal(30_000L), 추천_메뉴);
-
         // when then
-        assertThatThrownBy(() -> menu.addMenuProduct(후라이드_치킨, 2))
+        assertThatThrownBy(() -> new Menu("후라이드+후라이드", new BigDecimal(30_000L), 추천_메뉴, Arrays.asList(메뉴_후라이드_치킨)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

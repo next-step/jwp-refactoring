@@ -1,7 +1,9 @@
 package kitchenpos.order.application;
 
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_생성;
+import static kitchenpos.menu.application.MenuServiceTest.메뉴_상품_생성;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_생성;
+import static kitchenpos.product.application.ProductServiceTest.상품_생성;
 import static kitchenpos.table.application.TableServiceTest.주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -16,15 +18,16 @@ import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemDao;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,23 +49,28 @@ class OrderServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
     @InjectMocks
     private OrderService orderService;
 
     private Order 주문;
     private OrderTable 주문_테이블;
     private OrderLineItem 주문_목록_추천_치킨;
+
+    private Product 후라이드;
+    private MenuProduct 후라이드_원플원;
+
     private MenuGroup 추천_메뉴;
     private Menu 후라이드_세트_메뉴;
 
     @BeforeEach
     void init() {
         주문_테이블 = 주문_테이블_생성(1L, 4, false);
+
+        후라이드 = 상품_생성(1L, "후라이드", 16_000L);
+        후라이드_원플원 = 메뉴_상품_생성(후라이드, 1L);
+
         추천_메뉴 = 메뉴_그룹_생성(1L, "추천메뉴");
-        후라이드_세트_메뉴 = 메뉴_생성(1L, "후라이드세트메뉴", 16_000L, 추천_메뉴);
+        후라이드_세트_메뉴 = 메뉴_생성(1L, "후라이드세트메뉴", 16_000L, 추천_메뉴, Arrays.asList(후라이드_원플원));
 
         주문_목록_추천_치킨 = 주문_목록_생성(주문, 후라이드_세트_메뉴, 2);
     }
@@ -93,7 +101,7 @@ class OrderServiceTest {
     @DisplayName("존재하지 않은 주문 목록으로 주문을 생성할 경우 - 오류")
     void createOrderIfNonExistentMenu() {
         // given
-        Menu 존재하지_않는_메뉴 = 메뉴_생성(3L, "존재하지않는메뉴", 3000L, null);
+        Menu 존재하지_않는_메뉴 = 메뉴_생성(3L, "존재하지않는메뉴", 3000L, null, Arrays.asList(후라이드_원플원));
         OrderLineItem 존재하지_않는_메뉴의_주문_목록 = 주문_목록_생성(주문, 존재하지_않는_메뉴, 2);
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(존재하지_않는_메뉴의_주문_목록));
         주문 = 주문_생성(1L, 주문_테이블, orderLineItems);

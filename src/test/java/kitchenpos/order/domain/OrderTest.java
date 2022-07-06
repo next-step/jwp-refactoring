@@ -1,22 +1,28 @@
 package kitchenpos.order.domain;
 
-
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_생성;
+import static kitchenpos.menu.application.MenuServiceTest.메뉴_상품_생성;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_생성;
+import static kitchenpos.product.application.ProductServiceTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class OrderTest {
+    private Product 후라이드;
+    private MenuProduct 후라이드_원플원;
+
     private MenuGroup 추천_메뉴;
-    private Menu 후라이드_원플원;
+    private Menu 후라이드_세트_메뉴;
 
     private Order 주문;
     private OrderTable 주문_테이블;
@@ -26,10 +32,14 @@ class OrderTest {
     void init() {
         // given
         주문_테이블 = 주문_테이블_생성(1L, 4, false);
-        추천_메뉴 = 메뉴_그룹_생성(1L, "추천메뉴");
-        후라이드_원플원 = 메뉴_생성(1L, "후라이드_원플원", 16_000L, 추천_메뉴);
 
-        주문_목록_추천_치킨 = 주문_목록_생성(주문, 후라이드_원플원, 2);
+        후라이드 = 상품_생성(1L, "후라이드", 16_000L);
+        후라이드_원플원 = 메뉴_상품_생성(후라이드, 1L);
+
+        추천_메뉴 = 메뉴_그룹_생성(1L, "추천메뉴");
+        후라이드_세트_메뉴 = 메뉴_생성(1L, "후라이드_원플원", 16_000L, 추천_메뉴, Arrays.asList(후라이드_원플원));
+
+        주문_목록_추천_치킨 = 주문_목록_생성(주문, 후라이드_세트_메뉴, 2);
     }
 
     @Test
