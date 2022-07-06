@@ -1,7 +1,5 @@
 package kitchenpos.domain.menu;
 
-import static kitchenpos.domain.validator.PriceValidator.validatePrice;
-
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Embedded;
@@ -13,20 +11,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.domain.common.wrap.Name;
+import kitchenpos.domain.common.wrap.Price;
 import kitchenpos.dto.menu.MenuProductResponse;
 
 @Entity
 public class Menu {
 
-    public static final String MENU_PRICE_IS_OVER_THAN_TOTAL_SUM_OF_MENU_PRODUCT_PRICE_ERROR_MESSAGE = "메뉴에 구성된 상품 가격의 총합 보다 메뉴 가격이 클 수 없습니다.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -44,18 +44,10 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price);
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.of(this, menuProducts);
-        validateMenuPrice();
-    }
-
-    public void validateMenuPrice() {
-        if (price.compareTo(menuProducts.totalMenuProductPrice()) > 0) {
-            throw new IllegalArgumentException(MENU_PRICE_IS_OVER_THAN_TOTAL_SUM_OF_MENU_PRODUCT_PRICE_ERROR_MESSAGE);
-        }
+        this.price = Price.menuPriceOf(price, this.menuProducts);
+        this.name = Name.from(name);
+        this.menuGroup = menuGroup;
     }
 
     public Long getId() {
@@ -63,11 +55,11 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public MenuGroup getMenuGroup() {

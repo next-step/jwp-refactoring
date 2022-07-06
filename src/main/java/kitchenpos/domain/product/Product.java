@@ -1,15 +1,16 @@
 package kitchenpos.domain.product;
 
-import static kitchenpos.domain.validator.PriceValidator.validatePrice;
-
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import kitchenpos.domain.common.wrap.Name;
+import kitchenpos.domain.common.wrap.Price;
 
 @Entity
 @Table(
@@ -24,18 +25,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     public Product() {
 
     }
 
     private Product(String name, BigDecimal price) {
-        validatePrice(price);
-        this.name = name;
-        this.price = price;
+        this.name = Name.from(name);
+        this.price = Price.productPriceFrom(price);
     }
 
     public static Product of(String name, BigDecimal price) {
@@ -46,24 +48,12 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+        return price.getPrice();
     }
 
     @Override

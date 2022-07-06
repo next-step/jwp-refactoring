@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.product.Product;
+import kitchenpos.dto.product.ProductResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ public class ProductRestControllerTest extends BaseTest {
         ResultActions resultActions = mockMvcUtil.post(상품_생성_요청(name, price));
 
         // Then
-        Product product = as(resultActions, Product.class);
+        ProductResponse product = as(resultActions, ProductResponse.class);
         resultActions
             .andDo(print())
             .andExpect(status().isCreated())
