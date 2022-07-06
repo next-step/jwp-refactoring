@@ -1,0 +1,5 @@
+apply plugin: 'java-test-fixtures'
+
+dependencies {
+    implementation 'org.flywaydb:flyway-core'
+}
