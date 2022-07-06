@@ -39,7 +39,8 @@ public class MenuService {
         final List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
         menu.addMenuProducts(menuProducts);
 
-        return new MenuResponse(menuRepository.save(menu));
+        Menu save = menuRepository.save(menu);
+        return new MenuResponse(save);
     }
 
     public List<MenuResponse> list() {

@@ -46,13 +46,6 @@ public class OrderService {
 
         order.registerOrderTable(orderTable);
 
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItemRequests()
-                .stream()
-                .map(this::createMenuItem)
-                .collect(Collectors.toList());
-
-
-//        Order order = new Order(orderTable.getId(), orderLineItems);
         return new OrderResponse(orderRepository.save(order));
     }
 

@@ -63,7 +63,7 @@ class MenuServiceTest {
     void 메뉴를_등록할_수_있다() {
         MenuRequest 메뉴요청 = new MenuRequest(오늘의메뉴.getName(), 지코바치킨.getPriceValue(), 메뉴그룹.getId(), Arrays.asList(new MenuProductRequest(지코바치킨.getId(), 1L)));
         given(menuGroupRepository.findById(오늘의메뉴.getMenuGroup().getId())).willReturn(Optional.of(메뉴그룹));
-        given(productRepository.findById(메뉴상품.getProduct().getId())).willReturn(Optional.of(지코바치킨));
+        given(productRepository.findById(any())).willReturn(Optional.of(지코바치킨));
         given(menuRepository.save(any())).willReturn(오늘의메뉴);
 
         MenuResponse createdMenu = menuService.create(메뉴요청);

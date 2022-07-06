@@ -28,6 +28,10 @@ public class OrderTable {
     public OrderTable() {
     }
 
+    public OrderTable(Long id) {
+        this.id = id;
+    }
+
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -37,18 +41,6 @@ public class OrderTable {
         this(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
     public void groupBy(TableGroup tableGroup) {
         changeEmpty(false);
         this.tableGroup = tableGroup;
@@ -56,22 +48,6 @@ public class OrderTable {
 
     public void ungroup() {
         this.tableGroup = null;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void changeEmpty(boolean empty) {
@@ -89,5 +65,37 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void setNumberOfGuests(final int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(final boolean empty) {
+        this.empty = empty;
     }
 }

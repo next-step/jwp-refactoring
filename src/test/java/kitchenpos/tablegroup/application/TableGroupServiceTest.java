@@ -1,11 +1,13 @@
 package kitchenpos.tablegroup.application;
 
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.tablegroup.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.common.ServiceTestFactory.테이블그룹생성;
+import static kitchenpos.common.ServiceTestFactory.테이블그룹요청생성;
 import static kitchenpos.common.ServiceTestFactory.테이블생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,73 +33,48 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
     private OrderTable table1;
     private OrderTable table2;
-    private List<OrderTable> orderTables;
+    private List<Long> orderTablesIds;
+    private TableGroupRequest tableGroupRequest;
     private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
         table1 = 테이블생성(1L, null, 3, true);
         table2 = 테이블생성(2L, null, 3, true);
-        orderTables = Arrays.asList(table1, table2);
-        tableGroup = 테이블그룹생성(1L, orderTables);
+        orderTablesIds = Arrays.asList(table1.getId(), table2.getId());
+        tableGroupRequest = 테이블그룹요청생성(orderTablesIds);
+        tableGroup = 테이블그룹생성(1L, new ArrayList<>(Arrays.asList(table1, table2)));
     }
 
     @Test
     void 테이블그룹을_생성할_수_있다() {
-        given(orderTableDao.findAllByIdIn(Arrays.asList(table1.getId(), table2.getId()))).willReturn(orderTables);
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(tableGroup);
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(table1, table2));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
 
-        TableGroup result = tableGroupService.create(tableGroup);
+        TableGroupResponse result = tableGroupService.create(tableGroupRequest);
 
-        assertThat(result.getOrderTables()).hasSize(2);
+        assertThat(result.getId()).isEqualTo(tableGroup.getId());
     }
 
     @Test
     void 주문테이블이_2개미만이면_테이블그룹을_생성할_수_없다() {
-        TableGroup 테이블그룹_주문테이블1개 = 테이블그룹생성(2L, Arrays.asList(table1));
+        TableGroupRequest 테이블그룹_주문테이블1개 = 테이블그룹요청생성(Arrays.asList(table1.getId()));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(table1));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
 
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹_주문테이블1개))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 주문테이블이_등록되지_않았으면_테이블그룹을_생성할_수_없다() {
-        given(orderTableDao.findAllByIdIn(Arrays.asList(table1.getId(), table2.getId())))
-                .willReturn(Arrays.asList(table1));
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 주문테이블이_비어있으면_테이블그룹을_생성할_수_없다() {
-        OrderTable 빈테이블1 = 테이블생성(1L, null, 3, false);
-        OrderTable 빈테이블2 = 테이블생성(1L, null, 3, false);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(빈테이블1, 빈테이블2));
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 이미_테이블그룹아이디가_존재하면_테이블그룹을_생성할_수_없다() {
-        OrderTable 빈테이블1 = 테이블생성(1L, 1L, 3, true);
-        OrderTable 빈테이블2 = 테이블생성(1L, 1L, 3, true);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(빈테이블1, 빈테이블2));
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -103,19 +82,20 @@ class TableGroupServiceTest {
     void 테이블그룹을_삭제할_수_있다() {
         OrderTable 그룹있는_테이블1 = 테이블생성(1L, 1L, 3, true);
         OrderTable 그룹있는_테이블2 = 테이블생성(1L, 1L, 3, true);
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(Arrays.asList(그룹있는_테이블1, 그룹있는_테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(Arrays.asList(그룹있는_테이블1, 그룹있는_테이블2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
 
         tableGroupService.ungroup(1L);
 
-        assertThat(그룹있는_테이블1.getTableGroupId()).isNull();
-        assertThat(그룹있는_테이블2.getTableGroupId()).isNull();
+        assertThat(그룹있는_테이블1.getTableGroup()).isNull();
+        assertThat(그룹있는_테이블2.getTableGroup()).isNull();
     }
 
     @Test
     void 주문상태가_요리중이거나_식사중이면_테이블그룹을_삭제할_수_없다() {
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
+        List<OrderTable> orderTables = Arrays.asList(table1, table2);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class);

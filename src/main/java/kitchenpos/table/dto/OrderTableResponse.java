@@ -17,7 +17,9 @@ public class OrderTableResponse {
     }
 
     public OrderTableResponse(OrderTable orderTable) {
-        this(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        this(orderTable.getId(),
+                orderTable.getNumberOfGuests(),
+                orderTable.isEmpty());
     }
 
     public Long getId() {

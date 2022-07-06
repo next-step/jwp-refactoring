@@ -28,7 +28,11 @@ public class MenuResponse {
     }
 
     public MenuResponse(Menu menu) {
-        this(menu.getId(), menu.getName(), menu.getPriceBigDecimal(), menu.getMenuGroup().getId(), menu.getMenuProducts());
+        this(menu.getId(),
+                menu.getName(),
+                menu.getPriceBigDecimal(),
+                menu.getMenuGroup().getId(),
+                menu.getMenuProducts());
     }
 
     public Long getId() {

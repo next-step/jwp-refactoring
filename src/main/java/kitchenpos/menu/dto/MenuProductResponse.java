@@ -11,15 +11,14 @@ public class MenuProductResponse {
     public MenuProductResponse() {
     }
 
-    public MenuProductResponse(Long seq, Long menuId, Long productId, Long quantity) {
+    public MenuProductResponse(Long seq, Long productId, Long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
     public MenuProductResponse(MenuProduct menuProduct) {
-        this(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        this(menuProduct.getSeq(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }
 
     public Long getProductId() {

@@ -40,7 +40,7 @@ public class Order {
     }
 
     public void changeOrderStatue(OrderStatus orderStatus) {
-        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException();
         }
         this.orderStatus = orderStatus;

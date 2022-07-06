@@ -26,8 +26,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable save = orderTableRepository.save(new OrderTable(orderTableRequest));
-        return new OrderTableResponse(save);
+        OrderTable orderTable = orderTableRequest.toEntity();
+        orderTable.ungroup();
+        return new OrderTableResponse(orderTableRepository.save(orderTable));
     }
 
     public List<OrderTableResponse> list() {

@@ -15,8 +15,12 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public OrderLineItem toEntity(){
-        return new OrderLineItem(menuId,quantity);
+    public OrderLineItemRequest(OrderLineItem orderLineItem) {
+        this(orderLineItem.getMenuId(), Long.valueOf(orderLineItem.getQuantity()).intValue());
+    }
+
+    public OrderLineItem toEntity() {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getMenuId() {
