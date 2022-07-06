@@ -2,6 +2,7 @@ package kitchenpos.order.ui.dto;
 
 import kitchenpos.order.domain.Order;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,11 +18,11 @@ public class OrderCreateRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toEntity() {
+    public Order toEntity(LocalDateTime orderedTime) {
         return new Order(orderTableId, orderLineItems
                 .stream()
                 .map(OrderLineItemCreateRequest::toEntity)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()), orderedTime);
     }
 
     public Long getOrderTableId() {

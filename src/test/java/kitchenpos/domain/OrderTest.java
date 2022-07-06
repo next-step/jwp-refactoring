@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static kitchenpos.domain.OrderLineItemsTest.createDuplicateOrderLineItems;
+import static kitchenpos.application.OrderServiceTest.orderedTime;
 import static kitchenpos.domain.OrderLineItemsTest.createOrderLineItems;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,25 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class OrderTest {
 
     @Test
-    void 중복된_메뉴가_있으면_주문할_수_없다() {
-        // given
-        Order order = new Order(1L, createDuplicateOrderLineItems().elements());
-
-        // when & then
-        assertThatThrownBy(() ->
-                order.validateDuplicateMenu(1)
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("중복된 메뉴가 있습니다.");
-    }
-
-    @Test
     void 주문을_처리한다() {
         // given
-        Order order = new Order(1L, createOrderLineItems().elements());
-        LocalDateTime orderedTime = LocalDateTime.now();
+        LocalDateTime orderedTime = orderedTime();
 
         // when
-        order.order(orderedTime);
+        Order order = new Order(1L, createOrderLineItems().elements(), orderedTime);
 
         // then
         assertAll(

@@ -36,6 +36,15 @@ class PriceTest {
         Price result = PRICE.add(CHEAPER);
 
         // then
-        assertThat(result.value()).isEqualTo(BigDecimal.valueOf(1500));
+        assertThat(result).isEqualTo(new Price(BigDecimal.valueOf(1500)));
+    }
+
+    @Test
+    void 가격에_수량을_곱한다() {
+        // when
+        Price result = PRICE.multiply(5);
+
+        // then
+        assertThat(result).isEqualTo(new Price(BigDecimal.valueOf(5000)));
     }
 }

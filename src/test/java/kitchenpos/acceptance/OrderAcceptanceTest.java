@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.ui.dto.MenuCreateRequest;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.dto.OrderCreateRequest;
 import kitchenpos.order.ui.dto.OrderLineItemCreateRequest;
@@ -35,9 +36,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         Long 주문_테이블_id = 주문_테이블_등록됨(주문_테이블).getId();
-        Long 메뉴_id = 메뉴_등록됨(메뉴_요청_생성()).getId();
+        MenuCreateRequest 메뉴_요청_생성 = 메뉴_요청_생성();
+        Long 메뉴_id = 메뉴_등록됨(메뉴_요청_생성).getId();
 
-        주문 = new OrderCreateRequest(주문_테이블_id, Collections.singletonList(new OrderLineItemCreateRequest(메뉴_id, 2)));
+        주문 = new OrderCreateRequest(주문_테이블_id, Collections.singletonList(new OrderLineItemCreateRequest(메뉴_id, 메뉴_요청_생성.getName(), 메뉴_요청_생성.getPrice(), 2)));
         식사중 = new OrderUpdateRequest(OrderStatus.MEAL.name());
     }
 

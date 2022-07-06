@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -42,10 +40,8 @@ public class OrderLineItems {
         return Collections.unmodifiableList(elements);
     }
 
-    public void validateDuplicateMenu(long menuCount) {
-        if (elements.size() != menuCount) {
-            throw new IllegalArgumentException("중복된 메뉴가 있습니다.");
-        }
+    public int size() {
+        return elements.size();
     }
 
     public void addOrder(Order order) {

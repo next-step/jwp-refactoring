@@ -7,6 +7,8 @@ Content-Type: application/json
   "orderLineItems": [
     {
       "menuId": 1,
+      "menuName": "후라이드치킨",
+      "menuPrice": 16000,
       "quantity": 1
     }
   ]

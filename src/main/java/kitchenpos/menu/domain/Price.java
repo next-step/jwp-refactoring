@@ -8,6 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     public static final int ZERO = 0;
+    public static final int DECIMAL = 2;
 
     @Column(name = "price")
     private BigDecimal value = BigDecimal.ZERO;
@@ -17,7 +18,7 @@ public class Price {
 
     public Price(BigDecimal value) {
         validatePrice(value);
-        this.value = value;
+        this.value = value.setScale(DECIMAL);
     }
 
     private void validatePrice(BigDecimal value) {
@@ -36,5 +37,22 @@ public class Price {
 
     public Price add(Price price) {
         return new Price(value.add(price.value));
+    }
+
+    public Price multiply(long quantity) {
+        return new Price(value.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Price price = (Price) o;
+        return Objects.equals(value, price.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.menu.ui.dto;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Price;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +24,7 @@ public class MenuCreateRequest {
     }
 
     public Menu toEntity(List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroupId, menuProducts);
+        return new Menu(name, new Price(price), menuGroupId, menuProducts);
     }
 
     public String getName() {
