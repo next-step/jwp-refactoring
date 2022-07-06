@@ -19,39 +19,28 @@ import java.util.List;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderValidator orderValidator
     ) {
-        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                                                    .orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = orderValidator.tableValidIsEmpty(orderRequest.getOrderTableId());
 
         Order order = Order.from(orderTable);
 
         Order savedOrder = orderRepository.save(order);
 
-        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
-            throw new IllegalArgumentException();
-        }
-
+        orderValidator.orderLineItemsValidation(orderRequest.getOrderLineItems());
         for (OrderLineItemRequest items :orderRequest.getOrderLineItems()) {
-            Menu menu = menuRepository.findById(items.getMenuId()).orElseThrow(IllegalArgumentException::new);
-            savedOrder.addOrderLineItem(menu, items.getQuantity());
+            savedOrder.addOrderLineItem(items.getMenuId(), items.getQuantity());
         }
 
         return OrderResponse.from(savedOrder);

@@ -14,24 +14,24 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    @Column
+    private Long menuId;
     @Column
     private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
+    public OrderLineItem(Order order, Long menuId, long quantity) {
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = new Quantity(quantity);
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -47,8 +47,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {

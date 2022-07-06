@@ -16,8 +16,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column
+    private Long orderTableId;
 
     @Column
     private OrderStatus orderStatus;
@@ -34,21 +34,18 @@ public class Order {
     public Order(OrderTable orderTable) {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderTable = orderTable;
+        this.orderTableId = orderTable.getId();
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTable.getId();
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public static Order from(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new OrderTableException(OrderTableException.ORDER_TABLE_IS_EMPTY_MSG);
-        }
         return new Order(orderTable);
     }
 
@@ -56,8 +53,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -76,8 +73,8 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void addOrderLineItem(Menu menu, long quantity) {
-        orderLineItems.add(new OrderLineItem(this, menu, quantity));
+    public void addOrderLineItem(Long menuId, long quantity) {
+        orderLineItems.add(new OrderLineItem(this, menuId, quantity));
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
