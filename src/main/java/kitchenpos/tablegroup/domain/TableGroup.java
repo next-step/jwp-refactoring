@@ -1,13 +1,12 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity
@@ -16,15 +15,14 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables= new ArrayList<>();
-    public static final int MIN_ORDER_TABLE_NUMBER = 2;
-
+    @Embedded
+    private OrderTables orderTables;
     protected TableGroup() {
     }
 
     private TableGroup(List<OrderTable> orderTables) {
-        assignOrderTables(orderTables);
+        this.orderTables = new OrderTables(orderTables);
+        this.orderTables.assignOrderTables(this);
         createdDate = LocalDateTime.now();
     }
 
@@ -32,49 +30,8 @@ public class TableGroup {
         return new TableGroup(orderTables);
     }
 
-    private void assignOrderTables(List<OrderTable> orderTables) {
-        validateOrderTables(orderTables);
-        this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> orderTable.groupBy(this));
-    }
-
-    private void validateOrderTables(List<OrderTable> orderTables) {
-        validateOrderTablesSize(orderTables);
-        validateOrderTablesDuplicated(orderTables);
-        validateOrderTablesNotGrouped(orderTables);
-        validateOrderTablesEmpty(orderTables);
-    }
-
-    private void validateOrderTablesSize(List<OrderTable> orderTables) {
-        if (orderTables == null || orderTables.size() < MIN_ORDER_TABLE_NUMBER) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateOrderTablesDuplicated(List<OrderTable> orderTables) {
-        if(orderTables.size() != orderTables.stream().distinct().count()){
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateOrderTablesNotGrouped(List<OrderTable> orderTables) {
-        if (orderTables.stream().
-            anyMatch(orderTable -> orderTable.isGrouped())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateOrderTablesEmpty(List<OrderTable> orderTables) {
-        if (orderTables.stream().
-            anyMatch(orderTable -> !orderTable.isEmpty())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public void ungroup() {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-        }
+        orderTables.ungroup();
     }
 
     public Long getId() {
@@ -86,7 +43,7 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
 }
