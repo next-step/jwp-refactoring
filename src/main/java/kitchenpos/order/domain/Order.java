@@ -1,9 +1,9 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
@@ -28,8 +27,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
@@ -39,8 +38,9 @@ public class Order {
         validateOrderLineItems(orderLineItems);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
-        orderLineItems.forEach(orderLineItem -> orderLineItem.toOrder(this));
+        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems.toOrder(this);
+        orderedTime = LocalDateTime.now();
     }
 
     public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -92,7 +92,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public void changeStatus(final OrderStatus orderStatus) {

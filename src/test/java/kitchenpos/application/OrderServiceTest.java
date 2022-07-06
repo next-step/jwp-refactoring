@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.order.application.OrderService;
@@ -26,7 +27,7 @@ public class OrderServiceTest {
     @Test
     public void createOrder() {
         //given
-        OrderRequest order = OrderRequest.of(1l, Arrays.asList(OrderLineItemRequest.of( 1l, 1)));
+        OrderRequest order = OrderRequest.of(1l, new ArrayList<>(Arrays.asList(OrderLineItemRequest.of( 1l, 1))));
         //when
         OrderResponse result = orderService.create(order);
         //then

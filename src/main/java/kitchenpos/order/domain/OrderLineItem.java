@@ -41,7 +41,6 @@ public class OrderLineItem {
             this.order.getOrderLineItems().remove(this);
         }
         this.order = order;
-        order.getOrderLineItems().add(this);
     }
 
 

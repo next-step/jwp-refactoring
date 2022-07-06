@@ -29,7 +29,7 @@ public class OrderResponse {
             savedOrder.getOrderStatus(), orderLineItems);
     }
 
-    public static List<OrderResponse> convertToOrderResponse(List<Order> orders) {
+    public static List<OrderResponse> toOrderResponse(List<Order> orders) {
         return orders.stream()
             .map(order -> OrderResponse.from(order))
             .collect(Collectors.toList());
