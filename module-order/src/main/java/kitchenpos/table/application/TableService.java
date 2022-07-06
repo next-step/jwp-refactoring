@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
+
     private static final String NOT_EXIST_ORDER_TABLE_MESSAGE = "존재하지 않는 주문테이블 입니다.";
+
     private final OrderValidator orderValidator;
     private final OrderTableRepository orderTableRepository;
 
