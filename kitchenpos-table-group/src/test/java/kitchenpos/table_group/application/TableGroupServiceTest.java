@@ -49,7 +49,7 @@ class TableGroupServiceTest {
         verify(tableService).groupBy(any(), eq(orderTableIds));
     }
 
-    @DisplayName("단체 지정을 해제할 수 있다")
+    @DisplayName("단체 지정을 해제한다")
     @Test
     void ungroup() {
         // given
@@ -65,7 +65,7 @@ class TableGroupServiceTest {
         verify(tableService).ungroup(tableGroupId);
     }
 
-    @DisplayName("단체 지정을 해제할 수 없다")
+    @DisplayName("단체 지정이 없으면 단체 지정을 해제할 수 없다")
     @Test
     void tableGroupNotExist() {
         // given
