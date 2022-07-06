@@ -17,7 +17,7 @@ import java.util.List;
 public class TestFixture {
 
     public static Product 후라이드_상품_생성() {
-        return Product.of((long)1, "후라이드", new BigDecimal(16000));
+        return Product.of(1L, "후라이드", new BigDecimal(16000));
     }
 
     public static Product 양념치킨_상품_생성() {
@@ -33,19 +33,19 @@ public class TestFixture {
     }
 
     public static MenuProduct 후라이드_메뉴_상품_생성(Long productId) {
-        return MenuProduct.of(후라이드_상품_생성(), 1);
+        return MenuProduct.of(1L, 1);
     }
 
     public static MenuProduct 양념_메뉴_상품_생성(Long productId) {
-        return MenuProduct.of(양념치킨_상품_생성(), 2);
+        return MenuProduct.of(2L, 2);
     }
 
     public static Menu 후라이드_치킨_메뉴_생성(Long menuGroupId, List<MenuProduct> menuProducs) {
-        return Menu.of("후라이드치킨", new BigDecimal(16000), 한마리_메뉴_그룹_생성(), menuProducs);
+        return Menu.of("후라이드치킨", new BigDecimal(16000), 1L, menuProducs);
     }
 
     public static Menu 양념_치킨_메뉴_생성(Long menuGroupId, List<MenuProduct> menuProducts) {
-        return Menu.of("양념치킨", new BigDecimal(32000), 한마리_메뉴_그룹_생성(), menuProducts);
+        return Menu.of("양념치킨", new BigDecimal(32000), 1L, menuProducts);
     }
 
     public static OrderTable 주문테이블_1_생성() {
