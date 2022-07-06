@@ -7,36 +7,33 @@ import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
     private final MenuProductRepository menuProductRepository;
-    private final ProductService productService;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupService menuGroupService,
             final MenuProductRepository menuProductRepository,
-            final ProductService productService
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
         this.menuProductRepository = menuProductRepository;
-        this.productService = productService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuGroupService.existsById(menuRequest.getMenuGroupId());
-        productService.validPriceCheck(menuRequest);
+        menuValidator.validateMenuGroupCheck(menuRequest.getMenuGroupId());
+        menuValidator.validatePriceCheck(menuRequest);
         Menu savedMenu = menuRepository.save(menuRequest.toMenu());
 
         MenuProducts menuProducts = createMenuProduct(menuRequest.getMenuProducts());

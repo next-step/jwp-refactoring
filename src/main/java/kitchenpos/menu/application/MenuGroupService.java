@@ -30,11 +30,4 @@ public class MenuGroupService {
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
     }
-
-    @Transactional(readOnly = true)
-    public void existsById(Long menuGroupId) {
-        if(!menuGroupRepository.existsById(menuGroupId)) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴그룹입니다.");
-        }
-    }
 }
