@@ -24,12 +24,12 @@ public class TableGroup {
     private TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = new OrderTables(orderTables, this);
+        this.orderTables = new OrderTables(orderTables, id);
     }
 
     private TableGroup(List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables = new OrderTables(orderTables, this);
+        this.orderTables = new OrderTables(orderTables, id);
     }
 
     public static TableGroup of(Long id, List<OrderTable> orderTables) {

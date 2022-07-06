@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,9 +12,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", nullable = false)
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -31,16 +28,15 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         changeOrderLineItem(orderLineItems);
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        orderTable.validEmpty();
-        return new Order(orderTable, orderLineItems);
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     private void changeOrderLineItem(List<OrderLineItem> orderLineItems) {
@@ -66,8 +62,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
