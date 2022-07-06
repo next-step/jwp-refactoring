@@ -33,8 +33,11 @@ public class MenuGroupService {
                 .collect(toList());
     }
 
-    public MenuGroup findById(Long id) {
-        return menuGroupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴가 있습니다."));
+    public boolean existsById(Long id) {
+        if (!menuGroupRepository.existsById(id)) {
+            new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
+        }
+
+        return true;
     }
 }

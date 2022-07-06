@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.global.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
@@ -12,12 +13,12 @@ import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -39,19 +40,50 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
-
-        List<Product> products = getProducts(request);
-
-        Map<Long, Product> productMap = listToMap(products);
-
-        List<MenuProduct> menuProducts = request.getMenuProductRequests().stream()
-                .map(it -> MenuProduct.of(productMap.get(it.getProductId()), it.getQuantity()))
-                .collect(Collectors.toList());
-
-        Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
+        validateCreate(request);
+        Menu menu = request.toEntity();
         Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
+    }
+
+    private void validateCreate(MenuRequest request) {
+        validateMenuGroupId(request.getMenuGroupId());
+        validateMenuProduct(request);
+        validPrice(request);
+    }
+
+    public boolean validateMenuGroupId(Long menuGroupId) {
+        return menuGroupService.existsById(menuGroupId);
+    }
+
+    private void validateMenuProduct(MenuRequest request) {
+        List<Long> productIds = request.getMenuProductRequests().stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(toList());
+
+        List<Product> products = productRepository.findByIdIn(productIds);
+
+        if (productIds.size() != products.size()) {
+            throw new IllegalArgumentException("등록되지 않은 상품이 있습니다.");
+        }
+    }
+
+    private void validPrice(MenuRequest request) {
+        Price total = new Price(BigDecimal.ZERO);
+        for (MenuProductRequest menuProductRequest : request.getMenuProductRequests()) {
+            Product product = findByProductId(menuProductRequest.getProductId());
+            Price menuProductPrice = new Price(product.getMultipleValue(menuProductRequest.getQuantity()));
+            total = total.add(menuProductPrice);
+        }
+
+        if (total.getValue().compareTo(request.getPrice()) > 0) {
+            throw new IllegalArgumentException("메뉴 상품보다 메뉴의 가격이 높을 수 없습니다.");
+        }
+    }
+
+    private Product findByProductId(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품이 있습니다."));
     }
 
     public List<MenuResponse> list() {
