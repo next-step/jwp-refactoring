@@ -13,7 +13,7 @@ public class NumberOfGuest {
     }
 
     private NumberOfGuest(int numberOfGuests) {
-        validNumberOfGuest(numberOfGuests);
+        validateNumberOfGuest(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -21,7 +21,7 @@ public class NumberOfGuest {
         return new NumberOfGuest(numberOfGuest);
     }
 
-    private void validNumberOfGuest(int numberOfGuests) {
+    private void validateNumberOfGuest(int numberOfGuests) {
         if (numberOfGuests < MIN_NUMBER_OF_GUEST) {
             throw new IllegalArgumentException("사람의 수는 음수일수가 없습니다.");
         }

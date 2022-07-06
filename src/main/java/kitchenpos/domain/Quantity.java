@@ -12,7 +12,7 @@ public class Quantity {
     }
 
     public Quantity(long quantity) {
-        valid(quantity);
+        validate(quantity);
         this.quantity = quantity;
     }
 
@@ -28,7 +28,7 @@ public class Quantity {
         return quantity;
     }
 
-    private void valid(long quantity) {
+    private void validate(long quantity) {
         if (quantity < MIN_QUANTITY_VALUE) {
             throw new IllegalArgumentException("수량은 1개 이상 이어야야 합니다.");
         }

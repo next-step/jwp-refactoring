@@ -23,7 +23,7 @@ public class OrderTables {
     }
 
     private OrderTables(List<OrderTable> orderTables) {
-        validGroup(orderTables);
+        validateGroup(orderTables);
         this.orderTables = orderTables;
     }
 
@@ -43,7 +43,7 @@ public class OrderTables {
         orderTables.forEach((it)-> it.changeTableGroupId(null));
     }
 
-    private void validGroup(List<OrderTable> orderTables) {
+    private void validateGroup(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_CNT) {
             throw new IllegalArgumentException("단체지정은 2개이상 테이블만 가능합니다.");
         }

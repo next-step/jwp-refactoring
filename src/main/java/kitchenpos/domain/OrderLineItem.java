@@ -35,7 +35,7 @@ public class OrderLineItem {
     }
 
     private OrderLineItem(Long menuId, long quantity) {
-        validMenu(menuId);
+        validateMenu(menuId);
         this.quantity = Quantity.of(quantity);
         this.menuId = menuId;
 
@@ -45,7 +45,7 @@ public class OrderLineItem {
         return new OrderLineItem(menuId, quantity);
     }
 
-    private void validMenu(Long menuId) {
+    private void validateMenu(Long menuId) {
         if (Objects.isNull(menuId)) {
             throw new IllegalArgumentException("메뉴가 없습니다.");
         }

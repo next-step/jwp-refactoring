@@ -40,21 +40,21 @@ public class Order {
 
     public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
                  OrderLineItems orderLineItems) {
-        validOrderTableId(orderTableId);
-        validOrderLineItems(orderLineItems);
+        validateOrderTableId(orderTableId);
+        validateOrderLineItems(orderLineItems);
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    private void validOrderTableId(Long orderTableId) {
+    private void validateOrderTableId(Long orderTableId) {
         if (ObjectUtils.isEmpty(orderTableId)) {
             throw new IllegalArgumentException("주문 테이블은 존재 해야합니다");
         }
     }
 
-    private void validOrderLineItems(OrderLineItems orderLineItems) {
+    private void validateOrderLineItems(OrderLineItems orderLineItems) {
         if (ObjectUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문 항목들은 존재 해야합니다.");
         }

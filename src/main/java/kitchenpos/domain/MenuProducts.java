@@ -31,7 +31,7 @@ public class MenuProducts {
     }
 
     private MenuProducts(MenuProduct menuProduct) {
-        validProduct(menuProduct);
+        validateProduct(menuProduct);
         menuProduct.changeSeq(SEQ_START_INDEX);
         menuProductElements.add(menuProduct);
     }
@@ -65,7 +65,7 @@ public class MenuProducts {
         }
     }
 
-    private void validProduct(MenuProduct menuProduct) {
+    private void validateProduct(MenuProduct menuProduct) {
         if (ObjectUtils.isEmpty(menuProduct)) {
             throw new IllegalArgumentException("메뉴상품이 비어있습니다");
         }

@@ -24,13 +24,13 @@ public class OrderLineItems {
     }
 
     private OrderLineItems(List<OrderLineItem> orderLineItemElements) {
-        valid(orderLineItemElements);
+        validate(orderLineItemElements);
         this.orderLineItemElements = orderLineItemElements;
         generateSeq();
     }
 
 
-    private void valid(List<OrderLineItem> orderLineItemElements) {
+    private void validate(List<OrderLineItem> orderLineItemElements) {
         if (ObjectUtils.isEmpty(orderLineItemElements)) {
             throw new IllegalArgumentException("주문목록은 존재 해야합니다.");
         }

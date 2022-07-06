@@ -55,7 +55,7 @@ class ProductServiceTest {
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다. (EX) 상품 가격 -1원)")
     @ParameterizedTest
     @MethodSource("잘못된_상품가격")
-    void isNotValidPriceCreateProduct(BigDecimal price) {
+    void isNotValidatePriceCreateProduct(BigDecimal price) {
         //given
         ProductRequest request = new ProductRequest("양념치킨", price);
 
