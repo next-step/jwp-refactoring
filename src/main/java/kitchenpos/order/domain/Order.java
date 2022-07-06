@@ -52,7 +52,7 @@ public class Order {
             throw new IllegalArgumentException();
         }
         if(orderLineItems.size() != orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.getMenu())
+                .map(orderLineItem -> orderLineItem.getMenuId())
                 .distinct()
                 .count()) {
             throw new IllegalArgumentException();

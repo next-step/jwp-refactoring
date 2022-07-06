@@ -42,7 +42,7 @@ public class OrderService {
         return orderLineItemRequests.stream()
             .map(orderLineItemsRequest -> {
                 Menu menu = menuRepository.findById(orderLineItemsRequest.getMenuId()).orElseThrow(() -> new IllegalArgumentException());
-                return OrderLineItem.of(menu, orderLineItemsRequest.getQuantity());
+                return OrderLineItem.of(menu.getId(), orderLineItemsRequest.getQuantity());
             })
             .collect(Collectors.toList());
     }
