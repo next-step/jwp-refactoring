@@ -1,17 +1,12 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.application.OrderService;
-import kitchenpos.table.dto.OrderTableIdRequest;
-import kitchenpos.table.dto.TableGroupRequest;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)

@@ -15,14 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MenuProductsTest {
 
     Quantity quantity;
-    Product product;
     MenuProduct menuProduct;
     List<MenuProduct> menuProducts;
 
     @BeforeEach
     void setUp() {
         quantity = new Quantity(10);
-        product = new Product("진매", new Price(1000));
         menuProduct = new MenuProduct(1L, quantity.value());
         menuProducts = Collections.singletonList(menuProduct);
     }

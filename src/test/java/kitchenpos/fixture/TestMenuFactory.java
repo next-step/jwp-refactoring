@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestMenuFactory {
-    public static Menu create(Long id, int price, Long menuGroupId, String name) {
-        return create(id, price, menuGroupId, name, new ArrayList<>());
-    }
-
     public static Menu create(Long id, int price, Long menuGroupId, String name, List<MenuProduct> menuProducts) {
         return new Menu(id, new Name(name), new Price(price), menuGroupId, new MenuProducts(menuProducts));
     }

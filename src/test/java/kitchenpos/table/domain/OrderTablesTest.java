@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.Empty;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
