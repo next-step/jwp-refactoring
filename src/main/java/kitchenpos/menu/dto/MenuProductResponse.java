@@ -31,7 +31,7 @@ public class MenuProductResponse {
     }
 
     private static Long toMenuIdFromMenuProduct(Menu menu) {
-        if(Objects.isNull(menu)) {
+        if (Objects.isNull(menu)) {
             return null;
         }
         return menu.getId();

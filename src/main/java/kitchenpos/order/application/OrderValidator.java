@@ -38,7 +38,7 @@ public class OrderValidator {
             throw new IllegalArgumentException();
         }
 
-        if(menuRepository.countByIdIn(orderLineItemIds(orderLineItems)) != orderLineItems.size()) {
+        if (menuRepository.countByIdIn(orderLineItemIds(orderLineItems)) != orderLineItems.size()) {
             throw new OrderLineItemException(OrderLineItemException.ORDER_LINE_ITEM_SIZE_INVALID);
         }
     }

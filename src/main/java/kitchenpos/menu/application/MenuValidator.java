@@ -28,7 +28,7 @@ public class MenuValidator {
     }
 
     private void validateMenuGroup(Long menuGroupId) {
-        if(!menuGroupRepository.existsById(menuGroupId)) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
             throw new IllegalArgumentException("유효하지 않은 메뉴그룹입니다.");
         }
     }
@@ -41,7 +41,7 @@ public class MenuValidator {
 
     private BigDecimal menuProductsTotalPrice(List<MenuProductRequest> menuProductRequests) {
         BigDecimal total = BigDecimal.ZERO;
-        for(MenuProductRequest menuProductRequest : menuProductRequests) {
+        for (MenuProductRequest menuProductRequest : menuProductRequests) {
             BigDecimal price = productPrice(menuProductRequest).multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
             total = total.add(price);
         }
