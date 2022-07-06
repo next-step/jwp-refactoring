@@ -4,7 +4,7 @@ import java.util.List;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Component;
 
