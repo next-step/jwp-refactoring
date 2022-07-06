@@ -17,17 +17,14 @@ class OrderTablesTest {
         //  given
         OrderTables orderTables = new OrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
         TableGroup tableGroup = new TableGroup();
-        Empty empty = new Empty(false);
 
         // when
-        orderTables.addTableGroupAndEmpties(empty.value(), tableGroup);
+        orderTables.addTableGroup(tableGroup);
 
         // then
         assertAll(
                 () -> assertThat(orderTables.values().get(0).getTableGroup()).isEqualTo(tableGroup),
-                () -> assertThat(orderTables.values().get(1).getTableGroup()).isEqualTo(tableGroup),
-                () -> assertThat(orderTables.values().get(0).getEmpty()).isEqualTo(empty),
-                () -> assertThat(orderTables.values().get(1).getEmpty()).isEqualTo(empty)
+                () -> assertThat(orderTables.values().get(1).getTableGroup()).isEqualTo(tableGroup)
         );
     }
 }

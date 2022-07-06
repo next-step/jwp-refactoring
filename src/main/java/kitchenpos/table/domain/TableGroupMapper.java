@@ -42,7 +42,6 @@ public class TableGroupMapper {
         return new OrderTables(orderTables);
     }
 
-
     private List<Long> groupIds(TableGroupRequest request) {
         return request.getOrderTables()
                 .stream()

@@ -19,7 +19,6 @@ public class ValidateWithOrderTableEmptyValidateEventHandler {
     @Transactional
     public void handle(OrderTableEmptyValidateEvent event) {
         OrderTable orderTable = getOrderTable(event.getOrderTableId());
-
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }

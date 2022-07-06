@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -32,12 +33,15 @@ class TableGroupServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private TableGroupMapper tableGroupMapper;
+    private TableService tableService;
+    @Mock
+    private TableGroupValidator tableGroupValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
     @InjectMocks
-    private TableGroupMapper tableGroupMapperInject;
+    private TableGroupValidator tableGroupValidatorInject;
+
     @InjectMocks
     private UnGroupWithGroupEventHandler unGroupWithGroupEventHandler;
 
@@ -59,7 +63,9 @@ class TableGroupServiceTest {
     void create() throws Exception {
         // given
         given(tableGroupRepository.save(any())).willReturn(단체_테이블);
-        given(tableGroupMapper.mapFrom(any())).willReturn(단체_테이블);
+        given(tableService.getOrderTables(any())).willReturn(단체_테이블.getOrderTables());
+        doNothing().when(tableGroupValidator).validate(any(), any());
+
         // when
         TableGroupResponse tableGroup = tableGroupService.create(단체_테이블_요청);
 
@@ -74,7 +80,8 @@ class TableGroupServiceTest {
         단체_테이블_요청 = new TableGroupRequest(Collections.singletonList(new OrderTableIdRequest(1L)));
 
         // when & then
-        assertThatThrownBy(() -> tableGroupMapperInject.mapFrom(단체_테이블_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 테이블로 등록할 주문 테이블은 모두 존재해야 한다.")
@@ -82,9 +89,10 @@ class TableGroupServiceTest {
     void createException2() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(4, true);
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.singletonList(주문_테이블_1));
+
         // when & then
-        assertThatThrownBy(() -> tableGroupMapperInject.mapFrom(단체_테이블_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 테이블 등록 시 빈 주문 테이블이 있으면 예외가 발생한다")
@@ -92,10 +100,10 @@ class TableGroupServiceTest {
     void createException3() throws Exception {
         // given
         주문_테이블_2 = new OrderTable(3, true);
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // when & then
-        assertThatThrownBy(() -> tableGroupMapperInject.mapFrom(단체_테이블_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 
@@ -106,10 +114,10 @@ class TableGroupServiceTest {
         주문_테이블_1 = new OrderTable(1L, 단체_테이블, 3, false);
         주문_테이블_2 = new OrderTable(2L, 단체_테이블, 3, false);
         단체_테이블 = TestTableGroupFactory.create(1L, Arrays.asList(주문_테이블_1, 주문_테이블_2));
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // when & then
-        assertThatThrownBy(() -> tableGroupMapperInject.mapFrom(단체_테이블_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupValidatorInject.validate(단체_테이블_요청.getOrderTables(), 단체_테이블.getOrderTables()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 테이블을 해제한다")

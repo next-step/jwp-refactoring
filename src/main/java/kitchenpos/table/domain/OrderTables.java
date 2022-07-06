@@ -25,11 +25,8 @@ public class OrderTables {
         return orderTables;
     }
 
-    public void addTableGroupAndEmpties(boolean empty, TableGroup tableGroup) {
-        orderTables.forEach(o -> {
-            o.changeTableGroup(tableGroup);
-            o.changeEmpty(empty);
-        });
+    public void addTableGroup(TableGroup tableGroup) {
+        orderTables.forEach(o -> o.changeTableGroup(tableGroup));
     }
 
     public int size() {

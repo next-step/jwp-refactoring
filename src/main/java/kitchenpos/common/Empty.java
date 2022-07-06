@@ -7,7 +7,7 @@ import java.util.Objects;
 @Embeddable
 public class Empty {
     @Column(name = "empty")
-    private boolean empty;
+    private boolean empty = false;
 
     public Empty() {
     }

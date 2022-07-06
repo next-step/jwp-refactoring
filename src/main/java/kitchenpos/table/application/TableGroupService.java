@@ -1,28 +1,37 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupMapper;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final TableGroupMapper tableGroupMapper;
+    private final TableService tableService;
+    private final TableGroupValidator tableGroupValidator;
 
     public TableGroupService(
             TableGroupRepository tableGroupRepository,
-            TableGroupMapper tableGroupMapper) {
+            TableService tableService,
+            TableGroupValidator tableGroupValidator) {
         this.tableGroupRepository = tableGroupRepository;
-        this.tableGroupMapper = tableGroupMapper;
+        this.tableService = tableService;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        TableGroup tableGroup = tableGroupMapper.mapFrom(request);
+        OrderTables orderTables = tableService.getOrderTables(groupIds(request));
+        tableGroupValidator.validate(request.getOrderTables(), orderTables);
+
+        TableGroup tableGroup = new TableGroup(orderTables);
+
         final TableGroup persistTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(persistTableGroup);
     }
@@ -34,8 +43,16 @@ public class TableGroupService {
         tableGroupRepository.save(tableGroup);
     }
 
-    private TableGroup findTableGroupById(Long tableGroupId) {
+    public TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
     }
+
+    private List<Long> groupIds(TableGroupRequest request) {
+        return request.getOrderTables()
+                .stream()
+                .map(OrderTableIdRequest::getId)
+                .collect(Collectors.toList());
+    }
+
 
 }

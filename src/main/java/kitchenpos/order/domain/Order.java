@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.TableGroup;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -54,6 +56,21 @@ public class Order extends AbstractAggregateRoot<Order> {
         orderLineItems.setOrder(this);
     }
 
+    public static Order of(OrderRequest orderRequest) {
+        return new Order(
+                orderRequest.getOrderTableId(),
+                OrderStatus.COOKING,
+                toOrderLineItems(orderRequest.getOrderLineItems()));
+    }
+
+    private static OrderLineItems toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
+                .map(OrderLineItem::of)
+                .collect(Collectors.toList());
+
+        return new OrderLineItems(orderLineItems);
+    }
+
     public Long getId() {
         return id;
     }
@@ -96,11 +113,4 @@ public class Order extends AbstractAggregateRoot<Order> {
         return this.orderStatus == OrderStatus.COMPLETION;
     }
 
-    public void validate() {
-        registerEvent(new OrderTableEmptyValidateEvent(this));
-        if (orderLineItems == null) {
-            throw new IllegalArgumentException();
-        }
-        registerEvent(new MenuCountValidateEvent(this));
-    }
 }

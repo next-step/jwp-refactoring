@@ -13,22 +13,19 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuMapper menuMapper;
     private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuMapper menuMapper,
             final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
-        this.menuMapper = menuMapper;
         this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        Menu menu = menuMapper.mapFrom(request);
+        Menu menu = Menu.of(request);
         menuValidator.validate(menu);
         Menu persistMenu = menuRepository.save(menu);
         return MenuResponse.of(persistMenu);

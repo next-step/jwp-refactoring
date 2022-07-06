@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderMapper;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
@@ -17,22 +16,19 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
     private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final OrderMapper orderMapper,
             final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
-        this.orderMapper = orderMapper;
         this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final Order order = orderMapper.mapFrom(request);
+        final Order order = Order.of(request);
         orderValidator.validate(order);
         final Order persistOrder = orderRepository.save(order);
         return OrderResponse.of(persistOrder);

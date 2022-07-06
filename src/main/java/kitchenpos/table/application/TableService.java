@@ -2,11 +2,9 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableValidator;
-import kitchenpos.table.dto.NumberOfGuestsRequest;
-import kitchenpos.table.dto.OrderTableEmptyRequest;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +56,11 @@ public class TableService {
     public OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public OrderTables getOrderTables(List<Long> ids) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(ids);
+        return new OrderTables(orderTables);
     }
 
 }

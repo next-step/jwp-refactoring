@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import kitchenpos.common.Price;
 import kitchenpos.fixture.TestMenuRequestFactory;
 import kitchenpos.fixture.TestProductFactory;
-import kitchenpos.menu.domain.MenuMapper;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -39,8 +38,7 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
-    @Mock
-    private MenuMapper menuMapper;
+
     @Mock
     private MenuValidator menuValidator;
 
@@ -48,8 +46,6 @@ class MenuServiceTest {
     private MenuService menuService;
     @InjectMocks
     private MenuValidator menuValidatorInject;
-    @InjectMocks
-    private MenuMapper menuMapperInject;
 
     private Product 진매;
     private Product 진순이;
@@ -74,7 +70,6 @@ class MenuServiceTest {
     void create() throws Exception {
         // given
         given(menuRepository.save(any(Menu.class))).willReturn(메뉴);
-        given(menuMapper.mapFrom(any())).willReturn(메뉴);
         doNothing().when(menuValidator).validate(any());
 
         // when
