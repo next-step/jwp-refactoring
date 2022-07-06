@@ -7,6 +7,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.utils.RestAssuredHelper;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +20,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     private static final String MENU_GROUPS_URI = "/api/menu-groups";
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
     }
 

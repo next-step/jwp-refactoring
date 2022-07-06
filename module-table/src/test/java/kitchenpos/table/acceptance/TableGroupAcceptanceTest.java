@@ -8,6 +8,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.utils.RestAssuredHelper;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("단체 그룹 인수테스트 기능")
-class TableGroupAcceptanceTest extends AcceptanceTest {
+public class TableGroupAcceptanceTest extends AcceptanceTest {
     private static final String TABLE_GROUP_URI = "/api/table-groups";
     private ExtractableResponse<Response> 첫번째_테이블_주문_번호_결과, 두번째_테이블_주문_번호_결과;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
 
         // given

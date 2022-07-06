@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.utils.RestAssuredHelper;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +19,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     private static final String TABLE_URI = "/api/tables";
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
     }
 

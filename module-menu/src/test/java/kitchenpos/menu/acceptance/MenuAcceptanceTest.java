@@ -8,8 +8,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.AcceptanceTest;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.utils.RestAssuredHelper;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -24,12 +26,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴 인수테스트 기능")
-class MenuAcceptanceTest extends AcceptanceTest {
+public class MenuAcceptanceTest extends AcceptanceTest {
     private static final String MENU_URI = "/api/menus";
     private static final String PRODUCT_URI = "/api/products";
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
     }
 

@@ -8,7 +8,9 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.AcceptanceTest;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.utils.RestAssuredHelper;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -29,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("주문 인수테스트 기능")
-class OrderAcceptanceTest extends AcceptanceTest {
+public class OrderAcceptanceTest extends AcceptanceTest {
     private static final String ORDER_URI = "/api/orders";
     private static final String MENU_URI = "/api/menus";
     private static final String MENU_GROUPS_URI = "/api/menu-groups";
@@ -37,7 +39,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private static final String TABLE_URI = "/api/tables";
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
 
         // given

@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan({"kitchenpos.product", "kitchenpos.menu"})
-@EntityScan(value = {"kitchenpos.product.domain", "kitchenpos.menu"})
-@EnableJpaRepositories(value = {"kitchenpos.product.repository", "kitchenpos.menu.repository"})
+@ComponentScan(value = "kitchenpos.*")
+@EntityScan(value = "kitchenpos.*")
+@EnableJpaRepositories(value = "kitchenpos.*")
 class ModuleMenuApplicationTests {
     @Test
     void contextLoads() {
