@@ -40,7 +40,7 @@ public class OrderServiceTest {
     public void createWithOrderLineItemEmpty() {
         //when
         //then
-        OrderRequest order = OrderRequest.of(3l, Arrays.asList(OrderLineItemRequest.of( 1l, 1)));
+        OrderRequest order = OrderRequest.of(3l, Arrays.asList());
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
