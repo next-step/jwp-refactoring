@@ -24,12 +24,6 @@ public class MenuProducts {
         menuProducts.add(menuProduct);
     }
 
-    public BigDecimal getTotalPrice() {
-        return menuProducts.stream()
-                            .map(MenuProduct::getTotalPrice)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }

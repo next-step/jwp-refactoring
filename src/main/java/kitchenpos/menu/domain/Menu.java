@@ -21,8 +21,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private MenuGroup menuGroup;
+    @Column
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -30,42 +30,31 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(name, price, menuGroup, new MenuProducts());
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this(name, price, menuGroupId, new MenuProducts());
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(id, name, price, menuGroup, new MenuProducts(menuProducts));
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(id, name, price, menuGroupId, new MenuProducts(menuProducts));
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        this(id, name, price, menuGroup, new MenuProducts());
-    }
-
-    public void addProduct(Product product, long quantity) {
-        MenuProduct menuProduct = new MenuProduct(this, product, quantity);
-        menuProducts.add(menuProduct);
-    }
-
-    public void priceCheck() {
-        if (price.getPrice().compareTo(menuProducts.getTotalPrice()) > 0) {
-           throw new MenuProductException(MenuProductException.MENU_PRICE_MORE_EXPENSIVE_PRODUCTS_MSG);
-        }
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+        this(id, name, price, menuGroupId, new MenuProducts());
     }
 
     public Long getId() {
@@ -80,8 +69,8 @@ public class Menu {
         return price.getPrice();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
