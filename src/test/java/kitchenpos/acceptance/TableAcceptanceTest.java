@@ -55,17 +55,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
         List<OrderTable> orderTables = 테이블_조회_됨(테이블_전체_조회);
         assertThat(orderTables).contains(table);
 
-        // given
-//        구번_테이블.setEmpty(false);
         // when
-        final ExtractableResponse<Response> 테이블_상태_변경_요청 = 테이블_상태_변경_요청(9L, 구번_테이블);
+        final ExtractableResponse<Response> 테이블_상태_변경_요청 = 테이블_상태_변경_요청(table.getId(), OrderTable.of(0, false));
         // then
         테이블_상태_변경됨(테이블_상태_변경_요청);
 
-        // given
-//        구번_테이블.setNumberOfGuests(4);
         // when
-        final ExtractableResponse<Response> 손님_수_변경_요청 = 손님_수_변경_요청(9L, 구번_테이블);
+        final ExtractableResponse<Response> 손님_수_변경_요청 = 손님_수_변경_요청(table.getId(), OrderTable.of(4, false));
         // then
         손님_수_변경됨(손님_수_변경_요청);
 
@@ -148,7 +144,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .get();
 
         assertThat(updateTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
-        assertThat(updateTable.isEmpty()).isFalse();
+
 
     }
 }
