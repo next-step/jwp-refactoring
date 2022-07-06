@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -31,9 +31,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupDao tableGroupDao;
     @InjectMocks
@@ -78,7 +78,7 @@ public class TableGroupServiceTest {
 
         final List<OrderTable> 저장된_주문_테이블_리스트 = 주문_테이블_리스트_생성(주문_테이블, 주문_테이블2, 주문_테이블3);
 
-        given(orderTableDao.findAllByIdIn(주문_테이블_아이디_리스트)).willReturn(저장된_주문_테이블_리스트);
+        given(orderTableRepository.findAllByIdIn(주문_테이블_아이디_리스트)).willReturn(저장된_주문_테이블_리스트);
 
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -117,7 +117,7 @@ public class TableGroupServiceTest {
 
         final List<OrderTable> 저장된_주문_테이블_리스트 = 주문_테이블_리스트_생성(주문_테이블, 주문_테이블2);
 
-        given(orderTableDao.findAllByIdIn(주문_테이블_아이디_리스트)).willReturn(저장된_주문_테이블_리스트);
+        given(orderTableRepository.findAllByIdIn(주문_테이블_아이디_리스트)).willReturn(저장된_주문_테이블_리스트);
         given(tableGroupDao.save(테이블_그룹)).willReturn(테이블_그룹);
         assertThat(tableGroupService.create(테이블_그룹).getId()).isEqualTo(테이블_그룹.getId());
     }
@@ -134,9 +134,9 @@ public class TableGroupServiceTest {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        given(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
-                Arrays.asList(COOKING.name(), MEAL.name()))).willReturn(true);
+        given(orderTableRepository.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
+                Arrays.asList(COOKING, MEAL))).willReturn(true);
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId())).isInstanceOf(
                 IllegalArgumentException.class);
     }
@@ -153,9 +153,9 @@ public class TableGroupServiceTest {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        given(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
-                Arrays.asList(COOKING.name(), MEAL.name()))).willReturn(false);
+        given(orderTableRepository.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
+                Arrays.asList(COOKING, MEAL))).willReturn(false);
 
         tableGroupService.ungroup(테이블_그룹.getId());
         assertThat(주문_테이블.getTableGroupId()).isNull();

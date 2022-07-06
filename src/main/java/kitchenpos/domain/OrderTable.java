@@ -2,11 +2,23 @@ package kitchenpos.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private Long tableGroupId;
+    @Column
     private int numberOfGuests;
+    @Column
     private boolean empty;
 
     public OrderTable() {
@@ -58,5 +70,11 @@ public class OrderTable {
 
     public static List<OrderTable> ofList(final OrderTable... orderTables) {
         return Arrays.asList(orderTables);
+    }
+
+    public void checkOrderTableIsEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
     }
 }
