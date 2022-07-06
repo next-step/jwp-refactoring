@@ -103,16 +103,4 @@ class MenuServiceTest {
         // then
         assertThat(actual).hasSize(1);
     }
-
-    @Test
-    @DisplayName("주문내역의 메뉴가 모두 존재하지 않으면 오류를 반환한다")
-    void create_nonMenuError() {
-        // given
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.countByIdIn(Arrays.asList(1L, 2L))
-        ).withMessageContaining("존재하지 않는 메뉴입니다.");
-    }
 }

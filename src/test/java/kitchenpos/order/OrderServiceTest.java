@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
@@ -46,6 +47,9 @@ class OrderServiceTest {
 
     @Mock
     OrderValidator orderValidator;
+
+    @Mock
+    MenuValidator menuValidator;
 
     @Mock
     MenuService menuService;

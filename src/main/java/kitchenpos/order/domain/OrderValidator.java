@@ -5,8 +5,10 @@ import java.util.List;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.table.dao.OrderTableRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional(readOnly = true)
 public class OrderValidator {
 
     private final OrderRepository orderRepository;

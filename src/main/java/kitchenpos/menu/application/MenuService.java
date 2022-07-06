@@ -55,15 +55,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public void countByIdIn(List<Long> menuIds) {
-        long menuCount = menuRepository.countByIdIn(menuIds);
-
-        if (menuIds.size() != menuCount) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴입니다.");
-        }
-    }
-
     private MenuProducts createMenuProduct(List<MenuProductRequest> menuProductRequestList) {
         List<MenuProduct> menuProducts = menuProductRequestList.stream()
                 .map(menuProductRequest -> new MenuProduct(menuProductRequest.getProductId(),

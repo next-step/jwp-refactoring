@@ -2,11 +2,10 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -17,21 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
-    private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderValidator orderValidator;
+    private final MenuValidator menuValidator;
 
     public OrderService(
-            final MenuService menuService,
             final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
-            final OrderValidator orderValidator
+            final OrderValidator orderValidator,
+            final MenuValidator menuValidator
     ) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderValidator = orderValidator;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -40,7 +39,7 @@ public class OrderService {
 
         final Order savedOrder = orderRepository.save(new Order(orderRequest.getOrderTableId()));
 
-        validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
+        menuValidator.validateOrderLineItemsCheck(orderRequest.getMenuIds());
 
         OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
         orderLineItems.saveOrder(savedOrder);
@@ -64,14 +63,5 @@ public class OrderService {
         savedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.of(savedOrder);
-    }
-
-
-    private void validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        menuService.countByIdIn(menuIds);
     }
 }
