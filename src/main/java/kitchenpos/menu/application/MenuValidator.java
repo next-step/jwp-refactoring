@@ -23,7 +23,6 @@ public class MenuValidator {
     }
 
     public void validation(MenuRequest menuRequest) {
-        System.out.println("!!!!!c");
         validateMenuGroup(menuRequest.getMenuGroupId());
         validateProduct(menuRequest.getPrice(), menuRequest.getMenuProductRequests());
     }
@@ -35,7 +34,6 @@ public class MenuValidator {
     }
 
     private void validateProduct(BigDecimal price, List<MenuProductRequest> menuProductRequests) {
-        System.out.println("!!!!!" + price.intValue());
         if (price.compareTo(menuProductsTotalPrice(menuProductRequests)) > 0) {
             throw new MenuProductException(MenuProductException.MENU_PRICE_MORE_EXPENSIVE_PRODUCTS_MSG);
         }
@@ -44,10 +42,9 @@ public class MenuValidator {
     private BigDecimal menuProductsTotalPrice(List<MenuProductRequest> menuProductRequests) {
         BigDecimal total = BigDecimal.ZERO;
         for(MenuProductRequest menuProductRequest : menuProductRequests) {
-            BigDecimal price = productPrice(menuProductRequest).multiply(new BigDecimal(menuProductRequest.getQuantity()));
-            total.add(price);
+            BigDecimal price = productPrice(menuProductRequest).multiply(BigDecimal.valueOf(menuProductRequest.getQuantity()));
+            total = total.add(price);
         }
-        System.out.println("@@@@@" + total.intValue());
         return total;
     }
 

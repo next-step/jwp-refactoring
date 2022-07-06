@@ -75,8 +75,8 @@ class OrderServiceTest {
     void create() {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -109,8 +109,8 @@ class OrderServiceTest {
     void createEmptyOrderLineItems() {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -133,8 +133,8 @@ class OrderServiceTest {
     void createInvalidOrderLineItems() {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -158,8 +158,8 @@ class OrderServiceTest {
     void createInvalidOrderTable() {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -181,8 +181,8 @@ class OrderServiceTest {
     void createIsEmptyOrderTable() {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문테이블 = 주문테이블_생성(1L, 2, true);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -206,8 +206,8 @@ class OrderServiceTest {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
         주문테이블 = 주문테이블_생성(1L);
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
@@ -236,8 +236,8 @@ class OrderServiceTest {
         //given
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
         주문테이블 = 주문테이블_생성(1L);
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
@@ -276,8 +276,8 @@ class OrderServiceTest {
         //given
         주문테이블 = 주문테이블_생성(1L);
         메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹.getId());
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹.getId());
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
