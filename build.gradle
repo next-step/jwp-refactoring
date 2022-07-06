@@ -1,45 +1,45 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
-}
-
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation project(':module-product')
-//    implementation project(':module-menu')
-
-    runtimeOnly 'com.h2database:h2'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-//buildscript {
-//    ext {
-//        springBootVersion = '2.4.1'
-//    }
-//    repositories {
-//        mavenCentral()
-//    }
-//    dependencies {
-//        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-//        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
-//    }
+//plugins {
+//    id 'org.springframework.boot' version '2.4.1'
+//    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+//    id 'java'
 //}
+//
+//group = 'camp.nextstep.edu'
+//version = '0.0.1-SNAPSHOT'
+//sourceCompatibility = '1.8'
+//
+//repositories {
+//    mavenCentral()
+//}
+//
+//dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+////    implementation project(':module-product')
+////    implementation project(':module-menu')
+//
+//    runtimeOnly 'com.h2database:h2'
+//
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//}
+//
+//test {
+//    useJUnitPlatform()
+//}
+
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+    }
+}
 
 subprojects {
     apply plugin: 'java'
@@ -118,6 +118,18 @@ project(':module-table_group') {
     dependencies {
         implementation project(':module-common')
         implementation project(':module-table')
+
+        testImplementation(testFixtures(project(':module-common')))
+    }
+}
+
+project(':module-order') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        implementation project(':module-common')
+        implementation project(':module-table')
+        implementation project(':module-table_group')
 
         testImplementation(testFixtures(project(':module-common')))
     }

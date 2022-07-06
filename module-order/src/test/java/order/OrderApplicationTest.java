@@ -1,12 +1,10 @@
-package common;
+package order;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApplicationTest {
+public class OrderApplicationTest {
 
-    @Test
     public void contextLoads() {}
 
 }
