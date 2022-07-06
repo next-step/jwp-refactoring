@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.common.domain.PriceTest.가격_생성;
 import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.menuGroup.MenuGroupGenerator.메뉴_그룹_생성;
 import static kitchenpos.order.OrderGenerator.주문_물품_생성_요청;
 import static kitchenpos.order.OrderGenerator.주문_생성_요청;
 import static kitchenpos.product.ProductGenerator.상품_생성;

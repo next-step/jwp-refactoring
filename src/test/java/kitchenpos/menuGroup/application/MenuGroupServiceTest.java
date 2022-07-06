@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menuGroup.application;
 
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.dto.MenuGroupCreateRequest;
@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.menu.MenuGenerator.메뉴_그룹_생성_요청;
+import static kitchenpos.menuGroup.MenuGroupGenerator.메뉴_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
