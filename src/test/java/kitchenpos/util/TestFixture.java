@@ -11,7 +11,6 @@ import kitchenpos.table.domain.OrderTable;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 public class TestFixture {
@@ -32,7 +31,7 @@ public class TestFixture {
         return MenuGroup.of("두마리메뉴");
     }
 
-    public static MenuProduct 후라이드_메뉴_상품_생성(Long productId) {
+    public static MenuProduct 후라이드_메뉴_상품_생성() {
         return MenuProduct.of(1L, 1);
     }
 
@@ -49,7 +48,7 @@ public class TestFixture {
     }
 
     public static OrderTable 주문테이블_1_생성() {
-        return OrderTable.of(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())), 1, false);
+        return OrderTable.of(1L, 1, false);
     }
 
     public static OrderTable 빈_주문테이블_1_생성() {
