@@ -9,7 +9,9 @@ import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,11 +46,12 @@ public class MenuService {
 
     public void validateMenuGroupId(Long menuGroupId) {
         if (!menuGroupService.existsById(menuGroupId)) {
-            new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
+            throw new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
         }
     }
 
     private void validateMenuProduct(MenuRequest request) {
+        validPrice(request.getPrice());
         final long sum = request.getMenuProductRequests()
                 .stream()
                 .map(menuProduct -> productService.findById(menuProduct.getProductId()).getPrice().longValue()
@@ -57,6 +60,12 @@ public class MenuService {
                 .get();
         if (request.getPrice().longValue() > sum) {
             throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
+        }
+    }
+
+    private void validPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("잘못된 금액을 입력하였습니다.");
         }
     }
 
