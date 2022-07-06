@@ -36,7 +36,7 @@ public class OrderLineItem {
 
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
 
     }
 
@@ -48,7 +48,6 @@ public class OrderLineItem {
     public Long getSeq() {
         return seq;
     }
-
 
     public long getQuantity() {
         return quantity;

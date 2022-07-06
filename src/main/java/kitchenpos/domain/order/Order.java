@@ -42,7 +42,7 @@ public class Order {
 
     private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
 
     }
 

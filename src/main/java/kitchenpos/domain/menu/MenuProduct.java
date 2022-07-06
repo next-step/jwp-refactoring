@@ -36,7 +36,7 @@ public class MenuProduct {
 
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
 
     }
 
