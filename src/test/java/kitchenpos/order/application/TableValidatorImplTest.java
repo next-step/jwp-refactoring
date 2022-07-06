@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 import kitchenpos.common.exception.InvalidOrderStatusException;
-import kitchenpos.order.application.TableValidatorImpl;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;

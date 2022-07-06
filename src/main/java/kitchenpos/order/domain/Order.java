@@ -1,13 +1,19 @@
 package kitchenpos.order.domain;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.common.exception.InvalidOrderStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)

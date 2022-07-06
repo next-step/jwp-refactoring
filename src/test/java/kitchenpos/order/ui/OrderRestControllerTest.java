@@ -1,7 +1,22 @@
 package kitchenpos.order.ui;
 
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_응답_데이터_생성;
+import static kitchenpos.order.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.order.fixture.OrderFixture.주문_응답_데이터_생성;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import common.ui.BaseControllerTest;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import kitchenpos.common.domain.OrderStatus;
-import kitchenpos.common.ui.BaseRestControllerTest;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderLineItemRequestDto;
 import kitchenpos.order.dto.OrderLineItemResponseDto;
@@ -14,22 +29,7 @@ import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-
-import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.common.fixture.OrderFixture.주문_응답_데이터_생성;
-import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
-import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_응답_데이터_생성;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-class OrderRestControllerTest extends BaseRestControllerTest {
+class OrderRestControllerTest extends BaseControllerTest {
 
     @Mock
     private OrderService orderService;
@@ -43,11 +43,11 @@ class OrderRestControllerTest extends BaseRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        List<OrderLineItemRequestDto> orderLineItemRequests = Arrays.asList(주문항목_요청_데이터_생성(1L, 1));
+        List<OrderLineItemRequestDto> orderLineItemRequests = Arrays.asList(new OrderLineItemRequestDto(1L, 1));
         OrderRequestDto request = 주문_요청_데이터_생성(orderLineItemRequests);
         String requestBody = objectMapper.writeValueAsString(request);
 
-        List<OrderLineItemResponseDto> orderLineItems = Arrays.asList(주문항목_응답_데이터_생성(1L, 1L, 1));
+        List<OrderLineItemResponseDto> orderLineItems = Arrays.asList(new orderline(1L, 1L, 1));
         OrderResponseDto response = 주문_응답_데이터_생성(1L, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
         given(orderService.create(any())).willReturn(response);
 

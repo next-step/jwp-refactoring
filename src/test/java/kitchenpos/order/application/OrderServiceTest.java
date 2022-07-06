@@ -1,5 +1,21 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.common.fixture.OrderFixture.주문_데이터_생성;
+import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.common.exception.InvalidOrderStatusException;
 import kitchenpos.order.domain.Order;
@@ -9,28 +25,13 @@ import kitchenpos.order.dto.OrderLineItemResponseDto;
 import kitchenpos.order.dto.OrderRequestDto;
 import kitchenpos.order.dto.OrderResponseDto;
 import kitchenpos.order.repository.OrderRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static kitchenpos.common.fixture.OrderFixture.주문_데이터_생성;
-import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_데이터_생성;
-import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -136,18 +137,18 @@ class OrderServiceTest {
 
     private void 주문_데이터_확인(OrderResponseDto order, Long id, Long tableId, OrderStatus orderStatus) {
         assertAll(
-                () -> assertEquals(id, order.getId()),
-                () -> assertEquals(tableId, order.getOrderTableId()),
+                () -> Assertions.assertEquals(id, order.getId()),
+                () -> Assertions.assertEquals(tableId, order.getOrderTableId()),
                 () -> assertEquals(orderStatus, order.getOrderStatus()),
-                () -> assertThat(order.getOrderLineItems()).isNotEmpty()
+                () -> org.assertj.core.api.Assertions.assertThat(order.getOrderLineItems()).isNotEmpty()
         );
     }
 
     private void 주문항목_데이터_확인(OrderLineItemResponseDto orderLineItem, Long seq, Long orderId, Long menuId, int quantity) {
         assertAll(
-                () -> assertEquals(seq, orderLineItem.getSeq()),
-                () -> assertEquals(menuId, orderLineItem.getMenuId()),
-                () -> assertEquals(quantity, orderLineItem.getQuantity())
+                () -> Assertions.assertEquals(seq, orderLineItem.getSeq()),
+                () -> Assertions.assertEquals(menuId, orderLineItem.getMenuId()),
+                () -> Assertions.assertEquals(quantity, orderLineItem.getQuantity())
         );
     }
 

@@ -101,3 +101,24 @@ project(':module-menu') {
         testImplementation(testFixtures(project(':module-common')))
     }
 }
+
+project(':module-table') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        implementation project(':module-common')
+
+        testImplementation(testFixtures(project(':module-common')))
+    }
+}
+
+project(':module-table_group') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        implementation project(':module-common')
+        implementation project(':module-table')
+
+        testImplementation(testFixtures(project(':module-common')))
+    }
+}
