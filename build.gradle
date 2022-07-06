@@ -2,27 +2,79 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'java-test-fixtures'
 }
-
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
 repositories {
     mavenCentral()
 }
+subprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    apply plugin: 'java-test-fixtures'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+        testImplementation testFixtures(project(':module-core'))
+        testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+    test {
+        useJUnitPlatform()
+    }
+}
+project(':module-core') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
+        testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testFixturesImplementation 'io.rest-assured:rest-assured:3.3.0'
+    }
+}
+project(':module-product') {
 }
 
-test {
-    useJUnitPlatform()
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-product')
+        testImplementation testFixtures(project(':module-product'))
+        testImplementation project(':module-product')
+    }
+}
+
+project(':module-table') {
+    dependencies {
+        testRuntimeOnly project(':module-order')
+        testImplementation testFixtures(project(':module-product'))
+        testImplementation testFixtures(project(':module-menu'))
+    }
+}
+
+project(':module-order') {
+    dependencies {
+        runtimeOnly project(':module-product')
+        implementation project(':module-menu')
+        implementation project(':module-table')
+
+        testImplementation testFixtures(project(':module-product'))
+        testImplementation testFixtures(project(':module-menu'))
+        testImplementation testFixtures(project(':module-table'))
+    }
 }
