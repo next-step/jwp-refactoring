@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class ProductTest {
 
     @Test
-    @DisplayName("상품 생성 성공")
-    void instantiate_success() {
+    @DisplayName("정상 상품(피자) 상품을 생성 한다면 정상적으로 생성 된다.")
+    void product() {
         // given
         Name name = Name.of("피자");
         Price price = Price.of(BigDecimal.valueOf(17_000));
@@ -29,5 +29,4 @@ class ProductTest {
                 () -> assertThat(product.getPrice()).isEqualTo(BigDecimal.valueOf(17_000))
         );
     }
-
 }

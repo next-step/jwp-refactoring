@@ -10,6 +10,6 @@ public class MenuProductFixture {
     public static MenuProduct 메뉴_양념_치킨 = create(2L, ProductFixture.양념_치킨, Quantity.of(1L));
 
     public static MenuProduct create(Long seq, Product product, Quantity quantity) {
-        return MenuProduct.of(seq, null, product, quantity);
+        return MenuProduct.of(seq, null, product.getId(), quantity);
     }
 }

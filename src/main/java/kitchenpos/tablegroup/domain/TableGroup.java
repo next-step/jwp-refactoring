@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.table.domain.Empty;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.event.TableGroupEventPublisher;
+import kitchenpos.tablegroup.event.TableUnGroupEventPublisher;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "table_group")
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,29 +20,24 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables = OrderTables.empty();
-
     protected TableGroup() {
     }
 
-    private TableGroup(OrderTables orderTables) {
-        this.createdDate = LocalDateTime.now();
-        addOrderTable(orderTables);
+    private TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
-    private TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+    private TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
-    public static TableGroup of(OrderTables orderTables) {
-        return new TableGroup(orderTables);
+    public static TableGroup of(LocalDateTime createdDate) {
+        return new TableGroup(createdDate);
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static TableGroup of(Long id, LocalDateTime createdDate) {
+        return new TableGroup(id, createdDate);
     }
 
     public Long getId() {
@@ -53,15 +48,11 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
+    public void createOrderTableIds(List<Long> orderTablesIds) {
+        registerEvent(new TableGroupEventPublisher(id, orderTablesIds));
     }
 
-    private void addOrderTable(OrderTables orderTables) {
-        orderTables.getOrderTables().forEach(orderTable -> {
-            orderTable.setTableGroup(this);
-            orderTable.setEmpty(Empty.of(false));
-            this.orderTables.add(orderTable);
-        });
+    public void unGroup() {
+        registerEvent(new TableUnGroupEventPublisher(id));
     }
 }

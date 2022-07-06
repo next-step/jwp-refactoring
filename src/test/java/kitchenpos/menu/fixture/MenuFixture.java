@@ -4,7 +4,6 @@ import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -19,7 +18,7 @@ public class MenuFixture {
             1L,
             Name.of("기본 메뉴"),
             Price.of(BigDecimal.valueOf(17_000)),
-            추천_메뉴,
+            추천_메뉴.getId(),
             MenuProducts.of(Arrays.asList(메뉴_치킨))
     );
 
@@ -27,11 +26,11 @@ public class MenuFixture {
             2L,
             Name.of("추천 기본 메뉴"),
             Price.of(BigDecimal.valueOf(17_000)),
-            추천_메뉴,
+            추천_메뉴.getId(),
             MenuProducts.of(Arrays.asList(메뉴_양념_치킨))
     );
 
-    public static Menu create(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return Menu.of(id, name, price, menuGroup, menuProducts);
+    public static Menu create(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        return Menu.of(id, name, price, menuGroupId, menuProducts);
     }
 }
