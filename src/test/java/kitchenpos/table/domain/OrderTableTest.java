@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.OrderTableException;
 import kitchenpos.table.domain.OrderTable;
