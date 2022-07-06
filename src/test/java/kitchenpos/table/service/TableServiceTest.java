@@ -1,8 +1,8 @@
 package kitchenpos.table.service;
 
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.application.TableService;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -79,8 +79,6 @@ class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블1, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-                .thenReturn(false);
         when(orderTableRepository.save(주문테이블1))
                 .thenReturn(주문테이블1);
 
@@ -97,7 +95,7 @@ class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블1, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .thenReturn(true);
 
         // then
@@ -110,7 +108,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable 주문테이블 = OrderTable.of(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())), 1, false);
+        OrderTable 주문테이블 = OrderTable.of(1L, 1, false);
         OrderTableRequest 주문테이블_요청 = new OrderTableRequest(주문테이블1.getId(), 100, false);
         when(orderTableRepository.findById(1L))
                 .thenReturn(Optional.of(주문테이블));
