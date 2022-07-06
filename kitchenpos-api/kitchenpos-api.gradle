@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':kitchenpos-menu')
+    compile project(':kitchenpos-menu-group')
+    compile project(':kitchenpos-order')
+    compile project(':kitchenpos-product')
+    compile project(':kitchenpos-table')
+    compile project(':kitchenpos-table-group')
+
+    implementation 'org.flywaydb:flyway-core'
+}
