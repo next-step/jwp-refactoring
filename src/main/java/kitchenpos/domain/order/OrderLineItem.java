@@ -1,6 +1,7 @@
 package kitchenpos.domain.order;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class OrderLineItem {
     )
     private Order order;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
         name = "menu_id",
         foreignKey = @ForeignKey(name = "FK_ORDER_LINE_ITEM_TO_MENU"),

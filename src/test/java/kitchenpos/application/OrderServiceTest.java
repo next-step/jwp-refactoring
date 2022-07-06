@@ -16,7 +16,6 @@ import java.util.Optional;
 import kitchenpos.application.order.OrderService;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItemRepository;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
@@ -44,9 +43,6 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;

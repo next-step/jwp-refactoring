@@ -60,9 +60,7 @@ public class OrderService {
     // TODO N+1 발생 : N개의 주문을 조회하는 경우 이므로 1:1 관계는 Fetch Join으로, 1:N 관계는 LazyLoading + Batch Size를 이용한 In절로 접근
     // JPA로 리팩토링을 진행하면서 orderLineItem이 다른 Entity와 연관관계를 가지는 경우 또 다른 N+1이 발생할 수 있음에 주의
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        return orders.stream()
+        return orderRepository.findAll().stream()
             .map(OrderResponse::from)
             .collect(Collectors.toList());
     }

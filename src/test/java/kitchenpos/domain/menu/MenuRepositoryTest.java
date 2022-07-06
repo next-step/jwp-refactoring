@@ -1,7 +1,6 @@
 package kitchenpos.domain.menu;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,8 +48,8 @@ class MenuRepositoryTest extends ScenarioTestFixtureGenerator {
     }
 
     /**
-     * 조회 메뉴가 100건 이하인 경우 발생 쿼리는 최대 3회
-     * - N:1 관계인 메뉴의 메뉴 그룹은 @EntityGraph를 이용한 즉시 조회,
+     * 주문 목록 조회 시, 대상 건수가 100건(Batch Fetch Size) 이하인 경우 발생하는 쿼리는 최대 3회
+     * - N:1 관계인 메뉴의 메뉴 그룹은 @EntityGraph를 이용한 즉시 조회
      * - 1:N 관계인 메뉴의 메뉴 상품은 `FetchType.LAZY + batch_fetch_size`를 이용한 In절 조회
      * - 1:N 관계인 메뉴 상품의 상품은 `FetchType.LAZY + batch_fetch_size`를 이용한 In절 조회
      */
@@ -70,10 +69,7 @@ class MenuRepositoryTest extends ScenarioTestFixtureGenerator {
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
 
-        assertAll(
-            () -> assertThat(menuResponse.getId()).isEqualTo(커플_냉삼_메뉴.getId()),
-            () -> assertThat(menuResponse.getMenuProducts()).extracting("productId")
-                .containsExactly(물냉면.getId(), 비빔냉면.getId(), 삼겹살.getId())
-        );
+        assertThat(menuResponse.getMenuProducts()).extracting("productId")
+            .containsExactly(물냉면.getId(), 비빔냉면.getId(), 삼겹살.getId());
     }
 }
