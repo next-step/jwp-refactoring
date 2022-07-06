@@ -29,7 +29,6 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
         final List<OrderTable> orderTables = createOrderTables(request);
-
         TableGroup tableGroup = TableGroup.of(orderTables);
         final TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(saveTableGroup);
@@ -56,7 +55,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (orderService.existsNotCompletesByOrderTableIdIn(orderTableIds)) {
-            throw new IllegalStateException("주문이 완료된 테이블만 그룹 해제가 가능합니다.");
+            throw new IllegalArgumentException("주문이 완료된 테이블만 그룹 해제가 가능합니다.");
         }
     }
 }
