@@ -1,11 +1,13 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.common.domain.Price;
 
 @Entity
 public class Product {
@@ -37,14 +39,22 @@ public class Product {
         validateNonNullFields();
     }
 
+    public static Product of(String name, long price) {
+        return new Product(name, Price.from(price));
+    }
+
+    public static Product of(String name, BigDecimal price) {
+        return new Product(name, Price.from(price));
+    }
+
+    public static Product of(Long id, String name, BigDecimal price) {
+        return new Product(id, name, Price.from(price));
+    }
+
     private void validateNonNullFields() {
         if (name == null || price == null) {
             throw new IllegalArgumentException("이름, 가격은 상품의 필수 사항입니다.");
         }
-    }
-
-    public static Product of(String name, long price) {
-        return new Product(name, Price.from(price));
     }
 
     public Price calculateTotal(long quantity) {
@@ -53,5 +63,13 @@ public class Product {
 
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price.value();
     }
 }

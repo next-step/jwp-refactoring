@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
@@ -49,7 +50,7 @@ public class Menu {
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this(id, name, new Price(price), menuGroup, menuProducts);
+        this(id, name, Price.from(price), menuGroup, menuProducts);
     }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
@@ -154,7 +155,7 @@ public class Menu {
         }
 
         public Builder price(BigDecimal price) {
-            return new Builder(id, name, new Price(price), menuGroup, menuProducts);
+            return new Builder(id, name, Price.from(price), menuGroup, menuProducts);
         }
 
         public Builder menuGroup(MenuGroup menuGroup) {

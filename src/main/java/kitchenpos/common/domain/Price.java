@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -17,6 +17,10 @@ public class Price {
     protected Price(BigDecimal price) {
         validatePrice(price);
         this.value = price;
+    }
+
+    public static Price create() {
+        return new Price();
     }
 
     public static Price from(long price) {

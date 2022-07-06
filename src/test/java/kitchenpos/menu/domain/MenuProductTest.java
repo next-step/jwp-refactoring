@@ -1,15 +1,17 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.menu.domain.ProductTest.후라이드;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.common.domain.Price;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 상품")
 class MenuProductTest {
+    private static final Product 후라이드 = Product.of("후라이드", 16000);
     private static final MenuProduct 메뉴_상품 = MenuProduct.of(후라이드, 3L);
 
     @DisplayName("메뉴 상품의 금액(가격 * 수량)을 계산할 수 있다. ")

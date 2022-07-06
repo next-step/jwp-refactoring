@@ -1,16 +1,18 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.menu.domain.ProductTest.후라이드;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.domain.Price;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 상품 일급 컬랙션")
 class MenuProductsTest {
+    private static final Product 후라이드 = Product.of("후라이드", 16000);
     private static final MenuProduct 단일_후라이드_메뉴_상품 = MenuProduct.of(후라이드, 1L);
     private static final MenuProduct 트리플_후라이드_메뉴_상품 = MenuProduct.of(후라이드, 3L);
 
