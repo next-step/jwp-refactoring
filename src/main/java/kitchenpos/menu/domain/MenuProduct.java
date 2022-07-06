@@ -1,10 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.global.Price;
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -17,32 +13,26 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    private MenuProduct(Product product, long quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public void validProduct() {
-        if (Objects.isNull(product)) {
+        if (Objects.isNull(productId)) {
             throw new IllegalArgumentException("등록되지 않은 상품이 있습니다.");
         }
-    }
-
-    public Price getTotalPrice() {
-        BigDecimal totalPrice = product.getMultipleValue(quantity);
-        return new Price(totalPrice);
     }
 
     public void changeMenu(Menu menu) {
@@ -57,8 +47,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
