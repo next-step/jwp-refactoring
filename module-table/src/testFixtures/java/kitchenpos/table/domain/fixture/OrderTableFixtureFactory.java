@@ -4,6 +4,8 @@ import kitchenpos.table.domain.OrderTable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class OrderTableFixtureFactory {
+    private OrderTableFixtureFactory() {
+    }
 
     public static OrderTable createEmptyOrderTable() {
         return new OrderTable(0, true);

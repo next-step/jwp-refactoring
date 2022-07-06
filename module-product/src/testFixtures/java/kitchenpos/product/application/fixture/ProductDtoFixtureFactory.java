@@ -5,6 +5,9 @@ import kitchenpos.product.domain.Product;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class ProductDtoFixtureFactory {
+    private ProductDtoFixtureFactory() {
+    }
+
     public static Product createProduct(String name, int price) {
         return new Product(name, new BigDecimal(price));
     }

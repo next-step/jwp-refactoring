@@ -9,6 +9,7 @@ import kitchenpos.order.dto.OrderRequest;
 public class OrderContextBehavior {
     private OrderContextBehavior() {
     }
+
     public static ExtractableResponse<Response> 주문_추가_요청(OrderRequest orderRequest) {
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()

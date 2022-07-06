@@ -56,7 +56,8 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private void 인원수를_변경하고_확인한다(Long orderTableId, int numberOfGuests) {
         OrderTableRequest param = OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(numberOfGuests);
-        ExtractableResponse<Response> changeEmptyStateResponse = TableContextBehavior.테이블_인원수_변경_요청(orderTableId, param);
+        ExtractableResponse<Response> changeEmptyStateResponse = TableContextBehavior.테이블_인원수_변경_요청(orderTableId,
+                param);
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<OrderTableResponse> orderTables = TableContextBehavior.테이블_목록조회();
