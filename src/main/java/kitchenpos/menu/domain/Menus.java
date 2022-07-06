@@ -18,13 +18,6 @@ public class Menus {
                 .collect(Collectors.toList());
     }
 
-    public Menu findMenuById(Long id) {
-        return this.value.stream()
-                .filter(menu -> menu.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
-
     public boolean isNotAllContainIds(Collection<Long> ids) {
         Set<Long> removeDuplicatedIds = new HashSet<>(ids);
 

@@ -22,12 +22,12 @@ import static kitchenpos.menu.domain.QuantityTest.수량_생성;
 public class OrderGenerator {
     private static final String PATH = "/api/orders";
 
-    public static Order 주문_생성(OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(orderTable, orderLineItems);
+    public static Order 주문_생성(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
-    public static OrderLineItem 주문_물품_생성(Menu menu, long quantity) {
-        return new OrderLineItem(menu, 수량_생성(quantity));
+    public static OrderLineItem 주문_물품_생성(Long menuId, long quantity) {
+        return new OrderLineItem(menuId, 수량_생성(quantity));
     }
 
     public static OrderLineItems 주문_물품_목록_생성(OrderLineItem... orderLineItems) {

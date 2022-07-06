@@ -9,6 +9,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
@@ -216,10 +217,10 @@ class OrderServiceTest {
     }
 
     void 주문_정상_생성됨(OrderResponse order, OrderCreateRequest request) {
-        assertThat(order.getOrderTableResponse().getId()).isEqualTo(request.getOrderTable());
+        assertThat(order.getOrderTable()).isEqualTo(request.getOrderTable());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(order.getOrderLines().size()).isEqualTo(request.getOrderLineItems().size());
-        assertThat(order.getOrderLines().stream().map(orderLineItem -> orderLineItem.getMenu().getId()).collect(Collectors.toList()))
+        assertThat(order.getOrderLines().stream().map(OrderLineItemResponse::getMenu).collect(Collectors.toList()))
                 .containsAll(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenu).collect(Collectors.toList()));
     }
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class OrderResponse {
     private Long id;
-    private OrderTableResponse orderTableResponse;
+    private Long orderTable;
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLines = new ArrayList<>();
@@ -20,13 +20,13 @@ public class OrderResponse {
 
     public OrderResponse(
             Long id,
-            OrderTableResponse orderTableResponse,
+            Long orderTable,
             OrderStatus orderStatus,
             LocalDateTime orderedTime,
             List<OrderLineItemResponse> orderLines
     ) {
         this.id = id;
-        this.orderTableResponse = orderTableResponse;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLines.addAll(orderLines);
@@ -41,7 +41,7 @@ public class OrderResponse {
 
         return new OrderResponse(
                 order.getId(),
-                OrderTableResponse.from(order.getOrderTable()),
+                order.getOrderTableId(),
                 order.getOrderStatus(),
                 order.getOrderedTime(),
                 orderLineItemResponses
@@ -52,8 +52,8 @@ public class OrderResponse {
         return id;
     }
 
-    public OrderTableResponse getOrderTableResponse() {
-        return orderTableResponse;
+    public Long getOrderTable() {
+        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
