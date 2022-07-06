@@ -4,8 +4,6 @@ import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static kitchenpos.util.TestFixture.*;
 import static kitchenpos.util.TestFixture.빈_주문테이블_1_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +17,7 @@ class OrderTableTest {
         OrderTable orderTable = 주문테이블_1_생성();
 
         // when
-        orderTable.changeGroup(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())));
+        orderTable.changeGroup(주문테이블_1_생성().getTableGroupId());
 
         // then
         assertThat(orderTable.isEmpty()).isFalse();
