@@ -16,7 +16,7 @@ public class OrderLineItems {
 
     private static final int MIN_ORDER_LINE_NUMBER = 1;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "order")
     private List<OrderLineItem> orderLineItemElements = new ArrayList<>();
 
     protected OrderLineItems() {
