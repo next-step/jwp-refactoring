@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.global.domain;
 
 import javax.persistence.Embeddable;
 import org.springframework.util.ObjectUtils;

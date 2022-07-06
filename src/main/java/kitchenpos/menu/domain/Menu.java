@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.global.domain.Amount;
+import kitchenpos.global.domain.Name;
 import kitchenpos.global.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.util.ObjectUtils;
@@ -20,7 +21,8 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
     @ManyToOne
     private MenuGroup menuGroup;
     @Embedded
@@ -40,7 +42,7 @@ public class Menu {
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validate(name, price, menuGroup, menuProducts);
         validatePrice(price, menuProducts.totalAmount());
-        this.name = name;
+        this.name = new Name(name);
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
@@ -80,7 +82,7 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.value();
     }
 
     public Price getPrice() {
