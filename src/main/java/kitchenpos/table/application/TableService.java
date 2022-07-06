@@ -35,7 +35,7 @@ public class TableService {
         final OrderTable savedOrderTable = findById(orderTableId);
         // Order 테이블 조회 후 사용
         final OrderStatus orderStatus = OrderStatus.COMPLETION;
-        savedOrderTable.updateEmptyTable(orderTable, orderStatus.enabledOrderCancle());
+        savedOrderTable.updateEmptyTable(orderTable, orderStatus.enabledOrderCancel());
 
         return OrderTableResponse.of(savedOrderTable);
     }

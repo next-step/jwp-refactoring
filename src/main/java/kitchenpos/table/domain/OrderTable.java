@@ -39,10 +39,6 @@ public class OrderTable {
         emptyValidate(enabled);
         this.empty = updateTable.isEmpty();
     }
-    public void updateEmpty(final boolean empty) {
-        this.empty = empty;
-    }
-
 
     private void emptyValidate(final boolean enabled) {
         enabledOrderCancelStatus(enabled);
@@ -73,6 +69,9 @@ public class OrderTable {
         }
     }
 
+    public void updateEmpty(final boolean empty) {
+        this.empty = empty;
+    }
 
     public Long getId() {
         return id;

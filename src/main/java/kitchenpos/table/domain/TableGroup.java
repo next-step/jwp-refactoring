@@ -16,18 +16,33 @@ public class TableGroup {
 
     protected TableGroup() {}
 
-    public TableGroup(final Long id, final List<OrderTable> orderTables) {
+    public TableGroup(final Long id, final OrderTables orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = OrderTables.of(orderTables);
+        this.orderTables = orderTables;
     }
 
-    public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(null, orderTables);
+    public static TableGroup of(final List<OrderTable> orderTables, int requestOrderTableSize) {
+        final OrderTables tables = OrderTables.of(orderTables);
+        tables.notMatchCount(requestOrderTableSize);
+
+        return new TableGroup(null, tables);
     }
 
     public void updateGroupTableId() {
-        orderTables.updateGroupTableIdAndEmpty(id);
+        orderTables.updateGroupTableIdAndEmpty(id, false);
+    }
+
+    public void ungroupTable() {
+        orderTables.updateGroupTableIdAndEmpty(null, true);
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public List<OrderTable> getOrderTables() {

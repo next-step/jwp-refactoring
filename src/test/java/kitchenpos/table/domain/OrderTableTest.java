@@ -49,7 +49,7 @@ public class OrderTableTest {
         final OrderTable updateTable = OrderTable.of(0,true);
         final OrderStatus status = OrderStatus.COOKING;
         // when
-        assertThatThrownBy(() -> table.updateEmptyTable(updateTable, status.enabledOrderCancle()))
+        assertThatThrownBy(() -> table.updateEmptyTable(updateTable, status.enabledOrderCancel()))
                 .isInstanceOf(TableException.class);
     }
 

@@ -10,6 +10,8 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
@@ -47,20 +49,46 @@ public class OrderTables {
         return new OrderTables(collections);
     }
 
-    void notMatchCount(final List<OrderTable> orderTables) {
-        if (collections.size() != orderTables.size()) {
+    void notMatchCount(final int requestOrderTableSize) {
+        if (collections.size() != requestOrderTableSize) {
             throw new TableException(TableExceptionType.DIFFER_TABLE_COUNT);
         }
     }
-    void updateGroupTableIdAndEmpty(final Long groupId) {
+
+    void updateGroupTableIdAndEmpty(final Long groupId, final boolean empty) {
         for (OrderTable orderTable : collections) {
             orderTable.updateTableGroupId(groupId);
-            orderTable.updateEmpty(false);
+            orderTable.updateEmpty(empty);
         }
+    }
+
+    public List<Long> getOrderTableIds() {
+        return Collections.unmodifiableList(collections.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList()));
     }
 
     public List<OrderTable> get() {
         return Collections.unmodifiableList(collections);
     }
 
+    @Override
+    public String toString() {
+        return "OrderTables{" +
+                "collections=" + collections +
+                '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final OrderTables that = (OrderTables) o;
+        return Objects.equals(collections, that.collections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(collections);
+    }
 }
