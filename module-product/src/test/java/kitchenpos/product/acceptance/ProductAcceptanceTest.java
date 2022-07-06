@@ -6,7 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.util.KitchenPosBehaviors;
+
 import kitchenpos.product.acceptance.behavior.ProductContextBehavior;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;

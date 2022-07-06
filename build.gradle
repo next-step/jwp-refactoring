@@ -28,10 +28,12 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.flywaydb:flyway-core'
         runtimeOnly 'com.h2database:h2'
+
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
-
         testImplementation testFixtures(project(':module-core'))
+
+        testFixturesImplementation 'io.rest-assured:rest-assured:3.3.0'
         testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
     test {
@@ -55,7 +57,6 @@ project(':module-menu') {
     dependencies {
         implementation project(':module-product')
         testImplementation testFixtures(project(':module-product'))
-        testImplementation project(':module-product')
     }
 }
 

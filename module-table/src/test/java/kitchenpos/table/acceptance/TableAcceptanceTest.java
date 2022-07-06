@@ -6,7 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.util.KitchenPosBehaviors;
+
 import kitchenpos.table.acceptance.behavior.TableContextBehavior;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableRequest;

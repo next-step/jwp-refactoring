@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.util.KitchenPosBehaviors;
+
 import kitchenpos.table.acceptance.behavior.TableContextBehavior;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
