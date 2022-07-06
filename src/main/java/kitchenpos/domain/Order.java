@@ -52,13 +52,13 @@ public class Order {
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문내역 목록이 비어있습니다.");
         }
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (isCompleted()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문의 상태가 이미 완료됐습니다.");
         }
         this.orderStatus = orderStatus;
     }

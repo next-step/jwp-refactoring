@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -23,7 +24,9 @@ public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(final OrderRepository orderRepository,
+                             final OrderTableRepository orderTableRepository,
+                             final TableGroupRepository tableGroupRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
@@ -39,11 +42,11 @@ public class TableGroupService {
 
     private List<OrderTable> findOrderTablesByIdsWithValidation(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블 아이디 목록이 비어있습니다.");
         }
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("존재하지 않는 테이블이 있습니다.");
         }
         return orderTables;
     }
@@ -51,7 +54,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchElementException::new);
         validateUngroup(tableGroupId);
         tableGroup.ungroup();
     }
@@ -60,7 +63,7 @@ public class TableGroupService {
         final List<Long> orderTableIds = findOrderTableIdsByTableGroupId(tableGroupId);
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("조리중이거나 식사중인 테이블이 있습니다.");
         }
     }
 

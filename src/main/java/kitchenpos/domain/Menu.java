@@ -52,7 +52,7 @@ public class Menu {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (price.isGatherThan(sum)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴의 가격은 전체 상품의 가격의 합보다 작거나 같아야합니다.");
         }
     }
 

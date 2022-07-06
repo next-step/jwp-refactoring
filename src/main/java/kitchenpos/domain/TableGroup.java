@@ -50,10 +50,10 @@ public class TableGroup {
 
     private void validateOrderTables(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_COUNT) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블이 비어있거나 2개미만입니다.");
         }
         if (isNotEmptyOrAlreadyGrouped(orderTables)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블이 비어있지않거나 이미 그룹이 존재합니다.");
         }
     }
 

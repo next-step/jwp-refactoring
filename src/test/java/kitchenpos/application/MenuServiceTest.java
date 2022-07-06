@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,14 +42,14 @@ class MenuServiceTest {
     private ProductRepository productRepository;
 
     private Menu A_세트;
-    private Product 감자_튀김;
+    private Product 감자튀김;
     private Product 햄버거;
     private Product 치즈볼;
 
     @BeforeEach
     void setUp() {
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(6000), 1L);
-        감자_튀김 = new Product(1L, "감자튀김", BigDecimal.valueOf(1500));
+        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L);
+        감자튀김 = new Product(1L, "감자튀김", BigDecimal.valueOf(1500));
         햄버거 = new Product(2L, "햄버거", BigDecimal.valueOf(3500));
         치즈볼 = new Product(3L, "피자", BigDecimal.valueOf(1000));
     }
@@ -64,8 +63,7 @@ class MenuServiceTest {
                 Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(menuRepository.save(any())).willReturn(A_세트);
-        given(productRepository.findById(any())).willReturn(Optional.of(감자_튀김));
-        given(productRepository.findById(any())).willReturn(Optional.of(햄버거));
+        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(감자튀김, 햄버거));
 
         // when
         MenuResponse response = menuService.create(request);
@@ -81,7 +79,7 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        A_세트.addMenuProducts(Collections.singletonList(new MenuProduct(감자_튀김, 4)));
+        A_세트.addMenuProducts(Collections.singletonList(new MenuProduct(감자튀김, 4)));
         given(menuRepository.findAll()).willReturn(Collections.singletonList(A_세트));
 
         // when
@@ -124,8 +122,8 @@ class MenuServiceTest {
         MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
                 Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
         given(menuGroupRepository.existsById(request.getMenuGroupId())).willReturn(true);
-        given(productRepository.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
-        given(productRepository.findById(햄버거.getId())).willReturn(Optional.empty());
+        given(productRepository.findByIdIn(any())).willReturn(Collections.singletonList(감자튀김));
+
 
         // when & then
         assertThatThrownBy(() -> menuService.create(request))
@@ -139,8 +137,8 @@ class MenuServiceTest {
                 Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(3L, 1)));
         given(menuRepository.save(any())).willReturn(A_세트);
         given(menuGroupRepository.existsById(A_세트.getMenuGroupId())).willReturn(true);
-        given(productRepository.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
-        given(productRepository.findById(치즈볼.getId())).willReturn(Optional.of(치즈볼));
+        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(감자튀김, 치즈볼));
+
 
         // when & then
         assertThatThrownBy(() -> menuService.create(request))

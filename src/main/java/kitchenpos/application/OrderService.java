@@ -14,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -34,8 +36,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        final Order order = orderRepository.save(request.toOrder());
         validate(request);
+        final Order order = orderRepository.save(request.toOrder());
         order.addOrderLineItems(request.toOrderLineItems());
         return OrderResponse.of(order);
     }
@@ -47,7 +49,7 @@ public class OrderService {
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문내역이 비어있습니다.");
         }
 
         final List<Long> menuIds = orderLineItems.stream()
@@ -55,16 +57,16 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("존재하지 않는 주문내역이 있습니다.");
         }
     }
 
     private void validateOrderTable(Long orderTableId) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchElementException::new);
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블이 비어있습니다.");
         }
     }
 
@@ -75,8 +77,8 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(Long orderId, OrderStatus orderStatus) {
         final Order order = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchElementException::new);
         order.changeOrderStatus(orderStatus);
-        return OrderResponse.of(orderRepository.save(order));
+        return OrderResponse.of(order);
     }
 }

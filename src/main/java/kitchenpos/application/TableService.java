@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Transactional(readOnly = true)
@@ -35,24 +37,24 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, Boolean empty) {
-        OrderTable savedOrderTable = findById(orderTableId);
+        OrderTable orderTable = findById(orderTableId);
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("조리중이거나 식사중인 테이블이 있습니다.");
         }
-        savedOrderTable.changeEmpty(empty);
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        orderTable.changeEmpty(empty);
+        return OrderTableResponse.of(orderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, Integer numberOfGuests) {
-        OrderTable savedOrderTable = findById(orderTableId);
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        OrderTable orderTable = findById(orderTableId);
+        orderTable.changeNumberOfGuests(numberOfGuests);
+        return OrderTableResponse.of(orderTable);
     }
 
     public OrderTable findById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchElementException::new);
     }
 }

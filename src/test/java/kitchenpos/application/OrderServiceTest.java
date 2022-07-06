@@ -98,7 +98,6 @@ class OrderServiceTest {
         // given
         주문.addOrderLineItems(Collections.singletonList(주문내역));
         given(orderRepository.findById(any())).willReturn(Optional.of(주문));
-        given(orderRepository.save(any())).willReturn(주문);
 
         // when
         OrderResponse response = orderService.changeOrderStatus(1L, OrderStatus.MEAL);

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,7 +76,6 @@ class TableServiceTest {
         // given
         given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
-        given(orderTableRepository.save(any())).willReturn(주문_테이블);
 
         // when
         OrderTableResponse response = tableService.changeEmpty(1L, true);
@@ -91,7 +91,7 @@ class TableServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
@@ -122,7 +122,6 @@ class TableServiceTest {
         // given
         주문_테이블 = new OrderTable(1L, null, 3, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(orderTableRepository.save(any())).willReturn(주문_테이블);
 
         // when
         OrderTableResponse response = tableService.changeNumberOfGuests(1L, 0);
@@ -133,6 +132,10 @@ class TableServiceTest {
 
     @Test
     void 손님수를_0미만으로_변경할_경우() {
+        // given
+        주문_테이블 = new OrderTable(1L, null, 3, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
+
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, -1))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -145,7 +148,7 @@ class TableServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 0))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
