@@ -3,13 +3,15 @@ package kitchenpos.ui;
 import static kitchenpos.utils.MockMvcUtil.as;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성_요청;
 import static kitchenpos.utils.generator.TableGroupFixtureGenerator.테이블_그룹_생성_요청;
+import static kitchenpos.utils.generator.TableGroupFixtureGenerator.테이블_그룹_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.table.OrderTableResponse;
+import kitchenpos.dto.table.TableGroupResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,15 +24,15 @@ public class TableGroupRestControllerTest extends BaseTest {
     public static final String TABLE_GROUP_API_BASE_URL = "/api/table-groups";
     public static final String DELETE_TABLE_GROUP_API_URL_TEMPLATE = TABLE_GROUP_API_BASE_URL.concat("/{tableGroupId}");
 
-    private OrderTable firstOrderTable, secondOrderTable;
+    private OrderTableResponse firstOrderTable, secondOrderTable;
 
     /**
      * @Given 비어있는 주문 테이블을 2개 생성한다.
      */
     @BeforeEach
     void setUp() throws Exception {
-        firstOrderTable = as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTable.class);
-        secondOrderTable = as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTable.class);
+        firstOrderTable = as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTableResponse.class);
+        secondOrderTable = as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTableResponse.class);
     }
 
     /**
@@ -62,7 +64,7 @@ public class TableGroupRestControllerTest extends BaseTest {
     @DisplayName("특정 테이블 그룹을 해제한다.")
     public void getAllTableGroups() throws Exception {
         // Given
-        TableGroup savedTableGroup = as(mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable)), TableGroup.class);
+        TableGroupResponse savedTableGroup = as(mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable)), TableGroupResponse.class);
 
         // When
         ResultActions resultActions = mockMvcUtil.delete(DELETE_TABLE_GROUP_API_URL_TEMPLATE, savedTableGroup.getId());
@@ -71,5 +73,8 @@ public class TableGroupRestControllerTest extends BaseTest {
         resultActions
             .andDo(print())
             .andExpect(status().isNoContent());
+
+        TableGroupResponse getTableGroupResultActions = as(mockMvcUtil.post(테이블_그룹_조회_요청(savedTableGroup.getId())), TableGroupResponse.class);
+        assertThat(getTableGroupResultActions.getOrderTables()).hasSize(0);
     }
 }

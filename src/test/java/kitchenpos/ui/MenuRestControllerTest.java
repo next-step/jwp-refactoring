@@ -1,7 +1,9 @@
 package kitchenpos.ui;
 
 import static kitchenpos.utils.MockMvcUtil.as;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_구성_상품_생성_요청_객체_생성;
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청_객체_생성;
 import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성_요청;
 import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,32 +11,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.menu.CreateMenuRequest;
+import kitchenpos.dto.menu.MenuGroupResponse;
+import kitchenpos.dto.menu.MenuProductResponse;
+import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.product.ProductResponse;
 import kitchenpos.utils.BaseTest;
-import kitchenpos.utils.generator.MenuGroupFixtureGenerator;
-import kitchenpos.utils.generator.ProductFixtureGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("API:Menu")
-@Import({MenuGroupFixtureGenerator.class, ProductFixtureGenerator.class})
 public class MenuRestControllerTest extends BaseTest {
-
-    private final MenuGroupFixtureGenerator menuGroupFixtureGenerator;
-    private final ProductFixtureGenerator productFixtureGenerator;
-
-    public MenuRestControllerTest(
-        MenuGroupFixtureGenerator menuGroupFixtureGenerator,
-        ProductFixtureGenerator productFixtureGenerator
-    ) {
-        this.menuGroupFixtureGenerator = menuGroupFixtureGenerator;
-        this.productFixtureGenerator = productFixtureGenerator;
-    }
 
     public static final String MENU_API_URL_TEMPLATE = "/api/menus";
 
@@ -53,7 +41,6 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(jsonPath("$.[*].price").exists())
             .andExpect(jsonPath("$.[*].menuGroupId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].seq").exists())
-            .andExpect(jsonPath("$.[*].menuProducts[*].menuId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].productId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].quantity").exists());
     }
@@ -68,12 +55,19 @@ public class MenuRestControllerTest extends BaseTest {
     @DisplayName("메뉴를 추가한다.")
     public void createMenu() throws Exception {
         // Given
-        Product savedFirstProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        Product savedSecondProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        final MenuGroup savedMenuGroup = as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
+        final ProductResponse 항정살 = as(mockMvcUtil.post(상품_생성_요청("항정살", 20_000)), ProductResponse.class);
+        final ProductResponse 고추장_불고기 = as(mockMvcUtil.post(상품_생성_요청("고추장_불고기", 15_000)), ProductResponse.class);
+        final MenuGroupResponse 고기만_듬뿍 = as(mockMvcUtil.post(메뉴_그룹_생성_요청("고기만_듬뿍")), MenuGroupResponse.class);
+        final CreateMenuRequest 고기_더블_더블_메뉴_생성_요청 = 메뉴_생성_요청_객체_생성(
+            "고기만 듬뿍",
+            30_000,
+            고기만_듬뿍,
+            메뉴_구성_상품_생성_요청_객체_생성(항정살, 1),
+            메뉴_구성_상품_생성_요청_객체_생성(고추장_불고기, 1)
+        );
 
         // When
-        ResultActions resultActions = mockMvcUtil.post(메뉴_생성_요청(savedMenuGroup, savedFirstProduct, savedSecondProduct));
+        ResultActions resultActions = mockMvcUtil.post(메뉴_생성_요청(고기_더블_더블_메뉴_생성_요청));
 
         // Then
         resultActions
@@ -81,16 +75,15 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.name").exists())
-            .andExpect(jsonPath("$.menuGroupId").value(savedMenuGroup.getId()))
+            .andExpect(jsonPath("$.menuGroupId").value(고기만_듬뿍.getId()))
             .andExpect(jsonPath("$.menuProducts[*].seq").exists())
-            .andExpect(jsonPath("$.menuProducts[*].menuId").exists())
             .andExpect(jsonPath("$.menuProducts[*].productId").exists())
             .andExpect(jsonPath("$.menuProducts[*].quantity").exists());
 
-        Menu createMenuResponse = as(resultActions, Menu.class);
+        MenuResponse createMenuResponse = as(resultActions, MenuResponse.class);
 
         assertThat(createMenuResponse.getMenuProducts())
-            .extracting(MenuProduct::getProductId)
-            .containsExactly(savedFirstProduct.getId(), savedSecondProduct.getId());
+            .extracting(MenuProductResponse::getProductId)
+            .containsExactly(항정살.getId(), 고추장_불고기.getId());
     }
 }

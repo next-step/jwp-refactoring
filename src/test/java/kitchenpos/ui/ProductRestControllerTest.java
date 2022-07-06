@@ -7,8 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.product.ProductResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,13 +39,13 @@ public class ProductRestControllerTest extends BaseTest {
     public void createProduct() throws Exception {
         // Given
         final String name = "뽀빠이 닭강정";
-        final BigDecimal price = BigDecimal.valueOf(23000);
+        final int price = 23_000;
 
         // When
         ResultActions resultActions = mockMvcUtil.post(상품_생성_요청(name, price));
 
         // Then
-        Product product = as(resultActions, Product.class);
+        ProductResponse product = as(resultActions, ProductResponse.class);
         resultActions
             .andDo(print())
             .andExpect(status().isCreated())

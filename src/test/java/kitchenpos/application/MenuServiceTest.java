@@ -1,32 +1,29 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenu;
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenuProduct;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroup;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProductMock;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_구성_상품_생성;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.application.menu.MenuProductService;
+import kitchenpos.application.menu.MenuService;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroupRepository;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.dto.menu.CreateMenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.utils.generator.ScenarioTestFixtureGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,19 +37,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Service:Menu")
-class MenuServiceTest {
+class MenuServiceTest extends ScenarioTestFixtureGenerator {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
+    private MenuProductService menuProductService;
 
     @InjectMocks
     private MenuService menuService;
@@ -61,32 +55,17 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다.")
     public void createMenu() {
         // Given
-        MenuGroup menuGroup = generateMenuGroup();
-        Product firstProduct = generateProductMock();
-        Product secondProduct = generateProductMock();
-        List<Product> products = Arrays.asList(firstProduct, secondProduct);
-        Menu givenMenu = generateMenu(menuGroup, firstProduct, secondProduct);
-        List<MenuProduct> menuProducts = givenMenu.getMenuProducts();
-
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(menuDao.save(any(Menu.class))).will(AdditionalAnswers.returnsFirstArg());
-        given(productDao.findById(products.get(0).getId())).willReturn(Optional.of(products.get(0)));
-        given(productDao.findById(products.get(1).getId())).willReturn(Optional.of(products.get(1)));
-        given(menuProductDao.save(menuProducts.get(0))).willReturn(menuProducts.get(0));
-        given(menuProductDao.save(menuProducts.get(1))).willReturn(menuProducts.get(1));
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(고기랑_같이));
+        given(menuProductService.findMenuProductByMenuProductRequest(커플_냉삼_메뉴_구성_상품_생성_요청)).willReturn(커플_냉삼_메뉴_구성_상품);
+        given(menuRepository.save(any(Menu.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        Menu actualMenu = menuService.create(givenMenu);
+        menuService.create(커플_냉삼_메뉴_생성_요청);
 
         // Then
-        verify(menuGroupDao).existsById(any());
-        verify(productDao, times(products.size())).findById(anyLong());
-        verify(menuDao).save(any(Menu.class));
-        verify(menuProductDao, times(menuProducts.size())).save(any(MenuProduct.class));
-
-        assertThat(actualMenu.getMenuProducts())
-            .extracting(MenuProduct::getProductId)
-            .containsExactly(firstProduct.getId(), secondProduct.getId());
+        verify(menuGroupRepository).findById(any());
+        verify(menuProductService).findMenuProductByMenuProductRequest(커플_냉삼_메뉴_구성_상품_생성_요청);
+        verify(menuRepository).save(any(Menu.class));
     }
 
     @ParameterizedTest(name = "case[{index}] : ''{0}'' => {1}")
@@ -94,19 +73,23 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격이 유효하지 않은 경우 예외가 발생한다.")
     public void throwException_WhenMenuPriceIsInvalid(final BigDecimal givenPrice, final String givenDescription) {
         // Given
-        Menu givenMenu = new Menu();
-        givenMenu.setPrice(givenPrice);
+        CreateMenuRequest 가격이_유효하지_않은_메뉴_생성_요청 = new CreateMenuRequest(
+            "커플_냉삼_메뉴",
+            givenPrice,
+            고기랑_같이.getId(),
+            커플_냉삼_메뉴_구성_상품_생성_요청
+        );
 
         // When
         assertThatExceptionOfType(IllegalArgumentException.class)
             .as(givenDescription)
-            .isThrownBy(() -> menuService.create(givenMenu));
+            .isThrownBy(() -> menuService.create(가격이_유효하지_않은_메뉴_생성_요청));
     }
 
     private static Stream<Arguments> throwException_WhenMenuPriceIsInvalid() {
         final BigDecimal nullBigDecimal = null;
         return Stream.of(
-            Arguments.of(nullBigDecimal, "메뉴가격이 null인 경우 경우"),
+            Arguments.of(nullBigDecimal, "메뉴 가격이 null인 경우"),
             Arguments.of(BigDecimal.valueOf(Integer.MIN_VALUE), "메뉴 가격이 음수인 경우")
         );
     }
@@ -115,90 +98,84 @@ class MenuServiceTest {
     @DisplayName("존재하지 않는 메뉴 그룹 정보가 포함된 메뉴를 생성하는 경우 예외가 발생한다.")
     public void throwException_WhenMenuGroupIsNotExist() {
         // Given
-        final Menu givenMenu = new Menu();
-        givenMenu.setPrice(new BigDecimal(1000));
+        CreateMenuRequest 메뉴_그룹_정보가_존재하지_않는_메뉴_생성_요청 = new CreateMenuRequest(
+            "커플_냉삼_메뉴",
+            new BigDecimal(25_000),
+            null,
+            커플_냉삼_메뉴_구성_상품_생성_요청
+        );
 
-        given(menuGroupDao.existsById(any())).willReturn(false);
+        given(menuGroupRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> menuService.create(givenMenu));
+            .isThrownBy(() -> menuService.create(메뉴_그룹_정보가_존재하지_않는_메뉴_생성_요청));
 
-        verify(menuGroupDao).existsById(any());
+        verify(menuGroupRepository).findById(any());
     }
 
     @Test
-    @DisplayName("메뉴에 구성되는 메뉴 상품이 존재하지 않는 경우 예외가 발생한다.")
+    @DisplayName("메뉴 구성 상품이 존재하지 않는 경우 예외가 발생한다.")
     public void throwException_WhenMenuProductIsNotExist() {
         // Given
-        Menu menu = new Menu();
-        menu.setPrice(new BigDecimal(1000));
-        List<MenuProduct> menuProducts = generateMenuProduct(generateProductMock());
-        menu.setMenuProducts(menuProducts);
+        CreateMenuRequest 메뉴_구성_상품이_존재하지_않는_메뉴_생성_요청 = new CreateMenuRequest(
+            "커플_냉삼_메뉴",
+            new BigDecimal(25_000),
+            고기랑_같이.getId(),
+            null
+        );
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(고기랑_같이));
+        given(menuProductService.findMenuProductByMenuProductRequest(메뉴_구성_상품이_존재하지_않는_메뉴_생성_요청.getMenuProductRequests()))
+            .willThrow(IllegalArgumentException.class);
 
         // When
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> menuService.create(menu));
+            .isThrownBy(() -> menuService.create(메뉴_구성_상품이_존재하지_않는_메뉴_생성_요청));
 
         // Then
-        verify(menuGroupDao).existsById(any());
-        verify(productDao).findById(any());
+        verify(menuGroupRepository).findById(any());
+        verify(menuProductService).findMenuProductByMenuProductRequest(메뉴_구성_상품이_존재하지_않는_메뉴_생성_요청.getMenuProductRequests());
     }
 
     @Test
     @DisplayName("메뉴에 포함된 상품의 가격의 총 합이 메뉴의 가격보다 큰 경우 예외가 발생한다.")
     public void throwException_WhenMenuPriceIsOverThanSumOfEachMenuProductsPrice() {
-        MenuGroup menuGroup = generateMenuGroup();
-        Product firstProduct = generateProductMock();
-        Menu givenMenu = generateMenu(menuGroup, firstProduct);
+        // Given
+        CreateMenuRequest 메뉴_구성_상품_가격의_총합이_메뉴의_가격보다_큰_메뉴_생성_요청 = 메뉴_생성_요청_생성("커플_냉삼_메뉴", 25_000, 고기랑_같이, 메뉴_구성_상품_생성(물냉면, 1));
+        List<MenuProduct> 메뉴_상품_목록 = Collections.singletonList(메뉴_구성_상품_생성(물냉면, 1));
 
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(firstProduct.getId())).willReturn(Optional.of(firstProduct));
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(고기랑_같이));
+        given(
+            menuProductService.findMenuProductByMenuProductRequest(메뉴_구성_상품_가격의_총합이_메뉴의_가격보다_큰_메뉴_생성_요청.getMenuProductRequests()))
+            .willReturn(메뉴_상품_목록);
 
         // When
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> menuService.create(givenMenu));
+            .isThrownBy(() -> menuService.create(메뉴_구성_상품_가격의_총합이_메뉴의_가격보다_큰_메뉴_생성_요청));
 
         // Then
-        verify(menuGroupDao).existsById(any());
-        verify(productDao).findById(anyLong());
+        verify(menuGroupRepository).findById(any());
+        verify(menuProductService)
+            .findMenuProductByMenuProductRequest(메뉴_구성_상품_가격의_총합이_메뉴의_가격보다_큰_메뉴_생성_요청.getMenuProductRequests());
     }
 
     @Test
     @DisplayName("메뉴 목록을 조회한다. : 조회된 메뉴의 수만큼 메뉴 상품을 조회하는 과정에서 `N+1` 문제가 발생한다.")
     public void getAllMenus() {
         // Given
-        final int generateMenuMockCount = 5;
-        List<Menu> givenMenus = generateMenuMocks(generateMenuMockCount);
-
-        given(menuDao.findAll()).willReturn(givenMenus);
-        for (int i = 0; i < generateMenuMockCount; i++) {
-            given(menuProductDao.findAllByMenuId(any())).willReturn(givenMenus.get(i).getMenuProducts());
-        }
+        List<Menu> 메뉴_목록 = Arrays.asList(고기_더블_더블_메뉴, 커플_냉삼_메뉴);
+        given(menuRepository.findAll()).willReturn(메뉴_목록);
 
         // When
-        List<Menu> actualMenus = menuService.list();
+        List<MenuResponse> 조회된_메뉴_목록 = menuService.list();
 
         // Then
-        verify(menuDao).findAll();
-        verify(menuProductDao, times(generateMenuMockCount)).findAllByMenuId(any());
+        verify(menuRepository).findAll();
 
-        List<String> givenMenuNames = givenMenus.stream()
+        List<String> givenMenuNames = 메뉴_목록.stream()
             .map(Menu::getName)
             .collect(Collectors.toList());
-        assertThat(actualMenus).extracting(Menu::getName).isEqualTo(givenMenuNames);
-    }
-
-    private List<Menu> generateMenuMocks(int count) {
-        List<Menu> menus = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            Menu menu = new Menu();
-            menu.setMenuProducts(generateMenuProduct(generateProductMock()));
-            menus.add(menu);
-        }
-        return menus;
+        assertThat(조회된_메뉴_목록).extracting(MenuResponse::getName).isEqualTo(givenMenuNames);
     }
 }

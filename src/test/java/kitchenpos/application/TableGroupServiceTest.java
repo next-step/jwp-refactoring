@@ -1,23 +1,26 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateEmptyOrderTable;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
+import static kitchenpos.utils.generator.TableGroupFixtureGenerator.테이블_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.application.table.TableGroupService;
+import kitchenpos.domain.order.OrderRepository;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.domain.table.TableGroup;
+import kitchenpos.domain.table.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,43 +38,50 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private TableGroup tableGroup;
-    private OrderTable firstOrderTable, secondOrderTable;
-    private List<OrderTable> orderTables;
+    private OrderTable 단체석_첫번째_주문_테이블, 단체석_두번째_주문_테이블;
+    private List<OrderTable> 단체석_주문_테이블_목록;
+    private List<Long> 단체적_주문_테이블_번호_목록;
+    private TableGroup 단체석;
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = generateEmptyOrderTable();
-        secondOrderTable = generateEmptyOrderTable();
-        orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-        tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
+        단체석_첫번째_주문_테이블 = 비어있는_주문_테이블_생성();
+        단체석_두번째_주문_테이블 = 비어있는_주문_테이블_생성();
+
+        단체석_주문_테이블_목록 = Arrays.asList(단체석_첫번째_주문_테이블, 단체석_두번째_주문_테이블);
+        단체적_주문_테이블_번호_목록 = 단체석_주문_테이블_목록.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
+
+        단체석 = TableGroup.of(단체적_주문_테이블_번호_목록, 단체석_주문_테이블_목록);
     }
 
     @Test
     @DisplayName("테이블 그룹을 생성한다.")
     public void creatTableGroup() {
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-        given(tableGroupDao.save(any(TableGroup.class))).will(AdditionalAnswers.returnsFirstArg());
+        OrderTable 첫번째_빈좌석 = 비어있는_주문_테이블_생성();
+        OrderTable 두번째_빈좌석 = 비어있는_주문_테이블_생성();
+        List<OrderTable> 빈좌석_목록 = Arrays.asList(첫번째_빈좌석, 두번째_빈좌석);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(빈좌석_목록);
+        given(tableGroupRepository.save(any(TableGroup.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        tableGroupService.create(tableGroup);
+        tableGroupService.create(테이블_그룹_생성(첫번째_빈좌석, 두번째_빈좌석));
 
         // Then
-        verify(orderTableDao).findAllByIdIn(anyList());
-        verify(tableGroupDao).save(any(TableGroup.class));
-        verify(orderTableDao, times(orderTables.size())).save(any(OrderTable.class));
+        verify(orderTableRepository).findAllByIdIn(anyList());
+        verify(tableGroupRepository).save(any(TableGroup.class));
     }
 
     @ParameterizedTest(name = "case[{index}] : {0} => {1}")
@@ -81,19 +91,16 @@ class TableGroupServiceTest {
         final List<OrderTable> givenOrderTables,
         final String givenDescription
     ) {
-        // Given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(givenOrderTables);
-
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(tableGroup));
+            .as(givenDescription)
+            .isThrownBy(() -> tableGroupService.create(테이블_그룹_생성(단체석_첫번째_주문_테이블, 단체석_두번째_주문_테이블)));
     }
 
     private static Stream<Arguments> throwException_WhenOrderTableSizeIsLessThanMinimumGroupingTargetSize() {
         return Stream.of(
             Arguments.of(Collections.emptyList(), "테이블 그룹이 0개인 경우"),
-            Arguments.of(Collections.singletonList(new OrderTable()), "테이블 그룹이 1개인 경우")
+            Arguments.of(Collections.singletonList(비어있는_주문_테이블_생성()), "테이블 그룹이 1개인 경우")
         );
     }
 
@@ -101,13 +108,13 @@ class TableGroupServiceTest {
     @DisplayName("존재하지 않는 주문 테이블이 포함된 경우 예외 발생 검증")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Collections.emptyList());
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Collections.emptyList());
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(tableGroup));
+            .isThrownBy(() -> tableGroupService.create(테이블_그룹_생성(단체석_첫번째_주문_테이블, 단체석_두번째_주문_테이블)));
 
-        verify(orderTableDao).findAllByIdIn(anyList());
+        verify(orderTableRepository).findAllByIdIn(anyList());
     }
 
     @Test
@@ -115,64 +122,60 @@ class TableGroupServiceTest {
     public void throwException_WhenContainsIsNotEmptyOrderTable() {
         // Given
         List<OrderTable> givenContainsNotEmptyOrderTables = Arrays
-            .asList(generateNotEmptyOrderTable(), generateEmptyOrderTable());
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(givenContainsNotEmptyOrderTables);
-
-        TableGroup givenTableGroup = new TableGroup();
-        givenTableGroup.setOrderTables(givenContainsNotEmptyOrderTables);
+            .asList(비어있지_않은_주문_테이블_생성(), 비어있는_주문_테이블_생성());
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(givenContainsNotEmptyOrderTables);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(givenTableGroup));
+            .isThrownBy(() -> tableGroupService.create(테이블_그룹_생성(단체석_첫번째_주문_테이블, 단체석_두번째_주문_테이블)));
 
-        verify(orderTableDao).findAllByIdIn(anyList());
+        verify(orderTableRepository).findAllByIdIn(anyList());
     }
 
     @Test
     @DisplayName("이미 그룹핑 된 주문 테이블이 포함된 경우 예외 발생 검증")
     public void throwException_ContainsAlreadyHasTableGroupOrderTable() {
         // Given
-        OrderTable givenAlreadyHasTableGroupOrderTable = generateEmptyOrderTable();
-        givenAlreadyHasTableGroupOrderTable.setTableGroupId(1L);
+        OrderTable givenAlreadyHasTableGroupOrderTable = 비어있는_주문_테이블_생성();
+        givenAlreadyHasTableGroupOrderTable.allocateTableGroup(단체석);
 
-        List<OrderTable> givenContainsAlreadyHasTableGroupOrderTables = Arrays.asList(givenAlreadyHasTableGroupOrderTable, generateEmptyOrderTable());
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(givenContainsAlreadyHasTableGroupOrderTables);
-
-        TableGroup givenTableGroup = new TableGroup();
-        givenTableGroup.setOrderTables(givenContainsAlreadyHasTableGroupOrderTables);
+        List<OrderTable> givenContainsAlreadyHasTableGroupOrderTables = Arrays
+            .asList(givenAlreadyHasTableGroupOrderTable, 비어있는_주문_테이블_생성());
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(givenContainsAlreadyHasTableGroupOrderTables);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.create(givenTableGroup));
+            .isThrownBy(() -> tableGroupService.create(테이블_그룹_생성(단체석_첫번째_주문_테이블, 단체석_두번째_주문_테이블)));
 
-        verify(orderTableDao).findAllByIdIn(anyList());
+        verify(orderTableRepository).findAllByIdIn(anyList());
     }
 
     @Test
     @DisplayName("테이블 그룹을 해제한다.")
     public void ungroupTable() {
         // Given
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(orderTables);
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체석));
 
         // When
-        tableGroupService.ungroup(tableGroup.getId());
+        tableGroupService.ungroup(단체석.getId());
 
         // Then
-        verify(orderTableDao).findAllByTableGroupId(any());
-        verify(orderDao).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
-        verify(orderTableDao, times(orderTables.size())).save(any(OrderTable.class));
+        verify(tableGroupRepository).findById(any());
+        verify(orderRepository).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
     }
 
     @Test
     @DisplayName("조리중이거나 식사중인 주문 테이블이 포함된 경우 예외 발생 검증")
     public void throwException_WhenOrderTablesOrderHasMealStatusOrCookingStatus() {
         // Given
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체석));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> tableGroupService.ungroup(any()));
 
-        verify(orderDao).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
+        verify(tableGroupRepository).findById(any());
+        verify(orderRepository).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
     }
 }

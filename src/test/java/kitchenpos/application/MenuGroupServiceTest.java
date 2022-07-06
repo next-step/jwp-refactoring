@@ -1,15 +1,18 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroup;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroups;
+import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_목록_생성;
+import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성_요청_객체;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.application.menu.MenuGroupService;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuGroupRepository;
+import kitchenpos.dto.menu.MenuGroupRequest;
+import kitchenpos.dto.menu.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -32,15 +35,14 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     public void createMenuGroup() {
         // Given
-        final MenuGroup given = generateMenuGroup();
-        given(menuGroupDao.save(any(MenuGroup.class))).will(AdditionalAnswers.returnsFirstArg());
+        final MenuGroupRequest 오늘의_메뉴 = 메뉴_그룹_생성_요청_객체("오늘의 메뉴");
+        given(menuGroupRepository.save(any(MenuGroup.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        MenuGroup actual = menuGroupService.create(given);
+        menuGroupService.create(오늘의_메뉴);
 
         // Then
-        verify(menuGroupDao).save(any(MenuGroup.class));
-        assertThat(actual).isEqualTo(given);
+        verify(menuGroupRepository).save(any(MenuGroup.class));
     }
 
     @Test
@@ -48,14 +50,14 @@ class MenuGroupServiceTest {
     public void getMenuGroups() {
         // Given
         final int generateMenuGroupCount = 5;
-        List<MenuGroup> givenMenuGroups = generateMenuGroups(generateMenuGroupCount);
-        given(menuGroupDao.findAll()).willReturn(givenMenuGroups);
+        List<MenuGroup> givenMenuGroups = 메뉴_그룹_목록_생성(generateMenuGroupCount);
+        given(menuGroupRepository.findAll()).willReturn(givenMenuGroups);
 
         // When
-        List<MenuGroup> actualMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> actualMenuGroups = menuGroupService.list();
 
         // Then
-        verify(menuGroupDao).findAll();
+        verify(menuGroupRepository).findAll();
         assertThat(actualMenuGroups).hasSize(generateMenuGroupCount);
     }
 }

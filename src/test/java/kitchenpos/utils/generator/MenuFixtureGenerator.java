@@ -5,51 +5,100 @@ import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.CreateMenuRequest;
+import kitchenpos.dto.menu.MenuGroupResponse;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class MenuFixtureGenerator {
 
-    private static String NAME = "맵단 스페샬";
-    private static BigDecimal PRICE = BigDecimal.valueOf(33000);
-    private static int COUNTER = 0;
-
-    public static Menu generateMenu(
+    public static Menu 메뉴_생성(
+        final String name,
+        final int price,
         final MenuGroup menuGroup,
-        final Product... products
+        final MenuProduct... menuProducts
     ) {
-        Menu menu = new Menu();
-        menu.setName(NAME + COUNTER);
-        menu.setPrice(PRICE);
-        menu.setMenuGroupId(menuGroup.getId());
-        menu.setMenuProducts(generateMenuProduct(products));
-        return menu;
+        return new Menu(name, new BigDecimal(price), menuGroup, Arrays.asList(menuProducts));
     }
 
-    public static List<MenuProduct> generateMenuProduct(Product... products) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
+    public static MenuProduct 메뉴_구성_상품_생성(
+        final Product product,
+        final int quantity
+    ) {
+        return new MenuProduct(product, quantity);
+    }
 
-        int lastMenuGroupSeq = 7;
-        for (Product product : products) {
-            MenuProduct menuProduct = new MenuProduct();
-            menuProduct.setProductId(product.getId());
-            menuProduct.setQuantity(1);
-            menuProduct.setSeq((long) lastMenuGroupSeq);
-            lastMenuGroupSeq++;
+    public static MenuProductRequest 메뉴_구성_상품_생성_요청_객체_생성(
+        final ProductResponse product,
+        final int quantity
+    ) {
+        return new MenuProductRequest(product.getId(), quantity);
+    }
 
-            menuProducts.add(menuProduct);
+    public static CreateMenuRequest 메뉴_생성_요청_생성(
+        final String name,
+        final int price,
+        final MenuGroup savedMenuGroup,
+        final MenuProduct... menuProducts
+    ) {
+        return new CreateMenuRequest(name, new BigDecimal(price), savedMenuGroup.getId(), 메뉴_상품_요청_목록_생성(menuProducts));
+    }
+
+    public static CreateMenuRequest 메뉴_생성_요청_객체_생성(
+        final String name,
+        final int price,
+        final MenuGroupResponse savedMenuGroup,
+        final MenuProductRequest... menuProducts
+    ) {
+        return new CreateMenuRequest(name, new BigDecimal(price), savedMenuGroup.getId(), 메뉴_상품_요청_목록_생성(menuProducts));
+    }
+
+    public static List<MenuProductRequest> 메뉴_상품_요청_목록_생성(final MenuProduct... menuProducts) {
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        for (MenuProduct menuProduct : menuProducts) {
+            MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(),
+                (int) menuProduct.getQuantity());
+            menuProductRequests.add(menuProductRequest);
         }
-        return menuProducts;
+        return menuProductRequests;
+    }
+
+    public static List<MenuProductRequest> 메뉴_상품_요청_목록_생성(final MenuProductRequest... menuProducts) {
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        for (MenuProductRequest menuProduct : menuProducts) {
+            MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProductId(),
+                (int) menuProduct.getQuantity());
+            menuProductRequests.add(menuProductRequest);
+        }
+        return menuProductRequests;
     }
 
     public static MockHttpServletRequestBuilder 메뉴_생성_요청(
+        final String name,
+        final int price,
         final MenuGroup savedMenuGroup,
-        final Product... savedProducts
+        final MenuProduct... menuProducts
     ) throws Exception {
-        return postRequestBuilder(MENU_API_URL_TEMPLATE, generateMenu(savedMenuGroup, savedProducts));
+        return postRequestBuilder(MENU_API_URL_TEMPLATE, 메뉴_생성_요청_생성(name, price, savedMenuGroup, menuProducts));
+    }
+
+    public static MockHttpServletRequestBuilder 메뉴_생성_요청(
+        final String name,
+        final int price,
+        final MenuGroupResponse savedMenuGroup,
+        final MenuProductRequest... menuProducts
+    ) throws Exception {
+        return postRequestBuilder(MENU_API_URL_TEMPLATE, 메뉴_생성_요청_객체_생성(name, price, savedMenuGroup, menuProducts));
+    }
+
+    public static MockHttpServletRequestBuilder 메뉴_생성_요청(final CreateMenuRequest createMenuRequest) throws Exception {
+        return postRequestBuilder(MENU_API_URL_TEMPLATE, createMenuRequest);
     }
 }

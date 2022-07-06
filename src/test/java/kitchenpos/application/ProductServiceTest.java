@@ -1,15 +1,19 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProduct;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProducts;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_목록_생성;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청_객체;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.application.product.ProductService;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.product.CreateProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -32,15 +36,18 @@ class ProductServiceTest {
     @DisplayName("상품을 생성한다.")
     public void createProduct() {
         // Given
-        final Product given = generateProduct();
-        given(productDao.save(any(Product.class))).will(AdditionalAnswers.returnsFirstArg());
+        final CreateProductRequest given = 상품_생성_요청_객체("항정살", 20_000);
+        given(productRepository.save(any(Product.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        Product actual = productService.create(given);
+        ProductResponse actual = productService.create(given);
 
         // Then
-        verify(productDao).save(any(Product.class));
-        assertThat(actual).isEqualTo(given);
+        verify(productRepository).save(any(Product.class));
+        assertAll(
+            () -> assertThat(actual.getName()).isEqualTo(given.getName()),
+            () -> assertThat(actual.getPrice()).isEqualTo(given.getPrice())
+        );
     }
 
     @Test
@@ -48,14 +55,14 @@ class ProductServiceTest {
     public void getProducts() {
         // Given
         final int generateProductCount = 5;
-        List<Product> givenProducts = generateProducts(generateProductCount);
-        given(productDao.findAll()).willReturn(givenProducts);
+        List<Product> givenProducts = 상품_목록_생성(generateProductCount);
+        given(productRepository.findAll()).willReturn(givenProducts);
 
         // When
-        List<Product> actualProducts = productService.list();
+        List<ProductResponse> actualProducts = productService.list();
 
         // Then
-        verify(productDao).findAll();
+        verify(productRepository).findAll();
         assertThat(actualProducts).hasSize(generateProductCount);
     }
 }
