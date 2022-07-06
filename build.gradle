@@ -41,6 +41,12 @@ project(':module-menu-product') {
     }
 }
 
+project(':module-order-order-table') {
+    dependencies {
+        implementation project(':module-menu-product')
+    }
+}
+
 project(':module-main') {
     dependencies {
         implementation project(':module-menu-product')
