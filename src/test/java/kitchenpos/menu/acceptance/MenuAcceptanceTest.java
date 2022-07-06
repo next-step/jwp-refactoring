@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.menu.acceptance.behavior.MenuContextBehavior;
 import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
 import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
@@ -25,17 +26,17 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴생성 및 조회 기능 인수테스트")
     void menuAcceptanceTest() {
-        MenuGroup menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("치킨");
+        MenuGroup menuGroup = MenuContextBehavior.메뉴그룹_생성됨("치킨");
         Product product = KitchenPosBehaviors.상품_생성됨("강정치킨", 10000);
         MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
         MenuDto menuDto = MenuDtoFixtureFactory.createMenu(menuGroup
                 , "강정치킨 한마리", 10000
                 , Lists.newArrayList(menuProductDto));
 
-        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.메뉴_생성_요청(menuDto);
+        ExtractableResponse<Response> createResponse = MenuContextBehavior.메뉴_생성_요청(menuDto);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        List<MenuDto> menus = KitchenPosBehaviors.메뉴_목록조회();
+        List<MenuDto> menus = MenuContextBehavior.메뉴_목록조회();
         assertThat(menus).hasSize(1);
     }
 }

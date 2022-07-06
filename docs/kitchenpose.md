@@ -111,6 +111,7 @@
 
 ### 4단계 
 - [ ] 인수테스트 분리
+  - [X] menu
 - [ ] 모듈 생성
   - module-core
   - module-product

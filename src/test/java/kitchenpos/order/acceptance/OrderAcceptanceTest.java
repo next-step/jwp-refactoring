@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.menu.acceptance.behavior.MenuContextBehavior;
 import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
 import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
@@ -40,9 +41,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         product = KitchenPosBehaviors.상품_생성됨("상품1", 10000);
-        menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("메뉴그룹1");
+        menuGroup = MenuContextBehavior.메뉴그룹_생성됨("메뉴그룹1");
         MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
-        menuDto = KitchenPosBehaviors.메뉴_생성됨(
+        menuDto = MenuContextBehavior.메뉴_생성됨(
                 MenuDtoFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProductDto)));
         orderTable1 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
         orderTable2 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
