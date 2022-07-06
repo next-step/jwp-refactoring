@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static kitchenpos.util.TestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
