@@ -24,7 +24,7 @@ public class OrderTableTest {
         final OrderTable table = OrderTable.of(0, false);
         final OrderTable updateTable = OrderTable.of(0,true);
         // when
-        table.updateEmpty(updateTable, true);
+        table.updateEmptyTable(updateTable, true);
         // then
         assertThat(table.isEmpty()).isTrue();
     }
@@ -37,7 +37,7 @@ public class OrderTableTest {
         table.updateTableGroupId(1L);
         final OrderTable updateTable = OrderTable.of(0,true);
         // when
-        assertThatThrownBy(() -> table.updateEmpty(updateTable, true))
+        assertThatThrownBy(() -> table.updateEmptyTable(updateTable, true))
                 .isInstanceOf(TableException.class);
     }
 
@@ -49,7 +49,7 @@ public class OrderTableTest {
         final OrderTable updateTable = OrderTable.of(0,true);
         final OrderStatus status = OrderStatus.COOKING;
         // when
-        assertThatThrownBy(() -> table.updateEmpty(updateTable, status.enabledOrderCancle()))
+        assertThatThrownBy(() -> table.updateEmptyTable(updateTable, status.enabledOrderCancle()))
                 .isInstanceOf(TableException.class);
     }
 

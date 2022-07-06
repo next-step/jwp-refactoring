@@ -1,38 +1,37 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
-    public Long getId() {
-        return id;
-    }
+    protected TableGroup() {}
 
-    public void setId(final Long id) {
+    public TableGroup(final Long id, final List<OrderTable> orderTables) {
         this.id = id;
+        this.createdDate = LocalDateTime.now();
+        this.orderTables = OrderTables.of(orderTables);
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(null, orderTables);
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void updateGroupTableId() {
+        orderTables.updateGroupTableIdAndEmpty(id);
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        return orderTables.get();
     }
 
     @Override
@@ -45,10 +44,10 @@ public class TableGroup {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final TableGroup that = (TableGroup) o;
+        TableGroup that = (TableGroup) o;
         return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
     }
 

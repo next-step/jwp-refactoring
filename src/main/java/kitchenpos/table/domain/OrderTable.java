@@ -35,10 +35,14 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
-    public void updateEmpty(final OrderTable updateTable, final boolean enabled) {
+    public void updateEmptyTable(final OrderTable updateTable, final boolean enabled) {
         emptyValidate(enabled);
         this.empty = updateTable.isEmpty();
     }
+    public void updateEmpty(final boolean empty) {
+        this.empty = empty;
+    }
+
 
     private void emptyValidate(final boolean enabled) {
         enabledOrderCancelStatus(enabled);
