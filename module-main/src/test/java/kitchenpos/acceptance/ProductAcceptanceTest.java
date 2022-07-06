@@ -1,4 +1,4 @@
-package kitchenpos.product.acceptance;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.MenuProductAcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.fixture.ProductFactory;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("상품 관련 기능")
-public class ProductAcceptanceTest extends MenuProductAcceptanceTest {
+public class ProductAcceptanceTest extends AcceptanceTest {
 
     /**
      * Feature: 상품을 관리한다.

@@ -4,11 +4,6 @@ plugins {
     id 'java'
 }
 
-//group = 'camp.nextstep.edu'
-//version = '0.0.1-SNAPSHOT'
-//sourceCompatibility = '1.8'
-
-
 subprojects {
     group = 'camp.nextstep.edu'
     version = '0.0.1-SNAPSHOT'
@@ -42,6 +37,13 @@ subprojects {
 
 project(':module-menu-product') {
     dependencies {
-        
+
+    }
+}
+
+project(':module-main') {
+    dependencies {
+        implementation project(':module-menu-product')
+        implementation project(':module-order-order-table')
     }
 }

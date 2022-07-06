@@ -1,7 +1,6 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.acceptance;
 
-import static kitchenpos.table.acceptance.TableAcceptanceTest.주문테이블_등록_요청;
-import static kitchenpos.fixture.TableGroupFactory.createTableGroupRequest;
+import static kitchenpos.acceptance.TableAcceptanceTest.주문테이블_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -10,6 +9,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.fixture.TableGroupFactory;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -59,7 +59,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 단체_지정_요청(List<Long> orderTableIds) {
-        TableGroupRequest request = createTableGroupRequest(orderTableIds);
+        TableGroupRequest request = TableGroupFactory.createTableGroupRequest(orderTableIds);
 
         return RestAssured
                 .given().log().all()

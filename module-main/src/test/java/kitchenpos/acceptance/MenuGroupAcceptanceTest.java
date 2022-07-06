@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.MenuProductAcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("메뉴 그룹 관련 기능")
-public class MenuGroupAcceptanceTest extends MenuProductAcceptanceTest {
+public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {

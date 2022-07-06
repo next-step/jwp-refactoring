@@ -1,13 +1,7 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.주문테이블_등록_요청;
+
 import static kitchenpos.fixture.MenuProductFactory.createMenuProductRequest;
-import static kitchenpos.fixture.OrderFactory.createOrderLineItemRequest;
-import static kitchenpos.fixture.OrderFactory.createOrderRequest;
-import static kitchenpos.fixture.OrderFactory.createOrderStatusRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -18,15 +12,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.fixture.MenuFactory;
+import kitchenpos.fixture.OrderFactory;
+import kitchenpos.fixture.ProductFactory;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        주문테이블 = 주문테이블_등록_요청(5, false).as(OrderTableResponse.class);
+        주문테이블 = TableAcceptanceTest.주문테이블_등록_요청(5, false).as(OrderTableResponse.class);
         빅맥세트 = 메뉴그룹_등록_요청("빅맥세트").as(MenuGroupResponse.class);
         토마토 = 상품_등록_요청("토마토", 1000).as(ProductResponse.class);
         양상추 = 상품_등록_요청("양상추", 500).as(ProductResponse.class);
@@ -75,7 +76,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void 주문_관리() {
         ExtractableResponse<Response> response;
         // when 주문 등록 요청
-        response = 주문_등록_요청(주문테이블.getId(), Arrays.asList(createOrderLineItemRequest(빅맥버거.getId(), 1)));
+        response = 주문_등록_요청(주문테이블.getId(), Arrays.asList(OrderFactory.createOrderLineItemRequest(빅맥버거.getId(), 1)));
         // then 주문 등록됨
         주문_등록됨(response);
         OrderResponse 주문 = response.as(OrderResponse.class);
@@ -95,7 +96,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_등록_요청(Long orderTableId,
                                                          List<OrderLineItemRequest> orderLineItemRequests) {
-        OrderRequest orderRequest = createOrderRequest(orderTableId, orderLineItemRequests);
+        OrderRequest orderRequest = OrderFactory.createOrderRequest(orderTableId, orderLineItemRequests);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -114,7 +115,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문상태_변경_요청(OrderResponse order, OrderStatus orderStatus) {
-        OrderStatusRequest request = createOrderStatusRequest(orderStatus);
+        OrderStatusRequest request = OrderFactory.createOrderStatusRequest(orderStatus);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -146,5 +147,44 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static void 주문상태_변경됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
         assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(orderStatus.name());
+    }
+
+
+    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId,
+                                                         List<MenuProductRequest> menuProductRequests) {
+
+        MenuRequest request = MenuFactory.createMenuRequest(name, price, menuGroupId, menuProductRequests);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/api/menus")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(String name) {
+        MenuGroupRequest request = new MenuGroupRequest(name);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/api/menu-groups")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 상품_등록_요청(String name, double price) {
+        ProductRequest request = ProductFactory.createProductRequest(name, BigDecimal.valueOf(price));
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/api/products")
+                .then().log().all()
+                .extract();
     }
 }

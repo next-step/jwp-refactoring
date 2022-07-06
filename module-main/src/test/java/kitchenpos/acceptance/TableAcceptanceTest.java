@@ -1,6 +1,5 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.acceptance;
 
-import static kitchenpos.fixture.OrderTableFactory.createOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -10,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.fixture.OrderTableFactory;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -85,7 +85,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문테이블_등록_요청(int numberOfGuests, boolean empty) {
-        OrderTableRequest request = createOrderTableRequest(numberOfGuests, empty);
+        OrderTableRequest request = OrderTableFactory.createOrderTableRequest(numberOfGuests, empty);
 
         return RestAssured
                 .given().log().all()
@@ -108,7 +108,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createOrderTableRequest(orderTable.getNumberOfGuests(), true))
+                .body(OrderTableFactory.createOrderTableRequest(orderTable.getNumberOfGuests(), true))
                 .when().put("/api/tables/{orderTableId}/empty", orderTable.getId())
                 .then().log().all()
                 .extract();
@@ -118,7 +118,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createOrderTableRequest(orderTable.getNumberOfGuests(), false))
+                .body(OrderTableFactory.createOrderTableRequest(orderTable.getNumberOfGuests(), false))
                 .when().put("/api/tables/{orderTableId}/empty", orderTable.getId())
                 .then().log().all()
                 .extract();
@@ -128,7 +128,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createOrderTableRequest(numberOfGuests, orderTable.isEmpty()))
+                .body(OrderTableFactory.createOrderTableRequest(numberOfGuests, orderTable.isEmpty()))
                 .when().put("/api/tables/{orderTableId}/number-of-guests", orderTable.getId())
                 .then().log().all()
                 .extract();

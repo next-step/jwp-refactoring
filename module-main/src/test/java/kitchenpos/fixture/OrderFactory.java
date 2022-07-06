@@ -5,10 +5,10 @@ import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderFactory {
     public static Order createOrder(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
