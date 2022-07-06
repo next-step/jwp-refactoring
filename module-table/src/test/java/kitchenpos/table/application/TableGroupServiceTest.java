@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.behavior.TableContextServiceBehavior;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
