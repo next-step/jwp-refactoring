@@ -50,7 +50,7 @@ public class MenuService {
                 .collect(Collectors.toList()));
     }
 
-
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
 

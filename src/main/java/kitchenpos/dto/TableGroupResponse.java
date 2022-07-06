@@ -2,14 +2,16 @@ package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import kitchenpos.domain.TableGroup;
 
 public class TableGroupResponse {
     private Long id;
     private List<OrderTableResponse> orderTables;
     private LocalDateTime createDate;
 
-    public TableGroupResponse() {
-
+    public TableGroupResponse(TableGroup saveTableGroup) {
+        this(saveTableGroup.getId(), OrderTableResponse.of(saveTableGroup.getOrderTables()),
+                saveTableGroup.getCreatedDate());
     }
 
     public TableGroupResponse(Long id, List<OrderTableResponse> orderTables, LocalDateTime createDate) {

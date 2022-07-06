@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.repository.OrderRepository;
@@ -37,16 +36,15 @@ public class TableGroupService {
         final List<Long> requestOrderTables = tableGroupRequest.getOrderTables();
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(requestOrderTables);
 
-        validExistOrderTable(requestOrderTables, savedOrderTables);
+        validateExistOrderTable(requestOrderTables, savedOrderTables);
 
-        TableGroup result = tableGroupRepository.save(new TableGroup(OrderTables.of(savedOrderTables)));
-        result.group();
+        TableGroup saveTableGroup = tableGroupRepository.save(new TableGroup(OrderTables.of(savedOrderTables)));
+        saveTableGroup.group();
 
-        return new TableGroupResponse(result.getId(), OrderTableResponse.of(result.getOrderTables()),
-                result.getCreatedDate());
+        return new TableGroupResponse(saveTableGroup);
     }
 
-    private void validExistOrderTable(List<Long> requestOrderTables, List<OrderTable> savedOrderTables) {
+    private void validateExistOrderTable(List<Long> requestOrderTables, List<OrderTable> savedOrderTables) {
         if (requestOrderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException("단체지정할 주문 테이블이 없으면 단체석으로 지정할 수 없습니다.");
         }
@@ -57,12 +55,12 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new NoSuchElementException("해당 단체지정석을 찾을수 없습니다."));
 
-        validUngroup(tableGroup);
+        validateUngroup(tableGroup);
 
         tableGroup.unGroup();
     }
 
-    private void validUngroup(TableGroup tableGroup) {
+    private void validateUngroup(TableGroup tableGroup) {
         final List<Long> orderTableIds = tableGroup.getOrderTables()
                 .stream()
                 .map(OrderTable::getId)
