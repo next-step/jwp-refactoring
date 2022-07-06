@@ -9,6 +9,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +34,28 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        validOrderTable(request);
+        validCreate(request);
         Order order = Order.of(request.getOrderTableId(), createOrderLineItems(request));
         order = orderRepository.save(order);
         return OrderResponse.of(order);
     }
 
+    private void validCreate(OrderRequest request) {
+        validOrderTable(request);
+        validOrderLineRequest(request);
+    }
+
     private void validOrderTable(OrderRequest request) {
-        tableService.findById(request.getOrderTableId());
+        final OrderTable orderTable = tableService.findById(request.getOrderTableId());
+        if (orderTable == null || orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블이 없습니다.");
+        }
+    }
+
+    private void validOrderLineRequest(OrderRequest request) {
+        if (request.getOrderLineItemRequests() == null) {
+            throw new IllegalArgumentException("주문 항목 리스트가 없습니다.");
+        }
     }
 
     private List<OrderLineItem> createOrderLineItems(OrderRequest request) {
