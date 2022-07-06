@@ -1,5 +1,6 @@
 package kitchenpos.common.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -31,4 +32,27 @@ public class Quantity {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "Quantity{" +
+                "value=" + value +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Quantity quantity = (Quantity) o;
+        return value == quantity.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }

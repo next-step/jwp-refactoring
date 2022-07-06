@@ -16,7 +16,7 @@ class MenuProductTest {
 
     @DisplayName("메뉴 상품의 금액(가격 * 수량)을 계산할 수 있다. ")
     @Test
-    void amount() {
+    void 금액_계산() {
         assertThat(메뉴_상품.amount()).isEqualTo(Price.from(48000));
     }
 

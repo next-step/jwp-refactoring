@@ -13,23 +13,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,8 +43,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -124,7 +121,8 @@ class OrderServiceTest {
                 OrderRequest 주문_항목이_없는_주문_요청 = OrderRequest.of(1L, Collections.emptyList());
 
                 // when / then
-                assertThatThrownBy(() -> orderService.create(주문_항목이_없는_주문_요청)).isInstanceOf(IllegalArgumentException.class);
+                assertThatThrownBy(() -> orderService.create(주문_항목이_없는_주문_요청)).isInstanceOf(
+                        IllegalArgumentException.class);
             }
 
             @DisplayName("중복된 메뉴의 주문 항목을 가진 주문은 생성할 수 없다.")
@@ -240,7 +238,8 @@ class OrderServiceTest {
             Order 주문 = new Order(1L, 주문_테이블, OrderStatus.COMPLETION, LocalDateTime.now(), 주문_항목들);
 
             OrderRequest 주문_변경_요청 = OrderRequest.of(주문_테이블.getId(),
-                    Collections.singletonList(new OrderLineItemRequest(주문_항목.getMenuId(), 주문_항목.getQuantity())), OrderStatus.COOKING.name());
+                    Collections.singletonList(new OrderLineItemRequest(주문_항목.getMenuId(), 주문_항목.getQuantity())),
+                    OrderStatus.COOKING.name());
 
             given(orderRepository.findById(eq(주문.getId()))).willReturn(Optional.of(주문));
 

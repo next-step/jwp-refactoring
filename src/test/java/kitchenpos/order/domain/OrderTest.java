@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,11 +18,8 @@ class OrderTest {
         Menu 메뉴 = new Menu(1L, "무료 메뉴", BigDecimal.ZERO, new MenuGroup("무료 그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 1L);
         OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));
-        Order 계산_완료된_주문 = new Order.Builder()
-                .orderStatus(OrderStatus.COMPLETION)
-                .orderTable(OrderTable.of(5, false))
-                .orderLineItems(주문_항목들)
-                .build();
+        Order 계산_완료된_주문 = new Order.Builder().orderStatus(OrderStatus.COMPLETION).orderTable(OrderTable.of(5, false))
+                .orderLineItems(주문_항목들).build();
 
         assertThatThrownBy(() -> 계산_완료된_주문.updateOrderStatus(OrderStatus.MEAL.name())).isInstanceOf(
                 IllegalArgumentException.class);
@@ -31,9 +29,7 @@ class OrderTest {
     @Test
     void 빈_주문_생성불가() {
         assertThatThrownBy(
-                () -> new Order.Builder()
-                        .orderStatus(OrderStatus.COMPLETION)
-                        .orderTable(OrderTable.of(5, false))
+                () -> new Order.Builder().orderStatus(OrderStatus.COMPLETION).orderTable(OrderTable.of(5, false))
                         .orderLineItems(OrderLineItems.create()).build()).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -43,11 +39,7 @@ class OrderTest {
         Menu 메뉴 = new Menu(1L, "무료 메뉴", BigDecimal.ZERO, new MenuGroup("무료 그룹"));
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 1L);
         OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));
-        assertThatThrownBy(
-                () -> new Order.Builder()
-                .orderStatus(OrderStatus.COMPLETION)
-                .orderLineItems(주문_항목들)
+        assertThatThrownBy(() -> new Order.Builder().orderStatus(OrderStatus.COMPLETION).orderLineItems(주문_항목들)
                 .build()).isInstanceOf(IllegalArgumentException.class);
-
     }
 }

@@ -23,8 +23,8 @@ public class OrderLineItems {
         this.values = copy(orderLineItems);
     }
 
-    private static List<OrderLineItem> copy(List<OrderLineItem> menuProducts) {
-        return menuProducts.stream().map(OrderLineItem::from).collect(Collectors.toList());
+    private static List<OrderLineItem> copy(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream().map(OrderLineItem::from).collect(Collectors.toList());
     }
 
     public static OrderLineItems create() {

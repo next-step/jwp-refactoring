@@ -12,18 +12,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,18 +36,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("메뉴 서비스")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-    @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
-    private ProductRepository productRepository;
-
-    @Mock
-    private MenuGroupService menuGroupService;
-
     @InjectMocks
     protected MenuService menuService;
-
+    @Mock
+    private MenuRepository menuRepository;
+    @Mock
+    private ProductRepository productRepository;
+    @Mock
+    private MenuGroupService menuGroupService;
     private MenuGroup 분식_그룹;
 
     @BeforeEach

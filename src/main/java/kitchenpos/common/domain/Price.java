@@ -54,6 +54,13 @@ public class Price {
     }
 
     @Override
+    public String toString() {
+        return "Price{" +
+                "value=" + value +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import kitchenpos.menu.domain.Menu;
@@ -10,11 +9,12 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("주문 항목 일급 컬랙션")
 class OrderLineItemsTest {
 
     @DisplayName("주문 항목을 추가할 수 있다.")
     @Test
-    void add() {
+    void 주문_항목_추가() {
         Menu 메뉴 = new Menu("메뉴", BigDecimal.ZERO, new MenuGroup("그룹"), new MenuProducts());
         OrderLineItems 주문_항목들 = new OrderLineItems();
         주문_항목들.add(OrderLineItem.of(메뉴, 1L));
@@ -24,7 +24,7 @@ class OrderLineItemsTest {
 
     @DisplayName("주문 항목 리스트가 비어 있는지 확인할 수 있다.")
     @Test
-    void isEmpty() {
+    void 주문_항목_리스트가_비어있는지_확인() {
         OrderLineItems 주문_항목들 = new OrderLineItems();
         assertThat(주문_항목들.isEmpty()).isTrue();
     }
