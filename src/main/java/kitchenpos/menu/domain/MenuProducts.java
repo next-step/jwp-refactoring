@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -17,11 +18,11 @@ public class MenuProducts {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return Collections.unmodifiableList(menuProducts);
     }
 
-    public void setMenu(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
-        menu.setMenuProducts(this);
+    public void saveMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.saveMenu(menu));
+        menu.saveMenuProducts(this);
     }
 }

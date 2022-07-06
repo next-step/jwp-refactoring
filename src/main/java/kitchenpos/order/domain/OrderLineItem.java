@@ -41,7 +41,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void saveOrder(Order order) {
         this.order = order;
     }
 }

@@ -1,7 +1,5 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuProductRepository;
@@ -12,38 +10,37 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dao.ProductRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final ProductRepository productRepository;
     private final MenuGroupService menuGroupService;
     private final MenuProductRepository menuProductRepository;
+    private final ProductService productService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final ProductRepository productRepository,
             final MenuGroupService menuGroupService,
-            final MenuProductRepository menuProductRepository
+            final MenuProductRepository menuProductRepository,
+            final ProductService productService
     ) {
         this.menuRepository = menuRepository;
-        this.productRepository = productRepository;
         this.menuGroupService = menuGroupService;
         this.menuProductRepository = menuProductRepository;
+        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         menuGroupService.existsById(menuRequest.getMenuGroupId());
-        validPriceCheck(menuRequest.getPrice(), menuRequest.getMenuProducts());
+        productService.validPriceCheck(menuRequest);
         Menu savedMenu = menuRepository.save(menuRequest.toMenu());
 
         MenuProducts menuProducts = createMenuProduct(menuRequest.getMenuProducts());
-        menuProducts.setMenu(savedMenu);
+        menuProducts.saveMenu(savedMenu);
         menuProductRepository.saveAll(menuProducts.getMenuProducts());
 
         return MenuResponse.of(savedMenu);
@@ -58,27 +55,21 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private void validPriceCheck(BigDecimal price, List<MenuProductRequest> menuProducts) {
-        BigDecimal sum = BigDecimal.ZERO;
+    @Transactional(readOnly = true)
+    public void countByIdIn(List<Long> menuIds) {
+        long menuCount = menuRepository.countByIdIn(menuIds);
 
-        for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException("메뉴의 금액은 상품의 합 보다 작아야합니다.");
+        if (menuIds.size() != menuCount) {
+            throw new IllegalArgumentException("존재하지 않는 메뉴입니다.");
         }
     }
 
     private MenuProducts createMenuProduct(List<MenuProductRequest> menuProductRequestList) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuProductRequestList) {
-            Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
-        }
+        List<MenuProduct> menuProducts = menuProductRequestList.stream()
+                .map(menuProductRequest -> new MenuProduct(menuProductRequest.getProductId(),
+                        menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
+
         return new MenuProducts(menuProducts);
     }
 }

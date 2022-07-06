@@ -9,7 +9,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.dao.TableGroupRepository;
@@ -32,7 +32,7 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderRepository orderRepository;
+    OrderValidator orderValidator;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -49,7 +49,7 @@ class TableGroupServiceTest {
         주문테이블1 = new OrderTable(2, 빈자리);
         주문테이블2 = new OrderTable(2, 빈자리);
 
-        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 빈자리), new OrderTable(2, 빈자리)));
+        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 빈자리), new OrderTable(2, 빈자리))).groupTables();
     }
 
     @Test
@@ -94,7 +94,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정시 주문 테이블은 이미 주문이 진행중인 테이블이거나 이미 단체 테이블이면 안 된다")
     void create_emptyTableGroupError() {
         // given
-        주문테이블1.setEmpty(false);
+        주문테이블1.changeEmpty(false);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(단체손님.getOrderTables());
 
         // when & then
@@ -108,7 +108,6 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
@@ -117,19 +116,6 @@ class TableGroupServiceTest {
         assertAll(
                 () -> assertThat(주문테이블1.getTableGroup()).isNull(),
                 () -> assertThat(주문테이블2.getTableGroup()).isNull()
-        );
-    }
-
-    @Test
-    @DisplayName("지정한 단체를 해제시 주문 상태가 계산 완료여야 한다")
-    void ungroup_completionError() {
-        // given
-        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.ungroup(1L)
         );
     }
 }

@@ -21,7 +21,6 @@ public class TableGroup extends BaseEntity {
 
 
     public TableGroup(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.groupTable(this));
         this.orderTables = new OrderTables(orderTables);
     }
 
@@ -31,5 +30,17 @@ public class TableGroup extends BaseEntity {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
+    }
+
+    public TableGroup groupTables() {
+        orderTables.getOrderTables()
+                .forEach(orderTable -> orderTable.groupTable(this));
+
+        return this;
+    }
+
+    public void ungroupTables() {
+        orderTables.getOrderTables()
+                .forEach(OrderTable::ungroupTable);
     }
 }

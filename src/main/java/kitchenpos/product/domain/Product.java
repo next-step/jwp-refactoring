@@ -24,6 +24,10 @@ public class Product {
         this.price = price;
     }
 
+    public BigDecimal multiplyPrice(Long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,7 +42,7 @@ public class Product {
 
     private void validatePriceCheck(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("유효하지 않은 금액입니다.");
         }
     }
 }

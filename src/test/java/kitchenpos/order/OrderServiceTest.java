@@ -1,17 +1,15 @@
 package kitchenpos.order;
 
-import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
@@ -19,10 +17,10 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,16 +39,16 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuRepository menuRepository;
-
-    @Mock
     OrderRepository orderRepository;
 
     @Mock
     OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    OrderValidator orderValidator;
+
+    @Mock
+    MenuService menuService;
 
     Order 주문;
     OrderTable 테이블1;
@@ -62,10 +60,10 @@ class OrderServiceTest {
         테이블1 = new OrderTable(5, false);
         주문내역 = new OrderLineItem(1L, 1L);
 
-        주문 = new Order(테이블1);
+        주문 = new Order(1L);
 
-        주문.setOrderLineItems(new OrderLineItems(Collections.singletonList(주문내역)));
-        주문내역.setOrder(주문);
+        주문.saveOrderLineItems(new OrderLineItems(Collections.singletonList(주문내역)));
+        주문내역.saveOrder(주문);
 
         주문요청 = new OrderRequest(1L,
                 Collections.singletonList(new OrderLineItemRequest(주문내역.getMenuId(), 주문내역.getQuantity())));
@@ -75,8 +73,6 @@ class OrderServiceTest {
     @DisplayName("주문을 저장한다")
     void create() {
         // given
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블1));
         given(orderRepository.save(any())).willReturn(주문);
         given(orderLineItemRepository.saveAll(any())).willReturn(Collections.singletonList(주문내역));
 
@@ -95,42 +91,11 @@ class OrderServiceTest {
     void create_EmptyOrderLineItemsError() {
         // given
         주문요청 = new OrderRequest(1L, Collections.emptyList());
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(주문요청)
         ).withMessageContaining("주문 내역이 존재하지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("주문시 주문내역의 메뉴는 모두 존재하는 메뉴여야 한다")
-    void create_nonMenuError() {
-        // given
-        OrderLineItemRequest 주문내역1 = new OrderLineItemRequest(1L, 1L);
-        OrderLineItemRequest 주문내역2 = new OrderLineItemRequest(1L, 1L);
-        주문요청 = new OrderRequest(1L, Arrays.asList(주문내역1, 주문내역2));
-
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문요청)
-        ).withMessageContaining("존재하지 않는 메뉴입니다.");
-    }
-
-    @Test
-    @DisplayName("주문시 주문테이블 정보를 가지고 있어야 한다")
-    void create_nonExistTableError() {
-        // given
-        테이블1.setEmpty(빈자리);
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문요청)
-        ).withMessageContaining("주문 테이블이 존재하지 않습니다.");
     }
 
     @Test

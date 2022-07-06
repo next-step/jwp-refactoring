@@ -16,7 +16,7 @@ public class MenuAcceptanceAPI {
     public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
                                                          MenuProduct menuProduct) {
         List<MenuProductRequest> menuProductRequests = Collections.singletonList(
-                new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity()));
+                new MenuProductRequest(menuProduct.getProductId(), menuProduct.getQuantity()));
         MenuRequest menuRequest = new MenuRequest(name, price, menuGroupId, menuProductRequests);
 
         return AcceptanceTest.doPost("/api/menus", menuRequest);

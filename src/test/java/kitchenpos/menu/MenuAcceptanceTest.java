@@ -30,7 +30,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         한마리메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_생성되어_있음("추천메뉴").as(MenuGroup.class);
         양념치킨상품 = ProductAcceptanceTest.상품_생성되어_있음("양념치킨상품", new BigDecimal(18000)).as(Product.class);
 
-        양념치킨메뉴 = new MenuProduct(양념치킨상품, 1L);
+        양념치킨메뉴 = new MenuProduct(양념치킨상품.getId(), 1L);
     }
 
     @Test

@@ -7,9 +7,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuProductRepository;
@@ -20,7 +20,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dao.ProductRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,13 +40,13 @@ class MenuServiceTest {
     MenuRepository menuRepository;
 
     @Mock
-    ProductRepository productRepository;
-
-    @Mock
     MenuGroupService menuGroupService;
 
     @Mock
     MenuProductRepository menuProductRepository;
+
+    @Mock
+    ProductService productService;
 
     Menu 후라이드치킨;
     Product 후라이드;
@@ -57,8 +57,8 @@ class MenuServiceTest {
     void setUp() {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
         후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000), 1L);
-        후라이드치킨상품 = new MenuProduct(후라이드, 1L);
-        후라이드치킨.setMenuProducts(new MenuProducts(Collections.singletonList(후라이드치킨상품)));
+        후라이드치킨상품 = new MenuProduct(1L, 1L);
+        후라이드치킨.saveMenuProducts(new MenuProducts(Collections.singletonList(후라이드치킨상품)));
 
         상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(15000), 1L,
                 Collections.singletonList(new MenuProductRequest(1L, 1L)));
@@ -68,7 +68,6 @@ class MenuServiceTest {
     @DisplayName("메뉴를 저장한다")
     void create() {
         // given
-        given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuRepository.save(any())).willReturn(후라이드치킨);
         given(menuProductRepository.saveAll(any())).willReturn(Collections.singletonList(후라이드치킨상품));
 
@@ -77,19 +76,6 @@ class MenuServiceTest {
 
         // then
         assertThat(actual.getName()).isEqualTo("후라이드치킨");
-    }
-
-    @Test
-    @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
-    void create_priceException() {
-        // given
-        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(-1), 1L,
-                Collections.singletonList(new MenuProductRequest(1L, 1L)));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(상품)
-        );
     }
 
     @Test
@@ -106,32 +92,6 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 저장시 메뉴는 존재하는 상품 정보를 가져야 한다")
-    void create_nonProductInfoError() {
-        // given
-        given(productRepository.findById(any())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(상품)
-        ).withMessageContaining("존재하지 않는 상품입니다.");
-    }
-
-    @Test
-    @DisplayName("메뉴 저장시 메뉴상품에 속한 상품들의 금액 합보다 메뉴 가격이 작아야 한다")
-    void create_totalPriceError() {
-        // given
-        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(20000), 1L,
-                Collections.singletonList(new MenuProductRequest(1L, 1L)));
-        given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(상품)
-        ).withMessageContaining("메뉴의 금액은 상품의 합 보다 작아야합니다.");
-    }
-
-    @Test
     @DisplayName("메뉴 리스트를 조회한다")
     void list() {
         // given
@@ -142,5 +102,17 @@ class MenuServiceTest {
 
         // then
         assertThat(actual).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("주문내역의 메뉴가 모두 존재하지 않으면 오류를 반환한다")
+    void create_nonMenuError() {
+        // given
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.countByIdIn(Arrays.asList(1L, 2L))
+        ).withMessageContaining("존재하지 않는 메뉴입니다.");
     }
 }

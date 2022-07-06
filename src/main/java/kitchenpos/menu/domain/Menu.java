@@ -50,13 +50,13 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    public void setMenuProducts(MenuProducts menuProducts) {
+    public void saveMenuProducts(MenuProducts menuProducts) {
         this.menuProducts = menuProducts;
     }
 
     private void validatePriceCheck(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("유효하지 않은 금액입니다.");
         }
     }
 }

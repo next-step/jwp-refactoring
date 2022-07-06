@@ -47,7 +47,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         메뉴그룹 = 메뉴_그룹_생성_요청("추천메뉴").as(MenuGroup.class);
 
-        메뉴상품 = new MenuProduct(상품, 1L);
+        메뉴상품 = new MenuProduct(상품.getId(), 1L);
 
         양념치킨 = 메뉴_생성_요청("양념치킨", new BigDecimal(18000), 메뉴그룹.getId(), 메뉴상품).as(MenuResponse.class);
 
