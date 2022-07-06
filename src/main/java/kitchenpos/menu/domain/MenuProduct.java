@@ -1,10 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.Quantity;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {

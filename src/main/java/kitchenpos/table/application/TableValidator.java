@@ -7,7 +7,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.exception.OrderTableException;
 import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table.repository.TableGroupRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 

@@ -1,9 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.exception.OrderStatusException;
-import kitchenpos.table.exception.OrderTableException;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

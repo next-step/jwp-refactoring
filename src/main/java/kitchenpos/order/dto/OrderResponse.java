@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 

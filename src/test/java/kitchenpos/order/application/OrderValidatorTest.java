@@ -24,9 +24,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static kitchenpos.factory.OrderFixture.*;
-import static kitchenpos.factory.OrderFixture.주문_메뉴_생성;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;

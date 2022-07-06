@@ -1,14 +1,10 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.OrderTableException;
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Embeddable
