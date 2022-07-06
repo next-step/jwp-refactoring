@@ -38,7 +38,7 @@ public class OrderTest {
     @Test
     void createOrderTest() {
         OrderLineItem 주문_물품 = 주문_물품_생성(메뉴, 1);
-        주문_테이블.updateEmpty(false, OrderStatus.COMPLETION);
+        주문_테이블.updateEmpty(false);
         assertThatNoException().isThrownBy(() -> 주문_생성(주문_테이블, 주문_물품_목록_생성(주문_물품)));
     }
 
@@ -48,7 +48,7 @@ public class OrderTest {
     void orderChangeStatusByCompletionStateTest(OrderStatus orderStatus) {
         // given
         OrderLineItem 주문_물품 = 주문_물품_생성(메뉴, 1);
-        주문_테이블.updateEmpty(false, OrderStatus.COMPLETION);
+        주문_테이블.updateEmpty(false);
         Order 주문 = 주문_생성(주문_테이블, 주문_물품_목록_생성(주문_물품));
         주문.changeOrderStatus(OrderStatus.COMPLETION);
 
@@ -62,7 +62,7 @@ public class OrderTest {
     void orderChangeStatusTest(OrderStatus orderStatus) {
         // given
         OrderLineItem 주문_물품 = 주문_물품_생성(메뉴, 1);
-        주문_테이블.updateEmpty(false, OrderStatus.COMPLETION);
+        주문_테이블.updateEmpty(false);
         Order 주문 = 주문_생성(주문_테이블, 주문_물품_목록_생성(주문_물품));
 
         // when

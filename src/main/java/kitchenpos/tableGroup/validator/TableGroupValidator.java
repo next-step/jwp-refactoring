@@ -2,13 +2,11 @@ package kitchenpos.tableGroup.validator;
 
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class TableGroupValidator {

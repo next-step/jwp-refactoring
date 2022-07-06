@@ -58,12 +58,4 @@ public class OrderService {
 
         return OrderResponse.from(savedOrder);
     }
-
-    public OrderStatus getOrderStatusByOrderTableId(final Long orderTableId) {
-        return orderRepository.findOrderStatusByOrderTableId(orderTableId);
-    }
-
-    public boolean existsByOrderTableIdInAndOrderStatusIn(final List<Long> orderTables, final List<OrderStatus> orderStatuses) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, orderStatuses);
-    }
 }

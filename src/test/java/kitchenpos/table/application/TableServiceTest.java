@@ -1,15 +1,12 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class TableServiceTest {
 
     @MockBean
-    private OrderService orderService;
+    private OrderRepository orderRepository;
 
     @Autowired
     private TableService tableService;
@@ -71,11 +68,10 @@ public class TableServiceTest {
     }
 
     @DisplayName("요리중 또는 식사중인 주문 테이블의 빈 테이블 여부를 변경하면 예외가 발생해야 한다")
-    @ParameterizedTest
-    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL" })
-    void changeEmptyByCockingOrMealStatusOrderTableTest(OrderStatus orderStatus) {
+    @Test
+    void changeEmptyByCockingOrMealStatusOrderTableTest() {
         // given
-        when(orderService.getOrderStatusByOrderTableId(any())).thenReturn(orderStatus);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
         OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
 
         // then
@@ -125,7 +121,6 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuestsTest() {
         // given
-        when(orderService.getOrderStatusByOrderTableId(any())).thenReturn(OrderStatus.COMPLETION);
         OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
         tableService.changeEmpty(생성_된_주문_테이블.getId(), false);
 
