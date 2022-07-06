@@ -1,38 +1,31 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.global.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 @Service
 public class MenuService {
-    private static final int FIRST_INDEX = 0;
     private final MenuRepository menuRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private final MenuGroupService menuGroupService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final ProductRepository productRepository,
+            final ProductService productService,
             final MenuGroupService menuGroupService
     ) {
         this.menuRepository = menuRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
         this.menuGroupService = menuGroupService;
     }
 
@@ -47,60 +40,34 @@ public class MenuService {
     private void validateCreate(MenuRequest request) {
         validateMenuGroupId(request.getMenuGroupId());
         validateMenuProduct(request);
-        validPrice(request);
     }
 
-    public boolean validateMenuGroupId(Long menuGroupId) {
-        return menuGroupService.existsById(menuGroupId);
+    public void validateMenuGroupId(Long menuGroupId) {
+        if (!menuGroupService.existsById(menuGroupId)) {
+            new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
+        }
     }
 
     private void validateMenuProduct(MenuRequest request) {
-        List<Long> productIds = request.getMenuProductRequests().stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(toList());
-
-        List<Product> products = productRepository.findByIdIn(productIds);
-
-        if (productIds.size() != products.size()) {
-            throw new IllegalArgumentException("등록되지 않은 상품이 있습니다.");
-        }
-    }
-
-    private void validPrice(MenuRequest request) {
-        Price total = new Price(BigDecimal.ZERO);
-        for (MenuProductRequest menuProductRequest : request.getMenuProductRequests()) {
-            Product product = findByProductId(menuProductRequest.getProductId());
-            Price menuProductPrice = new Price(product.getMultipleValue(menuProductRequest.getQuantity()));
-            total = total.add(menuProductPrice);
-        }
-
-        if (total.getValue().compareTo(request.getPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴 상품보다 메뉴의 가격이 높을 수 없습니다.");
+        final long sum = request.getMenuProductRequests()
+                .stream()
+                .map(menuProduct -> productService.findById(menuProduct.getProductId()).getPrice().longValue()
+                                * menuProduct.getQuantity())
+                .reduce(Long::sum)
+                .get();
+        if (request.getPrice().longValue() > sum) {
+            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
         }
     }
 
     private Product findByProductId(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품이 있습니다."));
+        return productService.findById(productId);
     }
 
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(toList());
-    }
-
-    private List<Product> getProducts(MenuRequest request) {
-        List<Long> productIds = request.getMenuProductRequests().stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(toList());
-
-        List<Product> products = productRepository.findByIdIn(productIds);
-        if (products.size() != request.getMenuProductRequests().size()) {
-            throw new IllegalArgumentException("등록되지 않은 상품이 있습니다.");
-        }
-
-        return products;
     }
 
     public Menu findById(Long id) {

@@ -31,4 +31,9 @@ public class ProductService {
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상풉입니다."));
+    }
 }
