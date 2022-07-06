@@ -39,7 +39,7 @@ public class OrderService {
                 .orElseThrow(() -> new NoSuchElementException("주문이 가능한 테이블이 아닙니다"));
 
         final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
-        validExistMenuId(orderLineItemRequests);
+        validateExistMenuId(orderLineItemRequests);
 
         Order saveOrder = orderRepository.save(Order.createOrder(orderTable.getId(),
                 OrderLineItems.of(orderLineItemRequests)));
@@ -49,7 +49,7 @@ public class OrderService {
         return OrderResponse.of(saveOrder);
     }
 
-    private void validExistMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
+    private void validateExistMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
         final List<Long> menuIds = orderLineItemRequests.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());

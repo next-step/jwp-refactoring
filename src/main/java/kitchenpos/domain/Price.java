@@ -16,11 +16,11 @@ public class Price {
     }
 
     private Price(BigDecimal price) {
-        validPrice(price);
+        validatePrice(price);
         this.price = price;
     }
 
-    private void validPrice(BigDecimal price) {
+    private void validatePrice(BigDecimal price) {
         if (ObjectUtils.isEmpty(price) || isZeroOver(price)) {
             throw new IllegalArgumentException("가격은 0원 초과이어야 합니다.");
         }

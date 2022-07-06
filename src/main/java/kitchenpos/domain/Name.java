@@ -1,10 +1,16 @@
 package kitchenpos.domain;
 
+import javax.persistence.Embeddable;
 import org.springframework.util.ObjectUtils;
 
+@Embeddable
 public class Name {
 
-    private final String name;
+    private String name;
+
+    protected Name() {
+
+    }
 
     public Name(String name) {
         validateName(name);

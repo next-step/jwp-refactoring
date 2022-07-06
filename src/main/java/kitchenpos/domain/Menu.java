@@ -36,8 +36,8 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        valid(name, price, menuGroup, menuProducts);
-        validPrice(price, menuProducts.totalAmount());
+        validate(name, price, menuGroup, menuProducts);
+        validatePrice(price, menuProducts.totalAmount());
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -54,20 +54,20 @@ public class Menu {
         return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
     }
 
-    private void validPrice(Price price, Amount totalAmount) {
+    private void validatePrice(Price price, Amount totalAmount) {
         if (price.isBigThen(totalAmount)) {
             throw new IllegalArgumentException("메뉴의 가격은 구성하고 있는 메뉴 상품들의 가격(상품가격 * 수량)의 합계보다 작아야 합니다.");
         }
     }
 
-    private void valid(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validEmpty(name, "이름은 필수 이어야 합니다.");
-        validEmpty(price, "가격은 필수 이어야 합니다.");
-        validEmpty(menuGroup, "메뉴그룹은 필수 이어야 합니다.");
-        validEmpty(menuProducts, "메뉴상품들은 필수 이어야 합니다.");
+    private void validate(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateEmpty(name, "이름은 필수 이어야 합니다.");
+        validateEmpty(price, "가격은 필수 이어야 합니다.");
+        validateEmpty(menuGroup, "메뉴그룹은 필수 이어야 합니다.");
+        validateEmpty(menuProducts, "메뉴상품들은 필수 이어야 합니다.");
     }
 
-    private void validEmpty(Object obj, String msg) {
+    private void validateEmpty(Object obj, String msg) {
         if (ObjectUtils.isEmpty(obj)) {
             throw new IllegalArgumentException(msg);
         }

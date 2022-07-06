@@ -11,12 +11,12 @@ public class Amount {
     private final BigDecimal amount;
 
     private Amount(BigDecimal amount) {
-        valid(amount);
+        validate(amount);
         this.amount = amount;
     }
 
     private Amount(Price price, Quantity quantity) {
-        validAmount(price, quantity);
+        validateAmount(price, quantity);
         amount = price.multiply(quantity);
     }
 
@@ -51,7 +51,7 @@ public class Amount {
         return amount;
     }
 
-    private void valid(BigDecimal amount) {
+    private void validate(BigDecimal amount) {
         if (ObjectUtils.isEmpty(amount) || isZeroEqualOrOver(amount)) {
             throw new IllegalArgumentException("금액은 0원 이상이어야 합니다.");
         }
@@ -62,7 +62,7 @@ public class Amount {
         return amount.compareTo(BigDecimal.ZERO) <= COMPARE_EQUAL_NUMBER;
     }
 
-    private void validAmount(Price price, Quantity quantity) {
+    private void validateAmount(Price price, Quantity quantity) {
         if (ObjectUtils.isEmpty(price)) {
             throw new IllegalArgumentException("가격은 필수 입니다.");
         }

@@ -12,7 +12,7 @@ class MenuProductsTest {
 
     @Test
     @DisplayName("메뉴상품은 하나 이상 존재 해야한다.")
-    void valid() {
+    void validate() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> MenuProducts.from(new ArrayList<>()));
     }

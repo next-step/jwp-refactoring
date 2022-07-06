@@ -15,7 +15,8 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
 
     @Embedded
     private Price price;
@@ -25,15 +26,13 @@ public class Product {
     }
 
     public Product(String name) {
-        validName(name);
-        this.name = name;
+        this.name = new Name(name);
     }
 
 
     public Product(String name, Price price) {
-        validName(name);
         validPrice(price);
-        this.name = name;
+        this.name = new Name(name);
         this.price = price;
     }
 
@@ -43,9 +42,9 @@ public class Product {
     }
 
     public Product(Long id, String name, Price price) {
+        this(name, price);
         this.id = id;
-        this.name = name;
-        this.price = price;
+
     }
 
 
@@ -55,11 +54,6 @@ public class Product {
     }
 
 
-    private void validName(String name) {
-        if (ObjectUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("상품의 이름은 필수 입니다.");
-        }
-    }
 
     private void validPrice(Price price) {
         if (ObjectUtils.isEmpty(price)) {
@@ -77,12 +71,9 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.value();
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
 
     public Price getPrice() {
         return price;
