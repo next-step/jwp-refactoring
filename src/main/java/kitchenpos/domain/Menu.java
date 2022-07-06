@@ -46,7 +46,7 @@ public class Menu {
     }
 
     private Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this(name, Price.of(price), menuGroup, menuProducts);
+        this(name, Price.from(price), menuGroup, menuProducts);
 
     }
 

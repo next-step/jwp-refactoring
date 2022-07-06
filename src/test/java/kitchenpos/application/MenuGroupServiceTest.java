@@ -32,7 +32,7 @@ class MenuGroupServiceTest {
     void createMenuGroup() {
         //given
         MenuGroupRequest request = new MenuGroupRequest("양식");
-        given(menuGroupRepository.save(MenuGroup.of(request.getName()))).willReturn(MenuGroup.of("양식"));
+        given(menuGroupRepository.save(MenuGroup.from(request.getName()))).willReturn(MenuGroup.from("양식"));
 
         //when
         MenuGroupResponse saveMenuGroup = menuGroupService.create(request);
@@ -45,8 +45,8 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 목록을 조회 한다.")
     void retriedMenuGroups() {
         //given
-        MenuGroup 양식 = MenuGroup.of("양식");
-        MenuGroup 일식 = MenuGroup.of("일식");
+        MenuGroup 양식 = MenuGroup.from("양식");
+        MenuGroup 일식 = MenuGroup.from("일식");
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(양식, 일식));
 
         //when

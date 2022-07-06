@@ -27,7 +27,6 @@ public class TableGroup {
 
     public TableGroup(Long id, OrderTables orderTables) {
         this(orderTables);
-        createdDate = LocalDateTime.now();
         this.id = id;
     }
 

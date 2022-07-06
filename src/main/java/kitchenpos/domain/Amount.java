@@ -25,19 +25,19 @@ public class Amount {
         this(product.getPrice(), quantity);
     }
 
-    public static Amount of(int amount) {
+    public static Amount from(int amount) {
         return new Amount(BigDecimal.valueOf(amount));
     }
 
-    public static Amount of(BigDecimal amount) {
+    public static Amount from(BigDecimal amount) {
         return new Amount(amount);
     }
 
-    public static Amount of(MenuProduct menuProduct) {
+    public static Amount from(MenuProduct menuProduct) {
         return new Amount(menuProduct.getProduct(), menuProduct.getQuantity());
     }
 
-    public static Amount of(Product product, Quantity quantity) {
+    public static Amount from(Product product, Quantity quantity) {
         return new Amount(product.getPrice(), quantity);
     }
 

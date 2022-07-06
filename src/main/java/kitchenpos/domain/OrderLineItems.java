@@ -43,7 +43,7 @@ public class OrderLineItems {
     public static OrderLineItems of(List<OrderLineItemRequest> requestList) {
         return new OrderLineItems(requestList
                 .stream()
-                .map((orderLineItemRequest) -> OrderLineItem.of(orderLineItemRequest.getMenuId(),
+                .map((orderLineItemRequest) -> OrderLineItem.from(orderLineItemRequest.getMenuId(),
                         orderLineItemRequest.getQuantity()))
                 .collect(Collectors.toList()));
     }

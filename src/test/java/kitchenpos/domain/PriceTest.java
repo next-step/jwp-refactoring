@@ -22,25 +22,25 @@ class PriceTest {
 
         //when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> Price.of(price));
+                .isThrownBy(()-> Price.from(price));
     }
 
     @Test
     @DisplayName("가격은 필수이다")
     void priceIsNotNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> Price.of(null));
+                .isThrownBy(()-> Price.from(null));
     }
 
     @Test
     @DisplayName("가격 비교")
     void isBigThen() {
         assertAll(
-                () -> assertThat(Price.of(4).isBigThen(Price.of(3))).isTrue(),
-                () -> assertThat(Price.of(3).isBigThen(Price.of(3))).isFalse(),
-                () -> assertThat(Price.of(3).isBigThen(Price.of(4))).isFalse(),
-                () -> assertThat(Price.of(3).isBigThen(Amount.of(4))).isFalse(),
-                () -> assertThat(Price.of(4).isBigThen(Amount.of(3))).isTrue()
+                () -> assertThat(Price.from(4).isBigThen(Price.from(3))).isTrue(),
+                () -> assertThat(Price.from(3).isBigThen(Price.from(3))).isFalse(),
+                () -> assertThat(Price.from(3).isBigThen(Price.from(4))).isFalse(),
+                () -> assertThat(Price.from(3).isBigThen(Amount.from(4))).isFalse(),
+                () -> assertThat(Price.from(4).isBigThen(Amount.from(3))).isTrue()
         );
     }
 

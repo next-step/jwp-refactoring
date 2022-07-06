@@ -35,7 +35,7 @@ public class MenuProduct {
     public MenuProduct(Product product, int quantity) {
         validProduct(product);
         this.product = product;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = Quantity.from(quantity);
     }
 
     public MenuProduct(Long id, Menu menu, Product product, Quantity quantity) {
@@ -63,7 +63,7 @@ public class MenuProduct {
     }
 
     public Amount getAmount() {
-        return Amount.of(this);
+        return Amount.from(this);
     }
 
     public Long getSeq() {

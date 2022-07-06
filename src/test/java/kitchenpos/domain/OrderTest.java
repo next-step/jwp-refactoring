@@ -15,8 +15,8 @@ class OrderTest {
     private List<OrderLineItem> orderLineItems;
     @BeforeEach
     void setUp() {
-        OrderLineItem orderLineItem1 = OrderLineItem.of(1L, 3);
-        OrderLineItem orderLineItem2 = OrderLineItem.of(1L, 3);
+        OrderLineItem orderLineItem1 = OrderLineItem.from(1L, 3);
+        OrderLineItem orderLineItem2 = OrderLineItem.from(1L, 3);
         orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
     }
 
@@ -24,7 +24,7 @@ class OrderTest {
     @DisplayName("주문 테이블은 존재 해야 한다.")
     void orderTableIsNull() {
         OrderLineItems orderLineItems = OrderLineItems.from(
-                Collections.singletonList(OrderLineItem.of(1L, 2)));
+                Collections.singletonList(OrderLineItem.from(1L, 2)));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(null, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems));

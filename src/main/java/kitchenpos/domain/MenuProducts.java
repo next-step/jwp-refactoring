@@ -13,7 +13,7 @@ import org.springframework.util.ObjectUtils;
 
 @Embeddable
 public class MenuProducts {
-    private static final int MIE_MENU_PRODUCT_QTY = 1;
+    private static final int MIE_MENU_PRODUCT_QUANTITY = 1;
     private static final int SEQ_START_INDEX = 1;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "menu")
@@ -57,7 +57,7 @@ public class MenuProducts {
 
 
     private void validMenuProducts(List<MenuProduct> menuProductElements) {
-        if (CollectionUtils.isEmpty(menuProductElements) || menuProductElements.size() < MIE_MENU_PRODUCT_QTY) {
+        if (CollectionUtils.isEmpty(menuProductElements) || menuProductElements.size() < MIE_MENU_PRODUCT_QUANTITY) {
             throw new IllegalArgumentException("메뉴상품은 1개 이상이 존재 해야합니다.");
         }
         if (menuProductElements.stream().anyMatch(Objects::isNull)) {

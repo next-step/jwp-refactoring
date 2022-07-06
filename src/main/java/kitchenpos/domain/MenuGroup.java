@@ -26,7 +26,7 @@ public class MenuGroup {
 
     }
 
-    public static MenuGroup of(String name) {
+    public static MenuGroup from(String name) {
         return new MenuGroup(name);
     }
 

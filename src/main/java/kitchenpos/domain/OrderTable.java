@@ -29,7 +29,7 @@ public class OrderTable {
 
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = NumberOfGuest.of(numberOfGuests);
+        this.numberOfGuests = NumberOfGuest.from(numberOfGuests);
         this.empty = empty;
     }
 
@@ -52,7 +52,7 @@ public class OrderTable {
         if (isEmpty()) {
             throw new IllegalArgumentException("빈테이블일 경우 방문자를 변경할 수 없습니다.");
         }
-        this.numberOfGuests = NumberOfGuest.of(numberOfGuests);
+        this.numberOfGuests = NumberOfGuest.from(numberOfGuests);
     }
 
     public void changeTableGroupId(Long tableGroupId) {

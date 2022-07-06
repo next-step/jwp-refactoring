@@ -35,7 +35,7 @@ public class Product {
 
 
     public Product(String name, BigDecimal price) {
-        this(name, Price.of(price));
+        this(name, Price.from(price));
     }
 
     public Product(Long id, String name, Price price) {

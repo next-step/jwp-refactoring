@@ -13,7 +13,7 @@ class MenuGroupTest {
         String name = "";
 
         assertThatIllegalArgumentException().isThrownBy(
-                () -> MenuGroup.of(name)
+                () -> MenuGroup.from(name)
         );
     }
 

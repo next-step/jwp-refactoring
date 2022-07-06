@@ -78,7 +78,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(1, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
-        TableGroup tableGroup = new TableGroup(1L, OrderTables.of(orderTables));
+        TableGroup tableGroup = new TableGroup(1L, OrderTables.from(orderTables));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
@@ -97,7 +97,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(1L, 2L));
-        TableGroup tableGroup = new TableGroup(1L, OrderTables.of(orderTables));
+        TableGroup tableGroup = new TableGroup(1L, OrderTables.from(orderTables));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
@@ -117,7 +117,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
-        TableGroup tableGroup = new TableGroup(1L, OrderTables.of(orderTables));
+        TableGroup tableGroup = new TableGroup(1L, OrderTables.from(orderTables));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
@@ -151,7 +151,7 @@ class TableGroupServiceTest {
         //given
         OrderTable orderTable1 = new OrderTable(1L, 1L, 1, false);
         OrderTable orderTable2 = new OrderTable(2L, 1L, 1, false);
-        TableGroup tableGroup = new TableGroup(OrderTables.of(Arrays.asList(orderTable1, orderTable2)));
+        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
 
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),

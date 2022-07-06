@@ -39,9 +39,9 @@ class OrderLineItemsTest {
     public void changeOrder() {
         //given
         Order order = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(),OrderLineItems.from(
-                Collections.singletonList(OrderLineItem.of(1L, 2))));
+                Collections.singletonList(OrderLineItem.from(1L, 2))));
         OrderLineItems orderLineItems = OrderLineItems
-                .from(Arrays.asList(OrderLineItem.of(1L, 2L), OrderLineItem.of(2L, 3L)));
+                .from(Arrays.asList(OrderLineItem.from(1L, 2L), OrderLineItem.from(2L, 3L)));
 
         //when
         orderLineItems.changeOrder(order);

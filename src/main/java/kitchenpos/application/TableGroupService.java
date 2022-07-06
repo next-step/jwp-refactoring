@@ -38,7 +38,7 @@ public class TableGroupService {
 
         validateExistOrderTable(requestOrderTables, savedOrderTables);
 
-        TableGroup saveTableGroup = tableGroupRepository.save(new TableGroup(OrderTables.of(savedOrderTables)));
+        TableGroup saveTableGroup = tableGroupRepository.save(new TableGroup(OrderTables.from(savedOrderTables)));
         saveTableGroup.group();
 
         return new TableGroupResponse(saveTableGroup);

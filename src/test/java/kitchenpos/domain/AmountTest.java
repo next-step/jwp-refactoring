@@ -19,21 +19,21 @@ class AmountTest {
 
         //when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> Amount.of(price));
+                .isThrownBy(()-> Amount.from(price));
     }
 
     @Test
     @DisplayName("금액은 필수이다")
     void priceIsNotNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> Amount.of((BigDecimal) null));
+                .isThrownBy(()-> Amount.from((BigDecimal) null));
     }
 
     @Test
     @DisplayName("수량은 필수이다")
     void qtyIsNotNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> Amount.of(new Product("이름", BigDecimal.ONE), null));
+                .isThrownBy(()-> Amount.from(new Product("이름", BigDecimal.ONE), null));
     }
 
 
@@ -41,15 +41,15 @@ class AmountTest {
     @DisplayName("제품의 가격은 필수이다")
     void productPriceIsNotNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> Amount.of(new Product("이름", (Price) null), Quantity.of(10)));
+                .isThrownBy(()-> Amount.from(new Product("이름", (Price) null), Quantity.from(10)));
     }
 
     @Test
     @DisplayName("금액의 합계를 구한다")
     void totalAmount() {
-        List<Amount> amounts = Arrays.asList(Amount.of(10), Amount.of(20));
+        List<Amount> amounts = Arrays.asList(Amount.from(10), Amount.from(20));
 
-        assertThat(Amount.of(30)).isEqualTo(Amount.createSumAmounts(amounts));
+        assertThat(Amount.from(30)).isEqualTo(Amount.createSumAmounts(amounts));
 
     }
 

@@ -31,11 +31,11 @@ public class Price {
     }
 
 
-    public static Price of(BigDecimal price) {
+    public static Price from(BigDecimal price) {
         return new Price(price);
     }
 
-    public static Price of(int price) {
+    public static Price from(int price) {
         return new Price(BigDecimal.valueOf(price));
     }
 

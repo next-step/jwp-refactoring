@@ -36,12 +36,12 @@ public class OrderLineItem {
 
     private OrderLineItem(Long menuId, long quantity) {
         validateMenu(menuId);
-        this.quantity = Quantity.of(quantity);
+        this.quantity = Quantity.from(quantity);
         this.menuId = menuId;
 
     }
 
-    public static OrderLineItem of(Long menuId, long quantity) {
+    public static OrderLineItem from(Long menuId, long quantity) {
         return new OrderLineItem(menuId, quantity);
     }
 

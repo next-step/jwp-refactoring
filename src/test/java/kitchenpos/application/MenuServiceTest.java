@@ -62,8 +62,8 @@ class MenuServiceTest {
                 new MenuProductRequest(2L,1)
         );
 
-        product1 = new Product(1L,"상품1", Price.of(1000));
-        product2 = new Product(2L,"상품2", Price.of(1000));
+        product1 = new Product(1L,"상품1", Price.from(1000));
+        product2 = new Product(2L,"상품2", Price.from(1000));
     }
 
 
@@ -87,9 +87,9 @@ class MenuServiceTest {
     void menuPriceMinZero(int price) {
         //given
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(price), 1L, menuProductRequests1);
-        given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(MenuGroup.of("메뉴 그룹"));
-        given(productRepository.getOne(1L)).willReturn(new Product("상품1", Price.of(100)));
-        given(productRepository.getOne(2L)).willReturn(new Product("상품2", Price.of(100)));
+        given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(MenuGroup.from("메뉴 그룹"));
+        given(productRepository.getOne(1L)).willReturn(new Product("상품1", Price.from(100)));
+        given(productRepository.getOne(2L)).willReturn(new Product("상품2", Price.from(100)));
 
         //when & then
         assertThatIllegalArgumentException()
@@ -102,9 +102,9 @@ class MenuServiceTest {
     void productTotalIsBigAsMenuPriceIsBigAs() {
         //given
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(5000), 1L, menuProductRequests1);
-        given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(MenuGroup.of("메뉴 그룹"));
-        given(productRepository.getOne(1L)).willReturn(new Product("상품1", Price.of(1000)));
-        given(productRepository.getOne(2L)).willReturn(new Product("상품2", Price.of(1000)));
+        given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(MenuGroup.from("메뉴 그룹"));
+        given(productRepository.getOne(1L)).willReturn(new Product("상품1", Price.from(1000)));
+        given(productRepository.getOne(2L)).willReturn(new Product("상품2", Price.from(1000)));
 
 
         //when & then
@@ -116,9 +116,9 @@ class MenuServiceTest {
     @DisplayName("메뉴가 등록 된다.")
     void createMenu() {
         //given
-        MenuProduct menuProduct1 = new MenuProduct(1L,null, product1, Quantity.of(2));
-        MenuProduct menuProduct2 = new MenuProduct(2L,null, product2, Quantity.of(1));
-        Menu menu = new Menu(1L,"메뉴1", Price.of(2000), MenuGroup.of("메뉴 그룹"),
+        MenuProduct menuProduct1 = new MenuProduct(1L,null, product1, Quantity.from(2));
+        MenuProduct menuProduct2 = new MenuProduct(2L,null, product2, Quantity.from(1));
+        Menu menu = new Menu(1L,"메뉴1", Price.from(2000), MenuGroup.from("메뉴 그룹"),
                 MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2)));
         MenuRequest menuRequest = new MenuRequest("메뉴", menu.getPrice().value(), 1L, menuProductRequests1);
 
@@ -142,12 +142,12 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회")
     void listMenu() {
         //given
-        MenuProduct menuProduct1 = new MenuProduct(1L, null, product1, Quantity.of(2));
-        MenuProduct menuProduct2 = new MenuProduct(2L, null, product2, Quantity.of(1));
-        MenuProduct menuProduct3 = new MenuProduct(3L, null, product1, Quantity.of(3));
-        Menu menu1 = new Menu(1L,"메뉴1", Price.of(2000), MenuGroup.of("메뉴 그룹"),
+        MenuProduct menuProduct1 = new MenuProduct(1L, null, product1, Quantity.from(2));
+        MenuProduct menuProduct2 = new MenuProduct(2L, null, product2, Quantity.from(1));
+        MenuProduct menuProduct3 = new MenuProduct(3L, null, product1, Quantity.from(3));
+        Menu menu1 = new Menu(1L,"메뉴1", Price.from(2000), MenuGroup.from("메뉴 그룹"),
                 MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2)));
-        Menu menu2 = new Menu(2L,"메뉴2", Price.of(2000), MenuGroup.of("메뉴 그룹"),
+        Menu menu2 = new Menu(2L,"메뉴2", Price.from(2000), MenuGroup.from("메뉴 그룹"),
                 MenuProducts.from(Collections.singletonList(menuProduct3)));
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu1, menu2));

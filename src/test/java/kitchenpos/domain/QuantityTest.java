@@ -14,7 +14,7 @@ class QuantityTest {
     @ValueSource(longs = {0L, -1L})
     void qtyIsBigZero(long value) {
         assertThatIllegalArgumentException().isThrownBy(
-                () -> Quantity.of(value)
+                () -> Quantity.from(value)
         );
     }
 
