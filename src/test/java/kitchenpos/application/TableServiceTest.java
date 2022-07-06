@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.table.application.TableValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -36,10 +38,10 @@ class TableServiceTest {
     TableService tableService;
 
     @Mock
-    OrderRepository orderRepository;
+    OrderTableRepository orderTableRepository;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    TableValidator tableValidator;
 
     OrderTable 주문테이블;
 
@@ -91,8 +93,8 @@ class TableServiceTest {
         //given
         주문테이블 = new OrderTable(1L, null, 2, true);
         boolean 변경후상태 = false;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(tableValidator.findOrderTableById(anyLong())).willReturn(주문테이블);
+        willDoNothing().given(tableValidator).orderStatusValidate(anyLong());
 
         //when
         OrderTableResponse changedOrderTable = tableService.changeEmpty(주문테이블.getId(), 변경후상태);
@@ -102,58 +104,12 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 테이블일 경우 테이블 비어있는지 여부 변경 불가")
-    void changeEmptyInvalidTableId() {
-        //given
-        주문테이블 = new OrderTable(1L, null, 2, true);
-        boolean 변경후상태 = false;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        //then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블.getId(), 변경후상태);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("테이블이 테이블 그룹에 포함되어 있는 경우 테이블 비어있는지 여부 변경 불가")
-    void changeEmptyInvalidTableGroup() {
-        //given
-        주문테이블 = new OrderTable(1L, new TableGroup(2L, LocalDateTime.now()), 2, true);
-        boolean 변경후상태 = false;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
-
-        //then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블.getId(), 변경후상태);
-        }).isInstanceOf(OrderTableException.class)
-        .hasMessageContaining(OrderTableException.ORDER_TALBE_ALREADY_HAS_GROUP_MSG);
-    }
-
-    @Test
-    @DisplayName("테이블의 주문상태가 조리중/식사중일 경우 테이블 비어있는지 여부 변경 불가")
-    void changeEmptyInvalidOrderStatus() {
-        //given
-        주문테이블 = new OrderTable(1L, null, 2, true);
-        boolean 변경후상태 = false;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
-
-        //then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블.getId(), 변경후상태);
-        }).isInstanceOf(OrderStatusException.class)
-        .hasMessageContaining(OrderStatusException.ORDER_STATUS_CAN_NOT_UNGROUP_MSG);
-    }
-
-    @Test
     @DisplayName("테이블의 손님 숫자를 변경한다 (Happy Path)")
     void changeNumberOfGuests() {
         //given
         주문테이블 = new OrderTable(1L, null, 2, false);
         int 변경후손님수 = 3;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
+        given(tableValidator.findOrderTableById(anyLong())).willReturn(주문테이블);
 
         //when
         OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(주문테이블.getId(), 변경후손님수);
@@ -168,21 +124,7 @@ class TableServiceTest {
         //given
         주문테이블 = new OrderTable(1L, null, 2, false);
         int 변경후손님수 = -1;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
-
-        //then
-        assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(주문테이블.getId(), 변경후손님수);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("변경하려는 테이블이 유효하지 않은 경우 테이블의 손님 숫자 변경 불가")
-    void changeNumberOfGuestsInvalidOrderTable() {
-        //given
-        주문테이블 = new OrderTable(1L, null, 2, false);
-        int 변경후손님수 = 3;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(tableValidator.findOrderTableById(anyLong())).willReturn(주문테이블);
 
         //then
         assertThatThrownBy(() -> {
@@ -196,7 +138,7 @@ class TableServiceTest {
         //given
         주문테이블 = new OrderTable(1L, null, 2, true);
         int 변경후손님수 = 3;
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
+        given(tableValidator.findOrderTableById(anyLong())).willReturn(주문테이블);
 
         //then
         assertThatThrownBy(() -> {

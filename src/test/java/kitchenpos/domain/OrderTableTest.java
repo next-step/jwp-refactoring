@@ -32,7 +32,7 @@ class OrderTableTest {
     void changeEmptyHasTableGroup() {
         //given
         TableGroup 단체 = new TableGroup(1L, LocalDateTime.now());
-        테이블 = new OrderTable(1L, 단체, 2, false);
+        테이블 = new OrderTable(1L, 단체.getId(), 2, false);
 
         //then
         assertThatThrownBy(() -> 테이블.changeEmpty(true))
@@ -81,12 +81,12 @@ class OrderTableTest {
     void unGroup() {
         //given
         TableGroup 단체 = new TableGroup(1L, LocalDateTime.now());
-        테이블 = new OrderTable(1L, 단체, 2, false);
+        테이블 = new OrderTable(1L, 단체.getId(), 2, false);
 
         //when
         테이블.unGroup();
 
         //then
-        assertThat(테이블.getTableGroup()).isNull();
+        assertThat(테이블.getTableGroupId()).isNull();
     }
 }

@@ -20,12 +20,12 @@ class TableGroupTest {
     @DisplayName("단체지정에서 테이블을 해제한다.")
     void unGroup() {
         //given
-        OrderTable 일번테이블 = 테이블_생성(1L, 단체, 2, false);
-        OrderTable 이번테이블 = 테이블_생성(2L, 단체, 2, false);
         ArrayList<OrderTable> orderTables = new ArrayList<>();
+        단체 = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        OrderTable 일번테이블 = 테이블_생성(1L, 단체.getId(), 2, false);
+        OrderTable 이번테이블 = 테이블_생성(2L, 단체.getId(), 2, false);
         orderTables.add(일번테이블);
         orderTables.add(이번테이블);
-        단체 = new TableGroup(1L, LocalDateTime.now(), orderTables);
 
         //when
         단체.unGroup();
@@ -33,8 +33,8 @@ class TableGroupTest {
         //then
         assertAll(() -> {
             assertThat(단체.getOrderTables().getOrderTables().size()).isZero();
-            assertThat(일번테이블.getTableGroup()).isNull();
-            assertThat(이번테이블.getTableGroup()).isNull();
+            assertThat(일번테이블.getTableGroupId()).isNull();
+            assertThat(이번테이블.getTableGroupId()).isNull();
         });
     }
 }

@@ -8,7 +8,7 @@ public class TableGroupFixture {
         return new OrderTable(id, null, 2, false);
     }
 
-    public static OrderTable 테이블_생성(Long id, TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
-        return new OrderTable(id, tableGroup, numberOfGuests, isEmpty);
+    public static OrderTable 테이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean isEmpty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, isEmpty);
     }
 }
