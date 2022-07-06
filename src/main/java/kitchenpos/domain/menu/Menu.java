@@ -45,7 +45,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.menuProducts = MenuProducts.of(this, menuProducts);
-        this.price = Price.menuPriceOf(price, this.menuProducts);
+        this.price = Price.menuPriceOf(price, this.menuProducts.totalMenuProductPrice());
         this.name = Name.from(name);
         this.menuGroup = menuGroup;
     }
