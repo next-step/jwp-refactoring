@@ -2,14 +2,15 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -17,18 +18,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
-    public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
+    public ProductResponse create(final ProductRequest productRequest) {
+        final Product persistProduct = productRepository.save(
+                new Product(productRequest.getName(), productRequest.getPrice()));
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        return productRepository.save(product);
+        return ProductResponse.from(persistProduct);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<ProductResponse> list() {
+        return ProductResponse.fromToList(productRepository.findAll());
     }
 }
