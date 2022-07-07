@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,8 +16,8 @@ public class Menu {
     private Price price;
     @Column(nullable = false)
     private Long menuGroupId;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -38,12 +37,7 @@ public class Menu {
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         validateSumPrice(menuProducts);
-        for (MenuProduct menuProduct : menuProducts) {
-            if (!this.menuProducts.contains(menuProduct)) {
-                this.menuProducts.add(menuProduct);
-            }
-            menuProduct.bindTo(this);
-        }
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     private void validateSumPrice(List<MenuProduct> menuProducts) {
@@ -73,7 +67,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.get();
     }
 
 }
