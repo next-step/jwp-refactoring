@@ -20,7 +20,6 @@ public class TableGroup extends BaseEntity {
     private Long id;
 
     @OneToMany(
-            mappedBy = "tableGroup",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval = true)
@@ -50,11 +49,10 @@ public class TableGroup extends BaseEntity {
 
     private void addOrderTable(final OrderTable orderTable) {
         orderTables.add(orderTable);
-        orderTable.setTableGroup(this);
     }
 
     public void ungroup() {
-        orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+        orderTables.forEach(OrderTable::ungroup);
         orderTables = new ArrayList<>();
     }
 
@@ -70,7 +68,7 @@ public class TableGroup extends BaseEntity {
     }
 
     private static void validateExistTableGroup(final OrderTable savedOrderTable) {
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalArgumentException("이미 단체지정된 주문 테이블이 존재합니다.");
         }
     }
