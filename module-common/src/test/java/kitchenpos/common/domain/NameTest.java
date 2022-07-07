@@ -9,7 +9,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class NameTest {
-
     @Test
     @DisplayName("이름 생성 테스트")
     void name() {
