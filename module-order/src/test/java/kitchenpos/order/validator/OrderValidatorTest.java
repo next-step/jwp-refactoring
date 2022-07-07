@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 
 import static kitchenpos.common.Messages.*;
-import static kitchenpos.menu.fixture.MenuFixture.기본_메뉴;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +48,17 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문 생성시 정상적으로 유효성 검사에 성공한다.")
     void validateCreateOrder() {
+        MenuProduct 피자_2판 = MenuProduct.of(1L, Quantity.of(2));
+        MenuProducts 피자_구성품 = MenuProducts.of(Arrays.asList(피자_2판));
+        MenuGroup 피자_2판_메뉴_그룹 = MenuGroup.of(Name.of("피자_2판_메뉴_그룹"));
+
+        Menu 기본_메뉴 = Menu.of(
+                Name.of("피자_두판_세트_메뉴"),
+                Price.of(BigDecimal.valueOf(30_000)),
+                피자_2판_메뉴_그룹.getId(),
+                피자_구성품
+        );
+
         // given
         OrderRequest 주문_생성_요청 = OrderRequest.of(
                 1L,

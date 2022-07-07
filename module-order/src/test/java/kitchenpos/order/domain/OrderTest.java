@@ -7,7 +7,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
@@ -26,8 +25,7 @@ class OrderTest {
     @DisplayName("주문건을 피자 2판을 주문한다면 정상적으로 주문이 된다.")
     void order() {
         // given
-        Product 피자 = Product.of(Name.of("피자"), Price.of(BigDecimal.valueOf(17_000)));
-        MenuProduct 피자_2판 = MenuProduct.of(피자.getId(), Quantity.of(2));
+        MenuProduct 피자_2판 = MenuProduct.of(1L, Quantity.of(2));
         MenuProducts 피자_구성품 = MenuProducts.of(Arrays.asList(피자_2판));
         MenuGroup 피자_2판_메뉴_그룹 = MenuGroup.of(Name.of("피자_2판_메뉴_그룹"));
         OrderTable 주문_테이블_2명 = OrderTable.of(NumberOfGuests.of(2), Empty.of(false));
@@ -59,8 +57,7 @@ class OrderTest {
     @DisplayName("주문건을 상태 변경하는 경우 정상적으로 변경된다.")
     void changeOrderStatus() {
         // given
-        Product 피자 = Product.of(Name.of("피자"), Price.of(BigDecimal.valueOf(17_000)));
-        MenuProduct 피자_2판 = MenuProduct.of(피자.getId(), Quantity.of(2));
+        MenuProduct 피자_2판 = MenuProduct.of(1L, Quantity.of(2));
         MenuProducts 피자_구성품 = MenuProducts.of(Arrays.asList(피자_2판));
         MenuGroup 피자_2판_메뉴_그룹 = MenuGroup.of(Name.of("피자_2판_메뉴_그룹"));
         OrderTable 주문_테이블_2명 = OrderTable.of(NumberOfGuests.of(2), Empty.of(false));

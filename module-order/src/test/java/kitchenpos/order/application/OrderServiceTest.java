@@ -10,7 +10,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.*;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
@@ -49,7 +48,7 @@ class OrderServiceTest {
         // given
         OrderTable 신규_주문_테이블 = OrderTable.of(1L, null, NumberOfGuests.of(4), Empty.of(false));
         MenuGroup 추천_메뉴_그룹 = MenuGroup.of(1L, Name.of("추천 메뉴"));
-        MenuProduct 메뉴_상품_치킨 = MenuProduct.of(1L, null, ProductFixture.치킨.getId(), Quantity.of(1L));
+        MenuProduct 메뉴_상품_치킨 = MenuProduct.of(1L, null, 1L, Quantity.of(1L));
         Menu 치킨_두마리 = Menu.of(
                 1L,
                 Name.of("치킨"),
@@ -77,7 +76,7 @@ class OrderServiceTest {
     @DisplayName("주문건 리스트를 조회 한다면 정상적으로 조회 된다")
     void list() {
         // given
-        MenuProduct 메뉴_상품_치킨 = MenuProduct.of(1L, null, ProductFixture.치킨.getId(), Quantity.of(1L));
+        MenuProduct 메뉴_상품_치킨 = MenuProduct.of(1L, null, 1L, Quantity.of(1L));
         MenuGroup 추천_메뉴_그룹 = MenuGroup.of(1L, Name.of("추천 메뉴"));
         Menu 치킨_두마리 = Menu.of(
                 1L,
@@ -106,7 +105,7 @@ class OrderServiceTest {
     @DisplayName("주문건 상태 변경시 정상적으로 조회 및 변경 가능한 상태라면 변경된다")
     void changeOrderStatus() {
         // given
-        MenuProduct 메뉴_상품_치킨 = MenuProduct.of(1L, null, ProductFixture.치킨.getId(), Quantity.of(1L));
+        MenuProduct 메뉴_상품_치킨 = MenuProduct.of(1L, null, 1L, Quantity.of(1L));
         MenuGroup 추천_메뉴_그룹 = MenuGroup.of(1L, Name.of("추천 메뉴"));
         Menu 치킨_두마리 = Menu.of(
                 1L,
