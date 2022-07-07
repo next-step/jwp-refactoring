@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -64,16 +63,8 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public static List<OrderTable> ofList(final OrderTable... orderTables) {
@@ -84,5 +75,25 @@ public class OrderTable {
         if (empty) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void checkOrderTableIsGrouped() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeEmpty(final boolean empty) {
+        this.empty = empty;
+    }
+
+    public void checkNumberOfGuestsNotExists() {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 }

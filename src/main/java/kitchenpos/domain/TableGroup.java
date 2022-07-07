@@ -86,7 +86,7 @@ public class TableGroup {
     public void updateOrderTables() {
         for (final OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(this);
-            orderTable.setEmpty(false);
+            orderTable.changeEmpty(false);
         }
     }
 }

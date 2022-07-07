@@ -1,16 +1,20 @@
 package kitchenpos.application;
 
 import static kitchenpos.__fixture__.OrderTableTestFixture.주문_테이블_생성;
+import static kitchenpos.__fixture__.TableGroupTestFixture.테이블_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,6 +69,8 @@ public class TableServiceTest {
     @Test
     @DisplayName("주문 테이블 비울 때 이미 단체로 지정됐을 경우 Exception")
     public void changeEmtpyAlreadyExistsInGroupException() {
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Collections.emptyList());
+        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 테이블_그룹, 4, false);
         given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
 
         assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블))

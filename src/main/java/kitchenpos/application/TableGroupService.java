@@ -40,7 +40,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = findAllByTableGroupId(tableGroupId);
-        checkExistsByOrderTableIdInAndOrderStatusIn(orderTables.getOrderTableIds());
+        checkOrderStatusInCookingOrMeal(orderTables.getOrderTableIds());
 
         orderTables.upgroupAll();
         orderTableRepository.saveAll(orderTables.getOrderTables());
@@ -52,7 +52,7 @@ public class TableGroupService {
         return OrderTables.of(orderTableRepository.findAllByTableGroup(tableGroup));
     }
 
-    private void checkExistsByOrderTableIdInAndOrderStatusIn(final List<Long> orderTableIds) {
+    private void checkOrderStatusInCookingOrMeal(final List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
