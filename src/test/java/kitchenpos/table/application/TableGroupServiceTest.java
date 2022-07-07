@@ -33,6 +33,8 @@ public class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
     @Mock
     private TableValidator tableValidator;
+    @Mock
+    private OrderTableStatusValidator orderTableStatusValidator;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -157,7 +159,7 @@ public class TableGroupServiceTest {
         TableGroup 단체지정_테이블 = createTableGroup(orderTables);
         given(orderTableRepository.findAllByTableGroup(any())).willReturn(orderTables);
         given(tableGroupRepository.findById(단체지정_테이블.getId())).willReturn(Optional.of(단체지정_테이블));
-        willThrow(new IllegalArgumentException()).given(tableValidator).validateOrderTablesStatus(orderTables);
+        willThrow(new IllegalArgumentException()).given(orderTableStatusValidator).validateOrderTablesStatus(orderTables);
 
         // then
         assertThatThrownBy(() -> {

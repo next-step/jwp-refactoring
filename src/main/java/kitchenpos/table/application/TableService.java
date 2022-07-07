@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableStatusValidator;
 import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final TableValidator tableValidator;
+    private final OrderTableStatusValidator orderTableStatusValidator;
 
-    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator, OrderTableStatusValidator orderTableStatusValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableValidator = tableValidator;
+        this.orderTableStatusValidator = orderTableStatusValidator;
     }
 
     @Transactional
@@ -40,7 +43,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         OrderTable orderTable = getOrderTableById(orderTableId);
         orderTable.validateHasTableGroupId();
-        tableValidator.validateOrderStatus(orderTable.getId());
+        orderTableStatusValidator.validateOrderStatus(orderTable.getId());
 
         orderTable.updateEmpty();
         return OrderTableResponse.of(orderTableRepository.save(orderTable));

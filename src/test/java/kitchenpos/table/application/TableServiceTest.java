@@ -1,10 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.*;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableValidator;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +32,8 @@ public class TableServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableValidator tableValidator;
+    @Mock
+    private OrderTableStatusValidator orderTableStatusValidator;
     @InjectMocks
     private TableService tableService;
 
@@ -131,7 +129,7 @@ public class TableServiceTest {
     void changeEmpty_fail_orderStatus() {
         // given
         when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
-        willThrow(new IllegalArgumentException()).given(tableValidator).validateOrderStatus(주문_테이블.getId());
+        willThrow(new IllegalArgumentException()).given(orderTableStatusValidator).validateOrderStatus(주문_테이블.getId());
 
         // then
         assertThatThrownBy(() -> {
