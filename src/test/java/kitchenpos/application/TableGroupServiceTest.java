@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import kitchenpos.order.application.OrderTableOrderStatusValidatorImpl;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +41,7 @@ class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableOrderStatusValidatorImpl tableOrderStatusValidator;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -161,21 +161,6 @@ class TableGroupServiceTest {
 
         // Then
         verify(tableGroupRepository).findById(any());
-        verify(orderRepository).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
-    }
-
-    @Test
-    @DisplayName("조리중이거나 식사중인 주문 테이블이 포함된 경우 예외 발생 검증")
-    public void throwException_WhenOrderTablesOrderHasMealStatusOrCookingStatus() {
-        // Given
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체석));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-        // When & Then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableGroupService.ungroup(any()));
-
-        verify(tableGroupRepository).findById(any());
-        verify(orderRepository).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
+        verify(tableOrderStatusValidator).validateOrderStatus(anyList());
     }
 }
