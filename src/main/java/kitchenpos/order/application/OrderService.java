@@ -6,6 +6,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.exception.NoSuchOrderException;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

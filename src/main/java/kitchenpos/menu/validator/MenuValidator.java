@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.validator;
 
 import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.menu.domain.Menu;
