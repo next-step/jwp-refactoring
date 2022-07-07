@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.ui;
 
 import kitchenpos.exception.KitchenPosArgumentException;
+import kitchenpos.ordertable.application.TableService;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -12,9 +13,11 @@ import java.net.URI;
 @RestController
 public class TableGroupRestController {
     private final TableGroupService tableGroupService;
+    private final TableService tableService;
 
-    public TableGroupRestController(final TableGroupService tableGroupService) {
+    public TableGroupRestController(final TableGroupService tableGroupService, TableService tableService) {
         this.tableGroupService = tableGroupService;
+        this.tableService = tableService;
     }
 
     @PostMapping("/api/table-groups")
@@ -26,7 +29,7 @@ public class TableGroupRestController {
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
-        tableGroupService.ungroup(tableGroupId);
+        tableService.ungroupTableByTableGroupId(tableGroupId);
         return ResponseEntity.noContent().build();
     }
 

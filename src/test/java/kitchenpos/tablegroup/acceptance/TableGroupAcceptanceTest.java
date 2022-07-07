@@ -67,7 +67,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
      *     When 이미 그룹에 등록된 테이블 사용하여 테이블그룹 등록 요청
      *     Then 테이블그룹 등록 실패
      */
-    @DisplayName("테이블그룹을 관리리 실패한다")    @Test
+    @DisplayName("테이블그룹을 관리 실패한다")
+    @Test
     void 테이블그룹_관리_비정상_시나리오() {
         TableGroupRequest 테이블1개만_사용한_테이블그룹 = TableGroupRequest.from(Arrays.asList(테이블1.getId()));
         ExtractableResponse<Response> 테이블1개만_사용한_테이블그룹_등록 = 테이블그룹_등록_요청(테이블1개만_사용한_테이블그룹);

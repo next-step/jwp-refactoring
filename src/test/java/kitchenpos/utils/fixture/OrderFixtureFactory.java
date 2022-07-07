@@ -9,13 +9,13 @@ import java.util.List;
 
 public class OrderFixtureFactory {
     public static Order createOrder(Long id,
-                                    OrderTable orderTable,
+                                    Long orderTableId,
                                     List<OrderLineItem> orderLineItems) {
-        return Order.of(id, orderTable, orderLineItems);
+        return Order.of(id, orderTableId, orderLineItems);
     }
 
-    public static Order createOrder(OrderTable orderTable,
+    public static Order createOrder(Long orderTableId,
                                     List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTable, orderLineItems);
+        return Order.of(orderTableId, orderLineItems);
     }
 }

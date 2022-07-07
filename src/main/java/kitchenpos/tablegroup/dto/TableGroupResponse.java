@@ -1,37 +1,25 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class TableGroupResponse {
     private Long id;
-    private List<OrderTableResponse> orderTables;
 
     protected TableGroupResponse() {
     }
 
-    private TableGroupResponse(Long id, List<OrderTableResponse> orderTables) {
+    private TableGroupResponse(Long id) {
         this.id = id;
-        this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse from(TableGroup tableGroup) {
-        List<OrderTableResponse> orderTables = tableGroup.getOrderTables().stream()
-                .map(orderTable -> OrderTableResponse.from(orderTable))
-                .collect(Collectors.toList());
-        return new TableGroupResponse(tableGroup.getId(), orderTables);
+    public static TableGroupResponse from(TableGroup savedTableGroup) {
+        return new TableGroupResponse(savedTableGroup.getId());
     }
 
     public Long getId() {
         return id;
-    }
-
-    public List<OrderTableResponse> getOrderTables() {
-        return orderTables;
     }
 
     @Override
@@ -39,12 +27,11 @@ public class TableGroupResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroupResponse that = (TableGroupResponse) o;
-        return Objects.equals(id, that.id)
-                && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTables);
+        return Objects.hash(id);
     }
 }

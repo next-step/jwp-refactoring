@@ -1,45 +1,34 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.exception.NoSuchOrderException;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.exception.NoSuchOrderException;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final MenuService menuService,
-            final TableService tableService
-    ) {
+            final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
-        this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = tableService.findOrderTableById(orderRequest.getOrderTableId());
-        final Order order = Order.of(orderTable, retrieveOrderLineItems(orderRequest));
+        final Order order = orderRequest.toOrder();
+        orderValidator.validate(order);
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.from(savedOrder);
@@ -56,16 +45,6 @@ public class OrderService {
         savedOrder.changeStatus(orderRequest.getOrderStatus());
 
         return OrderResponse.from(savedOrder);
-    }
-
-    private List<OrderLineItem> retrieveOrderLineItems(OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
-        return orderLineItems.stream()
-                .map(orderLineItemsRequest -> {
-                    Menu menu = menuService.findMenuById(orderLineItemsRequest.getMenuId());
-                    return OrderLineItem.of(menu, orderLineItemsRequest.getQuantity());
-                })
-                .collect(Collectors.toList());
     }
 
     private Order findOrderById(Long orderId) {

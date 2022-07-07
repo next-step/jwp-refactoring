@@ -1,15 +1,17 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.validator;
 
 import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.NoSuchProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,25 +21,23 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
 import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
 import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
+public class MenuValidatorTest {
     @Mock
-    private MenuRepository menuRepository;
+    private ProductService productService;
     @Mock
-    private MenuValidator menuValidator;
+    private MenuGroupService menuGroupService;
     @InjectMocks
-    private MenuService menuService;
+    private MenuValidator menuValidator;
 
     private Menu 메뉴_김치찌개세트;
     private MenuGroup 메뉴그룹_한식;
@@ -53,50 +53,57 @@ class MenuServiceTest {
                 Arrays.asList(김치찌개세트_김치찌개));
     }
 
-    @DisplayName("메뉴를 등록할 수 있다")
+    @DisplayName("메뉴의 가격은, 메뉴상품의 정가의 합보다 클 수 없다")
     @Test
-    void 메뉴_등록(){
+    void 메뉴_등록_가격_검증_정가이하(){
         //given
-        given(menuRepository.save(any(Menu.class))).willReturn(메뉴_김치찌개세트);
-
-        //when
-        MenuRequest menuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), 메뉴_김치찌개세트.getPrice(), 메뉴_김치찌개세트.getMenuGroupId(),
-                Arrays.asList(
-                        MenuProductRequest.of(김치찌개세트_김치찌개.getProductId(), 김치찌개세트_김치찌개.getQuantity())
-                )
-        );
-        MenuResponse menuResponse = menuService.create(menuRequest);
-
-        //then
-        assertThat(menuResponse).isEqualTo(MenuResponse.from(메뉴_김치찌개세트));
-    }
-
-    @DisplayName("메뉴의 가격은 0 이상이어야 한다")
-    @Test
-    void 메뉴_등록_가격_검증_0이상(){
-        //given
+        given(menuGroupService.findMenuGroupById(anyLong())).willReturn(메뉴그룹_한식);
+        given(productService.findProductById(anyLong())).willReturn(김치찌개);
         MenuRequest invalidMenuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), -15000, 메뉴_김치찌개세트.getMenuGroupId(),
+                메뉴_김치찌개세트.getName(), 20000, 메뉴_김치찌개세트.getMenuGroupId(),
                 Arrays.asList(
                         MenuProductRequest.of(김치찌개세트_김치찌개.getProductId(), 김치찌개세트_김치찌개.getQuantity())
                 )
         );
 
         //then
-        assertThrows(IllegalPriceException.class, () -> menuService.create(invalidMenuRequest));
+        assertThrows(IllegalPriceException.class, () -> menuValidator.validate(invalidMenuRequest.toMenu()));
     }
 
-    @DisplayName("메뉴의 목록을 조회할 수 있다")
+    @DisplayName("등록하려는 메뉴그룹이 존재해야 한다")
     @Test
-    void 메뉴_목록_조회(){
+    void 메뉴_등록_메뉴그룹_검증(){
         //given
-        given(menuRepository.findAll()).willReturn(Arrays.asList(메뉴_김치찌개세트));
+        given(menuGroupService.findMenuGroupById(anyLong())).willThrow(NoSuchMenuGroupException.class);
 
         //when
-        List<MenuResponse> list = menuService.list();
+        MenuRequest invalidMenuRequest = MenuRequest.of(
+                메뉴_김치찌개세트.getName(), 15000, 메뉴_김치찌개세트.getMenuGroupId(),
+                Arrays.asList(
+                        MenuProductRequest.of(김치찌개세트_김치찌개.getProductId(), 김치찌개세트_김치찌개.getQuantity())
+                )
+        );
 
         //then
-        assertThat(list).containsExactly(MenuResponse.from(메뉴_김치찌개세트));
+        assertThrows(NoSuchMenuGroupException.class, () -> menuValidator.validate(invalidMenuRequest.toMenu()));
+    }
+
+    @DisplayName("등록하려는 메뉴상품의 상품이 존재해야 한다")
+    @Test
+    void 메뉴_등록_메뉴상품_검증(){
+        //given
+        given(menuGroupService.findMenuGroupById(anyLong())).willReturn(메뉴그룹_한식);
+        given(productService.findProductById(anyLong())).willThrow(NoSuchProductException.class);
+
+        //when
+        MenuRequest invalidMenuRequest = MenuRequest.of(
+                메뉴_김치찌개세트.getName(), 15000, 메뉴_김치찌개세트.getMenuGroupId(),
+                Arrays.asList(
+                        MenuProductRequest.of(김치찌개세트_김치찌개.getProductId(), 김치찌개세트_김치찌개.getQuantity())
+                )
+        );
+
+        //then
+        assertThrows(NoSuchProductException.class, () -> menuValidator.validate(invalidMenuRequest.toMenu()));
     }
 }

@@ -23,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +30,7 @@ import java.util.stream.Stream;
 
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -57,8 +57,7 @@ public class TableServiceTest {
         테이블_NOT_EMPTY = createOrderTable(1L, null, 4, false);
         테이블_GROUPED = createOrderTable(3L, null, 0, true);
         테이블_GROUPED2 = createOrderTable(4L, null, 0, true);
-        테이블_그룹 = TableGroupFixtureFactory.createTableGroup(LocalDateTime.now(),
-                Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
+        테이블_그룹 = TableGroupFixtureFactory.createTableGroup(1L, Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
     }
 
     @DisplayName("주문테이블을 등록할 수 있다")
@@ -204,5 +203,35 @@ public class TableServiceTest {
         //then
         assertThrows(IllegalOrderTableException.class,
                 () -> tableService.changeNumberOfGuests(테이블_EMPTY.getId(), orderTableNumOfGuestRequest));
+    }
+
+    @DisplayName("주문테이블을 삭제할 수 있다")
+    @Test
+    void 테이블그룹_삭제(){
+        //given
+        given(orderTableRepository.findAllByTableGroupId(anyLong()))
+                .willReturn(Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+
+        //when
+        tableService.ungroupTableByTableGroupId(테이블_그룹.getId());
+
+        //then
+        assertAll(
+                () -> assertThat(테이블_GROUPED.getTableGroupId()).isNull(),
+                () -> assertThat(테이블_GROUPED2.getTableGroupId()).isNull()
+        );
+    }
+
+    @DisplayName("주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 삭제할 수 없다")
+    @Test
+    void 테이블그룹_삭제_주문상태_검증(){
+        //given
+        given(orderTableRepository.findAllByTableGroupId(anyLong()))
+                .willReturn(Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+
+        //then
+        assertThrows(IllegalOrderException.class, () ->  tableService.ungroupTableByTableGroupId(테이블_그룹.getId()));
     }
 }
