@@ -34,9 +34,13 @@ public class Menu {
     public Menu() {
     }
 
+    public Menu(String name, Integer price) {
+        this.name=name;
+        this.price=Price.from(price);
+    }
+
     public Menu(String name, Integer price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = Price.from(price);
+        this(name,price);
         this.menuGroup = menuGroup;
     }
 

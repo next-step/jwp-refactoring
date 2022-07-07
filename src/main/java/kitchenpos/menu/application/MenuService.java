@@ -31,13 +31,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        MenuGroup menuGroup = getMenuGroup(menuRequest);
 
         final List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
-        menu.addMenuProducts(menuProducts);
+        Menu menu = menuRequest.toEntity(menuGroup, menuProducts);
 
         return new MenuResponse(menuRepository.save(menu));
     }
@@ -47,6 +44,11 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    private MenuGroup getMenuGroup(MenuRequest menuRequest) {
+        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     private List<MenuProduct> getMenuProducts(MenuRequest request) {
