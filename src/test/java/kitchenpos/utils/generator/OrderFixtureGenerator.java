@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.CreateOrderRequest;
 import kitchenpos.order.dto.CreateOrderTableItemRequest;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -25,13 +25,13 @@ public class OrderFixtureGenerator {
         final OrderTable savedOrderTable,
         final Menu... savedMenus
     ) {
-        return new Order(savedOrderTable, 주문_항목_목록_생성(savedMenus), LocalDateTime.now());
+        return new Order(savedOrderTable.getId(), 주문_항목_목록_생성(savedMenus), LocalDateTime.now());
     }
 
     private static List<OrderLineItem> 주문_항목_목록_생성(Menu... menus) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (Menu menu : menus) {
-            OrderLineItem orderLineItem = new OrderLineItem(menu, 1);
+            OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), 1);
             orderLineItems.add(orderLineItem);
         }
         return orderLineItems;

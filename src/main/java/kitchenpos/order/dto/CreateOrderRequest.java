@@ -2,9 +2,9 @@ package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.table.domain.OrderTable;
 
 public class CreateOrderRequest {
 
@@ -28,7 +28,13 @@ public class CreateOrderRequest {
         return orderLineItemRequests;
     }
 
-    public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderLineItems, LocalDateTime.now());
+    public Order toOrder() {
+        return new Order(orderTableId, toOrderLineItem(), LocalDateTime.now());
+    }
+
+    private List<OrderLineItem> toOrderLineItem() {
+        return orderLineItemRequests.stream()
+            .map(it -> new OrderLineItem(it.getMenuId(), it.getQuantity()))
+            .collect(Collectors.toList());
     }
 }

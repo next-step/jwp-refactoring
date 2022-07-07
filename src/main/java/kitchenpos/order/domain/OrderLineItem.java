@@ -1,15 +1,13 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -26,13 +24,8 @@ public class OrderLineItem {
     )
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "menu_id",
-        foreignKey = @ForeignKey(name = "FK_ORDER_LINE_ITEM_TO_MENU"),
-        nullable = false
-    )
-    private Menu menu;
+    @Column(nullable = false)
+    private Long menuId;
 
     private long quantity;
 
@@ -40,8 +33,8 @@ public class OrderLineItem {
 
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -57,12 +50,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
     public Long getMenuId() {
-        return menu.getId();
+        return menuId;
     }
 
     public void setOrder(Order order) {

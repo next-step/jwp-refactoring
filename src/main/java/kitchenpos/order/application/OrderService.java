@@ -3,46 +3,33 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.CreateOrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
 
-
-    public static final String EMPTY_ORDER_TABLE_ERROR_MESSAGE = "존재하지 않는 주문 테이블 입니다.";
     public static final String ORDER_NOT_FOUND_ERROR_MESSAGE = "존재하지 않는 주문 입니다.";
 
+    private final OrderCreationValidator orderCreationValidator;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
-    private final OrderCreateValidator orderCreateValidator;
 
     public OrderService(
-        OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository,
-        OrderCreateValidator orderCreateValidator
+        OrderCreationValidator orderCreationValidator,
+        OrderRepository orderRepository
     ) {
+        this.orderCreationValidator = orderCreationValidator;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
-        this.orderCreateValidator = orderCreateValidator;
     }
 
     @Transactional
     public OrderResponse create(final CreateOrderRequest createOrderRequest) {
-        List<OrderLineItem> orderLineItems = orderCreateValidator
-            .validateExistsMenusAndCreate(createOrderRequest.getOrderLineItemRequests());
-        final OrderTable orderTable = orderTableRepository.findById(createOrderRequest.getOrderTableId())
-            .orElseThrow(() -> new IllegalArgumentException(EMPTY_ORDER_TABLE_ERROR_MESSAGE));
-
-        Order order = createOrderRequest.toOrder(orderTable, orderLineItems);
-        return OrderResponse.from(orderRepository.save(order));
+        orderCreationValidator.validate(createOrderRequest);
+        return OrderResponse.from(orderRepository.save(createOrderRequest.toOrder()));
     }
 
     public List<OrderResponse> list() {
