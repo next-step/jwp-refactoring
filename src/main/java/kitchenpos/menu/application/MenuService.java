@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.global.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
@@ -51,21 +52,15 @@ public class MenuService {
     }
 
     private void validateMenuProduct(MenuRequest request) {
-        validPrice(request.getPrice());
+        Price requestPrice = new Price(request.getPrice());
         final long sum = request.getMenuProductRequests()
                 .stream()
                 .map(menuProduct -> productService.findById(menuProduct.getProductId()).getPrice().longValue()
                                 * menuProduct.getQuantity())
                 .reduce(Long::sum)
                 .get();
-        if (request.getPrice().longValue() > sum) {
+        if (requestPrice.getValue().longValue() > sum) {
             throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
-        }
-    }
-
-    private void validPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("잘못된 금액을 입력하였습니다.");
         }
     }
 
