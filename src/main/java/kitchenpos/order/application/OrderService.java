@@ -35,10 +35,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
-            throw new OrderException(OrderExceptionType.NOT_EXIST_ORDER_ITEM);
-        }
-
         final List<Menu> savedMenus = menuRepository.findAllById(orderRequest.fetchMenuIds());
 
         if (orderRequest.getOrderLineItems().size() != savedMenus.size()) {
