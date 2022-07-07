@@ -4,14 +4,14 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +55,8 @@ public class MenuService {
     }
 
     private Product findProductById(Long productId) {
-        return productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("상품(%d)을 찾을 수 없습니다.", productId)));
     }
 
     public List<MenuResponse> list() {

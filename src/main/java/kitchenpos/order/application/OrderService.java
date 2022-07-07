@@ -54,7 +54,8 @@ public class OrderService {
     }
 
     private OrderTable findOrderTableById(OrderRequest order) {
-        return orderTableRepository.findById(order.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(order.getOrderTableId()).orElseThrow(
+                () -> new IllegalArgumentException(String.format("주문 테이블(%d)을 찾을 수 없습니다.", order.getOrderTableId())));
     }
 
     public List<OrderResponse> list() {
@@ -70,7 +71,8 @@ public class OrderService {
     }
 
     private Order findOrderById(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("주문(%d)을 찾을 수 없습니다.", orderId)));
     }
 
     public boolean existOrderBeforeCompletion(OrderTable orderTable) {
