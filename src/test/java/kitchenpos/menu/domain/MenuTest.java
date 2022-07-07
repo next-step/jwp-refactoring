@@ -1,5 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
+import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
