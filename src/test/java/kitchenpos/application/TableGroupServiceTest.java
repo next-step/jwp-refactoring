@@ -13,10 +13,11 @@ import static org.mockito.BDDMockito.given;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +36,7 @@ public class TableGroupServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
     private OrderTable 주문_테이블;
@@ -45,9 +46,9 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블 = 주문_테이블_생성(1L, 1L, 4, false);
-        주문_테이블2 = 주문_테이블_생성(2L, 2L, 3, false);
-        주문_테이블3 = 주문_테이블_생성(3L, 3L, 3, false);
+        주문_테이블 = 주문_테이블_생성(1L, null, 4, false);
+        주문_테이블2 = 주문_테이블_생성(2L, null, 3, false);
+        주문_테이블3 = 주문_테이블_생성(3L, null, 3, false);
 
         테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
     }
@@ -96,8 +97,8 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("단체 테이블 생성 시 이미 단체 지정된 테이블은 단체로 지정 불가")
     public void createOrderTableIsAlreadyGroupException() {
-        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 1L, 4, false);
-        final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, 2L, 4, false);
+        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, false);
+        final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, null, 4, false);
         final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹)).isInstanceOf(IllegalArgumentException.class);
@@ -118,7 +119,7 @@ public class TableGroupServiceTest {
         final List<OrderTable> 저장된_주문_테이블_리스트 = 주문_테이블_리스트_생성(주문_테이블, 주문_테이블2);
 
         given(orderTableRepository.findAllByIdIn(주문_테이블_아이디_리스트)).willReturn(저장된_주문_테이블_리스트);
-        given(tableGroupDao.save(테이블_그룹)).willReturn(테이블_그룹);
+        given(tableGroupRepository.save(테이블_그룹)).willReturn(테이블_그룹);
         assertThat(tableGroupService.create(테이블_그룹).getId()).isEqualTo(테이블_그룹.getId());
     }
 
@@ -133,8 +134,8 @@ public class TableGroupServiceTest {
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
-        given(orderTableRepository.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
+        given(tableGroupRepository.findById(테이블_그룹.getId())).willReturn(Optional.ofNullable(테이블_그룹));
+        given(orderTableRepository.findAllByTableGroup(테이블_그룹)).willReturn(테이블_그룹.getOrderTables());
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
                 Arrays.asList(COOKING, MEAL))).willReturn(true);
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId())).isInstanceOf(
@@ -153,7 +154,8 @@ public class TableGroupServiceTest {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        given(orderTableRepository.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
+        given(tableGroupRepository.findById(테이블_그룹.getId())).willReturn(Optional.ofNullable(테이블_그룹));
+        given(orderTableRepository.findAllByTableGroup(테이블_그룹)).willReturn(테이블_그룹.getOrderTables());
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
                 Arrays.asList(COOKING, MEAL))).willReturn(false);
 

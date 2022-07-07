@@ -32,7 +32,7 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블 = 주문_테이블_생성(1L, 1L, 4, false);
+        주문_테이블 = 주문_테이블_생성(1L, null, 4, false);
     }
 
     @Test

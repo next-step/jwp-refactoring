@@ -78,7 +78,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 테이블이 비어있을 경우 Exception")
     public void createEmptyTableException() {
-        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 1L, 4, true);
+        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, true);
 
         given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
         given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
@@ -89,7 +89,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 생성")
     public void create() {
-        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 1L, 4, false);
+        final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, false);
 
         given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
         given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
