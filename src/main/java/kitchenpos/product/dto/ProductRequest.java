@@ -1,5 +1,6 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
@@ -25,5 +26,10 @@ public class ProductRequest {
 
     public Integer getPrice() {
         return price;
+    }
+
+    public Product toEntity() {
+        return new Product(name, Price.from(price));
+
     }
 }

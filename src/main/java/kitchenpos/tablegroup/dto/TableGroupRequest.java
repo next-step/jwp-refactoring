@@ -2,8 +2,7 @@ package kitchenpos.tablegroup.dto;
 
 import java.util.List;
 
-public class
-TableGroupRequest {
+public class TableGroupRequest {
     private List<Long> orderTables;
 
     public TableGroupRequest() {

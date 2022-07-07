@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -20,6 +22,10 @@ public class OrderLineItems {
     }
 
     public static OrderLineItems of(Order order, List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
         return new OrderLineItems(orderLineItems);
     }

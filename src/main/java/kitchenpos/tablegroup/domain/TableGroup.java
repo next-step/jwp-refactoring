@@ -32,7 +32,9 @@ public class TableGroup {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
+        validateOrderTables(orderTables);
         this.orderTables = orderTables;
+        orderTables.forEach(orderTable -> orderTable.groupBy(this));
     }
 
     public void group(List<OrderTable> orderTables) {

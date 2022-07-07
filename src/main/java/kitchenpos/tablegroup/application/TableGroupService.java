@@ -33,13 +33,9 @@ public class TableGroupService {
 
         final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        if (orderTables.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
-        }
+        checkNotExistOrderTable(orderTableIds, orderTables);
 
-        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
-
-        savedTableGroup.group(orderTables);
+        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
 
         return new TableGroupResponse(savedTableGroup);
     }
@@ -62,6 +58,12 @@ public class TableGroupService {
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkNotExistOrderTable(List<Long> orderTableIds, List<OrderTable> orderTables) {
+        if (orderTables.size() != orderTableIds.size()) {
             throw new IllegalArgumentException();
         }
     }
