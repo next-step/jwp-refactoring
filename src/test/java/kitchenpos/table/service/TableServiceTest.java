@@ -1,7 +1,6 @@
 package kitchenpos.table.service;
 
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -31,7 +30,7 @@ class TableServiceTest {
     TableService tableService;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableService orderTableService;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -77,6 +76,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
+        주문_테이블_생성(주문테이블1, 1L);
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
         when(orderTableRepository.save(주문테이블1))
@@ -95,7 +95,7 @@ class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
+        when(orderTableService.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId()))
                 .thenReturn(true);
 
         // then

@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -9,18 +8,17 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableService orderTableService;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository, OrderTableService orderTableService) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableService = orderTableService;
     }
 
     @Transactional
@@ -48,8 +46,7 @@ public class TableService {
     }
 
     private void validChangeEmpty(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderTableService.existsByOrderTableIdAndOrderStatusIn(orderTable.getId())) {
             throw new IllegalArgumentException("요리 또는 식사 중인 상태일 땐 변경할 수 없습니다.");
         }
     }
