@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +27,8 @@ public class OrderTest {
     void changeOrderStatus() {
         // given
         List<OrderLineItem> orderLineItems = Arrays.asList(
-                createOrderLineItem(1L, 1L),
-                createOrderLineItem(2L, 1L)
+                createOrderLineItem(new OrderMenu(1L, "싱글세트", BigDecimal.valueOf(15_000)), 1L),
+                createOrderLineItem(new OrderMenu(1L, "더블세트", BigDecimal.valueOf(25_000)), 1L)
         );
         Order order = createOrder(1L, OrderStatus.COMPLETION, orderLineItems);
 

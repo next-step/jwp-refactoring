@@ -68,12 +68,16 @@ public class CommonTestFixture {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItemRequest createOrderLineItemRequest(Long menuId, int quantity) {
-        return new OrderLineItemRequest(menuId, (long) quantity);
+    public static OrderMenu createOrderMenu(Long menuId, String menuName, BigDecimal menuPrice) {
+        return new OrderMenu(menuId, menuName, menuPrice);
     }
 
-    public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
-        return new OrderLineItem(menuId, quantity);
+    public static OrderLineItemRequest createOrderLineItemRequest(Long menuId, String menuName, BigDecimal price, int quantity) {
+        return new OrderLineItemRequest(menuId, menuName, price, (long) quantity);
+    }
+
+    public static OrderLineItem createOrderLineItem(OrderMenu orderMenu, long quantity) {
+        return new OrderLineItem(orderMenu, quantity);
     }
 
     public static OrderTableRequest createOrderTableRequest(int numberOfGuests, boolean empty) {

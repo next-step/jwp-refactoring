@@ -40,12 +40,11 @@ public class OrderServiceTest {
 
     private Product 싸이버거, 콜라;
     private MenuProduct 싱글세트_싸이버거, 싱글세트_콜라;
-    private MenuGroup 맘스세트메뉴;
-    private Menu 싱글세트;
     private OrderTable 주문_테이블;
     private OrderTable 빈_테이블;
     private OrderLineItem 주문항목;
     private OrderLineItemRequest 주문항목_요청;
+    private OrderMenu 주문_싱글세트;
 
     @BeforeEach
     void setUp() {
@@ -53,13 +52,12 @@ public class OrderServiceTest {
         콜라 = createProduct("콜라", BigDecimal.valueOf(1500));
         싱글세트_싸이버거 = createMenuProduct(싸이버거.getId(), 1);
         싱글세트_콜라 = createMenuProduct(콜라.getId(), 1);
-        맘스세트메뉴 = createMenuGroup("맘스세트메뉴");
-        싱글세트 = createMenu(1L, 1L, "싱글세트", BigDecimal.valueOf(5000), Lists.newArrayList(싱글세트_싸이버거, 싱글세트_콜라));
+        주문_싱글세트 = createOrderMenu(1L, "싱글세트", BigDecimal.valueOf(5000));
 
         주문_테이블 = createOrderTable(1L, null, 4, false);
         빈_테이블 = createOrderTable(2L, null, 0, true);
-        주문항목 = createOrderLineItem(싱글세트.getId(), 1);
-        주문항목_요청 = createOrderLineItemRequest(싱글세트.getId(), 1);
+        주문항목 = createOrderLineItem(주문_싱글세트, 1);
+        주문항목_요청 = createOrderLineItemRequest(1L, "싱글세트", BigDecimal.valueOf(5000), 1);
     }
 
     @DisplayName("주문을 등록한다.")
@@ -97,7 +95,7 @@ public class OrderServiceTest {
     @Test
     void create_fail_duplicated_menu() {
         // given
-        OrderLineItemRequest 미존재메뉴_주문항목_요청 = createOrderLineItemRequest(null, 1);
+        OrderLineItemRequest 미존재메뉴_주문항목_요청 = createOrderLineItemRequest(null, "싱글세트", BigDecimal.valueOf(5000), 1);
         OrderRequest 주문_요청 = createOrderRequest(주문_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청, 미존재메뉴_주문항목_요청));
         willThrow(new IllegalArgumentException()).given(orderValidator).validateCreate(주문_요청);
 
