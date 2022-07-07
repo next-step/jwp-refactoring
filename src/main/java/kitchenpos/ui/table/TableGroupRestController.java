@@ -34,8 +34,8 @@ public class TableGroupRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/api/table-groups/{id}")
-    public ResponseEntity<TableGroupResponse> getAll(@PathVariable("id") Long id) {
+    @GetMapping("/api/table-groups/{tableGroupId}")
+    public ResponseEntity<TableGroupResponse> getAll(@PathVariable("tableGroupId") Long id) {
         return ResponseEntity.ok().body(tableGroupService.findById(id));
     }
 }
