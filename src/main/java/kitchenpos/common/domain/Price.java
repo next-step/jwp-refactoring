@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
@@ -10,40 +10,40 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
-    @Column
-    private final BigDecimal price;
+    @Column(nullable = false, name = "price")
+    private final BigDecimal value;
 
     public Price() {
-        this.price = BigDecimal.ZERO;
+        this.value = BigDecimal.ZERO;
     }
 
     public Price(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new BadRequestException(ErrorCode.INVALID_PRICE);
         }
-        this.price = price;
+        this.value = price;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getValue() {
+        return value;
     }
 
     public boolean isBiggerThan(BigDecimal target) {
-        return price.compareTo(target) > 0;
+        return value.compareTo(target) > 0;
     }
 
     public Price add(Price price) {
-        return new Price(this.price.add(price.getPrice()));
+        return new Price(this.value.add(price.getValue()));
     }
 
     public boolean isOverThan(Price target) {
-        return price.compareTo(target.getPrice()) > 0;
+        return value.compareTo(target.getValue()) > 0;
     }
 
     @Override
     public String toString() {
         return "Price{" +
-                "price=" + price +
+                "price=" + value +
                 '}';
     }
 }

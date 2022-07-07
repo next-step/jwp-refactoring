@@ -2,7 +2,7 @@ package kitchenpos.menu.application.validator;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.application.ProductService;

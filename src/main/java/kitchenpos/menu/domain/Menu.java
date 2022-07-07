@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
