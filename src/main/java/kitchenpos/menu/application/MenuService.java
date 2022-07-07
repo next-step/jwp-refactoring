@@ -44,7 +44,7 @@ public class MenuService {
         validateMenuProduct(request);
     }
 
-    public void validateMenuGroupId(Long menuGroupId) {
+    private void validateMenuGroupId(Long menuGroupId) {
         if (!menuGroupService.existsById(menuGroupId)) {
             throw new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
         }
