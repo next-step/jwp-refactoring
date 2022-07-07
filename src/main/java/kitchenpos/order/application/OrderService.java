@@ -66,7 +66,7 @@ public class OrderService {
 
     private OrderLineItem createOrderLineItem(OrderLineItemRequest request) {
         final Menu menu = menuService.findById(request.getMenuId());
-        return OrderLineItem.of(menu.getId(), request.getQuantity());
+        return OrderLineItem.of(menu.getId(), menu.getName(), menu.getPrice(), request.getQuantity());
     }
 
     @Transactional(readOnly = true)
