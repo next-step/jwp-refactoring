@@ -35,22 +35,14 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
-    public void updateEmptyTable(final OrderTable updateTable, final boolean enabled) {
-        emptyValidate(enabled);
+    public void updateEmptyTable(final OrderTable updateTable) {
+        emptyValidate();
         this.empty = updateTable.isEmpty();
     }
 
-    private void emptyValidate(final boolean enabled) {
-        enabledOrderCancelStatus(enabled);
-
+    private void emptyValidate() {
         if (Objects.nonNull(tableGroupId)) {
             throw new TableException(TableExceptionType.EXIST_TABLE_GROUP);
-        }
-    }
-
-    private void enabledOrderCancelStatus(final boolean enabled) {
-        if (!enabled) {
-            throw new TableException(TableExceptionType.IMPOSSIBLE_ORDER_STATUS);
         }
     }
 
@@ -66,6 +58,12 @@ public class OrderTable {
 
         if(numberOfGuests < 0) {
             throw  new TableException(TableExceptionType.NUMBER_OF_GUESTS_ERROR);
+        }
+    }
+
+    public void validateUsed() {
+        if (!empty) {
+            throw new TableException(TableExceptionType.USED_TABLE);
         }
     }
 

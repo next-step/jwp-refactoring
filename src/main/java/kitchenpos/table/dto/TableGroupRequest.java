@@ -9,31 +9,31 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TableGroupRequest {
-    private final List<OrderTable> list;
+    private final List<OrderTable> orderTables;
 
     @JsonCreator
-    public TableGroupRequest(@JsonProperty("list") final List<OrderTable> list) {
-        this.list = list;
+    public TableGroupRequest(@JsonProperty("orderTables") final List<OrderTable> list) {
+        this.orderTables = list;
     }
 
-    public List<Long> getOrderTableIds () {
-        return list.stream()
+    public List<Long> fetchOrderTableIds() {
+        return orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderTable> getList() {
-        return list;
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 
     public int size() {
-        return list.size();
+        return orderTables.size();
     }
 
     @Override
     public String toString() {
         return "TableGroupRequest{" +
-                "list=" + list +
+                "orderTables=" + orderTables +
                 '}';
     }
 
@@ -42,11 +42,11 @@ public class TableGroupRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroupRequest that = (TableGroupRequest) o;
-        return Objects.equals(list, that.list);
+        return Objects.equals(orderTables, that.orderTables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return Objects.hash(orderTables);
     }
 }

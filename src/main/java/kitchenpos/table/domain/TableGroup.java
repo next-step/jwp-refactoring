@@ -25,7 +25,6 @@ public class TableGroup {
     public static TableGroup of(final List<OrderTable> orderTables, int requestOrderTableSize) {
         final OrderTables tables = OrderTables.of(orderTables);
         tables.notMatchCount(requestOrderTableSize);
-
         return new TableGroup(null, tables);
     }
 

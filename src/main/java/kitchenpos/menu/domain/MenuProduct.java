@@ -21,15 +21,15 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(final Long seq, final Long menuId, final Product product, final long quantity) {
+    public MenuProduct(final Long seq, final Product product, final long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
+        this.menuId = null;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(final Long menuId, final Product product, final long quantity) {
-        return new MenuProduct(menuId, menuId, product, quantity);
+    public static MenuProduct of(final Product product, final long quantity) {
+        return new MenuProduct(null, product, quantity);
     }
 
     public BigDecimal calculate() {

@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.repository.OrderRepository;
+import kitchenpos.table.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.repository.OrderTableRepository;
@@ -24,11 +26,11 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private OrderRepository orderRepository;
     @InjectMocks
     TableGroupService tableGroupService;
 
@@ -55,11 +57,15 @@ class TableGroupServiceTest {
         // given
         final OrderTable 일번_테이블 = OrderTable.of(0, true);
         final OrderTable 이번_테이블 = OrderTable.of(0, true);
-        final TableGroup tableGroup = TableGroup.of(Arrays.asList(일번_테이블, 이번_테이블), 2);
+        final Order order = Order.of(일번_테이블.getId(),Arrays.asList());
+        order.updateOrderStatus(OrderStatus.COMPLETION);
+
         given(orderTableRepository.findAllById(any()))
                 .willReturn(Arrays.asList(일번_테이블, 이번_테이블));
         given(tableGroupRepository.findById(any()))
                 .willReturn(Optional.of(TableGroup.of(Arrays.asList(일번_테이블, 이번_테이블), 2)));
+        given(orderRepository.findByOrderTableId(any()))
+                .willReturn(Optional.of(order));
         // when
         tableGroupService.ungroup(1L);
         // then

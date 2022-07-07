@@ -4,6 +4,6 @@ public enum OrderStatus {
     COOKING, MEAL, COMPLETION;
 
     public boolean enabledOrderCancel() {
-        return !(this.equals(COOKING) || this.equals(MEAL));
+        return this.equals(COMPLETION);
     }
 }

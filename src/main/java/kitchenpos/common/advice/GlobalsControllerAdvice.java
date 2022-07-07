@@ -1,6 +1,7 @@
 package kitchenpos.common.advice;
 
 import kitchenpos.menu.exception.MenuException;
+import kitchenpos.order.exception.OrderException;
 import kitchenpos.product.exception.ProductException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,16 @@ public class GlobalsControllerAdvice {
     }
 
     @ExceptionHandler(MenuException.class)
-    public ResponseEntity<String> productException(final MenuException menuException) {
+    public ResponseEntity<String> menuException(final MenuException menuException) {
         logger.warn("MenuException : " + menuException.getMessage());
         fileLogger.debug(menuException.getMessage());
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<Void> orderException(final OrderException orderException) {
+        logger.warn("MenuException : " + orderException.getMessage());
+        fileLogger.debug(orderException.getMessage());
         return ResponseEntity.badRequest().build();
     }
 
