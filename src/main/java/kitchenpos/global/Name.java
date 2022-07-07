@@ -3,7 +3,9 @@ package kitchenpos.global;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Name {
     @Column(name="name", nullable = false)
     private String value;
