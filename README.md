@@ -111,18 +111,18 @@
 
 ### 구현
 #### 도메인 단위로 구성
-- common-main
+- module-main
   - Application.run
-- common-module
+- module-common
   - Name
   - Price
   - Quantity
-- product-module
+- module-product
   - Product
-- menu-module
+- module-menu
   - Menu
   - MenuGroup
-- order-module
+- module-order
   - Order
   - Table
   - TableGroup
