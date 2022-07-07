@@ -21,7 +21,6 @@ import java.util.List;
 import static kitchenpos.menu.fixture.MenuFixture.기본_메뉴;
 import static kitchenpos.menu.fixture.MenuFixture.추천_기본_메뉴;
 import static kitchenpos.menugroup.fixture.MenuGroupFixture.추천_메뉴;
-import static kitchenpos.product.fixture.ProductFixture.치킨;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +41,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴의 정상적인 데이터를 입력한다면 정상 상품 등록이 된다")
     void create() {
-        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(1L, 1);
 
         MenuRequest 추천_기본_메뉴_요청값 = MenuRequest.of("추천 기본 메뉴", BigDecimal.valueOf(17_000), 추천_메뉴.getId(), Arrays.asList(양념_치킨_요청값));
         when(menuRepository.save(any())).thenReturn(추천_기본_메뉴);
@@ -55,7 +54,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴의 가격을 0원보다 미만으로 등록한다면 에러가 발생된다")
     void create2() {
-        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(1L, 1);
 
         MenuRequest 잘못된_금액_요청값 = MenuRequest.of(
                 "추천 기본 메뉴",

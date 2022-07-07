@@ -1,8 +1,11 @@
 package kitchenpos.menu.validator;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +20,6 @@ import java.util.NoSuchElementException;
 
 import static kitchenpos.common.Messages.*;
 import static kitchenpos.menugroup.fixture.MenuGroupFixture.추천_메뉴;
-import static kitchenpos.product.fixture.ProductFixture.치킨;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +40,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴를 생성할때 정상적으로 유효성 검사가 성공 된다")
     void validateCreateMenu() {
+        Product 치킨 = Product.of(1L, Name.of("치킨"), Price.of(BigDecimal.valueOf(18_000)));
+
         MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
 
         MenuRequest 정상_메뉴 = MenuRequest.of(
@@ -56,6 +60,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴의 메뉴그룹 ID가 잘못된 경우 에러가 발생 된다.")
     void createMenuGroupNotExists() {
+        Product 치킨 = Product.of(1L, Name.of("치킨"), Price.of(BigDecimal.valueOf(18_000)));
+
         MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
 
         MenuRequest 잘못된_그룹_메뉴_ID_요청값 = MenuRequest.of(
@@ -76,6 +82,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴 등록시 상품정보가 조회가 되지 않은 경우 에러가 발생된다")
     void createProductFindInNoSuch() {
+        Product 치킨 = Product.of(1L, Name.of("치킨"), Price.of(BigDecimal.valueOf(18_000)));
+
         MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
 
         MenuRequest 잘못된_상품_정보_요청값 = MenuRequest.of(
@@ -95,6 +103,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴 등록시 상품 가격의 합보다 메뉴가격이 큰 경우 실패 테스트")
     void create5() {
+        Product 치킨 = Product.of(1L, Name.of("치킨"), Price.of(BigDecimal.valueOf(18_000)));
+
         MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
 
         MenuRequest 잘못된_상품_정보_요청값 = MenuRequest.of(

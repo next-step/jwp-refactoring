@@ -24,10 +24,6 @@ public class DatabaseCleanup implements InitializingBean {
         tableNames.put("menu", "id");
         tableNames.put("menu_group", "id");
         tableNames.put("menu_product", "seq");
-        tableNames.put("orders", "id");
-        tableNames.put("order_line_item", "seq");
-        tableNames.put("order_table", "id");
-        tableNames.put("table_group", "id");
         tableNames.put("product", "id");
     }
 
