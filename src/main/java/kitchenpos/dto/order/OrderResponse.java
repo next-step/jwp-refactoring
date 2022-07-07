@@ -28,15 +28,12 @@ public class OrderResponse {
     }
 
     public static OrderResponse from(final Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
-            .map(OrderLineItemResponse::from)
-            .collect(Collectors.toList());
         return new OrderResponse(
             order.getId(),
             order.getOrderTable().getId(),
             order.getOrderStatus(),
             order.getOrderedTime(),
-            orderLineItemResponses
+            order.toOrderLineItemResponse()
         );
     }
 

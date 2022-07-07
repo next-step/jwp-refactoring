@@ -1,10 +1,12 @@
 package kitchenpos.domain.order;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import kitchenpos.dto.order.OrderLineItemResponse;
 
 @Embeddable
 public class OrderLineItems {
@@ -31,5 +33,11 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<OrderLineItemResponse> toResponse() {
+        return orderLineItems.stream()
+            .map(OrderLineItemResponse::from)
+            .collect(Collectors.toList());
     }
 }

@@ -7,15 +7,17 @@ import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import kitchenpos.application.order.OrderCreateValidator;
 import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
@@ -39,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest extends ScenarioTestFixtureGenerator {
 
     @Mock
-    private MenuRepository menuRepository;
+    private OrderCreateValidator orderCreateValidator;
 
     @Mock
     private OrderRepository orderRepository;
@@ -53,6 +55,7 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
     private OrderTable 비어있지_않은_주문_테이블_생성;
     private Order order;
     private CreateOrderRequest 커플_냉삼_메뉴_주문;
+    private OrderLineItem 커플_냉삼_메뉴_주문_항목;
 
     @BeforeEach
     public void setUp() {
@@ -60,13 +63,14 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
         비어있지_않은_주문_테이블_생성 = 비어있지_않은_주문_테이블_생성();
         order = 주문_생성(비어있지_않은_주문_테이블_생성, 커플_냉삼_메뉴);
         커플_냉삼_메뉴_주문 = 주문_생성_요청_객체(비어있지_않은_주문_테이블_생성, 커플_냉삼_메뉴);
+        커플_냉삼_메뉴_주문_항목 = new OrderLineItem(커플_냉삼_메뉴, 1);
     }
 
     @Test
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // Given
-        given(menuRepository.findById(any())).willReturn(Optional.of(커플_냉삼_메뉴));
+        given(orderCreateValidator.validateExistsMenusAndCreate(anyList())).willReturn(Collections.singletonList(커플_냉삼_메뉴_주문_항목));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지_않은_주문_테이블_생성));
         given(orderRepository.save(any(Order.class))).will(AdditionalAnswers.returnsFirstArg());
 
@@ -74,7 +78,7 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
         orderService.create(커플_냉삼_메뉴_주문);
 
         // Then
-        verify(menuRepository).findById(any());
+        verify(orderCreateValidator).validateExistsMenusAndCreate(anyList());
         verify(orderTableRepository).findById(any());
         verify(orderRepository).save(any(Order.class));
     }
@@ -83,7 +87,7 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
     @DisplayName("주문 항목이 없는 주문을 생성하는 경우 예외 발생 검증")
     public void throwException_WhenOrderLineItemIsEmpty() {
         // When & Then
-        assertThatExceptionOfType(NullPointerException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(new CreateOrderRequest()));
     }
 
@@ -94,41 +98,41 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
         CreateOrderRequest 존재하지_않는_메뉴의_주문_항목이_포함된_주문_생성_요청 = new CreateOrderRequest(1L,
             Collections.singletonList(존재하지_않는_메뉴의_주문_항목));
 
-        given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
+        given(orderCreateValidator.validateExistsMenusAndCreate(anyList())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(존재하지_않는_메뉴의_주문_항목이_포함된_주문_생성_요청));
 
-        verify(menuRepository).findById(anyLong());
+        verify(orderCreateValidator).validateExistsMenusAndCreate(anyList());
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지 않는 주문을 생성하는 경우 예외 발생 검증")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
-        given(menuRepository.findById(any())).willReturn(Optional.of(커플_냉삼_메뉴));
+        given(orderCreateValidator.validateExistsMenusAndCreate(anyList())).willReturn(Collections.singletonList(커플_냉삼_메뉴_주문_항목));
         given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(커플_냉삼_메뉴_주문));
 
-        verify(menuRepository).findById(any());
+        verify(orderCreateValidator).validateExistsMenusAndCreate(anyList());
         verify(orderTableRepository).findById(any());
     }
 
     @Test
     @DisplayName("주문에 포함된 주문테이블이 비어있는 경우(주문을 요청한 테이블이 `isEmpty() = true`인 경우) 예외가 발생 검증")
     public void throwException_When() {
-        given(menuRepository.findById(any())).willReturn(Optional.of(커플_냉삼_메뉴));
+        given(orderCreateValidator.validateExistsMenusAndCreate(anyList())).willReturn(Collections.singletonList(커플_냉삼_메뉴_주문_항목));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있는_주문_테이블_생성()));
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(커플_냉삼_메뉴_주문));
 
-        verify(menuRepository).findById(any());
+        verify(orderCreateValidator).validateExistsMenusAndCreate(anyList());
         verify(orderTableRepository).findById(any());
     }
 

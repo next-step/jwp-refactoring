@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.order.OrderLineItemResponse;
 
 @Entity
 @Table(name = "orders")
@@ -103,6 +104,10 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
+    }
+
+    public List<OrderLineItemResponse> toOrderLineItemResponse() {
+        return orderLineItems.toResponse();
     }
 
     public OrderTable getOrderTable() {
