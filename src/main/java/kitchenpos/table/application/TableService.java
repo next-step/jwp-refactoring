@@ -57,7 +57,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTableStatusRequest.isEmpty());
+        savedOrderTable.reserve(orderTableStatusRequest.isEmpty());
 
         return OrderTableResponse.from(savedOrderTable);
     }

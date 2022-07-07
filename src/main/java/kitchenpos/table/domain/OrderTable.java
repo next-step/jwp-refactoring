@@ -71,7 +71,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public void setEmpty(boolean empty) {
+    public void reserve(boolean empty) {
         this.empty = empty;
     }
 

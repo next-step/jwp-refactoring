@@ -22,18 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
-    private final MenuProductDao menuProductDao;
     private final ProductDao productDao;
 
     public MenuService(
             final MenuDao menuDao,
             final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
             final ProductDao productDao
     ) {
         this.menuDao = menuDao;
         this.menuGroupDao = menuGroupDao;
-        this.menuProductDao = menuProductDao;
         this.productDao = productDao;
     }
 
