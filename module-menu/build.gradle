@@ -1,0 +1,6 @@
+dependencies {
+    testImplementation(testFixtures(project(":module-product")))
+}
+
+bootJar { enabled = false }
+jar { enabled = true }

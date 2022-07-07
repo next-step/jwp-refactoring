@@ -1,32 +1,83 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-test-fixtures'
+
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+        implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+
+        implementation 'org.flywaydb:flyway-core'
+
+        runtimeOnly 'com.h2database:h2'
+
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+project(':module-product') {
+    apply(plugin: 'java-test-fixtures')
 
-    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
-
-    implementation 'org.flywaydb:flyway-core'
-
-    runtimeOnly 'com.h2database:h2'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    dependencies {
+        compile project(':module-common')
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':module-menu') {
+    apply(plugin: 'java-test-fixtures')
+
+    dependencies {
+        compile project(':module-common')
+        compile project(':module-product')
+    }
+}
+
+project(':module-order') {
+    apply(plugin: 'java-test-fixtures')
+
+    dependencies {
+        compile project(':module-common')
+        compile project(':module-menu')
+    }
+}
+
+project(':module-main') {
+    dependencies {
+        compile project(':module-common')
+        compile project(':module-menu')
+        compile project(':module-product')
+        compile project(':module-order')
+    }
 }
