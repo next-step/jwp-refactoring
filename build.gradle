@@ -24,20 +24,28 @@ subprojects {
 
 }
 
-project(':module-menu-product') {
+project(':module-common') {
     dependencies {
 
     }
 }
 
+project(':module-menu-product') {
+    dependencies {
+        implementation project(':module-common')
+    }
+}
+
 project(':module-order-order-table') {
     dependencies {
+        implementation project(':module-common')
         implementation project(':module-menu-product')
     }
 }
 
 project(':module-main') {
     dependencies {
+        implementation project(':module-common')
         implementation project(':module-menu-product')
         implementation project(':module-order-order-table')
     }

@@ -3,8 +3,6 @@ package kitchenpos.common;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.common.Price;
-import kitchenpos.common.Quantity;
 import kitchenpos.exception.InvalidPriceException;
 import org.junit.jupiter.api.Test;
 
