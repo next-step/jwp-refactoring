@@ -11,11 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.dto.menu.CreateMenuRequest;
-import kitchenpos.dto.menu.MenuGroupResponse;
-import kitchenpos.dto.menu.MenuProductResponse;
-import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.menu.dto.CreateMenuRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

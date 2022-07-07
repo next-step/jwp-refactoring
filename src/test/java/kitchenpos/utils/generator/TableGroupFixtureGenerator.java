@@ -7,9 +7,9 @@ import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.table.CreateTableGroupRequest;
-import kitchenpos.dto.table.OrderTableResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.CreateTableGroupRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class TableGroupFixtureGenerator {

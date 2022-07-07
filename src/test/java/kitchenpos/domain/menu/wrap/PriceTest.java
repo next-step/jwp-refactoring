@@ -3,6 +3,7 @@ package kitchenpos.domain.menu.wrap;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
+import kitchenpos.menu.domain.wrap.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

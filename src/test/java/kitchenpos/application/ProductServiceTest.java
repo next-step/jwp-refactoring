@@ -9,11 +9,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import kitchenpos.application.product.ProductService;
-import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.dto.product.CreateProductRequest;
-import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.product.dto.CreateProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

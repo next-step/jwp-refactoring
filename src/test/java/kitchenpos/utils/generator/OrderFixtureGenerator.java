@@ -8,15 +8,15 @@ import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.dto.order.ChangeOrderStatusRequest;
-import kitchenpos.dto.order.CreateOrderRequest;
-import kitchenpos.dto.order.CreateOrderTableItemRequest;
-import kitchenpos.dto.table.OrderTableResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.CreateOrderRequest;
+import kitchenpos.order.dto.CreateOrderTableItemRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderFixtureGenerator {
