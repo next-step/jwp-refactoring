@@ -38,8 +38,7 @@ public class TableGroupService {
         final List<Long> orderTableIds = orderTables.extractIds();
         final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
 
-        savedOrderTables.validate(orderTables.getSize());
-        tableGroup.changeCreatedDate(LocalDateTime.now(), savedOrderTables);
+        tableGroup.changeCreatedDate(LocalDateTime.now(), savedOrderTables, orderTables.getSize());
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 

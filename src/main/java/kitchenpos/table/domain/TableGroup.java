@@ -48,9 +48,20 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void changeCreatedDate(LocalDateTime createdDate, OrderTables orderTables) {
+    public void changeCreatedDate(LocalDateTime createdDate, OrderTables orderTables, int size) {
+        validate(orderTables, size);
         this.createdDate = createdDate;
         this.orderTables = orderTables;
         this.orderTables.add(this);
+    }
+
+    public void validate(OrderTables orderTables, int size) {
+        if (orderTables.getSize() != size) {
+            throw new IllegalArgumentException();
+        }
+
+        for (final OrderTable orderTable : orderTables.getOrderTables()) {
+            orderTable.validate();
+        }
     }
 }
