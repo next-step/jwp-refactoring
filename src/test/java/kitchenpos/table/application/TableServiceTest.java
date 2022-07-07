@@ -60,7 +60,7 @@ class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_테이블, 주문_테이블2));
 
         // when
-        List<OrderTableResponse> 주문_전체_조회_결과 = tableService.list();
+        List<OrderTableResponse> 주문_전체_조회_결과 = tableService.listAll();
 
         // then
         assertThat(주문_전체_조회_결과).hasSize(2);
