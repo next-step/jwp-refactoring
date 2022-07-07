@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {
@@ -19,9 +16,7 @@ public class MenuProduct {
 
     private long quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
@@ -30,15 +25,15 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
+    public MenuProduct(long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public MenuProduct(long seq, Menu menu, Product product, int quantity) {
+    public MenuProduct(long seq, Menu menu, long productId, int quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -50,16 +45,12 @@ public class MenuProduct {
         return quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Menu getMenu() {
         return menu;
-    }
-
-    public BigDecimal calculateAmount() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public void updateMenu(final Menu menu) {

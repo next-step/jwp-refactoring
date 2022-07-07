@@ -61,7 +61,6 @@ public class Menu {
 
     private void updateMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = new MenuProducts(menuProducts);
-        this.menuProducts.validatePrice(price);
         this.menuProducts.addMenu(this);
     }
 }

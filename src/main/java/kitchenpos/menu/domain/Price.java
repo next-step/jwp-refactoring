@@ -31,4 +31,19 @@ public class Price {
     public boolean isBiggerThan(BigDecimal target) {
         return price.compareTo(target) > 0;
     }
+
+    public Price add(Price price) {
+        return new Price(this.price.add(price.getPrice()));
+    }
+
+    public boolean isOverThan(Price target) {
+        return price.compareTo(target.getPrice()) > 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Price{" +
+                "price=" + price +
+                '}';
+    }
 }
