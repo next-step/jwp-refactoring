@@ -32,6 +32,14 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        validateOrderLineItems(orderLineItems);
+        this.orderTableId = requireNonNull(orderTableId, "orderTableId");
+        this.orderedTime = LocalDateTime.now();
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderLineItems = orderLineItems;
+    }
+
     public Order(Long orderTableId) {
         this(null, orderTableId);
     }
