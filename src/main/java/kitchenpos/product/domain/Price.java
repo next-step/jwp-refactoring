@@ -37,6 +37,13 @@ public class Price {
         return value.compareTo(target) > 0;
     }
 
+    public static Price multiply(Product product, long quantity) {
+        return Price.from(
+                product.getPriceBigDecimal()
+                        .multiply(BigDecimal.valueOf(quantity))
+        );
+    }
+
     public BigDecimal getValue() {
         return value;
     }

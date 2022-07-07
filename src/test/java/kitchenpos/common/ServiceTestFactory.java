@@ -34,14 +34,8 @@ public class ServiceTestFactory {
     }
 
 
-    public static Menu 메뉴생성(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(Price.from(price));
-        menu.setMenuGroup(menuGroup);
-        menu.setMenuProducts(menuProducts);
-        return menu;
+    public static Menu 메뉴생성(String name, Integer price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name,price,menuGroup,menuProducts);
     }
 
     public static MenuProduct 메뉴상품생성(Long seq, Product product, Long quantity) {

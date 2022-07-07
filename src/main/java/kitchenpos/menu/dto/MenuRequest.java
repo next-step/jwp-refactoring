@@ -23,9 +23,7 @@ public class MenuRequest {
     }
 
     public Menu toEntity(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(name, price, menuGroup);
-        menu.addMenuProducts(menuProducts);
-        return menu;
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public String getName() {
