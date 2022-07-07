@@ -26,10 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-//import static kitchenpos.factory.fixture.MenuFixtureFactory.createMenu;
-//import static kitchenpos.factory.fixture.MenuGroupFixtureFactory.createMenuGroup;
-//import static kitchenpos.factory.fixture.MenuProductFixtureFactory.createMenuProduct;
-//import static kitchenpos.factory.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,14 +67,14 @@ class MenuServiceTest {
         치킨_그룹 = new MenuGroup(치킨_그룹_ID, "치킨");
         양념_치킨 = new Menu(양념_치킨_ID, "양념치킨", BigDecimal.valueOf(20000L), 치킨_그룹.getId(), Arrays.asList(양념_치킨_콜라, 양념_치킨_닭));
         menuProductRequest = new MenuProductRequest(양념_치킨_콜라.getProduct().getId(), 양념_치킨_콜라.getQuantity());
-        menuRequest = new MenuRequest(양념_치킨.getName(), 양념_치킨.getPrice(), 양념_치킨.getMenuGroupId(), Arrays.asList(menuProductRequest));
+        menuRequest = new MenuRequest(양념_치킨.getName(), 양념_치킨.getPrice().getPrice(), 양념_치킨.getMenuGroupId(), Arrays.asList(menuProductRequest));
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
         MenuProductRequest menuProductRequest_2 = new MenuProductRequest(양념_치킨_닭.getProduct().getId(), 양념_치킨_닭.getQuantity());
-        menuRequest = new MenuRequest(양념_치킨.getName(), 양념_치킨.getPrice(), 양념_치킨.getMenuGroupId(),
+        menuRequest = new MenuRequest(양념_치킨.getName(), 양념_치킨.getPrice().getPrice(), 양념_치킨.getMenuGroupId(),
                 Arrays.asList(menuProductRequest, menuProductRequest_2));
 
         given(menuGroupRepository.existsById(치킨_그룹.getId())).willReturn(Boolean.TRUE);
@@ -115,7 +111,7 @@ class MenuServiceTest {
         MenuGroup menuGroup = new MenuGroup(1000L, "테스트");
         Menu menu = new Menu(1000L, null, BigDecimal.valueOf(1000L), menuGroup.getId(), null);
 
-        menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), Arrays.asList());
+        menuRequest = new MenuRequest(menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroupId(), Arrays.asList());
 
         given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(Boolean.FALSE);
 

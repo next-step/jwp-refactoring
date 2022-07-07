@@ -31,8 +31,8 @@ public class MenuProducts {
         elements.forEach(menuProduct -> menuProduct.updateMenu(menu));
     }
 
-    public void validatePrice(BigDecimal price) {
-        if (price.compareTo(sum()) > 0) {
+    public void validatePrice(Price price) {
+        if (price.isBiggerThan(sum())) {
             throw new BadRequestException(ErrorCode.INVALID_MENU_PRICE);
         }
     }
