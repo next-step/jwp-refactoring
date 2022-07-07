@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +41,8 @@ class OrderTest {
 
     public static List<OrderLineItem> 주문_항목_리스트_생성() {
         List<OrderLineItem> list = new ArrayList<>();
-        list.add(OrderLineItem.of(1L, 1L));
-        list.add(OrderLineItem.of(2L, 1L));
+        list.add(OrderLineItem.of(1L, "후라이드 치킨", new BigDecimal(16000), 1L));
+        list.add(OrderLineItem.of(2L, "양념치킨", new BigDecimal(16000), 1L));
         return list;
     }
 }

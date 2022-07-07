@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -56,9 +57,9 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문항목_1 = OrderLineItem.of(1L, 1L);
+        주문항목_1 = OrderLineItem.of(1L, "후라이드치킨", new BigDecimal(16000), 1L);
         주문항목_생성(주문항목_1, 주문_1);
-        주문항목_2 = OrderLineItem.of(2L, 1L);
+        주문항목_2 = OrderLineItem.of(2L, "양념치킨", new BigDecimal(16000),1L);
         주문항목_생성(주문항목_2, 주문_1);
         주문테이블_1 = OrderTable.of(1L, 2, false);
         주문_테이블_생성(주문테이블_1, 1L);
