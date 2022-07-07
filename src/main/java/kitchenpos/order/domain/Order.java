@@ -31,15 +31,7 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
-    }
-
-    public Order(Long id) {
-        this.id = id;
-    }
-
-    public Order(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    protected Order() {
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
