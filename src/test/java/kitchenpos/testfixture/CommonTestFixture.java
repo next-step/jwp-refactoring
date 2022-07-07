@@ -9,8 +9,10 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.product.domain.*;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -46,8 +48,8 @@ public class CommonTestFixture {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuProduct createMenuProduct(Product product, int quantity) {
-        return new MenuProduct(product, (long) quantity);
+    public static MenuProduct createMenuProduct(Long productId, int quantity) {
+        return new MenuProduct(productId, (long) quantity);
     }
 
     public static MenuProductRequest createMenuProductRequest(Long productId, int quantity) {
@@ -66,12 +68,16 @@ public class CommonTestFixture {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItemRequest createOrderLineItemRequest(Long menuId, int quantity) {
-        return new OrderLineItemRequest(menuId, (long) quantity);
+    public static OrderMenu createOrderMenu(Long menuId, String menuName, BigDecimal menuPrice) {
+        return new OrderMenu(menuId, menuName, menuPrice);
     }
 
-    public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
-        return new OrderLineItem(menuId, quantity);
+    public static OrderLineItemRequest createOrderLineItemRequest(Long menuId, String menuName, BigDecimal price, int quantity) {
+        return new OrderLineItemRequest(menuId, menuName, price, (long) quantity);
+    }
+
+    public static OrderLineItem createOrderLineItem(OrderMenu orderMenu, long quantity) {
+        return new OrderLineItem(orderMenu, quantity);
     }
 
     public static OrderTableRequest createOrderTableRequest(int numberOfGuests, boolean empty) {

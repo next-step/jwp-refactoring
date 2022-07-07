@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 public class OrderTables {
     private static final int MIN_ORDER_TABLE_SIZE = 2;
     private static final String ERROR_MESSAGE_INVALID_TABLE = "빈 테이블이 아니거나 단체 지정된 테이블입니다.";
-    private static final String ERROR_MESSAGE_TABLE_COUNT = "단체지정하려면 테이블 수가 2개 이상이어야 합니다.";
+    private static final String ERROR_MESSAGE_TABLE_COUNT = "단체지정하려면 테이블 수가 " + MIN_ORDER_TABLE_SIZE + "개 이상이어야 합니다.";
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")

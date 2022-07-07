@@ -1,9 +1,8 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,22 +22,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private TableValidator tableValidator;
+    @Mock
+    private OrderTableStatusValidator orderTableStatusValidator;
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private OrderTableRequest 빈_테이블_요청_1;
-    private OrderTableRequest 빈_테이블_요청_2;
-    private OrderTableRequest 빈_테이블_요청_3;
     private OrderTable 빈_테이블_1;
     private OrderTable 빈_테이블_2;
     private OrderTable 빈_테이블_3;
@@ -50,7 +49,7 @@ public class TableGroupServiceTest {
         빈_테이블_1 = createOrderTable(1L, null, 0, true);
         빈_테이블_2 = createOrderTable(2L, null, 0, true);
         빈_테이블_3 = createOrderTable(3L, null, 0, true);
-        List<OrderTable>  orderTables = Arrays.asList(
+        List<OrderTable> orderTables = Arrays.asList(
                 createOrderTable(6L, null, 4, true),
                 createOrderTable(7L, null, 5, true)
         );
@@ -139,7 +138,6 @@ public class TableGroupServiceTest {
         // given
         TableGroup 단체지정_테이블 = createTableGroup(Arrays.asList(빈_테이블_1, 빈_테이블_2, 빈_테이블_3));
         given(orderTableRepository.findAllByTableGroup(any())).willReturn(Arrays.asList(빈_테이블_1, 빈_테이블_2, 빈_테이블_3));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
         given(tableGroupRepository.findById(단체지정_테이블.getId())).willReturn(Optional.of(단체지정_테이블));
 
         // when
@@ -157,10 +155,11 @@ public class TableGroupServiceTest {
     @Test
     void unGroup_fail() {
         // given
-        TableGroup 단체지정_테이블 = createTableGroup(Arrays.asList(빈_테이블_1, 빈_테이블_2, 빈_테이블_3));
-        given(orderTableRepository.findAllByTableGroup(any())).willReturn(Arrays.asList(빈_테이블_1, 빈_테이블_2, 빈_테이블_3));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        List<OrderTable> orderTables = Arrays.asList(빈_테이블_1, 빈_테이블_2, 빈_테이블_3);
+        TableGroup 단체지정_테이블 = createTableGroup(orderTables);
+        given(orderTableRepository.findAllByTableGroup(any())).willReturn(orderTables);
         given(tableGroupRepository.findById(단체지정_테이블.getId())).willReturn(Optional.of(단체지정_테이블));
+        willThrow(new IllegalArgumentException()).given(orderTableStatusValidator).validateOrderTablesStatus(orderTables);
 
         // then
         assertThatThrownBy(() -> {

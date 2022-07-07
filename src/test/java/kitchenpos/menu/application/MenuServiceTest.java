@@ -5,7 +5,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static kitchenpos.testfixture.CommonTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,19 +22,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    MenuGroupRepository menuGroupRepository;
-    @Mock
     MenuRepository menuRepository;
     @Mock
-    ProductRepository productRepository;
+    MenuValidator menuValidator;
     @InjectMocks
     MenuService menuService;
-    @InjectMocks
-    MenuGroupService menuGroupService;
 
     private Product 싸이버거, 콜라;
     private MenuProduct 싱글세트_싸이버거, 더블세트_싸이버거, 세트_콜라;
@@ -47,13 +40,11 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupService, productRepository);
-
         싸이버거 = createProduct("싸이버거", BigDecimal.valueOf(3_500));
         콜라 = createProduct("콜라", BigDecimal.valueOf(1_500));
-        싱글세트_싸이버거 = createMenuProduct(싸이버거, 1);
-        더블세트_싸이버거 = createMenuProduct(싸이버거, 2);
-        세트_콜라 = createMenuProduct(콜라, 1);
+        싱글세트_싸이버거 = createMenuProduct(싸이버거.getId(), 1);
+        더블세트_싸이버거 = createMenuProduct(싸이버거.getId(), 2);
+        세트_콜라 = createMenuProduct(콜라.getId(), 1);
         싱글세트상품 = Arrays.asList(싱글세트_싸이버거, 세트_콜라);
         더블세트상품 = Arrays.asList(더블세트_싸이버거, 세트_콜라);
         맘스세트메뉴 = createMenuGroup("맘스세트메뉴");
@@ -68,9 +59,6 @@ class MenuServiceTest {
                 createMenuProductRequest(콜라.getId(), 1)
         );
         MenuRequest 싱글세트 = createMenuRequest(맘스세트메뉴.getId(), "싱글세트", BigDecimal.valueOf(5_500), menuProductsRequests);
-        given(menuGroupRepository.findById(맘스세트메뉴.getId())).willReturn(Optional.of(맘스세트메뉴));
-        given(productRepository.findById(싸이버거.getId())).willReturn(Optional.of(싸이버거));
-        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
         given(menuRepository.save(any(Menu.class))).willReturn(createMenu(싱글세트.getMenuGroupId(), 싱글세트.getName(), 싱글세트.getPrice(), 싱글세트상품));
 
         // when
@@ -109,12 +97,12 @@ class MenuServiceTest {
                 createMenuProductRequest(콜라.getId(), 1)
         );
         MenuRequest 싱글세트 = createMenuRequest(맘스세트메뉴.getId(), "싱글세트", BigDecimal.valueOf(5_500), menuProductsRequests);
-        given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
+        willThrow(new NoSuchElementException()).given(menuValidator).validate(싱글세트);
 
         // then
         assertThatThrownBy(() -> {
             menuService.create(싱글세트);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴 등록에 실패한다. (메뉴 상품 가격의 총 합이 메뉴 가격보다 큰 경우")
@@ -125,8 +113,7 @@ class MenuServiceTest {
                 createMenuProductRequest(싸이버거.getId(), 1)
         );
         MenuRequest 싱글세트 = createMenuRequest(맘스세트메뉴.getId(), "싱글세트", BigDecimal.valueOf(2_500), menuProductsRequests);
-        given(menuGroupRepository.findById(맘스세트메뉴.getId())).willReturn(Optional.of(맘스세트메뉴));
-        given(productRepository.findById(싸이버거.getId())).willReturn(Optional.of(싸이버거));
+        willThrow(new IllegalArgumentException()).given(menuValidator).validate(싱글세트);
 
         // then
         assertThatThrownBy(() -> {
