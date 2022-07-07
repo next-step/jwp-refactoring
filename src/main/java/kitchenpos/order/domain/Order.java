@@ -83,11 +83,6 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-        this.orderLineItems.add(this);
-    }
-
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new BadRequestException(ErrorCode.ORDER_LINE_ITEM_EMPTY);

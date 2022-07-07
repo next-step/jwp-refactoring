@@ -103,7 +103,7 @@ class MenuServiceTest {
         MenuGroup menuGroup = new MenuGroup(1000L, "테스트");
         Menu menu = new Menu(1000L, null, BigDecimal.valueOf(1000L), menuGroup.getId(), null);
 
-        MenuRequest menuRequest = new MenuRequest(menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroupId(), Arrays.asList());
+        MenuRequest menuRequest = new MenuRequest(menu.getName(), menu.getPrice().getValue(), menu.getMenuGroupId(), Arrays.asList());
 
         given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(Boolean.FALSE);
 

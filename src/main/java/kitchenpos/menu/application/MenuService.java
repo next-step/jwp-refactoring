@@ -32,4 +32,8 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAllWithMenuProducts();
         return MenuResponse.of(menus);
     }
+
+    public long countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
 }

@@ -3,10 +3,9 @@ package kitchenpos.order.application;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -22,12 +21,12 @@ import java.util.List;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(MenuService menuService, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -63,7 +62,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
         final List<Long> menuIds = OrderLineItems.extractMenuIds(orderLineItems);
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
             throw new BadRequestException(ErrorCode.CONTAINS_NOT_EXIST_MENU);
         }
 

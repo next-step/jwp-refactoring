@@ -3,7 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -34,7 +34,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
+    private MenuService menuService;
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -61,7 +61,7 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다")
     @Test
     void create() {
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(1L)));
         given(orderRepository.save(any(Order.class))).willReturn(order);
 
@@ -73,7 +73,7 @@ class OrderServiceTest {
     @DisplayName("존재하는 menu가 아니라면 주문을 생성할 수 없다.")
     @Test
     void create_invalid_menuIds() {
-        given(menuRepository.countByIdIn(any())).willReturn(1000L);
+        given(menuService.countByIdIn(any())).willReturn(1000L);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(BadRequestException.class)
@@ -93,7 +93,7 @@ class OrderServiceTest {
     @DisplayName("존재하는 주문 테이블이 아니라면 주문을 생성할 수 없다.")
     @Test
     void create_invalid_orderTableId() {
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -104,7 +104,7 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 비어있으면 주문을 생성할 수 없다.")
     @Test
     void create_orderTable_empty() {
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(1L, true)));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
