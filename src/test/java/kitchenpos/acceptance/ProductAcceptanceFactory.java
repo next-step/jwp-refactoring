@@ -3,11 +3,11 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,9 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class ProductAcceptanceFactory {
 
     public static ExtractableResponse<Response> 상품_등록_요청(String name, int price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
+        ProductRequest product = new ProductRequest(name, price);
 
         return RestAssured
                 .given().log().all()
@@ -30,6 +28,7 @@ public class ProductAcceptanceFactory {
                 .then().log().all()
                 .extract();
     }
+
     public static ExtractableResponse<Response> 상품_조회_요청() {
         return RestAssured
                 .given().log().all()
@@ -40,7 +39,6 @@ public class ProductAcceptanceFactory {
                 .then().log().all()
                 .extract();
     }
-
 
 
     public static void 상품_등록_성공(ExtractableResponse<Response> 상품등록_결과, String 상품명) {
