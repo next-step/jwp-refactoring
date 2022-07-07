@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.event.GroupTableEvent;
-import kitchenpos.ordertable.event.UngroupTableEvent;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -134,21 +133,5 @@ class TableGroupServiceTest {
 
         //then
         assertThrows(IllegalOrderTableException.class, () -> tableGroupService.create(invalidTableGroupRequest));
-    }
-
-    @DisplayName("주문테이블을 삭제할 수 없다")
-    @Test
-    void 테이블그룹_삭제(){
-        assertDoesNotThrow(() -> tableGroupService.ungroup(단체_테이블.getId()));
-    }
-
-    @DisplayName("주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 삭제할 수 없다")
-    @Test
-    void 테이블그룹_삭제_주문상태_검증(){
-        //given
-        willThrow(IllegalOrderException.class).given(eventPublisher).publishEvent(any(UngroupTableEvent.class));
-
-        //then
-        assertThrows(IllegalOrderException.class, () -> tableGroupService.ungroup(단체_테이블.getId()));
     }
 }

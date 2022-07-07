@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.ordertable.event.GroupTableEvent;
-import kitchenpos.ordertable.event.UngroupTableEvent;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -26,10 +25,5 @@ public class TableGroupService {
         final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
         eventPublisher.publishEvent(GroupTableEvent.of(savedTableGroup.getId(), tableGroupRequest.getOrderTables()));
         return TableGroupResponse.from(savedTableGroup);
-    }
-
-    @Transactional
-    public void ungroup(final Long tableGroupId) {
-        eventPublisher.publishEvent(UngroupTableEvent.from(tableGroupId));
     }
 }
