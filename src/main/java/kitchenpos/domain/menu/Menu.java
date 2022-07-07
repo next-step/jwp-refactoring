@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.domain.common.wrap.Name;
-import kitchenpos.domain.common.wrap.Price;
+import kitchenpos.domain.menu.wrap.Price;
 import kitchenpos.dto.menu.MenuProductResponse;
 
 @Entity
@@ -45,7 +45,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.menuProducts = MenuProducts.of(this, menuProducts);
-        this.price = Price.menuPriceOf(price, this.menuProducts.totalMenuProductPrice());
+        this.price = Price.of(price, this.menuProducts.totalMenuProductPrice());
         this.name = Name.from(name);
         this.menuGroup = menuGroup;
     }

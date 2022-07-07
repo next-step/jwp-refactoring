@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import kitchenpos.domain.common.wrap.Name;
-import kitchenpos.domain.common.wrap.Price;
+import kitchenpos.domain.product.wrap.Price;
 
 @Entity
 @Table(
@@ -37,7 +37,7 @@ public class Product {
 
     private Product(String name, BigDecimal price) {
         this.name = Name.from(name);
-        this.price = Price.productPriceFrom(price);
+        this.price = Price.from(price);
     }
 
     public static Product of(String name, BigDecimal price) {
