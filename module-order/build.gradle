@@ -1,6 +1,2 @@
-dependencies {
-    testImplementation(testFixtures(project(":module-menu")))
-}
-
 bootJar { enabled = false }
 jar { enabled = true }

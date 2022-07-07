@@ -61,6 +61,8 @@ project(':module-menu') {
     dependencies {
         compile project(':module-common')
         compile project(':module-product')
+
+        testImplementation testFixtures(project(":module-product"))
     }
 }
 
@@ -70,6 +72,9 @@ project(':module-order') {
     dependencies {
         compile project(':module-common')
         compile project(':module-menu')
+
+        testImplementation testFixtures(project(":module-menu"))
+
     }
 }
 
