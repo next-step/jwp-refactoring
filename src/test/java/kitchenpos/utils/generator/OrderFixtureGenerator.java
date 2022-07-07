@@ -5,6 +5,7 @@ import static kitchenpos.ui.OrderRestControllerTest.UPDATE_ORDER_STATUS_API_URL_
 import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.domain.menu.Menu;
@@ -24,7 +25,7 @@ public class OrderFixtureGenerator {
         final OrderTable savedOrderTable,
         final Menu... savedMenus
     ) {
-        return new Order(savedOrderTable, 주문_항목_목록_생성(savedMenus));
+        return new Order(savedOrderTable, 주문_항목_목록_생성(savedMenus), LocalDateTime.now());
     }
 
     private static List<OrderLineItem> 주문_항목_목록_생성(Menu... menus) {

@@ -1,5 +1,6 @@
 package kitchenpos.dto.order;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
@@ -28,6 +29,6 @@ public class CreateOrderRequest {
     }
 
     public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderLineItems);
+        return new Order(orderTable, orderLineItems, LocalDateTime.now());
     }
 }

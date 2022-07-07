@@ -5,6 +5,7 @@ import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.domain.table.OrderTable;
@@ -25,11 +26,23 @@ class OrderTest extends ScenarioTestFixtureGenerator {
     }
 
     @Test
+    @DisplayName("주문 시간이 없는 경우 예외 발생 검증")
+    public void throwException_WhenOrderedDateIsNull() {
+        // Given
+        OrderLineItem firstOrderLineItem = new OrderLineItem(고기_더블_더블_메뉴, 1);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(커플_냉삼_메뉴, 1);
+
+        // When
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> new Order(비어있지_않은_주문_테이블_생성, Arrays.asList(firstOrderLineItem, secondOrderLineItem), null));
+    }
+
+    @Test
     @DisplayName("주문 항목이 없는 경우 예외 발생 검증")
     public void throwException_WhenOrderLineItemIsEmpty() {
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> new Order(비어있지_않은_주문_테이블_생성, Collections.emptyList()));
+            .isThrownBy(() -> new Order(비어있지_않은_주문_테이블_생성, Collections.emptyList(), LocalDateTime.now()));
     }
 
     @Test
@@ -41,7 +54,8 @@ class OrderTest extends ScenarioTestFixtureGenerator {
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> new Order(비어있는_주문_테이블_생성, Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+            .isThrownBy(
+                () -> new Order(비어있는_주문_테이블_생성, Arrays.asList(firstOrderLineItem, secondOrderLineItem), LocalDateTime.now()));
     }
 
     @Test
@@ -49,7 +63,7 @@ class OrderTest extends ScenarioTestFixtureGenerator {
     public void changeOrderStatus() {
         // Given
         OrderLineItem firstOrderLineItem = new OrderLineItem(고기_더블_더블_메뉴, 1);
-        Order givenOrder = new Order(비어있지_않은_주문_테이블_생성, Collections.singletonList(firstOrderLineItem));
+        Order givenOrder = new Order(비어있지_않은_주문_테이블_생성, Collections.singletonList(firstOrderLineItem), LocalDateTime.now());
         OrderStatus changeRequestOrderStatus = OrderStatus.MEAL;
 
         // When
@@ -64,7 +78,7 @@ class OrderTest extends ScenarioTestFixtureGenerator {
     public void throwException_WhenRequestOrderStatusIsNull() {
         // Given
         OrderLineItem firstOrderLineItem = new OrderLineItem(고기_더블_더블_메뉴, 1);
-        Order givenOrder = new Order(비어있지_않은_주문_테이블_생성, Collections.singletonList(firstOrderLineItem));
+        Order givenOrder = new Order(비어있지_않은_주문_테이블_생성, Collections.singletonList(firstOrderLineItem), LocalDateTime.now());
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -76,7 +90,7 @@ class OrderTest extends ScenarioTestFixtureGenerator {
     public void throwException_WhenRequestOrderStatusIsAlreadyCompletion() {
         // Given
         OrderLineItem firstOrderLineItem = new OrderLineItem(고기_더블_더블_메뉴, 1);
-        Order givenOrder = new Order(비어있지_않은_주문_테이블_생성, Collections.singletonList(firstOrderLineItem));
+        Order givenOrder = new Order(비어있지_않은_주문_테이블_생성, Collections.singletonList(firstOrderLineItem), LocalDateTime.now());
         givenOrder.changeOrderStatus(OrderStatus.COMPLETION);
 
         // When & Then
