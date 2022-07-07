@@ -1,18 +1,20 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.request.MenuGroupRequest;
+import kitchenpos.dto.response.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴_그룹_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,46 +23,47 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
+    @InjectMocks
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     private MenuGroup 메뉴_그룹;
 
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
-        메뉴_그룹 = 메뉴_그룹_데이터_생성(1L, "세트 메뉴");
+        메뉴_그룹 = new MenuGroup(1L, "세트 메뉴");
     }
 
     @DisplayName("메뉴 그룹 생성")
     @Test
     void create() {
         // given
-        given(menuGroupDao.save(any())).willReturn(메뉴_그룹);
+        MenuGroupRequest request = new MenuGroupRequest("세트 메뉴");
+        given(menuGroupRepository.save(any())).willReturn(메뉴_그룹);
 
         // when
-        MenuGroup menuGroup = menuGroupService.create(메뉴_그룹);
+        MenuGroupResponse response = menuGroupService.create(request);
 
         // then
-        assertThat(menuGroup).isEqualTo(메뉴_그룹);
+        assertThat(response.getName()).isEqualTo("세트 메뉴");
     }
 
     @DisplayName("메뉴 그룹 목록 조회")
     @Test
     void list() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Collections.singletonList(메뉴_그룹));
+        given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(메뉴_그룹));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> responses = menuGroupService.list();
 
         // then
         assertAll(
-                () -> assertThat(menuGroups).isNotEmpty(),
-                () -> assertThat(menuGroups).hasSize(1),
-                () -> assertThat(menuGroups).containsExactly(메뉴_그룹)
+                () -> assertThat(responses).isNotEmpty(),
+                () -> assertThat(responses).hasSize(1),
+                () -> assertThat(responses.stream().map(MenuGroupResponse::getName)).containsExactly("세트 메뉴")
         );
     }
 }

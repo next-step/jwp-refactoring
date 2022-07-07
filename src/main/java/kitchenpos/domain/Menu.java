@@ -1,77 +1,79 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@Entity
 public class Menu {
-    private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
 
-    public Menu() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Name name;
+    @Embedded
+    private Price price;
+    @Column(nullable = false)
+    private Long menuGroupId;
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
+
+    protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+    }
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+        this.id = id;
+        this.name = new Name(name);
+        this.price = new Price(price);
+        this.menuGroupId = menuGroupId;
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        validateSumPrice(menuProducts);
+        for (MenuProduct menuProduct : menuProducts) {
+            if (!this.menuProducts.contains(menuProduct)) {
+                this.menuProducts.add(menuProduct);
+            }
+            menuProduct.bindTo(this);
+        }
+    }
+
+    private void validateSumPrice(List<MenuProduct> menuProducts) {
+        BigDecimal sum = menuProducts.stream()
+                .map(MenuProduct::calculateSumPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (price.isGatherThan(sum)) {
+            throw new IllegalArgumentException("메뉴의 가격은 전체 상품의 가격의 합보다 작거나 같아야합니다.");
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        return name.getValue();
     }
 
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+        return price.getValue();
     }
 
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
-    }
 }

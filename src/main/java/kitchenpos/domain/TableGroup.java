@@ -1,57 +1,75 @@
 package kitchenpos.domain;
 
+import org.springframework.util.CollectionUtils;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class TableGroup {
+
+    private static final int MIN_TABLE_COUNT = 2;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
+        this.createdDate = LocalDateTime.now();
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void addOrderTables(List<OrderTable> orderTables) {
+        validateOrderTables(orderTables);
+        for (OrderTable orderTable : orderTables) {
+            add(orderTable);
+        }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TableGroup that = (TableGroup) o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+    private void validateOrderTables(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_COUNT) {
+            throw new IllegalArgumentException("테이블이 비어있거나 2개미만입니다.");
+        }
+        if (isNotEmptyOrAlreadyGrouped(orderTables)) {
+            throw new IllegalArgumentException("테이블이 비어있지않거나 이미 그룹이 존재합니다.");
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+    private boolean isNotEmptyOrAlreadyGrouped(List<OrderTable> orderTables) {
+        return orderTables.stream().anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
+    }
+
+    private void add(OrderTable orderTable) {
+        if (!this.orderTables.contains(orderTable)) {
+            this.orderTables.add(orderTable);
+        }
+        orderTable.bindTo(this);
+    }
+
+    public void ungroup() {
+        orderTables.forEach(OrderTable::unBind);
+        orderTables.clear();
     }
 }

@@ -1,8 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.dto.response.OrderTableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,12 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderTableFixture.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -29,94 +32,87 @@ class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private OrderTable 주문_테이블;
-    private OrderTable 변경_테이블;
+
+    @BeforeEach
+    void setUp() {
+        주문_테이블 = new OrderTable(1L, null, 0, true);
+    }
 
     @DisplayName("테이블 생성")
     @Test
     void create() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 0, true);
-        given(orderTableDao.save(any())).willReturn(주문_테이블);
+        OrderTableRequest request = new OrderTableRequest(0, true);
+        given(orderTableRepository.save(any())).willReturn(주문_테이블);
 
         // when
-        OrderTable orderTable = tableService.create(주문_테이블);
+        OrderTableResponse response = tableService.create(request);
 
         // then
-        assertThat(orderTable).isEqualTo(주문_테이블);
+        assertThat(response).isNotNull();
     }
 
     @DisplayName("테이블 목록 조회")
     @Test
     void list() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 0, true);
-        given(orderTableDao.findAll()).willReturn(Collections.singletonList(주문_테이블));
+        given(orderTableRepository.findAll()).willReturn(Collections.singletonList(주문_테이블));
 
         // when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> responses = tableService.list();
 
         // then
-        assertAll(
-                () -> assertThat(orderTables).hasSize(1),
-                () -> assertThat(orderTables).containsExactly(주문_테이블)
-        );
+        assertThat(responses).hasSize(1);
     }
 
     @DisplayName("빈 테이블로 변경")
     @Test
     void changeEmpty() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 3, false);
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(주문_테이블);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
 
         // when
-        OrderTable orderTable = tableService.changeEmpty(1L, 변경_테이블);
+        OrderTableResponse response = tableService.changeEmpty(1L, true);
 
         // then
-        assertThat(orderTable.isEmpty()).isTrue();
+        assertThat(response.isEmpty()).isTrue();
     }
 
     @Test
     void 존재하지않는_테이블의_상태를_변경할_경우() {
         // given
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 변경_테이블))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void 단체_지정된_주문_테이블의_상태를_변경할_경우() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, 1L, 3, false);
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
+        주문_테이블 = new OrderTable(1L, new TableGroup(1L), 3, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 변경_테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 조리_또는_식사중인_상태의_테이블을_변경하는_경우() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 3, false);
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 변경_테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,48 +120,45 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 3, false);
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(orderTableDao.save(any())).willReturn(주문_테이블);
+        주문_테이블 = new OrderTable(1L, null, 3, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
 
         // when
-        OrderTable orderTable = tableService.changeNumberOfGuests(1L, 변경_테이블);
+        OrderTableResponse response = tableService.changeNumberOfGuests(1L, 0);
 
         // then
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(0);
+        assertThat(response.getNumberOfGuests()).isEqualTo(0);
     }
 
     @Test
     void 손님수를_0미만으로_변경할_경우() {
         // given
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, -1, true);
+        주문_테이블 = new OrderTable(1L, null, 3, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 변경_테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, -1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 존재하지_않는_테이블의_손님_수를_변경할_경우() {
         // given
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 변경_테이블))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 0))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     void 비어있는_테이블의_손님_수를_변경할_경우() {
         // given
-        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 0, true);
-        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
+        주문_테이블 = new OrderTable(1L, null, 0, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 변경_테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 0))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.ProductRequest;
+import kitchenpos.dto.response.ProductResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,58 +29,62 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Product 상품;
+
+    @BeforeEach
+    void setUp() {
+        상품 = new Product("치킨", BigDecimal.valueOf(3000));
+    }
 
     @DisplayName("상품 생성")
     @Test
     void create() {
         // given
-        상품 = 상품_데이터_생성(1L, "상품", BigDecimal.valueOf(3000));
-        given(productDao.save(any())).willReturn(상품);
+        ProductRequest request = new ProductRequest("치킨", BigDecimal.valueOf(3000));
+        given(productRepository.save(any())).willReturn(상품);
 
         // when
-        Product product = productService.create(상품);
+        ProductResponse response = productService.create(request);
 
         // then
-        assertThat(product).isEqualTo(상품);
+        assertThat(response.getName()).isEqualTo("치킨");
     }
 
     @DisplayName("상품 조회")
     @Test
     void list() {
         // given
-        상품 = 상품_데이터_생성(1L, "상품", BigDecimal.valueOf(3000));
-        given(productDao.findAll()).willReturn(Collections.singletonList(상품));
+        given(productRepository.findAll()).willReturn(Collections.singletonList(상품));
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> responses = productService.list();
 
         // then
         assertAll(
-                () -> assertThat(products).hasSize(1),
-                () -> assertThat(products).containsExactly(상품)
+                () -> assertThat(responses).hasSize(1),
+                () -> assertThat(responses.stream().map(ProductResponse::getName)).containsExactly("치킨")
         );
     }
 
     @Test
     void 상품_가격이_0보다_작은경우() {
         // given
-        상품 = 상품_데이터_생성(1L, "상품", BigDecimal.valueOf(-1000));
+        ProductRequest request = new ProductRequest("치킨", BigDecimal.valueOf(-1000));
 
         // when & then
-        assertThatThrownBy(() -> productService.create(상품))
+        assertThatThrownBy(() -> productService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 상품_가격이_빈값인_경우() {
         // given
-        상품 = 상품_데이터_생성(1L, "상품", null);
+        ProductRequest request = new ProductRequest("치킨", null);
 
         // when & then
-        assertThatThrownBy(() -> productService.create(상품))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(request))
+                .isInstanceOf(NullPointerException.class);
     }
 }
