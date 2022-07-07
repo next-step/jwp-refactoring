@@ -60,5 +60,7 @@ project(':module-order') {
 project(':module-table') {
     dependencies {
         compile project(':module-common')
+        compile project(':module-order')
+        compile project(':module-menu')
     }
 }
