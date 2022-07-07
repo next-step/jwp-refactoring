@@ -88,7 +88,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
-    public List<MenuResponse> 메뉴_조회_됨(final ExtractableResponse<Response> response) {
+    public static List<MenuResponse> 메뉴_조회_됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         return response.jsonPath().getList(".", MenuResponse.class);
     }

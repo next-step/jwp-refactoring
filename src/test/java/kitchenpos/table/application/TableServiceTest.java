@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.application.TableService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -26,6 +27,8 @@ public class TableServiceTest {
     public static final OrderTable 일번_테이블 = OrderTable.of(0, true);
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
     @InjectMocks
     TableService tableService;
 
@@ -62,6 +65,8 @@ public class TableServiceTest {
         // given
         given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(일번_테이블));
+        given(orderRepository.findByOrderTableId(any()))
+                .willReturn(Optional.of(Order.of(일번_테이블.getId(), Arrays.asList())));
         // when
         final OrderTableResponse orderTableResponse = tableService.changeEmpty(일번_테이블.getId(), OrderTable.of(0, false));
         // then

@@ -12,8 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuTest {
-    public static List<MenuProduct> 메뉴상품 = Arrays.asList(MenuProduct.of(1L, ProductTest.불고기버거,5L),
-            MenuProduct.of(2L, ProductTest.새우버거,1L));
+    public static List<MenuProduct> 메뉴상품 = Arrays.asList(MenuProduct.of(ProductTest.불고기버거, 5L),
+            MenuProduct.of(ProductTest.새우버거, 1L));
     public static Menu 햄버거메뉴 = new Menu(1L, "불고기버거", BigDecimal.valueOf(5_000), MenuGroupTest.햄버거_메뉴);
 
     @Test
@@ -37,7 +37,7 @@ public class MenuTest {
     void addMenuException() {
         // when
         assertThatThrownBy(() ->
-                햄버거메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(2L, ProductTest.새우버거,1L))))
+                햄버거메뉴.addMenuProducts(Arrays.asList(MenuProduct.of(ProductTest.새우버거, 1L))))
                 .isInstanceOf(RuntimeException.class);
     }
 

@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class ProductRepositoryTest {
     public static final CreateProductRequest 불고기버거 = new CreateProductRequest("불고기버거", 1500);
+    public static final CreateProductRequest 새우버거 = new CreateProductRequest("새우버거", 2000);
     @Autowired
     ProductRepository productRepository;
 

@@ -24,7 +24,7 @@ public class OrderTableTest {
         final OrderTable table = OrderTable.of(0, false);
         final OrderTable updateTable = OrderTable.of(0,true);
         // when
-        table.updateEmptyTable(updateTable, true);
+        table.updateEmptyTable(updateTable);
         // then
         assertThat(table.isEmpty()).isTrue();
     }
@@ -37,19 +37,7 @@ public class OrderTableTest {
         table.updateTableGroupId(1L);
         final OrderTable updateTable = OrderTable.of(0,true);
         // when
-        assertThatThrownBy(() -> table.updateEmptyTable(updateTable, true))
-                .isInstanceOf(TableException.class);
-    }
-
-    @Test
-    @DisplayName("테이블 빈 상태 변경 주문 상태 불가")
-    void emptyException2() {
-        // given
-        final OrderTable table = OrderTable.of(0, false);
-        final OrderTable updateTable = OrderTable.of(0,true);
-        final OrderStatus status = OrderStatus.COOKING;
-        // when
-        assertThatThrownBy(() -> table.updateEmptyTable(updateTable, status.enabledOrderCancel()))
+        assertThatThrownBy(() -> table.updateEmptyTable(updateTable))
                 .isInstanceOf(TableException.class);
     }
 
