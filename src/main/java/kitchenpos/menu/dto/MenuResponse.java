@@ -27,7 +27,7 @@ public class MenuResponse {
             menu.getMenuGroupId(), menuProductResponses);
     }
 
-    public static List<MenuResponse> convertToMenuResponses(List<Menu> menus) {
+    public static List<MenuResponse> toMenuResponses(List<Menu> menus) {
         return menus.stream()
             .map(menu -> MenuResponse.of(menu))
             .collect(Collectors.toList());

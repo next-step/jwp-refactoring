@@ -6,9 +6,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -17,17 +15,15 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    private long menuId;
     private long quantity;
 
     public OrderLineItem() {
     }
 
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
+    public OrderLineItem(long menuId, long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -35,8 +31,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public static OrderLineItem of(Menu menu, int quantity) {
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem of(long menuId, int quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
 
@@ -45,7 +41,6 @@ public class OrderLineItem {
             this.order.getOrderLineItems().remove(this);
         }
         this.order = order;
-        order.getOrderLineItems().add(this);
     }
 
 
@@ -53,8 +48,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
@@ -70,11 +65,11 @@ public class OrderLineItem {
             return false;
         }
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, order, menu, quantity);
+        return Objects.hash(seq, order, menuId, quantity);
     }
 }

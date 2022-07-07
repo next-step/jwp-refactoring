@@ -25,11 +25,11 @@ public class OrderResponse {
         List<OrderLineItemResponse> orderLineItems = savedOrder.getOrderLineItems().stream()
             .map(orderLineItem -> OrderLineItemResponse.from(orderLineItem))
             .collect(Collectors.toList());
-        return new OrderResponse(savedOrder.getId(), savedOrder.getOrderTable().getId(),
+        return new OrderResponse(savedOrder.getId(), savedOrder.getOrderTableId(),
             savedOrder.getOrderStatus(), orderLineItems);
     }
 
-    public static List<OrderResponse> convertToOrderResponse(List<Order> orders) {
+    public static List<OrderResponse> toOrderResponse(List<Order> orders) {
         return orders.stream()
             .map(order -> OrderResponse.from(order))
             .collect(Collectors.toList());
