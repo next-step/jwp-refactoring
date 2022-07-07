@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.domain.MenuTest;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -57,7 +59,7 @@ class TableGroupServiceTest {
         // given
         final OrderTable 일번_테이블 = OrderTable.of(0, true);
         final OrderTable 이번_테이블 = OrderTable.of(0, true);
-        final Order order = Order.of(일번_테이블.getId(),Arrays.asList());
+        final Order order = Order.of(일번_테이블.getId(),Arrays.asList(OrderLineItem.of(MenuTest.햄버거메뉴, 1L)));
         order.updateOrderStatus(OrderStatus.COMPLETION);
 
         given(orderTableRepository.findAllById(any()))

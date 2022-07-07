@@ -1,6 +1,9 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.OrderException;
+import kitchenpos.order.exception.OrderExceptionType;
 import kitchenpos.table.domain.OrderStatus;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,10 +41,17 @@ public class Order {
     }
 
     public static Order of(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
+        validateItemEmpty(orderLineItems);
         final Order order = new Order(orderTableId);
         order.addOrderLineItems(orderLineItems);
 
         return order;
+    }
+
+    private static void validateItemEmpty(final List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new OrderException(OrderExceptionType.NOT_EXIST_ORDER_ITEM);
+        }
     }
 
     void addOrderLineItems(final List<OrderLineItem> orderLineItems) {

@@ -14,7 +14,7 @@ public class OrderLineItemTest {
     void updateOrder() {
         // given
         final OrderLineItem 주문라인 = OrderLineItem.of(MenuTest.햄버거메뉴, 1L);
-        final Order order = Order.of(1L, Arrays.asList());
+        final Order order = Order.of(1L, Arrays.asList(OrderLineItem.of(MenuTest.햄버거메뉴, 1L)));
         // when
         주문라인.updateOrder(order);
         // then

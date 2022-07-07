@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.domain.MenuTest;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
@@ -66,7 +68,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(일번_테이블));
         given(orderRepository.findByOrderTableId(any()))
-                .willReturn(Optional.of(Order.of(일번_테이블.getId(), Arrays.asList())));
+                .willReturn(Optional.of(Order.of(일번_테이블.getId(), Arrays.asList(OrderLineItem.of(MenuTest.햄버거메뉴, 1L)))));
         // when
         final OrderTableResponse orderTableResponse = tableService.changeEmpty(일번_테이블.getId(), OrderTable.of(0, false));
         // then
