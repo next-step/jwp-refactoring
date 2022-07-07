@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -21,18 +20,6 @@ class MenuTest {
         추천_메뉴 = new MenuGroup(1L, "추천메뉴");
         후라이드_치킨 = new Product(1L, "후라이드치킨", new BigDecimal(8_500L));
         메뉴_후라이드_치킨 = new MenuProduct(후라이드_치킨, 2);
-    }
-
-    @Test
-    @DisplayName("메뉴 가격이 null 이거나 음수일 경우 - 오류")
-    void invalidPrice() {
-        // when then
-        assertAll(
-            () -> assertThatThrownBy(() -> new Menu("후라이드+후라이드", new BigDecimal(-6_000L), 추천_메뉴, Arrays.asList(메뉴_후라이드_치킨)))
-                .isInstanceOf(IllegalArgumentException.class),
-            () -> assertThatThrownBy(() -> new Menu("후라이드+후라이드", null, 추천_메뉴, Arrays.asList(메뉴_후라이드_치킨)))
-                .isInstanceOf(IllegalArgumentException.class)
-        );
     }
 
     @Test

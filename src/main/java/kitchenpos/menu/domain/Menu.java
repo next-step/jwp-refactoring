@@ -20,9 +20,11 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -35,24 +37,22 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price);
         MenuProducts products = convertToMenuProducts(menuProducts);
-
         validateMenuProductsPriceThanMenuPrice(price, products);
-        this.name = name;
-        this.price = price;
+
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = products;
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price);
         MenuProducts products = convertToMenuProducts(menuProducts);
-
         validateMenuProductsPriceThanMenuPrice(price, products);
+
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = products;
     }
@@ -62,12 +62,11 @@ public class Menu {
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validatePrice(price);
         validateMenuProductsPriceThanMenuPrice(price, menuProducts);
 
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -77,11 +76,11 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getValue();
     }
 
     public MenuGroup getMenuGroup() {
@@ -102,16 +101,10 @@ public class Menu {
         return new MenuProducts(products);
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     private void validateMenuProductsPriceThanMenuPrice(BigDecimal price, MenuProducts menuProducts) {
         BigDecimal totalPrice = menuProducts.calculateTotalPrice();
 
-        if (price.compareTo(totalPrice) > 0) {
+        if(price.compareTo(totalPrice) > 0) {
             throw new IllegalArgumentException();
         }
     }
