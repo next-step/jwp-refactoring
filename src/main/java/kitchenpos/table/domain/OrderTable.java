@@ -89,9 +89,7 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new BadRequestException(ErrorCode.NEGATIVE_NUMBER_OF_GUESTS);
-        }
+        NumberOfGuests.validate(numberOfGuests);
 
         if (this.isEmpty()) {
             throw new BadRequestException(ErrorCode.TABLE_EMPTY);
