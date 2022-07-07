@@ -6,7 +6,6 @@ import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -39,8 +38,6 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -52,13 +49,11 @@ class OrderServiceTest {
     private OrderLineItemRequest orderLineItemRequest;
     private OrderRequest orderRequest;
     private Order order;
-    private OrderLineItem orderLineItem;
 
     @BeforeEach
     void setUp() {
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
         orderRequest = new OrderRequest(ORDER_TABLE_ID, Arrays.asList(orderLineItemRequest));
-        orderLineItem = new OrderLineItem(order);
         order = new Order(ORDER_ID, ORDER_TABLE_ID, OrderStatus.COOKING,
                 Arrays.asList(OrderLineItemRequest.toEntity(orderLineItemRequest)));
     }
@@ -133,8 +128,6 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         given(orderRepository.findById(ORDER_ID)).willReturn(Optional.of(order));
-        given(orderLineItemRepository.findAllByOrderId(ORDER_ID))
-                .willReturn(Arrays.asList(new OrderLineItem(order)));
 
         OrderResponse response = orderService.changeOrderStatus(ORDER_ID, new OrderRequest(OrderStatus.COMPLETION));
 
