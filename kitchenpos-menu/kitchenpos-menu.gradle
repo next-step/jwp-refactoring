@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':kitchenpos-menu-group')
+    compile project(':kitchenpos-product')
+}
+
+bootJar.enabled=false
+jar.enabled=true
