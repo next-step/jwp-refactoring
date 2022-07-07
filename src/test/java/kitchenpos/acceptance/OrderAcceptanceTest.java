@@ -106,7 +106,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 주문의_주문상태를_변경할_수_있다() {
-        OrderStatus 식사중 = OrderStatus.MEAL ;
+        OrderStatus 식사중 = OrderStatus.MEAL;
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
         OrderResponse 주문 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목)).as(OrderResponse.class);
 

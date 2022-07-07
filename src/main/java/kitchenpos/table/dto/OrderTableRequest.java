@@ -27,6 +27,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toEntity() {
-        return new OrderTable(numberOfGuests,empty);
+        return new OrderTable(numberOfGuests, empty);
     }
 }

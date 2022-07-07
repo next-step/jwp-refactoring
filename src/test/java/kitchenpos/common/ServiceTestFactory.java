@@ -7,7 +7,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -35,7 +34,7 @@ public class ServiceTestFactory {
 
 
     public static Menu 메뉴생성(String name, Integer price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name,price,menuGroup,menuProducts);
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public static MenuProduct 메뉴상품생성(Long seq, Product product, Long quantity) {

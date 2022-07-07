@@ -52,10 +52,12 @@ public class Product {
     public Price getPrice() {
         return price;
     }
-    public Integer getPriceValue(){
+
+    public Integer getPriceValue() {
         return price.getPriceValue();
     }
-    public BigDecimal getPriceBigDecimal(){
+
+    public BigDecimal getPriceBigDecimal() {
         return price.getValue();
     }
 

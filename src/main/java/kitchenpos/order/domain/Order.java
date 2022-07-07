@@ -51,9 +51,9 @@ public class Order {
             throw new IllegalArgumentException();
         }
 
-        this.orderTableId= orderTable.getId();
+        this.orderTableId = orderTable.getId();
         changeOrderStatue(OrderStatus.COOKING);
-        this.orderedTime=LocalDateTime.now();
+        this.orderedTime = LocalDateTime.now();
 
     }
 

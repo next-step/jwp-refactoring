@@ -71,7 +71,7 @@ class TableGroupServiceTest {
     @Test
     void 주문테이블이_2개미만이면_테이블그룹을_생성할_수_없다() {
         TableGroupRequest 테이블그룹_주문테이블1개 = 테이블그룹요청생성(Arrays.asList(table1.getId()));
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(table1,table2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(table1, table2));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹_주문테이블1개))
                 .isInstanceOf(IllegalArgumentException.class);
