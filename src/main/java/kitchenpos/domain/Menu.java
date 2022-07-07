@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import kitchenpos.request.MenuRequest;
 
 @Entity
 public class Menu {
@@ -88,6 +89,11 @@ public class Menu {
         if (price.getValue().compareTo(totalPrices) > 0) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public static Menu of(final MenuRequest menuRequest, final MenuGroup menuGroup,
+                          final List<MenuProduct> menuProducts) {
+        return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
     }
 
     @Override

@@ -25,4 +25,9 @@ public class MenuGroupService {
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.of(menuGroupRepository.findAll());
     }
+
+    public MenuGroup findMenuGroupById(final Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

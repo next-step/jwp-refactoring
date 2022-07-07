@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.dao.MenuGroupRepository;
-import kitchenpos.dao.MenuProductRepository;
 import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
@@ -45,9 +43,7 @@ public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-    @Mock
-    private MenuProductRepository menuProductRepository;
+    private MenuGroupService menuGroupService;
     @Mock
     private ProductRepository productRepository;
     @InjectMocks
@@ -67,7 +63,7 @@ public class MenuServiceTest {
         final MenuProductRequest 메뉴_상품_요청 = 메뉴_상품_요청_생성(후라이드치킨);
         final MenuRequest 메뉴 = 메뉴_요청_생성("한마리치킨", BigDecimal.valueOf(-16_000), 한마리_메뉴_그룹, Arrays.asList(메뉴_상품_요청));
 
-        given(menuGroupRepository.findById(한마리_메뉴_그룹.getId())).willReturn(Optional.of(한마리_메뉴_그룹));
+        given(menuGroupService.findMenuGroupById(한마리_메뉴_그룹.getId())).willReturn(한마리_메뉴_그룹);
         given(productRepository.findById(메뉴_상품_요청.getProductId())).willReturn(Optional.ofNullable(후라이드치킨_상품));
 
         assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
@@ -76,7 +72,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("등록되지 않은 메뉴 그룹으로 메뉴 등록 시 Exception")
     public void createNotExistsMenuGroupException() {
-        given(menuGroupRepository.findById(한마리_메뉴_그룹.getId())).willThrow(IllegalArgumentException.class);
+        given(menuGroupService.findMenuGroupById(한마리_메뉴_그룹.getId())).willThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> menuService.create(한마리치킨)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -87,7 +83,7 @@ public class MenuServiceTest {
         final MenuProductRequest 메뉴_상품_요청 = 메뉴_상품_요청_생성(후라이드치킨);
         final MenuRequest 메뉴 = 메뉴_요청_생성("한마리치킨", BigDecimal.valueOf(17_000), 한마리_메뉴_그룹, Arrays.asList(메뉴_상품_요청));
 
-        given(menuGroupRepository.findById(한마리_메뉴_그룹.getId())).willReturn(Optional.ofNullable(한마리_메뉴_그룹));
+        given(menuGroupService.findMenuGroupById(한마리_메뉴_그룹.getId())).willReturn(한마리_메뉴_그룹);
         given(productRepository.findById(후라이드치킨_상품.getId())).willReturn(Optional.of(후라이드치킨_상품));
 
         assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
@@ -102,7 +98,7 @@ public class MenuServiceTest {
         final MenuProduct 후라이드치킨 = 메뉴_상품_1개_생성(후라이드치킨_상품, 메뉴);
         메뉴.addMenuProduct(후라이드치킨);
 
-        given(menuGroupRepository.findById(한마리_메뉴_그룹.getId())).willReturn(Optional.ofNullable(한마리_메뉴_그룹));
+        given(menuGroupService.findMenuGroupById(한마리_메뉴_그룹.getId())).willReturn(한마리_메뉴_그룹);
         given(productRepository.findById(후라이드치킨_상품.getId())).willReturn(Optional.of(후라이드치킨_상품));
         given(menuRepository.save(any())).willReturn(메뉴);
 

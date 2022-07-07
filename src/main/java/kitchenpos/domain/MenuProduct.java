@@ -38,6 +38,10 @@ public class MenuProduct {
         this.quantity = new Quantity(quantity);
     }
 
+    public static MenuProduct of(final Product product, final long quantity) {
+        return new MenuProduct(product, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }

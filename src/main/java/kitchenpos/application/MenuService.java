@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.dao.MenuGroupRepository;
-import kitchenpos.dao.MenuProductRepository;
+import java.util.stream.Collectors;
 import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
@@ -19,41 +17,37 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
+    private final MenuGroupService menuGroupService;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final MenuProductRepository menuProductRepository,
+            final MenuGroupService menuGroupService,
             final ProductRepository productRepository
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
+        this.menuGroupService = menuGroupService;
         this.productRepository = productRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
+        final MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
 
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         final List<MenuProduct> menuProducts = toMenuProducts(menuProductRequests);
-        final Menu menu = menuRequest.toMenu(menuGroup, menuProducts);
+        final Menu menu = Menu.of(menuRequest, menuGroup, menuProducts);
 
         return MenuResponse.of(menuRepository.save(menu));
     }
 
     private List<MenuProduct> toMenuProducts(final List<MenuProductRequest> menuProductRequests) {
-        final List<MenuProduct> menuProducts = new ArrayList<>();
-        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
-            final Product product = findProductById(menuProductRequest);
-            menuProducts.add(menuProductRequest.toMenuProduct(product));
-        }
-        return menuProducts;
+        return menuProductRequests.stream()
+                .map(menuProductRequest -> {
+                    final Product product = findProductById(menuProductRequest);
+                    return MenuProduct.of(product, menuProductRequest.getQuantity());
+                })
+                .collect(Collectors.toList());
     }
 
     private Product findProductById(final MenuProductRequest menuProductRequest) {

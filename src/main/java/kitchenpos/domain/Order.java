@@ -16,6 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import kitchenpos.request.OrderLineItemRequest;
+import kitchenpos.request.OrderRequest;
 import org.springframework.util.CollectionUtils;
 
 @Entity(name = "orders")
@@ -68,6 +70,14 @@ public class Order {
         this.orderTableId = requireNonNull(orderTableId, "orderTableId");
         this.orderedTime = LocalDateTime.now();
         this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public static Order of(final OrderRequest orderRequest, final OrderTable orderTable) {
+        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
+                .stream()
+                .map(OrderLineItemRequest::toOrderLineItem)
+                .collect(Collectors.toList());
+        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {

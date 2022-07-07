@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import org.springframework.util.CollectionUtils;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -13,6 +14,10 @@ public class OrderRequest {
                         final List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
+    }
+
+    public OrderRequest(final Long orderTableId) {
+        this.orderTableId = orderTableId;
     }
 
     protected OrderRequest() {
@@ -38,5 +43,23 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void checkOrderLineIsEmpty() {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public void checkOrderLineItemsExists(final Long menuCount) {
+        if (orderLineItems.size() != menuCount) {
+            throw new IllegalArgumentException();
+        }
     }
 }
