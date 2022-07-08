@@ -29,11 +29,15 @@ public class Order {
     protected Order() {
     }
 
-    public Order(final Long id, final Long orderTableId) {
+    public Order(final Long id, final Long orderTableId, final OrderStatus orderStatus) {
         this.id = id;
         this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING;
+        this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
+    }
+
+    public Order(final Long id, final Long orderTableId) {
+        this(id, orderTableId, OrderStatus.COOKING);
     }
 
     private Order(final Long orderTableId) {

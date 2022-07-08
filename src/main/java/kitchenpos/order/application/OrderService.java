@@ -15,7 +15,6 @@ import kitchenpos.table.exception.TableException;
 import kitchenpos.table.exception.TableExceptionType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 

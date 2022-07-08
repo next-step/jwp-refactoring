@@ -15,7 +15,7 @@ public class TableGroupResponse {
         this.orderTables = OrderTableResponse.ofList(orderTables);
     }
 
-    public static TableGroupResponse of (final TableGroup tableGroup) {
+    public static TableGroupResponse of(final TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getOrderTables());
     }
 

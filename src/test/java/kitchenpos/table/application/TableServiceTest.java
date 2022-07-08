@@ -1,12 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.menu.domain.MenuTest;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.validator.OrderTableValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -30,7 +27,7 @@ public class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableValidator orderTableValidator;
     @InjectMocks
     TableService tableService;
 
@@ -65,10 +62,9 @@ public class TableServiceTest {
     @DisplayName("테이블 빈 값 상태 변경")
     void changeEmpty() {
         // given
+        doNothing().when(orderTableValidator).validateEnabledClear(any());
         given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(일번_테이블));
-        given(orderRepository.findByOrderTableId(any()))
-                .willReturn(Optional.of(Order.of(일번_테이블.getId(), Arrays.asList(OrderLineItem.of(MenuTest.햄버거메뉴, 1L)))));
         // when
         final OrderTableResponse orderTableResponse = tableService.changeEmpty(일번_테이블.getId(), OrderTable.of(0, false));
         // then
