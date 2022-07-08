@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
