@@ -45,8 +45,15 @@ project(':module-menu') {
     }
 }
 
+project(':module-order') {
+    dependencies {
+        implementation project(':module-menu')
+    }
+}
+
 dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation project(':module-product')
     implementation project(':module-menu')
+    implementation project(':module-order')
 }

@@ -1,0 +1,7 @@
+jar {
+    enabled = true
+}
+
+dependencies {
+    runtimeOnly 'com.h2database:h2'
+}
