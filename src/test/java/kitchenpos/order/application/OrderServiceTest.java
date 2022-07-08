@@ -1,8 +1,9 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -10,7 +11,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,17 +31,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
+    private MenuValidator menuValidator;
+    @Mock
     private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderLineItemRepository orderLineItemRepository;
     @InjectMocks
     private OrderService orderService;
     private OrderLineItem orderLineItemRequest;
@@ -53,7 +56,7 @@ class OrderServiceTest {
     void setUp() {
         orderLineItemRequest = new OrderLineItem();
         orderRequest = 주문요청생성(1L, Arrays.asList(orderLineItemRequest));
-        order = 주문생성(1L,Arrays.asList(orderLineItemRequest));
+        order = 주문생성(1L, Arrays.asList(orderLineItemRequest));
         orderLineItem = new OrderLineItem();
         orderLineItem.setSeq(order.getId());
     }
@@ -61,7 +64,6 @@ class OrderServiceTest {
     @Test
     void 주문을_생성할_수_있다() {
         OrderTable ordertable = 테이블생성(5, false);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(ordertable));
         given(orderRepository.save(any())).willReturn(order);
 
         OrderResponse result = orderService.create(orderRequest);
@@ -81,29 +83,27 @@ class OrderServiceTest {
     void 메뉴가_존재하지_않으면_주문을_생성할_수_없다() {
         OrderRequest 존재하지않는메뉴_주문 = 주문요청생성(1L, Arrays.asList(new OrderLineItem()));
 
-        assertThatThrownBy(() -> orderService.create(존재하지않는메뉴_주문)).isInstanceOf(IllegalArgumentException.class);
+        doThrow(IllegalArgumentException.class).when(orderValidator).validate(존재하지않는메뉴_주문);
+
+        assertThatThrownBy(() -> orderService.create(존재하지않는메뉴_주문))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 주문항목이_존재하지_않으면_주문을_생성할_수_없다() {
-        assertThatThrownBy(() -> orderService.create(orderRequest))
+        OrderRequest 주문항목이_빈_주문 = 주문요청생성(1L, Arrays.asList());
+        assertThatThrownBy(() -> orderService.create(주문항목이_빈_주문))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 주문테이블이_존재하지않으면_주문을_생성할_수_없다() {
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        OrderRequest orderRequest = 주문요청생성(999L, Arrays.asList(orderLineItemRequest));
+
+        doThrow(IllegalArgumentException.class).when(orderValidator).validate(orderRequest);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 주문테이블이_비어있으면_주문을_생성할_수_없다() {
-        OrderTable 빈_주문테이블 = 테이블생성(5, true);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_주문테이블));
-
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

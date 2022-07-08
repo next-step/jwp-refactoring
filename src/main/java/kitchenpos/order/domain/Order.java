@@ -24,8 +24,8 @@ public class Order {
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private Long orderTableId;
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
-    private LocalDateTime orderedTime;
+    private OrderStatus orderStatus = OrderStatus.COOKING;
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
     private OrderLineItems orderLineItems;
@@ -44,17 +44,6 @@ public class Order {
             throw new IllegalArgumentException();
         }
         this.orderStatus = orderStatus;
-    }
-
-    public void registerOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        this.orderTableId = orderTable.getId();
-        changeOrderStatue(OrderStatus.COOKING);
-        this.orderedTime = LocalDateTime.now();
-
     }
 
     public Long getId() {
@@ -81,8 +70,8 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
+    public void setOrderLineItems(OrderLineItems orderLineItems) {
+        this.orderLineItems = orderLineItems;
     }
 
     public OrderLineItems getOrderLineItems() {

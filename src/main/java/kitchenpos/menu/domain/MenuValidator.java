@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -15,10 +16,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuValidator {
     private final MenuGroupRepository menuGroupRepository;
+    private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
 
-    public MenuValidator(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuValidator(MenuGroupRepository menuGroupRepository, MenuRepository menuRepository, ProductRepository productRepository) {
         this.menuGroupRepository = menuGroupRepository;
+        this.menuRepository = menuRepository;
         this.productRepository = productRepository;
     }
 
@@ -42,18 +45,6 @@ public class MenuValidator {
         }
     }
 
-    private MenuProducts getMenuProducts(List<MenuProductRequest> request) {
-        return new MenuProducts(request.stream()
-                .map(this::getMenuProduct)
-                .collect(Collectors.toList()));
-    }
-
-    private MenuProduct getMenuProduct(MenuProductRequest menuProductRequest) {
-        final Product product = productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(IllegalArgumentException::new);
-        return MenuProduct.from(product.getId(), menuProductRequest.getQuantity());
-    }
-
     private Price totalPriceOfProducts(List<MenuProductRequest> menuProductRequests) {
         Price total = Price.from(0);
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
@@ -68,5 +59,20 @@ public class MenuValidator {
     private Product getProduct(MenuProductRequest menuProductRequest) {
         return productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+    }
+
+    public void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        List<Long> menuIds = getMenuIds(orderLineItemRequests);
+        int countById = menuRepository.countByIdIn(menuIds);
+        if (countById != menuIds.size()) {
+            throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
+        }
+
+    }
+
+    private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 }

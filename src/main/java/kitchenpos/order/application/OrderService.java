@@ -1,13 +1,14 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,28 +18,31 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
+    private final MenuValidator menuValidator;
     private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
 
-    public OrderService(final OrderValidator orderValidator,
-                        final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
+    public OrderService(MenuValidator menuValidator, OrderValidator orderValidator, OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository) {
+        this.menuValidator = menuValidator;
         this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         orderValidator.validate(orderRequest);
 
-        final OrderTable orderTable = getOrderTable(orderRequest.getOrderTableId());
+        Order savedOrder = orderRepository.save(orderRequest.toEntity());
 
-        Order order = orderRequest.toEntity();
-        order.registerOrderTable(orderTable);
+        menuValidator.validateOrderLineItems(orderRequest.getOrderLineItemRequests());
 
-        return new OrderResponse(orderRepository.save(order));
+        OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
+        orderLineItems.saveOrder(savedOrder);
+        orderLineItemRepository.saveAll(orderLineItems.getOrderLineItems());
+
+        return new OrderResponse(savedOrder);
     }
 
     public List<OrderResponse> list() {
@@ -55,11 +59,6 @@ public class OrderService {
         savedOrder.changeOrderStatue(orderStatusRequest.getOrderStatus());
 
         return new OrderResponse(savedOrder);
-    }
-
-    private OrderTable getOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
     }
 
     private Order getOrder(Long orderId) {

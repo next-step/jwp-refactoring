@@ -3,6 +3,8 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +16,17 @@ import java.util.stream.Collectors;
 public class OrderValidator {
 
     private final MenuRepository menuRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(MenuRepository menuRepository) {
+    public OrderValidator(MenuRepository menuRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public void validate(OrderRequest orderRequest) {
         validateOrderLineItems(orderRequest.getOrderLineItemRequests());
-
+        validateOrderTable(orderRequest.getOrderTableId());
+        validateOrderTableEmpty(orderRequest.getOrderTableId());
     }
 
     private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
@@ -29,6 +34,20 @@ public class OrderValidator {
 
         if (menuRepository.countByIdIn(menuIds) != orderLineItemRequests.size()) {
             throw new IllegalArgumentException("주문항목에는 등록된 메뉴만 존재해야합니다.");
+        }
+    }
+
+    private void validateOrderTable(Long orderTableId) {
+        if (!orderTableRepository.existsById(orderTableId)) {
+            throw new IllegalArgumentException("주문테이블이 존재하지 않습니다.");
+        }
+    }
+
+    private void validateOrderTableEmpty(Long orderTableId) {
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈테이블은 주문할 수 없습니다.");
         }
     }
 

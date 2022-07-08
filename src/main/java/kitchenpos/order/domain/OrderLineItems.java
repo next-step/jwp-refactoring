@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -30,15 +29,18 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
+    public void saveOrder(Order order) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.setOrder(order);
+        }
+        order.setOrderLineItems(this);
+
+    }
+
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public List<Long> collectMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-    }
 
     public int size() {
         return orderLineItems.size();
