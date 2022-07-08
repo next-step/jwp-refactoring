@@ -11,7 +11,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroup;
@@ -34,7 +34,7 @@ class TableServiceTest {
     private OrderTableDao orderTableDao;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -84,7 +84,7 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
 
         // when
         OrderTableResponse changedOrderTable = tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_않은_주문_테이블.isEmpty()));
@@ -120,7 +120,7 @@ class TableServiceTest {
     void changeEmptyByInvalidOrderStatus() {
         // given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         // when then
         assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_않은_주문_테이블.isEmpty())))

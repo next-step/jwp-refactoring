@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
@@ -34,7 +35,7 @@ public class MenuService {
         menuValidator.validate(menuRequest);
 
         MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(EntityNotFoundException::new);
 
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuRequest.toMenuProducts());
 
@@ -49,7 +50,7 @@ public class MenuService {
 
     public Menu findMenuById(Long menuId) {
         return menuDao.findById(menuId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(EntityNotFoundException::new);
     }
 
     public long countByIdIn(List<Long> menuIds) {

@@ -20,7 +20,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
@@ -41,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -85,7 +85,7 @@ class OrderServiceTest {
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
         given(menuService.countByIdIn(anyList())).willReturn(1L);
         given(menuService.findMenuById(any())).willReturn(후라이드_세트_메뉴);
-        given(orderDao.save(any(Order.class))).willReturn(주문);
+        given(orderRepository.save(any(Order.class))).willReturn(주문);
 
         // when
         OrderResponse savedOrder = orderService.create(new OrderRequest(주문));
@@ -131,7 +131,7 @@ class OrderServiceTest {
         // given
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
         주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
-        given(orderDao.findAll()).willReturn(Arrays.asList(주문));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(주문));
 
         // when
         List<OrderResponse> orders = orderService.list();
@@ -148,7 +148,7 @@ class OrderServiceTest {
         Order 저장된_주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
 
-        given(orderDao.findById(저장된_주문.getId())).willReturn(Optional.of(저장된_주문));
+        given(orderRepository.findById(저장된_주문.getId())).willReturn(Optional.of(저장된_주문));
 
         // when
         OrderResponse changedOrder = orderService.changeOrderStatus(저장된_주문.getId(), orderStatusRequest);
@@ -164,7 +164,7 @@ class OrderServiceTest {
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
         Order 없는_주문 = 주문_생성(1L, 주문_테이블, OrderStatus.COOKING, orderLineItems);
 
-        given(orderDao.findById(없는_주문.getId())).willReturn(Optional.empty());
+        given(orderRepository.findById(없는_주문.getId())).willReturn(Optional.empty());
 
         // when then
         assertThatThrownBy(() -> orderService.changeOrderStatus(없는_주문.getId(), new OrderStatusRequest(OrderStatus.MEAL.name())))
@@ -172,11 +172,11 @@ class OrderServiceTest {
     }
 
     public static Order 주문_생성(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(id, orderTable, orderLineItems);
+        return new Order(id, orderTable.getId(), orderLineItems);
     }
 
     public static Order 주문_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderLineItems);
+        return new Order(id, orderTable.getId(), orderStatus, orderLineItems);
     }
 
     public static OrderLineItem 주문_목록_생성(Order order, Menu menu, int quantity) {
