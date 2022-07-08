@@ -14,9 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
@@ -26,7 +23,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
-import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -72,26 +68,17 @@ class OrderServiceTest {
         @Test
         void 주문_생성_성공() {
             // given
-            Long 후라이드_아이디 = 1L;
-            MenuProduct 후라이드_하나 = MenuProduct.of(후라이드_아이디, 1L);
-            MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-
-            Long 메뉴_그룹_아이디 = 1L;
-            Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), 메뉴_그룹_아이디, 메뉴_상품);
-
             Long 메뉴_아이디 = 1L;
             Long 주문_테이블_아이디 = 1L;
 
             OrderLineItem 주문_항목 = new OrderLineItem(메뉴_아이디, 1);
             OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));
 
-            OrderTable 주문_테이블 = new OrderTable(1L, 5);
-
             given(orderRepository.save(any(Order.class))).willReturn(
                     new Order(1L, 주문_테이블_아이디, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목들));
 
             OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 3);
-            OrderRequest 주문_요청 = OrderRequest.of(주문_테이블.getId(), Collections.singletonList(주문_항목_요청));
+            OrderRequest 주문_요청 = OrderRequest.of(1L, Collections.singletonList(주문_항목_요청));
 
             // when
             OrderResponse savedOrder = orderService.create(주문_요청);
@@ -130,14 +117,12 @@ class OrderServiceTest {
                 // given
                 Long 메뉴_아이디 = 1L;
 
-                OrderTable 주문_테이블 = new OrderTable(1L, 5);
-
                 OrderLineItem 주문_항목1 = new OrderLineItem(메뉴_아이디, 1);
                 OrderLineItem 주문_항목2 = new OrderLineItem(메뉴_아이디, 3);
 
                 OrderLineItemRequest 요청의_주문_항목1 = new OrderLineItemRequest(주문_항목1.getMenuId(), 주문_항목1.getQuantity());
                 OrderLineItemRequest 요청의_주문_항목2 = new OrderLineItemRequest(주문_항목2.getMenuId(), 주문_항목2.getQuantity());
-                OrderRequest 주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(요청의_주문_항목1, 요청의_주문_항목2));
+                OrderRequest 주문_요청 = OrderRequest.of(1L, Arrays.asList(요청의_주문_항목1, 요청의_주문_항목2));
 
                 // when / then
                 assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
@@ -162,7 +147,6 @@ class OrderServiceTest {
             @Test
             void 빈_주문_테이블로_주문_생성() {
                 // given
-                OrderTable 빈_테이블 = new OrderTable(1L, 0, Boolean.TRUE);
                 doThrow(IllegalArgumentException.class).when(orderValidator).validate(any(Order.class));
 
                 OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 2);
@@ -218,10 +202,6 @@ class OrderServiceTest {
         @Test
         void 계산_완료_주문_변경() {
             // given
-            MenuProduct 후라이드_하나 = MenuProduct.of(1L, 1L);
-            MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-            Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), 1L, 메뉴_상품);
-
             Long 메뉴_아이디 = 1L;
             OrderLineItem 주문_항목 = new OrderLineItem(메뉴_아이디, 1);
             OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));

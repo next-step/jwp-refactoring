@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':kitchenpos-common')
+    compile project(':kitchenpos-menu-groups')
+    compile project(':kitchenpos-products')
+}
