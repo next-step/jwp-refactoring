@@ -50,14 +50,6 @@ class PriceTest {
             assertThat(가격).isNotNull();
         }
 
-        @DisplayName("값이 NULL이면 생성할 수 없습니다.")
-        @Test
-        void 이름이_NULL() {
-            assertThatThrownBy(
-                    () -> new Builder().price(Price.from(1000)).menuGroup(new MenuGroup("메뉴 그룹")).build()).isInstanceOf(
-                    IllegalArgumentException.class);
-        }
-
         @DisplayName("가격 값이 NULL이면 생성할 수 없습니다.")
         @Test
         void 가격이_값이_NULL() {

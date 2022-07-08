@@ -1,16 +1,12 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -18,9 +14,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -29,15 +24,15 @@ public class MenuProduct {
     }
 
     public MenuProduct(MenuProduct menuProduct) {
-        this(new Product(menuProduct.product), menuProduct.quantity);
+        this(menuProduct.productId, menuProduct.quantity);
     }
 
-    private MenuProduct(Product product, Long quantity) {
-        this(product, Quantity.from(quantity));
+    private MenuProduct(Long productId, Long quantity) {
+        this(productId, Quantity.from(quantity));
     }
 
-    private MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, Quantity quantity) {
+        this.productId = productId;
         this.quantity = quantity;
         validateNonNullFields();
     }
@@ -46,18 +41,14 @@ public class MenuProduct {
         return new MenuProduct(menuProduct);
     }
 
-    public static MenuProduct of(Product product, Long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, Long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     private void validateNonNullFields() {
-        if (product == null || quantity == null) {
+        if (productId == null || quantity == null) {
             throw new IllegalArgumentException("상품, 수량은 메뉴 상품의 필수 사항입니다.");
         }
-    }
-
-    public Price amount() {
-        return product.calculateTotal(quantity.value());
     }
 
     public Long getSeq() {
@@ -65,7 +56,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
     public Long getQuantity() {

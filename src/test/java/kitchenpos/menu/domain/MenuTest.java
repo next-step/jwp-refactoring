@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class MenuTest {
         @DisplayName("이름, 가격, 메뉴 그룹을 지정하면 생성할 수 있다.")
         @Test
         void 생성_성공() {
-            Menu menu = new Menu.Builder().name("메뉴").price(Price.from(0)).menuGroup(new MenuGroup("메뉴 그룹")).build();
+            Menu menu = new Menu.Builder().name("메뉴").price(Price.from(0)).menuGroupId(1L).build();
 
             assertThat(menu).isNotNull();
         }
@@ -36,15 +35,15 @@ class MenuTest {
         @DisplayName("이름이 NULL이면 생성할 수 없습니다.")
         @Test
         void 이름이_NULL() {
-            assertThatThrownBy(() -> new Menu.Builder().price(Price.from(1000)).menuGroup(new MenuGroup("메뉴 그룹"))
-                    .build()).isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> new Menu.Builder().price(Price.from(1000)).menuGroupId(1L).build()).isInstanceOf(
+                    IllegalArgumentException.class);
         }
 
         @DisplayName("가격름이 NULL이면 생성할 수 없습니다.")
         @Test
         void 가격이_NULL() {
-            assertThatThrownBy(() -> new Menu.Builder().price(Price.from(1000)).menuGroup(new MenuGroup("메뉴 그룹"))
-                    .build()).isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> new Menu.Builder().price(Price.from(1000)).menuGroupId(1L).build()).isInstanceOf(
+                    IllegalArgumentException.class);
         }
 
         @DisplayName("메뉴 그룹이 NULL이면 생성할 수 없습니다.")

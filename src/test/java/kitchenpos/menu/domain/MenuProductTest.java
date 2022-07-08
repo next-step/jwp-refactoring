@@ -11,14 +11,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 상품")
 class MenuProductTest {
-    private static final Product 후라이드 = Product.of("후라이드", 16000);
-    private static final MenuProduct 메뉴_상품 = MenuProduct.of(후라이드, 3L);
-
-    @DisplayName("메뉴 상품의 금액(가격 * 수량)을 계산할 수 있다. ")
-    @Test
-    void 금액_계산() {
-        assertThat(메뉴_상품.amount()).isEqualTo(Price.from(48000));
-    }
+    private static final MenuProduct 메뉴_상품 = MenuProduct.of(1L, 3L);
 
     @DisplayName("생성")
     @Nested

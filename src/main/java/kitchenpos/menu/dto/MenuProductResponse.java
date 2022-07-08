@@ -3,6 +3,7 @@ package kitchenpos.menu.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 
 public class MenuProductResponse {
     private Long seq;
@@ -18,8 +19,8 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public static List<MenuProductResponse> from(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
+    public static List<MenuProductResponse> from(MenuProducts menuProducts) {
+        return menuProducts.value().stream()
                 .map(MenuProductResponse::from)
                 .collect(Collectors.toList());
     }

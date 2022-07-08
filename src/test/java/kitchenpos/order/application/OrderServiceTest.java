@@ -74,10 +74,12 @@ class OrderServiceTest {
         @Test
         void 주문_생성_성공() {
             // given
-            Product 후라이드 = Product.of("후라이드", 16000L);
-            MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
+            Long 후라이드_아이디 = 1L;
+            MenuProduct 후라이드_하나 = MenuProduct.of(후라이드_아이디, 1L);
             MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-            Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"), 메뉴_상품);
+
+            Long 메뉴_그룹_아이디 = 1L;
+            Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), 메뉴_그룹_아이디, 메뉴_상품);
 
             Long 메뉴_아이디 = 1L;
             Long 주문_테이블_아이디 = 1L;
@@ -128,10 +130,6 @@ class OrderServiceTest {
             @Test
             void 중복된_메뉴의_주문_항목을_가진_주문_생성() {
                 // given
-                Product 후라이드 = Product.of("후라이드", 16000L);
-                MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
-                MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-
                 Long 메뉴_아이디 = 1L;
 
                 OrderTable 주문_테이블 = new OrderTable(1L, 5);
@@ -222,10 +220,9 @@ class OrderServiceTest {
         @Test
         void 계산_완료_주문_변경() {
             // given
-            Product 후라이드 = Product.of("후라이드", 16000L);
-            MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
+            MenuProduct 후라이드_하나 = MenuProduct.of(1L, 1L);
             MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-            Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"), 메뉴_상품);
+            Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), 1L, 메뉴_상품);
 
             Long 메뉴_아이디 = 1L;
             OrderLineItem 주문_항목 = new OrderLineItem(메뉴_아이디, 1);
