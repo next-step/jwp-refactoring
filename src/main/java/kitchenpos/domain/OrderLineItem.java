@@ -10,10 +10,6 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
-
     private Long menuId;
 
     private String menuName;
@@ -25,8 +21,7 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Long menuId, String menuName, BigDecimal price, long quantity) {
-        this.order = order;
+    public OrderLineItem(Long menuId, String menuName, BigDecimal price, long quantity) {
         this.menuId = menuId;
         this.menuName = menuName;
         this.price = price;
@@ -46,14 +41,6 @@ public class OrderLineItem {
 
     public void setSeq(Long seq) {
         this.seq = seq;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public Long getMenuId() {

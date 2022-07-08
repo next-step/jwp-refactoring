@@ -20,7 +20,8 @@ public class Order {
 
     private LocalDateTime orderedTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
@@ -34,8 +35,7 @@ public class Order {
 
     private List<OrderLineItem> toOrderLineItems(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                             .map(orderLineItem -> new OrderLineItem(this
-                                     , orderLineItem.getMenuId()
+                             .map(orderLineItem -> new OrderLineItem(orderLineItem.getMenuId()
                                      , orderLineItem.getMenuName()
                                      , orderLineItem.getPrice()
                                      , orderLineItem.getQuantity()))
