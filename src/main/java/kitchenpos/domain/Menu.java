@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Entity
@@ -20,7 +19,9 @@ public class Menu {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal price;
 
-    private Long menuGroupId;
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -28,17 +29,16 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+    public Menu(String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(name, BigDecimal.valueOf(price), menuGroup, menuProducts);
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validateMenuPrice(price);
-        validateTotalPrice(price, menuProducts);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts.addAll(toMenuProducts(menuProducts));
+        this.menuGroup = menuGroup;
+        this.menuProducts.addAll(mapMenuProducts(menuProducts));
     }
 
     public Long getId() {
@@ -65,12 +65,16 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setMenuGroupId(Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -95,17 +99,7 @@ public class Menu {
         return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
-    private void validateTotalPrice(BigDecimal price, List<MenuProduct> menuProducts) {
-        AtomicReference<BigDecimal> sum = new AtomicReference<>(BigDecimal.ZERO);
-        menuProducts.forEach(
-                menuProduct -> sum.set(sum.get().add(menuProduct.getProductPrice()
-                                                                .multiply(BigDecimal.valueOf(menuProduct.getQuantity())))));
-        if (sum.get().compareTo(price) != 0) {
-            throw new IllegalArgumentException("메뉴 가격과 상품 합계의 가격이 일치하지 않습니다");
-        }
-    }
-
-    private List<MenuProduct> toMenuProducts(List<MenuProduct> menuProducts) {
+    private List<MenuProduct> mapMenuProducts(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                            .map(menuProduct -> new MenuProduct(this, menuProduct.getProduct(), menuProduct.getQuantity()))
                            .collect(Collectors.toList());
