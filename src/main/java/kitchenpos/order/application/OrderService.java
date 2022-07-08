@@ -1,104 +1,94 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    public OrderResponse create(final OrderRequest orderRequest) {
+        validateDuplicateMenu(orderRequest);
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+        List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest);
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        validateEmptyOrderTable(orderTable);
+
+        Order savedOrder = orderRepository.save(new Order(orderTable.getId(), orderLineItems));
+        return OrderResponse.from(savedOrder);
+    }
+
+    private void validateDuplicateMenu(final OrderRequest orderRequest) {
+        final List<Long> menuIds = orderRequest.getOrderLineItems().stream()
+                .map(OrderLineItemDto::getMenuId)
+                .collect(toList());
+
+        if (orderRequest.getOrderLineItems().size() != menuRepository.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException("주문 시 주문 항목에 메뉴들은 중복될 수 없습니다.");
         }
+    }
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
+    private void validateEmptyOrderTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 시 주문 테이블은 비어있을 수 없습니다.");
         }
-
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderRepository.save(order);
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+    private List<OrderLineItem> toOrderLineItems(final OrderRequest orderRequest) {
+        return orderRequest.getOrderLineItems().stream()
+                .map(orderLineItem -> {
+                    Menu menu = menuRepository.findById(orderLineItem.getMenuId())
+                            .orElseThrow(() -> new EntityNotFoundException("주문 항목 정보가 존재하지 않습니다."));
+                    return new OrderLineItem(menu, orderLineItem.getQuantity());
+                }).collect(toList());
     }
 
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+    private OrderTable findOrderTableById(final Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new EntityNotFoundException("주문 테이블 정보가 존재하지 않습니다."));
+    }
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+    @Transactional(readOnly = true)
+    public List<OrderResponse> list() {
+        return orderRepository.findAll().stream()
+                .map(OrderResponse::from)
+                .collect(toList());
+    }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
+        Order savedOrder = findOrderById(orderId);
+        savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
+        return OrderResponse.from(savedOrder);
+    }
 
-        orderRepository.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
-        return savedOrder;
+    private Order findOrderById(final Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("주문 정보가 존재하지 않습니다."));
     }
 }
