@@ -34,7 +34,11 @@ public class Order {
 
     private List<OrderLineItem> toOrderLineItems(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                             .map(orderLineItem -> new OrderLineItem(this, orderLineItem.getMenu(), orderLineItem.getQuantity()))
+                             .map(orderLineItem -> new OrderLineItem(this
+                                     , orderLineItem.getMenuId()
+                                     , orderLineItem.getMenuName()
+                                     , orderLineItem.getPrice()
+                                     , orderLineItem.getQuantity()))
                              .collect(Collectors.toList());
     }
 

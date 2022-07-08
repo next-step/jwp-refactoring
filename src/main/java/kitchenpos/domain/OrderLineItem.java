@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -13,23 +14,30 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    private Long menuId;
+
+    private String menuName;
+
+    private BigDecimal price;
 
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
+    public OrderLineItem(Order order, Long menuId, String menuName, BigDecimal price, long quantity) {
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
+        this.menuName = menuName;
+        this.price = price;
         this.quantity = quantity;
     }
 
     public OrderLineItem(Menu menu, long quantity) {
-        this(null, menu, quantity);
+        this.menuId = menu.getId();
+        this.menuName = menu.getName();
+        this.price = menu.getPrice();
+        this.quantity = quantity;
     }
 
     public Long getSeq() {
@@ -48,12 +56,28 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public long getQuantity() {
