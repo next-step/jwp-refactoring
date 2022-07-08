@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,7 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 
 @Entity
 public class Menu {
