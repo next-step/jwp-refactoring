@@ -63,9 +63,9 @@
 
 ## 3단계
 - 단방향 관계로 변경
-  - MenuValidator 
+  - MenuValidator , OrderValidator
 - 간접참조로 변경
-  - MenuProduct - product rkswjqckawhfh qusrud
+  - MenuProduct - product 간접참조로 변경
 
 ## 용어 사전
 
