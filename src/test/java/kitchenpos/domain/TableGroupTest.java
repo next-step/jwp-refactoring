@@ -96,11 +96,11 @@ public class TableGroupTest {
         tem.clear();
 
         // when
-        List<OrderTable> 주문_테이블 = orderTableRepository.findAllByTableGroup(테이블_그룹);
+        List<OrderTable> 주문_테이블 = orderTableRepository.findAllByTableGroupId(테이블_그룹.getId());
         테이블_그룹.ungroup(주문_테이블);
 
         // then
-        orderTableRepository.findAll().forEach(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
+        orderTableRepository.findAll().forEach(orderTable -> assertThat(orderTable.getTableGroupId()).isNull());
     }
 
     @DisplayName("빈 테이블이 아닌 테이블은 단체 지정할 수 없다.")
@@ -148,7 +148,7 @@ public class TableGroupTest {
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> {
-            List<OrderTable> 주문_테이블 = orderTableRepository.findAllByTableGroup(테이블_그룹);
+            List<OrderTable> 주문_테이블 = orderTableRepository.findAllByTableGroupId(테이블_그룹.getId());
             new TableGroup().ungroup(주문_테이블);
         });
     }

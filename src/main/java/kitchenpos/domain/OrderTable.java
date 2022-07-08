@@ -9,9 +9,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -27,6 +25,25 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void includeInGroup(final TableGroup tableGroup) {
+        if (!isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블이 아니면 단체 지정할 수 없습니다.");
+        }
+        if (isGrouped()) {
+            throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
+        }
+        empty = false;
+        tableGroupId = tableGroup.getId();
+    }
+
+    private boolean isGrouped() {
+        return Objects.nonNull(tableGroupId);
+    }
+
+    public void excludeFromGroup() {
+        tableGroupId = null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -35,34 +52,8 @@ public class OrderTable {
         this.id = id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
     public Long getTableGroupId() {
-        return tableGroup.getId();
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-    }
-
-    public void includeInGroup(final TableGroup tableGroup) {
-        if (!isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블이 아니면 단체 지정할 수 없습니다.");
-        }
-        if (isGrouped()) {
-            throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
-        }
-        this.empty = false;
-        this.tableGroup = tableGroup;
-    }
-
-    private boolean isGrouped() {
-        return Objects.nonNull(tableGroup);
-    }
-
-    public void excludeFromGroup() {
-        this.tableGroup = null;
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -92,7 +83,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("단체 지정된 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
         }
         this.empty = empty;

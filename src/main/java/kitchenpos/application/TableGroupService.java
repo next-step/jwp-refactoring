@@ -47,7 +47,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                                                     .orElseThrow(IllegalArgumentException::new);
 
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroup.getId());
         validatePresentOrderTable(orderTables.size());
         orderTableValidator.hasOrderStatusInCookingOrMeal(orderTables);
 
