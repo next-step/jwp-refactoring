@@ -29,7 +29,7 @@ public class OrderRestController {
 
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderResponse>> list() {
-        return ResponseEntity.ok().body(orderService.list());
+        return ResponseEntity.ok().body(orderService.listAllOrders());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")

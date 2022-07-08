@@ -60,7 +60,7 @@ class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_테이블, 주문_테이블2));
 
         // when
-        List<OrderTableResponse> 주문_전체_조회_결과 = tableService.list();
+        List<OrderTableResponse> 주문_전체_조회_결과 = tableService.listAll();
 
         // then
         assertThat(주문_전체_조회_결과).hasSize(2);
@@ -78,7 +78,7 @@ class TableServiceTest {
             OrderTable 주문_테이블 = new OrderTable(계산완료인_주문_테이블의_아이디, 주문_테이블_상태_변경_요청.getNumberOfGuests(), false);
 
             given(orderTableRepository.findById(eq(계산완료인_주문_테이블의_아이디))).willReturn(Optional.of(주문_테이블));
-            given(orderService.existOrderBeforeCompletion(eq(주문_테이블))).willReturn(Boolean.FALSE);
+            given(orderService.existOrderBeforeCompletion(eq(계산완료인_주문_테이블의_아이디))).willReturn(Boolean.FALSE);
 
             // when
             OrderTableResponse 테이블_상태_변경_결과 = tableService.changeEmpty(계산완료인_주문_테이블의_아이디, 주문_테이블_상태_변경_요청);
@@ -125,7 +125,7 @@ class TableServiceTest {
             OrderTable 계산완료가_아닌_주문_테이블 = new OrderTable(계산완료가_아닌_주문_테이블_아이디, 5, false);
 
             given(orderTableRepository.findById(eq(계산완료가_아닌_주문_테이블_아이디))).willReturn(Optional.of(계산완료가_아닌_주문_테이블));
-            given(orderService.existOrderBeforeCompletion(any(OrderTable.class))).willReturn(Boolean.TRUE);
+            given(orderService.existOrderBeforeCompletion(eq(계산완료가_아닌_주문_테이블_아이디))).willReturn(Boolean.TRUE);
 
             // when / then
             assertThatThrownBy(() -> tableService.changeEmpty(계산완료가_아닌_주문_테이블_아이디, 테이블_상태_변경_요청)).isInstanceOf(

@@ -27,7 +27,7 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
-    public List<OrderTableResponse> list() {
+    public List<OrderTableResponse> listAll() {
         return OrderTableResponse.from(orderTableRepository.findAll());
     }
 
@@ -35,7 +35,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
-        if (orderService.existOrderBeforeCompletion(savedOrderTable)) {
+        if (orderService.existOrderBeforeCompletion(orderTableId)) {
             throw new IllegalArgumentException("계산 완료되지 않은 주문이 있어서 빈 테이블로 만들 수 없습니다.");
         }
 
@@ -55,6 +55,7 @@ public class TableService {
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블(%d)를 찾을 수 없습니다.", orderTableId)));
     }
 }

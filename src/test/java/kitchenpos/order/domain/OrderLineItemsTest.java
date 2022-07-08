@@ -15,9 +15,10 @@ class OrderLineItemsTest {
     @DisplayName("주문 항목을 추가할 수 있다.")
     @Test
     void 주문_항목_추가() {
-        Menu 메뉴 = new Menu("메뉴", BigDecimal.ZERO, new MenuGroup("그룹"), new MenuProducts());
         OrderLineItems 주문_항목들 = new OrderLineItems();
-        주문_항목들.add(OrderLineItem.of(메뉴, 1L));
+
+        Long 메뉴_아이디 = 1L;
+        주문_항목들.add(OrderLineItem.of(메뉴_아이디, 1L));
 
         assertThat(주문_항목들.value()).isNotEmpty();
     }
