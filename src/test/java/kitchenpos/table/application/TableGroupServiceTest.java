@@ -35,11 +35,11 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private TableGroupValidator tableGroupValidator;
 
     private TableGroup 테이블_그룹;
     private OrderTable 첫번째_테이블;
@@ -113,9 +113,9 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         List<OrderTable> orderTables = Arrays.asList(첫번째_테이블, 두번째_테이블);
+        테이블_그룹.addOrderTables(orderTables);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(테이블_그룹));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
         tableGroupService.ungroup(테이블_그룹.getId());
@@ -125,18 +125,5 @@ class TableGroupServiceTest {
                 () -> assertThat(첫번째_테이블.getTableGroup()).isNull(),
                 () -> assertThat(두번째_테이블.getTableGroup()).isNull()
         );
-    }
-
-    @Test
-    void 주문_상태가_조리_또는_식사중인_테이블을_해제하는_경우() {
-        // given
-        List<OrderTable> orderTables = Arrays.asList(첫번째_테이블, 두번째_테이블);
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(테이블_그룹));
-        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -1,12 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +20,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,9 +29,9 @@ class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private TableValidator tableValidator;
 
     private OrderTable 주문_테이블;
 
@@ -76,7 +72,6 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
 
         // when
         OrderTableResponse response = tableService.changeEmpty(1L, true);
@@ -93,28 +88,6 @@ class TableServiceTest {
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    void 단체_지정된_주문_테이블의_상태를_변경할_경우() {
-        // given
-        주문_테이블 = new OrderTable(1L, new TableGroup(1L), 3, false);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
-
-        // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 조리_또는_식사중인_상태의_테이블을_변경하는_경우() {
-        // given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("인원 수 변경")
