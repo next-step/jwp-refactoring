@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':module-menu')
+
+    testImplementation(testFixtures(project(":module-product")))
+    testImplementation(testFixtures(project(":module-menu")))
+    testImplementation(testFixtures(project(":module-table")))
+    testImplementation(testFixtures(project(":module-test")))
+}
