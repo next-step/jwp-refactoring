@@ -7,16 +7,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuProductResponse {
-    private final String name;
+    private final Long productId;
     private final long quantity;
 
-    public MenuProductResponse(final String name, final long quantity) {
-        this.name = name;
+    public MenuProductResponse(final Long productId, final long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
     public static MenuProductResponse of(final MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getProduct().getName(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
     public static List<MenuProductResponse> ofList(final List<MenuProduct> menuProducts) {
@@ -25,8 +25,8 @@ public class MenuProductResponse {
                 .collect(Collectors.toList());
     }
 
-    public String getName() {
-        return name;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
@@ -36,21 +36,21 @@ public class MenuProductResponse {
     @Override
     public String toString() {
         return "MenuProductResponse{" +
-                "name='" + name + '\'' +
+                "productId=" + productId +
                 ", quantity=" + quantity +
                 '}';
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final MenuProductResponse that = (MenuProductResponse) o;
-        return quantity == that.quantity && Objects.equals(name, that.name);
+        MenuProductResponse that = (MenuProductResponse) o;
+        return quantity == that.quantity && Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, quantity);
+        return Objects.hash(productId, quantity);
     }
 }

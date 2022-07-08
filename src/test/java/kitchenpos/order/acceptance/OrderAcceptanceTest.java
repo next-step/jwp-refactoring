@@ -84,7 +84,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 주문_전체_조회 = 주문_전체_조회();
         // then
         final List<OrderResponse> 주문_조회_됨 = 주문_조회_됨(주문_전체_조회);
-        assertThat(주문_조회_됨).contains(주문_요청_됨);
+        assertThat(주문_조회_됨.stream().anyMatch(it -> it.getId() == 주문_요청_됨.getId())).isTrue();
 
         // then
         final ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(주문_요청_됨.getId(), new UpdateOrderStatusRequest(OrderStatus.COMPLETION));

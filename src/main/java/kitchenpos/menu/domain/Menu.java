@@ -1,8 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.exception.MenuException;
-import kitchenpos.menu.exception.MenuExceptionType;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,17 +17,16 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
     @Embedded
-    private MenuProducts menuProducts;
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
-    public Menu(final Long id, final String name, final BigDecimal price, final  MenuGroup menuGroup) {
+    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = MenuPrice.of(price);
         this.menuGroup = menuGroup;
-
     }
 
     public static Menu of(final String name, final BigDecimal price, final MenuGroup menuGroup) {
@@ -38,20 +34,9 @@ public class Menu {
     }
 
     public void addMenuProducts(final List<MenuProduct> menuProducts) {
-        MenuProducts products = MenuProducts.of(menuProducts);
-        validate(products);
-        this.menuProducts = products;
-        updateMenuId();
-    }
-
-    private void updateMenuId() {
-        this.menuProducts.getProducts()
-                .forEach(it -> it.updateMenuId(id));
-    }
-
-    private void validate(final MenuProducts menuProducts) {
-        if (!menuProducts.isPossibleCreate(price.getValue())) {
-            throw new MenuException(MenuExceptionType.EXCEED_PRICE);
+        for (final MenuProduct menuProduct : menuProducts) {
+            menuProduct.updateMenuId(this.id);
+            this.menuProducts.add(menuProduct);
         }
     }
 
