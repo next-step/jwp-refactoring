@@ -47,10 +47,8 @@ public class ServiceTestFactory {
     }
 
     public static TableGroup 테이블그룹생성(Long id, List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new TableGroup(orderTables);
         tableGroup.setId(id);
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(orderTables);
         return tableGroup;
     }
 

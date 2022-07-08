@@ -33,7 +33,8 @@ public class TableGroupService {
 
         checkNotExistOrderTable(orderTableIds, orderTables);
 
-        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup.groupTables());
 
         return new TableGroupResponse(savedTableGroup);
     }
