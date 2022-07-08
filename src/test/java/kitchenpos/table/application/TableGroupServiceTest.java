@@ -3,7 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.menu.domain.MenuTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.table.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.repository.OrderTableRepository;

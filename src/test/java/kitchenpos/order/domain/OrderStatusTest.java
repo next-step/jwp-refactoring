@@ -1,11 +1,9 @@
-package kitchenpos.table.domain;
+package kitchenpos.order.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import sun.security.x509.OtherName;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 public class OrderStatusTest {

@@ -2,7 +2,7 @@ package kitchenpos.table.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.repository.OrderRepository;
-import kitchenpos.table.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.exception.TableException;
 import org.junit.jupiter.api.DisplayName;

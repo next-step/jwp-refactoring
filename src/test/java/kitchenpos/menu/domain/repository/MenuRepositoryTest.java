@@ -48,7 +48,6 @@ class MenuRepositoryTest {
         final Menu menu = menuRepository.save(햄버거세트_메뉴);
         menu.addMenuProducts(메뉴상품_리스트);
         // then
-        menu.getMenuProducts().forEach(System.out::println);
         assertThat(menu).isInstanceOf(Menu.class);
         assertThat(menu.getMenuProducts().stream().anyMatch(it -> menu.getId() == it.getMenuId())).isTrue();
     }

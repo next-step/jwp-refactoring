@@ -74,7 +74,7 @@ public class OrderLineItem {
     public String toString() {
         return "OrderLineItem{" +
                 "seq=" + seq +
-                ", order=" + order +
+                ", orderId=" + order.getId() +
                 ", menuName='" + menuName + '\'' +
                 ", menuPrice=" + menuPrice +
                 ", menuId=" + menuId +

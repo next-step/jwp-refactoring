@@ -35,7 +35,7 @@ public class MenuValidator {
         }
 
         final BigDecimal totalPrice = getTotalPrice(menuProducts, products);
-        if (createMenuRequest.getPrice().compareTo(totalPrice) <= BigDecimal.ZERO.intValue()) {
+        if (createMenuRequest.getPrice().compareTo(totalPrice) > BigDecimal.ZERO.intValue()) {
             throw new MenuException(MenuExceptionType.EXCEED_PRICE);
         }
 

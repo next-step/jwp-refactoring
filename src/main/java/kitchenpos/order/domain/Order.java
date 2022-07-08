@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.exception.OrderExceptionType;
-import kitchenpos.table.domain.OrderStatus;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -26,7 +25,7 @@ public class Order {
     @Embedded
     private final OrderLineItems orderLineItems = new OrderLineItems();
 
-    protected Order() {
+    public Order() {
     }
 
     public Order(final Long id, final Long orderTableId, final OrderStatus orderStatus) {
