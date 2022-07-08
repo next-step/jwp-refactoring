@@ -4,6 +4,7 @@ import static kitchenpos.order.__fixture__.OrderLineItemTestFixture.주문_항�
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,8 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        주문_항목 = Arrays.asList(주문_항목_생성(1L, 1L), 주문_항목_생성(2L, 1L));
+        주문_항목 = Arrays.asList(주문_항목_생성(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L),
+                주문_항목_생성(2L, "양념치킨", BigDecimal.valueOf(17_000), 1L));
     }
 
     @Test

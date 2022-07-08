@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -50,8 +51,8 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_항목 = 주문_항목_생성(1L, 1L);
-        주문_항목_요청 = 주문_항목_요청_생성(1L, 1L);
+        주문_항목 = 주문_항목_생성(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L);
+        주문_항목_요청 = 주문_항목_요청_생성(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L);
         주문_요청 = 주문_요청_생성(1L, Arrays.asList(주문_항목_요청));
         주문 = 주문_생성(1L, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(주문_항목));
     }
