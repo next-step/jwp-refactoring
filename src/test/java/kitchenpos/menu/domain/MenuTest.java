@@ -21,15 +21,6 @@ class MenuTest {
         상품들 = MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
     }
 
-
-    @DisplayName("메뉴의 가격은 구성하고 있는 메뉴 상품들의 가격(상품가격 * 수량)의 합계보다 작아야 한다.")
-    @Test
-    void noMenuPriceValid() {
-        //when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Menu("이름", Price.from(1000), MenuGroup.from("메뉴그룹1"), 상품들));
-    }
-
     @DisplayName("메뉴는 메뉴 그룹이 없으면 등록할 수 없다.")
     @Test
     void noMenuGroup() {

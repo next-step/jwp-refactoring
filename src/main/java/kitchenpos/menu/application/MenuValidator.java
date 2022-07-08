@@ -1,8 +1,9 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.global.domain.Amount;
 import kitchenpos.global.domain.Price;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.domain.Product;

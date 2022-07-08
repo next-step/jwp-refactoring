@@ -22,7 +22,6 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -80,7 +79,6 @@ class MenuServiceTest {
         //given
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(1), 1L, menuProductRequests1);
         given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(null);
-        //given(menuValidator)
 
         //when & then
         assertThatIllegalArgumentException()
@@ -96,29 +94,11 @@ class MenuServiceTest {
         //given
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(price), 1L, menuProductRequests1);
         given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(MenuGroup.from("메뉴 그룹"));
-        given(productRepository.getOne(1L)).willReturn(new Product("상품1", Price.from(100)));
-        given(productRepository.getOne(2L)).willReturn(new Product("상품2", Price.from(100)));
-
 
         //when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest));
 
-    }
-
-    @Test
-    @DisplayName("메뉴의 가격은 메뉴 상품들의 합계보다 작아야 한다.")
-    void productTotalIsBigAsMenuPriceIsBigAs() {
-        //given
-        MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(5000), 1L, menuProductRequests1);
-        given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(MenuGroup.from("메뉴 그룹"));
-        given(productRepository.getOne(1L)).willReturn(new Product("상품1", Price.from(1000)));
-        given(productRepository.getOne(2L)).willReturn(new Product("상품2", Price.from(1000)));
-
-
-        //when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
@@ -132,10 +112,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("메뉴", menu.getPrice().value(), 1L, menuProductRequests1);
 
         given(menuGroupRepository.getOne(menuRequest.getMenuGroupId())).willReturn(menu.getMenuGroup());
-        given(productRepository.getOne(1L)).willReturn(product1);
-        given(productRepository.getOne(2L)).willReturn(product2);
         given(menuRepository.save(any())).willReturn(menu);
-
 
         //when
         final MenuResponse saveMenu = menuService.create(menuRequest);
@@ -160,7 +137,6 @@ class MenuServiceTest {
                 MenuProducts.from(Collections.singletonList(menuProduct3)));
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu1, menu2));
-
 
         //when
         final List<MenuResponse> menus = menuService.list();
