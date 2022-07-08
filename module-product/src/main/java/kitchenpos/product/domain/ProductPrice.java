@@ -1,6 +1,6 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.exception.IllegalPriceException;
+import kitchenpos.product.exception.IllegalPriceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

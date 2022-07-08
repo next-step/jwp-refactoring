@@ -1,20 +1,15 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.IllegalOrderException;
-import kitchenpos.order.exception.IllegalOrderLineItemException;
-import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static kitchenpos.utils.fixture.MenuFixtureFactory.*;

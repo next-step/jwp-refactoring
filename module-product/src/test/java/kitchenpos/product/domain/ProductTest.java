@@ -1,13 +1,13 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.product.exception.IllegalPriceException;
+import kitchenpos.utils.fixture.ProductFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static kitchenpos.utils.fixture.ProductFixtureFactory.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("상품 도메인 테스트")
 class ProductTest {
