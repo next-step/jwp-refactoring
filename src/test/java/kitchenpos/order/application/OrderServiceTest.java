@@ -21,7 +21,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.order.infra.OrderTableRepository;
+import kitchenpos.table.infra.OrderTableRepository;
 import kitchenpos.order.request.OrderLineItemRequest;
 import kitchenpos.order.request.OrderRequest;
 import kitchenpos.table.domain.OrderTable;

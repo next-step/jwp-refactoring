@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.order.infra.OrderTableRepository;
+import kitchenpos.table.infra.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;

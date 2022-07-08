@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.order.infra.OrderTableRepository;
+import kitchenpos.table.infra.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.infra.TableGroupRepository;

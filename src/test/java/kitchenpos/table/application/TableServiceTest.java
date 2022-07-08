@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.order.infra.OrderTableRepository;
+import kitchenpos.table.infra.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;

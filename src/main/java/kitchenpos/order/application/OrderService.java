@@ -4,7 +4,7 @@ import java.util.List;
 import kitchenpos.menu.infra.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.order.infra.OrderTableRepository;
+import kitchenpos.table.infra.OrderTableRepository;
 import kitchenpos.order.request.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
