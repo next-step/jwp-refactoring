@@ -1,6 +1,6 @@
-package kitchenpos.tablegroup.exception;
+package kitchenpos.ordertable.exception;
 
-public class NoSuchTableGroupException extends KitchenPosArgumentException {
+public class NoSuchTableGroupException extends KitchenPosTableException {
     private static final String ERROR_MESSAGE = "TableGroup이 존재하지 않습니다 (id: %d)";
 
     public NoSuchTableGroupException(Long id) {

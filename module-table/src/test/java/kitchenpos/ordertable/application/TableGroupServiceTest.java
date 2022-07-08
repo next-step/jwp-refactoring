@@ -1,12 +1,13 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.ordertable.application;
 
+import kitchenpos.ordertable.application.TableGroupService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.event.GroupTableEvent;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.ordertable.domain.TableGroup;
+import kitchenpos.ordertable.domain.TableGroupRepository;
+import kitchenpos.ordertable.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

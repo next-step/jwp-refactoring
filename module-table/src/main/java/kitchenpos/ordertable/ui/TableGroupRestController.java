@@ -1,10 +1,10 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.ordertable.ui;
 
-import kitchenpos.ordertable.exception.KitchenPosArgumentException;
+import kitchenpos.ordertable.exception.KitchenPosTableException;
 import kitchenpos.ordertable.application.TableService;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.ordertable.application.TableGroupService;
+import kitchenpos.ordertable.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +33,8 @@ public class TableGroupRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(KitchenPosArgumentException.class)
-    public ResponseEntity handleKitchenPosArgException(KitchenPosArgumentException e) {
+    @ExceptionHandler(KitchenPosTableException.class)
+    public ResponseEntity handleKitchenPosArgException(KitchenPosTableException e) {
         return ResponseEntity.badRequest().build();
     }
 }

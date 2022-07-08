@@ -3,7 +3,7 @@ package kitchenpos.menu.ui;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.exception.KitchenPosArgumentException;
+import kitchenpos.menu.exception.KitchenPosMenuException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +30,8 @@ public class MenuRestController {
         return ResponseEntity.ok().body(menuService.list());
     }
 
-    @ExceptionHandler(KitchenPosArgumentException.class)
-    public ResponseEntity handleKitchenPosArgException(KitchenPosArgumentException e) {
+    @ExceptionHandler(KitchenPosMenuException.class)
+    public ResponseEntity handleKitchenPosArgException(KitchenPosMenuException e) {
         return ResponseEntity.badRequest().build();
     }
 }

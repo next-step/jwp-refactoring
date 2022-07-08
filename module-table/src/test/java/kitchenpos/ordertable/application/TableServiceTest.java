@@ -10,7 +10,7 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.ordertable.exception.NoSuchOrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.ordertable.domain.TableGroup;
 import fixture.TableGroupFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

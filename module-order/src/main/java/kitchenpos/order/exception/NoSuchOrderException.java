@@ -1,6 +1,6 @@
 package kitchenpos.order.exception;
 
-public class NoSuchOrderException extends KitchenPosArgumentException {
+public class NoSuchOrderException extends KitchenPosOrderException {
     private static final String ERROR_MESSAGE = "Order가 존재하지 않습니다 (id: %d)";
 
     public NoSuchOrderException(Long id) {

@@ -2,7 +2,7 @@ package acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.ordertable.dto.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 
 import static acceptance.RestAssuredMethods.*;
