@@ -111,8 +111,8 @@ class TableGroupServiceTest {
     void create4() {
         // given
         TableGroup tableGroup = 단체_지정_생성(2L, null);
-        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
-        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
+        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup.getId(), 1, false);
+        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup.getId(), 1, false);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));

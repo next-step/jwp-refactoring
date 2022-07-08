@@ -91,7 +91,7 @@ class TableServiceTest {
         // given
         Long savedOrderId = 1L;
         TableGroup tableGroup = 단체_지정_생성(1L, null);
-        OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, tableGroup, 0, false);
+        OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, tableGroup.getId(), 0, false);
         when(orderTableRepository.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
 
         // when, then

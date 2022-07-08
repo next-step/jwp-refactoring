@@ -1,7 +1,6 @@
 package kitchenpos.orderTable.domain;
 
 import kitchenpos.common.domain.BaseEntity;
-import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -11,9 +10,8 @@ public class OrderTable extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+
+    private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
@@ -26,15 +24,15 @@ public class OrderTable extends BaseEntity {
         this.empty = empty;
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
@@ -44,7 +42,7 @@ public class OrderTable extends BaseEntity {
     }
 
     public void changeEmpty() {
-        if (Objects.nonNull(this.tableGroup)) {
+        if (Objects.nonNull(this.tableGroupId)) {
             throw new IllegalArgumentException("단체 지정되어 빈 상태로 변경할 수 없습니다.");
         }
         this.numberOfGuests = new NumberOfGuests(0);
@@ -63,16 +61,16 @@ public class OrderTable extends BaseEntity {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public void ungroup() {
+        this.tableGroupId = null;
+    }
+
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
