@@ -10,7 +10,7 @@ public class MenuProductRequest {
     }
 
     public MenuProductRequest(MenuProduct menuProduct) {
-        this(menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        this(menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
     public MenuProductRequest(Long productId, long quantity) {

@@ -20,7 +20,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public
 class MenuServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Mock
     private MenuGroupDao menuGroupDao;
@@ -60,8 +60,8 @@ class MenuServiceTest {
         감자튀김 = 상품_생성(2L, "감자튀김", 3_000L);
         한마리메뉴 = 메뉴_그룹_생성(1L, "한마리메뉴");
 
-        메뉴반반치킨 = 메뉴_상품_생성(반반, 1L);
-        메뉴감자튀김 = 메뉴_상품_생성(감자튀김, 1L);
+        메뉴반반치킨 = 메뉴_상품_생성(반반.getId(), 1L);
+        메뉴감자튀김 = 메뉴_상품_생성(감자튀김.getId(), 1L);
 
         반반치킨세트 = 메뉴_생성(1L, "반반치킨", 16_000L, 한마리메뉴, Arrays.asList(메뉴반반치킨, 메뉴감자튀김));
     }
@@ -71,8 +71,8 @@ class MenuServiceTest {
     void createMenu() {
         // given
         given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
-        given(productDao.findById(반반.getId())).willReturn(Optional.of(반반));
-        given(productDao.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
+        given(productRepository.findById(반반.getId())).willReturn(Optional.of(반반));
+        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(menuDao.save(any(Menu.class))).willReturn(반반치킨세트);
 
         //when
@@ -102,7 +102,7 @@ class MenuServiceTest {
     void notExistProduct() {
         // given
         given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
-        given(productDao.findById(반반.getId())).willReturn(Optional.empty());
+        given(productRepository.findById(반반.getId())).willReturn(Optional.empty());
 
         // when then
         assertThatThrownBy(() -> menuService.create(new MenuRequest(반반치킨세트)))
@@ -126,7 +126,7 @@ class MenuServiceTest {
         return new Menu(menuId, name, new BigDecimal(price), menuGroup, menuProducts);
     }
 
-    public static MenuProduct 메뉴_상품_생성(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct 메뉴_상품_생성(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 }

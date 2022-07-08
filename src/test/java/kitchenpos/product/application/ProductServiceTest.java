@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -42,7 +42,7 @@ public class ProductServiceTest {
     @DisplayName("상품을 생성한다.")
     void createProduct() {
         // given
-        given(productDao.save(any(Product.class))).willReturn(햄버거);
+        given(productRepository.save(any(Product.class))).willReturn(햄버거);
 
         // when
         ProductResponse savedProduct = productService.create(new ProductRequest(햄버거));
@@ -59,7 +59,7 @@ public class ProductServiceTest {
     @DisplayName("상품 목록을 조회한다.")
     void findAll() {
         // given
-        given(productDao.findAll()).willReturn(Arrays.asList(햄버거, 피자));
+        given(productRepository.findAll()).willReturn(Arrays.asList(햄버거, 피자));
 
         // when
         List<ProductResponse> products = productService.list();
