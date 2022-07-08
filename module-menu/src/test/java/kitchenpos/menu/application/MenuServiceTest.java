@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static fixture.ProductFixtureFactory.createProduct;
-import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
-import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
-import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
+import static fixture.MenuFixtureFactory.createMenu;
+import static fixture.MenuGroupFixtureFactory.createMenuGroup;
+import static fixture.MenuProductFixtureFactory.createMenuProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

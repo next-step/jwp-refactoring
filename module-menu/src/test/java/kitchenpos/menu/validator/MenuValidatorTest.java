@@ -22,9 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 
 import static fixture.ProductFixtureFactory.createProduct;
-import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
-import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
-import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
+import static fixture.MenuFixtureFactory.createMenu;
+import static fixture.MenuGroupFixtureFactory.createMenuGroup;
+import static fixture.MenuProductFixtureFactory.createMenuProduct;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;

@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.ui;
 
-import kitchenpos.exception.KitchenPosArgumentException;
+import kitchenpos.ordertable.exception.KitchenPosArgumentException;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
