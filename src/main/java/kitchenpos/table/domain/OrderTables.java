@@ -20,12 +20,14 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public void addOrderTable(OrderTable orderTable) {
-        orderTables.add(orderTable);
-    }
-
     public List<OrderTable> getOrderTables() {
         return Collections.unmodifiableList(orderTables);
+    }
+
+    public void group(TableGroup tableGroup) {
+        for(OrderTable orderTable: orderTables) {
+            orderTable.group(tableGroup);
+        }
     }
 
     public void ungroup() {

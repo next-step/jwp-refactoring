@@ -14,10 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupDao;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +31,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Mock
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -61,8 +61,8 @@ class TableGroupServiceTest {
         테이블_그룹 = 테이블_그룹_생성(1L, orderTables);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 이번_주문_테이블.getId()));
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(테이블_그룹);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(테이블_그룹);
 
         // when
         TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
@@ -89,7 +89,7 @@ class TableGroupServiceTest {
     void createIfNonExistentOrderTable() {
         // given
         List<OrderTable> 존재하지_않는_주문_테이블 = Arrays.asList(일번_주문_테이블);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(존재하지_않는_주문_테이블);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(존재하지_않는_주문_테이블);
 
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 이번_주문_테이블.getId()));
 
@@ -107,7 +107,7 @@ class TableGroupServiceTest {
         List<OrderTable> 유효하지_않는_주문_테이블 = Arrays.asList(일번_주문_테이블, 테이블_그룹_있는_주문_테이블);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 테이블_그룹_있는_주문_테이블.getId()));
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(유효하지_않는_주문_테이블);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(유효하지_않는_주문_테이블);
 
         // when then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
@@ -122,7 +122,7 @@ class TableGroupServiceTest {
         List<OrderTable> 유효하지_않는_주문_테이블 = Arrays.asList(일번_주문_테이블, 주문_테이블이_비어있지_않은_테이블);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 주문_테이블이_비어있지_않은_테이블.getId()));
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(유효하지_않는_주문_테이블);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(유효하지_않는_주문_테이블);
 
         // when then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
@@ -138,7 +138,7 @@ class TableGroupServiceTest {
         OrderTable 테이블_그룹_있는_일번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(일번_주문_테이블.getId(), 테이블_그룹, 6, true);
         OrderTable 테이블_그룹_있는_이번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(이번_주문_테이블.getId(), 테이블_그룹, 6, true);
 
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블));
+        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
@@ -158,7 +158,7 @@ class TableGroupServiceTest {
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
         테이블_그룹 = 테이블_그룹_생성(1L, orderTables);
 
-        given(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
+        given(orderTableRepository.findAllByTableGroupId(테이블_그룹.getId())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when then

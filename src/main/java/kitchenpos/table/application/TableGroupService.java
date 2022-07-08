@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupDao;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ import org.springframework.util.CollectionUtils;
 @Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderRepository orderRepository;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+        this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -37,58 +37,37 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        TableGroup tableGroup = new TableGroup();
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if(orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
 
-        OrderTables orderTables = getOrderTables(tableGroup, savedOrderTables);
-        tableGroup.updateOrderTables(orderTables);
+        final OrderTables orderTables = new OrderTables(savedOrderTables);
+        TableGroup tableGroup = new TableGroup(orderTables);
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-        return TableGroupResponse.from(savedTableGroup);
+        return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(IllegalArgumentException::new);
 
         validatePossibilityOfCancellation(tableGroupId);
         tableGroup.ungroup();
-        tableGroupDao.delete(tableGroup);
-    }
-
-    private OrderTables getOrderTables(TableGroup tableGroup, List<OrderTable> savedOrderTables) {
-        OrderTables orderTables = new OrderTables();
-        for(final OrderTable savedOrderTable: savedOrderTables) {
-            validateOrderTable(savedOrderTable);
-
-            savedOrderTable.update(tableGroup, false);
-            orderTables.addOrderTable(savedOrderTable);
-        }
-
-        return orderTables;
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if(orderTable.isAlreadyRegistered()) {
-            throw new IllegalArgumentException();
-        }
+        tableGroupRepository.delete(tableGroup);
     }
 
     private void validatePossibilityOfCancellation(Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
         if(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
     }

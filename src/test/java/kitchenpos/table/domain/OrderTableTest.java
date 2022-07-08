@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import static kitchenpos.table.domain.TableGroupTest.테이블_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,7 @@ public class OrderTableTest {
     @BeforeEach
     void init() {
         // given
-        주문_테이블 = 주문_테이블_생성(1L, 4, true);
+        주문_테이블 = 주문_테이블_생성(4, true);
     }
 
     @Test
@@ -31,15 +32,18 @@ public class OrderTableTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static OrderTable 주문_테이블_생성(Long orderTableId, int numberOfGuests, boolean empty) {
-        return new OrderTable(orderTableId, numberOfGuests, empty);
+    @Test
+    @DisplayName("비어 있지 않은 주문 테이블을 그룹 지정할 경우 - 오류")
+    void groupIfOrderTableIsNotEmpty() {
+        // given
+        TableGroup 테이블_그룹 = 테이블_그룹_생성(1L);
+        OrderTable 비어_있지_않은_주문_테이블 = 주문_테이블_생성(4, false);
+
+        assertThatThrownBy(() -> 비어_있지_않은_주문_테이블.group(테이블_그룹))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static OrderTable 주문_테이블_생성(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
-    }
-
-    public static OrderTable 주문_테이블_생성(Long orderTableId, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(orderTableId, tableGroup, numberOfGuests, empty);
+    public static OrderTable 주문_테이블_생성(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
     }
 }
