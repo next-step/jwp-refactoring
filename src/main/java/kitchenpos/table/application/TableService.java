@@ -49,7 +49,7 @@ public class TableService {
     private void validationOrderStatus(final Long orderTableId) {
         orderRepository.findByOrderTableId(orderTableId)
                 .ifPresent(it -> {
-                    if (it.getOrderStatus().enabledOrderCancel()) {
+                    if (!it.getOrderStatus().enabledOrderCancel()) {
                         throw new TableException(TableExceptionType.IMPOSSIBLE_ORDER_STATUS);
                     }
                 });
