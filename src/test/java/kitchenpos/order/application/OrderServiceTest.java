@@ -1,7 +1,12 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,16 +39,14 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
 
     private OrderTable 저장된_주문테이블;
-    private List<OrderLineItem> 주문항목_리스트;
+    private Menu 첫번째_메뉴;
+    private Menu 두번째_메뉴;
     private OrderLineItem 첫번째_주문항목;
     private OrderLineItem 두번째_주문항목;
 
@@ -50,35 +55,42 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        첫번째_주문항목 = new OrderLineItem(1L,2);
-        두번째_주문항목 = new OrderLineItem(2L, 1);
-        주문항목_리스트 = Arrays.asList(첫번째_주문항목, 두번째_주문항목);
-        저장된_주문테이블 = new OrderTable(1L, null, 4, false);
+        MenuGroup 메뉴그룹 = new MenuGroup(1L, "추천메뉴");
+        첫번째_메뉴 = new Menu(1L, "짬짜면세트", BigDecimal.valueOf(0), 메뉴그룹, Collections.emptyList());
+        두번째_메뉴 = new Menu(2L, "탕수육세트", BigDecimal.valueOf(0), 메뉴그룹, Collections.emptyList());
 
-        생성할_주문 = new Order(저장된_주문테이블.getId(), 주문항목_리스트);
-        저장된_주문 = new Order(1L, 저장된_주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목_리스트);
+        저장된_주문테이블 = new OrderTable(1L, null, 4, false);
+        첫번째_주문항목 = new OrderLineItem(첫번째_메뉴, 2);
+        두번째_주문항목 = new OrderLineItem(두번째_메뉴, 1);
+
+        List<OrderLineItem> 주문항목_목록 = Arrays.asList(첫번째_주문항목, 두번째_주문항목);
+        생성할_주문 = new Order(저장된_주문테이블.getId(), 주문항목_목록);
+        저장된_주문 = new Order(1L, 저장된_주문테이블.getId(), 주문항목_목록);
     }
 
     @DisplayName("주문을 생성할 수 있다.")
     @Test
     void createOrder() {
         // given
+        OrderRequest 생성할_주문_요쳥 = new OrderRequest(1L,
+                Arrays.asList(OrderLineItemDto.from(첫번째_주문항목), OrderLineItemDto.from(두번째_주문항목)));
+
         given(menuRepository.countByIdIn(anyList()))
-                .willReturn((long) 주문항목_리스트.size());
-        given(orderTableRepository.findById(생성할_주문.getOrderTableId()))
+                .willReturn((long) 생성할_주문_요쳥.getOrderLineItems().size());
+        given(menuRepository.findById(eq(1L)))
+                .willReturn(Optional.ofNullable(첫번째_메뉴));
+        given(menuRepository.findById(eq(2L)))
+                .willReturn(Optional.ofNullable(두번째_메뉴));
+        given(orderTableRepository.findById(생성할_주문_요쳥.getOrderTableId()))
                 .willReturn(Optional.of(저장된_주문테이블));
         given(orderRepository.save(생성할_주문))
                 .willReturn(저장된_주문);
-        given(orderLineItemRepository.save(eq(첫번째_주문항목)))
-                .willReturn(첫번째_주문항목);
-        given(orderLineItemRepository.save(eq(두번째_주문항목)))
-                .willReturn(두번째_주문항목);
 
         // when
-        Order 생성된_주문 = orderService.create(생성할_주문);
+        OrderResponse 생성된_주문_응답 = orderService.create(생성할_주문_요쳥);
 
         // then
-        주문_생성_성공(생성된_주문, 생성할_주문);
+        주문_생성_성공(생성된_주문_응답, 생성할_주문_요쳥);
     }
 
 
@@ -86,22 +98,26 @@ class OrderServiceTest {
     @Test
     void createOrderFailsWhenEmptyOrderLineItems() {
         // given
-        생성할_주문 = new Order(저장된_주문테이블.getId(), null);
+        OrderRequest 생성할_주문_요쳥 = new OrderRequest(1L, Arrays.asList(OrderLineItemDto.from(첫번째_주문항목)));
+
+        given(menuRepository.countByIdIn(anyList()))
+                .willReturn((long) 생성할_주문_요쳥.getOrderLineItems().size());
+        given(menuRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
 
         // when & then
-        주문_생성_실패(생성할_주문);
+        주문_생성_실패_주문항목_없음(생성할_주문_요쳥);
     }
 
     @DisplayName("중복된 메뉴가 있으면 주문 생성에 실패한다.")
     @Test
     void createOrderFailsWhenDuplicateMenu() {
         // given
-        Long 유니크한_메뉴개수 = 1L;
-        given(menuRepository.countByIdIn(anyList()))
-                .willReturn(유니크한_메뉴개수);
+        OrderRequest 생성할_주문_요쳥 = new OrderRequest(1L,
+                Arrays.asList(OrderLineItemDto.from(첫번째_주문항목), OrderLineItemDto.from(첫번째_주문항목)));
 
         // when & then
-        주문_생성_실패(생성할_주문);
+        주문_생성_실패_중목메뉴_존재(생성할_주문_요쳥);
     }
 
     @DisplayName("주문 테이블이 존재하지 않으면 주문 생성에 실패한다.")
@@ -109,28 +125,34 @@ class OrderServiceTest {
     void createOrderFailsWhenNoOrderTable() {
         // given
         Long 존재하지_않는_주문테이블ID = 1000L;
-        생성할_주문 = new Order(존재하지_않는_주문테이블ID, 주문항목_리스트);
+        OrderRequest 생성할_주문_요쳥 = new OrderRequest(존재하지_않는_주문테이블ID, Arrays.asList(OrderLineItemDto.from(첫번째_주문항목)));
+
         given(menuRepository.countByIdIn(anyList()))
-                .willReturn((long) 주문항목_리스트.size());
+                .willReturn((long) 생성할_주문_요쳥.getOrderLineItems().size());
+        given(menuRepository.findById(anyLong()))
+                .willReturn(Optional.ofNullable(첫번째_메뉴));
 
         // when & then
-        주문_생성_실패(생성할_주문);
+        주문_생성_실패_주문테이블_없음(생성할_주문_요쳥);
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 주문 생성에 실패한다.")
     @Test
     void createOrderFailsWhenEmptyOrderTable() {
         // given
-        OrderTable 빈_주문테이블 = new OrderTable(2L, null, 4, true);
-        생성할_주문 = new Order(빈_주문테이블.getId(), 주문항목_리스트);
+        Long 빈_주문테이블ID = 2L;
+        OrderTable 빈_주문테이블 = new OrderTable(빈_주문테이블ID, null, 4, true);
+        OrderRequest 생성할_주문_요쳥 = new OrderRequest(빈_주문테이블ID, Arrays.asList(OrderLineItemDto.from(첫번째_주문항목)));
 
         given(menuRepository.countByIdIn(anyList()))
-                .willReturn((long) 주문항목_리스트.size());
-        given(orderTableRepository.findById(생성할_주문.getOrderTableId()))
-                .willReturn(Optional.of(빈_주문테이블));
+                .willReturn((long) 생성할_주문_요쳥.getOrderLineItems().size());
+        given(menuRepository.findById(anyLong()))
+                .willReturn(Optional.ofNullable(첫번째_메뉴));
+        given(orderTableRepository.findById(빈_주문테이블ID))
+                .willReturn(Optional.ofNullable(빈_주문테이블));
 
         // when & then
-        주문_생성_실패(생성할_주문);
+        주문_생성_실패_주문테이블_비어있음(생성할_주문_요쳥);
     }
 
     @DisplayName("주문 목록을 조회할 수 있다.")
@@ -138,61 +160,62 @@ class OrderServiceTest {
     void listOrders() {
         // given
         List<Order> 조회할_주문_목록 = Arrays.asList(저장된_주문);
+
         given(orderRepository.findAll())
                 .willReturn(조회할_주문_목록);
-        given(orderLineItemRepository.findAllByOrderId(anyLong()))
-                .willReturn(주문항목_리스트);
 
         // when
-        List<Order> 조회된_주문_목록 = orderService.list();
+        List<OrderResponse>  조회된_주문_목록_응답 = orderService.list();
 
         // then
-        주문_목록_조회_성공(조회된_주문_목록, 조회할_주문_목록);
+        주문_목록_조회_성공(조회된_주문_목록_응답, 조회할_주문_목록);
     }
+
 
     @DisplayName("주문 테이블 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus() {
         // given
         Long 상태_변경할_주문ID = 1L;
-        Order 상태_변경_전_주문 = new Order(상태_변경할_주문ID, 저장된_주문테이블.getId(), OrderStatus.MEAL.name(), LocalDateTime.now(), 주문항목_리스트);
-        Order 상태_변경_후_예상_주문 = new Order(상태_변경할_주문ID, 저장된_주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문항목_리스트);
-        given(orderRepository.findById(상태_변경할_주문ID))
-                .willReturn(Optional.of(상태_변경_전_주문));
-        given(orderRepository.save(any()))
-                .willReturn(상태_변경_후_예상_주문);
-        given(orderLineItemRepository.findAllByOrderId(상태_변경할_주문ID))
-                .willReturn(주문항목_리스트);
+        OrderStatus 변경후_상태 = OrderStatus.COMPLETION;
+        Order 상태_변경된_주문 = new Order(1L, 저장된_주문테이블.getId(), OrderStatus.COMPLETION, Arrays.asList(첫번째_주문항목));
+
+        given(orderRepository.findById(any()))
+                .willReturn(Optional.of(저장된_주문));
 
         // when
-        Order 상태_변경_완료_주문 = orderService.changeOrderStatus(상태_변경할_주문ID, new Order(OrderStatus.COMPLETION.name()));
+        OrderResponse 상태_변경_주문_응답 = orderService.changeOrderStatus(상태_변경할_주문ID, new OrderRequest(변경후_상태.name()));
 
         // then
-        주문_상태_변경_성공(상태_변경_완료_주문, 상태_변경_후_예상_주문);
+        주문_상태_변경_성공(상태_변경_주문_응답, 상태_변경된_주문);
     }
 
     @DisplayName("주문이 존재하지 않으면 상태 변경에 실패한다.")
     @Test
     void changeOrderStatusFailsWhenNoOrder() {
         Long 존재하지_않는_주문ID = 1000L;
+        String 계산완료 = OrderStatus.COMPLETION.name();
 
         // when & then
-        주문_상태_변경_실패(존재하지_않는_주문ID, new Order(OrderStatus.COMPLETION.name()));
+        주문_상태_변경_실패_주문_없음(존재하지_않는_주문ID, new OrderRequest(계산완료));
     }
 
-    @DisplayName("'계산 완료' 상태인 경우 상태 변경에 실패한다.")
-    @Test
-    void changeOrderStatusFailsWhenCompleted() {
-        // given
-        Order 완료된_주문 = new Order(1L, 저장된_주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문항목_리스트);
-        given(orderRepository.findById(완료된_주문.getId()))
-                .willReturn(Optional.of(완료된_주문));
+     @DisplayName("'계산 완료' 상태인 경우 상태 변경에 실패한다.")
+     @Test
+     void changeOrderStatusFailsWhenCompleted() {
+         // given
+         Order 계산완료_주문 = new Order(1L, 저장된_주문테이블.getId(), OrderStatus.COMPLETION, Arrays.asList(첫번째_주문항목));
+         String 계산완료 = OrderStatus.COMPLETION.name();
 
-        // when & then
-        주문_상태_변경_실패(완료된_주문.getId(), new Order(OrderStatus.COMPLETION.name()));
-    }
+         given(orderRepository.findById(계산완료_주문.getId()))
+                 .willReturn(Optional.of(계산완료_주문));
 
-    private void 주문_생성_성공(Order 생성된_주문, Order 생성할_주문) {
+         // when & then
+         주문_상태_변경_실패_계산완료(계산완료_주문.getId(), new OrderRequest(계산완료));
+     }
+
+
+    private void 주문_생성_성공(OrderResponse 생성된_주문, OrderRequest 생성할_주문) {
         assertAll(
                 () -> assertThat(생성된_주문.getId())
                         .isNotNull(),
@@ -203,27 +226,57 @@ class OrderServiceTest {
                 () -> assertThat(생성된_주문.getOrderTableId())
                         .isEqualTo(생성할_주문.getOrderTableId()),
                 () -> assertThat(생성된_주문.getOrderLineItems())
-                        .containsExactlyElementsOf(생성할_주문.getOrderLineItems())
+                        .hasSize(생성할_주문.getOrderLineItems().size())
         );
     }
 
-    private void 주문_생성_실패(Order 생성할_주문) {
-        assertThatThrownBy(() -> orderService.create(생성할_주문))
-                .isExactlyInstanceOf(IllegalArgumentException.class);
+    private void 주문_생성_실패_주문항목_없음(OrderRequest 생성할_주문_요청) {
+        assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
+                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .hasMessage("주문 항목 정보가 존재하지 않습니다.");
     }
 
-    private void 주문_목록_조회_성공(List<Order> 조회된_주문_목록, List<Order> 조회할_주문_목록) {
-        assertThat(조회된_주문_목록)
-                .containsExactlyElementsOf(조회할_주문_목록);
+    private void 주문_생성_실패_중목메뉴_존재(OrderRequest 생성할_주문_요청) {
+        assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 시 주문 항목에 메뉴들은 중복될 수 없습니다.");
     }
 
-    private void 주문_상태_변경_성공(Order 상태_변경_완료_주문, Order 상태_변경_후_예상_주문) {
-        assertThat(상태_변경_완료_주문.getOrderStatus())
-                .isEqualTo(상태_변경_후_예상_주문.getOrderStatus());
+    private void 주문_생성_실패_주문테이블_없음(OrderRequest 생성할_주문_요청) {
+        assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
+                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .hasMessage("주문 테이블 정보가 존재하지 않습니다.");
     }
 
-    private void 주문_상태_변경_실패(Long 주문ID, Order 주문) {
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문ID, 주문))
-                .isExactlyInstanceOf(IllegalArgumentException.class);
+    private void 주문_생성_실패_주문테이블_비어있음(OrderRequest 생성할_주문_요청) {
+        assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 시 주문 테이블은 비어있을 수 없습니다.");
+    }
+
+    private void 주문_목록_조회_성공(List<OrderResponse> 조회된_주문_목록_응답, List<Order> 조회할_주문_목록) {
+        assertAll(
+                () -> assertThat(조회된_주문_목록_응답).hasSize(조회할_주문_목록.size()),
+                () -> assertThat(조회된_주문_목록_응답.get(0).getId())
+                        .isEqualTo(조회할_주문_목록.get(0).getId())
+        );
+
+    }
+
+    private void 주문_상태_변경_성공(OrderResponse 상태_변경_주문_응답, Order 상태_변경된_주문) {
+        assertThat(상태_변경_주문_응답.getOrderStatus())
+                .isEqualTo(상태_변경된_주문.getOrderStatus().name());
+    }
+
+    private void 주문_상태_변경_실패_주문_없음(Long 주문ID, OrderRequest 변경할_주문_요청) {
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문ID, 변경할_주문_요청))
+                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .hasMessage("주문 정보가 존재하지 않습니다.");
+    }
+
+    private void 주문_상태_변경_실패_계산완료(Long 주문ID, OrderRequest 변경할_주문_요청) {
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문ID, 변경할_주문_요청))
+                .isExactlyInstanceOf(IllegalStateException.class)
+                .hasMessage("계산 완료된 주문은 상태를 변경할 수 없습니다.");
     }
 }
