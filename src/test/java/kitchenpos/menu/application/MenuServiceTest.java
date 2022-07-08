@@ -40,19 +40,13 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     private Menu A_세트;
-    private Product 감자튀김;
-    private Product 햄버거;
-    private Product 치즈볼;
 
     @BeforeEach
     void setUp() {
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L);
-        감자튀김 = new Product(1L, "감자튀김", BigDecimal.valueOf(1500));
-        햄버거 = new Product(2L, "햄버거", BigDecimal.valueOf(3500));
-        치즈볼 = new Product(3L, "피자", BigDecimal.valueOf(1000));
+        A_세트 = new Menu("A세트", BigDecimal.valueOf(5000), 1L, Collections.singletonList(new MenuProduct(1L, 1)));
     }
 
 
@@ -64,7 +58,6 @@ class MenuServiceTest {
                 Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(menuRepository.save(any())).willReturn(A_세트);
-        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(감자튀김, 햄버거));
 
         // when
         MenuResponse response = menuService.create(request);
@@ -72,7 +65,7 @@ class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(response.getName()).isEqualTo("A세트"),
-                () -> assertThat(response.getMenuProducts()).hasSize(2)
+                () -> assertThat(response.getMenuProducts()).hasSize(1)
         );
     }
 
@@ -80,7 +73,6 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        A_세트.addMenuProducts(Collections.singletonList(new MenuProduct(감자튀김, 4)));
         given(menuRepository.findAll()).willReturn(Collections.singletonList(A_세트));
 
         // when
@@ -117,32 +109,4 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void 등록된_상품으로만_메뉴을_구성해야한다() {
-        // given
-        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
-                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
-        given(menuGroupRepository.existsById(request.getMenuGroupId())).willReturn(true);
-        given(productRepository.findByIdIn(any())).willReturn(Collections.singletonList(감자튀김));
-
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 메뉴의_가격이_구성_상품들의_합보다_큰_경우() {
-        // given
-        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
-                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(3L, 1)));
-        given(menuRepository.save(any())).willReturn(A_세트);
-        given(menuGroupRepository.existsById(A_세트.getMenuGroupId())).willReturn(true);
-        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(감자튀김, 치즈볼));
-
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 }

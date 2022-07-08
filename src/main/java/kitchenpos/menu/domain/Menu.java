@@ -26,9 +26,7 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
-        this.name = new Name(name);
-        this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
+        this(null, name, price, menuGroupId);
     }
 
     public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
@@ -38,19 +36,15 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public void addMenuProducts(List<MenuProduct> menuProducts) {
-        validateSumPrice(menuProducts);
-        this.menuProducts.addAll(this, menuProducts);
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.name = new Name(name);
+        this.price = new Price(price);
+        this.menuGroupId = menuGroupId;
+        addMenuProducts(menuProducts);
     }
 
-    private void validateSumPrice(List<MenuProduct> menuProducts) {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::calculateSumPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (price.isGatherThan(sum)) {
-            throw new IllegalArgumentException("메뉴의 가격은 전체 상품의 가격의 합보다 작거나 같아야합니다.");
-        }
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     public Long getId() {

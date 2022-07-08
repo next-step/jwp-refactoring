@@ -24,24 +24,23 @@ import static java.util.stream.Collectors.toList;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(MenuRequest request) {
         validateMenuGroup(request.getMenuGroupId());
+        menuValidator.validate(request);
         final Menu menu = menuRepository.save(request.toMenu());
-        List<MenuProduct> menuProducts = toMenuProducts(request.getMenuProducts());
-        menu.addMenuProducts(menuProducts);
         return MenuResponse.of(menu);
     }
 
@@ -49,30 +48,6 @@ public class MenuService {
         if (!menuGroupRepository.existsById(menuGroupId)) {
             throw new IllegalArgumentException("존재하지 않는 메뉴 그룹입니다.");
         }
-    }
-
-    private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        List<Long> productIds = menuProductRequests.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(toList());
-
-        List<Product> products = productRepository.findByIdIn(productIds);
-        if (products.size() != menuProductRequests.size()) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴상품이 있습니다.");
-        }
-
-        Map<Long, List<Product>> productMap = products.stream()
-                .collect(groupingBy(Product::getId));
-
-        return menuProductRequests.stream()
-                .map(it -> new MenuProduct(productMap.get(it.getProductId()).get(0),
-                        it.getQuantity()))
-                .collect(toList());
-    }
-
-    private Product findProductById(MenuProductRequest menuProductRequest) {
-        return productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(NoSuchElementException::new);
     }
 
     public List<MenuResponse> list() {
