@@ -18,7 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import kitchenpos.order.request.OrderLineItemRequest;
 import kitchenpos.order.request.OrderRequest;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 @Entity(name = "orders")
@@ -73,12 +72,12 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public static Order of(final OrderRequest orderRequest, final OrderTable orderTable) {
+    public static Order of(final OrderRequest orderRequest) {
         final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
                 .stream()
                 .map(OrderLineItemRequest::toOrderLineItem)
                 .collect(Collectors.toList());
-        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        return new Order(orderRequest.getOrderTableId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {
