@@ -46,7 +46,7 @@ public class OrderRepositoryTest {
         final Product 새우버거 = productRepository.save(ProductRepositoryTest.새우버거.toEntity());
         테이블 = orderTableRepository.save(OrderTable.of(0, true));
 
-        final Menu 메뉴 = Menu.of("불고기버거", BigDecimal.valueOf(5_000), 햄버거_메뉴);
+        final Menu 메뉴 = Menu.of("불고기버거", BigDecimal.valueOf(5_000), 햄버거_메뉴.getId());
         햄버거세트_메뉴 = menuRepository.save(메뉴);
         햄버거세트_메뉴.addMenuProducts(Arrays.asList(
                 MenuProduct.of(불고기버거.getId(), 5L),

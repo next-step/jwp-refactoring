@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class MenuTest {
     public static List<MenuProduct> 메뉴상품 = Arrays.asList(MenuProduct.of(ProductTest.불고기버거.getId(), 5L),
             MenuProduct.of(ProductTest.새우버거.getId(), 1L));
-    public static Menu 햄버거메뉴 = new Menu(1L, "불고기버거", BigDecimal.valueOf(5_000), MenuGroupTest.햄버거_메뉴);
+    public static Menu 햄버거메뉴 = new Menu(1L, "불고기버거", BigDecimal.valueOf(5_000), MenuGroupTest.햄버거_메뉴.getId());
 
     @Test
     @DisplayName("메뉴 생성")

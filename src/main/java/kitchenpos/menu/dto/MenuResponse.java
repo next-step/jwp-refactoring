@@ -11,21 +11,21 @@ public class MenuResponse {
     private final Long id;
     private final String name;
     private final BigDecimal price;
-    private final MenuGroupResponse menuGroup;
+    private final Long menuGroupId;
     private final List<MenuProductResponse> menuProducts;
 
     public MenuResponse(final Long id, final String name, final BigDecimal price,
-                        final MenuGroupResponse menuGroup, final List<MenuProductResponse> menuProducts) {
+                        final Long menuGroupId, final List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
     public static MenuResponse of(final Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
-                MenuGroupResponse.of(menu.getMenuGroup()),
+                menu.getMenuGroupId(),
                 MenuProductResponse.ofList(menu.getMenuProducts()));
     }
 
@@ -47,8 +47,8 @@ public class MenuResponse {
         return price;
     }
 
-    public MenuGroupResponse getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProductResponse> getMenuProducts() {
@@ -61,7 +61,7 @@ public class MenuResponse {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", menuGroup=" + menuGroup +
+                ", menuGroupId=" + menuGroupId +
                 ", menuProducts=" + menuProducts +
                 '}';
     }
@@ -71,11 +71,11 @@ public class MenuResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final MenuResponse that = (MenuResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroup, that.menuGroup) && Objects.equals(menuProducts, that.menuProducts);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
 }

@@ -44,7 +44,7 @@ public class OrderServiceTest {
     @DisplayName("주문 추가")
     void create() {
         // given
-        Menu 햄버거_메뉴 = new Menu(1L, "햄버거세트", BigDecimal.valueOf(2000), MenuGroup.of("햄버거메뉴"));
+        Menu 햄버거_메뉴 = new Menu(1L, "햄버거세트", BigDecimal.valueOf(2000), MenuGroup.of("햄버거메뉴").getId());
         doNothing().when(orderValidator).validate(any());
 
         given(menuRepository.findAllById(any()))

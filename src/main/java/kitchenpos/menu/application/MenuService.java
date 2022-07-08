@@ -17,29 +17,22 @@ import java.util.List;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
     private final MenuValidator menuValidator;
 
-    public MenuService(final MenuRepository menuRepository, final  MenuGroupRepository menuGroupRepository, final  MenuValidator menuValidator) {
+    public MenuService(final MenuRepository menuRepository, final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
         this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final CreateMenuRequest createMenuRequest) {
         menuValidator.validate(createMenuRequest);
-        final MenuGroup menuGroup = findByMenuGroupId(createMenuRequest.getMenuGroupId());
-        final Menu savedMenu = menuRepository.save(createMenuRequest.toEntity(menuGroup));
+        final Menu savedMenu = menuRepository.save(createMenuRequest.toEntity());
         savedMenu.addMenuProducts(createMenuRequest.toMenuProducts());
 
         return MenuResponse.of(savedMenu);
     }
 
-    private MenuGroup findByMenuGroupId(final Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new MenuException(MenuExceptionType.MENU_GROUP_NOT_FOUND));
-    }
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();

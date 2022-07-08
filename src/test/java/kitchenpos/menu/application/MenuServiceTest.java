@@ -35,14 +35,12 @@ import static org.mockito.Mockito.doNothing;
 class MenuServiceTest {
     public static MenuProductRequest 불고기버거상품 = new MenuProductRequest(ProductTest.불고기버거.getId(), 5);
     public static MenuProductRequest 새우버거상품 = new MenuProductRequest(ProductTest.새우버거.getId(), 1);
-    public static Menu 불고기_새우버거_메뉴 = Menu.of("불고기버거 + 새우버거", BigDecimal.valueOf(2000.0), MenuGroupTest.햄버거_메뉴);
+    public static Menu 불고기_새우버거_메뉴 = Menu.of("불고기버거 + 새우버거", BigDecimal.valueOf(2000.0), MenuGroupTest.햄버거_메뉴.getId());
     public static CreateMenuRequest 메뉴_생성_요청 = new CreateMenuRequest("불고기버거 + 새우버거", BigDecimal.valueOf(5_000), MenuGroupTest.햄버거_메뉴.getId(),
             Arrays.asList(불고기버거상품, 새우버거상품));
 
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuValidator menuValidator;
     @InjectMocks
@@ -53,8 +51,6 @@ class MenuServiceTest {
     void create() {
         // given
         doNothing().when(menuValidator).validate(any());
-        given(menuGroupRepository.findById(any()))
-                .willReturn(Optional.of(MenuGroupTest.햄버거_메뉴));
         given(menuRepository.save(any()))
                 .willReturn(불고기_새우버거_메뉴);
         // when
