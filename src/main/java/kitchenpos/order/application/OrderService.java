@@ -1,9 +1,8 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -18,26 +17,25 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(final MenuRepository menuRepository,
+    public OrderService(final OrderValidator orderValidator,
                         final OrderRepository orderRepository,
                         final OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+        this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
-
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        orderValidator.validate(orderRequest);
+
+        final OrderTable orderTable = getOrderTable(orderRequest.getOrderTableId());
+
         Order order = orderRequest.toEntity();
-        validateOrderLineItems(order.getOrderLineItems());
-
-        final OrderTable orderTable = getOrderTable(order);
-
         order.registerOrderTable(orderTable);
 
         return new OrderResponse(orderRepository.save(order));
@@ -59,21 +57,13 @@ public class OrderService {
         return new OrderResponse(savedOrder);
     }
 
-    private OrderTable getOrderTable(Order order) {
-        return orderTableRepository.findById(order.getOrderTableId())
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     private Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private void validateOrderLineItems(OrderLineItems orderLineItems) {
-        List<Long> menuIds = orderLineItems.collectMenuIds();
-
-        if (menuRepository.countByIdIn(menuIds) != orderLineItems.size()) {
-            throw new IllegalArgumentException();
-        }
     }
 }

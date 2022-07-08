@@ -5,6 +5,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -36,7 +37,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
+    private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -59,9 +60,7 @@ class OrderServiceTest {
 
     @Test
     void 주문을_생성할_수_있다() {
-        int menuIds = 1;
         OrderTable ordertable = 테이블생성(5, false);
-        given(menuRepository.countByIdIn(any())).willReturn(menuIds);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(ordertable));
         given(orderRepository.save(any())).willReturn(order);
 
@@ -87,15 +86,12 @@ class OrderServiceTest {
 
     @Test
     void 주문항목이_존재하지_않으면_주문을_생성할_수_없다() {
-        given(menuRepository.countByIdIn(any())).willReturn(99);
-
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 주문테이블이_존재하지않으면_주문을_생성할_수_없다() {
-        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -105,7 +101,6 @@ class OrderServiceTest {
     @Test
     void 주문테이블이_비어있으면_주문을_생성할_수_없다() {
         OrderTable 빈_주문테이블 = 테이블생성(5, true);
-        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_주문테이블));
 
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
