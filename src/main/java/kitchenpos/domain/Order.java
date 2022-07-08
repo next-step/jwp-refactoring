@@ -13,9 +13,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -29,10 +27,7 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블은 빈 테이블이 아니어야 합니다.");
-        }
-        this.orderTable = orderTable;
+        this.orderTableId = orderTable.getId();
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(toOrderLineItems(orderLineItems));
     }
@@ -51,12 +46,8 @@ public class Order {
         this.id = id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

@@ -45,6 +45,10 @@ public class OrderService {
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                                                     .orElseThrow(NoSuchElementException::new);
 
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블은 빈 테이블이 아니어야 합니다.");
+        }
+
         return orderRepository.save(new Order(orderTable, OrderStatus.COOKING, toOrderLineItems(menus, request.getOrderLineItems())));
     }
 
