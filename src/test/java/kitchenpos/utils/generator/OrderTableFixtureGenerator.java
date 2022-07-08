@@ -8,10 +8,10 @@ import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.table.ChangeOrderTableEmptyRequest;
-import kitchenpos.dto.table.ChangeOrderTableNumberOfGuestsRequest;
-import kitchenpos.dto.table.CreateOrderTableRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.ChangeOrderTableEmptyRequest;
+import kitchenpos.table.dto.ChangeOrderTableNumberOfGuestsRequest;
+import kitchenpos.table.dto.CreateOrderTableRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderTableFixtureGenerator {

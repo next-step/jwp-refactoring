@@ -14,13 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.dto.menu.MenuGroupResponse;
-import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.dto.order.ChangeOrderStatusRequest;
-import kitchenpos.dto.order.OrderResponse;
-import kitchenpos.dto.product.ProductResponse;
-import kitchenpos.dto.table.OrderTableResponse;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

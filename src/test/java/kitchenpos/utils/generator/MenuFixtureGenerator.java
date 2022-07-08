@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.menu.CreateMenuRequest;
-import kitchenpos.dto.menu.MenuGroupResponse;
-import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.CreateMenuRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class MenuFixtureGenerator {

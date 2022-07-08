@@ -7,12 +7,12 @@ import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹
 import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
 
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.menu.CreateMenuRequest;
-import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.CreateMenuRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 
 public class ScenarioTestFixtureGenerator {

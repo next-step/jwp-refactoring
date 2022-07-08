@@ -9,9 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.stream.Stream;
-import kitchenpos.dto.table.ChangeOrderTableEmptyRequest;
-import kitchenpos.dto.table.ChangeOrderTableNumberOfGuestsRequest;
-import kitchenpos.dto.table.OrderTableResponse;
+import kitchenpos.table.dto.ChangeOrderTableEmptyRequest;
+import kitchenpos.table.dto.ChangeOrderTableNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

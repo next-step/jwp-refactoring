@@ -5,17 +5,18 @@ import static kitchenpos.ui.OrderRestControllerTest.UPDATE_ORDER_STATUS_API_URL_
 import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.dto.order.ChangeOrderStatusRequest;
-import kitchenpos.dto.order.CreateOrderRequest;
-import kitchenpos.dto.order.CreateOrderTableItemRequest;
-import kitchenpos.dto.table.OrderTableResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.CreateOrderRequest;
+import kitchenpos.order.dto.CreateOrderTableItemRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderFixtureGenerator {
@@ -24,13 +25,13 @@ public class OrderFixtureGenerator {
         final OrderTable savedOrderTable,
         final Menu... savedMenus
     ) {
-        return new Order(savedOrderTable, 주문_항목_목록_생성(savedMenus));
+        return new Order(savedOrderTable.getId(), 주문_항목_목록_생성(savedMenus), LocalDateTime.now());
     }
 
     private static List<OrderLineItem> 주문_항목_목록_생성(Menu... menus) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (Menu menu : menus) {
-            OrderLineItem orderLineItem = new OrderLineItem(menu, 1);
+            OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), 1);
             orderLineItems.add(orderLineItem);
         }
         return orderLineItems;
