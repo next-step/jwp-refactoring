@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    @DisplayName("상품 등록")
     @Test
     void 상품_등록() {
         //given
@@ -43,6 +45,7 @@ public class ProductServiceTest {
 
     }
 
+    @DisplayName("상품의 가격은 0보다 커야하며 0보다 작을 경우 상품을 등록할 수 없다.")
     @Test
     void 상품의_가격이_0보다_작을_경우_상품_등록_에러() {
         //given
@@ -52,6 +55,7 @@ public class ProductServiceTest {
         assertThrows(IllegalArgumentException.class, () -> productService.create(빅맥));
     }
 
+    @DisplayName("상품 목록 조회")
     @Test
     void 상품_목록_조회() {
         //given

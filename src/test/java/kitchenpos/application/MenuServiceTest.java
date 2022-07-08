@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -69,6 +70,7 @@ public class MenuServiceTest {
         빅맥세트.setMenuProducts(Arrays.asList(빅맥_메뉴상품, 감자튀김_메뉴상품, 콜라_메뉴상품));
     }
 
+    @DisplayName("메뉴 등록 테스트")
     @Test
     void 메뉴_등록() {
         //given
@@ -89,6 +91,7 @@ public class MenuServiceTest {
 
     }
 
+    @DisplayName("메뉴 목록 조회 테스트")
     @Test
     void 메뉴_목록_조회() {
         //given
@@ -102,6 +105,7 @@ public class MenuServiceTest {
         assertThat(menuList.size()).isEqualTo(2);
     }
 
+    @DisplayName("메뉴 등록 가능 테스트")
     @Test
     void 메뉴_가격이_0보다_작을_경우_등록_에러() {
         //given
@@ -111,6 +115,7 @@ public class MenuServiceTest {
         assertThrows(IllegalArgumentException.class, () -> menuService.create(빅맥세트));
     }
 
+    @DisplayName("메뉴 그룹에 메뉴가 포함되지 않을 경우 메뉴를 등록할 수 없다.")
     @Test
     void 메뉴_그룹에_메뉴가_존재하지_않을_경우_등록_에러() {
         Menu 불고기_버거_세트 = new Menu(2L, "불고기 버거 세트", new BigDecimal(6000), 패스트푸드_그룹.getId(), Collections.emptyList());
@@ -118,6 +123,7 @@ public class MenuServiceTest {
         assertThrows(IllegalArgumentException.class, () -> menuService.create(불고기_버거_세트));
     }
 
+    @DisplayName("메뉴의 가격이 메뉴 상품 가격의 합보다 클 경우 메뉴를 등록할 수 없다.")
     @Test
     void 메뉴_가격이_메뉴_가격의_합보다_클_경우_등록_에러() {
         Menu 뉴빅맥_세트 = new Menu(3L, "뉴빅맥 세트", new BigDecimal(8000), 패스트푸드_그룹.getId(), Collections.emptyList());

@@ -6,6 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,6 +34,7 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    @DisplayName("테이블 그룹 등록")
     @Test
     void 테이블_그룹_등록() {
         //given
@@ -51,6 +53,7 @@ public class TableGroupServiceTest {
         assertThat(savedTableGroup.getId()).isEqualTo(tableGroup.getId());
     }
 
+    @DisplayName("테이블의 수가 2개 미만일 경우 테이블 그룹으로 등록할 수 없다.")
     @Test
     void 테이블의_수가_두개_미만일_경우_테이블_그룹_등록_실패() {
         //given
@@ -63,6 +66,7 @@ public class TableGroupServiceTest {
         assertThrows(IllegalArgumentException.class, ()-> tableGroupService.create(tableGroup));
     }
 
+    @DisplayName("등록된 테이블이 아닐 경우 테이블 그룹으로 등록할 수 없다.")
     @Test
     void 존재하지_않는_테이블일_경우_테이블_그룹_등록_실패() {
         //given
@@ -75,6 +79,7 @@ public class TableGroupServiceTest {
         assertThrows(IllegalArgumentException.class, ()-> tableGroupService.create(tableGroup));
     }
 
+    @DisplayName("테이블이 비어있지 않은 경우 테이블 그룹으로 등록할 수 없다.")
     @Test
     void 테이블이_비어있지_않은_경우_테이블_그룹_등록_실패() {
         //given
@@ -88,6 +93,7 @@ public class TableGroupServiceTest {
         assertThrows(IllegalArgumentException.class, ()-> tableGroupService.create(tableGroup));
     }
 
+    @DisplayName("이미 테이블 그룹으로 지정이된 테이블일 경우 테이블 그룹으로 등록할 수 없다.")
     @Test
     void 이미_단체_지정이된_테이블일_경우_테이블_그룹_등록_실패() {
         //given
@@ -101,6 +107,7 @@ public class TableGroupServiceTest {
         assertThrows(IllegalArgumentException.class, ()-> tableGroupService.create(tableGroup));
     }
 
+    @DisplayName("테이블 그룹 등록 해제")
     @Test
     void 테이블_그룹_등록_해제() {
         //given
@@ -121,6 +128,7 @@ public class TableGroupServiceTest {
                 .collect(Collectors.toList())).isEmpty();
     }
 
+    @DisplayName("주문 상태가 계산 완료가 아닐경우 테이블 그룹 등록을 해제할 수 없다.")
     @Test
     void 주문상태가_계산_완료가_아니라면_등록_해제_실패() {
         //given
