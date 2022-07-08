@@ -1,9 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -13,27 +10,26 @@ public class MenuProduct {
     private Long seq;
     @Column(name = "menu_id")
     private Long menuId;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private Long productId;
     @Column(nullable = false)
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(final Long seq, final Product product, final long quantity) {
+    public MenuProduct(final Long seq, final Long productId, final long quantity) {
         this.seq = seq;
         this.menuId = null;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(final Product product, final long quantity) {
-        return new MenuProduct(null, product, quantity);
+    public static MenuProduct of(final Long productId, final long quantity) {
+        return new MenuProduct(null, productId, quantity);
     }
 
-    public BigDecimal calculate() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    public boolean equalsProductId(final Long productId) {
+        return this.productId ==productId;
     }
 
     public void updateMenuId(final Long menuId) {
@@ -48,8 +44,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
@@ -61,21 +57,21 @@ public class MenuProduct {
         return "MenuProduct{" +
                 "seq=" + seq +
                 ", menuId=" + menuId +
-                ", product=" + product +
+                ", productId=" + productId +
                 ", quantity=" + quantity +
                 '}';
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId) && Objects.equals(product, that.product);
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId) && Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, product, quantity);
+        return Objects.hash(seq, menuId, productId, quantity);
     }
 }

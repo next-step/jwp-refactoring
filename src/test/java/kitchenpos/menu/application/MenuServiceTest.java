@@ -10,6 +10,7 @@ import kitchenpos.menu.dto.CreateMenuRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductServiceTest;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.ProductTest;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +28,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -55,8 +55,9 @@ class MenuServiceTest {
         // given
         given(menuGroupRepository.findById(any()))
                 .willReturn(Optional.of(MenuGroupTest.햄버거_메뉴));
-        given(productRepository.findById(any()))
-                .willReturn(Optional.of(ProductServiceTest.불고기버거));
+        given(productRepository.findAllById(any()))
+                .willReturn(Arrays.asList(new Product(1L, "불고기버거", BigDecimal.valueOf(1500)),
+                        new Product(2L, "새우버거", BigDecimal.valueOf(2000))));
         given(menuRepository.save(any()))
                 .willReturn(불고기_새우버거_메뉴);
         // when
@@ -71,9 +72,6 @@ class MenuServiceTest {
         // given
         given(menuRepository.findAll())
                 .willReturn(Arrays.asList(불고기_새우버거_메뉴));
-
-        given(menuProductRepository.findAllByMenuId(any()))
-                .willReturn(Arrays.asList(MenuProductTest.불고기버거));
         // when
         final List<MenuResponse> menus = menuService.list();
         // then

@@ -38,7 +38,7 @@ class MenuRepositoryTest {
         final Product 새우버거 = productRepository.save(ProductRepositoryTest.새우버거.toEntity());
         final MenuGroup 햄버거_메뉴 = menuGroupRepository.save(MenuGroupRepositoryTest.햄버거_메뉴.toEntity());
 
-        메뉴상품_리스트 = Arrays.asList(MenuProduct.of(불고기버거, 5L), MenuProduct.of(새우버거, 1L));
+        메뉴상품_리스트 = Arrays.asList(MenuProduct.of(불고기버거.getId(), 5L), MenuProduct.of(새우버거.getId(), 1L));
         햄버거세트_메뉴 = Menu.of("햄버거세트메뉴", BigDecimal.valueOf(8_000), 햄버거_메뉴);
     }
 

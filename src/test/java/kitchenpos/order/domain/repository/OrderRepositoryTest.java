@@ -51,8 +51,8 @@ public class OrderRepositoryTest {
         final Menu 메뉴 = Menu.of("불고기버거", BigDecimal.valueOf(5_000), 햄버거_메뉴);
         햄버거세트_메뉴 = menuRepository.save(메뉴);
         햄버거세트_메뉴.addMenuProducts(Arrays.asList(
-                MenuProduct.of(불고기버거, 5L),
-                MenuProduct.of(새우버거, 1L)));
+                MenuProduct.of(불고기버거.getId(), 5L),
+                MenuProduct.of(새우버거.getId(), 1L)));
     }
 
     @Test
