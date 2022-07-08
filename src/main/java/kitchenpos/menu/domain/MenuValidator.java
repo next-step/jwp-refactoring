@@ -1,4 +1,4 @@
-package kitchenpos.menu.validator;
+package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
