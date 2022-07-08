@@ -4,13 +4,13 @@ import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class MenuServiceTest {
     MenuGroupService menuGroupService;
 
     @Mock
-    ProductRepository productRepository;
+    ProductService productService;
 
     @Mock
     MenuRepository menuRepository;
@@ -59,7 +59,7 @@ class MenuServiceTest {
         후라이드 = 후라이드_상품_생성();
         양념 = 양념치킨_상품_생성();
 
-        후라이드메뉴상품 = 후라이드_메뉴_상품_생성(후라이드.getId());
+        후라이드메뉴상품 = 후라이드_메뉴_상품_생성();
         양념메뉴상품 = 양념_메뉴_상품_생성(양념.getId());
 
         후라이드치킨 = 후라이드_치킨_메뉴_생성(한마리메뉴.getId(), Arrays.asList(후라이드메뉴상품));
@@ -70,10 +70,10 @@ class MenuServiceTest {
     @Test
     void createMenu() {
         // given
-        when(menuGroupService.findById(후라이드치킨.getMenuGroupId()))
-                .thenReturn(한마리메뉴);
-        when(productRepository.findByIdIn(Arrays.asList(후라이드.getId())))
-                .thenReturn(Arrays.asList(후라이드));
+        when(menuGroupService.existsById(1L))
+                .thenReturn(true);
+        when(productService.findById(후라이드.getId()))
+                .thenReturn(후라이드);
         when(menuRepository.save(any()))
                 .thenReturn(후라이드치킨);
 
@@ -120,6 +120,8 @@ class MenuServiceTest {
     @Test
     void createMenuAndIsNotRegisterMenuGroup() {
         // given
+        when(menuGroupService.existsById(1L))
+                .thenReturn(false);
         MenuRequest 후라이드치킨_요청 = new MenuRequest(후라이드치킨.getName(), new BigDecimal(16000), 후라이드치킨.getMenuGroupId(),
                 Arrays.asList(new MenuProductRequest(후라이드.getId(), 1L)));
 

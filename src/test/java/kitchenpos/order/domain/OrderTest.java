@@ -3,10 +3,10 @@ package kitchenpos.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.util.TestFixture.주문테이블_1_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -36,13 +36,13 @@ class OrderTest {
     }
 
     public static Order 주문_생성() {
-        return Order.of(주문테이블_1_생성(), 주문_항목_리스트_생성());
+        return Order.of(1L, 주문_항목_리스트_생성());
     }
 
     public static List<OrderLineItem> 주문_항목_리스트_생성() {
         List<OrderLineItem> list = new ArrayList<>();
-        list.add(OrderLineItem.of(1L, 1L));
-        list.add(OrderLineItem.of(2L, 1L));
+        list.add(OrderLineItem.of(1L, "후라이드 치킨", new BigDecimal(16000), 1L));
+        list.add(OrderLineItem.of(2L, "양념치킨", new BigDecimal(16000), 1L));
         return list;
     }
 }

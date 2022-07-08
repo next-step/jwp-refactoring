@@ -1,16 +1,17 @@
 package kitchenpos.order.service;
 
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,11 +20,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.util.TestFixture.주문항목_생성;
+import static kitchenpos.util.TestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -37,12 +39,13 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private TableService tableService;
+
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private MenuService menuService;
 
     private OrderLineItem 주문항목_1;
     private OrderLineItem 주문항목_2;
@@ -50,31 +53,35 @@ class OrderServiceTest {
     private OrderTable 주문테이블_1;
     private OrderTable 주문테이블_2;
     private Order 주문_1;
+    private Menu 메뉴;
 
     @BeforeEach
     void setUp() {
-        주문항목_1 = OrderLineItem.of(1L, 1L);
+        주문항목_1 = OrderLineItem.of(1L, "후라이드치킨", new BigDecimal(16000), 1L);
         주문항목_생성(주문항목_1, 주문_1);
-        주문항목_2 = OrderLineItem.of(2L, 1L);
+        주문항목_2 = OrderLineItem.of(2L, "양념치킨", new BigDecimal(16000),1L);
         주문항목_생성(주문항목_2, 주문_1);
-        주문테이블_1 = OrderTable.of(null, 2, false);
-        주문_1 = Order.of(주문테이블_1, Arrays.asList(주문항목_1, 주문항목_2));
+        주문테이블_1 = OrderTable.of(1L, 2, false);
+        주문_테이블_생성(주문테이블_1, 1L);
+        주문_1 = Order.of(주문테이블_1.getId(), Arrays.asList(주문항목_1, 주문항목_2));
+        메뉴 = 후라이드_치킨_메뉴_생성(1L, Arrays.asList(후라이드_메뉴_상품_생성()));
+        메뉴_생성(메뉴);
     }
 
     @DisplayName("주문 등록")
     @Test
     void createOrder() {
         // given
-        when(menuRepository.countByIdIn(Arrays.asList(주문항목_1.getMenuId(), 주문항목_2.getMenuId())))
-                .thenReturn(2L);
-        when(orderTableRepository.findById(1L))
-                .thenReturn(Optional.ofNullable(주문테이블_1));
+        when(tableService.findById(주문테이블_1.getId()))
+                .thenReturn(주문테이블_1);
+        when(menuService.findById(1L))
+                .thenReturn(메뉴);
         when(orderRepository.save(any()))
                 .thenReturn(주문_1);
 
         // when
         OrderRequest 주문_요청 = new OrderRequest(1L, 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),
-                Arrays.asList(new OrderLineItemRequest(1L, 1L), new OrderLineItemRequest(2L, 1L)));
+                Arrays.asList(new OrderLineItemRequest(1L, 1L)));
         OrderResponse result = orderService.create(주문_요청);
 
         // then
@@ -102,13 +109,10 @@ class OrderServiceTest {
     @Test
     void createOrderAndNotExistTable() {
         // given
-        when(menuRepository.countByIdIn(Arrays.asList(1L, 2L)))
-                .thenReturn(2L);
-        when(orderTableRepository.findById(1L))
-                .thenReturn(Optional.empty());
-
+        when(tableService.findById(3L))
+                .thenThrow(new IllegalArgumentException());
         // then
-        OrderRequest 주문_요청 = new OrderRequest(1L, 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),
+        OrderRequest 주문_요청 = new OrderRequest(3L, 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),
                 Arrays.asList(new OrderLineItemRequest(1L, 1L), new OrderLineItemRequest(2L, 1L)));
         assertThatThrownBy(() -> {
             orderService.create(주문_요청);
@@ -119,11 +123,13 @@ class OrderServiceTest {
     @Test
     void createOrderAndNotRegisterMenu() {
         // given
-        when(menuRepository.countByIdIn(Arrays.asList(주문항목_1.getMenuId(), 주문항목_2.getMenuId())))
-                .thenReturn(1L);
+        when(tableService.findById(주문테이블_1.getId()))
+                .thenReturn(주문테이블_1);
+        when(menuService.findById(1L))
+                .thenThrow(new IllegalArgumentException());
 
         // then
-        OrderRequest 주문_요청 = new OrderRequest(주문_1.getId(), 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),
+        OrderRequest 주문_요청 = new OrderRequest(1L, 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),
                 Arrays.asList(new OrderLineItemRequest(1L, 1L), new OrderLineItemRequest(2L, 1L)));
         assertThatThrownBy(() -> {
             orderService.create(주문_요청);
@@ -134,10 +140,8 @@ class OrderServiceTest {
     @Test
     void createOrderAndEmptyTable() {
         // given
-        when(menuRepository.countByIdIn(Arrays.asList(주문항목_1.getMenuId(), 주문항목_2.getMenuId())))
-                .thenReturn(2L);
-        when(orderTableRepository.findById(1L))
-                .thenReturn(Optional.empty());
+        when(tableService.findById(주문테이블_1.getId()))
+                .thenThrow(new IllegalArgumentException());
 
         // then
         OrderRequest 주문_요청 = new OrderRequest(1L, 주문_1.getOrderStatus(), 주문_1.getOrderedTime(),
@@ -151,7 +155,7 @@ class OrderServiceTest {
     @Test
     void findAllOrders() {
         // given
-        when(orderRepository.findAllOrderAndItems())
+        when(orderRepository.findAll())
                 .thenReturn(Arrays.asList(주문_1));
 
         // when
@@ -165,9 +169,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
+        주문_1.changeOrderStatus(OrderStatus.MEAL);
         when(orderRepository.findById(1L))
                 .thenReturn(Optional.of(주문_1));
-        when(orderRepository.findAllOrderAndItemsByOrder(any()))
+        when(orderRepository.save(any()))
                 .thenReturn(주문_1);
 
         // when

@@ -1,4 +1,6 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
+
+import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -16,9 +18,9 @@ public class OrderTables {
     protected OrderTables() {
     }
 
-    public OrderTables(List<OrderTable> orderTables, TableGroup tableGroup) {
+    public OrderTables(List<OrderTable> orderTables, Long tableGroupId) {
         validTableEmpty(orderTables);
-        changeGroup(orderTables, tableGroup);
+        changeGroup(orderTables, tableGroupId);
         this.orderTables = orderTables;
     }
 
@@ -31,8 +33,8 @@ public class OrderTables {
                 });
     }
 
-    public void changeGroup(List<OrderTable> orderTables, TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.changeGroup(tableGroup));
+    public void changeGroup(List<OrderTable> orderTables, Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.changeGroup(tableGroupId));
     }
 
     public void changeUnGroup() {

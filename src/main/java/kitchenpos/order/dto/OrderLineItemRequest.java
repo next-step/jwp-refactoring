@@ -11,10 +11,6 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public static OrderLineItem toEntity(OrderLineItemRequest request) {
-        return OrderLineItem.of(request.getMenuId(), request.getQuantity());
-    }
-
     public Long getMenuId() {
         return menuId;
     }

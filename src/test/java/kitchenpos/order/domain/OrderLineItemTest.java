@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,6 @@ class OrderLineItemTest {
     }
 
     public static OrderLineItem 주문_항목_생성() {
-        return OrderLineItem.of(3L, 1L);
+        return OrderLineItem.of(3L, "메뉴1", new BigDecimal(16000), 1L);
     }
 }

@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
@@ -33,8 +33,7 @@ public class MenuGroupService {
                 .collect(toList());
     }
 
-    public MenuGroup findById(Long id) {
-        return menuGroupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴가 있습니다."));
+    public boolean existsById(Long id) {
+        return menuGroupRepository.existsById(id);
     }
 }

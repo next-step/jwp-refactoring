@@ -9,9 +9,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId = null;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -22,18 +21,18 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable of(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
+    public static OrderTable of(Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroupId, numberOfGuests, empty);
     }
 
-    public void changeGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void changeGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
@@ -60,7 +59,7 @@ public class OrderTable {
     }
 
     public void changeUnGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
@@ -68,11 +67,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (tableGroup != null) {
-            return tableGroup.getId();
-        }
-
-        return null;
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -84,6 +79,6 @@ public class OrderTable {
     }
 
     public boolean isGroup() {
-        return Objects.nonNull(tableGroup);
+        return Objects.nonNull(tableGroupId);
     }
 }
