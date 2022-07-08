@@ -4,14 +4,14 @@ plugins {
     id 'java'
 }
 
+group = 'camp.nextstep.edu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
 allprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
-
-    group = 'camp.nextstep.edu'
-    version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = '1.8'
 
     repositories {
         mavenCentral()
@@ -34,32 +34,13 @@ allprojects {
     }
 }
 
-project(':module-product') {
-    dependencies {
+subprojects {
+    bootJar {
+        enabled = false
     }
-}
 
-project(':module-menu') {
-    dependencies {
-        implementation project(':module-product')
-    }
-}
-
-project(':module-order') {
-    dependencies {
-        implementation project(':module-menu')
-    }
-}
-
-project(':module-table') {
-    dependencies {
-        implementation project(':module-menu')
-        implementation project(':module-order')
-    }
-}
-
-project(':module-test') {
-    dependencies {
+    jar {
+        enabled = true
     }
 }
 
