@@ -1,23 +1,16 @@
 package kitchenpos.ordertable.acceptance;
 
-import acceptance.TableAcceptanceMethods;
+import acceptance.AcceptanceTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static acceptance.TableAcceptanceMethods.*;
-import static kitchenpos.utils.RestAssuredMethods.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("테이블 관련 기능 인수테스트")
 public class TableAcceptanceTest extends AcceptanceTest {

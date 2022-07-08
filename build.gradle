@@ -58,6 +58,11 @@ project(':module-table') {
     }
 }
 
+project(':module-test') {
+    dependencies {
+    }
+}
+
 dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation project(':module-product')

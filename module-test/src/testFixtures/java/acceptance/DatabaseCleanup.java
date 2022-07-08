@@ -1,4 +1,4 @@
-package kitchenpos.utils;
+package acceptance;
 
 import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,13 +17,14 @@ import java.util.stream.Collectors;
 @Service
 @ActiveProfiles("test")
 public class DatabaseCleanup implements InitializingBean {
-    private final static List<String> tableNamesWithSeq = Arrays.asList();
+    private final static List<String> seqTables = Arrays.asList("menu_product", "order_line_item");
 
     @PersistenceContext
     private EntityManager entityManager;
 
     private List<String> tableNamesDefaultWithId;
     private List<String> tableNamesUserDefinedWithId;
+    private List<String> tableNamesWithSeq;
 
     @Override
     public void afterPropertiesSet() {
@@ -31,7 +32,7 @@ public class DatabaseCleanup implements InitializingBean {
                 .filter(e -> e.getJavaType().getAnnotation(Table.class) == null)
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
                 .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .filter(name -> !tableNamesWithSeq.stream().anyMatch(s -> s.equals(name)))
+                .filter(name -> !seqTables.stream().anyMatch(s -> s.equals(name)))
                 .collect(Collectors.toList());
 
         tableNamesUserDefinedWithId = entityManager.getMetamodel().getEntities().stream()
@@ -39,7 +40,13 @@ public class DatabaseCleanup implements InitializingBean {
                 .map(e -> CaseFormat.UPPER_CAMEL.to(
                         CaseFormat.LOWER_UNDERSCORE, e.getJavaType().getAnnotation(Table.class).name())
                 )
-                .filter(name -> !tableNamesWithSeq.stream().anyMatch(s -> s.equals(name)))
+                .filter(name -> !seqTables.stream().anyMatch(s -> s.equals(name)))
+                .collect(Collectors.toList());
+
+        tableNamesWithSeq = entityManager.getMetamodel().getEntities().stream()
+                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
+                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .filter(name -> seqTables.stream().anyMatch(s -> s.equals(name)))
                 .collect(Collectors.toList());
     }
 

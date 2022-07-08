@@ -3,6 +3,7 @@ plugins{
     id 'java-test-fixtures'
     id 'maven-publish'
 }
+bootJar { enabled = false }
 jar {
     enabled = true
 }
@@ -12,6 +13,6 @@ dependencies {
     testFixturesImplementation 'io.rest-assured:rest-assured:3.3.0'
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation(testFixtures(project(":module-product")))
-    testImplementation(testFixtures(project(":module-test")))
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testFixturesImplementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
 }

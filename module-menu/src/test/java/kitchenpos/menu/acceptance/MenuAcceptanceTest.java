@@ -1,9 +1,8 @@
 package kitchenpos.menu.acceptance;
 
-import acceptance.MenuGroupAcceptanceMethods;
+import acceptance.AcceptanceTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;

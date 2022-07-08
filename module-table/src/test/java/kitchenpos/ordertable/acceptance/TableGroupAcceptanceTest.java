@@ -1,8 +1,8 @@
 package kitchenpos.ordertable.acceptance;
 
+import acceptance.AcceptanceTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;

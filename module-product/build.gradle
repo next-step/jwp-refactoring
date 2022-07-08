@@ -12,4 +12,5 @@ dependencies {
     testFixturesImplementation 'io.rest-assured:rest-assured:3.3.0'
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation(testFixtures(project(":module-test")))
 }
