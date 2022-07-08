@@ -30,9 +30,4 @@ public class ProductService {
             .map(ProductResponse::from)
             .collect(Collectors.toList());
     }
-
-    public Product findProductById(Long productId) {
-        return productRepository.findById(productId)
-            .orElseThrow(IllegalArgumentException::new);
-    }
 }

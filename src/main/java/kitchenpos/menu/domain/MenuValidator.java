@@ -2,18 +2,19 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.exception.InvalidValueException;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.common.exception.InvalidValueException;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MenuValidator {
-    private final ProductService productService;
+    private final ProductRepository productRepository;
 
-    public MenuValidator(ProductService productService) {
-        this.productService = productService;
+    public MenuValidator(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public void validate(MenuRequest menuRequest) {
@@ -31,7 +32,7 @@ public class MenuValidator {
     private BigDecimal calculateMenuProductsPrice(List<MenuProduct> menuProducts) {
         BigDecimal totalPrice = BigDecimal.ZERO;
         for(final MenuProduct menuProduct : menuProducts) {
-            final Product product = productService.findProductById(menuProduct.getProductId());
+            final Product product = findProductById(menuProduct.getProductId());
 
             BigDecimal multiply = product.getPrice()
                 .multiply(new BigDecimal(menuProduct.getQuantity()));
@@ -40,5 +41,10 @@ public class MenuValidator {
         }
 
         return totalPrice;
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+            .orElseThrow(EntityNotFoundException::new);
     }
 }
