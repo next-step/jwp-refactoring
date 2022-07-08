@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -28,8 +28,8 @@ public class Price {
         return price;
     }
 
-    public boolean isGatherThan(BigDecimal sum) {
-        return price.compareTo(sum) > 0;
+    public boolean isGatherThan(BigDecimal price) {
+        return this.price.compareTo(price) > 0;
     }
 
     public BigDecimal getValue() {

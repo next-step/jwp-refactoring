@@ -2,8 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.response.OrderTableResponse;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Transactional(readOnly = true)
 @Service

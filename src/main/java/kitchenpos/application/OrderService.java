@@ -5,7 +5,7 @@ import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;

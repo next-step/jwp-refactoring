@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.dao.OrderLineItemRepository;
 import kitchenpos.dao.OrderRepository;

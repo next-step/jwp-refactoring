@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupRepository;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.TableGroupRequest;

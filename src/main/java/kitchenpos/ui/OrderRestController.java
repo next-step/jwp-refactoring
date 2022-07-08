@@ -1,8 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,11 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.domain.OrderStatus;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
