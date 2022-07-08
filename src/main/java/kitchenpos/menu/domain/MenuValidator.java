@@ -63,8 +63,7 @@ public class MenuValidator {
 
     public void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         List<Long> menuIds = getMenuIds(orderLineItemRequests);
-        int countById = menuRepository.countByIdIn(menuIds);
-        if (countById != menuIds.size()) {
+        if (menuRepository.countByIdIn(menuIds) != orderLineItemRequests.size()) {
             throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
         }
 

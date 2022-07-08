@@ -27,10 +27,9 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         menuValidator.validate(menuRequest);
 
-        Menu menu =menuRequest.toEntity();
+        Menu menu = menuRequest.toEntity();
 
-        Menu save = menuRepository.save(menu);
-        return new MenuResponse(save);
+        return new MenuResponse(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
