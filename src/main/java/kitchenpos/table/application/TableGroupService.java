@@ -22,14 +22,10 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        //final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
         final List<OrderTable> savedOrderTables = tableValidator.findTableAllByIdIn(tableGroupRequest.getOrderTableIds());
 
         tableValidator.orderTablesSizeValidation(savedOrderTables, tableGroupRequest);
 
-//        if (savedOrderTables.size() != tableGroupRequest.getOrderTableIds().size()) {
-//            throw new IllegalArgumentException();
-//        }
         tableValidator.addOrderTableValidation(savedOrderTables);
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
 
@@ -45,10 +41,6 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
 
         tableValidator.orderStatusByIdsValidate(tableGroup.getOrderTables().orderTableIds());
-//        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-//                tableGroup.getOrderTables().orderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new OrderStatusException(OrderStatusException.ORDER_STATUS_CAN_NOT_UNGROUP_MSG);
-//        }
 
         tableGroup.unGroup();
     }

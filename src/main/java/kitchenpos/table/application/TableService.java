@@ -34,14 +34,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final boolean isEmpty) {
-//        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-//                                            .orElseThrow(IllegalArgumentException::new);
         final OrderTable savedOrderTable = tableValidator.findOrderTableById(orderTableId);
 
-//        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-//                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new OrderStatusException(OrderStatusException.ORDER_STATUS_CAN_NOT_UNGROUP_MSG);
-//        }
         tableValidator.orderStatusValidate(orderTableId);
 
         savedOrderTable.changeEmpty(isEmpty);
@@ -50,8 +44,6 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
-//        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-//                            .orElseThrow(IllegalArgumentException::new);
         final OrderTable savedOrderTable = tableValidator.findOrderTableById(orderTableId);
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
