@@ -1,11 +1,8 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -19,14 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final OrderRepository orderRepository,
+    private final ChangeStateTableValidator changeStateTableValidator;
+
+    public TableGroupService(final OrderTableRepository orderTableRepository, final ChangeStateTableValidator changeStateTableValidator,
                              final TableGroupRepository tableGroupRepository) {
 
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.changeStateTableValidator = changeStateTableValidator;
         this.tableGroupRepository = tableGroupRepository;
     }
 
@@ -66,9 +64,6 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문 테이블중 조리중인 경우에 단체석을 개인 주문테이블로 변경할 수 없습니다.");
-        }
+        changeStateTableValidator.validateUnGroupTableChange(orderTableIds);
     }
 }

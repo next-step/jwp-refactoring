@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -35,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private ChangeStateTableValidator changeStateTableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -139,31 +137,9 @@ class TableGroupServiceTest {
         given(tableGroupRepository.findById(1L)).willReturn(Optional.empty());
 
         //when & then
-
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() ->
                 tableGroupService.ungroup(1L)
         );
     }
-
-    @Test
-    @DisplayName("주문 테이블중 조리중인 경우에 단체석을 개인 주문테이블로 변경할 수 없다.")
-    void isNotAbleUngroup() {
-        //given
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 1, false);
-        OrderTable orderTable2 = new OrderTable(2L, 1L, 1, false);
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
-
-        given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
-
-        //when & then
-        assertThatIllegalArgumentException().isThrownBy(() ->
-                tableGroupService.ungroup(1L)
-        );
-    }
-
-
-
 
 }

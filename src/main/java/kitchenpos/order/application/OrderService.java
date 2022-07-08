@@ -41,6 +41,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoSuchElementException("존재 하지 않은 주문 입니다."));
+
         OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
 
         savedOrder.changOrderStatus(orderStatus);

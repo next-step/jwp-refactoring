@@ -1,11 +1,9 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.domain.OrderStateValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -16,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderStateValidator changeOrderTableValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderStateValidator changeOrderTableValidator, final OrderTableRepository orderTableRepository) {
+        this.changeOrderTableValidator = changeOrderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -44,19 +42,13 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new NoSuchElementException("변경할 테이블이 존재하지 않습니다."));
 
-        validateChangeEmptyTable(orderTableId);
+        changeOrderTableValidator.validateChangeEmptyTable(orderTableId);
 
         savedOrderTable.changeEmptyTable();
 
         return OrderTableResponse.formOrderTable(savedOrderTable);
     }
 
-    private void validateChangeEmptyTable(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문이 완료된 상태여만 빈테이블로 변경이 가능합니다.");
-        }
-    }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {

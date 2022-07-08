@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import kitchenpos.global.domain.Price;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -25,33 +24,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OrderValidatorTest {
-    @Mock
-    private MenuRepository menuRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private MenuRepository menuRepository;
+
     @InjectMocks
     private OrderValidator orderValidator;
 
-    private List<OrderLineItem> orderLineItemList;
     private List<OrderLineItemRequest> orderLineItems;
-    private OrderLineItem orderLineItems1;
-    private OrderLineItem orderLineItems2;
-
 
     @BeforeEach
     void setUp() {
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 3);
         OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(1L, 3);
 
-
         orderLineItems = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
-
-        orderLineItems1 = OrderLineItem.of(1L, Price.from(100).value(), "1L", 10);
-        orderLineItems2 = OrderLineItem.of(1L, Price.from(100).value(), "2B", 10);
-        orderLineItemList = Arrays.asList(orderLineItems1, orderLineItems2);
-
     }
 
     @Test
