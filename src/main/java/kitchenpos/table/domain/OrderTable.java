@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

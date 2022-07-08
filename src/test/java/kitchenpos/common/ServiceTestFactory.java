@@ -11,11 +11,10 @@ import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
