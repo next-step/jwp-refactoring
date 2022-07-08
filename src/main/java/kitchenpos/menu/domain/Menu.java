@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "menu")
 @Entity
@@ -73,5 +74,19 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id)
+                && Objects.equals(name, menu.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
