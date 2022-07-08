@@ -52,7 +52,7 @@ class OrderServiceTest {
     void setUp() {
         orderLineItemRequest = new OrderLineItem();
         orderRequest = 주문요청생성(1L, Arrays.asList(orderLineItemRequest));
-        order = 주문생성(1L, 1L, OrderStatus.COOKING.name(), Arrays.asList(orderLineItemRequest));
+        order = 주문생성(1L,Arrays.asList(orderLineItemRequest));
         orderLineItem = new OrderLineItem();
         orderLineItem.setSeq(order.getId());
     }
@@ -60,7 +60,7 @@ class OrderServiceTest {
     @Test
     void 주문을_생성할_수_있다() {
         int menuIds = 1;
-        OrderTable ordertable = 테이블생성(1L, 1L, 5, false);
+        OrderTable ordertable = 테이블생성(5, false);
         given(menuRepository.countByIdIn(any())).willReturn(menuIds);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(ordertable));
         given(orderRepository.save(any())).willReturn(order);
@@ -104,7 +104,7 @@ class OrderServiceTest {
 
     @Test
     void 주문테이블이_비어있으면_주문을_생성할_수_없다() {
-        OrderTable 빈_주문테이블 = 테이블생성(1L, 1L, 5, true);
+        OrderTable 빈_주문테이블 = 테이블생성(5, true);
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_주문테이블));
 
@@ -113,7 +113,7 @@ class OrderServiceTest {
 
     @Test
     void 주문을_조회할_수_있다() {
-        Order 주문1 = 주문생성(1L, 1L, OrderStatus.MEAL.name(), Arrays.asList(new OrderLineItem()));
+        Order 주문1 = 주문생성(1L, Arrays.asList(new OrderLineItem()));
         List<Order> orders = Arrays.asList(주문1);
         given(orderRepository.findAll()).willReturn(orders);
 
@@ -125,7 +125,7 @@ class OrderServiceTest {
     @Test
     void 주문의_주문상태를_변경할_수_있다() {
         OrderStatus 식사중 = OrderStatus.MEAL;
-        OrderLineItem orderLineItem = 주문항목생성(1L, order.getId(), null, 1);
+        OrderLineItem orderLineItem = 주문항목생성(null, 1);
         OrderStatusRequest request = new OrderStatusRequest(식사중);
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
         orderRequest = 주문요청생성(1L, Arrays.asList(orderLineItem));

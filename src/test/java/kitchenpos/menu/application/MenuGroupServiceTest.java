@@ -33,9 +33,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        메뉴그룹 = new MenuGroup();
-        메뉴그룹.setId(1L);
-        메뉴그룹.setName("오늘의메뉴");
+        메뉴그룹 = new MenuGroup("오늘의메뉴");
     }
 
     @Test

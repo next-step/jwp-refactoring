@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -34,10 +35,7 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        지코바치킨 = new Product();
-        지코바치킨.setId(1L);
-        지코바치킨.setName("지코바치킨");
-        지코바치킨.setPrice(BigDecimal.valueOf(20000));
+        지코바치킨 = new Product("지코바치킨", Price.from(20000));
     }
 
     @Test

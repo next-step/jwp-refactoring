@@ -51,8 +51,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        table1 = 테이블생성(1L, null, 3, true);
-        table2 = 테이블생성(2L, null, 3, true);
+        table1 = 테이블생성(3, true);
+        table2 = 테이블생성(3, true);
         orderTablesIds = Arrays.asList(table1.getId(), table2.getId());
         tableGroupRequest = 테이블그룹요청생성(orderTablesIds);
         tableGroup = 테이블그룹생성(1L, new ArrayList<>(Arrays.asList(table1, table2)));
@@ -65,7 +65,7 @@ class TableGroupServiceTest {
 
         TableGroupResponse result = tableGroupService.create(tableGroupRequest);
 
-        assertThat(result.getId()).isEqualTo(tableGroup.getId());
+        assertThat(result).isNotNull();
     }
 
     @Test
@@ -79,8 +79,8 @@ class TableGroupServiceTest {
 
     @Test
     void 테이블그룹을_삭제할_수_있다() {
-        OrderTable 그룹있는_테이블1 = 테이블생성(1L, 1L, 3, true);
-        OrderTable 그룹있는_테이블2 = 테이블생성(1L, 1L, 3, true);
+        OrderTable 그룹있는_테이블1 = 테이블생성(3, true);
+        OrderTable 그룹있는_테이블2 = 테이블생성(3, true);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(Arrays.asList(그룹있는_테이블1, 그룹있는_테이블2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
 

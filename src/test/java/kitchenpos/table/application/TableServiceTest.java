@@ -43,18 +43,18 @@ class TableServiceTest {
     @Test
     void 테이블을_생성할_수_있다() {
         OrderTableRequest orderTableRequest = 테이블요청생성(3, true);
-        OrderTable orderTable = 테이블생성(2L, 2L, 5, true);
+        OrderTable orderTable = 테이블생성(5, true);
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTableResponse createdOrderTable = tableService.create(orderTableRequest);
 
-        assertThat(createdOrderTable.getId()).isNotNull();
+        assertThat(createdOrderTable).isNotNull();
     }
 
     @Test
     void 테이블을_조회할_수_있다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, true);
-        OrderTable orderTable2 = 테이블생성(2L, null, 5, true);
+        OrderTable orderTable = 테이블생성(3, true);
+        OrderTable orderTable2 = 테이블생성(5, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
         given(orderTableRepository.findAll()).willReturn(orderTables);
 
@@ -65,7 +65,7 @@ class TableServiceTest {
 
     @Test
     void 테이블을_비울_수_있다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest request = 테이블요청생성(3, true);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
@@ -78,7 +78,7 @@ class TableServiceTest {
 
     @Test
     void 주문테이블이_존재하지않으면_테이블을_비울_수_없다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest orderTableRequest = 테이블요청생성(3, false);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.empty());
 
@@ -88,7 +88,7 @@ class TableServiceTest {
 
     @Test
     void 테이블그룹이_존재하면_테이블을_비울_수_없다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest orderTableRequest = 테이블요청생성(3, false);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
@@ -99,7 +99,7 @@ class TableServiceTest {
 
     @Test
     void 주문상태가_요리중이거나_식사중이면_테이블을_비울_수_없다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest orderTableRequest = 테이블요청생성(3, false);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
@@ -110,7 +110,7 @@ class TableServiceTest {
 
     @Test
     void 테이블의_인원수를_변경할_수_있다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest 인원수변경_5명 = 테이블요청생성(5, false);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
@@ -121,7 +121,7 @@ class TableServiceTest {
 
     @Test
     void 테이블의_인원수를_음수로_변경할_수_없다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest 음수인원수로변경 = 테이블요청생성(-5, false);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), 음수인원수로변경))
@@ -130,7 +130,7 @@ class TableServiceTest {
 
     @Test
     void 존재하지않는_테이블의_인원수를_변경할_수_없다() {
-        OrderTable orderTable = 테이블생성(1L, null, 3, false);
+        OrderTable orderTable = 테이블생성(3, false);
         OrderTableRequest 인원수변경_5명 = 테이블요청생성(5, false);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.empty());
 
