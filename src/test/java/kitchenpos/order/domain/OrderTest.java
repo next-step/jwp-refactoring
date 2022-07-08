@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,18 +15,20 @@ import org.junit.jupiter.api.Test;
 class OrderTest {
 
     private List<OrderLineItem> orderLineItems;
+    OrderLineItem orderLineItem1;
+    OrderLineItem orderLineItem2;
     @BeforeEach
     void setUp() {
-        OrderLineItem orderLineItem1 = OrderLineItem.from(1L, 3);
-        OrderLineItem orderLineItem2 = OrderLineItem.from(1L, 3);
+        orderLineItem1 = OrderLineItem.of(1L, BigDecimal.valueOf(100), "메뉴", 3);
+        orderLineItem2 = OrderLineItem.of(1L, BigDecimal.valueOf(100), "메뉴1", 2);
+
         orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
     }
 
     @Test
     @DisplayName("주문 테이블은 존재 해야 한다.")
     void orderTableIsNull() {
-        OrderLineItems orderLineItems = OrderLineItems.from(
-                Collections.singletonList(OrderLineItem.from(1L, 2)));
+        OrderLineItems orderLineItems = OrderLineItems.from(Collections.singletonList(orderLineItem1));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(null, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems));

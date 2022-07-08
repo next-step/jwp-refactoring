@@ -4,12 +4,10 @@ package kitchenpos.order.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import org.springframework.util.ObjectUtils;
 
 @Embeddable
@@ -41,13 +39,6 @@ public class OrderLineItems {
         }
     }
 
-    public static OrderLineItems of(List<OrderLineItemRequest> requestList) {
-        return new OrderLineItems(requestList
-                .stream()
-                .map((orderLineItemRequest) -> OrderLineItem.from(orderLineItemRequest.getMenuId(),
-                        orderLineItemRequest.getQuantity()))
-                .collect(Collectors.toList()));
-    }
 
     public static OrderLineItems from(List<OrderLineItem> orderLineItems) {
         return new OrderLineItems(orderLineItems);
