@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -11,18 +10,17 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderValidator orderValidator, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderValidator = orderValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -44,22 +42,15 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
 
-        validateOrderTableStatus(orderTables);
-
-        orderTables.forEach(OrderTable::ungroup);
-
-        orderTableRepository.saveAll(orderTables);
-    }
-
-    private void validateOrderTableStatus(List<OrderTable> orderTables) {
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        orderValidator.validateOrderTableStatus(orderTableIds);
+
+        orderTables.forEach(OrderTable::ungroup);
+
+        orderTableRepository.saveAll(orderTables);
     }
 
     private void checkNotExistOrderTable(List<Long> orderTableIds, List<OrderTable> orderTables) {

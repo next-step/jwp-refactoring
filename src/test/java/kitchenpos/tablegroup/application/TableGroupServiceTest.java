@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -26,14 +26,14 @@ import static kitchenpos.common.ServiceTestFactory.테이블생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @DisplayName("테이블그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderValidator orderValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -82,7 +82,6 @@ class TableGroupServiceTest {
         OrderTable 그룹있는_테이블1 = 테이블생성(3, true);
         OrderTable 그룹있는_테이블2 = 테이블생성(3, true);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(Arrays.asList(그룹있는_테이블1, 그룹있는_테이블2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
 
         tableGroupService.ungroup(1L);
 
@@ -94,7 +93,8 @@ class TableGroupServiceTest {
     void 주문상태가_요리중이거나_식사중이면_테이블그룹을_삭제할_수_없다() {
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
+
+        doThrow(IllegalArgumentException.class).when(orderValidator).validateOrderTableStatus(any());
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class);

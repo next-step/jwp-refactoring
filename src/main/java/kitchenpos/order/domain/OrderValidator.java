@@ -8,6 +8,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 public class OrderValidator {
 
     private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(MenuRepository menuRepository, OrderTableRepository orderTableRepository) {
+    public OrderValidator(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -51,10 +54,16 @@ public class OrderValidator {
         }
     }
 
+    public void validateOrderTableStatus(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
     }
-
 }
