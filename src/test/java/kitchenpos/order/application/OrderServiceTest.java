@@ -32,7 +32,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -69,9 +69,9 @@ class OrderServiceTest {
                 .willReturn(Optional.of(저장된_주문테이블));
         given(orderRepository.save(생성할_주문))
                 .willReturn(저장된_주문);
-        given(orderLineItemDao.save(eq(첫번째_주문항목)))
+        given(orderLineItemRepository.save(eq(첫번째_주문항목)))
                 .willReturn(첫번째_주문항목);
-        given(orderLineItemDao.save(eq(두번째_주문항목)))
+        given(orderLineItemRepository.save(eq(두번째_주문항목)))
                 .willReturn(두번째_주문항목);
 
         // when
@@ -140,7 +140,7 @@ class OrderServiceTest {
         List<Order> 조회할_주문_목록 = Arrays.asList(저장된_주문);
         given(orderRepository.findAll())
                 .willReturn(조회할_주문_목록);
-        given(orderLineItemDao.findAllByOrderId(anyLong()))
+        given(orderLineItemRepository.findAllByOrderId(anyLong()))
                 .willReturn(주문항목_리스트);
 
         // when
@@ -161,7 +161,7 @@ class OrderServiceTest {
                 .willReturn(Optional.of(상태_변경_전_주문));
         given(orderRepository.save(any()))
                 .willReturn(상태_변경_후_예상_주문);
-        given(orderLineItemDao.findAllByOrderId(상태_변경할_주문ID))
+        given(orderLineItemRepository.findAllByOrderId(상태_변경할_주문ID))
                 .willReturn(주문항목_리스트);
 
         // when

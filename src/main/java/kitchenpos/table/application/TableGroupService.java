@@ -1,10 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.*;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.ui.TableGroupRestController;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
