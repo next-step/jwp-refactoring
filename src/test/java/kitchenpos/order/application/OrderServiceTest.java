@@ -1,17 +1,12 @@
 package kitchenpos.order.application;
 
 import kitchenpos.common.domain.OrderStatus;
-import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.order.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,22 +32,17 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
+
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     private Order 주문;
-    private OrderTable 테이블;
-    private OrderTable 빈_테이블;
     private OrderLineItem 주문내역;
 
     @BeforeEach
     void setUp() {
         주문 = new Order(1L, 1L);
-        테이블 = new OrderTable(1L, new TableGroup(1L), 1, false);
-        빈_테이블 = new OrderTable(2L, new TableGroup(2L), 0, true);
         주문내역 = new OrderLineItem(1L, 주문, 1L, 1);
     }
 
@@ -63,8 +53,6 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(1L, 1));
         OrderRequest request = new OrderRequest(1L, orderLineItemRequests);
         given(orderRepository.save(any())).willReturn(주문);
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
 
         // when
         OrderResponse response = orderService.create(request);
@@ -112,32 +100,6 @@ class OrderServiceTest {
     void 주문의_개수가_0개인_경우() {
         // given
         OrderRequest request = new OrderRequest(1L, Collections.emptyList());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 주문_내역의_건수가_주문한_메뉴들의_수와_같지_않은경우() {
-        // given
-        List<OrderLineItemRequest> orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(1L, 1));
-        OrderRequest request = new OrderRequest(1L, orderLineItemRequests);
-        given(menuRepository.countByIdIn(any())).willReturn(3L);
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 빈_테이블에서_주문한_경우() {
-        // given
-        List<OrderLineItemRequest> orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(1L, 1));
-        OrderRequest request = new OrderRequest(1L, orderLineItemRequests);
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(빈_테이블));
-
 
         // when & then
         assertThatThrownBy(() -> orderService.create(request))
