@@ -1,4 +1,4 @@
-package kitchenpos.menu.exception;
+package kitchenpos.common.exception;
 
 public class InvalidValueException extends IllegalArgumentException {
 
