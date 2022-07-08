@@ -33,8 +33,12 @@ public class Price {
         }
     }
 
-    public boolean biggerThan(BigDecimal target) {
-        return value.compareTo(target) > 0;
+    public boolean biggerThan(Price target) {
+        return value.compareTo(target.value) > 0;
+    }
+
+    public Price add(Price price) {
+        return new Price(this.value.add(price.value));
     }
 
     public static Price multiply(Product product, long quantity) {

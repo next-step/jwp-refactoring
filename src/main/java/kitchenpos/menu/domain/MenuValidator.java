@@ -8,7 +8,6 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +29,11 @@ public class MenuValidator {
     }
 
     private void validateProductsPrice(Price price, List<MenuProductRequest> menuProductRequests) {
-        List<MenuProduct> menuProducts = getMenuProducts(menuProductRequests);
-        BigDecimal productAmount = menuProducts.stream()
-                .map(MenuProduct::getAmount)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+        Price totalPrice = totalPriceOfProducts(menuProductRequests);
 
-        if (price.biggerThan(productAmount)) {
+        if (price.biggerThan(totalPrice)) {
             throw new IllegalArgumentException("가격이 상품들의 가격의 합보다 클 수 없습니다.");
         }
-
     }
 
     private void validateMenuGroup(Long menuGroupId) {
@@ -48,15 +42,31 @@ public class MenuValidator {
         }
     }
 
-    private List<MenuProduct> getMenuProducts(List<MenuProductRequest> request) {
-        return request.stream()
+    private MenuProducts getMenuProducts(List<MenuProductRequest> request) {
+        return new MenuProducts(request.stream()
                 .map(this::getMenuProduct)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     private MenuProduct getMenuProduct(MenuProductRequest menuProductRequest) {
         final Product product = productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
-        return MenuProduct.from(product, menuProductRequest.getQuantity());
+        return MenuProduct.from(product.getId(), menuProductRequest.getQuantity());
+    }
+
+    private Price totalPriceOfProducts(List<MenuProductRequest> menuProductRequests) {
+        Price total = Price.from(0);
+        for (MenuProductRequest menuProductRequest : menuProductRequests) {
+            Product product = getProduct(menuProductRequest);
+            Price price = Price.multiply(product, menuProductRequest.getQuantity());
+            total = total.add(price);
+        }
+
+        return total;
+    }
+
+    private Product getProduct(MenuProductRequest menuProductRequest) {
+        return productRepository.findById(menuProductRequest.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
     }
 }

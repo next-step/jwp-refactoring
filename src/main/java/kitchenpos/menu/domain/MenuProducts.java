@@ -1,8 +1,11 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.Price;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

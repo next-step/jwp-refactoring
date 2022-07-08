@@ -65,6 +65,7 @@
 - 단방향 관계로 변경
   - MenuValidator 
 - 간접참조로 변경
+  - MenuProduct - product rkswjqckawhfh qusrud
 
 ## 용어 사전
 

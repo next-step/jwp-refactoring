@@ -34,8 +34,8 @@ public class ServiceTestFactory {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuProduct 메뉴상품생성(Product product, Long quantity) {
-        return new MenuProduct(product,quantity);
+    public static MenuProduct 메뉴상품생성(Long productId, Long quantity) {
+        return new MenuProduct(productId,quantity);
     }
 
     public static MenuGroup 메뉴그룹생성(String name) {

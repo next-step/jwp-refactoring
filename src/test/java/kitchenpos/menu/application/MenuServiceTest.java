@@ -52,7 +52,7 @@ class MenuServiceTest {
     void setUp() {
         지코바치킨 = 상품생성("지코바치킨", BigDecimal.valueOf(20000));
         메뉴그룹 = 메뉴그룹생성("메뉴그룹");
-        메뉴상품 = 메뉴상품생성(지코바치킨, 1L);
+        메뉴상품 = 메뉴상품생성(지코바치킨.getId(), 1L);
         오늘의메뉴 = 메뉴생성("오늘의메뉴", 지코바치킨.getPrice().getPriceValue(), 1L, Arrays.asList(메뉴상품));
     }
 
