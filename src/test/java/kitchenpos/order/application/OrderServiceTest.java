@@ -4,6 +4,7 @@ import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -21,7 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,13 +56,16 @@ class OrderServiceTest {
     void setUp() {
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
         orderRequest = new OrderRequest(ORDER_TABLE_ID, Arrays.asList(orderLineItemRequest));
-        order = new Order(ORDER_ID, ORDER_TABLE_ID, OrderStatus.COOKING,
-                Arrays.asList(OrderLineItemRequest.toEntity(orderLineItemRequest)));
+        order = new Order(ORDER_ID, ORDER_TABLE_ID, OrderStatus.COOKING, Arrays.asList(new OrderLineItem()));
     }
 
     @DisplayName("주문을 생성한다")
     @Test
     void create() {
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L , 1);
+        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.COOKING, Arrays.asList(orderLineItemRequest));
+
+        given(menuService.findById(anyLong())).willReturn(new Menu( 1L,"메뉴", BigDecimal.TEN, 1L, Arrays.asList()));
         given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(1L)));
         given(orderRepository.save(any(Order.class))).willReturn(order);
@@ -73,6 +78,10 @@ class OrderServiceTest {
     @DisplayName("존재하는 menu가 아니라면 주문을 생성할 수 없다.")
     @Test
     void create_invalid_menuIds() {
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L , 1);
+        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.COOKING, Arrays.asList(orderLineItemRequest));
+
+        given(menuService.findById(anyLong())).willReturn(new Menu( 1L,"메뉴", BigDecimal.TEN, 1L, Arrays.asList()));
         given(menuService.countByIdIn(any())).willReturn(1000L);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -80,19 +89,13 @@ class OrderServiceTest {
                 .hasMessage(ErrorCode.CONTAINS_NOT_EXIST_MENU.getMessage());
     }
 
-    @DisplayName("orderLineItems 비어있다면 주문을 생성할 수 없다.")
-    @Test
-    void create_empty_orderLineItems() {
-        orderRequest = new OrderRequest(ORDER_TABLE_ID, new ArrayList<>());
-
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage(ErrorCode.ORDER_LINE_ITEM_EMPTY.getMessage());
-    }
-
     @DisplayName("존재하는 주문 테이블이 아니라면 주문을 생성할 수 없다.")
     @Test
     void create_invalid_orderTableId() {
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L , 1);
+        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.COOKING, Arrays.asList(orderLineItemRequest));
+
+        given(menuService.findById(anyLong())).willReturn(new Menu( 1L,"메뉴", BigDecimal.TEN, 1L, Arrays.asList()));
         given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
 
@@ -104,6 +107,10 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 비어있으면 주문을 생성할 수 없다.")
     @Test
     void create_orderTable_empty() {
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L , 1);
+        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.COOKING, Arrays.asList(orderLineItemRequest));
+
+        given(menuService.findById(anyLong())).willReturn(new Menu( 1L,"메뉴", BigDecimal.TEN, 1L, Arrays.asList()));
         given(menuService.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(1L, true)));
 

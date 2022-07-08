@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.table.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embedded;
@@ -25,6 +26,7 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     private Long orderTableId;
 
@@ -47,6 +49,11 @@ public class Order {
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
+    public Order(OrderStatus orderStatus, Long orderTableId) {
+        this.orderStatus = orderStatus;
+        this.orderTableId = orderTableId;
+    }
+
     public Long getId() {
         return id;
     }
@@ -67,11 +74,8 @@ public class Order {
         return orderLineItems.getElements();
     }
 
-    public void register(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public void register(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTable);
-        this.orderTableId = orderTable.getId();
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         this.orderLineItems = new OrderLineItems(orderLineItems);
         this.orderLineItems.add(this);
     }

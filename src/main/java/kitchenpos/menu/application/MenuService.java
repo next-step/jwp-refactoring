@@ -1,5 +1,7 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.application.validator.MenuValidatorGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -35,5 +37,10 @@ public class MenuService {
 
     public long countByIdIn(List<Long> menuIds) {
         return menuRepository.countByIdIn(menuIds);
+    }
+
+    public Menu findById(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
     }
 }
