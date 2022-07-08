@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.order.application.OrderTableStatusService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -26,14 +27,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private TableStatusService tableStatusService;
 
     @InjectMocks
     private TableService tableService;
@@ -65,8 +66,6 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, false, 1);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-                .willReturn(Boolean.FALSE);
 
         OrderTableResponse response = tableService.changeEmpty(orderTableId, request);
 
@@ -89,9 +88,13 @@ class TableServiceTest {
     @DisplayName("조리, 식사중인 테이블은 변경할 수 없다.")
     @Test
     void changeEmpty_cooking_meal() {
+        OrderRepository orderRepository = mock(OrderRepository.class);
+
+        TableService tableService = new TableService(orderTableRepository, new OrderTableStatusService(orderRepository));
+
         Long orderTableId = 1L;
         OrderTableRequest request = new OrderTableRequest(1, true);
-        OrderTable orderTable = new OrderTable(1L, false);
+        OrderTable orderTable = new OrderTable(1L, false, 1);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
