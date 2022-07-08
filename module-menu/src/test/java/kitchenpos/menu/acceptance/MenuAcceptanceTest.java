@@ -1,28 +1,22 @@
 package kitchenpos.menu.acceptance;
 
-import acceptance.ProductAcceptanceMethods;
+import acceptance.MenuGroupAcceptanceMethods;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static acceptance.ProductAcceptanceMethods.*;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
-import static kitchenpos.utils.RestAssuredMethods.get;
-import static kitchenpos.utils.RestAssuredMethods.post;
-import static org.assertj.core.api.Assertions.assertThat;
+import static acceptance.MenuAcceptanceMethods.*;
+import static acceptance.MenuGroupAcceptanceMethods.*;
+import static acceptance.ProductAcceptanceMethods.상품_등록되어_있음;
 
 @DisplayName("메뉴 관련 기능 인수테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -116,42 +110,5 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(김치찌개_menuProduct_1인, 공기밥_menuProduct_1인));
         ExtractableResponse<Response> 정가보다_비싼_메뉴_등록 = 메뉴_등록_요청(정가보다_비싼_메뉴_menuRequest);
         메뉴_등록_실패됨(정가보다_비싼_메뉴_등록);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest params) {
-        return post("/api/menus", params);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
-        return get("/api/menus");
-    }
-
-    public static void 메뉴_등록됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 메뉴_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 메뉴_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> expectedMenuIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
-                .collect(Collectors.toList());
-
-        List<Long> resultMenuIds = response.jsonPath().getList(".", MenuResponse.class).stream()
-                .map(MenuResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultMenuIds).containsAll(expectedMenuIds);
-    }
-
-    public static void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
-        return 메뉴_등록_요청(MenuRequest.of(name, price, menuGroupId, menuProducts));
     }
 }

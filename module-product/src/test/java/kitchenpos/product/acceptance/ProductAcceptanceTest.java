@@ -1,26 +1,17 @@
 package kitchenpos.product.acceptance;
 
-import acceptance.ProductAcceptanceMethods;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.utils.RestAssuredMethods;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static acceptance.ProductAcceptanceMethods.*;
-import static kitchenpos.utils.RestAssuredMethods.*;
-import static kitchenpos.utils.RestAssuredMethods.get;
-import static kitchenpos.utils.RestAssuredMethods.post;
-import static org.assertj.core.api.Assertions.assertThat;
+import static acceptance.RestAssuredMethods.post;
 
 @DisplayName("상품 관련 기능 인수테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {

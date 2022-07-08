@@ -27,7 +27,7 @@ import static fixture.MenuFixtureFactory.createMenu;
 import static fixture.MenuGroupFixtureFactory.createMenuGroup;
 import static fixture.MenuProductFixtureFactory.createMenuProduct;
 import static fixture.ProductFixtureFactory.createProduct;
-import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
+import static fixture.OrderTableFixtureFactory.createOrderTable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;

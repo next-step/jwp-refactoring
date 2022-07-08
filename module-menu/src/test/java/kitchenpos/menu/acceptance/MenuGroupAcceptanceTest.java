@@ -4,19 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static kitchenpos.utils.RestAssuredMethods.get;
-import static kitchenpos.utils.RestAssuredMethods.post;
-import static org.assertj.core.api.Assertions.assertThat;
+import static acceptance.MenuGroupAcceptanceMethods.*;
 
 @DisplayName("메뉴그룹 관련 기능 인수테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -54,38 +48,5 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 메뉴그룹_목록_조회 = 메뉴그룹_목록_조회_요청();
         메뉴그룹_목록_응답됨(메뉴그룹_목록_조회);
         메뉴그룹_목록_포함됨(메뉴그룹_목록_조회, Arrays.asList(한식_등록, 양식_등록));
-    }
-
-    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroupRequest params) {
-        return post("/api/menu-groups", params);
-    }
-
-    public static ExtractableResponse<Response> 메뉴그룹_목록_조회_요청() {
-        return get("/api/menu-groups");
-    }
-
-    public static void 메뉴그룹_등록됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 메뉴그룹_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 메뉴그룹_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> expectedMenuGroupIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
-                .collect(Collectors.toList());
-
-        List<Long> resultMenuGroupIds = response.jsonPath().getList(".", MenuGroupResponse.class).stream()
-                .map(MenuGroupResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultMenuGroupIds).containsAll(expectedMenuGroupIds);
-    }
-
-    public static ExtractableResponse<Response> 메뉴그룹_등록되어_있음(String name) {
-        return 메뉴그룹_등록_요청(MenuGroupRequest.from(name));
     }
 }

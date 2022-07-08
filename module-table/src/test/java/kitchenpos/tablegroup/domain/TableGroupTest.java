@@ -3,7 +3,7 @@ package kitchenpos.tablegroup.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
+import static fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("테이블그룹 도메인 테스트")

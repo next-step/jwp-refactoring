@@ -11,7 +11,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.utils.fixture.TableGroupFixtureFactory;
+import fixture.TableGroupFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
+import static fixture.OrderTableFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -18,8 +18,8 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
 
-import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
-import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
+import static fixture.OrderTableFixtureFactory.createOrderTable;
+import static fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

@@ -8,14 +8,11 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
-import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.테이블_등록되어_있음;
-import static kitchenpos.utils.RestAssuredMethods.delete;
-import static kitchenpos.utils.RestAssuredMethods.post;
-import static org.assertj.core.api.Assertions.assertThat;
+import static acceptance.TableAcceptanceMethods.테이블_등록되어_있음;
+import static acceptance.TableGroupAcceptanceMethods.*;
 
 @DisplayName("테이블그룹 관련 기능 인수테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -92,27 +89,5 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         TableGroupRequest 이미_등록된_테이블_사용한_테이블그룹 = TableGroupRequest.from(Arrays.asList(테이블1.getId(), 테이블3.getId()));
         ExtractableResponse<Response> 이미_등록된_테이블_사용한_테이블그룹_등록 = 테이블그룹_등록_요청(이미_등록된_테이블_사용한_테이블그룹);
         테이블그룹_등록_실패됨(이미_등록된_테이블_사용한_테이블그룹_등록);
-    }
-
-    public static ExtractableResponse<Response> 테이블그룹_등록_요청(TableGroupRequest params) {
-        return post("/api/table-groups", params);
-    }
-
-    public static ExtractableResponse<Response> 테이블그룹_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return delete(uri);
-    }
-
-    public static void 테이블그룹_등록됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 테이블그룹_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 테이블그룹_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

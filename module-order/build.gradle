@@ -4,4 +4,7 @@ jar {
 
 dependencies {
     runtimeOnly 'com.h2database:h2'
+    testImplementation(testFixtures(project(":module-product")))
+    testImplementation(testFixtures(project(":module-menu")))
+    testImplementation(testFixtures(project(":module-table")))
 }
