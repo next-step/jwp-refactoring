@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -26,9 +26,9 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,9 +44,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
-    @Mock
-    private MenuService menuService;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -55,18 +53,15 @@ class OrderServiceTest {
     @Test
     void 전체_주문_조회() {
         // given
-        Product 후라이드 = Product.of("후라이드", 16000L);
-        MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
-        MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-        Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"), 메뉴_상품);
+        Long 메뉴_아이디 = 1L;
+        Long 주문_테이블_아이디 = 1L;
 
-        OrderTable 주문_테이블 = new OrderTable(1L, 5);
-        Order 주문 = Order.of(주문_테이블, new OrderLineItems(Arrays.asList(OrderLineItem.of(메뉴, 2L))));
+        Order 주문 = Order.of(주문_테이블_아이디, new OrderLineItems(Collections.singletonList(OrderLineItem.of(메뉴_아이디, 2L))));
 
         given(orderRepository.findAll()).willReturn(Collections.singletonList(주문));
 
         // when
-        List<OrderResponse> orders = orderService.list();
+        List<OrderResponse> orders = orderService.listAllOrders();
 
         // then
         assertThat(orders).hasSize(1);
@@ -83,14 +78,17 @@ class OrderServiceTest {
             MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
             MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
             Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"), 메뉴_상품);
-            OrderLineItem 주문_항목 = new OrderLineItem(메뉴, 1);
+
+            Long 메뉴_아이디 = 1L;
+            Long 주문_테이블_아이디 = 1L;
+
+            OrderLineItem 주문_항목 = new OrderLineItem(메뉴_아이디, 1);
             OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));
 
             OrderTable 주문_테이블 = new OrderTable(1L, 5);
 
-            given(orderTableRepository.findById(eq(주문_테이블.getId()))).willReturn(Optional.ofNullable(주문_테이블));
             given(orderRepository.save(any(Order.class))).willReturn(
-                    new Order(1L, 주문_테이블, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목들));
+                    new Order(1L, 주문_테이블_아이디, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목들));
 
             OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 3);
             OrderRequest 주문_요청 = OrderRequest.of(주문_테이블.getId(), Collections.singletonList(주문_항목_요청));
@@ -119,6 +117,7 @@ class OrderServiceTest {
             void 주문_항목이_없는_주문_생성() {
                 // given
                 OrderRequest 주문_항목이_없는_주문_요청 = OrderRequest.of(1L, Collections.emptyList());
+                doThrow(IllegalArgumentException.class).when(orderValidator).validate(any(Order.class));
 
                 // when / then
                 assertThatThrownBy(() -> orderService.create(주문_항목이_없는_주문_요청)).isInstanceOf(
@@ -132,13 +131,13 @@ class OrderServiceTest {
                 Product 후라이드 = Product.of("후라이드", 16000L);
                 MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
                 MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-                Menu 메뉴 = new Menu("메뉴", new BigDecimal(16000L), new MenuGroup("메뉴그룹"), 메뉴_상품);
-                given(menuService.findMenuById(eq(메뉴.getId()))).willReturn(메뉴);
+
+                Long 메뉴_아이디 = 1L;
 
                 OrderTable 주문_테이블 = new OrderTable(1L, 5);
 
-                OrderLineItem 주문_항목1 = new OrderLineItem(메뉴, 1);
-                OrderLineItem 주문_항목2 = new OrderLineItem(메뉴, 3);
+                OrderLineItem 주문_항목1 = new OrderLineItem(메뉴_아이디, 1);
+                OrderLineItem 주문_항목2 = new OrderLineItem(메뉴_아이디, 3);
 
                 OrderLineItemRequest 요청의_주문_항목1 = new OrderLineItemRequest(주문_항목1.getMenuId(), 주문_항목1.getQuantity());
                 OrderLineItemRequest 요청의_주문_항목2 = new OrderLineItemRequest(주문_항목2.getMenuId(), 주문_항목2.getQuantity());
@@ -157,7 +156,7 @@ class OrderServiceTest {
                 Long 존재하지_않는_주문_테이블_아이디 = 99999L;
                 OrderRequest 주문_요청 = OrderRequest.of(존재하지_않는_주문_테이블_아이디, Collections.singletonList(주문_항목_요청));
 
-                given(orderTableRepository.findById(eq(존재하지_않는_주문_테이블_아이디))).willReturn(Optional.empty());
+                doThrow(IllegalArgumentException.class).when(orderValidator).validate(any(Order.class));
 
                 // when / then
                 assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
@@ -168,7 +167,7 @@ class OrderServiceTest {
             void 빈_주문_테이블로_주문_생성() {
                 // given
                 OrderTable 빈_테이블 = new OrderTable(1L, 0, Boolean.TRUE);
-                given(orderTableRepository.findById(eq(빈_테이블.getId()))).willReturn(Optional.ofNullable(빈_테이블));
+                doThrow(IllegalArgumentException.class).when(orderValidator).validate(any(Order.class));
 
                 OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 2);
                 OrderRequest 주문_요청 = OrderRequest.of(1L, Collections.singletonList(주문_항목_요청));
@@ -188,17 +187,14 @@ class OrderServiceTest {
             OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 3);
             OrderRequest 주문_요청 = OrderRequest.of(1L, Collections.singletonList(주문_항목_요청), OrderStatus.COOKING.name());
 
-            Product 후라이드 = Product.of("후라이드", 16000L);
-            MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
-            MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
-            Menu 메뉴 = new Menu("메뉴", new BigDecimal(16000L), new MenuGroup("메뉴그룹"), 메뉴_상품);
+            Long 메뉴_아이디 = 1L;
 
-            OrderLineItem 주문_항목 = new OrderLineItem(메뉴, 1);
+            OrderLineItem 주문_항목 = new OrderLineItem(메뉴_아이디, 1);
             OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));
 
-            OrderTable 주문_테이블 = new OrderTable(1L, 5);
+            Long 주문_테이블_아이디 = 1L;
 
-            Order 주문 = new Order(1L, 주문_테이블, OrderStatus.MEAL, LocalDateTime.now(), 주문_항목들);
+            Order 주문 = new Order(1L, 주문_테이블_아이디, OrderStatus.MEAL, LocalDateTime.now(), 주문_항목들);
 
             given(orderRepository.findById(eq(주문.getId()))).willReturn(Optional.of(주문));
 
@@ -230,14 +226,15 @@ class OrderServiceTest {
             MenuProduct 후라이드_하나 = MenuProduct.of(후라이드, 1L);
             MenuProducts 메뉴_상품 = new MenuProducts(Collections.singletonList(후라이드_하나));
             Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"), 메뉴_상품);
-            OrderLineItem 주문_항목 = new OrderLineItem(메뉴, 1);
+
+            Long 메뉴_아이디 = 1L;
+            OrderLineItem 주문_항목 = new OrderLineItem(메뉴_아이디, 1);
             OrderLineItems 주문_항목들 = new OrderLineItems(Collections.singletonList(주문_항목));
 
-            OrderTable 주문_테이블 = new OrderTable(1L, 5);
+            Long 주문_테이블_아이디 = 1L;
+            Order 주문 = new Order(1L, 주문_테이블_아이디, OrderStatus.COMPLETION, LocalDateTime.now(), 주문_항목들);
 
-            Order 주문 = new Order(1L, 주문_테이블, OrderStatus.COMPLETION, LocalDateTime.now(), 주문_항목들);
-
-            OrderRequest 주문_변경_요청 = OrderRequest.of(주문_테이블.getId(),
+            OrderRequest 주문_변경_요청 = OrderRequest.of(주문_테이블_아이디,
                     Collections.singletonList(new OrderLineItemRequest(주문_항목.getMenuId(), 주문_항목.getQuantity())),
                     OrderStatus.COOKING.name());
 

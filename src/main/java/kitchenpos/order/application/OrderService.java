@@ -2,8 +2,6 @@ package kitchenpos.order.application;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
@@ -12,8 +10,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,24 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    private final MenuService menuService;
-
-    public OrderService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
-                        final MenuService menuService) {
+    public OrderService(final OrderRepository orderRepository,
+                        final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
-        this.menuService = menuService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderLineItems orderLineItems = createOrderLineItems(orderRequest);
+        Order order = Order.of(orderRequest.getOrderTableId(), orderLineItems);
 
-        final OrderTable orderTable = findOrderTableById(orderRequest);
+        orderValidator.validate(order);
 
-        Order order = Order.of(orderTable, orderLineItems);
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.from(savedOrder);
@@ -47,18 +41,12 @@ public class OrderService {
     private OrderLineItems createOrderLineItems(OrderRequest orderRequest) {
         OrderLineItems orderLineItems = OrderLineItems.create();
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
-            Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(OrderLineItem.of(menu, orderLineItemRequest.getQuantity()));
+            orderLineItems.add(OrderLineItem.of(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()));
         }
         return orderLineItems;
     }
 
-    private OrderTable findOrderTableById(OrderRequest order) {
-        return orderTableRepository.findById(order.getOrderTableId()).orElseThrow(
-                () -> new IllegalArgumentException(String.format("주문 테이블(%d)을 찾을 수 없습니다.", order.getOrderTableId())));
-    }
-
-    public List<OrderResponse> list() {
+    public List<OrderResponse> listAllOrders() {
         return OrderResponse.from(orderRepository.findAll());
     }
 
@@ -75,13 +63,13 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("주문(%d)을 찾을 수 없습니다.", orderId)));
     }
 
-    public boolean existOrderBeforeCompletion(OrderTable orderTable) {
-        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
+    public boolean existOrderBeforeCompletion(Long orderTableId) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.COMPLETION));
     }
 
-    public boolean existOrderBeforeCompletion(List<OrderTable> orderTables) {
-        return orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables,
+    public boolean existOrderBeforeCompletion(List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 }

@@ -36,6 +36,12 @@ public class OrderTables {
         return Collections.unmodifiableList(values);
     }
 
+    public List<Long> getOrderTableIds() {
+        return values.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
     public boolean isEmpty() {
         return values.isEmpty();
     }

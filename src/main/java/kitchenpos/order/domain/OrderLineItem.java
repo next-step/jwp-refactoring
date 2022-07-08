@@ -1,15 +1,12 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -17,9 +14,8 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Column(name = "menu_id", nullable = false)
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
@@ -28,21 +24,21 @@ public class OrderLineItem {
     }
 
     private OrderLineItem(OrderLineItem orderLineItem) {
-        this(orderLineItem.menu, orderLineItem.quantity);
+        this(orderLineItem.menuId, orderLineItem.quantity);
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
         this.quantity = Quantity.from(quantity);
     }
 
-    private OrderLineItem(Menu menu, Quantity quantity) {
-        this.menu = menu;
+    private OrderLineItem(Long menuId, Quantity quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Menu menu, Long quantity) {
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem of(Long menuId, Long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public static OrderLineItem from(OrderLineItem orderLineItem) {
@@ -50,7 +46,7 @@ public class OrderLineItem {
     }
 
     public boolean hasSameMenu(OrderLineItem orderLineItem) {
-        return menu.equals(orderLineItem.menu);
+        return menuId == orderLineItem.menuId;
     }
 
     public Long getSeq() {
@@ -58,7 +54,7 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return menu.getId();
+        return menuId;
     }
 
     public long getQuantity() {

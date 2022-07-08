@@ -53,7 +53,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         OrderTables orderTables = tableGroup.getOrderTables();
-        if (orderService.existOrderBeforeCompletion(orderTables.value())) {
+        if (orderService.existOrderBeforeCompletion(orderTables.getOrderTableIds())) {
             throw new IllegalArgumentException("계산 완료되지 않은 테이블이 있어 단체 지정할 수 없습니다.");
         }
         tableGroup.ungroup();

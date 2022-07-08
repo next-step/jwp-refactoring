@@ -35,7 +35,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
-        if (orderService.existOrderBeforeCompletion(savedOrderTable)) {
+        if (orderService.existOrderBeforeCompletion(orderTableId)) {
             throw new IllegalArgumentException("계산 완료되지 않은 주문이 있어서 빈 테이블로 만들 수 없습니다.");
         }
 
