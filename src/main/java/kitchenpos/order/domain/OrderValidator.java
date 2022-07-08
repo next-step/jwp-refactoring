@@ -2,20 +2,20 @@ package kitchenpos.order.domain;
 
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderValidator {
-    private final OrderTableDao orderTableDao;
-    private final MenuDao menuDao;
+    private final OrderTableRepository orderTableRepository;
+    private final MenuRepository menuRepository;
 
-    public OrderValidator(OrderTableDao orderTableDao, MenuDao menuDao) {
-        this.orderTableDao = orderTableDao;
-        this.menuDao = menuDao;
+    public OrderValidator(OrderTableRepository orderTableRepository, MenuRepository menuRepository) {
+        this.orderTableRepository = orderTableRepository;
+        this.menuRepository = menuRepository;
     }
 
     public void validate(OrderRequest orderRequest) {
@@ -24,7 +24,7 @@ public class OrderValidator {
     }
 
     private void validateOrderTable(Long orderTableId) {
-        OrderTable orderTable = orderTableDao.findById(orderTableId)
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(EntityNotFoundException::new);
 
         if(orderTable.isEmpty()) {
@@ -33,7 +33,7 @@ public class OrderValidator {
     }
 
     private void validateIfThereIsMenu(List<Long> menuIds) {
-        if(menuIds.size() != menuDao.countByIdIn(menuIds)) {
+        if(menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new EntityNotFoundException();
         }
     }

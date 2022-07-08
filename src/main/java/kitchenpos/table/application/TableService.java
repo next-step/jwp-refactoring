@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableGuestRequest;
@@ -20,11 +20,11 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderRepository orderRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableDao orderTableDao) {
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -32,20 +32,20 @@ public class TableService {
         OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests(),
             orderTableRequest.isEmpty());
 
-        OrderTable saveOrderTable = orderTableDao.save(orderTable);
+        OrderTable saveOrderTable = orderTableRepository.save(orderTable);
 
         return OrderTableResponse.from(saveOrderTable);
     }
 
     public List<OrderTableResponse> list() {
-        return orderTableDao.findAll().stream()
+        return orderTableRepository.findAll().stream()
             .map(OrderTableResponse::from)
             .collect(Collectors.toList());
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableStatusRequest orderTableStatusRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if(Objects.nonNull(savedOrderTable.getTableGroup())) {
@@ -64,7 +64,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableGuestRequest orderTableGuestRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
         savedOrderTable.changeGuests(orderTableGuestRequest.getNumberOfGuests());

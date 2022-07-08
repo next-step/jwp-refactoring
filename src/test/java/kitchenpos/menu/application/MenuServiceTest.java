@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -36,10 +36,10 @@ class MenuServiceTest {
     private ProductRepository productRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -70,10 +70,10 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다.")
     void createMenu() {
         // given
-        given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
         given(productRepository.findById(반반.getId())).willReturn(Optional.of(반반));
         given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
-        given(menuDao.save(any(Menu.class))).willReturn(반반치킨세트);
+        given(menuRepository.save(any(Menu.class))).willReturn(반반치킨세트);
 
         //when
         MenuResponse savedMenu = menuService.create(new MenuRequest(반반치킨세트));
@@ -90,7 +90,7 @@ class MenuServiceTest {
     @DisplayName("유효하지 않은 메뉴그룹을 가진 메뉴를 생성할 경우 - 오류")
     void notExistMenuGroup() {
         // given
-        given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.empty());
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.empty());
 
         // when then
         assertThatThrownBy(() -> menuService.create(new MenuRequest(반반치킨세트)))
@@ -101,7 +101,7 @@ class MenuServiceTest {
     @DisplayName("유효하지 않은 상품을 가진 메뉴를 생성할 경우 - 오류")
     void notExistProduct() {
         // given
-        given(menuGroupDao.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
         given(productRepository.findById(반반.getId())).willReturn(Optional.empty());
 
         // when then
@@ -113,7 +113,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     void findAll() {
         // given
-        given(menuDao.findAll()).willReturn(Arrays.asList(반반치킨세트));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(반반치킨세트));
 
         // when
         List<MenuResponse> menus = menuService.list();

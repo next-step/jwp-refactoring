@@ -29,7 +29,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private MenuService menuService;
@@ -82,7 +82,7 @@ class OrderServiceTest {
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
         주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
 
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블));
         given(menuService.countByIdIn(anyList())).willReturn(1L);
         given(menuService.findMenuById(any())).willReturn(후라이드_세트_메뉴);
         given(orderRepository.save(any(Order.class))).willReturn(주문);
@@ -118,7 +118,7 @@ class OrderServiceTest {
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
         주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
 
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when then
         assertThatThrownBy(() -> orderService.create(new OrderRequest(주문)))

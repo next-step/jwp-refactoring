@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -31,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public
 class TableServiceTest {
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private OrderRepository orderRepository;
@@ -52,7 +52,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 생성한다.")
     void createOrder() {
         // given
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(주문_테이블);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문_테이블);
 
         // when
         OrderTableResponse savedOrderTable = tableService.create(new OrderTableRequest(주문_테이블.getNumberOfGuests(), 주문_테이블.isEmpty()));
@@ -70,7 +70,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블 목록을 조회한다.")
     void findAll() {
         // given
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(주문_테이블));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_테이블));
 
         // when
         List<OrderTableResponse> orderTables = tableService.list();
@@ -83,7 +83,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 빈 테이블 상태를 변경한다.")
     void changeEmpty() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_테이블));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
 
         // when
@@ -108,7 +108,7 @@ class TableServiceTest {
     @DisplayName("테이블 그룹 정보가 없는 주문 테이블의 빈 테이블 상태를 변경할 경우 - 오류")
     void changeEmptyByNonExistentTableGroup() {
         // given
-        given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.empty());
 
         // when then
         assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_않은_주문_테이블.isEmpty())))
@@ -119,7 +119,7 @@ class TableServiceTest {
     @DisplayName("주문의 상태가 `요리중`이거나 `식사`일 경우 - 오류")
     void changeEmptyByInvalidOrderStatus() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_테이블));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         // when then
@@ -131,7 +131,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문 손님 수를 변경한다.")
     void changeGuest() {
         // given
-        given(orderTableDao.findById(비어있는_않은_주문_테이블.getId())).willReturn(Optional.of(비어있는_않은_주문_테이블));
+        given(orderTableRepository.findById(비어있는_않은_주문_테이블.getId())).willReturn(Optional.of(비어있는_않은_주문_테이블));
 
         // when
         OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(비어있는_않은_주문_테이블.getId(), new OrderTableGuestRequest(5));
@@ -144,7 +144,7 @@ class TableServiceTest {
     @DisplayName("유효하지 않은 주문 테이블의 손님 수를 변경할 경우 - 오류")
     void changeGuestByNonExistentOrderTable() {
         // given
-        given(orderTableDao.findById(비어있는_않은_주문_테이블.getId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(비어있는_않은_주문_테이블.getId())).willReturn(Optional.empty());
 
         // when then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(비어있는_않은_주문_테이블.getId(), new OrderTableGuestRequest(10)))
