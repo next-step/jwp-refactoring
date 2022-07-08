@@ -1,6 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.event.GroupTableEvent;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
@@ -8,7 +7,6 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +21,6 @@ import java.util.Arrays;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

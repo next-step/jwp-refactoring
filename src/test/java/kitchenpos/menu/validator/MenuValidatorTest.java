@@ -1,13 +1,13 @@
 package kitchenpos.menu.validator;
 
-import kitchenpos.exception.IllegalPriceException;
+import kitchenpos.menu.exception.IllegalPriceException;
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
+import kitchenpos.menu.exception.NoSuchMenuGroupException;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.NoSuchProductException;

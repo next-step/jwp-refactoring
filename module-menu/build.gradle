@@ -1,0 +1,8 @@
+jar {
+    enabled = true
+}
+
+dependencies {
+    runtimeOnly 'com.h2database:h2'
+    testImplementation(testFixtures(project(":module-product")))
+}

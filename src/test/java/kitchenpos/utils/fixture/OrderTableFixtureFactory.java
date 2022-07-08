@@ -1,7 +1,6 @@
 package kitchenpos.utils.fixture;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableFixtureFactory {
     public static OrderTable createOrderTable(int numberOfGuests, boolean empty) {

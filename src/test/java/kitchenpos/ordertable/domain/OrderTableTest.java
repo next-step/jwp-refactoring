@@ -1,18 +1,12 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import static kitchenpos.utils.fixture.OrderFixtureFactory.*;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.*;
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;

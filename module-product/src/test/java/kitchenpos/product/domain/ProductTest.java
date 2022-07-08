@@ -1,11 +1,10 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.product.exception.IllegalPriceException;
-import kitchenpos.utils.fixture.ProductFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.utils.fixture.ProductFixtureFactory.*;
+import static fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
