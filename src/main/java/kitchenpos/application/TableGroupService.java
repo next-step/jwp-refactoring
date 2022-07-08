@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,18 +31,15 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
-        TableGroup.validateInputOrderTable(request.getOrderTables());
+        validateRequestOrderTables(request.getOrderTables());
 
-        final List<Long> orderTableIds = request.getOrderTables()
-                                                .stream()
-                                                .map(OrderTableRequest::getId)
-                                                .collect(Collectors.toList());
-
-        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(getOrderTableIds(request));
 
         validatePresentOrderTable(request.getOrderTableSize(), orderTables.size());
 
-        return tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup saved = tableGroupRepository.save(new TableGroup());
+        saved.group(orderTables);
+        return saved;
     }
 
     @Transactional
@@ -48,14 +47,35 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                                                     .orElseThrow(IllegalArgumentException::new);
 
-        orderTableValidator.hasOrderStatusInCookingOrMeal(tableGroup.getOrderTables());
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
+        validatePresentOrderTable(orderTables.size());
+        orderTableValidator.hasOrderStatusInCookingOrMeal(orderTables);
 
-        tableGroup.ungroup();
+        tableGroup.ungroup(orderTables);
+    }
+
+    private List<Long> getOrderTableIds(TableGroupRequest request) {
+        return request.getOrderTables()
+                      .stream()
+                      .map(OrderTableRequest::getId)
+                      .collect(Collectors.toList());
+    }
+
+    private void validateRequestOrderTables(List<OrderTableRequest> requests) {
+        if (Objects.isNull(requests) || requests.size() < 2) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private void validatePresentOrderTable(int inputSize, int presentSize) {
         if (inputSize != presentSize) {
             throw new IllegalArgumentException("요청 테이블과 실제 테이블 개수가 일치하지 않습니다.");
+        }
+    }
+
+    private void validatePresentOrderTable(int presentSize) {
+        if (presentSize == 0) {
+            throw new NoSuchElementException("단체 지정된 주문 테이블이 존재하지 않습니다.");
         }
     }
 }
