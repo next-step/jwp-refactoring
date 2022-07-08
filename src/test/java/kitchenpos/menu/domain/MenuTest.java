@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.Arrays;
 import kitchenpos.global.domain.Price;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +15,8 @@ class MenuTest {
 
     @BeforeEach
     void setUp() {
-        Product product1 = new Product("상품1", Price.from(20));
-        Product product2 = new Product("상품2", Price.from(30));
-        MenuProduct menuProduct1 = new MenuProduct(product1, 1);
-        MenuProduct menuProduct2 = new MenuProduct(product2, 2);
+        MenuProduct menuProduct1 = new MenuProduct(1L, 1);
+        MenuProduct menuProduct2 = new MenuProduct(2L, 2);
 
         상품들 = MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
     }

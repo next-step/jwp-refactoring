@@ -1,13 +1,8 @@
 package kitchenpos.menu.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import kitchenpos.global.domain.Amount;
-import kitchenpos.global.domain.Price;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,23 +14,5 @@ class MenuProductsTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> MenuProducts.from(new ArrayList<>()));
     }
-
-    @Test
-    @DisplayName("메뉴상품들의 총금액")
-    void totalAmount() {
-        //givne
-        Product product1 = new Product("상품1", Price.from(20));
-        Product product2 = new Product("상품2", Price.from(30));
-        MenuProduct menuProduct1 = new MenuProduct(product1, 1);
-        MenuProduct menuProduct2 = new MenuProduct(product2, 2);
-        MenuProducts menuProducts = MenuProducts.from(Arrays.asList(menuProduct1, menuProduct2));
-
-        //when
-        final Amount totalAmount = menuProducts.totalAmount();
-
-        //then
-        assertThat(totalAmount).isEqualTo(Amount.from(80));
-    }
-
 
 }

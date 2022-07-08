@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import kitchenpos.global.domain.Amount;
 import kitchenpos.global.domain.Name;
 import kitchenpos.global.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
@@ -41,7 +40,6 @@ public class Menu {
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validate(name, price, menuGroup, menuProducts);
-        validatePrice(price, menuProducts.totalAmount());
         this.name = new Name(name);
         this.price = price;
         this.menuGroup = menuGroup;
@@ -58,11 +56,6 @@ public class Menu {
         return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
     }
 
-    private void validatePrice(Price price, Amount totalAmount) {
-        if (price.isBigThen(totalAmount)) {
-            throw new IllegalArgumentException("메뉴의 가격은 구성하고 있는 메뉴 상품들의 가격(상품가격 * 수량)의 합계보다 작아야 합니다.");
-        }
-    }
 
     private void validate(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validateEmpty(name, "이름은 필수 이어야 합니다.");
