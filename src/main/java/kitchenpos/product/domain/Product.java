@@ -28,6 +28,10 @@ public class Product {
         this.price = price;
     }
 
+    public Product(Long productId) {
+        this.id = productId;
+    }
+
     public Product(ProductRequest productRequest) {
         this.name = productRequest.getName();
         this.price = Price.from(productRequest.getPrice());

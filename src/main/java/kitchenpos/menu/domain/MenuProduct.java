@@ -38,6 +38,10 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public MenuProduct(Long productId, Long quantity) {
+        this(new Product(productId), quantity);
+    }
+
     public static MenuProduct from(Product product, Long quantity) {
         return new MenuProduct(product, quantity);
     }

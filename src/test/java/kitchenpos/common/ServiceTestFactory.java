@@ -30,8 +30,8 @@ public class ServiceTestFactory {
     }
 
 
-    public static Menu 메뉴생성(String name, Integer price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu 메뉴생성(String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     public static MenuProduct 메뉴상품생성(Product product, Long quantity) {

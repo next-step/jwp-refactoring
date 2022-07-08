@@ -42,8 +42,8 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, Integer price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroup);
+    public Menu(String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(name, price, new MenuGroup(menuGroupId));
 
         this.menuProducts = MenuProducts.of(this, menuProducts);
     }

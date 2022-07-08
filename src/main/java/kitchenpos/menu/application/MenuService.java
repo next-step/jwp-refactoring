@@ -1,15 +1,10 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,23 +15,22 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuService(MenuRepository menuRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
+
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = getMenuGroup(menuRequest);
+        menuValidator.validate(menuRequest);
 
-        final List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
-        Menu menu = menuRequest.toEntity(menuGroup, menuProducts);
+        Menu menu =menuRequest.toEntity();
 
-        return new MenuResponse(menuRepository.save(menu));
+        Menu save = menuRepository.save(menu);
+        return new MenuResponse(save);
     }
 
     public List<MenuResponse> list() {
@@ -44,23 +38,5 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::new)
                 .collect(Collectors.toList());
-    }
-
-    private MenuGroup getMenuGroup(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private List<MenuProduct> getMenuProducts(MenuRequest request) {
-        return request.getMenuProducts()
-                .stream()
-                .map(this::getMenuProduct)
-                .collect(Collectors.toList());
-    }
-
-    private MenuProduct getMenuProduct(MenuProductRequest menuProductRequest) {
-        final Product product = productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(IllegalArgumentException::new);
-        return MenuProduct.from(product, menuProductRequest.getQuantity());
     }
 }
