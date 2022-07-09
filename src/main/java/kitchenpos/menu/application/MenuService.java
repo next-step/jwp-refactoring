@@ -14,18 +14,18 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuMapper menuValidator;
+    private final MenuMapper menuMapper;
 
     public MenuService(final MenuRepository menuRepository, final MenuMapper menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuValidator = menuValidator;
+        this.menuMapper = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
         return MenuResponse.from(
                 menuRepository.save(
-                        menuValidator.mapFrom(request)
+                        menuMapper.mapFrom(request)
                 )
         );
     }
