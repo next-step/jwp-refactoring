@@ -41,7 +41,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
 
     implementation project(':module-product')
     implementation project(':module-menu')
