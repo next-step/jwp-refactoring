@@ -31,7 +31,7 @@ public class MenuResponse {
         this(menu.getId(),
                 menu.getName(),
                 menu.getPriceBigDecimal(),
-                menu.getMenuGroup().getId(),
+                menu.getMenuGroupId(),
                 menu.getMenuProducts().getMenuProducts());
     }
 

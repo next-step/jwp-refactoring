@@ -22,9 +22,7 @@ public class Menu {
     private String name;
     @Embedded
     private Price price;
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -33,15 +31,15 @@ public class Menu {
     }
 
     public Menu(String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(null, name, Price.from(price), new MenuGroup(menuGroupId), new MenuProducts(menuProducts));
+        this(null, name, Price.from(price), menuGroupId, new MenuProducts(menuProducts));
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
@@ -61,8 +59,8 @@ public class Menu {
         return price.getValue();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
