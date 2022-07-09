@@ -1,0 +1,11 @@
+dependencies {
+    implementation 'com.google.guava:guava:14.0.1'
+    implementation project(':domain-product')
+    implementation project(':domain-menu')
+    implementation project(':domain-order')
+    implementation project(':domain-common-vo')
+}
+
+test {
+    useJUnitPlatform()
+}
