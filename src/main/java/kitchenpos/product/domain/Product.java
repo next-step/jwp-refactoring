@@ -23,18 +23,23 @@ public class Product {
     protected Product() {
     }
 
+    public Product(Long productId) {
+        this(productId, null, Price.from(0));
+    }
+
     public Product(String name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public Product(Long productId) {
-        this.id = productId;
+    public Product(ProductRequest productRequest) {
+        this(null, productRequest.getName(), Price.from(productRequest.getPrice()));
     }
 
-    public Product(ProductRequest productRequest) {
-        this.name = productRequest.getName();
-        this.price = Price.from(productRequest.getPrice());
+    public Product(Long id, String name, Price price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
     }
 
     public Long getId() {

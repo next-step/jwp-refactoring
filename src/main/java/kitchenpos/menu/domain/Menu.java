@@ -32,22 +32,18 @@ public class Menu {
     protected Menu() {
     }
 
-    protected Menu(String name, Integer price) {
-        this.name = name;
-        this.price = Price.from(price);
-    }
-
-    protected Menu(String name, Integer price, MenuGroup menuGroup) {
-        this(name, price);
-        this.menuGroup = menuGroup;
-    }
-
     public Menu(String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(name, price, new MenuGroup(menuGroupId));
-
-        this.menuProducts = MenuProducts.of(this, menuProducts);
+        this(null, name, Price.from(price), new MenuGroup(menuGroupId), new MenuProducts(menuProducts));
+        menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
     }
-    
+
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
 
     public Long getId() {
         return id;
