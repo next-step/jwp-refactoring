@@ -1,10 +1,15 @@
 package kitchenpos.order.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -16,19 +21,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
+    private final MenuService menuService;
 
-    public OrderService(
-            final OrderRepository orderRepository,
-            final OrderValidator orderValidator
-    ) {
+    public OrderService(OrderRepository orderRepository,
+        OrderValidator orderValidator, MenuService menuService) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
+        this.menuService = menuService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         orderValidator.validate(orderRequest);
-        Order order = orderRequest.toEntity();
+
+        List<OrderLineItem> orderLineItemList = convertOrderLineItems(orderRequest);
+        Order order = new Order(orderRequest.getOrderTableId(), orderLineItemList);
 
         return OrderResponse.from(orderRepository.save(order));
     }
@@ -49,5 +56,18 @@ public class OrderService {
         savedOrder.updateOrderStatus(orderStatusRequest.getOrderStatus());
 
         return OrderResponse.from(savedOrder);
+    }
+
+    private List<OrderLineItem> convertOrderLineItems(OrderRequest orderRequest) {
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
+
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        for(OrderLineItemRequest orderLineItemRequest: orderLineItemRequests) {
+            final Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
+
+            orderLineItems.add(new OrderLineItem(menu.getId(), menu.getName(), menu.getPrice(), orderLineItemRequest.getQuantity()));
+        }
+
+        return orderLineItems;
     }
 }
