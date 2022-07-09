@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +32,7 @@ class PriceTest {
 
         // when & then
         assertThatThrownBy(() -> Price.from(값))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .isExactlyInstanceOf(InvalidPriceException.class)
                 .hasMessage("가격은 0보다 커야 합니다.");
     }
 }
