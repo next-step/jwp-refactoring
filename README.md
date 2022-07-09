@@ -92,10 +92,10 @@
 
 | 한글명 | 영문명 | 설명 |
 | --- | --- | --- |
-| 상품 | kitchenpos.product | 메뉴를 관리하는 기준이 되는 데이터 |
+| 상품 | product | 메뉴를 관리하는 기준이 되는 데이터 |
 | 메뉴 그룹 | menu group | 메뉴 묶음, 분류 |
 | 메뉴 | menu | 메뉴 그룹에 속하는 실제 주문 가능 단위 |
-| 메뉴 상품 | menu kitchenpos.product | 메뉴에 속하는 수량이 있는 상품 |
+| 메뉴 상품 | menu product | 메뉴에 속하는 수량이 있는 상품 |
 | 금액 | amount | 가격 * 수량 |
 | 주문 테이블 | order table | 매장에서 주문이 발생하는 영역 |
 | 빈 테이블 | empty table | 주문을 등록할 수 없는 주문 테이블 |
@@ -159,7 +159,7 @@
 
 - 작업 할일 & 순서
  1. 도메인간의 경계를 파악하여 패키지부터 나눠 보기 
-    - (menu, kitchenpos.product, order, table)
+    - (menu, product, order, table)
  2. 패키지 나눈 이후 사이클 및 의존성을 파악하여 의존성 분리 진행
  
  * 의존성 분리 완료 
