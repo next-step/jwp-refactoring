@@ -49,13 +49,13 @@ public class OrderTables {
         return new OrderTables(collections);
     }
 
-    void notMatchCount(final int requestOrderTableSize) {
+    public void notMatchCount(final int requestOrderTableSize) {
         if (collections.size() != requestOrderTableSize) {
             throw new TableException(TableExceptionType.DIFFER_TABLE_COUNT);
         }
     }
 
-    void updateGroupTableIdAndEmpty(final Long groupId, final boolean empty) {
+    public void updateGroupTableIdAndEmpty(final Long groupId, final boolean empty) {
         for (OrderTable orderTable : collections) {
             orderTable.updateTableGroupId(groupId);
             orderTable.updateEmpty(empty);
