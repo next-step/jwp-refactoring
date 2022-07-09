@@ -55,7 +55,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
-        tableValidator.isPossibleChangeNumberOfGuests(savedOrderTable);
+        savedOrderTable.isPossibleChangeNumberOfGuests();
 
         savedOrderTable.updateNumberOfGuests(new NumberOfGuests(numberOfGuests));
 
