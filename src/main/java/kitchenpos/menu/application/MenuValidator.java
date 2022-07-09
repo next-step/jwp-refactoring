@@ -1,8 +1,9 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.application;
 
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.common.exception.InvalidValueException;
 import kitchenpos.product.domain.Product;

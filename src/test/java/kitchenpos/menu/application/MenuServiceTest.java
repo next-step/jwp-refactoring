@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_생성;
 import static kitchenpos.product.application.ProductServiceTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -13,10 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
@@ -33,13 +32,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public
 class MenuServiceTest {
     @Mock
-    private ProductRepository productRepository;
-
-    @Mock
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuRepository menuRepository;
+
+    @Mock
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
@@ -71,8 +70,6 @@ class MenuServiceTest {
     void createMenu() {
         // given
         given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
-        given(productRepository.findById(반반.getId())).willReturn(Optional.of(반반));
-        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(menuRepository.save(any(Menu.class))).willReturn(반반치킨세트);
 
         //when
@@ -84,29 +81,6 @@ class MenuServiceTest {
             () -> assertThat(savedMenu.getName()).isEqualTo(반반치킨세트.getName()),
             () -> assertThat(savedMenu.getPrice()).isEqualTo(반반치킨세트.getPrice())
         );
-    }
-
-    @Test
-    @DisplayName("유효하지 않은 메뉴그룹을 가진 메뉴를 생성할 경우 - 오류")
-    void notExistMenuGroup() {
-        // given
-        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.empty());
-
-        // when then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest(반반치킨세트)))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("유효하지 않은 상품을 가진 메뉴를 생성할 경우 - 오류")
-    void notExistProduct() {
-        // given
-        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
-        given(productRepository.findById(반반.getId())).willReturn(Optional.empty());
-
-        // when then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest(반반치킨세트)))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
