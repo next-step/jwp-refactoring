@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -22,12 +20,10 @@ import java.util.List;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final TableStatusService tableStatusService;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, TableStatusService tableStatusService) {
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableStatusService = tableStatusService;
     }
 
     public TableGroupResponse create(final TableGroupRequest request) {
@@ -44,11 +40,10 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
-        final List<Long> orderTableIds = orderTables.extractIds();
-        tableStatusService.validateOrderTableStatus(orderTableIds);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.TABLE_GROUP_NOT_FOUND));
 
-        List<OrderTable> changedOrderTable = orderTables.changeTableGroup();
-        orderTableRepository.saveAll(changedOrderTable);
+        tableGroup.unGroup();
+        tableGroupRepository.save(tableGroup);
     }
 }

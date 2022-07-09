@@ -3,6 +3,7 @@ package kitchenpos.common.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
+    TABLE_GROUP_NOT_FOUND("존재하지 않는 단체 지정이빈다.", HttpStatus.NOT_FOUND),
     MENU_NOT_FOUND("존재하지 않는 메뉴입니다.", HttpStatus.NOT_FOUND),
     TABLE_NOT_EMPTY("테이블이 비어있지 않습니다", HttpStatus.BAD_REQUEST),
     TABLE_EMPTY("테이블이 비어있습니다.", HttpStatus.BAD_REQUEST),

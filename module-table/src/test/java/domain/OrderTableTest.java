@@ -2,13 +2,11 @@ package domain;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -64,8 +62,8 @@ class OrderTableTest {
     @DisplayName("주문 테이블은 비어있으면 안된다")
     @Test
     void validate_empty() {
-        assertThatThrownBy(() ->{
-            OrderTable orderTable = new OrderTable(1L,false);
+        assertThatThrownBy(() -> {
+            OrderTable orderTable = new OrderTable(1L, false);
             orderTable.validate();
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage(ErrorCode.TABLE_NOT_EMPTY.getMessage());
@@ -74,7 +72,7 @@ class OrderTableTest {
     @DisplayName("주문 테이블은 그룹화 되어 있으면 안된다")
     @Test
     void validate_group() {
-        assertThatThrownBy(() ->{
+        assertThatThrownBy(() -> {
             OrderTable orderTable = new OrderTable(true, new TableGroup(1L));
             orderTable.validate();
         }).isInstanceOf(BadRequestException.class)

@@ -22,8 +22,8 @@ public class OrderTableEmptyChangeHandler {
 
     @EventListener
     @Transactional
-    public void handle(OrderTableChangeEmptyEventPublisher eventPublisher) {
-        OrderTable orderTable = eventPublisher.getOrderTable();
+    public void handle(OrderTableChangeEmptyEventPublisher event) {
+        OrderTable orderTable = event.getOrderTable();
         validateOrderTableStatus(orderTable);
     }
 

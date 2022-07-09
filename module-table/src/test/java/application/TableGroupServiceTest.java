@@ -2,7 +2,7 @@ package application;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
-import kitchenpos.table.application.TableStatusService;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -10,34 +10,28 @@ import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import kitchenpos.table.application.TableGroupService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-    @Mock
-    private TableStatusService tableStatusService;
-
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -139,27 +133,16 @@ class TableGroupServiceTest {
                 .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
     }
 
-//    @DisplayName("테이블 그룹을 해제할 수 있다.")
-//    @Test
-//    void unGroup() {
-//        firstOrderTable.updateTableGroup(new TableGroup(1L));
-//
-//        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-//        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
-//
-//        tableGroupService.ungroup(1L);
-//
-//        assertThat(firstOrderTable.getTableGroup()).isNull();
-//    }
-//
-//    @DisplayName("주문 상태가 COOKING 이거나 MEAL 이면, 테이블 그룹을 해제할 수 없다.")
-//    @Test
-//    void unGroup_invalid_orderStatus() {
-//        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-//        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
-//
-//        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-//                .isInstanceOf(BadRequestException.class)
-//                .hasMessage(ErrorCode.CAN_NOT_CHANGE_COOKING_AND_MEAL.getMessage());
-//    }
+    @DisplayName("테이블 그룹을 해제할 수 있다.")
+    @Test
+    void unGroup() {
+        OrderTable orderTable1 = new OrderTable();
+        OrderTable orderTable2 = new OrderTable();
+        TableGroup tableGroup = new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(tableGroup));
+
+        tableGroupService.ungroup(1L);
+
+        assertThat(orderTable1.getTableGroup()).isNull();
+    }
 }

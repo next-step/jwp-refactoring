@@ -4,7 +4,6 @@ import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.application.TableStatusService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -34,8 +33,6 @@ import static org.mockito.Mockito.mock;
 class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private TableStatusService tableStatusService;
 
     @InjectMocks
     private TableService tableService;
@@ -43,7 +40,7 @@ class TableServiceTest {
     @DisplayName("테이블을 생성한다.")
     @Test
     void create() {
-        OrderTable orderTable = new OrderTable(1L, true, 1,null);
+        OrderTable orderTable = new OrderTable(1L, true, 1, null);
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse response = tableService.create(new OrderTableRequest(1, true));
 
@@ -106,7 +103,7 @@ class TableServiceTest {
     void changeEmpty_nonNull_tableGroupId() {
         Long orderTableId = 1L;
         OrderTableRequest request = new OrderTableRequest(1, false);
-        OrderTable orderTable = new OrderTable(orderTableId, false,1, new TableGroup(1L));
+        OrderTable orderTable = new OrderTable(orderTableId, false, 1, new TableGroup(1L));
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 

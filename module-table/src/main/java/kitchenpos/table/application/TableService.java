@@ -15,11 +15,9 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final TableStatusService tableStatusService;
 
-    public TableService(OrderTableRepository orderTableRepository, TableStatusService tableStatusService) {
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.tableStatusService = tableStatusService;
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
@@ -42,22 +40,6 @@ public class TableService {
 
         return OrderTableResponse.of(savedOrderTable);
     }
-
-//    @Transactional(readOnly = true)
-//    public List<OrderTableResponse> list() {
-//        return OrderTableResponse.of(orderTableRepository.findAll());
-//    }
-//
-//    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
-//        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-//                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_TABLE_NOT_FOUND));
-//
-//        tableStatusService.validateOrderTableStatus(orderTableId);
-//
-//        savedOrderTable.changeEmpty(request.isEmpty());
-//
-//        return OrderTableResponse.of(savedOrderTable);
-//    }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
