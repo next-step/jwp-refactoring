@@ -14,7 +14,8 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    protected TableGroup() {}
+    protected TableGroup() {
+    }
 
     public TableGroup(final Long id, final OrderTables orderTables) {
         this.id = id;

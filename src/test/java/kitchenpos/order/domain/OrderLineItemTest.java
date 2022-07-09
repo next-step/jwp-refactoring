@@ -18,7 +18,6 @@ public class OrderLineItemTest {
         // when
         주문라인.updateOrder(order);
         // then
-        System.out.println(주문라인);
         assertThat(주문라인.getOrder()).isEqualTo(order);
     }
 }

@@ -10,8 +10,6 @@ import kitchenpos.menu.dto.CreateMenuRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -19,9 +17,8 @@ import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.acceptance.TableAcceptanceTest;
-import kitchenpos.table.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import org.hibernate.sql.Update;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,7 +81,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 주문_전체_조회 = 주문_전체_조회();
         // then
         final List<OrderResponse> 주문_조회_됨 = 주문_조회_됨(주문_전체_조회);
-        assertThat(주문_조회_됨).contains(주문_요청_됨);
+        assertThat(주문_조회_됨.stream().anyMatch(it -> it.getId() == 주문_요청_됨.getId())).isTrue();
 
         // then
         final ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(주문_요청_됨.getId(), new UpdateOrderStatusRequest(OrderStatus.COMPLETION));

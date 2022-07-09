@@ -9,13 +9,9 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.exception.OrderExceptionType;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.repository.OrderTableRepository;
-import kitchenpos.table.exception.TableException;
-import kitchenpos.table.exception.TableExceptionType;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -23,35 +19,32 @@ import java.util.List;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidatorImpl orderValidator;
 
     public OrderService(final MenuRepository menuRepository,
                         final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
+                        final OrderValidatorImpl orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<Menu> savedMenus = menuRepository.findAllById(orderRequest.fetchMenuIds());
-
-        if (orderRequest.getOrderLineItems().size() != savedMenus.size()) {
-            throw new OrderException(OrderExceptionType.NOT_MATCH_MENU_SIZE);
-        }
-
-        final OrderTable orderTable = findByOrderTableId(orderRequest);
-        orderTable.validateUsed();
-
+        orderValidator.validate(orderRequest);
+        final List<Menu> savedMenus = findAllByMenuId(orderRequest);
         final Order save = orderRepository.save(orderRequest.toEntity(savedMenus));
 
         return OrderResponse.of(save);
     }
 
-    private OrderTable findByOrderTableId(final OrderRequest orderRequest) {
-        return orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new TableException(TableExceptionType.TABLE_NOT_FOUND));
+    private List<Menu> findAllByMenuId(final OrderRequest orderRequest) {
+        final List<Menu> savedMenus = menuRepository.findAllById(orderRequest.fetchMenuIds());
+
+        if (orderRequest.getOrderLineItems().size() != savedMenus.size()) {
+            throw new OrderException(OrderExceptionType.NOT_MATCH_MENU_SIZE);
+        }
+        return savedMenus;
     }
 
     public List<OrderResponse> list() {

@@ -56,8 +56,8 @@ public class OrderTable {
             throw new TableException(TableExceptionType.TABLE_EMPTY);
         }
 
-        if(numberOfGuests < 0) {
-            throw  new TableException(TableExceptionType.NUMBER_OF_GUESTS_ERROR);
+        if (numberOfGuests < 0) {
+            throw new TableException(TableExceptionType.NUMBER_OF_GUESTS_ERROR);
         }
     }
 

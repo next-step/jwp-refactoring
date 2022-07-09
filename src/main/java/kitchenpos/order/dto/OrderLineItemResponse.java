@@ -2,15 +2,16 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.OrderLineItem;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class OrderLineItemResponse {
     private final Long seq;
     private final String name;
-    private final long price;
+    private final BigDecimal price;
     private final long quantity;
 
-    public OrderLineItemResponse(final Long seq, final String name, final long price, final long quantity) {
+    public OrderLineItemResponse(final Long seq, final String name, final BigDecimal price, final long quantity) {
         this.seq = seq;
         this.name = name;
         this.price = price;
@@ -30,7 +31,7 @@ public class OrderLineItemResponse {
         return name;
     }
 
-    public long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 

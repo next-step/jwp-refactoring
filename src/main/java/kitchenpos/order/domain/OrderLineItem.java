@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -12,22 +13,29 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    @Column(name = "menu_name", nullable = false)
+    private String menuName;
+    @Column(name = "menu_price", nullable = false)
+    private BigDecimal menuPrice;
+    @Column(name = "menu_id", nullable = false)
+    private Long menuId;
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(final Long seq, final Order orderId, final Menu menu, final long quantity) {
+    public OrderLineItem(final Long seq, final Order orderId, final String menuName, final BigDecimal menuPrice,
+                         final Long menuId, final long quantity) {
         this.seq = seq;
         this.order = orderId;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
+        this.menuName = menuName;
+        this.menuPrice = menuPrice;
     }
 
     private OrderLineItem(final Menu menu, final long quantity) {
-        this(null, null, menu, quantity);
+        this(null, null, menu.getName(), menu.getPrice(), menu.getId(), quantity);
     }
 
     public static OrderLineItem of(final Menu menu, final long quantity) {
@@ -42,16 +50,20 @@ public class OrderLineItem {
         return seq;
     }
 
-    public String getMenuName() {
-        return menu.getName();
-    }
-
-    public long getMenuPrice() {
-        return menu.getPrice().longValue();
-    }
-
     public Order getOrder() {
         return order;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public BigDecimal getMenuPrice() {
+        return menuPrice;
+    }
+
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
@@ -63,7 +75,9 @@ public class OrderLineItem {
         return "OrderLineItem{" +
                 "seq=" + seq +
                 ", orderId=" + order.getId() +
-                ", menu=" + menu +
+                ", menuName='" + menuName + '\'' +
+                ", menuPrice=" + menuPrice +
+                ", menuId=" + menuId +
                 ", quantity=" + quantity +
                 '}';
     }
@@ -73,12 +87,12 @@ public class OrderLineItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menuName, that.menuName) && Objects.equals(menuPrice, that.menuPrice) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, order, menu, quantity);
+        return Objects.hash(seq, order, menuName, menuPrice, menuId, quantity);
     }
 }
 

@@ -1,9 +1,9 @@
-package kitchenpos.table.domain;
+package kitchenpos.order.domain;
 
 public enum OrderStatus {
     COOKING, MEAL, COMPLETION;
 
-    public boolean enabledOrderCancel() {
+    public boolean enabledTableClear() {
         return this.equals(COMPLETION);
     }
 }
