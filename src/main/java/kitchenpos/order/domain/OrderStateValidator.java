@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.application.ChangeStateTableValidator;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class OrderStateValidator implements ChangeStateTableValidator {
     private final OrderRepository orderRepository;
 
