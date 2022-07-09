@@ -1,4 +1,4 @@
-package kitchenpos.order.__fixture__;
+package kitchenpos;
 
 import java.time.LocalDateTime;
 import java.util.List;

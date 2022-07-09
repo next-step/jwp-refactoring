@@ -1,4 +1,4 @@
-package kitchenpos.order.__fixture__;
+package kitchenpos;
 
 import java.math.BigDecimal;
 import kitchenpos.order.domain.OrderLineItem;

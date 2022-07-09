@@ -1,8 +1,8 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.__fixture__.OrderLineItemTestFixture.주문_항목_요청_생성;
-import static kitchenpos.order.__fixture__.OrderTestFixture.빈_주문_요청_생성;
-import static kitchenpos.order.__fixture__.OrderTestFixture.주문_요청_생성;
+import static kitchenpos.OrderLineItemTestFixture.주문_항목_요청_생성;
+import static kitchenpos.OrderTestFixture.빈_주문_요청_생성;
+import static kitchenpos.OrderTestFixture.주문_요청_생성;
 import static kitchenpos.table.__fixture__.OrderTableTestFixture.주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,25 +48,25 @@ public class OrderTableValidatorTest {
     public void createEmptyException() {
         final OrderRequest 빈_주문_요청 = 빈_주문_요청_생성(2L);
 
-        Assertions.assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(빈_주문_요청)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(빈_주문_요청)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 시 주문 항목이 메뉴에 존재하지 않으면 Exception")
     public void createOrderLineItemsNotExistsException() {
-        BDDMockito.given(menuRepository.countByIdIn(ArgumentMatchers.any(List.class))).willReturn(2L);
-        Assertions.assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(주문_요청)).isInstanceOf(
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(2L);
+        assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(주문_요청)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지 않을 경우 Exception")
     public void createTableNotExistsException() {
-        BDDMockito.given(menuRepository.countByIdIn(ArgumentMatchers.any(List.class))).willReturn(1L);
-        BDDMockito.given(orderTableRepository.findById(주문_요청.getOrderTableId())).willReturn(Optional.empty());
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
+        given(orderTableRepository.findById(주문_요청.getOrderTableId())).willReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(주문_요청)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(주문_요청)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -75,10 +75,10 @@ public class OrderTableValidatorTest {
     public void createEmptyTableException() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, true);
 
-        BDDMockito.given(menuRepository.countByIdIn(ArgumentMatchers.any(List.class))).willReturn(1L);
-        BDDMockito.given(orderTableRepository.findById(주문_요청.getOrderTableId())).willReturn(Optional.of(주문_테이블));
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
+        given(orderTableRepository.findById(주문_요청.getOrderTableId())).willReturn(Optional.of(주문_테이블));
 
-        Assertions.assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(주문_요청)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableValidator.validateOrderRequest(주문_요청)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 }

@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.order.__fixture__.OrderLineItemTestFixture.주문_항목_생성;
+import static kitchenpos.OrderLineItemTestFixture.주문_항목_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

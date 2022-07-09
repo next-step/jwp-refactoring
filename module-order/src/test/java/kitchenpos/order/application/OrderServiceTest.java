@@ -1,9 +1,9 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.__fixture__.OrderLineItemTestFixture.주문_항목_생성;
-import static kitchenpos.order.__fixture__.OrderLineItemTestFixture.주문_항목_요청_생성;
-import static kitchenpos.order.__fixture__.OrderTestFixture.주문_생성;
-import static kitchenpos.order.__fixture__.OrderTestFixture.주문_요청_생성;
+import static kitchenpos.OrderLineItemTestFixture.주문_항목_생성;
+import static kitchenpos.OrderLineItemTestFixture.주문_항목_요청_생성;
+import static kitchenpos.OrderTestFixture.주문_생성;
+import static kitchenpos.OrderTestFixture.주문_요청_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
