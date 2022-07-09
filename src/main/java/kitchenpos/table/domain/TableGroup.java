@@ -1,5 +1,9 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.MinOrderTableSizeViolationException;
+import kitchenpos.table.exception.TableGroupInvalidStatusException;
+import kitchenpos.table.exception.TableGroupNotEmptyException;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +17,7 @@ import java.util.Objects;
 @Table(name = "table_group")
 @Entity
 public class TableGroup {
-    private static final int MIN_ORDER_TABLE_SIZE = 2;
+    public static final int MIN_ORDER_TABLE_SIZE = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +43,7 @@ public class TableGroup {
 
     private void validateOrderTablesSize(final List<OrderTable> orderTables) {
         if (orderTables.size() < MIN_ORDER_TABLE_SIZE) {
-            throw new IllegalArgumentException(String.format("단체 지정시 테이블은 최소 %d개 이상이어야 합니다.", MIN_ORDER_TABLE_SIZE));
+            throw new MinOrderTableSizeViolationException();
         }
     }
 
@@ -52,10 +56,10 @@ public class TableGroup {
 
     private void validateOrderTable(final OrderTable orderTable) {
         if (!orderTable.isEmptyTableGroup()) {
-            throw new IllegalStateException("이미 단체 지정이 되어있는 테이블은 단체 지정을 할 수 없습니다.");
+            throw new TableGroupInvalidStatusException();
         }
         if (!orderTable.isEmpty()) {
-            throw new IllegalStateException("비어있지 않은 테이블은 단체 지정을 할 수 없습니다.");
+            throw new TableGroupNotEmptyException();
         }
     }
 

@@ -1,9 +1,11 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.exception.OrderTableDuplicateException;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -168,25 +170,25 @@ class TableGroupServiceTest {
 
     private void 단체_지정_실패_중복_주문테이블(TableGroupRequest 단체_지정_요청) {
         assertThatThrownBy(() -> tableGroupService.create(단체_지정_요청))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .isExactlyInstanceOf(OrderTableDuplicateException.class)
                 .hasMessage("단체 지정시 주문 테이블은 중복될 수 없습니다.");
     }
 
     private void 단체_지정_실패_주문테이블_부족(TableGroupRequest 단체_지정_요청) {
         assertThatThrownBy(() -> tableGroupService.create(단체_지정_요청))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .isExactlyInstanceOf(MinOrderTableSizeViolationException.class)
                 .hasMessage("단체 지정시 테이블은 최소 2개 이상이어야 합니다.");
     }
 
     private void 단체_지정_실패_비어있지_않은_테이블(TableGroupRequest 단체_지정_요청) {
         assertThatThrownBy(() -> tableGroupService.create(단체_지정_요청))
-                .isExactlyInstanceOf(IllegalStateException.class)
+                .isExactlyInstanceOf(TableGroupNotEmptyException.class)
                 .hasMessage("비어있지 않은 테이블은 단체 지정을 할 수 없습니다.");
     }
 
     private void 단체_지정_실패_단체_지정_존재(TableGroupRequest 단체_지정_요청) {
         assertThatThrownBy(() -> tableGroupService.create(단체_지정_요청))
-                .isExactlyInstanceOf(IllegalStateException.class)
+                .isExactlyInstanceOf(TableGroupInvalidStatusException.class)
                 .hasMessage("이미 단체 지정이 되어있는 테이블은 단체 지정을 할 수 없습니다.");
     }
 
@@ -196,7 +198,7 @@ class TableGroupServiceTest {
 
     private void 단체_지정_해제_실패_계산완료_아님(Long 해제할_단체_지정ID) {
         assertThatThrownBy(() -> tableGroupService.ungroup(해제할_단체_지정ID))
-                .isExactlyInstanceOf(IllegalStateException.class)
+                .isExactlyInstanceOf(TableUngroupInvalidStatusException.class)
                 .hasMessage("주문 상태가 모두 완료일때만 단체 지정해제가 가능합니다.");
     }
 }
