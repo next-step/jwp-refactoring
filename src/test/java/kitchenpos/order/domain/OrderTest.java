@@ -6,7 +6,6 @@ import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,9 +33,9 @@ class OrderTest {
     @Test
     void register() {
         Order order = new Order(1L, 1L, OrderStatus.COOKING, Arrays.asList(new OrderLineItem()));
-        order.register(new OrderTable(1L), OrderStatus.COMPLETION, LocalDateTime.now(), Arrays.asList(new OrderLineItem()));
+        order.register(new OrderTable(1L), Arrays.asList(new OrderLineItem()));
 
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @DisplayName("orderLineItem이 비어있다면 생성할 수 없다.")
@@ -44,7 +43,7 @@ class OrderTest {
     void register_invalid_orderTable() {
         assertThatThrownBy(() -> {
             Order order = new Order(1L, 1L, OrderStatus.COOKING, Arrays.asList(new OrderLineItem()));
-            order.register(new OrderTable(1L, true), OrderStatus.COMPLETION, LocalDateTime.now(), Arrays.asList(new OrderLineItem()));
+            order.register(new OrderTable(1L, true), Arrays.asList(new OrderLineItem()));
         })
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(ErrorCode.ORDER_TABLE_EMPTY.getMessage());

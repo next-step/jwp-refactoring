@@ -48,8 +48,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = new OrderTable(1L, true);
-        secondOrderTable = new OrderTable(2L, true);
+        firstOrderTable = new OrderTable(1L, true, 1);
+        secondOrderTable = new OrderTable(2L, true, 2);
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
     }
 

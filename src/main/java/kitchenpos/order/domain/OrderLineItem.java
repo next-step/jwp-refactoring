@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.domain.Price;
+
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,27 +19,26 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private long quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Embedded
+    private OrderMenu orderMenu = new OrderMenu();
+
+    private long quantity;
+
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order) {
-        this.order = order;
-    }
-
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Long menuId, String name, Price price, long quantity) {
+        this.orderMenu = new OrderMenu(menuId, name ,price);
         this.quantity = quantity;
     }
 
     public Long getMenuId() {
-        return menuId;
+        return orderMenu.getMenuId();
     }
 
     public long getQuantity() {

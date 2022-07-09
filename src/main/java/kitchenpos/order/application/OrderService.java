@@ -3,13 +3,12 @@ package kitchenpos.order.application;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -17,32 +16,38 @@ import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(MenuService menuService, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final Order order = request.toEntity(request);
-        final List<OrderLineItem> orderLineItems = extractOrderLineItems(order);
+        List<OrderLineItem> orderLineItems = toOrderLineItems(request);
+        validateExistMenu(orderLineItems);
         final OrderTable orderTable = findOrderTableById(request);
-
-        order.register(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
-
+        Order order = new Order(request.getOrderStatus(), request.getOrderTableId());
+        order.register(orderTable, orderLineItems);
         return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private List<OrderLineItem> toOrderLineItems(OrderRequest request) {
+        return request.getOrderLineItems().stream()
+                .map(o -> {
+                    Menu menu = menuService.findById(o.getMenuId());
+                    return new OrderLineItem(menu.getId(), menu.getName(), menu.getPrice(), o.getQuantity());
+                })
+                .collect(Collectors.toList());
     }
 
     public List<OrderResponse> list() {
@@ -57,20 +62,16 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         savedOrder.changeOrderStatus(request.getOrderStatus());
-        savedOrder.addOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return OrderResponse.of(savedOrder);
     }
 
-    private List<OrderLineItem> extractOrderLineItems(Order order) {
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    private void validateExistMenu(List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = OrderLineItems.extractMenuIds(orderLineItems);
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
             throw new BadRequestException(ErrorCode.CONTAINS_NOT_EXIST_MENU);
         }
-
-        return orderLineItems;
     }
 
     private OrderTable findOrderTableById(OrderRequest request) {

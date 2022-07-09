@@ -1,8 +1,10 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,9 +15,9 @@ class OrderLineItemsTest {
     @Test
     void extractMenuIds() {
         List<OrderLineItem> orderLineItems = Arrays.asList(
-                new OrderLineItem(1L, 1),
-                new OrderLineItem(2L, 2),
-                new OrderLineItem(3L, 3));
+                new OrderLineItem(1L, "테스트", new Price(BigDecimal.TEN), 1),
+                new OrderLineItem(2L, "테스트", new Price(BigDecimal.TEN), 1),
+                new OrderLineItem(3L, "테스트", new Price(BigDecimal.TEN), 1));
 
         List<Long> ids = OrderLineItems.extractMenuIds(orderLineItems);
 

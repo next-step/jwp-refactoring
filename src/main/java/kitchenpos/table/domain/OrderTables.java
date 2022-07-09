@@ -41,16 +41,6 @@ public class OrderTables {
         return elements.size();
     }
 
-    public void validate(int number) {
-        if (this.getSize() != number) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : this.elements) {
-            orderTable.validate();
-        }
-    }
-
     public void add(TableGroup tableGroup) {
         elements.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
     }

@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.table.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embedded;
@@ -25,21 +26,14 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     private Long orderTableId;
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
-    }
-
-    public Order(Long id) {
-        this.id = id;
-    }
-
-    public Order(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    protected Order() {
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
@@ -53,6 +47,11 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = new OrderLineItems(orderLineItems);
+    }
+
+    public Order(OrderStatus orderStatus, Long orderTableId) {
+        this.orderStatus = orderStatus;
+        this.orderTableId = orderTableId;
     }
 
     public Long getId() {
@@ -75,11 +74,8 @@ public class Order {
         return orderLineItems.getElements();
     }
 
-    public void register(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public void register(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTable);
-        this.orderTableId = orderTable.getId();
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         this.orderLineItems = new OrderLineItems(orderLineItems);
         this.orderLineItems.add(this);
     }
@@ -89,11 +85,6 @@ public class Order {
             throw new BadRequestException(ErrorCode.CAN_NOT_CHANGE_COMPLETED_ORDER_STATUS);
         }
         this.orderStatus = orderStatus;
-    }
-
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-        this.orderLineItems.add(this);
     }
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
