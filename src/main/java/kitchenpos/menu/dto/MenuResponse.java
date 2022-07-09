@@ -10,7 +10,7 @@ public class MenuResponse {
     private String name;
     private BigDecimal price;
     private Long menuGroup;
-    private List<MenuProductResponse> products;
+    private List<MenuProductResponse> menuProducts;
 
     public static MenuResponse from(Menu menu) {
         MenuResponse response = new MenuResponse();
@@ -18,8 +18,8 @@ public class MenuResponse {
         response.id = menu.getId();
         response.name = menu.getName();
         response.price = menu.getPrice().getValue();
-        response.menuGroup = menu.getMenuGroup().getId();
-        response.products = menu.getMenuProducts().toProductResponses();
+        response.menuGroup = menu.getMenuGroupId();
+        response.menuProducts = menu.getMenuProducts().toProductResponses();
 
         return response;
     }
@@ -40,7 +40,7 @@ public class MenuResponse {
         return menuGroup;
     }
 
-    public List<MenuProductResponse> getProducts() {
-        return products;
+    public List<MenuProductResponse> getMenuProducts() {
+        return menuProducts;
     }
 }

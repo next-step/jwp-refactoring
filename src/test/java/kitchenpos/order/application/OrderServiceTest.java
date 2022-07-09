@@ -1,14 +1,15 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuGroup.dao.MenuGroupRepository;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
@@ -29,7 +30,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.common.domain.PriceTest.가격_생성;
-import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.menu.MenuGenerator.메뉴_상품_생성_요청;
+import static kitchenpos.menu.MenuGenerator.메뉴_생성_요청;
+import static kitchenpos.menuGroup.MenuGroupGenerator.메뉴_그룹_생성;
 import static kitchenpos.order.OrderGenerator.주문_물품_생성_요청;
 import static kitchenpos.order.OrderGenerator.주문_생성_요청;
 import static kitchenpos.product.ProductGenerator.상품_생성;
@@ -216,10 +219,10 @@ class OrderServiceTest {
     }
 
     void 주문_정상_생성됨(OrderResponse order, OrderCreateRequest request) {
-        assertThat(order.getOrderTableResponse().getId()).isEqualTo(request.getOrderTable());
+        assertThat(order.getOrderTable()).isEqualTo(request.getOrderTable());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(order.getOrderLines().size()).isEqualTo(request.getOrderLineItems().size());
-        assertThat(order.getOrderLines().stream().map(orderLineItem -> orderLineItem.getMenu().getId()).collect(Collectors.toList()))
+        assertThat(order.getOrderLines().stream().map(OrderLineItemResponse::getMenu).collect(Collectors.toList()))
                 .containsAll(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenu).collect(Collectors.toList()));
     }
 

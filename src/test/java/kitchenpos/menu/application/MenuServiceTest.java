@@ -1,11 +1,11 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menuGroup.dao.MenuGroupRepository;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.common.domain.PriceTest.가격_생성;
-import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.menu.MenuGenerator.메뉴_상품_생성_요청;
+import static kitchenpos.menu.MenuGenerator.메뉴_생성_요청;
+import static kitchenpos.menuGroup.MenuGroupGenerator.메뉴_그룹_생성;
 import static kitchenpos.product.ProductGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -77,16 +79,9 @@ class MenuServiceTest {
                 없는_메뉴_그룹_아이디,
                 Collections.singletonList(메뉴_상품)
         );
-        MenuCreateRequest 메뉴_그룹_정보가_없는_메뉴_생성_요청 = 메뉴_생성_요청(
-                "메뉴 그룹 정보가 없는 메뉴",
-                1_000,
-                null,
-                Collections.singletonList(메뉴_상품)
-        );
 
         // then
         메뉴_생성_실패됨(() -> menuService.create(없는_메뉴_그룹의_메뉴_생성_요청));
-        메뉴_생성_실패됨(() -> menuService.create(메뉴_그룹_정보가_없는_메뉴_생성_요청));
     }
 
     @DisplayName("메뉴의 가격과 메뉴에 포함된 상품의 전체 가격의 합이 일치하지 않는 경우 예외가 발생해야 한다")

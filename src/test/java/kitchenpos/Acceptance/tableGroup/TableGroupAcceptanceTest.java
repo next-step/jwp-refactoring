@@ -8,8 +8,8 @@ import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.dto.TableGroupCreateRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tableGroup.dto.TableGroupCreateRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +24,7 @@ import java.util.List;
 
 import static kitchenpos.order.OrderGenerator.*;
 import static kitchenpos.table.TableGenerator.*;
+import static kitchenpos.tableGroup.TableGroupGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {

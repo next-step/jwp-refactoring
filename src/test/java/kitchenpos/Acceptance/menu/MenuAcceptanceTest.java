@@ -42,12 +42,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 없는_메뉴_그룹으로_메뉴_생성_결과
                 = 메뉴_생성_API_호출("메뉴", 1_000, -1L, Collections.emptyList());
-        ExtractableResponse<Response> 메뉴_그룹_정보_없이_메뉴_생성_결과
-                = 메뉴_생성_API_호출("메뉴", 1_000, null, Collections.emptyList());
 
         // then
         메뉴_생성_실패됨(없는_메뉴_그룹으로_메뉴_생성_결과);
-        메뉴_생성_실패됨(메뉴_그룹_정보_없이_메뉴_생성_결과);
     }
 
     @DisplayName("없는 상품으로 메뉴를 생성하면 생성 요청이 실패해야 한다")
@@ -55,17 +52,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuByNotSavedProductTest() {
         // given
         Long menuProductQuantity = 2L;
-        MenuProductRequest 상품_정보가_없는_메뉴_상품_요청 = 메뉴_상품_생성_요청(null, menuProductQuantity);
         MenuProductRequest 없는_상품이_포함된_메뉴_상품_요청 = 메뉴_상품_생성_요청(-1L, menuProductQuantity);
 
         // when
-        ExtractableResponse<Response> 상품_정보가_없는_메뉴_상품_메뉴_생성_결과 =
-                메뉴_생성_API_호출("메뉴", 1_000, 메뉴_그룹_아이디, Collections.singletonList(상품_정보가_없는_메뉴_상품_요청));
         ExtractableResponse<Response> 없는_상품이_포함된_메뉴_상품_메뉴_생성_결과 =
                 메뉴_생성_API_호출("메뉴", 1_000, 메뉴_그룹_아이디, Collections.singletonList(없는_상품이_포함된_메뉴_상품_요청));
 
         // then
-        메뉴_생성_실패됨(상품_정보가_없는_메뉴_상품_메뉴_생성_결과);
         메뉴_생성_실패됨(없는_상품이_포함된_메뉴_상품_메뉴_생성_결과);
     }
 

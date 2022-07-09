@@ -1,15 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menus;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.mapper.OrderMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,26 +16,20 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final OrderMapper mapper;
 
-    public OrderService(
-            final OrderRepository orderRepository,
-            final MenuService menuService,
-            final TableService tableService
-    ) {
+    public OrderService(final OrderRepository orderRepository, final OrderMapper mapper) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
-        this.tableService = tableService;
+        this.mapper = mapper;
     }
 
     @Transactional
     public OrderResponse create(final OrderCreateRequest request) {
-        OrderTable orderTable = tableService.getOrderTable(request.getOrderTable());
-        Menus menus = menuService.findMenusInIds(request.getMenus());
-        Order order = request.of(orderTable, menus);
-
-        return OrderResponse.from(orderRepository.save(order));
+        return OrderResponse.from(
+                orderRepository.save(
+                        mapper.mapFrom(request)
+                )
+        );
     }
 
     public List<OrderResponse> list() {
@@ -57,13 +48,5 @@ public class OrderService {
         savedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.from(savedOrder);
-    }
-
-    public OrderStatus getOrderStatusByOrderTableId(final Long orderTableId) {
-        return orderRepository.findOrderStatusByOrderTableId(orderTableId);
-    }
-
-    public boolean existsByOrderTableIdInAndOrderStatusIn(final List<Long> orderTables, final List<OrderStatus> orderStatuses) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, orderStatuses);
     }
 }

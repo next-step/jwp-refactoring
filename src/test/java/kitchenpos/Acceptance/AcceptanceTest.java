@@ -2,8 +2,8 @@ package kitchenpos.Acceptance;
 
 import io.restassured.RestAssured;
 import kitchenpos.Acceptance.utils.DatabaseCleanup;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 
-import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.menu.MenuGenerator.메뉴_상품_생성_요청;
+import static kitchenpos.menu.MenuGenerator.메뉴_생성_API_호출;
+import static kitchenpos.menuGroup.MenuGroupGenerator.메뉴_그룹_생성_API_호출;
 import static kitchenpos.product.ProductGenerator.상품_생성_API_요청;
 import static kitchenpos.table.TableGenerator.주문_테이블_생성_요청;
 import static kitchenpos.table.TableGenerator.테이블_생성_API_호출;

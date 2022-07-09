@@ -3,8 +3,8 @@ package kitchenpos.Acceptance.menuGroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
-import kitchenpos.menu.MenuGenerator;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.MenuGroupGenerator;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.menuGroup.MenuGroupGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -35,7 +35,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     void menuGroupFindAllTest() {
         // given
         List<String> 메뉴_그룹_이름들 = Arrays.asList("메뉴 그룹 1", "메뉴 그룹 2", "메뉴 그룹 3", "메뉴 그룹 4", "메뉴 그룹 5");
-        메뉴_그룹_이름들.forEach(MenuGenerator::메뉴_그룹_생성_API_호출);
+        메뉴_그룹_이름들.forEach(MenuGroupGenerator::메뉴_그룹_생성_API_호출);
 
         // when
         ExtractableResponse<Response> 메뉴_그룹_목록_조회_결과 = 메뉴_그룹_목록_조회_API_호출();

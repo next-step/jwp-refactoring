@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Quantity;
 
 import javax.persistence.*;
@@ -14,23 +14,37 @@ public class OrderLineItem {
     @ManyToOne
     private Order order;
 
-    @ManyToOne
-    private Menu menu;
+    @Column(nullable = false)
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
 
+    @Embedded
+    private Price orderedMenuPrice;
+
+    @Column(nullable = false)
+    private String menuName;
+
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
+    public OrderLineItem(
+            Long seq, Order order, Long menuId, Quantity quantity, Price orderedMenuPrice, String menuName
+    ) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
+        this.orderedMenuPrice = orderedMenuPrice;
+        this.menuName = menuName;
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
-        this(null, null, menu, quantity);
+    public OrderLineItem(Long menuId, Quantity quantity, Price orderedMenuPrice, String menuName) {
+        this(null, null, menuId, quantity, orderedMenuPrice, menuName);
+    }
+
+    public void associateOrder(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {
@@ -41,15 +55,19 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {
         return quantity;
     }
 
-    public void associateOrder(Order order) {
-        this.order = order;
+    public Price getOrderedMenuPrice() {
+        return orderedMenuPrice;
+    }
+
+    public String getMenuName() {
+        return menuName;
     }
 }
