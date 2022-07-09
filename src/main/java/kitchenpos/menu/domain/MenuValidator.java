@@ -14,12 +14,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MenuValidator {
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
 
-    public MenuValidator(MenuGroupRepository menuGroupRepository, MenuRepository menuRepository, ProductRepository productRepository) {
+    public MenuValidator(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
         this.menuGroupRepository = menuGroupRepository;
-        this.menuRepository = menuRepository;
         this.productRepository = productRepository;
     }
 
@@ -57,12 +55,5 @@ public class MenuValidator {
     private Product getProduct(MenuProductRequest menuProductRequest) {
         return productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
-    }
-
-    public void validateOrderLineItems(List<Long> menuIds) {
-        if (menuRepository.countByIdIn(menuIds) != menuIds.size()) {
-            throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
-        }
-
     }
 }

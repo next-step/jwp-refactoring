@@ -19,13 +19,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuValidator menuValidator;
     private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
 
-    public OrderService(MenuValidator menuValidator, OrderValidator orderValidator, OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository) {
-        this.menuValidator = menuValidator;
+    public OrderService(OrderValidator orderValidator, OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository) {
         this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
@@ -37,7 +35,7 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(orderRequest.toEntity());
 
-        menuValidator.validateOrderLineItems(getMenuIds(orderRequest.getOrderLineItemRequests()));
+        orderValidator.validateOrderLineItems(orderRequest.getOrderLineItemRequests());
 
         OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
         orderLineItems.saveOrder(savedOrder);
@@ -65,11 +63,5 @@ public class OrderService {
     private Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
-        return orderLineItemRequests.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
     }
 }

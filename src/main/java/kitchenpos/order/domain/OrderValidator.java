@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
@@ -15,10 +16,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderValidator {
 
+    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderValidator(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -47,6 +50,14 @@ public class OrderValidator {
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        List<Long> menuIds = getMenuIds(orderLineItemRequests);
+        if (menuRepository.countByIdIn(menuIds) != orderLineItemRequests.size()) {
+            throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
+        }
+
     }
 
     private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
