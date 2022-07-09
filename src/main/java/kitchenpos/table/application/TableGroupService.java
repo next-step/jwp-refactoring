@@ -56,7 +56,6 @@ public class TableGroupService {
 
         validatePossibilityOfCancellation(tableGroupId);
         tableGroup.ungroup();
-        tableGroupRepository.delete(tableGroup);
     }
 
     private void validatePossibilityOfCancellation(Long tableGroupId) {

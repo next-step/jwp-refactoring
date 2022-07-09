@@ -69,23 +69,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("빈 주문 테이블로 주문을 생성할 경우 - 오류")
-    void createOrderIfOrderTableIsEmpty() {
-        // given
-        OrderTableResponse 빈_주문_테이블_하나 = 주문_테이블_생성_요청(7, false).as(OrderTableResponse.class);
-        OrderTableResponse 빈_주문_테이블_둘 = 주문_테이블_생성_요청(2, false).as(OrderTableResponse.class);
-        테이블_그룹_생성_요청(Arrays.asList(빈_주문_테이블_하나.getId(), 빈_주문_테이블_둘.getId()));
-
-        OrderLineItemRequest 후라이드_아이템 = 주문_아이템_생성(후라이드_세트_메뉴.getId(), 1);
-
-        // when
-        ExtractableResponse<Response> response = 주문_생성_요청(이번_주문_테이블.getId(), Arrays.asList(후라이드_아이템));
-
-        // then
-        주문_생성_실패됨(response);
-    }
-
-    @Test
     @DisplayName("주문 목록을 조회한다.")
     void findAll() {
         // given

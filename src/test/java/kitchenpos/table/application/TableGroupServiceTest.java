@@ -12,6 +12,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -133,11 +134,11 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블의 단체 지정을 해제한다.")
     void ungroup() {
         // given
-        테이블_그룹 = 테이블_그룹_생성(3L);
+        OrderTable 테이블_그룹_있는_일번_주문_테이블 = 주문_테이블_생성(1L, 6, true);
+        OrderTable 테이블_그룹_있는_이번_주문_테이블 = 주문_테이블_생성(2L, 6, true);
+        테이블_그룹 = 테이블_그룹_생성(3L, new OrderTables(Arrays.asList(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블)));
 
-        OrderTable 테이블_그룹_있는_일번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(일번_주문_테이블.getId(), 테이블_그룹, 6, true);
-        OrderTable 테이블_그룹_있는_이번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(이번_주문_테이블.getId(), 테이블_그룹, 6, true);
-
+        given(tableGroupRepository.findById(테이블_그룹.getId())).willReturn(Optional.of(테이블_그룹));
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
@@ -158,7 +159,7 @@ class TableGroupServiceTest {
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
         테이블_그룹 = 테이블_그룹_생성(1L, orderTables);
 
-        given(orderTableRepository.findAllByTableGroupId(테이블_그룹.getId())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
+        given(tableGroupRepository.findById(테이블_그룹.getId())).willReturn(Optional.of(테이블_그룹));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when then

@@ -10,14 +10,13 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderTables {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
-        this.orderTables = new ArrayList<>();
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        this.orderTables = new ArrayList<>(orderTables);
     }
 
     public List<OrderTable> getOrderTables() {
