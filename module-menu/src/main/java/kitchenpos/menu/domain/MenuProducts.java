@@ -9,7 +9,7 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "kitchenpos/menu", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private List<MenuProduct> elements = new ArrayList<>();
 
     public MenuProducts() {
