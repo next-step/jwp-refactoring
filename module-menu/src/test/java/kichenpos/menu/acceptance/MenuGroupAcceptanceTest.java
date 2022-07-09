@@ -23,7 +23,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
     }
-    
+
     @TestFactory
     Stream<DynamicTest> 메뉴_그룹_관리_시나리오() {
         return Stream.of(
