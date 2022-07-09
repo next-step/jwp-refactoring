@@ -1,10 +1,10 @@
-package kitchenpos.table.application;
+package application;
 
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.application.OrderTableStatusService;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.TableStatusService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -24,9 +24,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,17 +89,12 @@ class TableServiceTest {
     @DisplayName("조리, 식사중인 테이블은 변경할 수 없다.")
     @Test
     void changeEmpty_cooking_meal() {
-        OrderRepository orderRepository = mock(OrderRepository.class);
-
-        TableService tableService = new TableService(orderTableRepository, new OrderTableStatusService(orderRepository));
-
         Long orderTableId = 1L;
         OrderTableRequest request = new OrderTableRequest(1, true);
-        OrderTable orderTable = new OrderTable(1L, false, 1);
+        OrderTable orderTable = mock(OrderTable.class);
 
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-                .willReturn(Boolean.TRUE);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+        willThrow(new BadRequestException(ErrorCode.CAN_NOT_CHANGE_COOKING_AND_MEAL)).given(orderTable).changeEmpty(anyBoolean());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
                 .isInstanceOf(BadRequestException.class)

@@ -38,12 +38,26 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_TABLE_NOT_FOUND));
 
-        tableStatusService.validateOrderTableStatus(orderTableId);
-
         savedOrderTable.changeEmpty(request.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
     }
+
+//    @Transactional(readOnly = true)
+//    public List<OrderTableResponse> list() {
+//        return OrderTableResponse.of(orderTableRepository.findAll());
+//    }
+//
+//    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
+//        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+//                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_TABLE_NOT_FOUND));
+//
+//        tableStatusService.validateOrderTableStatus(orderTableId);
+//
+//        savedOrderTable.changeEmpty(request.isEmpty());
+//
+//        return OrderTableResponse.of(savedOrderTable);
+//    }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
