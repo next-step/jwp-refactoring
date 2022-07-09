@@ -2,6 +2,8 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,10 +21,9 @@ public class OrderRequest {
         this.orderLineItemRequests = orderLineItemRequests;
     }
 
-    public Order toEntity() {
-        return new Order(orderTableId, orderLineItemRequests.stream()
-                .map(OrderLineItemRequest::toEntity)
-                .collect(Collectors.toList()));
+    public Order toEntity(OrderValidator orderValidator) {
+        orderValidator.validate(this);
+        return new Order(orderTableId, getOrderLineItems());
     }
 
 

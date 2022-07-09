@@ -17,7 +17,6 @@ public class OrderLineItems {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
-
         this.orderLineItems = orderLineItems;
     }
 
@@ -28,14 +27,6 @@ public class OrderLineItems {
 
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
         return new OrderLineItems(orderLineItems);
-    }
-
-    public void saveOrder(Order order) {
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(order);
-        }
-        order.setOrderLineItems(this);
-
     }
 
     public List<OrderLineItem> getOrderLineItems() {

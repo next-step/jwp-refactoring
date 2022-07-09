@@ -25,9 +25,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuValidator.validate(menuRequest);
-
-        Menu menu = menuRequest.toEntity();
+        Menu menu = menuRequest.toEntity(menuValidator);
 
         return new MenuResponse(menuRepository.save(menu));
     }

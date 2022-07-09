@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
@@ -38,13 +37,9 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuValidator menuValidator;
-    @Mock
     private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
     @InjectMocks
     private OrderService orderService;
     private OrderLineItem orderLineItemRequest;

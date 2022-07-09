@@ -29,6 +29,7 @@ public class OrderValidator {
     public void validate(OrderRequest orderRequest) {
         validateOrderTable(orderRequest.getOrderTableId());
         validateOrderTableEmpty(orderRequest.getOrderTableId());
+        validateOrderLineItems(orderRequest.getOrderLineItemRequests());
     }
 
     private void validateOrderTable(Long orderTableId) {
@@ -52,7 +53,7 @@ public class OrderValidator {
         }
     }
 
-    public void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+    private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         List<Long> menuIds = getMenuIds(orderLineItemRequests);
         if (menuRepository.countByIdIn(menuIds) != orderLineItemRequests.size()) {
             throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
