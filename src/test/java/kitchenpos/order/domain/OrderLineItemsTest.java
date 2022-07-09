@@ -1,15 +1,9 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.OrderException;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderLineItemsTest {
 //    @Test
