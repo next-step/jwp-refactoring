@@ -1,7 +1,8 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.application;
 
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.exception.InvalidValueException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
@@ -28,7 +29,7 @@ public class OrderValidator {
             .orElseThrow(EntityNotFoundException::new);
 
         if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new InvalidValueException();
         }
     }
 

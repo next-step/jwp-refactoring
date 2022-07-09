@@ -25,7 +25,7 @@ public class OrderLineItemResponse {
     }
 
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemResponse> toList(List<OrderLineItem> orderLineItems) {

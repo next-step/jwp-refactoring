@@ -33,4 +33,13 @@ public class OrderRequest {
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
     }
+
+    public Order toEntity() {
+        return new Order(
+            orderTableId,
+            orderLineItems.stream()
+                .map(OrderLineItemRequest::toEntity)
+                .collect(Collectors.toList())
+        );
+    }
 }
