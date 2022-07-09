@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-allprojects {
+subprojects {
     group = 'camp.nextstep.edu'
     version = '0.0.1-SNAPSHOT'
 
@@ -27,14 +27,9 @@ allprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//        implementation 'org.flywaydb:flyway-core'
         runtimeOnly 'com.h2database:h2'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'io.rest-assured:rest-assured:3.3.0'
     }
 
     test {
@@ -54,13 +49,6 @@ project(':module-menu') {
 project(':module-order') {
     dependencies {
         compile project(':module-common')
-    }
-}
-
-project(':module-table') {
-    dependencies {
-        compile project(':module-common')
-        compile project(':module-order')
         compile project(':module-menu')
     }
 }
