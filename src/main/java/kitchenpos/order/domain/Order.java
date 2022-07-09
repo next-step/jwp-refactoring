@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.EmptyOrderLineItemException;
+import kitchenpos.order.exception.OrderAlreadyCompletedException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -58,7 +60,7 @@ public class Order {
 
     private void changeOrderStatus(final OrderStatus orderStatus) {
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalStateException("계산 완료된 주문은 상태를 변경할 수 없습니다.");
+            throw new OrderAlreadyCompletedException();
         }
         this.orderStatus = orderStatus;
     }
@@ -70,7 +72,7 @@ public class Order {
 
     private void validateEmptyOrderLineItems(final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalStateException("주문시 주문항목은 1개 이상이어야 합니다.");
+            throw new EmptyOrderLineItemException();
         }
     }
 

@@ -2,16 +2,20 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.exception.MenuDuplicateException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.InvalidOrderTableException;
+import kitchenpos.order.exception.OrderLineItemNotFoundException;
+import kitchenpos.order.exception.OrderNotFoundException;
+import kitchenpos.order.exception.OrderTableNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -50,13 +54,13 @@ public class OrderService {
                 .collect(toList());
 
         if (orderRequest.getOrderLineItems().size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("주문 시 주문 항목에 메뉴들은 중복될 수 없습니다.");
+            throw new MenuDuplicateException();
         }
     }
 
     private void validateEmptyOrderTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 시 주문 테이블은 비어있을 수 없습니다.");
+            throw new InvalidOrderTableException("주문 시 주문 테이블은 비어있을 수 없습니다.");
         }
     }
 
@@ -64,14 +68,14 @@ public class OrderService {
         return orderRequest.getOrderLineItems().stream()
                 .map(orderLineItem -> {
                     Menu menu = menuRepository.findById(orderLineItem.getMenuId())
-                            .orElseThrow(() -> new EntityNotFoundException("주문 항목 정보가 존재하지 않습니다."));
+                            .orElseThrow(OrderLineItemNotFoundException::new);
                     return new OrderLineItem(menu, orderLineItem.getQuantity());
                 }).collect(toList());
     }
 
     private OrderTable findOrderTableById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException("주문 테이블 정보가 존재하지 않습니다."));
+                .orElseThrow(OrderTableNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
@@ -89,6 +93,6 @@ public class OrderService {
 
     private Order findOrderById(final Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("주문 정보가 존재하지 않습니다."));
+                .orElseThrow(OrderNotFoundException::new);
     }
 }

@@ -3,10 +3,12 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.exception.MenuDuplicateException;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.*;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -232,25 +234,25 @@ class OrderServiceTest {
 
     private void 주문_생성_실패_주문항목_없음(OrderRequest 생성할_주문_요청) {
         assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
-                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .isExactlyInstanceOf(OrderLineItemNotFoundException.class)
                 .hasMessage("주문 항목 정보가 존재하지 않습니다.");
     }
 
     private void 주문_생성_실패_중목메뉴_존재(OrderRequest 생성할_주문_요청) {
         assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .isExactlyInstanceOf(MenuDuplicateException.class)
                 .hasMessage("주문 시 주문 항목에 메뉴들은 중복될 수 없습니다.");
     }
 
     private void 주문_생성_실패_주문테이블_없음(OrderRequest 생성할_주문_요청) {
         assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
-                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .isExactlyInstanceOf(OrderTableNotFoundException.class)
                 .hasMessage("주문 테이블 정보가 존재하지 않습니다.");
     }
 
     private void 주문_생성_실패_주문테이블_비어있음(OrderRequest 생성할_주문_요청) {
         assertThatThrownBy(() -> orderService.create(생성할_주문_요청))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .isExactlyInstanceOf(InvalidOrderTableException.class)
                 .hasMessage("주문 시 주문 테이블은 비어있을 수 없습니다.");
     }
 
@@ -270,13 +272,13 @@ class OrderServiceTest {
 
     private void 주문_상태_변경_실패_주문_없음(Long 주문ID, OrderRequest 변경할_주문_요청) {
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문ID, 변경할_주문_요청))
-                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .isExactlyInstanceOf(OrderNotFoundException.class)
                 .hasMessage("주문 정보가 존재하지 않습니다.");
     }
 
     private void 주문_상태_변경_실패_계산완료(Long 주문ID, OrderRequest 변경할_주문_요청) {
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문ID, 변경할_주문_요청))
-                .isExactlyInstanceOf(IllegalStateException.class)
+                .isExactlyInstanceOf(OrderAlreadyCompletedException.class)
                 .hasMessage("계산 완료된 주문은 상태를 변경할 수 없습니다.");
     }
 }
