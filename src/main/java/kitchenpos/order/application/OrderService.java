@@ -32,7 +32,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderValidator.validate(orderRequest);
+        orderValidator.validateOrderTable(orderRequest.getOrderTableId());
+        orderValidator.validateIfThereIsMenu(orderRequest.toMenuIds());
 
         List<OrderLineItem> orderLineItemList = convertOrderLineItems(orderRequest);
         Order order = new Order(orderRequest.getOrderTableId(), orderLineItemList);

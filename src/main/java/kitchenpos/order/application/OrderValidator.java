@@ -19,12 +19,7 @@ public class OrderValidator {
         this.menuRepository = menuRepository;
     }
 
-    public void validate(OrderRequest orderRequest) {
-        validateOrderTable(orderRequest.getOrderTableId());
-        validateIfThereIsMenu(orderRequest.toMenuIds());
-    }
-
-    private void validateOrderTable(Long orderTableId) {
+    public void validateOrderTable(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(EntityNotFoundException::new);
 
@@ -33,7 +28,7 @@ public class OrderValidator {
         }
     }
 
-    private void validateIfThereIsMenu(List<Long> menuIds) {
+    public void validateIfThereIsMenu(List<Long> menuIds) {
         if(menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new EntityNotFoundException();
         }
