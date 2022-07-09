@@ -1,6 +1,8 @@
 package kichenpos.order.domain;
 
 import kichenpos.common.domain.Price;
+import kichenpos.menu.domain.Menu;
+import kichenpos.menu.domain.MenuProduct;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -15,6 +17,9 @@ public class OrderLineItemsTest {
 
     @Test
     void 주문_항목이_있는지_확인한다() {
+        MenuProduct menuProduct = new MenuProduct(null, 3);
+        System.out.println(menuProduct);
+
         // when & then
         assertThatThrownBy(() ->
                 new OrderLineItems(new ArrayList<>())
