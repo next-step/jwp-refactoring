@@ -42,6 +42,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation project(':menu')
     implementation project(':table')
+    implementation project(':order')
 }
 
 test {
