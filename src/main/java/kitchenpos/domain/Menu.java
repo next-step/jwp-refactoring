@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Entity
@@ -36,11 +35,10 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validateMenuPrice(price);
-        validateTotalPrice(price, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts.addAll(toMenuProducts(menuProducts));
+        this.menuProducts.addAll(mapMenuProducts(menuProducts));
     }
 
     public Long getId() {
@@ -79,10 +77,6 @@ public class Menu {
         return menuGroup.getId();
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroup.setId(menuGroupId);
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
@@ -105,17 +99,7 @@ public class Menu {
         return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
-    private void validateTotalPrice(BigDecimal price, List<MenuProduct> menuProducts) {
-        AtomicReference<BigDecimal> sum = new AtomicReference<>(BigDecimal.ZERO);
-        menuProducts.forEach(
-                menuProduct -> sum.set(sum.get().add(menuProduct.getProductPrice()
-                                                                .multiply(BigDecimal.valueOf(menuProduct.getQuantity())))));
-        if (sum.get().compareTo(price) != 0) {
-            throw new IllegalArgumentException("메뉴 가격과 상품 합계의 가격이 일치하지 않습니다");
-        }
-    }
-
-    private List<MenuProduct> toMenuProducts(List<MenuProduct> menuProducts) {
+    private List<MenuProduct> mapMenuProducts(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                            .map(menuProduct -> new MenuProduct(this, menuProduct.getProduct(), menuProduct.getQuantity()))
                            .collect(Collectors.toList());

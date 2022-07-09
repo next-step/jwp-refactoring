@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import kitchenpos.dao.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class OrderTest {
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
+    @Disabled
     @DisplayName("빈 테이블에는 주문할 수 없다.")
     @Test
     void create_throwException_givenEmptyTable() {

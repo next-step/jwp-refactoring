@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -9,27 +10,29 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
+    private Long menuId;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    private String menuName;
+
+    private BigDecimal price;
 
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        this.order = order;
-        this.menu = menu;
+    public OrderLineItem(Long menuId, String menuName, BigDecimal price, long quantity) {
+        this.menuId = menuId;
+        this.menuName = menuName;
+        this.price = price;
         this.quantity = quantity;
     }
 
     public OrderLineItem(Menu menu, long quantity) {
-        this(null, menu, quantity);
+        this.menuId = menu.getId();
+        this.menuName = menu.getName();
+        this.price = menu.getPrice();
+        this.quantity = quantity;
     }
 
     public Long getSeq() {
@@ -40,20 +43,28 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getMenuId() {
+        return menuId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public String getMenuName() {
+        return menuName;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public long getQuantity() {
