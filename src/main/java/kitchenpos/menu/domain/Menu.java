@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,7 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
 @Entity
 public class Menu {
@@ -38,7 +38,6 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         MenuProducts products = convertToMenuProducts(menuProducts);
-        validateMenuProductsPriceThanMenuPrice(price, products);
 
         this.name = new Name(name);
         this.price = new Price(price);
@@ -48,7 +47,6 @@ public class Menu {
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         MenuProducts products = convertToMenuProducts(menuProducts);
-        validateMenuProductsPriceThanMenuPrice(price, products);
 
         this.id = id;
         this.name = new Name(name);
@@ -62,8 +60,6 @@ public class Menu {
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateMenuProductsPriceThanMenuPrice(price, menuProducts);
-
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
@@ -91,21 +87,14 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
+
     private MenuProducts convertToMenuProducts(List<MenuProduct> menuProducts) {
         List<MenuProduct> products = new ArrayList<>();
 
         for(MenuProduct menuProduct: menuProducts) {
-            products.add(new MenuProduct(this, menuProduct.getProduct(), menuProduct.getQuantity()));
+            products.add(new MenuProduct(this, menuProduct.getProductId(), menuProduct.getQuantity()));
         }
 
         return new MenuProducts(products);
-    }
-
-    private void validateMenuProductsPriceThanMenuPrice(BigDecimal price, MenuProducts menuProducts) {
-        BigDecimal totalPrice = menuProducts.calculateTotalPrice();
-
-        if(price.compareTo(totalPrice) > 0) {
-            throw new IllegalArgumentException();
-        }
     }
 }

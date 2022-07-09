@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -41,7 +41,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴그룹을 생성한다.")
     void createMenuGroup() {
         // given
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(양식);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(양식);
 
         // when
         MenuGroupResponse menuGroupResponse = menuGroupService.create(new MenuGroupRequest(양식));
@@ -57,7 +57,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴그룹 목록을 조회한다.")
     void findAll() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(양식, 한식));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(양식, 한식));
 
         // when
         List<MenuGroupResponse> menuGroups = menuGroupService.list();

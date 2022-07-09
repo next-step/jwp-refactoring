@@ -9,14 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.common.exception.InvalidValueException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -28,9 +25,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
@@ -45,27 +41,25 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
-        this(id, orderTable, OrderStatus.COOKING, orderLineItems);
+    public Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        this(id, orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        validateOrderTable(orderTable);
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         validateOrderLineItemRequestEmpty(orderLineItems);
 
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItemList) {
         OrderLineItems orderLineItems = convertToOrderLineItems(orderLineItemList);
 
-        validateOrderTable(orderTable);
         validateOrderLineItemRequestEmpty(orderLineItems);
 
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
     }
@@ -78,8 +72,8 @@ public class Order {
         this.id = id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public String getOrderStatus() {
@@ -102,15 +96,9 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
-        if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     private void validateOrderLineItemRequestEmpty(OrderLineItems orderLineItems) {
         if(orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new InvalidValueException();
         }
     }
 

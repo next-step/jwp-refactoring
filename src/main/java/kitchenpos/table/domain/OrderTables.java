@@ -10,22 +10,23 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderTables {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
-        this.orderTables = new ArrayList<>();
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
-    public void addOrderTable(OrderTable orderTable) {
-        orderTables.add(orderTable);
+        this.orderTables = new ArrayList<>(orderTables);
     }
 
     public List<OrderTable> getOrderTables() {
         return Collections.unmodifiableList(orderTables);
+    }
+
+    public void group(TableGroup tableGroup) {
+        for(OrderTable orderTable: orderTables) {
+            orderTable.group(tableGroup);
+        }
     }
 
     public void ungroup() {

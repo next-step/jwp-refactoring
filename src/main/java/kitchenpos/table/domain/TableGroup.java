@@ -25,8 +25,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
-        this(null);
+    protected TableGroup() {
     }
 
     public TableGroup(Long id) {
@@ -38,7 +37,8 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public void updateOrderTables(OrderTables orderTables) {
+    public TableGroup(OrderTables orderTables) {
+        orderTables.group(this);
         this.orderTables = orderTables;
     }
 

@@ -6,7 +6,7 @@ import kitchenpos.table.dto.OrderTableResponse;
 
 public class OrderResponse {
     private Long id;
-    private OrderTableResponse orderTable;
+    private Long orderTableId;
     private String orderStatus;
     private List<OrderLineItemResponse> orderLineItems;
 
@@ -16,15 +16,15 @@ public class OrderResponse {
     public OrderResponse(Order order) {
         this(
             order.getId(),
-            OrderTableResponse.from(order.getOrderTable()),
+            order.getOrderTableId(),
             order.getOrderStatus(),
             OrderLineItemResponse.toList(order.getOrderLineItems()));
     }
 
-    public OrderResponse(Long id, OrderTableResponse orderTable, String orderStatus,
+    public OrderResponse(Long id, Long orderTableId, String orderStatus,
         List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
@@ -33,8 +33,8 @@ public class OrderResponse {
         return id;
     }
 
-    public OrderTableResponse getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public String getOrderStatus() {
@@ -48,7 +48,7 @@ public class OrderResponse {
     public static OrderResponse from(Order order) {
         return new OrderResponse(
             order.getId(),
-            OrderTableResponse.from(order.getOrderTable()),
+            order.getOrderTableId(),
             order.getOrderStatus(),
             OrderLineItemResponse.toList(order.getOrderLineItems())
         );

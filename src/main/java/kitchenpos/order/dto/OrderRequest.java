@@ -12,7 +12,7 @@ public class OrderRequest {
     }
 
     public OrderRequest(Order order) {
-        this(order.getOrderTable().getId(), OrderLineItemRequest.toList(order.getOrderLineItems()));
+        this(order.getOrderTableId(), OrderLineItemRequest.toList(order.getOrderLineItems()));
     }
 
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {

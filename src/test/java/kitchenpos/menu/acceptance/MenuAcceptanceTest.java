@@ -60,6 +60,41 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회_요청됨(response);
     }
 
+    @Test
+    @DisplayName("상품 가격보다 메뉴 가격이 더 클 경우 - 오류")
+    void isMoreThan() {
+        // when
+        ExtractableResponse<Response> response = 메뉴_생성_요청("후라이드+후라이드", 100_000L, 추천_메뉴.getId(), Arrays.asList(메뉴_후라이드_치킨));
+
+        // then
+        메뉴_생성_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("잘못된 메뉴 그룹을 가진 메뉴를 생성할 경우 - 오류")
+    void notExistMenuGroup() {
+        // given
+        Long 잘못된_메뉴_그룹 = -999L;
+
+        // when
+        ExtractableResponse<Response> response = 메뉴_생성_요청("후라이드+후라이드", 19_000L, 잘못된_메뉴_그룹, Arrays.asList(메뉴_후라이드_치킨));
+
+        // then
+        메뉴_생성_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 상품을 가진 메뉴를 생성할 경우 - 오류")
+    void notExistProduct() {
+        MenuProductRequest 잘못된_메뉴_상품 = 메뉴_상품_생성(-999L, 4);
+
+        // when
+        ExtractableResponse<Response> response = 메뉴_생성_요청("잘못된_메뉴", 19_000L, 추천_메뉴.getId(), Arrays.asList(잘못된_메뉴_상품));
+
+        // then
+        메뉴_생성_실패됨(response);
+    }
+
     public static ExtractableResponse<Response> 메뉴_생성_요청(String name, Long price, Long menuGroupId,
         List<MenuProductRequest> menuProducts) {
         MenuRequest menuRequest = new MenuRequest(name, new BigDecimal(price), menuGroupId, menuProducts);
@@ -81,6 +116,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private static void 메뉴_생성_요청됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    private static void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static void 메뉴_목록_조회_요청됨(ExtractableResponse<Response> response) {

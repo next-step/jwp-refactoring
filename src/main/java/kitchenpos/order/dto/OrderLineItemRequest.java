@@ -24,8 +24,12 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
+    public OrderLineItem toEntity() {
+        return new OrderLineItem(menuId, quantity);
+    }
+
     public static OrderLineItemRequest from(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemRequest(orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemRequest> toList(List<OrderLineItem> orderLineItems) {

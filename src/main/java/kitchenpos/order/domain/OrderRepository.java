@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderDao extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
     Order save(Order entity);
 
     Optional<Order> findById(Long id);
 
     List<Order> findAll();
 
-    boolean existsByOrderTableAndOrderStatusIn(OrderTable orderTable, List<OrderStatus> orderStatuses);
+    boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses);
 
-    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses);
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses);
 }

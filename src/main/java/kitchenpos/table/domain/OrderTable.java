@@ -75,13 +75,22 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public boolean isAlreadyRegistered() {
-        return !empty || Objects.nonNull(tableGroup);
-    }
-
     public void update(TableGroup tableGroup, boolean empty) {
         this.tableGroup = tableGroup;
         this.empty = empty;
+    }
+
+    public void group(TableGroup tableGroup) {
+        if(isNotEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        if(isGrouped()) {
+            throw new IllegalArgumentException();
+        }
+
+        this.tableGroup = tableGroup;
+        this.empty = false;
     }
 
     public void ungroup() {
@@ -99,6 +108,14 @@ public class OrderTable {
         }
 
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private boolean isNotEmpty() {
+        return !empty;
+    }
+
+    private boolean isGrouped() {
+        return Objects.nonNull(tableGroup);
     }
 
     @Override

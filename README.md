@@ -5,6 +5,12 @@
 - [x] README.md 작성
 - [x] 테스트 코드 작성
 
+<details>
+<summary>기능 요구 사항</summary>
+<div markdown="1">
+
+
+
 ## 기능 요구사항
 
 1. Menu
@@ -76,6 +82,22 @@
   - [x] 주문 테이블의 단체 지정을 해제한다.
     - 정보가 올바르지 않으면 해제할 수 없다.
       - 주문의 상태가 `요리중`이거나 `식사`면 안 된다.
+
+</div>
+</details>
+
+<details>
+<summary>(도메인) 다이어그램</summary>
+<div markdown="2">
+
+* 변경 전 다이어그램
+![변경 전 다이어그램](./diagram/before_dependency_refactor.png)
+
+* 변경 후 다이어그램
+![변경 휴 다이어그램](./diagram/after_dependency_refactor.png)
+
+</div>
+</details>
 
 ## 용어 사전
 

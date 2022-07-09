@@ -5,7 +5,6 @@ import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_생성_요청
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_생성_요청;
-import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -32,7 +31,6 @@ import org.springframework.http.MediaType;
 
 @DisplayName("주문을 관리한다.")
 public class OrderAcceptanceTest extends AcceptanceTest {
-    private OrderTableResponse 주문_테이블;
     private ProductResponse 후라이드;
     private MenuProductRequest 후라이드_원플원;
     private MenuGroupResponse 추천_메뉴;
@@ -48,9 +46,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         추천_메뉴 = 메뉴_그룹_생성_요청("추천메뉴").as(MenuGroupResponse.class);
         후라이드_세트_메뉴 = 메뉴_생성_요청("후라이드+후라이드", 19_000L, 추천_메뉴.getId(), Arrays.asList(후라이드_원플원)).as(MenuResponse.class);
 
-        일번_주문_테이블 = 주문_테이블_생성_요청(4, true).as(OrderTableResponse.class);
-        이번_주문_테이블 = 주문_테이블_생성_요청(7, true).as(OrderTableResponse.class);
-        테이블_그룹_생성_요청(Arrays.asList(일번_주문_테이블.getId(), 이번_주문_테이블.getId()));
+        일번_주문_테이블 = 주문_테이블_생성_요청(4, false).as(OrderTableResponse.class);
+        이번_주문_테이블 = 주문_테이블_생성_요청(7, false).as(OrderTableResponse.class);
     }
 
     @Test
@@ -63,7 +60,33 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 주문_생성_요청(일번_주문_테이블.getId(), Arrays.asList(후라이드_아이템));
 
         // then
-        주문_생성됨(response);
+        주문_생성_요청됨(response);
+    }
+
+    @Test
+    @DisplayName("잘못된 주문 메뉴로 주문을 생성할 경우 - 오류")
+    void createOrderIfNonExistentMenu() {
+        // given
+        OrderLineItemRequest 잘못된_주문_메뉴 = 주문_아이템_생성(-9999L, 1);
+
+        // when
+        ExtractableResponse<Response> response = 주문_생성_요청(일번_주문_테이블.getId(), Arrays.asList(잘못된_주문_메뉴));
+
+        // then
+        주문_생성_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("존재하지 않은 주문 테이블로 주문을 생성할 경우 - 오류")
+    void createOrderIfNonExistentOrderTable() {
+        // given
+        OrderLineItemRequest 후라이드_아이템 = 주문_아이템_생성(후라이드_세트_메뉴.getId(), 1);
+
+        // when
+        ExtractableResponse<Response> response = 주문_생성_요청(-9999L, Arrays.asList(후라이드_아이템));
+
+        // then
+        주문_생성_실패됨(response);
     }
 
     @Test
@@ -120,9 +143,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    public static void 주문_생성됨(ExtractableResponse response) {
+    public static void 주문_생성_요청됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 주문_생성_실패됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 주문_목록_조회_요청됨(ExtractableResponse response) {

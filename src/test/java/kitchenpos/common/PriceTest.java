@@ -1,10 +1,10 @@
-package kitchenpos.product.domain;
+package kitchenpos.common;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ class PriceTest {
     void invalidPrice() {
         // when then
         assertAll(
-            () -> assertThatThrownBy(() -> new kitchenpos.menu.domain.Price(new BigDecimal(-6_000L)))
+            () -> assertThatThrownBy(() -> new Price(new BigDecimal(-6_000L)))
                 .isInstanceOf(IllegalArgumentException.class),
             () -> assertThatThrownBy(() -> new Price(null))
                 .isInstanceOf(IllegalArgumentException.class)
