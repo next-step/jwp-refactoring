@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -36,7 +37,7 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(orderRequest.toEntity());
 
-        menuValidator.validateOrderLineItems(orderRequest.getOrderLineItemRequests());
+        menuValidator.validateOrderLineItems(getMenuIds(orderRequest.getOrderLineItemRequests()));
 
         OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
         orderLineItems.saveOrder(savedOrder);
@@ -64,5 +65,11 @@ public class OrderService {
     private Order getOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 }

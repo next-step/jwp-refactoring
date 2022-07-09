@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Transactional(readOnly = true)
@@ -61,17 +59,10 @@ public class MenuValidator {
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
     }
 
-    public void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        List<Long> menuIds = getMenuIds(orderLineItemRequests);
-        if (menuRepository.countByIdIn(menuIds) != orderLineItemRequests.size()) {
+    public void validateOrderLineItems(List<Long> menuIds) {
+        if (menuRepository.countByIdIn(menuIds) != menuIds.size()) {
             throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
         }
 
-    }
-
-    private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
-        return orderLineItemRequests.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
     }
 }
