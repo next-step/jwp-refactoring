@@ -3,7 +3,6 @@ package kitchenpos.Acceptance.menuGroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
-import kitchenpos.menu.MenuGenerator;
 import kitchenpos.menuGroup.MenuGroupGenerator;
 import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.apache.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.MenuGenerator.*;
 import static kitchenpos.menuGroup.MenuGroupGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

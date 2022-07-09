@@ -9,8 +9,6 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.menuGroup.dto.MenuGroupCreateRequest;
 
 import java.math.BigDecimal;
 import java.util.Collections;

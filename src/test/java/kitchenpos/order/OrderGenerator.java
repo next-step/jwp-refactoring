@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static kitchenpos.common.domain.PriceTest.가격_생성;
 import static kitchenpos.menu.domain.QuantityTest.수량_생성;
 
 public class OrderGenerator {
@@ -24,8 +25,8 @@ public class OrderGenerator {
         return new Order(orderTableId, orderLineItems);
     }
 
-    public static OrderLineItem 주문_물품_생성(Long menuId, long quantity) {
-        return new OrderLineItem(menuId, 수량_생성(quantity));
+    public static OrderLineItem 주문_물품_생성(Long menuId, long quantity, int menuPrice, String menuName) {
+        return new OrderLineItem(menuId, 수량_생성(quantity), 가격_생성(menuPrice), menuName);
     }
 
     public static OrderLineItems 주문_물품_목록_생성(OrderLineItem... orderLineItems) {
