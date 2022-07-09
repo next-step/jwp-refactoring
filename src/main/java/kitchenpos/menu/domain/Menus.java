@@ -25,6 +25,13 @@ public class Menus {
                 this.value.stream().map(Menu::getId).anyMatch(id -> !removeDuplicatedIds.contains(id));
     }
 
+    public Menu findMenuById(Long id) {
+        return this.value.stream()
+                .filter(menu -> menu.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
     public List<Menu> getValue() {
         return value;
     }
