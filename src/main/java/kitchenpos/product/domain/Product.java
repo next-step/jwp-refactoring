@@ -20,7 +20,7 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, Price price) {

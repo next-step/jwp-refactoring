@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,7 +28,11 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
+    }
+
+    public Order(long id) {
+        this.id = id;
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {

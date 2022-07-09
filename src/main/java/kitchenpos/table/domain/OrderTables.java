@@ -14,7 +14,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public OrderTables() {
+    protected OrderTables() {
     }
 
     public OrderTables(List<OrderTable> orderTables) {

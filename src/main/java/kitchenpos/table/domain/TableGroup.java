@@ -22,7 +22,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {

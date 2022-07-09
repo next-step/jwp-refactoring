@@ -13,7 +13,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
+    protected OrderLineItems() {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {

@@ -29,15 +29,15 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(String name, Integer price) {
+    protected Menu(String name, Integer price) {
         this.name = name;
         this.price = Price.from(price);
     }
 
-    public Menu(String name, Integer price, MenuGroup menuGroup) {
+    protected Menu(String name, Integer price, MenuGroup menuGroup) {
         this(name, price);
         this.menuGroup = menuGroup;
     }
@@ -47,6 +47,7 @@ public class Menu {
 
         this.menuProducts = MenuProducts.of(this, menuProducts);
     }
+    
 
     public Long getId() {
         return id;

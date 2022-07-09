@@ -76,7 +76,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 주문테이블이_존재하지않으면_테이블그룹을_등록할_수_없다() {
-        OrderTable 존재하지않는테이블 = new OrderTable();
+        OrderTable 존재하지않는테이블 = new OrderTable(1L);
         List<Long> 주문테이블_리스트 = Arrays.asList(테이블1.getId(), 존재하지않는테이블.getId());
 
         ExtractableResponse<Response> 테이블그룹_등록_결과 = 테이블그룹_등록_요청(주문테이블_리스트);
