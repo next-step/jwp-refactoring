@@ -60,7 +60,7 @@ public class TableGroup {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable orderTable : orderTables.getOrderTables()) {
+        for (final OrderTable orderTable : orderTables.getElements()) {
             orderTable.validate();
         }
     }

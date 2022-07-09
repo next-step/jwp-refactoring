@@ -27,7 +27,7 @@ public class OrderTables {
         this.elements = elements;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public List<OrderTable> getElements() {
         return Collections.unmodifiableList(new ArrayList<>(elements));
     }
 
