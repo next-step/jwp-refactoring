@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -211,7 +212,7 @@ class MenuServiceTest {
 
     private void 메뉴_생성_실패_상품_없음(MenuRequest 생성할_메뉴_요청) {
         assertThatThrownBy(() -> menuService.create(생성할_메뉴_요청))
-                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .isExactlyInstanceOf(ProductNotFoundException.class)
                 .hasMessage("상품이 존재하지 않습니다.");
     }
 

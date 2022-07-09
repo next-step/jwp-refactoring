@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,7 @@ public class MenuService {
 
     private Product findProductById(final Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("상품이 존재하지 않습니다."));
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     private MenuGroup findMenuGroupById(final Long menuGroupId) {
