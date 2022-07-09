@@ -1,10 +1,7 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -19,12 +16,15 @@ import org.springframework.util.CollectionUtils;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final OrderStatusManagementService orderStatusManagementService;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(
+        OrderStatusManagementService orderStatusManagementService,
+        OrderTableRepository orderTableRepository,
+        TableGroupRepository tableGroupRepository) {
+        this.orderStatusManagementService = orderStatusManagementService;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -65,9 +65,6 @@ public class TableGroupService {
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
-        if(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        orderStatusManagementService.validateOrderStatusBeChangedByIds(orderTableIds);
     }
 }

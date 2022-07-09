@@ -13,7 +13,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -35,7 +34,7 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderStatusManagementService orderStatusManagementService;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -140,7 +139,6 @@ class TableGroupServiceTest {
 
         given(tableGroupRepository.findById(테이블_그룹.getId())).willReturn(Optional.of(테이블_그룹));
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
         tableGroupService.ungroup(테이블_그룹.getId());
@@ -160,7 +158,9 @@ class TableGroupServiceTest {
         테이블_그룹 = 테이블_그룹_생성(1L, orderTables);
 
         given(tableGroupRepository.findById(테이블_그룹.getId())).willReturn(Optional.of(테이블_그룹));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+
+        // when
+        tableGroupService.ungroup(테이블_그룹.getId());
 
         // when then
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId()))

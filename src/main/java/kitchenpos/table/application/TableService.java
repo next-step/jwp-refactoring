@@ -1,10 +1,10 @@
 package kitchenpos.table.application;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -12,18 +12,15 @@ import kitchenpos.table.dto.OrderTableStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderStatusManagementService orderStatusManagementService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderStatusManagementService orderStatusManagementService,
+        OrderTableRepository orderTableRepository) {
+        this.orderStatusManagementService = orderStatusManagementService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -52,11 +49,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if(orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
+        orderStatusManagementService.validateOrderStatusBeChanged(orderTableId);
         savedOrderTable.reserve(orderTableStatusRequest.isEmpty());
 
         return OrderTableResponse.from(savedOrderTable);
