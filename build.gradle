@@ -1,27 +1,79 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        version_springBoot = "2.4.1"
+        version_springDependencyManagement = "1.0.10.RELEASE"
+        version_restAssured = "3.3.0"
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${version_springBoot}"
+        classpath "io.spring.gradle:dependency-management-plugin:${version_springDependencyManagement}"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
 
-repositories {
-    mavenCentral()
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "java"
+    apply plugin: "idea"
+
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    if (it.name != ":module-common") {
+
+        apply plugin: "java-test-fixtures"
+
+        dependencies {
+            implementation "org.springframework.boot:spring-boot-starter-actuator"
+            implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+            implementation "org.springframework.boot:spring-boot-starter-web"
+            implementation "org.flywaydb:flyway-core"
+            runtimeOnly "com.h2database:h2"
+            testImplementation "org.springframework.boot:spring-boot-starter-test"
+            testImplementation "io.rest-assured:rest-assured:$version_restAssured"
+        }
+
+        test {
+            useJUnitPlatform()
+        }
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+project(":module-menu") {
+    dependencies {
+        compile project(":module-common")
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(":module-order") {
+    dependencies {
+        compile project(":module-common")
+        compile project(":module-menu")
+    }
+}
+
+project(":module-table") {
+    dependencies {
+        compile project(":module-common")
+        compile project(":module-menu")
+        compile project(":module-order")
+        testImplementation(testFixtures(project(":module-order")))
+    }
+}
+
+project(":module-main") {
+    dependencies {
+        compile project(":module-menu")
+        compile project(":module-order")
+        compile project(":module-table")
+    }
 }
