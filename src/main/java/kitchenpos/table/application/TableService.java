@@ -30,6 +30,7 @@ public class TableService {
         return OrderTableResponse.formOrderTable(saveTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll()
                 .stream()

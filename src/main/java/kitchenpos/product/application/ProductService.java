@@ -23,6 +23,7 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return ProductResponse.of(productRepository.findAll());
     }

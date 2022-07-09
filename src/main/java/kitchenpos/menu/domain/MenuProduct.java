@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.global.domain.Quantity;
 import org.springframework.util.ObjectUtils;
 
 @Table(name = "menu_product")

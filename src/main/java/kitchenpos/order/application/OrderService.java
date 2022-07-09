@@ -29,7 +29,7 @@ public class OrderService {
     }
 
 
-
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll()
                 .stream()

@@ -25,6 +25,7 @@ public class MenuGroupService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         final List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 
