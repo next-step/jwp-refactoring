@@ -53,6 +53,12 @@ public class OrderTable {
         this.empty = false;
     }
 
+    public void isPossibleChangeNumberOfGuests() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 자리일 때 손님 수를 변경할 수 없습니다.");
+        }
+    }
+
     public void leaveGroup() {
         this.tableGroup = null;
     }

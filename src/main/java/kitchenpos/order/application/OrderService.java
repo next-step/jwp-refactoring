@@ -7,7 +7,6 @@ import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.mapper.OrderMapper;
-import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +17,10 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper mapper;
-    private final OrderValidator orderValidator;
 
-    public OrderService(
-            final OrderRepository orderRepository,
-            final OrderMapper mapper,
-            final OrderValidator orderValidator
-    ) {
+    public OrderService(final OrderRepository orderRepository, final OrderMapper mapper) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
-        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -52,7 +45,6 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = getOrder(orderId);
 
-        orderValidator.isPossibleChangeOrderStatus(savedOrder);
         savedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.from(savedOrder);

@@ -37,6 +37,8 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        isPossibleChangeOrderStatus();
+
         this.orderStatus = orderStatus;
     }
 
@@ -58,5 +60,11 @@ public class Order {
 
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void isPossibleChangeOrderStatus() {
+        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
+            throw new IllegalArgumentException("완료 상태의 주문의 상태를 변경할 수 없습니다.");
+        }
     }
 }
