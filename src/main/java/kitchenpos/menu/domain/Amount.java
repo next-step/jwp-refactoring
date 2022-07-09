@@ -1,4 +1,4 @@
-package kitchenpos.global.domain;
+package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,6 +31,9 @@ public class Amount {
 
     public static Amount of(Price price, int quantity) {
         return new Amount(price, Quantity.from(quantity));
+    }
+    public static Amount of(BigDecimal price, int quantity) {
+        return new Amount(Price.from(price), Quantity.from(quantity));
     }
 
     public static Amount createSumAmounts(List<Amount> Amounts) {

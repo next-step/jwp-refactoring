@@ -1,4 +1,4 @@
-package kitchenpos.global.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Embeddable;
 

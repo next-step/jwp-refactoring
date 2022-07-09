@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.global.domain.Name;
-import kitchenpos.global.domain.Price;
 import org.springframework.util.ObjectUtils;
 
 @Entity

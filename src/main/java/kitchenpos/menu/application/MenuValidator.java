@@ -1,9 +1,11 @@
 package kitchenpos.menu.application;
 
 import java.util.stream.Collectors;
-import kitchenpos.global.domain.Amount;
-import kitchenpos.global.domain.Price;
+
+
+import kitchenpos.menu.domain.Amount;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.domain.Product;
@@ -40,7 +42,7 @@ public class MenuValidator {
     private Amount getAmount(MenuProductRequest menuProductRequest) {
         Product product = productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("없는 상품이 존재합니다."));
-        return Amount.of(product.getPrice(), menuProductRequest.getQuantity());
+        return Amount.of(product.getPriceValue(), menuProductRequest.getQuantity());
     }
 
     private void validatePrice(Price price, Amount totalAmount) {

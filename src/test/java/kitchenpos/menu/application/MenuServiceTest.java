@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import kitchenpos.global.domain.Price;
-import kitchenpos.global.domain.Quantity;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -68,8 +68,8 @@ class MenuServiceTest {
                 new MenuProductRequest(2L,1)
         );
 
-        product1 = new Product(1L,"상품1", Price.from(1000));
-        product2 = new Product(2L,"상품2", Price.from(1000));
+        product1 = new Product(1L,"상품1", Price.from(1000).value());
+        product2 = new Product(2L,"상품2", Price.from(1000).value());
     }
 
 

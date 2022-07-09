@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.global.domain.Price;
+
 import kitchenpos.menu.application.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -60,8 +60,8 @@ class MenuValidatorTest {
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(1500), 1L, menuProductRequests);
 
 
-        given(productRepository.findById(1L)).willReturn(Optional.of(new Product("상품1" , Price.from(500))));
-        given(productRepository.findById(2L)).willReturn(Optional.of(new Product("상품2" , Price.from(100))));
+        given(productRepository.findById(1L)).willReturn(Optional.of(new Product("상품1" , BigDecimal.valueOf(500))));
+        given(productRepository.findById(2L)).willReturn(Optional.of(new Product("상품2" , BigDecimal.valueOf(100))));
 
 
         assertThatIllegalArgumentException()

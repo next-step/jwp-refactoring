@@ -1,4 +1,4 @@
-package kitchenpos.global.domain;
+package kitchenpos.order.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -68,13 +68,5 @@ public class Price {
 
     public boolean isBigThen(Price target) {
         return isBigThen(target.value());
-    }
-
-    public boolean isBigThen(Amount target) {
-        return isBigThen(target.value());
-    }
-
-    public BigDecimal multiply(Quantity quantity) {
-        return price.multiply(BigDecimal.valueOf(quantity.value()));
     }
 }

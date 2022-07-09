@@ -13,9 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.global.domain.Name;
-import kitchenpos.global.domain.Price;
-import kitchenpos.global.domain.Quantity;
 
 @Entity
 @Table(name = "order_line_item")
