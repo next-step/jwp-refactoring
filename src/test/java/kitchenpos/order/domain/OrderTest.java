@@ -1,8 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.domain.OrderStatus;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

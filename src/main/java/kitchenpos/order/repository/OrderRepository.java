@@ -1,7 +1,7 @@
 package kitchenpos.order.repository;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -3,9 +3,11 @@ package kitchenpos.order.application;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
+@Transactional(readOnly = true)
 @Service
 public class OrderValidator {
 

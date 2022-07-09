@@ -1,11 +1,13 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,18 +15,22 @@ import java.util.NoSuchElementException;
 
 import static java.util.stream.Collectors.toList;
 
+@Transactional(readOnly = true)
 @Service
 public class MenuValidator {
 
     private final ProductRepository productRepository;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuValidator(ProductRepository productRepository) {
+    public MenuValidator(ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
         this.productRepository = productRepository;
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     public void validate(MenuRequest request) {
-        List<MenuProduct> menuProducts = request.getMenuProducts();
+        validateMenuGroup(request.getMenuGroupId());
 
+        List<MenuProduct> menuProducts = request.getMenuProducts();
         List<Product> products = getProducts(menuProducts);
 
         BigDecimal sum = products.stream()
@@ -57,5 +63,9 @@ public class MenuValidator {
                 .getQuantity();
     }
 
-
+    private void validateMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new IllegalArgumentException("존재하지 않는 메뉴 그룹입니다.");
+        }
+    }
 }

@@ -1,14 +1,16 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.application.TableValidator;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Objects;
 
+@Transactional(readOnly = true)
 @Service
 public class TableValidatorImpl implements TableValidator {
 
