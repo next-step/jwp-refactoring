@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -206,7 +207,7 @@ class MenuServiceTest {
 
     private void 메뉴_생성_실패_메뉴_그룹_없음(MenuRequest 생성할_메뉴_요청) {
         assertThatThrownBy(() -> menuService.create(생성할_메뉴_요청))
-                .isExactlyInstanceOf(EntityNotFoundException.class)
+                .isExactlyInstanceOf(MenuGroupNotFoundException.class)
                 .hasMessage("메뉴 그룹이 존재하지 않습니다.");
     }
 
