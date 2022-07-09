@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -53,9 +52,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 생성")
     public void create() {
-        doNothing().when(orderValidator).validateOrderRequest(주문_요청);
         given(orderRepository.save(any())).willReturn(주문);
-
         final Order 생성된_주문 = orderService.create(주문_요청);
         assertThat(생성된_주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }

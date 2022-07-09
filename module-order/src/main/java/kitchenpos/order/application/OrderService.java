@@ -22,8 +22,9 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        orderValidator.validateOrderRequest(orderRequest);
-        return orderRepository.save(Order.of(orderRequest));
+        final Order order = Order.of(orderRequest);
+        orderValidator.validateOrder(order);
+        return orderRepository.save(order);
     }
 
     public List<Order> list() {

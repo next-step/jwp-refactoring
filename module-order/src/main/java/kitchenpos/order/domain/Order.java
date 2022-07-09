@@ -145,4 +145,5 @@ public class Order {
     public void changeOrderStatus(final Order order) {
         this.orderStatus = order.getOrderStatus();
     }
+
 }
