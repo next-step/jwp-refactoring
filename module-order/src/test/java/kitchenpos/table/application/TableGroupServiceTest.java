@@ -33,14 +33,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private kitchenpos.table.application.ChangeStateTableValidator changeStateTableValidator;
+    private ChangeStateTableValidator changeStateTableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
-    private kitchenpos.table.application.TableGroupService tableGroupService;
+    private TableGroupService tableGroupService;
 
     @Test
     @DisplayName("개별 주문 테이블이 2개 미만일 경우 단체석으로 지정할 수 없다.")
