@@ -53,7 +53,6 @@ subprojects {
 dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation project(':module-menu')
-    implementation project(':module-common')
     implementation project(':module-product')
     implementation project(':module-order')
 }
@@ -63,22 +62,14 @@ test {
 }
 
 
-project(':module-product') {
-    dependencies {
-        implementation project(':module-common')
-    }
-}
-
 project(':module-menu') {
     dependencies {
-        implementation project(':module-common')
         implementation project(':module-product')
     }
 }
 
 project(':module-order') {
     dependencies {
-        implementation project(':module-common')
         implementation project(':module-menu')
     }
 }

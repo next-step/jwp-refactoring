@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.order.exception;
 
 import java.util.NoSuchElementException;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class OrderExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class})
     public ResponseEntity<Void> badRequest(RuntimeException e) {
