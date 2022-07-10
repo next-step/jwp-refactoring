@@ -1,9 +1,9 @@
 package kitchenpos.product.domain;
 
+import static kitchenpos.product.ProductTestFixture.상품_생성;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,15 +21,15 @@ public class ProductTest {
         );
     }
 
-    public static Product 상품_생성(String name) {
-        return new Product(name, null);
-    }
-
-    public static Product 상품_생성(String name, Long price) {
-        return new Product(name, new BigDecimal(price));
-    }
-
-    public static Product 상품_생성(Long id, String name, Long price) {
-        return new Product(id, name, new BigDecimal(price));
-    }
+//    public static Product 상품_생성(String name) {
+//        return new Product(name, null);
+//    }
+//
+//    public static Product 상품_생성(String name, Long price) {
+//        return new Product(name, new BigDecimal(price));
+//    }
+//
+//    public static Product 상품_생성(Long id, String name, Long price) {
+//        return new Product(id, name, new BigDecimal(price));
+//    }
 }

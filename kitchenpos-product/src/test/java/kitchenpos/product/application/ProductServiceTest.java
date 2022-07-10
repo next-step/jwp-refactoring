@@ -1,11 +1,11 @@
 package kitchenpos.product.application;
 
+import static kitchenpos.product.ProductTestFixture.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.product.domain.Product;
@@ -68,15 +68,15 @@ public class ProductServiceTest {
         assertThat(products.size()).isEqualTo(2);
     }
 
-    public static Product 상품_생성(String name) {
-        return new Product(name, null);
-    }
-
-    public static Product 상품_생성(String name, Long price) {
-        return new Product(name, new BigDecimal(price));
-    }
-
-    public static Product 상품_생성(Long id, String name, Long price) {
-        return new Product(id, name, new BigDecimal(price));
-    }
+//    public static Product 상품_생성(String name) {
+//        return new Product(name, null);
+//    }
+//
+//    public static Product 상품_생성(String name, Long price) {
+//        return new Product(name, new BigDecimal(price));
+//    }
+//
+//    public static Product 상품_생성(Long id, String name, Long price) {
+//        return new Product(id, name, new BigDecimal(price));
+//    }
 }
