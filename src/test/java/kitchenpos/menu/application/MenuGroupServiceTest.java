@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -72,10 +73,11 @@ class MenuGroupServiceTest {
     private void 메뉴그룹_목록_조회_성공(List<MenuGroupResponse> 조회된_메뉴그룹_목록, List<MenuGroup> 조회할_메뉴그룹_목록) {
         assertAll(
                 () -> assertThat(조회된_메뉴그룹_목록).hasSize(조회할_메뉴그룹_목록.size()),
-                () -> assertThat(조회된_메뉴그룹_목록.get(0).getId()).isEqualTo(조회할_메뉴그룹_목록.get(0).getId()),
-                () -> assertThat(조회된_메뉴그룹_목록.get(0).getName()).isEqualTo(조회할_메뉴그룹_목록.get(0).getName()),
-                () -> assertThat(조회된_메뉴그룹_목록.get(1).getId()).isEqualTo(조회할_메뉴그룹_목록.get(1).getId()),
-                () -> assertThat(조회된_메뉴그룹_목록.get(1).getName()).isEqualTo(조회할_메뉴그룹_목록.get(1).getName())
+                () -> assertThat(조회된_메뉴그룹_목록).extracting("id", "name")
+                        .containsExactly(
+                                tuple(조회할_메뉴그룹_목록.get(0).getId(), 조회할_메뉴그룹_목록.get(0).getName()),
+                                tuple(조회할_메뉴그룹_목록.get(1).getId(), 조회할_메뉴그룹_목록.get(1).getName()),
+                                tuple(조회할_메뉴그룹_목록.get(2).getId(), 조회할_메뉴그룹_목록.get(2).getName()))
         );
     }
 }
