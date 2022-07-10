@@ -1,0 +1,6 @@
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-common')
+        implementation project(':module-product')
+    }
+}

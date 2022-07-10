@@ -1,0 +1,5 @@
+project(':module-table') {
+    dependencies {
+        testImplementation project(':module-order')
+    }
+}
