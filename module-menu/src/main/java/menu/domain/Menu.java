@@ -47,6 +47,10 @@ public class Menu {
         this.menuProducts.addAll(this, menuProducts);
     }
 
+    public OrderedMenu toOrderedMenu() {
+        return new OrderedMenu(id, name, price);
+    }
+
     public Long getId() {
         return id;
     }

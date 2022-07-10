@@ -1,7 +1,9 @@
 package order.domain;
 
+import menu.domain.Menu;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,10 +14,11 @@ class OrderLineItemsTest {
 
     @Test
     void 주문_목록을_추가한다() {
+        Menu menu = new Menu(1L, "메뉴", BigDecimal.valueOf(3000), 1L);
         Order order = new Order(1L);
         OrderLineItems orderLineItems = new OrderLineItems();
 
-        orderLineItems.addAll(order, Collections.singletonList(new OrderLineItem(1L, 1)));
+        orderLineItems.addAll(order, Collections.singletonList(new OrderLineItem(menu.toOrderedMenu(), 1)));
 
         assertAll(
                 () -> assertThat(orderLineItems.get()).hasSize(1),

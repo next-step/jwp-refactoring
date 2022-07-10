@@ -19,14 +19,14 @@ public class OrderRequest {
     protected OrderRequest() {
     }
 
-    public Order toOrder() {
-        return new Order(orderTableId, toOrderLineItems());
+    public List<Long> toMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 
-    public List<OrderLineItem> toOrderLineItems() {
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::toOrderLineItem)
-                .collect(Collectors.toList());
+    public Order toOrder(List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     public Long getOrderTableId() {

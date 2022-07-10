@@ -1,8 +1,10 @@
 package order.application;
 
-import order.domain.OrderStatus;
+import menu.domain.Menu;
+import menu.repository.MenuRepository;
 import order.domain.Order;
 import order.domain.OrderLineItem;
+import order.domain.OrderStatus;
 import order.dto.OrderLineItemRequest;
 import order.dto.OrderRequest;
 import order.dto.OrderResponse;
@@ -15,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,18 +35,23 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
+    private MenuRepository menuRepository;
+
+    @Mock
     private OrderRepository orderRepository;
 
     @Mock
     private OrderValidator orderValidator;
 
+    private Menu 메뉴;
     private Order 주문;
     private OrderLineItem 주문내역;
 
     @BeforeEach
     void setUp() {
+        메뉴 = new Menu(1L, "메뉴", BigDecimal.valueOf(3000), 1L);
         주문 = new Order(1L, 1L);
-        주문내역 = new OrderLineItem(1L, 주문, 1L, 1);
+        주문내역 = new OrderLineItem(1L, 주문, 메뉴.toOrderedMenu(), 1);
     }
 
     @DisplayName("주문 생성")
@@ -53,6 +61,7 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(1L, 1));
         OrderRequest request = new OrderRequest(1L, orderLineItemRequests);
         given(orderRepository.save(any())).willReturn(주문);
+        given(menuRepository.findById(any())).willReturn(Optional.of(메뉴));
 
         // when
         OrderResponse response = orderService.create(request);

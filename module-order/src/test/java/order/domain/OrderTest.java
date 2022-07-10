@@ -1,8 +1,10 @@
 package order.domain;
 
+import menu.domain.Menu;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,12 +14,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTest {
-
+    private final Menu menu = new Menu(1L, "메뉴", BigDecimal.valueOf(3000), 1L);
     private List<OrderLineItem> orderLineItems;
 
     @BeforeEach
     void setUp() {
-        orderLineItems = Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 1));
+        orderLineItems = Arrays.asList(new OrderLineItem(menu.toOrderedMenu(), 1));
     }
 
     @Test
@@ -37,7 +39,7 @@ class OrderTest {
         order.addOrderLineItems(orderLineItems);
 
         assertAll(
-                () -> assertThat(order.getOrderLineItems()).hasSize(2),
+                () -> assertThat(order.getOrderLineItems()).hasSize(1),
                 () -> assertThat(order.getOrderLineItems()).element(0)
                         .satisfies(it -> {
                             assertThat(it.getOrder()).isNotNull();
