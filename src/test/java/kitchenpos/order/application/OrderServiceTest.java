@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
@@ -22,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.common.ServiceTestFactory.메뉴생성;
 import static kitchenpos.common.ServiceTestFactory.주문생성;
 import static kitchenpos.common.ServiceTestFactory.주문요청생성;
 import static kitchenpos.common.ServiceTestFactory.주문항목생성;
@@ -40,6 +43,8 @@ class OrderServiceTest {
     private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
+    @Mock
+    private MenuRepository menuRepository;
     @InjectMocks
     private OrderService orderService;
     private OrderLineItem orderLineItemRequest;
@@ -59,7 +64,9 @@ class OrderServiceTest {
     @Test
     void 주문을_생성할_수_있다() {
         OrderTable ordertable = 테이블생성(5, false);
+        Menu menu = 메뉴생성("메뉴이름",10000,1L,Arrays.asList());
         given(orderRepository.save(any())).willReturn(order);
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
 
         OrderResponse result = orderService.create(orderRequest);
 
@@ -78,7 +85,7 @@ class OrderServiceTest {
     void 메뉴가_존재하지_않으면_주문을_생성할_수_없다() {
         OrderRequest 존재하지않는메뉴_주문 = 주문요청생성(1L, Arrays.asList(new OrderLineItem()));
 
-        doThrow(IllegalArgumentException.class).when(orderValidator).validate(존재하지않는메뉴_주문);
+        doThrow(IllegalArgumentException.class).when(orderValidator).validateOrderLineItems(존재하지않는메뉴_주문.getOrderLineItemRequests());
 
         assertThatThrownBy(() -> orderService.create(존재하지않는메뉴_주문))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -95,7 +102,7 @@ class OrderServiceTest {
     void 주문테이블이_존재하지않으면_주문을_생성할_수_없다() {
         OrderRequest orderRequest = 주문요청생성(999L, Arrays.asList(orderLineItemRequest));
 
-        doThrow(IllegalArgumentException.class).when(orderValidator).validate(orderRequest);
+        doThrow(IllegalArgumentException.class).when(orderValidator).validateOrderLineItems(orderRequest.getOrderLineItemRequests());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);

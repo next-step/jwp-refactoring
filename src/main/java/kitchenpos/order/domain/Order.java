@@ -19,14 +19,13 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.COOKING;
     private LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
-    private OrderLineItems orderLineItems;
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
