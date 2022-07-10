@@ -27,17 +27,12 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
-        this(null, name, price, menuGroup, menuProducts);
-    }
-
-    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup,
-                final List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = Price.from(price);
-        this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
+    private Menu(MenuBuilder menuBuilder) {
+        this.id = menuBuilder.id;
+        this.name = menuBuilder.name;
+        this.price = Price.from(menuBuilder.price);
+        this.menuGroup = menuBuilder.menuGroup;
+        addMenuProducts(menuBuilder.menuProducts);
     }
 
     private void addMenuProducts(final List<MenuProduct> menuProducts) {
@@ -53,6 +48,39 @@ public class Menu {
     private void validatePrice() {
         if (price.getValue().compareTo(menuProducts.totalMenuProductPrice()) > 0) {
             throw new IllegalStateException("메뉴의 가격이 메뉴 상품 목록 가격의 합보다 클 수 없습니다.");
+        }
+    }
+
+    // Builder
+    public static class MenuBuilder {
+        private Long id;
+        private String name;
+        private BigDecimal price;
+        private MenuGroup menuGroup;
+        private List<MenuProduct> menuProducts;
+
+        public MenuBuilder(final String name, final BigDecimal price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        public MenuBuilder id(final Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public MenuBuilder menuGroup(final MenuGroup menuGroup) {
+            this.menuGroup = menuGroup;
+            return this;
+        }
+
+        public MenuBuilder menuPrducts(final List<MenuProduct> menuProducts) {
+            this.menuProducts = menuProducts;
+            return this;
+        }
+
+        public Menu build() {
+            return new Menu(this);
         }
     }
 

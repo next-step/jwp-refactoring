@@ -8,7 +8,6 @@ import kitchenpos.menu.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -36,7 +35,10 @@ public class MenuService {
                 .collect(toList());
 
         final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
+        final Menu menu = new Menu.MenuBuilder(menuRequest.getName(), menuRequest.getPrice())
+                .menuGroup(menuGroup)
+                .menuPrducts(menuProducts)
+                .build();
 
         return MenuResponse.from(menuRepository.save(menu));
     }

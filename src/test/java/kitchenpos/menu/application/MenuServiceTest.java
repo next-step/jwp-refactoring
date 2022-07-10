@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.InvalidPriceException;
 import kitchenpos.menu.exception.MenuGroupNotFoundException;
 import kitchenpos.menu.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +56,11 @@ class MenuServiceTest {
         두번째_메뉴상품 = new MenuProduct(2L, 두번째_상품,1);
         메뉴상품_목록 = Arrays.asList(첫번째_메뉴상품, 두번째_메뉴상품);
         메뉴그룹 = new MenuGroup(1L, "추천메뉴");
-        생성할_메뉴 = new Menu(1L, "짬짜면세트", BigDecimal.valueOf(26000), 메뉴그룹, 메뉴상품_목록);
+        생성할_메뉴 = new Menu.MenuBuilder("짬짜면세트", BigDecimal.valueOf(26000))
+                .menuGroup(메뉴그룹)
+                .menuPrducts(메뉴상품_목록)
+                .id(1L)
+                .build();
     }
 
     @DisplayName("메뉴를 생성할 수 있다.")
@@ -201,7 +205,7 @@ class MenuServiceTest {
 
     private void 메뉴_생성_실패_가격정보_오류(MenuRequest 생성할_메뉴_요청) {
         assertThatThrownBy(() -> menuService.create(생성할_메뉴_요청))
-                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .isExactlyInstanceOf(InvalidPriceException.class)
                 .hasMessage("가격은 0보다 커야 합니다.");
     }
 

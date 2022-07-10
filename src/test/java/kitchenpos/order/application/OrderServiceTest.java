@@ -58,8 +58,17 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MenuGroup 메뉴그룹 = new MenuGroup(1L, "추천메뉴");
-        첫번째_메뉴 = new Menu(1L, "짬짜면세트", BigDecimal.valueOf(0), 메뉴그룹, Collections.emptyList());
-        두번째_메뉴 = new Menu(2L, "탕수육세트", BigDecimal.valueOf(0), 메뉴그룹, Collections.emptyList());
+
+        첫번째_메뉴 = new Menu.MenuBuilder("짬짜면세트", BigDecimal.valueOf(0))
+                .menuGroup(메뉴그룹)
+                .menuPrducts(Collections.emptyList())
+                .id(1L)
+                .build();
+        두번째_메뉴 = new Menu.MenuBuilder("탕수육세트", BigDecimal.valueOf(0))
+                .menuGroup(메뉴그룹)
+                .menuPrducts(Collections.emptyList())
+                .id(2L)
+                .build();
 
         저장된_주문테이블 = new OrderTable(1L, null, 4, false);
         첫번째_주문항목 = new OrderLineItem(첫번째_메뉴, 2);
