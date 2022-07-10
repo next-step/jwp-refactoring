@@ -1,0 +1,9 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation project(':domain-common-vo')
+    testImplementation(testFixtures(project(":domain-common-vo")))
+}
+
+test {
+    useJUnitPlatform()
+}

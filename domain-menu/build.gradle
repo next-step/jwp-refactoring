@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':domain-product')
+    implementation project(':domain-common-vo')
+}
+
+test {
+    useJUnitPlatform()
+}
