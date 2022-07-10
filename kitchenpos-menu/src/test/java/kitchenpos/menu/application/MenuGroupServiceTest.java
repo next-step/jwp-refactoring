@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.menu.MenuGroupTestFixture.메뉴_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,8 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public
-class MenuGroupServiceTest {
+public class MenuGroupServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
@@ -67,9 +67,5 @@ class MenuGroupServiceTest {
             () -> assertThat(menuGroups).isNotNull(),
             () -> assertThat(menuGroups.size()).isEqualTo(2)
         );
-    }
-
-    public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
-        return new MenuGroup(id, name);
     }
 }

@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_생성;
-import static kitchenpos.product.application.ProductServiceTest.상품_생성;
+import static kitchenpos.menu.MenuGroupTestFixture.메뉴_그룹_생성;
+import static kitchenpos.product.ProductTestFixture.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,7 +19,6 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public
-class MenuServiceTest {
+public class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
