@@ -1,29 +1,86 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+        vspringDependencyManagementVersion = "1.0.10.RELEASE"
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:${vspringDependencyManagementVersion}"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    // A Java Library
+    apply plugin: 'java-library'
+    // which produces test fixtures
+    apply plugin: 'java-test-fixtures'
 
-repositories {
-    mavenCentral()
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+project(':kitchenpos-common') {
+    dependencies {
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':kitchenpos-order') {
+    dependencies {
+        compile project(':kitchenpos-common')
+        compile project(':kitchenpos-menu')
+        testImplementation(testFixtures(project(":kitchenpos-menu")))
+        testImplementation(testFixtures(project(":kitchenpos-product")))
+        testImplementation(testFixtures(project(":kitchenpos-table")))
+    }
+}
+
+project(':kitchenpos-menu') {
+    dependencies {
+        compile project(':kitchenpos-common')
+        compile project(':kitchenpos-product')
+        testImplementation(testFixtures(project(":kitchenpos-product")))
+    }
+}
+
+project(':kitchenpos-product') {
+    dependencies {
+        compile project(':kitchenpos-common')
+    }
+}
+
+project(':kitchenpos-table') {
+    dependencies {
+        compile project(':kitchenpos-common')
+        compile project(':kitchenpos-order')
+        compile project(':kitchenpos-menu')
+        testImplementation(testFixtures(project(":kitchenpos-order")))
+    }
 }
