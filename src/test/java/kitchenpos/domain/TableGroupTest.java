@@ -160,7 +160,7 @@ public class TableGroupTest {
 
     private void 주문_생성됨() {
         List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
-        orderRepository.save(new Order(주문_테이블_일번, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
+        orderRepository.save(new Order(주문_테이블_일번.getId(), OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
     }
 
     private List<OrderLineItem> toOrderLineItems(List<Menu> menus, List<OrderLineItemRequest> OrderLineItems) {
