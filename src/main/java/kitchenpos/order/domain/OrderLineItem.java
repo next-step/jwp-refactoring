@@ -38,7 +38,7 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Long menuId, Integer quantity) {
-        this(null, null, menuId, "menuname", null, quantity);
+        this(null, null, menuId, null, null, quantity);
     }
 
     public OrderLineItem(Long menuId, String name, Price price, long quantity) {
