@@ -68,7 +68,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
      * When 가격을 음수로 지정하여 메뉴를 생성하면
      * Then 메뉴를 생성할 수 없다.
      */
-    @DisplayName("가격이 음수인 메뉴 생성")
+    @DisplayName("가격이 음수인 경우 메뉴를 생성할 수 없다.")
     @Test
     void createMenuWithNegativePrice() {
         // when
@@ -82,7 +82,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
      * When 등록되지 않은 메뉴 그룹 ID 를 이용하여 메뉴를 생성하면
      * Then 메뉴를 생성할 수 없다.
      */
-    @DisplayName("등록되지 않은 메뉴 그룹으로 메뉴 생성")
+    @DisplayName("등록되지 않은 메뉴 그룹 ID 를 사용하면 메뉴를 생성할 수 없다.")
     @Test
     void createMenuWithInvalidMenuGroupId() {
         // when
@@ -96,7 +96,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
      * When (메뉴상품의 수량 * 상품 가격) 의 곱보다 메뉴 가격이 크면
      * Then 메뉴를 생성할 수 없다.
      */
-    @DisplayName("메뉴의 가격 조건이 맞지 않는 메뉴 생성")
+    @DisplayName("메뉴의 가격 조건이 맞지 않는 경우 메뉴를 생성할 수 없다.")
     @Test
     void createMenuWithInvalidPrice() {
         // when
@@ -110,7 +110,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
      * When 메뉴를 생성하면
      * Then 저장된 메뉴 데이터와 메뉴 상품 목록이 함께 리턴된다
      */
-    @DisplayName("메뉴 생성 결과 내 메뉴 상품 목록 추가")
+    @DisplayName("메뉴 생성 결과 내 메뉴 상품 목록 추가하여 리턴한다.")
     @Test
     void createMenuWithMenuProduct() {
         // when
@@ -127,7 +127,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
      * When 메뉴 목록을 조회하면
      * Then 메뉴 상품과 함께 조회된다
      */
-    @DisplayName("메뉴 목록 조회")
+    @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() {
         // given
