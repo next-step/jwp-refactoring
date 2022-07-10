@@ -31,6 +31,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 메뉴그룹_조회_결과 = 메뉴그룹_조회_요청();
 
-        메뉴그룹_조회됨(메뉴그룹_조회_결과,Arrays.asList(두마리메뉴,한마리메뉴,신메뉴));
+        메뉴그룹_조회됨(메뉴그룹_조회_결과, Arrays.asList(두마리메뉴, 한마리메뉴, 신메뉴));
     }
 }

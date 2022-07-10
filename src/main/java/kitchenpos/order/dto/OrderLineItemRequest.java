@@ -10,13 +10,13 @@ public class OrderLineItemRequest {
     public OrderLineItemRequest() {
     }
 
+    public OrderLineItemRequest(OrderLineItem orderLineItem) {
+        this(orderLineItem.getMenuId(), Long.valueOf(orderLineItem.getQuantity()).intValue());
+    }
+
     public OrderLineItemRequest(Long menuId, Integer quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
-    }
-
-    public OrderLineItemRequest(OrderLineItem orderLineItem) {
-        this(orderLineItem.getMenuId(), Long.valueOf(orderLineItem.getQuantity()).intValue());
     }
 
     public OrderLineItem toEntity() {

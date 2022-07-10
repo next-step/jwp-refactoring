@@ -20,7 +20,15 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
+    }
+
+    public Product(Long productId) {
+        this(productId, null, Price.from(0));
+    }
+
+    public Product(ProductRequest productRequest) {
+        this(null, productRequest.getName(), Price.from(productRequest.getPrice()));
     }
 
     public Product(String name, Price price) {
@@ -28,34 +36,29 @@ public class Product {
         this.price = price;
     }
 
-    public Product(ProductRequest productRequest) {
-        this.name = productRequest.getName();
-        this.price = Price.from(productRequest.getPrice());
+    public Product(Long id, String name, Price price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Price getPrice() {
         return price;
     }
-    public Integer getPriceValue(){
+
+    public Integer getPriceValue() {
         return price.getPriceValue();
     }
-    public BigDecimal getPriceBigDecimal(){
+
+    public BigDecimal getPriceBigDecimal() {
         return price.getValue();
     }
 

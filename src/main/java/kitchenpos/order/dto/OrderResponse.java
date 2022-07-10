@@ -18,6 +18,10 @@ public class OrderResponse {
     public OrderResponse() {
     }
 
+    public OrderResponse(Order order) {
+        this(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), order.getOrderLineItems());
+    }
+
     public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -26,10 +30,6 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems.getOrderLineItems().stream()
                 .map(OrderLineItemResponse::new)
                 .collect(Collectors.toList());
-    }
-
-    public OrderResponse(Order order) {
-        this(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), order.getOrderLineItems());
     }
 
     public Long getId() {

@@ -1,10 +1,10 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuValidator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
@@ -22,8 +22,11 @@ public class MenuRequest {
         this.menuProducts = menuProducts;
     }
 
-    public Menu toEntity(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public Menu toEntity(MenuValidator menuValidator) {
+        menuValidator.validate(this);
+        return new Menu(name, price, menuGroupId, menuProducts.stream()
+                .map(MenuProductRequest::toEntity)
+                .collect(Collectors.toList()));
     }
 
     public String getName() {

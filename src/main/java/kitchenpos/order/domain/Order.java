@@ -1,16 +1,12 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,16 +17,19 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private Long orderTableId;
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
-    private LocalDateTime orderedTime;
+    private OrderStatus orderStatus = OrderStatus.COOKING;
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
-    private OrderLineItems orderLineItems;
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
+    }
+
+    public Order(long id) {
+        this.id = id;
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
@@ -44,17 +43,6 @@ public class Order {
             throw new IllegalArgumentException();
         }
         this.orderStatus = orderStatus;
-    }
-
-    public void registerOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        this.orderTableId= orderTable.getId();
-        changeOrderStatue(OrderStatus.COOKING);
-        this.orderedTime=LocalDateTime.now();
-
     }
 
     public Long getId() {
@@ -79,10 +67,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public OrderLineItems getOrderLineItems() {

@@ -61,6 +61,12 @@
 - 도메인 엔티티 변환
 - 롬복사용 금지
 
+## 3단계
+- 단방향 관계로 변경
+  - MenuValidator , OrderValidator
+- 간접참조로 변경
+  - MenuProduct - product 간접참조로 변경
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |

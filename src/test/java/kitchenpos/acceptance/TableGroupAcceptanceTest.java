@@ -11,7 +11,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,7 +76,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 주문테이블이_존재하지않으면_테이블그룹을_등록할_수_없다() {
-        OrderTable 존재하지않는테이블 = new OrderTable();
+        OrderTable 존재하지않는테이블 = new OrderTable(1L);
         List<Long> 주문테이블_리스트 = Arrays.asList(테이블1.getId(), 존재하지않는테이블.getId());
 
         ExtractableResponse<Response> 테이블그룹_등록_결과 = 테이블그룹_등록_요청(주문테이블_리스트);
@@ -96,7 +96,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void 테이블그룹을_삭제할_수_있다() {
         List<Long> 주문테이블_리스트 = Arrays.asList(테이블1.getId(), 테이블2.getId());
-        TableGroup 등록된_테이블그룹 = 테이블그룹_등록_요청(주문테이블_리스트).as(TableGroup.class);
+        TableGroupResponse 등록된_테이블그룹 = 테이블그룹_등록_요청(주문테이블_리스트).as(TableGroupResponse.class);
 
         ExtractableResponse<Response> 테이블그룹_삭제_결과 = 테이블그룹_삭제_요청(등록된_테이블그룹.getId());
 
@@ -106,7 +106,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest
     @MethodSource("cookingAndMeal")
     void 주문상태가_요리중이거나_식사중인_테이블그룹은_삭제할_수_없다(OrderStatus status) {
-        TableGroup 등록된_테이블그룹 = 테이블그룹_등록_요청(Arrays.asList(테이블1.getId(), 테이블2.getId())).as(TableGroup.class);
+        TableGroupResponse 등록된_테이블그룹 = 테이블그룹_등록_요청(Arrays.asList(테이블1.getId(), 테이블2.getId())).as(TableGroupResponse.class);
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
         OrderResponse 주문 = 주문_등록_요청(테이블1.getId(), Arrays.asList(주문항목)).as(OrderResponse.class);
         주문_상태_변경_요청(주문.getId(), status);

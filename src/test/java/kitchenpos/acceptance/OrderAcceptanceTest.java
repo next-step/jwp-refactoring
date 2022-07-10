@@ -106,7 +106,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 주문의_주문상태를_변경할_수_있다() {
-        OrderStatus 식사중 = OrderStatus.MEAL ;
+        OrderStatus 식사중 = OrderStatus.MEAL;
         OrderLineItemRequest 주문항목 = new OrderLineItemRequest(후라이드메뉴.getId(), 1);
         OrderResponse 주문 = 주문_등록_요청(주문테이블1.getId(), Arrays.asList(주문항목)).as(OrderResponse.class);
 
@@ -117,8 +117,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 주문이_존재하지않으면_주문을_변경할_수_없다() {
-        Order 존재하지않는_주문 = new Order();
-        존재하지않는_주문.setId(999L);
+        Order 존재하지않는_주문 = new Order(999L);
         OrderStatus 주문상태_요리중 = OrderStatus.COOKING;
 
         ExtractableResponse<Response> 주문_변경_결과 = 주문_상태_변경_요청(존재하지않는_주문.getId(), 주문상태_요리중);

@@ -14,8 +14,9 @@ public class MenuGroupResponse {
         this.id = id;
         this.name = name;
     }
-    public MenuGroupResponse(MenuGroup menuGroup){
-        this(menuGroup.getId(),menuGroup.getName());
+
+    public MenuGroupResponse(MenuGroup menuGroup) {
+        this(menuGroup.getId(), menuGroup.getName());
     }
 
     public Long getId() {

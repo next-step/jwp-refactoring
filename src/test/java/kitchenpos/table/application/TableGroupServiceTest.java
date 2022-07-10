@@ -1,13 +1,13 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,14 +26,14 @@ import static kitchenpos.common.ServiceTestFactory.테이블생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @DisplayName("테이블그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderValidator orderValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -51,8 +51,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        table1 = 테이블생성(1L, null, 3, true);
-        table2 = 테이블생성(2L, null, 3, true);
+        table1 = 테이블생성(3, true);
+        table2 = 테이블생성(3, true);
         orderTablesIds = Arrays.asList(table1.getId(), table2.getId());
         tableGroupRequest = 테이블그룹요청생성(orderTablesIds);
         tableGroup = 테이블그룹생성(1L, new ArrayList<>(Arrays.asList(table1, table2)));
@@ -65,13 +65,13 @@ class TableGroupServiceTest {
 
         TableGroupResponse result = tableGroupService.create(tableGroupRequest);
 
-        assertThat(result.getId()).isEqualTo(tableGroup.getId());
+        assertThat(result).isNotNull();
     }
 
     @Test
     void 주문테이블이_2개미만이면_테이블그룹을_생성할_수_없다() {
         TableGroupRequest 테이블그룹_주문테이블1개 = 테이블그룹요청생성(Arrays.asList(table1.getId()));
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(table1,table2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(table1, table2));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹_주문테이블1개))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -79,10 +79,9 @@ class TableGroupServiceTest {
 
     @Test
     void 테이블그룹을_삭제할_수_있다() {
-        OrderTable 그룹있는_테이블1 = 테이블생성(1L, 1L, 3, true);
-        OrderTable 그룹있는_테이블2 = 테이블생성(1L, 1L, 3, true);
+        OrderTable 그룹있는_테이블1 = 테이블생성(3, true);
+        OrderTable 그룹있는_테이블2 = 테이블생성(3, true);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(Arrays.asList(그룹있는_테이블1, 그룹있는_테이블2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
 
         tableGroupService.ungroup(1L);
 
@@ -94,7 +93,8 @@ class TableGroupServiceTest {
     void 주문상태가_요리중이거나_식사중이면_테이블그룹을_삭제할_수_없다() {
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
+
+        doThrow(IllegalArgumentException.class).when(orderValidator).validateOrderTableStatus(any());
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class);

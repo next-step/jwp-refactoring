@@ -9,7 +9,7 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,8 +44,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         //메뉴
         Product 후라이드 = 상품_등록_요청("후라이드", 16000).as(Product.class);
         MenuGroup 두마리메뉴 = 메뉴그룹_등록_요청("두마리메뉴").as(MenuGroup.class);
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setQuantity(1);
+        MenuProduct menuProduct = new MenuProduct(1);
 
         //주문
         주문항목 = new OrderLineItem();
@@ -121,8 +120,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 존재하지않는_주문테이블의_손님수를_변경할_수_없다() {
-        OrderTable 존재하지않는_주문테이블 = new OrderTable();
-        존재하지않는_주문테이블.setId(999L);
+        OrderTable 존재하지않는_주문테이블 = new OrderTable(999L);
 
         ExtractableResponse<Response> 테이블_손님수_변경_결과 = 테이블_손님수_변경_요청(존재하지않는_주문테이블.getId(), 3);
 
