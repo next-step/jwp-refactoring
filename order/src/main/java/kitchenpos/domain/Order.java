@@ -27,8 +27,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTable.getId();
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(toOrderLineItems(orderLineItems));
     }

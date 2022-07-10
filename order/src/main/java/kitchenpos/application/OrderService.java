@@ -2,8 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.OrderRepository;
-import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,11 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
 
     @Autowired
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -42,14 +42,15 @@ public class OrderService {
             throw new IllegalArgumentException("요청 메뉴와 실제 메뉴 개수가 일치하지 않습니다.");
         }
 
-        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                                                    .orElseThrow(NoSuchElementException::new);
+        if (orderRepository.existsOrderTableById(request.getOrderTableId()) == null) {
+            throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다..");
+        }
 
-        if (orderTable.isEmpty()) {
+        if (orderRepository.isEmptyTable(request.getOrderTableId())) {
             throw new IllegalArgumentException("주문 테이블은 빈 테이블이 아니어야 합니다.");
         }
 
-        return orderRepository.save(new Order(orderTable, OrderStatus.COOKING, toOrderLineItems(menus, request.getOrderLineItems())));
+        return orderRepository.save(new Order(request.getOrderTableId(), OrderStatus.COOKING, toOrderLineItems(menus, request.getOrderLineItems())));
     }
 
     public List<Order> list() {
