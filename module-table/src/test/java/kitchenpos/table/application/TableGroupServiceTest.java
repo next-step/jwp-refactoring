@@ -36,6 +36,7 @@ class TableGroupServiceTest {
     private ChangeStateTableValidator changeStateTableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
+
     @Mock
     private TableGroupRepository tableGroupRepository;
 
