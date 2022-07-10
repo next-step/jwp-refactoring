@@ -81,7 +81,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
      * When 주문 테이블을 빈 테이블로 변경하면
      * Then 주문 테이블이 빈 테이블로 변경된다.
      */
-    @DisplayName("주문 테이블을 빈 테이블로 변경")
+    @DisplayName("주문 테이블을 빈 테이블로 변경한다.")
     @Test
     void changeEmpty() {
         // when
@@ -97,7 +97,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
      * When 주문 테이블의 손님 수를 변경하면
      * Then 주문 테이블의 손님 수가 변경된다.
      */
-    @DisplayName("주문 테이블의 손님 수를 변경")
+    @DisplayName("주문 테이블의 손님 수를 변경한다.")
     @Test
     void changeNumberOfGuests() {
         // when
@@ -113,7 +113,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
      * When 주문 테이블의 손님 수를 음수로 변경하면
      * Then 오류가 발생한다.
      */
-    @DisplayName("주문 테이블의 손님 수를 음수로 변경")
+    @DisplayName("주문 테이블의 손님 수를 음수로 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsToNegativeNumber() {
         // when
@@ -129,7 +129,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
      * When 생성한 주문 테이블이 아닌 임의의 주문 테이블 ID 를 전송하면
      * Then 오류가 발생한다.
      */
-    @DisplayName("주문 테이블의 손님 수를 음수로 변경")
+    @DisplayName("임의의 주문 테이블 ID 로는 주문 테이블 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsWithInvalidOrderTableId() {
         // when
@@ -146,7 +146,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
      * When 빈 테이블로 상태를 변경하면
      * Then 오류가 발생한다.
      */
-    @DisplayName("단체 지정 정보가 등록된 주문 테이블 상태 변경")
+    @DisplayName("이미 단체 지정된 테이블을 빈 테이블로 변경할 수 없다.")
     @Test
     void changeEmptyOfNotEmptyTableGroupId() {
         // given
@@ -167,7 +167,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
      * When 주문에 해당하는 주문 테이블을 빈 테이블로 변경할 경우
      * Then 오류가 발생한다
      */
-    @DisplayName("주문의 상태가 MEAL 인 주문 테이블을 빈 테이블로 변경")
+    @DisplayName("주문의 상태가 MEAL 인 주문 테이블은 빈 테이블로 변경할 수 없다.")
     @Test
     void changeMealStatusTableToEmptyStatus() {
         // given

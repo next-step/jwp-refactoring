@@ -53,7 +53,7 @@ class ProductAcceptanceTest extends BaseAcceptanceTest {
      * When 상품을 생성하면
      * Then 오류가 발생한다
      */
-    @DisplayName("상품 가격이 0원 미만인 상품을 등록한다.")
+    @DisplayName("상품 가격이 0원 미만인 상품은 생성이 불가능하다.")
     @Test
     void createProductWithInvalidPrice() {
         // given

@@ -78,7 +78,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문 항목을 이용하여 주문을 생성하면
      * Then 주문 항목의 수와 메뉴의 수가 일치하지 않아 에러가 발생한다.
      */
-    @DisplayName("메뉴 정보가 존재하지 않는 주문 항목을 이용한 주문 생성")
+    @DisplayName("메뉴 정보가 존재하지 않는 주문 항목으로는 주문을 생성할 수 없다.")
     @Test
     void createOrderWithoutOrderLineItem() {
         // given
@@ -99,7 +99,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문을 생성하면
      * Then 에러가 발생한다.
      */
-    @DisplayName("비어 있는 테이블을 포함한 주문 생성")
+    @DisplayName("비어 있는 테이블을 포함한 주문은 생성이 불가능하다.")
     @Test
     void createOrderWithEmptyOrderTable() {
         // given
@@ -117,7 +117,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문을 생성하면
      * Then 주문 테이블의 ID 와 주문의 테이블 ID 가 동일하게 지정된다.
      */
-    @DisplayName("주문 테이블과 주문의 테이블ID 일치")
+    @DisplayName("주문 생성 시 주문 테이블과 주문의 테이블ID 가 동일하게 지정된다.")
     @Test
     void createOrderWithOrderTableId() {
         // when
@@ -132,7 +132,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문을 생성하면
      * Then 주문 시간이 등록된다.
      */
-    @DisplayName("주문 시간 등록")
+    @DisplayName("주문 생성 시 주문 시간이 등록된다.")
     @Test
     void setOrderedTime() {
         // when
@@ -147,7 +147,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문을 생성하면
      * Then 주문 항목이 조회된다.
      */
-    @DisplayName("주문 생성 후 주문 항목 리턴 여부 확인")
+    @DisplayName("주문을 생성하면 주문 항목도 함께 조회된다.")
     @Test
     void hasOrderLineItem() {
         // when
@@ -182,7 +182,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문 상태를 MEAL 로 변경하면
      * Then 주문의 상태가 MEAL 로 변경된다.
      */
-    @DisplayName("주문 상태 변경")
+    @DisplayName("주문 상태가 MEAL 로 변경된다.")
     @Test
     void changeOrderStatus() {
         // given
@@ -200,7 +200,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 등록한 주문이 아닌 임의의 주문ID 로 상태를 변경하면
      * Then 오류가 발생한다.
      */
-    @DisplayName("등록되지 않은 주문ID 를 이용한 상태 변경")
+    @DisplayName("등록되지 않은 주문ID 로는 주문 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusWithUnavailableOrderId() {
         // given
@@ -219,7 +219,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 다시 주문 상태를 COOKING 으로 변경하면
      * Then 오류가 발생한다.
      */
-    @DisplayName("상태가 COMPLETION 인 주문")
+    @DisplayName("상태가 COMPLETION 인 주문은 주문 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusWithCompletionStatus() {
         // given
@@ -238,7 +238,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
      * When 주문 상태를 변경하면
      * Then 주문 항목도 함께 리턴된다.
      */
-    @DisplayName("주문 항목 리턴 확인")
+    @DisplayName("주문 상태를 변경하면 주문 항목도 함께 리턴된다.")
     @Test
     void hasOrderLineItemAfterChangingStatus() {
         // given
