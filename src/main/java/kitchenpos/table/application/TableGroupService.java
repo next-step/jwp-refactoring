@@ -7,7 +7,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.TableGroupNotFoundException;
-import kitchenpos.table.exception.TableUngroupFailException;
 import kitchenpos.table.exception.TableUngroupInvalidStatusException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
