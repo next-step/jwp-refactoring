@@ -1,7 +1,7 @@
 package kitchenpos.order.validator;
 
-import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.validator.TableValidator;
 import kitchenpos.tableGroup.domain.TableGroup;
