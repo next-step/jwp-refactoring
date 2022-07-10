@@ -24,7 +24,7 @@ public class MenuRequest {
 
     public Menu toEntity(MenuValidator menuValidator) {
         menuValidator.validate(this);
-        return new Menu(name,price, menuGroupId, menuProducts.stream()
+        return new Menu(name, price, menuGroupId, menuProducts.stream()
                 .map(MenuProductRequest::toEntity)
                 .collect(Collectors.toList()));
     }

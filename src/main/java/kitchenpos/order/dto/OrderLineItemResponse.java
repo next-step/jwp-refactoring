@@ -10,14 +10,14 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {
     }
 
+    public OrderLineItemResponse(OrderLineItem orderLineItem) {
+        this(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
+    }
+
     public OrderLineItemResponse(Long seq, Long menuId, long quantity) {
         this.seq = seq;
         this.menuId = menuId;
         this.quantity = quantity;
-    }
-
-    public OrderLineItemResponse(OrderLineItem orderLineItem) {
-        this(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public Long getSeq() {

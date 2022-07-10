@@ -64,7 +64,7 @@ class OrderServiceTest {
     @Test
     void 주문을_생성할_수_있다() {
         OrderTable ordertable = 테이블생성(5, false);
-        Menu menu = 메뉴생성("메뉴이름",10000,1L,Arrays.asList());
+        Menu menu = 메뉴생성("메뉴이름", 10000, 1L, Arrays.asList());
         given(orderRepository.save(any())).willReturn(order);
         given(menuRepository.findById(any())).willReturn(Optional.of(menu));
 

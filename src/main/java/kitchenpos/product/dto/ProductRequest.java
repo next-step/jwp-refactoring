@@ -10,14 +10,17 @@ public class ProductRequest {
     public ProductRequest() {
     }
 
+    public ProductRequest(Product product) {
+        this(product.getName(), product.getPriceValue());
+    }
+
     public ProductRequest(String name, Integer price) {
         this.name = name;
         this.price = price;
     }
 
-    public ProductRequest(Product product) {
-        this.name = product.getName();
-        this.price = product.getPriceValue();
+    public Product toEntity() {
+        return new Product(name, Price.from(price));
     }
 
     public String getName() {
@@ -26,10 +29,5 @@ public class ProductRequest {
 
     public Integer getPrice() {
         return price;
-    }
-
-    public Product toEntity() {
-        return new Product(name, Price.from(price));
-
     }
 }

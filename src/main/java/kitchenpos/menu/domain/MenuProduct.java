@@ -32,10 +32,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public static MenuProduct from(Long productId, Long quantity) {
-        return new MenuProduct(productId, quantity);
-    }
-
     public Long getSeq() {
         return seq;
     }

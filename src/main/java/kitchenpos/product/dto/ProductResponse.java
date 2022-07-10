@@ -10,16 +10,14 @@ public class ProductResponse {
     public ProductResponse() {
     }
 
+    public ProductResponse(Product product) {
+        this(product.getId(), product.getName(), product.getPriceValue());
+    }
+
     public ProductResponse(Long id, String name, Integer price) {
         this.id = id;
         this.name = name;
         this.price = price;
-    }
-
-    public ProductResponse(Product product) {
-        this.id = product.getId();
-        this.name = product.getName();
-        this.price = product.getPriceValue();
     }
 
     public Long getId() {

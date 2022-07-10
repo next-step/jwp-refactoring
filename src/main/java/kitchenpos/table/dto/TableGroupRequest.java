@@ -12,7 +12,6 @@ public class TableGroupRequest {
         this.orderTables = orderTables;
     }
 
-
     public List<Long> getOrderTables() {
         return orderTables;
     }

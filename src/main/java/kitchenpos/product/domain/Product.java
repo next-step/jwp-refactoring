@@ -27,13 +27,13 @@ public class Product {
         this(productId, null, Price.from(0));
     }
 
+    public Product(ProductRequest productRequest) {
+        this(null, productRequest.getName(), Price.from(productRequest.getPrice()));
+    }
+
     public Product(String name, Price price) {
         this.name = name;
         this.price = price;
-    }
-
-    public Product(ProductRequest productRequest) {
-        this(null, productRequest.getName(), Price.from(productRequest.getPrice()));
     }
 
     public Product(Long id, String name, Price price) {

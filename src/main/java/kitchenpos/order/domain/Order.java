@@ -69,10 +69,6 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }

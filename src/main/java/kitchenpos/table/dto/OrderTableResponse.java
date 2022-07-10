@@ -10,16 +10,14 @@ public class OrderTableResponse {
     public OrderTableResponse() {
     }
 
+    public OrderTableResponse(OrderTable orderTable) {
+        this(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
     public OrderTableResponse(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public OrderTableResponse(OrderTable orderTable) {
-        this(orderTable.getId(),
-                orderTable.getNumberOfGuests(),
-                orderTable.isEmpty());
     }
 
     public Long getId() {

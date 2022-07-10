@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ServiceTestFactory {
     public static OrderTable 테이블생성(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable(numberOfGuests,empty);
+        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
         return orderTable;
     }
 
@@ -34,7 +34,7 @@ public class ServiceTestFactory {
     }
 
     public static MenuProduct 메뉴상품생성(Long productId, Long quantity) {
-        return new MenuProduct(productId,quantity);
+        return new MenuProduct(productId, quantity);
     }
 
     public static MenuGroup 메뉴그룹생성(String name) {
@@ -66,6 +66,6 @@ public class ServiceTestFactory {
     }
 
     public static OrderLineItem 주문항목생성(Long menuId, long quantity) {
-        return new OrderLineItem(menuId,Long.valueOf(quantity).intValue());
+        return new OrderLineItem(menuId, Long.valueOf(quantity).intValue());
     }
 }
