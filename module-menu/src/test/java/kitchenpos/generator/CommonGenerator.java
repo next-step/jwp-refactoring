@@ -1,7 +1,6 @@
 package kitchenpos.generator;
 
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Quantity;
 
 import java.math.BigDecimal;
 

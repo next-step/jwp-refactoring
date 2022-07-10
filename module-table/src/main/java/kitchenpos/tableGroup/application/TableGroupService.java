@@ -1,10 +1,10 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.tableGroup.dao.TableGroupRepository;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.dto.TableGroupCreateRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import kitchenpos.tableGroup.mapper.TableGroupMapper;
+import kitchenpos.tableGroup.repository.TableGroupRepository;
 import kitchenpos.tableGroup.validator.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

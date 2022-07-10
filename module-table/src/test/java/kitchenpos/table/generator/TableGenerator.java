@@ -8,7 +8,6 @@ import kitchenpos.table.dto.OrderTableCreateRequest;
 import java.util.List;
 
 public class TableGenerator {
-    private static final String PATH = "/api/tables";
 
     public static OrderTable 주문_테이블_생성(NumberOfGuests numberOfGuests) {
         return new OrderTable(numberOfGuests);

@@ -1,15 +1,15 @@
 package kitchenpos.order.mapper;
 
 import kitchenpos.domain.Quantity;
-import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Menus;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.dto.OrderCreateRequest;
-import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

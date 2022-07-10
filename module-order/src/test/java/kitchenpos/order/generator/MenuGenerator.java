@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class MenuGenerator {
-    private static final String MENU_PATH = "/api/menus";
 
     private MenuGenerator() {}
 

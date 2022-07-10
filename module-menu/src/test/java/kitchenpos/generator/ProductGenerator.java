@@ -7,7 +7,6 @@ import kitchenpos.product.dto.ProductCreateRequest;
 import java.math.BigDecimal;
 
 public class ProductGenerator {
-    private static final String PATH = "/api/products";
 
     private ProductGenerator() {}
 

@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -26,10 +24,6 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getValue() {
         return value;
-    }
-
-    public boolean isEmpty() {
-        return CollectionUtils.isEmpty(this.value);
     }
 
     public void associateOrder(Order order) {

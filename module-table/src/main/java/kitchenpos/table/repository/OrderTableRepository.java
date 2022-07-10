@@ -1,4 +1,4 @@
-package kitchenpos.table.dao;
+package kitchenpos.table.repository;
 
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.jpa.repository.JpaRepository;

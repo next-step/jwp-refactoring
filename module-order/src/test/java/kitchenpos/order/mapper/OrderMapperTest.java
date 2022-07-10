@@ -1,10 +1,10 @@
 package kitchenpos.order.mapper;
 
-import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.dto.OrderCreateRequest;
-import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package kitchenpos.menu.mapper;
 
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menuGroup.dao.MenuGroupRepository;
+import kitchenpos.menuGroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
