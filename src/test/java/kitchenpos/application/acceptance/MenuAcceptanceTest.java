@@ -50,7 +50,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
      * When 메뉴를 생성하면
      * Then 저장된 메뉴 데이터가 리턴된다
      */
-    @DisplayName("메뉴 생성")
+    @DisplayName("메뉴 생성에 성공한다.")
     @Test
     void createMenu() {
         // when
@@ -66,7 +66,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     /**
      * When 가격을 음수로 지정하여 메뉴를 생성하면
-     * Then 오류가 발생한다
+     * Then 메뉴를 생성할 수 없다.
      */
     @DisplayName("가격이 음수인 메뉴 생성")
     @Test
@@ -80,7 +80,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     /**
      * When 등록되지 않은 메뉴 그룹 ID 를 이용하여 메뉴를 생성하면
-     * Then 오류가 발생한다
+     * Then 메뉴를 생성할 수 없다.
      */
     @DisplayName("등록되지 않은 메뉴 그룹으로 메뉴 생성")
     @Test
@@ -94,7 +94,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     /**
      * When (메뉴상품의 수량 * 상품 가격) 의 곱보다 메뉴 가격이 크면
-     * Then 오류가 발생한다
+     * Then 메뉴를 생성할 수 없다.
      */
     @DisplayName("메뉴의 가격 조건이 맞지 않는 메뉴 생성")
     @Test

@@ -18,7 +18,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -44,7 +47,36 @@ class MenuServiceTest {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
-    @DisplayName("가격이 입력되지 않는 경우 오류가 발생한다")
+    @DisplayName("메뉴가 생성된다.")
+    @Test
+    void create() {
+        Menu menu = new Menu();
+        menu.setId(1L);
+        menu.setPrice(new BigDecimal(10));
+        menu.setMenuGroupId(1L);
+
+        MenuProduct menuProduct = new MenuProduct();
+        menuProduct.setProductId(1L);
+        menuProduct.setQuantity(1);
+
+        Product product = new Product();
+        product.setPrice(new BigDecimal(10));
+
+        menu.setMenuProducts(Arrays.asList(menuProduct));
+
+        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(productDao.findById(1L)).willReturn(Optional.of(product));
+        given(menuDao.save(menu)).willReturn(menu);
+
+        Menu result = menuService.create(menu);
+
+        assertAll(
+                () -> assertNotNull(result.getId()),
+                () -> assertThat(result.getMenuProducts()).hasSize(1)
+        );
+    }
+
+    @DisplayName("가격이 입력되지 않는 경우 메뉴를 생성할 수 없다.")
     @Test
     void createWithNullPrice() {
         Menu menu = new Menu();
@@ -54,7 +86,7 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("가격이 0보다 작은 경우 오류가 발생한다")
+    @DisplayName("가격이 0보다 작은 경우 메뉴를 생성할 수 없다.")
     @Test
     void createWithNegativePrice() {
         Menu menu = new Menu();
@@ -65,7 +97,7 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴에 포함된 메뉴그룹ID가 존재하지 않으면 오류가 발생한다")
+    @DisplayName("메뉴에 포함된 메뉴그룹ID가 존재하지 않으면 메뉴를 생성할 수 없다.")
     @Test
     void createWithUnavailableMenuGroupId() {
         Menu menu = new Menu();
@@ -79,7 +111,7 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴에 포함된 각 상품의 (상품 * 수량) 합이 메뉴 가격보다 작은 경우 오류가 발생한다")
+    @DisplayName("메뉴에 포함된 각 상품의 (상품 * 수량) 합이 메뉴 가격보다 작은 경우 메뉴를 생성할 수 없다.")
     @Test
     void createWithInvalidProductPrice() {
         Menu menu = new Menu();
