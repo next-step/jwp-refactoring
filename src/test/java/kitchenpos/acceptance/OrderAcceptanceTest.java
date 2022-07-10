@@ -1,6 +1,5 @@
 package kitchenpos.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
@@ -11,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -25,6 +23,7 @@ import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -136,8 +135,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_요청됨(ExtractableResponse<Response> createResponse) {
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(createResponse.header(HttpHeaders.LOCATION)).isNotEmpty();
+        Assertions.assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Assertions.assertThat(createResponse.header(HttpHeaders.LOCATION)).isNotEmpty();
     }
 
     private ExtractableResponse<Response> 주문_목록_조회() {
@@ -149,16 +148,16 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 요청한_주문이_조회됨(ExtractableResponse<Response> createResponse, ExtractableResponse<Response> orderResponse) {
-        assertThat(orderResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(orderResponse.jsonPath().getList("id", Long.class)).contains(createResponse.as(OrderResponse.class).getId());
+        Assertions.assertThat(orderResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(orderResponse.jsonPath().getList("id", Long.class)).contains(createResponse.as(OrderResponse.class).getId());
     }
     private void 주문완료_상태로_변경됨(long orderId, ExtractableResponse<Response> reSearchResponse) {
-        assertThat(reSearchResponse.jsonPath().getString("find{it -> it.id==" + orderId + "}.orderStatus"))
+        Assertions.assertThat(reSearchResponse.jsonPath().getString("find{it -> it.id==" + orderId + "}.orderStatus"))
                 .isEqualTo(OrderStatus.COMPLETION.name());
     }
 
     private void 주문의_상태가_변경됨(ExtractableResponse<Response> updateResponse) {
-        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private ExtractableResponse<Response> 주문의_상태를_완료로_변경_요청(ExtractableResponse<Response> createResponse) {
@@ -176,19 +175,43 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private OrderTableResponse 주문_테이블이_존재함(OrderTableRequest orderTable) {
-        return TableAcceptanceTest.주문가능한_테이블을_요청한다(orderTable).as(OrderTableResponse.class);
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(orderTable)
+                .when().post("/api/tables")
+                .then()
+                .log().all()
+                .extract().as(OrderTableResponse.class);
     }
 
-    private ProductResponse 상품이_등록되어_있음(ProductRequest product) {
-        return ProductAcceptanceTest.상품_등록을_요청(product).as(ProductResponse.class);
+    private ProductResponse 상품이_등록되어_있음(ProductRequest productRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(productRequest)
+                .when().post("/api/products")
+                .then()
+                .log().all()
+                .extract().as(ProductResponse.class);
     }
 
-    private MenuGroupResponse 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {
-        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroupResponse.class);
+    private MenuGroupResponse 메뉴그룹이_등록되어있음(MenuGroupRequest request) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/api/menu-groups")
+                .then()
+                .log().all()
+                .extract().as(MenuGroupResponse.class);
     }
 
-    private MenuResponse 메뉴가_등록_되어_있음(MenuRequest menu) {
-        return MenuAcceptanceTest.메뉴등록을_요청(menu).as(MenuResponse.class);
+    private MenuResponse 메뉴가_등록_되어_있음(MenuRequest menuRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(menuRequest)
+                .when().post("/api/menus")
+                .then()
+                .log().all()
+                .extract().as(MenuResponse.class);
     }
 
 }

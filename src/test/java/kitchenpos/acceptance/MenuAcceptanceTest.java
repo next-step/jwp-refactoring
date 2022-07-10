@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -114,7 +113,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private ProductResponse 상품이_등록되어_있음(ProductRequest product) {
-        return ProductAcceptanceTest.상품_등록을_요청(product).as(ProductResponse.class);
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(product)
+                .when().post("/api/products")
+                .then()
+                .log().all()
+                .extract().as(ProductResponse.class);
     }
 
 
