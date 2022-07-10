@@ -1,4 +1,0 @@
-package kitchenpos;
-
-class ApplicationTest {
-}
