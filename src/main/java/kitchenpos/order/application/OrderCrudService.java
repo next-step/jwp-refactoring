@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderCrudService {
+
+    public static final String ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE = "주문 항목이 비어있을 수 없다.";
     private final MenuDao menuDao;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
@@ -36,7 +38,7 @@ public class OrderCrudService {
         final List<OrderLineItem> orderLineItems = request.toOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
         }
 
         final List<Long> menuIds = orderLineItems.stream()
