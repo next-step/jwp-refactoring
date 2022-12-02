@@ -22,6 +22,7 @@ public class MenuService {
     public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
     public static final String MINIMUM_PRICE_EXCEPTION_MESSAGE = "가격이 0원보다 작을 수 없습니다.";
     public static final String MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE = "메뉴 그룹이 존재하지 않습니다.";
+    public static final String MENU_PRICE_EXCEPTION_MESSAGE = "메뉴의 가격이 메뉴 상품의 합보다 클 수 없다.";
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
     private final MenuProductDao menuProductDao;
@@ -40,7 +41,7 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuCreateRequest request) {
+    public MenuResponse create(final MenuCreateRequest request) {
         final BigDecimal price = request.getPrice();
 
         if (Objects.isNull(price)) {
@@ -65,7 +66,7 @@ public class MenuService {
         }
 
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
         }
 
         final Menu savedMenu = menuDao.save(request.toMenu());
@@ -77,7 +78,6 @@ public class MenuService {
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);
-
 
         return new MenuResponse(savedMenu);
     }

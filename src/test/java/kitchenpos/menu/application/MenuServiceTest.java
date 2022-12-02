@@ -3,8 +3,12 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static kitchenpos.menu.application.MenuService.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,8 +43,15 @@ class MenuServiceTest {
     @Autowired
     private ProductDao productDao;
 
+    private Long menuGroupId;
+    private MenuProduct menuProduct;
+
     @BeforeEach
     void setUp() {
+        menuGroupId = menuGroupDao.save(new MenuGroup("A")).getId();
+        Menu menu = menuDao.save(new Menu("A", BigDecimal.ONE, menuGroupId));
+        Product product = productDao.save(new Product("A", BigDecimal.ONE));
+        menuProduct = menuProductDao.save(new MenuProduct(menu.getId(), menu.getId(), product.getId()));
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
@@ -46,7 +59,9 @@ class MenuServiceTest {
     @ParameterizedTest
     @NullSource
     void create_fail_MenuGroupNull(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(price)))
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(menuProduct);
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, 1L, price)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -55,7 +70,9 @@ class MenuServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"-1"})
     void create_fail_minimumPrice(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(price)))
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(menuProduct);
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, 1L, price)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MINIMUM_PRICE_EXCEPTION_MESSAGE);
     }
@@ -64,8 +81,21 @@ class MenuServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"1"})
     void create_fail_menuGroup(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(price)))
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(menuProduct);
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, null, price)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("메뉴의 가격이 메뉴 상품의 합보다 클 수 없다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"1"})
+    void create_fail_priceSum(BigDecimal price) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(menuProduct);
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, menuGroupId, price)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(MENU_PRICE_EXCEPTION_MESSAGE);
     }
 }
