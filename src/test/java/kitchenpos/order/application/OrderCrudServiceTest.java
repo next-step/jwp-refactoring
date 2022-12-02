@@ -15,8 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
-import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderCrudService.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("OrderCrudService")
@@ -59,12 +58,23 @@ class OrderCrudServiceTest {
     void create_fail_orderLineItemSize() {
 
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem());
+        orderLineItems.add(new OrderLineItem(1L, 100L, 1));
+
+        assertThatThrownBy(() -> orderCrudService.create(new OrderCreateRequest(1L, orderLineItems)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("주문을 생성한다. / 주문 테이블은 비어있을 수 없다.")
+    @Test
+    void create_fail_orderTableEmpty() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(1L, 2L, 3));
 
         OrderCreateRequest request = new OrderCreateRequest(1L, orderLineItems);
 
         assertThatThrownBy(() -> orderCrudService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
+                .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
     }
 }
