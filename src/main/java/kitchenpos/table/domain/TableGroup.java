@@ -1,12 +1,13 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup(List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
