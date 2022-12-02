@@ -3,6 +3,8 @@ package kitchenpos.order.ui;
 import kitchenpos.order.application.OrderCrudService;
 import kitchenpos.order.application.OrderStatusService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,8 @@ public class OrderRestController {
     }
 
     @PostMapping("/api/orders")
-    public ResponseEntity<Order> create(@RequestBody final Order order) {
-        final Order created = orderCrudService.create(order);
+    public ResponseEntity<OrderResponse> create(@RequestBody final OrderCreateRequest request) {
+        final OrderResponse created = orderCrudService.create(request);
         final URI uri = URI.create("/api/orders/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created);
