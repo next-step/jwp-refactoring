@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
+    public static final String ORDER_STATUS_EXCEPTION_MESSAGE = "주문상태가 완료일 경우에만 해제가능합니다.";
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
@@ -77,7 +78,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE);
         }
 
         for (final OrderTable orderTable : orderTables) {
