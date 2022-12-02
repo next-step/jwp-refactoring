@@ -21,6 +21,7 @@ import java.util.Objects;
 public class MenuService {
     public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
     public static final String MINIMUM_PRICE_EXCEPTION_MESSAGE = "가격이 0원보다 작을 수 없습니다.";
+    public static final String MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE = "메뉴 그룹이 존재하지 않습니다.";
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
     private final MenuProductDao menuProductDao;
@@ -51,7 +52,7 @@ public class MenuService {
         }
 
         if (!menuGroupDao.existsById(request.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
         }
 
         final List<MenuProduct> menuProducts = request.getMenuProducts();

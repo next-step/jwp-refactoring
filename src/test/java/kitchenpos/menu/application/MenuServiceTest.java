@@ -11,14 +11,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.application.MenuService.MINIMUM_PRICE_EXCEPTION_MESSAGE;
-import static kitchenpos.menu.application.MenuService.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.menu.application.MenuService.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("MenuService")
+@SpringBootTest
 class MenuServiceTest {
 
     @Autowired
@@ -57,5 +58,14 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(price)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MINIMUM_PRICE_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("메뉴 그룹이 없을 경우 메뉴를 생성할 수 없다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"1"})
+    void create_fail_menuGroup(BigDecimal price) {
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(price)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
     }
 }
