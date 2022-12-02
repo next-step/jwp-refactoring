@@ -11,8 +11,13 @@ public class OrderCreateRequest {
     private Long orderTableId;
     private List<OrderLineItem> orderLineItems;
 
+    public OrderCreateRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+    }
+
     public Order toOrder() {
-        return new Order(this.orderTableId, orderLineItems);
+        return new Order(this.orderTableId, this.orderLineItems);
     }
 
     public Long getOrderTableId() {
@@ -20,6 +25,6 @@ public class OrderCreateRequest {
     }
 
     public List<OrderLineItem> toOrderLineItems() {
-        return new ArrayList<>();
+        return this.orderLineItems;
     }
 }
