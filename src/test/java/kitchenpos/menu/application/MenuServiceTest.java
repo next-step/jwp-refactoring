@@ -7,6 +7,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static kitchenpos.menu.application.MenuService.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("MenuService")
 @SpringBootTest
@@ -49,9 +53,9 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuGroupId = menuGroupDao.save(new MenuGroup("A")).getId();
-        Menu menu = menuDao.save(new Menu("A", BigDecimal.ONE, menuGroupId));
-        Product product = productDao.save(new Product("A", BigDecimal.ONE));
-        menuProduct = menuProductDao.save(new MenuProduct(menu.getId(), menu.getId(), product.getId()));
+        Menu menu = menuDao.save(new Menu("A", BigDecimal.valueOf(2), menuGroupId));
+        Product product = productDao.save(new Product("A", BigDecimal.valueOf(2)));
+        menuProduct = menuProductDao.save(new MenuProduct(menu.getId(), menu.getId(), product.getId(), 1));
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
@@ -61,7 +65,7 @@ class MenuServiceTest {
     void create_fail_MenuGroupNull(BigDecimal price) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, 1L, price)))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, 1L, price, "A")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -72,7 +76,7 @@ class MenuServiceTest {
     void create_fail_minimumPrice(BigDecimal price) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, 1L, price)))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, 1L, price, "A")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MINIMUM_PRICE_EXCEPTION_MESSAGE);
     }
@@ -83,19 +87,37 @@ class MenuServiceTest {
     void create_fail_menuGroup(BigDecimal price) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, null, price)))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, null, price, "menuA")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("메뉴의 가격이 메뉴 상품의 합보다 클 수 없다.")
     @ParameterizedTest
-    @ValueSource(strings = {"1"})
+    @ValueSource(strings = {"3"})
     void create_fail_priceSum(BigDecimal price) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, menuGroupId, price)))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, menuGroupId, price, "menuA")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_PRICE_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("메뉴를 생성한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"1"})
+    void create_success(BigDecimal price) {
+        String name = "menuA";
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(menuProduct);
+        MenuResponse response = menuService.create(new MenuCreateRequest(menuProducts, menuGroupId, price, name));
+
+        assertAll(
+                () -> assertThat(response.getId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(name),
+                () -> assertTrue(response.getPrice().compareTo(price) == 0),
+                () -> assertThat(response.getMenuProducts()).hasSize(1)
+        );
+
     }
 }
