@@ -12,6 +12,10 @@ public class MenuCreateRequest {
     private Long menuGroupId;
     private BigDecimal price;
 
+    public MenuCreateRequest(BigDecimal price) {
+        this.price = price;
+    }
+
     public Menu toMenu() {
         return new Menu();
     }
