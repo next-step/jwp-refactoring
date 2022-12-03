@@ -8,7 +8,7 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(long orderId, long menuId, int quantity) {
+    public OrderLineItem(Long orderId, Long menuId, int quantity) {
         this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;

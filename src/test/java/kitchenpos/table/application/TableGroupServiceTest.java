@@ -1,6 +1,13 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -11,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -35,16 +43,30 @@ class TableGroupServiceTest {
     @Autowired
     private TableGroupDao tableGroupDao;
 
+    @Autowired
+    private MenuDao menuDao;
+
+    @Autowired
+    private MenuGroupDao menuGroupDao;
+
     private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
+        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
 
+        List<MenuProduct> menuProducts = new ArrayList<>();
         OrderTable orderTable = orderTableDao.save(new OrderTable());
+        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(orderTable);
         tableGroup = tableGroupDao.save(new TableGroup(orderTables));
+        orderTable.setTableGroupId(tableGroup.getId());
+        orderTableDao.save(orderTable);
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
+        orderDao.save(new Order(orderTable.getId(), orderLineItems));
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
     }
 
@@ -77,7 +99,6 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
-
     }
 
     @DisplayName("테이블 그룹을 해제한다. / 식사중일 경우 해제할 수 없다.")
