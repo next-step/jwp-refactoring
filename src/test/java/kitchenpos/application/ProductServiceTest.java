@@ -67,7 +67,7 @@ public class ProductServiceTest {
 
         @ParameterizedTest
         @NullSource
-        @DisplayName("새로운 상품 생성 성공")
+        @DisplayName("가격이 없으면 상품 등록 실패")
         public void createFailure_priceNull(BigDecimal bigDecimal) {
             // given
             final Product product = new Product();
@@ -79,7 +79,7 @@ public class ProductServiceTest {
 
         @ParameterizedTest
         @ValueSource(ints = {Integer.MIN_VALUE, -2, -1})
-        @DisplayName("새로운 상품 생성 성공")
+        @DisplayName("가격이 음수이면 상품 등록 실패")
         public void createFailure_priceNegative(int priceValue) {
             // given
             final Product product = new Product();
@@ -113,7 +113,7 @@ public class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("리스트 조회 성공")
+        @DisplayName("빈 리스트 조회 성공")
         public void listSuccessEmptyList() {
             // given
             final List<Product> mockProducts = Collections.emptyList();
