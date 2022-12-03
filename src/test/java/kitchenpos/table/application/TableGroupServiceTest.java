@@ -39,9 +39,12 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
+
+        OrderTable orderTable = orderTableDao.save(new OrderTable());
+
         List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.add(orderTable);
         tableGroup = tableGroupDao.save(new TableGroup(orderTables));
-        orderTables.add(new OrderTable(tableGroup.getId()));
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
     }
 

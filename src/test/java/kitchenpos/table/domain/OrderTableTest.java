@@ -13,8 +13,8 @@ class OrderTableTest {
     @Test
     void create() {
 
-        OrderTable orderTable = new OrderTable(1L);
-
+        OrderTable orderTable = new OrderTable();
+        
         assertAll(
                 () -> assertThat(orderTable.getTableGroupId()).isNotNull(),
                 () -> assertThat(orderTable.getNumberOfGuests()).isZero(),

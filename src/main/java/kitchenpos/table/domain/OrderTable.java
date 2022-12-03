@@ -6,8 +6,7 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable() {
         this.empty = true;
     }
 
