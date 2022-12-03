@@ -14,11 +14,11 @@ class OrderTableTest {
     void create() {
 
         OrderTable orderTable = new OrderTable();
-        
+
         assertAll(
-                () -> assertThat(orderTable.getTableGroupId()).isNotNull(),
+                () -> assertThat(orderTable.getTableGroupId()).isNull(),
                 () -> assertThat(orderTable.getNumberOfGuests()).isZero(),
-                () -> assertThat(orderTable.isEmpty()).isTrue()
+                () -> assertThat(orderTable.isEmpty()).isFalse()
         );
     }
 }

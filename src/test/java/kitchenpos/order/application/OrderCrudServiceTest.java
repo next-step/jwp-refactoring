@@ -56,7 +56,9 @@ class OrderCrudServiceTest {
         TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
         OrderTable orderTable = orderTableDao.save(new OrderTable());
         orderTable.setTableGroupId(tableGroup.getId());
-        orderTable = orderTableDao.save(orderTable);
+
+        OrderTable orderTable1 = orderTableDao.save(orderTable);
+        orderTableId = orderTable1.getId();
         orderCrudService = new OrderCrudService(menuDao, orderDao, orderLineItemDao, orderTableDao);
     }
 

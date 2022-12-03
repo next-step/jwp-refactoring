@@ -7,7 +7,7 @@ public class OrderTable {
     private boolean empty;
 
     public OrderTable() {
-        this.empty = true;
+        this.empty = false;
     }
 
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {

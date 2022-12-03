@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -50,6 +51,7 @@ class TableGroupServiceTest {
     private MenuGroupDao menuGroupDao;
 
     private TableGroup tableGroup;
+    private Order order;
 
     @BeforeEach
     void setUp() {
@@ -66,7 +68,7 @@ class TableGroupServiceTest {
         orderTableDao.save(orderTable);
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        orderDao.save(new Order(orderTable.getId(), orderLineItems));
+        order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
     }
 
@@ -78,6 +80,10 @@ class TableGroupServiceTest {
             OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
             assertThat(find.getTableGroupId()).isNotNull();
         }
+
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        orderDao.save(order);
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 
         tableGroupService.ungroup(tableGroup.getId());
 
@@ -96,6 +102,9 @@ class TableGroupServiceTest {
             assertThat(find.getTableGroupId()).isNotNull();
         }
 
+        Order order1 = orderDao.findById(order.getId()).get();
+        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
@@ -105,5 +114,18 @@ class TableGroupServiceTest {
     @Test
     void unGroup_fail_meal() {
 
+        for (OrderTable orderTable : tableGroup.getOrderTables()) {
+            OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
+            assertThat(find.getTableGroupId()).isNotNull();
+        }
+
+        order.setOrderStatus(OrderStatus.MEAL.name());
+        orderDao.save(order);
+
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }
 }
