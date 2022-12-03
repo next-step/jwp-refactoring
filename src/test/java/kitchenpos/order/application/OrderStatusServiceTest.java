@@ -25,7 +25,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kitchenpos.order.application.OrderStatusService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 상태 서비스")
 @SpringBootTest
@@ -80,5 +82,23 @@ class OrderStatusServiceTest {
 
         assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
                 .isEqualTo(OrderStatus.MEAL.name());
+    }
+
+    @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
+    @Test
+    void changeStatus_fail() {
+
+        OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.COMPLETION);
+
+        assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
+                .isEqualTo(OrderStatus.COMPLETION.name());
+
+        Order order1 = orderDao.findById(order.getId()).get();
+
+        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+
+        assertThatThrownBy(() -> orderStatusService.changeOrderStatus(order.getId(), request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
     }
 }
