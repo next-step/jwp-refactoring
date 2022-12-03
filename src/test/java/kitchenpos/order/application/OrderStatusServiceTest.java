@@ -101,4 +101,12 @@ class OrderStatusServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
     }
+
+    @DisplayName("주문상태를 완료로 변경한다.")
+    @Test
+    void name() {
+        orderStatusService.changeOrderStatus(order.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION));
+        Order order1 = orderDao.findById(order.getId()).get();
+        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+    }
 }
