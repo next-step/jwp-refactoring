@@ -70,7 +70,7 @@ public class ProductServiceTest {
     @DisplayName("가격이 0원 미만인 상품은 생성할 수 없다.")
     @ParameterizedTest(name = "등록하고자 하는 상품의 가격: {0}")
     @ValueSource(longs = {-1000, -2000})
-    void createProductThrowErrorWhenPriceIsNull(long price) {
+    void createProductThrowErrorWhenPriceIsSmallerThenZero(long price) {
         // given
         Product product = generateProduct(3L, "감자튀김", BigDecimal.valueOf(price));
 

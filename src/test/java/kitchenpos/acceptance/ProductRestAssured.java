@@ -15,6 +15,10 @@ public class ProductRestAssured {
         return 상품_생성_요청(id, name, price);
     }
 
+    public static ExtractableResponse<Response> 상품_등록되어_있음(Product product) {
+        return 상품_생성_요청(product.getId(), product.getName(), product.getPrice());
+    }
+
     public static ExtractableResponse<Response> 상품_생성_요청(Long id, String name, BigDecimal price) {
         Product product = generateProduct(id, name, price);
 
