@@ -54,8 +54,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         콜라상품 = generateMenuProduct(2L, null, 콜라.getId(), 1L);
         불고기버거상품 = generateMenuProduct(3L, null, 불고기버거.getId(), 1L);
         치킨버거상품 = generateMenuProduct(3L, null, 치킨버거.getId(), 1L);
-        불고기버거세트 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        불고기버거세트 = generateMenu("불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
+        치킨버거세트 = generateMenu("치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
     }
 
     @DisplayName("메뉴를 생성한다.")

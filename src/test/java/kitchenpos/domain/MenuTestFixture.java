@@ -8,4 +8,8 @@ public class MenuTestFixture {
     public static Menu generateMenu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return Menu.of(id, name, price, menuGroupId, menuProducts);
     }
+
+    public static Menu generateMenu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return Menu.of(null, name, price, menuGroupId, menuProducts);
+    }
 }
