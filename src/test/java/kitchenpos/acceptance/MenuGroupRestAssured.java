@@ -14,6 +14,10 @@ public class MenuGroupRestAssured {
         return 메뉴_그룹_생성_요청(id, name);
     }
 
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
+        return 메뉴_그룹_생성_요청(menuGroup.getId(), menuGroup.getName());
+    }
+
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(Long id, String name) {
         MenuGroup menuGroup = generateMenuGroup(id, name);
 
