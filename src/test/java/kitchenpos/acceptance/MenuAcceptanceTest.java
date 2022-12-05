@@ -10,6 +10,7 @@ import static kitchenpos.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -83,8 +84,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 메뉴_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank()
+        );
     }
 
     private static void 메뉴_목록_응답됨(ExtractableResponse<Response> response) {
