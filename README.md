@@ -125,11 +125,11 @@ PUT /api/orders/{orderId}/order-status
 ## 1단계 - 테스트를 통한 코드 보호
 ### 요구 사항
 - [x] 키친포스의 요구사항을 작성한다.
-- [ ] 정리한 요구사항을 토대로 테스트 코드 작성 ➝ 모든 Business Object에 대한 테스트 코드 작성
+- [x] 정리한 요구사항을 토대로 테스트 코드 작성 ➝ 모든 Business Object에 대한 테스트 코드 작성
   - @SpringBootTest를 이용한 통합 테스트 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드 작성
-    - [ ] @ExtendWith(MockitoExtension.class)를 이용한 Business Object 테스트 코드 작성
-  - [ ] 인수 테스트 코드 작성(권장)
-- [ ] lombok 사용하지 않을 것
+    - [x] @ExtendWith(MockitoExtension.class)를 이용한 Business Object 테스트 코드 작성
+  - [x] 인수 테스트 코드 작성(권장)
+- [x] lombok 사용하지 않을 것
 
 ### 힌트
 - `http` 디렉토리의 `.http` 파일을 보고 어떤 요청을 받는지 참고할 수 있다. 
