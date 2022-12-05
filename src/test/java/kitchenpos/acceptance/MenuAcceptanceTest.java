@@ -7,6 +7,7 @@ import static kitchenpos.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.domain.MenuProductTestFixture.generateMenuProduct;
+import static kitchenpos.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +38,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuProduct 불고기버거상품;
     private MenuProduct 치킨버거상품;
     private MenuProduct 콜라상품;
+    private Menu 불고기버거세트;
+    private Menu 치킨버거세트;
 
     @BeforeEach
     public void setUp() {
@@ -50,13 +53,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         콜라상품 = generateMenuProduct(2L, null, 콜라.getId(), 1L);
         불고기버거상품 = generateMenuProduct(3L, null, 불고기버거.getId(), 1L);
         치킨버거상품 = generateMenuProduct(3L, null, 치킨버거.getId(), 1L);
+        불고기버거세트 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
+        치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void createMenu() {
         // when
-        ExtractableResponse<Response> response = 메뉴_생성_요청(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
+        ExtractableResponse<Response> response = 메뉴_생성_요청(불고기버거세트);
 
         // then
         메뉴_생성됨(response);
@@ -66,8 +71,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllProducts() {
         // given
-        ExtractableResponse<Response> createResponse1 = 메뉴_등록되어_있음(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        ExtractableResponse<Response> createResponse2 = 메뉴_등록되어_있음(2L, "불고기버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        ExtractableResponse<Response> createResponse1 = 메뉴_등록되어_있음(불고기버거세트);
+        ExtractableResponse<Response> createResponse2 = 메뉴_등록되어_있음(치킨버거세트);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();

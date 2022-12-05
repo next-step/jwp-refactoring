@@ -13,16 +13,14 @@ import org.springframework.http.MediaType;
 
 public class MenuRestAssured {
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return 메뉴_생성_요청(id, name, price, menuGroupId, menuProducts);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {
+        return 메뉴_생성_요청(menu);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menus = generateMenu(id, name, price, menuGroupId, menuProducts);
-
+    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
         return RestAssured
                 .given().log().all()
-                .body(menus)
+                .body(menu)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all()
