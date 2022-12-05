@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.acceptance.ProductRestAssured.상품_목록_조회_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_생성_요청;
+import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,11 +21,21 @@ import org.springframework.http.HttpStatus;
 @DisplayName("상품 관련 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
+    private Product 감자튀김;
+    private Product 콜라;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        감자튀김 = generateProduct(1L, "감자튀김", BigDecimal.valueOf(3000L));
+        콜라 = generateProduct(2L, "콜라", BigDecimal.valueOf(1500L));
+    }
+
     @DisplayName("상품을 생성한다.")
     @Test
     void createProduct() {
         // when
-        ExtractableResponse<Response> response = 상품_생성_요청(1L, "감자튀김", BigDecimal.valueOf(3000L));
+        ExtractableResponse<Response> response = 상품_생성_요청(감자튀김);
 
         // then
         상품_생성됨(response);
@@ -33,8 +45,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllProducts() {
         // given
-        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(1L, "감자튀김", BigDecimal.valueOf(3000L));
-        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(2L, "콜라", BigDecimal.valueOf(1500L));
+        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(감자튀김);
+        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(콜라);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();

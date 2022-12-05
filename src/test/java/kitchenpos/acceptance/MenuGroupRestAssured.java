@@ -11,16 +11,14 @@ import org.springframework.http.MediaType;
 public class MenuGroupRestAssured {
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(Long id, String name) {
-        return 메뉴_그룹_생성_요청(id, name);
+        return 메뉴_그룹_생성_요청(generateMenuGroup(id, name));
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
-        return 메뉴_그룹_생성_요청(menuGroup.getId(), menuGroup.getName());
+        return 메뉴_그룹_생성_요청(menuGroup);
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(Long id, String name) {
-        MenuGroup menuGroup = generateMenuGroup(id, name);
-
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
         return RestAssured
                 .given().log().all()
                 .body(menuGroup)

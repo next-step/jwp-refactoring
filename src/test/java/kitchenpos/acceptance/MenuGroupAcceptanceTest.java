@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_목록_조회_요청;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
+import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,11 +20,21 @@ import org.springframework.http.HttpStatus;
 @DisplayName("메뉴 그룹 관련 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
+    private MenuGroup 햄버거세트;
+    private MenuGroup 햄버거단품;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        햄버거세트 = generateMenuGroup(1L, "햄버거세트");
+        햄버거단품 = generateMenuGroup(2L, "햄버거단품");
+    }
+
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void createMenuGroup() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(1L, "햄버거세트");
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(햄버거세트);
 
         // then
         메뉴_그룹_생성됨(response);
@@ -32,8 +44,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllMenuGroups() {
         // given
-        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(1L, "햄버거세트");
-        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(2L, "햄버거단품");
+        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(햄버거세트);
+        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(햄버거단품);
 
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
