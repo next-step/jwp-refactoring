@@ -22,7 +22,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         // when
-        ExtractableResponse<Response> response =MenuGroupAcceptance.create_menu_group("양식");
+        ExtractableResponse<Response> response = MenuGroupAcceptance.create_menu_group("양식");
 
         // then
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
@@ -34,9 +34,9 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("빈 값의 이름을 입력하여 메뉴 그룹을 생성한다.")
     @Test
-    void createMenuWithEmptyName() {
+    void createMenuWithNullName() {
         // when
-        ExtractableResponse<Response> response =MenuGroupAcceptance.create_menu_group(null);
+        ExtractableResponse<Response> response = MenuGroupAcceptance.create_menu_group(null);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
