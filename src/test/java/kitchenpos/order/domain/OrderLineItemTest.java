@@ -20,4 +20,14 @@ class OrderLineItemTest {
                 () -> assertThat(orderLineItem.getQuantity()).isNotNull()
         );
     }
+
+    @DisplayName("주문 항목을 생성한다. / 메뉴가 없을 수 없다.")
+    @Test
+    void create_fail_notMenu() {
+    }
+
+    @DisplayName("주문 항목을 생성한다. / 갯수가 없을 수 없다.")
+    @Test
+    void create_fail_notQuantity() {
+    }
 }
