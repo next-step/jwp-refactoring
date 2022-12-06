@@ -48,4 +48,8 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+    public void empty() {
+        this.empty = true;
+    }
 }
