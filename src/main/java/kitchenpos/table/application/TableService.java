@@ -16,6 +16,7 @@ import java.util.Objects;
 public class TableService {
     public static final String CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "변경하는 손님수는 0명보다 작을 수 없습니다.";
     public static final int CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER = 0;
+    public static final String TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "테이블이 공석 상태면 손님수를 변경할 수 없다.";
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
 
@@ -66,7 +67,7 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
