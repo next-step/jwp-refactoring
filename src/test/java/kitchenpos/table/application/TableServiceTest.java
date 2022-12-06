@@ -1,6 +1,12 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -12,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +32,12 @@ class TableServiceTest {
 
     @Autowired
     private OrderDao orderDao;
+
+    @Autowired
+    private MenuDao menuDao;
+
+    @Autowired
+    private MenuGroupDao menuGroupDao;
 
     @Autowired
     private OrderTableDao orderTableDao;
@@ -93,5 +106,23 @@ class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeEmpty(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("공석 상태로 변경한다. / 요리중일 경우 변경할 수 없다.")
+    @Test
+    void empty_fail_cooking() {
+
+        List<Order> orders = orderDao.findAll();
+        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
+        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+        OrderTable orderTable = orderTableDao.save(new OrderTable());
+
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
+        Order order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
+
+        assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTableId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
 }
