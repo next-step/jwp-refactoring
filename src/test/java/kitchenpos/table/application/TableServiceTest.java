@@ -7,6 +7,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -120,6 +121,28 @@ class TableServiceTest {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
         Order order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
+
+        assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTableId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("공석 상태로 변경한다. / 식사중일 경우 변경할 수 없다.")
+    @Test
+    void empty_fail_meal() {
+
+        List<Order> orders = orderDao.findAll();
+        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
+        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+        OrderTable orderTable = orderTableDao.save(new OrderTable());
+
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
+        Order order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
+
+        order.setOrderStatus(OrderStatus.MEAL.name());
+
+        orderDao.save(order);
 
         assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTableId()))
                 .isInstanceOf(IllegalArgumentException.class)
