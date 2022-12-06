@@ -1,14 +1,19 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
+
 public class OrderLineItem {
+    public static final String MENU_NULL_EXCEPTION_MESSAGE = "메뉴가 없을 수 없습니다.";
     private Long seq;
     private Long orderId;
     private Long menuId;
     private long quantity;
 
-    protected OrderLineItem() {}
+    protected OrderLineItem() {
+    }
 
     public OrderLineItem(Long orderId, Long menuId, int quantity) {
+        validate(menuId);
         this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
@@ -19,6 +24,12 @@ public class OrderLineItem {
         this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    private void validate(Long menuId) {
+        if (Objects.isNull(menuId)) {
+            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
+        }
     }
 
     public Long getSeq() {
