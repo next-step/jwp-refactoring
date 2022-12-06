@@ -22,16 +22,20 @@ public class Product {
     protected Product() {}
 
     public Product(String name, BigDecimal price) {
-        validate(name, price);
+        validate(name);
 
         this.name = name;
         this.price = new ProductPrice(price);
     }
 
-    private void validate(String name, BigDecimal price) {
+    private void validate(String name) {
         if (StringUtils.isEmpty(name)) {
             throw new IllegalArgumentException(ProductExceptionCode.REQUIRED_NAME.getMessage());
         }
+    }
+
+    public BigDecimal calculateAmount(long quantity) {
+        return this.price.multiply(new BigDecimal(quantity));
     }
 
     public Long getId() {
