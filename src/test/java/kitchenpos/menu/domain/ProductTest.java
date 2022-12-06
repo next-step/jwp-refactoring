@@ -4,6 +4,7 @@ import kitchenpos.menu.exception.ProductExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.math.BigDecimal;
@@ -26,5 +27,12 @@ class ProductTest {
             new Product(name, new BigDecimal(18000));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ProductExceptionCode.REQUIRED_NAME.getMessage());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = { "2:5000", "3:6000", "7:10000", "10:1000" }, delimiter = ':')
+    void 상품의_총_금액을_구함(int quantity, int price) {
+        Product product = new Product("스파게티", new BigDecimal(price));
+        assertEquals(new BigDecimal(quantity * price), product.calculateAmount(quantity));
     }
 }

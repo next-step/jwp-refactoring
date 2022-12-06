@@ -46,11 +46,12 @@ class MenuGroupRestControllerTest extends ControllerTest {
 
     @Test
     void 메뉴_그룹_등록() throws Exception {
+        MenuGroupRequest request = new MenuGroupRequest("양식");
         given(menuGroupService.create(any(MenuGroupRequest.class)))
                 .willReturn(MenuGroupResponse.of(양식));
 
         webMvc.perform(post("/api/menu-groups")
-                    .content(mapper.writeValueAsString(양식))
+                    .content(mapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(양식.getId().intValue())))

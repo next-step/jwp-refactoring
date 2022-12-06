@@ -47,10 +47,11 @@ class ProductRestControllerTest extends ControllerTest {
 
     @Test
     void 상품_등록() throws Exception {
+        ProductRequest request = new ProductRequest(스테이크.getName(), 스테이크.getPrice());
         given(productService.create(any(ProductRequest.class))).willReturn(ProductResponse.of(스테이크));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(스테이크))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(스테이크.getId().intValue())))
@@ -60,6 +61,7 @@ class ProductRestControllerTest extends ControllerTest {
 
     @Test
     void 상품_등록_실패() throws Exception {
+        ProductRequest request = new ProductRequest(스테이크.getName(), 스테이크.getPrice());
         given(productService.create(any(ProductRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/products")
