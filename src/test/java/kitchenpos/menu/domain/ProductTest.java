@@ -1,27 +1,30 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.exception.MenuGroupExceptionCode;
+import kitchenpos.menu.exception.ProductExceptionCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("메뉴 그룹 테스트")
-class MenuGroupTest {
+@DisplayName("상품 클래스 테스트")
+class ProductTest {
     @Test
     void 동등성_테스트() {
-        assertEquals(new MenuGroup("양식"), new MenuGroup("양식"));
+        assertEquals(new Product("스파게티", new BigDecimal(18000)),
+                new Product("스파게티", new BigDecimal(18000)));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 이름이_null이거나_빈_문자열이면_메뉴_그룹_객체를_생성할_수_없음(String name) {
+    void 이름이_null이거나_빈_문자열인_상품을_생성할_수_없음(String name) {
         assertThatThrownBy(() -> {
-            new MenuGroup(name);
+            new Product(name, new BigDecimal(18000));
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(MenuGroupExceptionCode.REQUIRED_NAME.getMessage());
+                .hasMessage(ProductExceptionCode.REQUIRED_NAME.getMessage());
     }
 }
