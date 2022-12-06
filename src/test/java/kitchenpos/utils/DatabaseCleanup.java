@@ -1,6 +1,7 @@
 package kitchenpos.utils;
 
 import com.google.common.base.CaseFormat;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,9 +36,23 @@ public class DatabaseCleanup implements InitializingBean {
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            cleanAutoIncrement(entityManager, tableName);
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private void cleanAutoIncrement(EntityManager entityManager, String tableName) {
+        if(isTableContainedSeqColumn(tableName)) {
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN SEQ RESTART WITH 1").executeUpdate();
+            return;
+        }
+
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+    }
+
+    private boolean isTableContainedSeqColumn(String tableName) {
+        return StringUtils.equals(tableName, "order_line_item") ||
+                StringUtils.equals(tableName, "menu_product");
     }
 }
