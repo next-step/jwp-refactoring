@@ -103,9 +103,9 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 가격이 0 이하이면 예외가 발생한다.")
+    @DisplayName("메뉴 가격이 0 미만이면 예외가 발생한다.")
     @ParameterizedTest
-    @ValueSource(ints = {0, -1, -1000, -20000})
+    @ValueSource(ints = {-1, -1000, -20000})
     void createUnderZeroPriceMenuException(int input) {
         // given
         불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(input), 1L, new ArrayList<>());

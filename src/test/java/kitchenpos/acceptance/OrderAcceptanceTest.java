@@ -48,14 +48,18 @@ class OrderAcceptanceTest extends AcceptanceTest {
         불고기상품 = new MenuProduct(1L, null, 불고기.getId(), 1L);
         김치상품 = new MenuProduct(2L, null, 김치.getId(), 1L);
         공기밥상품 = new MenuProduct(3L, null, 공기밥.getId(), 1L);
-        불고기정식 = 메뉴_생성_요청(
-                new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), Arrays.asList(불고기상품, 김치상품, 공기밥상품))
-        ).as(Menu.class);
+        불고기정식 = 메뉴_생성_요청(new Menu(
+                1L,
+                "불고기정식",
+                BigDecimal.valueOf(12_000L),
+                한식.getId(),
+                Arrays.asList(불고기상품, 김치상품, 공기밥상품)
+        )).as(Menu.class);
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, null, 0, false))
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(null, null, 불고기정식.getId(), 1);
-        주문 = new Order(null, 주문테이블.getId(), OrderStatus.COOKING.name(), null, Arrays.asList(불고기정식주문));
+        주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(불고기정식주문));
     }
 
     @DisplayName("주문을 생성한다.")
