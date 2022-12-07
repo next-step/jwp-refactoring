@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static kitchenpos.acceptance.TableAcceptanceTest.주문테이블_생성_요청;
@@ -26,8 +25,10 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = new OrderTable(1L, null, 4, true);
-        주문테이블_B = new OrderTable(2L, null, 4, true);
+        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, null, 4, true))
+                .as(OrderTable.class);
+        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, null, 4, true))
+                .as(OrderTable.class);
         우테캠_PRO_단체 = new TableGroup(1L, null, Arrays.asList(주문테이블_A, 주문테이블_B));
     }
 
@@ -35,9 +36,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroup() {
         // when
-        주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(주문테이블_B).as(OrderTable.class);
-        우테캠_PRO_단체 = new TableGroup(1L, null, Arrays.asList(주문테이블_A, 주문테이블_B));
         ExtractableResponse<Response> response = 단체지정_생성_요청(우테캠_PRO_단체);
 
         // then
@@ -55,7 +53,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // then
         단체지정_해제됨(response);
-
     }
 
     private ExtractableResponse<Response> 단체지정_생성_요청(TableGroup tableGroup) {

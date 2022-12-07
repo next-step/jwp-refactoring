@@ -41,7 +41,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블을 조회한다.")
     @Test
-    void findOrderTables() {
+    void findAllOrderTable() {
         // given
         주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
         주문테이블_B = 주문테이블_생성_요청(주문테이블_B).as(OrderTable.class);

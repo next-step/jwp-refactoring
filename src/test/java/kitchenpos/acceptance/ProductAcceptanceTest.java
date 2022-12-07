@@ -42,7 +42,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
-    void findAllMenuGroups() {
+    void findAllProduct() {
         // given
         불고기 = 상품_생성_요청(불고기).as(Product.class);
         김치 = 상품_생성_요청(김치).as(Product.class);

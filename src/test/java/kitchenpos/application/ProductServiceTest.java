@@ -71,7 +71,7 @@ class ProductServiceTest {
 
     @DisplayName("상품을 조회할 수 있다.")
     @Test
-    void findProducts() {
+    void findAllProduct() {
         // given
         Product product = new Product(1L, "떡볶이", BigDecimal.valueOf(3_000));
         when(productDao.findAll()).thenReturn(Arrays.asList(product));

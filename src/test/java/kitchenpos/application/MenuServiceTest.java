@@ -155,7 +155,7 @@ class MenuServiceTest {
 
     @DisplayName("메뉴를 조회할 수 있다.")
     @Test
-    void findMenus() {
+    void findAllMenu() {
         // given
         List<Menu> menus = Arrays.asList(불고기정식);
         when(menuDao.findAll()).thenReturn(menus);

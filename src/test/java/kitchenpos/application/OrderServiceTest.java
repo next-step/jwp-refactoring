@@ -152,7 +152,7 @@ class OrderServiceTest {
 
     @DisplayName("주문을 조회할 수 있다.")
     @Test
-    void findOrders() {
+    void findAllOrder() {
         // given
         when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
         when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(주문.getOrderLineItems());

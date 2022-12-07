@@ -70,7 +70,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_목록_응답됨(response, Arrays.asList(불고기정식.getId()));
-
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {

@@ -51,7 +51,7 @@ class TableServiceTest {
 
     @DisplayName("주문 테이블을 조회할 수 있다.")
     @Test
-    void findOrderTable() {
+    void findAllOrderTable() {
         // given
         OrderTable orderTable = new OrderTable(1L, null, 4, true);
         when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable));

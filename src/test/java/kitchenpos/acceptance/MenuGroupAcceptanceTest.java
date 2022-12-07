@@ -41,7 +41,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void findAllMenuGroups() {
+    void findAllMenuGroup() {
         // given
         한식 = 메뉴그룹_생성_요청(한식).as(MenuGroup.class);
         양식 = 메뉴그룹_생성_요청(양식).as(MenuGroup.class);

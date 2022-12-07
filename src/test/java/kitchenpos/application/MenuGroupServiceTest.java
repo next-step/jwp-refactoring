@@ -44,7 +44,7 @@ class MenuGroupServiceTest {
 
     @DisplayName("메뉴 그룹을 조회한다.")
     @Test
-    void findMenuGroups() {
+    void findAllMenuGroup() {
         // given
         MenuGroup 한식 = new MenuGroup(1L, "한식");
         when(menuGroupDao.findAll()).thenReturn(Arrays.asList(한식));
