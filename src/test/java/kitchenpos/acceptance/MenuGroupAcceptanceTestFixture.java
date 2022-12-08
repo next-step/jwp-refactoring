@@ -8,7 +8,6 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
