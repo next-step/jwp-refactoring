@@ -33,8 +33,8 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        group1 = new MenuGroup(1L, "group1");
-        group2 = new MenuGroup(2L, "group2");
+        group1 = MenuGroup.of(1L, "group1");
+        group2 = MenuGroup.of(2L, "group2");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")

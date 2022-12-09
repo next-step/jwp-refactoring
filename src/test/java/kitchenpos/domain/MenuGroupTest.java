@@ -10,8 +10,8 @@ class MenuGroupTest {
     @DisplayName("id가 같은 두 객체는 동등하다.")
     @Test
     void equalsTest() {
-        MenuGroup group1 = new MenuGroup(1L, "group1");
-        MenuGroup group2 = new MenuGroup(1L, "group1");
+        MenuGroup group1 = MenuGroup.of(1L, "group1");
+        MenuGroup group2 = MenuGroup.of(1L, "group1");
 
         Assertions.assertThat(group1).isEqualTo(group2);
     }
@@ -19,8 +19,8 @@ class MenuGroupTest {
     @DisplayName("id가 다르면 두 객체는 동등하지 않다.")
     @Test
     void equalsTest2() {
-        MenuGroup group1 = new MenuGroup(1L, "group1");
-        MenuGroup group2 = new MenuGroup(2L, "group1");
+        MenuGroup group1 = MenuGroup.of(1L, "group1");
+        MenuGroup group2 = MenuGroup.of(2L, "group1");
 
         Assertions.assertThat(group1).isNotEqualTo(group2);
     }

@@ -17,7 +17,7 @@ public class MenuGroupRestAssured {
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(Long id, String name) {
         return RestAssured
                 .given().log().all()
-                .body(new MenuGroup(id, name))
+                .body(MenuGroup.of(id, name))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menu-groups")
                 .then().log().all()
