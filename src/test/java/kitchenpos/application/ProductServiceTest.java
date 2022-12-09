@@ -34,8 +34,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        버팔로윙 = new Product(1L, "버팔로윙", BigDecimal.valueOf(6_500));
-        치킨텐더 = new Product(2L, "치킨텐더", BigDecimal.valueOf(5_900));
+        버팔로윙 = Product.of(1L, "버팔로윙", BigDecimal.valueOf(6_500));
+        치킨텐더 = Product.of(2L, "치킨텐더", BigDecimal.valueOf(5_900));
     }
 
     @DisplayName("상품을 생성한다.")
@@ -51,7 +51,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성 시 가격이 null 이면 예외가 발생한다.")
     @Test
     void createException() {
-        Product product = new Product(1L, "product", null);
+        Product product = Product.of(1L, "product", null);
 
         Assertions.assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -60,7 +60,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성 시 가격이 0보다 작으면 예외가 발생한다.")
     @Test
     void createException2() {
-        Product product = new Product(1L, "product", BigDecimal.valueOf(-1));
+        Product product = Product.of(1L, "product", BigDecimal.valueOf(-1));
 
         Assertions.assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);

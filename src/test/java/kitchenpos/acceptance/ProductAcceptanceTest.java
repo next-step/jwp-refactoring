@@ -29,8 +29,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        버팔로윙 = new Product(1L, "버팔로윙", BigDecimal.valueOf(6_500));
-        치킨텐더 = new Product(2L, "치킨텐더", BigDecimal.valueOf(5_900));
+        버팔로윙 = Product.of(1L, "버팔로윙", BigDecimal.valueOf(6_500));
+        치킨텐더 = Product.of(2L, "치킨텐더", BigDecimal.valueOf(5_900));
     }
 
     /**
