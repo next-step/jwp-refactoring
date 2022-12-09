@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,11 +32,11 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        MenuGroup 한식 = new MenuGroup(1L, "한식");
+        MenuGroup 한식 = new MenuGroup("한식");
         when(menuGroupRepository.save(한식)).thenReturn(한식);
 
         // when
-        MenuGroup result = menuGroupService.create(한식);
+        MenuGroupResponse result = menuGroupService.create(MenuGroupRequest.of(한식.getName()));
 
         // then
         assertAll(
@@ -51,7 +53,7 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(한식));
 
         // when
-        List<MenuGroup> results = menuGroupService.list();
+        List<MenuGroupResponse> results = menuGroupService.list();
 
         // then
         assertAll(
