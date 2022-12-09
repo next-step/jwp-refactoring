@@ -3,6 +3,9 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+
+
 public class Order {
     private Long id;
     private Long orderTableId;
@@ -11,6 +14,9 @@ public class Order {
     private List<OrderLineItem> orderLineItems;
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
+        }
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         this.orderStatus = OrderStatus.COOKING.name();
