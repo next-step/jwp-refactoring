@@ -16,7 +16,7 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public OrderLineItem() {}
+    protected OrderLineItem() {}
 
     public OrderLineItem(Long seq, Long menuId, long quantity) {
         this.seq = seq;

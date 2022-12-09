@@ -19,7 +19,7 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    public MenuProduct() {}
+    protected MenuProduct() {}
 
     public MenuProduct(Long seq, long quantity, Menu menu, Product product) {
         this.seq = seq;

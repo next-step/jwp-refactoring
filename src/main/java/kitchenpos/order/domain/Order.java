@@ -17,7 +17,7 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {}
+    protected Order() {}
 
     public Order(
             Long id,

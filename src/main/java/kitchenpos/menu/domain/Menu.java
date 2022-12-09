@@ -20,7 +20,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts;
 
-    public Menu() {}
+    protected Menu() {}
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
