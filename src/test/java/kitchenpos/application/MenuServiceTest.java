@@ -61,9 +61,9 @@ class MenuServiceTest {
         공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
         한식 = new MenuGroup(1L, "한식");
         불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식, new ArrayList<>());
-        불고기상품 = new MenuProduct(1L, 불고기.getId(), 1L);
-        김치상품 = new MenuProduct(2L, 김치.getId(), 1L);
-        공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 1L);
+        불고기상품 = new MenuProduct(1L, 불고기.getId(), 불고기정식, 불고기);
+        김치상품 = new MenuProduct(2L, 김치.getId(), 불고기정식, 김치);
+        공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 불고기정식, 공기밥);
         불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
     }
 
@@ -72,9 +72,9 @@ class MenuServiceTest {
     void createMenu() {
         // given
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
-        when(productRepository.findById(불고기상품.getProductId())).thenReturn(Optional.of(불고기));
-        when(productRepository.findById(김치상품.getProductId())).thenReturn(Optional.of(김치));
-        when(productRepository.findById(공기밥상품.getProductId())).thenReturn(Optional.of(공기밥));
+        when(productRepository.findById(불고기상품.getProduct().getId())).thenReturn(Optional.of(불고기));
+        when(productRepository.findById(김치상품.getProduct().getId())).thenReturn(Optional.of(김치));
+        when(productRepository.findById(공기밥상품.getProduct().getId())).thenReturn(Optional.of(공기밥));
         when(menuRepository.save(불고기정식)).thenReturn(불고기정식);
 
         // when
@@ -140,9 +140,9 @@ class MenuServiceTest {
         // given
         불고기정식.setPrice(BigDecimal.valueOf(200_000));
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
-        when(productRepository.findById(불고기상품.getProductId())).thenReturn(Optional.of(불고기));
-        when(productRepository.findById(김치상품.getProductId())).thenReturn(Optional.of(김치));
-        when(productRepository.findById(공기밥상품.getProductId())).thenReturn(Optional.of(공기밥));
+        when(productRepository.findById(불고기상품.getProduct().getId())).thenReturn(Optional.of(불고기));
+        when(productRepository.findById(김치상품.getProduct().getId())).thenReturn(Optional.of(김치));
+        when(productRepository.findById(공기밥상품.getProduct().getId())).thenReturn(Optional.of(공기밥));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(불고기정식))
