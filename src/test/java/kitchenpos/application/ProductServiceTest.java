@@ -62,7 +62,7 @@ class ProductServiceTest {
     @DisplayName("상품 가격은 필수값이며, 음수여서는 안된다.")
     void projectTest3() {
         Product nullPriceProduct = generateProduct(4L, "nullPriceProduct", null);
-        Product negativePriceProduct = generateProduct(4L, "negativePriceProduct", new BigDecimal(-1));
+        Product negativePriceProduct = generateProduct(5L, "negativePriceProduct", new BigDecimal(-1));
 
         assertThatThrownBy(() -> productService.create(nullPriceProduct)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> productService.create(negativePriceProduct)).isInstanceOf(IllegalArgumentException.class);
