@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 추천메뉴;
+    private MenuGroup 신메뉴;
     private Product 강정치킨;
     private Product 후라이드;
 
@@ -38,25 +38,25 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> menu() {
         return Stream.of(
                 dynamicTest("메뉴을 등록한다.", () -> {
-                    추천메뉴 = 메뉴_그룹_등록됨("추천메뉴");
+                    신메뉴 = 메뉴_그룹_등록됨("신메뉴");
                     강정치킨 = 상품_등록됨("강정치킨", BigDecimal.valueOf(15_000L));
                     후라이드 = 상품_등록됨("후라이드", BigDecimal.valueOf(15_000L));
 
                     ResponseEntity<Menu> response = 메뉴_생성_요청("강정1,후라이드1치킨",
                                                                    BigDecimal.valueOf(15_000L),
-                                                                   추천메뉴.getId(), 강정치킨, 후라이드);
+                                                                   신메뉴.getId(), 강정치킨, 후라이드);
 
                     메뉴_생성됨(response);
                 }),
                 dynamicTest("가격이 0미만의 메뉴을 등록한다.", () -> {
                     ResponseEntity<Menu> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(-1),
-                                                                   추천메뉴.getId(), 강정치킨);
+                                                                   신메뉴.getId(), 강정치킨);
 
                     메뉴_생성_실패됨(response);
                 }),
                 dynamicTest("이름이 없는 메뉴을 등록한다.", () -> {
                     ResponseEntity<Menu> response = 메뉴_생성_요청(null, BigDecimal.valueOf(15_000L),
-                                                                   추천메뉴.getId(), 강정치킨);
+                                                                   신메뉴.getId(), 강정치킨);
 
                     메뉴_생성_실패됨(response);
                 }),
@@ -68,7 +68,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("상품 없이 메뉴을 등록한다.", () -> {
                     ResponseEntity<Menu> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
-                                                                   추천메뉴.getId());
+                                                                   신메뉴.getId());
 
                     메뉴_생성_실패됨(response);
                 }),
@@ -77,13 +77,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                     존재하지_않는_상품.setId(Long.MAX_VALUE);
 
                     ResponseEntity<Menu> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
-                                                                   추천메뉴.getId(), 존재하지_않는_상품);
+                                                                   신메뉴.getId(), 존재하지_않는_상품);
 
                     메뉴_생성_실패됨(response);
                 }),
                 dynamicTest("상품 가격보다 비싼 메뉴을 등록한다.", () -> {
                     ResponseEntity<Menu> response = 메뉴_생성_요청("비싼 강정치킨", BigDecimal.valueOf(18_000L),
-                                                                   추천메뉴.getId(), 강정치킨);
+                                                                   신메뉴.getId(), 강정치킨);
 
                     메뉴_생성_실패됨(response);
                 }),
