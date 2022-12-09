@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.ProductFixture.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,33 +30,33 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product iphone;
-    private Product galaxy;
+    private Product 후라이드치킨;
+    private Product 양념치킨;
 
     @BeforeEach
     void setUp() {
-        iphone = new Product(1L, "아이폰14", BigDecimal.valueOf(10000));
-        galaxy = new Product(1L, "갤럭시", BigDecimal.valueOf(20000));
+        후라이드치킨 = createProduct(1L, "후라이드치킨", BigDecimal.valueOf(10000));
+        양념치킨 = createProduct(1L, "양념치킨", BigDecimal.valueOf(20000));
     }
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void create() {
-        given(productDao.save(any())).willReturn(iphone);
+        given(productDao.save(any())).willReturn(후라이드치킨);
 
-        Product savedProduct = productService.create(iphone);
+        Product savedProduct = productService.create(후라이드치킨);
 
         assertAll(
                 () -> assertThat(savedProduct.getId()).isNotNull(),
-                () -> assertThat(savedProduct.getName()).isEqualTo(iphone.getName()),
-                () -> assertThat(savedProduct.getPrice()).isEqualTo(iphone.getPrice())
+                () -> assertThat(savedProduct.getName()).isEqualTo(후라이드치킨.getName()),
+                () -> assertThat(savedProduct.getPrice()).isEqualTo(후라이드치킨.getPrice())
         );
     }
 
     @DisplayName("가격이 존재하지 않는 상품은 등록할 수 없다.")
     @Test
     void createExceptionWithNull() {
-        Product product = new Product(1L, "칸쵸", null);
+        Product product = createProduct(1L, "치킨무", null);
 
         assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -65,7 +66,7 @@ class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {-1000, -2000})
     void createExceptionWithNegative(int price) {
-        Product product = new Product(1L, "칸쵸", BigDecimal.valueOf(price));
+        Product product = createProduct(1L, "치킨무", BigDecimal.valueOf(price));
 
         assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -74,11 +75,11 @@ class ProductServiceTest {
     @DisplayName("상품 목록을 조회할 수 있다.")
     @Test
     void list() {
-        given(productDao.findAll()).willReturn(Arrays.asList(iphone, galaxy));
+        given(productDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         List<Product> products = productService.list();
 
         assertThat(products).hasSize(2);
-        assertThat(products).contains(iphone, galaxy);
+        assertThat(products).contains(후라이드치킨, 양념치킨);
     }
 }

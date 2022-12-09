@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.MenuGroupFixture.createMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,36 +26,36 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroup chicken;
-    private MenuGroup pizza;
+    private MenuGroup 추천메뉴;
+    private MenuGroup 인기메뉴;
 
     @BeforeEach
     void setUp() {
-        chicken = new MenuGroup(1L, "치킨");
-        pizza = new MenuGroup(2L, "피자");
+        추천메뉴 = createMenuGroup(1L, "추천메뉴");
+        인기메뉴 = createMenuGroup(1L, "인기메뉴");
     }
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void create() {
-        given(menuGroupDao.save(any())).willReturn(chicken);
+        given(menuGroupDao.save(any())).willReturn(추천메뉴);
 
-        MenuGroup savedMenuGroup = menuGroupService.create(chicken);
+        MenuGroup savedMenuGroup = menuGroupService.create(추천메뉴);
 
         assertAll(
                 () -> assertThat(savedMenuGroup.getId()).isNotNull(),
-                () -> assertThat(savedMenuGroup.getName()).isEqualTo(chicken.getName())
+                () -> assertThat(savedMenuGroup.getName()).isEqualTo(추천메뉴.getName())
         );
     }
 
     @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
     @Test
     void list() {
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(chicken, pizza));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(추천메뉴, 인기메뉴));
 
         List<MenuGroup> menuGroups = menuGroupService.list();
 
         assertThat(menuGroups).hasSize(2);
-        assertThat(menuGroups).contains(chicken, pizza);
+        assertThat(menuGroups).contains(추천메뉴, 인기메뉴);
     }
 }

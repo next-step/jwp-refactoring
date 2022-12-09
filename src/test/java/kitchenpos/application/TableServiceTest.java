@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.OrderTableFixture.createTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,21 +33,21 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable firstTable;
-    private OrderTable secondTable;
+    private OrderTable 주문테이블_A;
+    private OrderTable 주문테이블_B;
 
     @BeforeEach
     void setUp() {
-        firstTable = new OrderTable(1L, null, 0, true);
-        secondTable = new OrderTable(2L, null, 0, true);
+        주문테이블_A = createTable(1L, null, 0, true);
+        주문테이블_B = createTable(2L, null, 0, true);
     }
 
     @DisplayName("주문 테이블을 등록할 수 있다.")
     @Test
     void create() {
-        given(tableService.create(firstTable)).willReturn(firstTable);
+        given(tableService.create(주문테이블_A)).willReturn(주문테이블_A);
 
-        OrderTable savedOrderTable = tableService.create(firstTable);
+        OrderTable savedOrderTable = tableService.create(주문테이블_A);
 
         assertAll(
                 () -> assertThat(savedOrderTable.getId()).isNotNull(),
@@ -59,20 +60,20 @@ class TableServiceTest {
     @DisplayName("주문 테이블 목록을 조회할 수 있다.")
     @Test
     void list() {
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(firstTable, secondTable));
+        given(orderTableDao.findAll()).willReturn(Arrays.asList(주문테이블_A, 주문테이블_B));
 
         List<OrderTable> orderTables = tableService.list();
 
         assertThat(orderTables).hasSize(2);
-        assertThat(orderTables).contains(firstTable, secondTable);
+        assertThat(orderTables).contains(주문테이블_A, 주문테이블_B);
     }
 
     @DisplayName("주문 테이블 이용 여부를 변경할 수 있다.")
     @Test
     void changeEmpty() {
-        OrderTable expected = new OrderTable(1L, null, 0, false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
-        given(orderTableDao.save(firstTable)).willReturn(firstTable);
+        OrderTable expected = createTable(1L, null, 0, false);
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(주문테이블_A));
+        given(orderTableDao.save(주문테이블_A)).willReturn(주문테이블_A);
 
         OrderTable changeOrderTable = tableService.changeEmpty(1L, expected);
 
@@ -82,8 +83,8 @@ class TableServiceTest {
     @DisplayName("단체 테이블로 지정되어 있다면 주문 테이블 이용 여부를 변경할 수 없다.")
     @Test
     void changeEmptyWithTableGroup() {
-        firstTable.setTableGroupId(1L);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
+        주문테이블_A.setTableGroupId(1L);
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(주문테이블_A));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -93,7 +94,7 @@ class TableServiceTest {
     @Test
     void changeEmptyWithOrderStatus() {
         List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(주문테이블_A));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, orderStatus)).willReturn(true);
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
@@ -103,10 +104,10 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable expected = new OrderTable(1L, null, 5, false);
-        firstTable.setEmpty(false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
-        given(orderTableDao.save(firstTable)).willReturn(firstTable);
+        OrderTable expected = createTable(1L, null, 5, false);
+        주문테이블_A.setEmpty(false);
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(주문테이블_A));
+        given(orderTableDao.save(주문테이블_A)).willReturn(주문테이블_A);
 
         OrderTable changeOrderTable = tableService.changeNumberOfGuests(1L, expected);
 
@@ -116,7 +117,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 손님 수를 음수로 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsWithNegative() {
-        OrderTable expected = new OrderTable(1L, null, -1, false);
+        OrderTable expected = createTable(1L, null, -1, false);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, expected))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -125,8 +126,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 이용중이 아니라면 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsWithNotEmptyTable() {
-        firstTable.setEmpty(true);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
+        주문테이블_A.setEmpty(true);
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(주문테이블_A));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);

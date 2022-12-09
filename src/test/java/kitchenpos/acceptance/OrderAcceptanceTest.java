@@ -12,11 +12,17 @@ import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_생성되�
 import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_생성됨;
 import static kitchenpos.acceptance.ProductAcceptanceTestFixture.상품_등록_되어_있음;
 import static kitchenpos.acceptance.TableAcceptanceTestFixture.주문_테이블_생성되어_있음;
+import static kitchenpos.domain.MenuFixture.createMenu;
+import static kitchenpos.domain.MenuGroupFixture.createMenuGroup;
+import static kitchenpos.domain.MenuProductFixture.createMenuProduct;
+import static kitchenpos.domain.OrderFixture.createOrder;
+import static kitchenpos.domain.OrderLineItemFixture.createOrderLineItem;
+import static kitchenpos.domain.OrderTableFixture.createTable;
+import static kitchenpos.domain.ProductFixture.createProduct;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.domain.Menu;
@@ -33,13 +39,15 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
-    private Product 메모리;
-    private Product 디스플레이;
-    private MenuGroup 핸드폰;
-    private MenuProduct 메모리상품;
-    private MenuProduct 디스플레이상품;
-    private Menu 아이폰;
-    private Menu 갤럭시;
+    private Product 후라이드치킨;
+    private Product 양념치킨;
+    private Product 콜라;
+    private MenuGroup 추천메뉴;
+    private MenuProduct 후라이드치킨상품;
+    private MenuProduct 양념치킨상품;
+    private MenuProduct 콜라상품;
+    private Menu 두마리치킨;
+    private Menu 양념세트;
     private Order 주문_A;
     private Order 주문_B;
 
@@ -47,32 +55,32 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void orderSetUp() {
         super.setUp();
 
-        메모리 = 상품_등록_되어_있음(new Product(null, "메모리", new BigDecimal(3000))).as(Product.class);
-        디스플레이 = 상품_등록_되어_있음(new Product(null, "디스플레이", new BigDecimal(5000))).as(Product.class);
-        핸드폰 = 메뉴_그룹_등록되어_있음(new MenuGroup(null, "애플")).as(MenuGroup.class);
-        메모리상품 = new MenuProduct(null, null, 메모리.getId(), 1);
-        디스플레이상품 = new MenuProduct(null, null, 디스플레이.getId(), 1);
+        후라이드치킨 = 상품_등록_되어_있음(createProduct("후라이드치킨", new BigDecimal(3000))).as(Product.class);
+        양념치킨 = 상품_등록_되어_있음(createProduct("양념치킨", new BigDecimal(5000))).as(Product.class);
+        콜라 = 상품_등록_되어_있음(createProduct("콜라", new BigDecimal(1000))).as(Product.class);
 
-        아이폰 = new Menu(null, "아이폰", new BigDecimal(7000), 핸드폰.getId(), new ArrayList<>());
-        아이폰.setMenuProducts(Arrays.asList(메모리상품, 디스플레이상품));
-        아이폰 = 메뉴_등록되어_있음(아이폰).as(Menu.class);
-        갤럭시 = new Menu(null, "갤럭시", new BigDecimal(5000), 핸드폰.getId(), new ArrayList<>());
-        갤럭시.setMenuProducts(Arrays.asList(메모리상품, 디스플레이상품));
-        갤럭시 = 메뉴_등록되어_있음(갤럭시).as(Menu.class);
+        추천메뉴 = 메뉴_그룹_등록되어_있음(createMenuGroup("추천메뉴")).as(MenuGroup.class);
 
-        OrderTable 주문테이블_A = 주문_테이블_생성되어_있음(new OrderTable(null, null, 5, false)).as(OrderTable.class);
-        OrderTable 주문테이블_B = 주문_테이블_생성되어_있음(new OrderTable(null, null, 3, false)).as(OrderTable.class);
+        후라이드치킨상품 = createMenuProduct(후라이드치킨.getId(), 1);
+        양념치킨상품 = createMenuProduct(양념치킨.getId(), 1);
+        콜라상품 = createMenuProduct(콜라.getId(), 1);
 
-        OrderLineItem 주문항목_A = new OrderLineItem(null, null, 아이폰.getId(), 1);
-        OrderLineItem 주문항목_B = new OrderLineItem(null, null, 갤럭시.getId(), 1);
+        두마리치킨 = 메뉴_등록되어_있음(createMenu("두마리치킨", new BigDecimal(3000), 추천메뉴.getId(), Arrays.asList(후라이드치킨상품, 양념치킨상품))).as(Menu.class);
+        양념세트 = 메뉴_등록되어_있음(createMenu("양념세트", new BigDecimal(2500), 추천메뉴.getId(), Arrays.asList(양념치킨상품, 콜라상품))).as(Menu.class);
 
-        주문_A = new Order(null, 주문테이블_A.getId(), null, null, Collections.singletonList(주문항목_A));
-        주문_B = new Order(null, 주문테이블_B.getId(), null, null, Collections.singletonList(주문항목_B));
+        OrderTable 주문테이블_A = 주문_테이블_생성되어_있음(createTable(5, false)).as(OrderTable.class);
+        OrderTable 주문테이블_B = 주문_테이블_생성되어_있음(createTable(3, false)).as(OrderTable.class);
+
+        OrderLineItem 주문항목_A = createOrderLineItem(두마리치킨.getId(), 1);
+        OrderLineItem 주문항목_B = createOrderLineItem(양념세트.getId(), 1);
+
+        주문_A = createOrder(주문테이블_A.getId(), Collections.singletonList(주문항목_A));
+        주문_B = createOrder(주문테이블_B.getId(), Collections.singletonList(주문항목_B));
     }
 
     @DisplayName("주문을 등록한다")
     @Test
-    void createOrder() {
+    void create() {
         ExtractableResponse<Response> response = 주문_생성_요청(주문_A);
 
         주문_생성됨(response);
@@ -95,7 +103,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void changeOrderStatus() {
         String exceptedStatus = OrderStatus.COOKING.name();
         Order existOrder = 주문_생성되어_있음(주문_A).as(Order.class);
-        Order updateOrder = new Order(existOrder.getId(), existOrder.getOrderTableId(), exceptedStatus,
+        Order updateOrder = createOrder(existOrder.getId(), existOrder.getOrderTableId(), exceptedStatus,
                 existOrder.getOrderedTime(), existOrder.getOrderLineItems());
 
         ExtractableResponse<Response> response = 주문_상태_변경_요청(existOrder.getId(), updateOrder);

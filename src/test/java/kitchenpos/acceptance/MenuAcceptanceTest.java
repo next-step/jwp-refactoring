@@ -8,11 +8,14 @@ import static kitchenpos.acceptance.MenuAcceptanceTestFixture.메뉴_생성_요�
 import static kitchenpos.acceptance.MenuAcceptanceTestFixture.메뉴_생성됨;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTestFixture.메뉴_그룹_등록되어_있음;
 import static kitchenpos.acceptance.ProductAcceptanceTestFixture.상품_등록_되어_있음;
+import static kitchenpos.domain.MenuFixture.createMenu;
+import static kitchenpos.domain.MenuGroupFixture.createMenuGroup;
+import static kitchenpos.domain.MenuProductFixture.createMenuProduct;
+import static kitchenpos.domain.ProductFixture.createProduct;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -24,34 +27,38 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
-    private Product 메모리;
-    private Product 디스플레이;
-    private MenuGroup 핸드폰;
-    private MenuProduct 메모리상품;
-    private MenuProduct 디스플레이상품;
-    private Menu 아이폰;
-    private Menu 갤럭시;
+    private Product 후라이드치킨;
+    private Product 양념치킨;
+    private Product 콜라;
+    private MenuGroup 추천메뉴;
+    private MenuProduct 후라이드치킨상품;
+    private MenuProduct 양념치킨상품;
+    private MenuProduct 콜라상품;
+    private Menu 두마리치킨;
+    private Menu 양념세트;
 
     @BeforeEach
     void menuSetUp() {
         super.setUp();
 
-        메모리 = 상품_등록_되어_있음(new Product(null, "메모리", new BigDecimal(3000))).as(Product.class);
-        디스플레이 = 상품_등록_되어_있음(new Product(null, "디스플레이", new BigDecimal(5000))).as(Product.class);
-        핸드폰 = 메뉴_그룹_등록되어_있음(new MenuGroup(null, "애플")).as(MenuGroup.class);
-        메모리상품 = new MenuProduct(null, null, 메모리.getId(), 1);
-        디스플레이상품 = new MenuProduct(null, null, 디스플레이.getId(), 1);
+        후라이드치킨 = 상품_등록_되어_있음(createProduct("후라이드치킨", new BigDecimal(3000))).as(Product.class);
+        양념치킨 = 상품_등록_되어_있음(createProduct("양념치킨", new BigDecimal(5000))).as(Product.class);
+        콜라 = 상품_등록_되어_있음(createProduct("콜라", new BigDecimal(1000))).as(Product.class);
 
-        아이폰 = new Menu(null, "아이폰", new BigDecimal(7000), 핸드폰.getId(), new ArrayList<>());
-        아이폰.setMenuProducts(Arrays.asList(메모리상품, 디스플레이상품));
-        갤럭시 = new Menu(null, "갤럭시", new BigDecimal(5000), 핸드폰.getId(), new ArrayList<>());
-        갤럭시.setMenuProducts(Arrays.asList(메모리상품, 디스플레이상품));
+        추천메뉴 = 메뉴_그룹_등록되어_있음(createMenuGroup("추천메뉴")).as(MenuGroup.class);
+
+        후라이드치킨상품 = createMenuProduct(후라이드치킨.getId(), 1);
+        양념치킨상품 = createMenuProduct(양념치킨.getId(), 1);
+        콜라상품 = createMenuProduct(콜라.getId(), 1);
+
+        두마리치킨 = createMenu("두마리치킨", new BigDecimal(3000), 추천메뉴.getId(), Arrays.asList(후라이드치킨상품, 양념치킨상품));
+        양념세트 = createMenu("양념세트", new BigDecimal(2500), 추천메뉴.getId(), Arrays.asList(양념치킨상품, 콜라상품));
     }
 
     @DisplayName("메뉴를 등록한다.")
     @Test
-    void createMenu() {
-        ExtractableResponse<Response> response = 메뉴_생성_요청(아이폰);
+    void crate() {
+        ExtractableResponse<Response> response = 메뉴_생성_요청(두마리치킨);
 
         메뉴_생성됨(response);
     }
@@ -59,8 +66,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void getMenuList() {
-        ExtractableResponse<Response> createResponse1 = 메뉴_등록되어_있음(아이폰);
-        ExtractableResponse<Response> createResponse2 = 메뉴_등록되어_있음(갤럭시);
+        ExtractableResponse<Response> createResponse1 = 메뉴_등록되어_있음(두마리치킨);
+        ExtractableResponse<Response> createResponse2 = 메뉴_등록되어_있음(양념세트);
 
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
