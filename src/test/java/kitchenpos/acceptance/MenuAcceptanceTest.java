@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
@@ -43,7 +44,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         공기밥 = 상품_생성_요청(new Product(3L, "공기밥", BigDecimal.valueOf(1_000))).as(Product.class);
         한식 = 메뉴그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
 
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), new ArrayList<>());
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식, new ArrayList<>());
         불고기상품 = new MenuProduct(null, 불고기.getId(), 1L);
         김치상품 = new MenuProduct(null, 김치.getId(), 1L);
         공기밥상품 = new MenuProduct(null, 공기밥.getId(), 1L);
@@ -96,9 +97,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_목록_응답됨(ExtractableResponse<Response> response, List<Long> menuIds) {
-        List<Long> ids = response.jsonPath().getList(".", Menu.class)
+        List<Long> ids = response.jsonPath().getList(".", MenuResponse.class)
                         .stream()
-                        .map(Menu::getId)
+                        .map(MenuResponse::getId)
                         .collect(Collectors.toList());
 
         assertAll(

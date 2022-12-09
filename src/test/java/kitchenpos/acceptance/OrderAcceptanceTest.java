@@ -57,7 +57,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 1L,
                 "불고기정식",
                 BigDecimal.valueOf(12_000L),
-                한식.getId(),
+                한식,
                 Arrays.asList(불고기상품, 김치상품, 공기밥상품)
         )).as(Menu.class);
 

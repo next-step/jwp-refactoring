@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -59,7 +60,7 @@ class MenuServiceTest {
         김치 = new Product(2L, "김치", BigDecimal.valueOf(1_000));
         공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
         한식 = new MenuGroup(1L, "한식");
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), new ArrayList<>());
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식, new ArrayList<>());
         불고기상품 = new MenuProduct(1L, 불고기.getId(), 1L);
         김치상품 = new MenuProduct(2L, 김치.getId(), 1L);
         공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 1L);
@@ -70,7 +71,7 @@ class MenuServiceTest {
     @Test
     void createMenu() {
         // given
-        when(menuGroupRepository.findById(불고기정식.getMenuGroupId())).thenReturn(Optional.of(한식));
+        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findById(불고기상품.getProductId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치상품.getProductId())).thenReturn(Optional.of(김치));
         when(productRepository.findById(공기밥상품.getProductId())).thenReturn(Optional.of(공기밥));
@@ -90,7 +91,7 @@ class MenuServiceTest {
     @Test
     void createNullPriceMenuException() {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", null, 1L, new ArrayList<>());
+        불고기정식 = new Menu(1L, "불고기정식", null, 한식, new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> menuService.create(불고기정식))
@@ -102,7 +103,7 @@ class MenuServiceTest {
     @ValueSource(ints = {-1, -1000, -20000})
     void createUnderZeroPriceMenuException(int input) {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(input), 1L, new ArrayList<>());
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(input), 한식, new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> menuService.create(불고기정식))
@@ -113,8 +114,8 @@ class MenuServiceTest {
     @Test
     void notExistMenuGroupException() {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(1_000), 1L, new ArrayList<>());
-        when(menuGroupRepository.findById(불고기정식.getMenuGroupId())).thenReturn(Optional.of(한식));
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(1_000), 한식, new ArrayList<>());
+        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(불고기정식))
@@ -125,8 +126,8 @@ class MenuServiceTest {
     @Test
     void notExistProductException() {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(1_000), 1L, new ArrayList<>());
-        when(menuGroupRepository.findById(불고기정식.getMenuGroupId())).thenReturn(Optional.of(한식));
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(1_000), 한식, new ArrayList<>());
+        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(불고기정식))
@@ -138,7 +139,7 @@ class MenuServiceTest {
     void menuPriceException() {
         // given
         불고기정식.setPrice(BigDecimal.valueOf(200_000));
-        when(menuGroupRepository.findById(불고기정식.getMenuGroupId())).thenReturn(Optional.of(한식));
+        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findById(불고기상품.getProductId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치상품.getProductId())).thenReturn(Optional.of(김치));
         when(productRepository.findById(공기밥상품.getProductId())).thenReturn(Optional.of(공기밥));
@@ -156,7 +157,7 @@ class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(menus);
 
         // when
-        List<Menu> results = menuService.list();
+        List<MenuResponse> results = menuService.list();
 
         // then
         assertAll(
