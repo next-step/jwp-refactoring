@@ -19,3 +19,8 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+## Step1 테스트를 통한 코드 보호
+- 요구사항 작성
+- 요구사항을 토대로 테스트 코드 작성(@SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드)
+- Lombok없이 진행하기
