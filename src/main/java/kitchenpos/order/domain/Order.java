@@ -7,6 +7,7 @@ import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY
 
 
 public class Order {
+    public static final String ORDER_TABLE_NULL_EXCEPTION_MESSAGE = "주문 테이블이 없습니다.";
     private Long id;
     private Long orderTableId;
     private String orderStatus;
@@ -16,6 +17,9 @@ public class Order {
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
+        }
+        if (orderTableId == null) {
+            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
         }
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
