@@ -5,6 +5,14 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
+import kitchenpos.fixture.MenuFixture;
+import kitchenpos.fixture.MenuGroupFixture;
+import kitchenpos.fixture.MenuProductFixture;
+import kitchenpos.fixture.ProductFixture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,8 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.MenuFixture.메뉴_기본;
-import static kitchenpos.fixture.MenuProductFixture.메뉴_상품_후라이드_치킨;
 import static kitchenpos.fixture.ProductFixture.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,6 +50,21 @@ class MenuServiceTest {
 
     @Mock
     private ProductDao productDao;
+
+    private Product 상품_후라이드치킨;
+    private Menu 메뉴_기본;
+    private MenuGroup 메뉴_그룹_기본;
+    private MenuProduct 메뉴_상품_후라이드_치킨;
+
+    @BeforeEach
+    void set_up() {
+        상품_후라이드치킨 = ProductFixture.create(1L, "후라이드치킨", BigDecimal.valueOf(15_000));
+        메뉴_상품_후라이드_치킨 = MenuProductFixture.create(1L, ProductFixture.후라이드치킨.getId(), 1L);
+        메뉴_그룹_기본 = MenuGroupFixture.create(1L, "메뉴 그룹 기본");
+        메뉴_기본 = MenuFixture.create(
+                1L, BigDecimal.valueOf(15_000), 메뉴_그룹_기본.getId(), Arrays.asList(메뉴_상품_후라이드_치킨)
+        );
+    }
 
     @DisplayName("메뉴를 등록할 수 있다")
     @Test
@@ -79,7 +100,7 @@ class MenuServiceTest {
         Menu 메뉴_오류_그룹_없음 = new Menu();
         메뉴_오류_그룹_없음.setPrice(BigDecimal.valueOf(100_000));
 
-        // given && when && then
+        // when && then
         assertThatThrownBy(() -> menuService.create(메뉴_오류_그룹_없음))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -91,12 +112,10 @@ class MenuServiceTest {
         Menu 메뉴_요금_많이 = new Menu();
         메뉴_요금_많이.setPrice(BigDecimal.valueOf(1_000_000));
         메뉴_요금_많이.setMenuProducts(Arrays.asList(메뉴_상품_후라이드_치킨));
-
-        // when
         when(menuGroupDao.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(후라이드치킨));
 
-        // then
+        // when && then
         assertThatThrownBy(() -> menuService.create(메뉴_요금_많이))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -104,11 +123,14 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록 조회 시 메뉴 상품도 함께 조회한다.")
     @Test
     void list() {
+        // given
         when(menuDao.findAll()).thenReturn(Arrays.asList(메뉴_기본));
         when(menuProductDao.findAllByMenuId(메뉴_기본.getId())).thenReturn(Arrays.asList(메뉴_상품_후라이드_치킨));
 
+        // when
         List<Menu> 메뉴_목록_조회 = menuService.list();
 
+        // then
         assertAll(
                 () -> assertThat(메뉴_목록_조회).hasSize(1),
                 () -> assertThat(메뉴_목록_조회).containsExactly(메뉴_기본)

@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.ProductFixture;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +15,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.ProductFixture.강정치킨;
-import static kitchenpos.fixture.ProductFixture.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,11 +31,22 @@ class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 
+    private Product 강정치킨;
+    private Product 후라이드치킨;
+
+    @BeforeEach
+    void set_up() {
+        후라이드치킨 = ProductFixture.create(1L, "후라이드치킨", BigDecimal.valueOf(15_000));
+        강정치킨 = ProductFixture.create(2L, "강정치킨", BigDecimal.valueOf(18_000));
+    }
+
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void create_product() {
-        // given && when
+        // given
         when(productDao.save(any())).thenReturn(강정치킨);
+
+        // when
         Product product = productService.create(강정치킨);
 
         // then
@@ -57,8 +68,10 @@ class ProductServiceTest {
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test
     void find_products() {
-        // given &&  when
+        // given
         when(productService.list()).thenReturn(Arrays.asList(강정치킨, 후라이드치킨));
+
+        // when
         List<Product> 상품_목록 = productService.list();
 
         // then
