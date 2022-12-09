@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,11 +35,11 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        Product product = new Product(1L, "떡볶이", BigDecimal.valueOf(3_000));
+        Product product = new Product("떡볶이", BigDecimal.valueOf(3_000));
         when(productRepository.save(product)).thenReturn(product);
 
         // when
-        Product result = productService.create(product);
+        ProductResponse result = productService.create(ProductRequest.of(product.getName(), product.getPrice()));
 
         // then
         assertAll(
@@ -54,7 +56,7 @@ class ProductServiceTest {
         Product product = new Product(1L, "떡볶이", null);
 
         // when & then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(ProductRequest.of(product.getName(), product.getPrice())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -66,7 +68,7 @@ class ProductServiceTest {
         Product product = new Product(1L, "떡볶이", BigDecimal.valueOf(input));
 
         // when & then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(ProductRequest.of(product.getName(), product.getPrice())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -78,7 +80,7 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when
-        List<Product> results = productService.list();
+        List<ProductResponse> results = productService.list();
 
         // then
         assertAll(
