@@ -84,7 +84,7 @@ class TableServiceTest {
 
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
+                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
         ).thenReturn(false);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
 
@@ -132,7 +132,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 4, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
+                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
         ).thenReturn(true);
 
         // when & then

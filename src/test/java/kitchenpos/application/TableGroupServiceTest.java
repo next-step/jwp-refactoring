@@ -144,7 +144,7 @@ class TableGroupServiceTest {
                 .thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
         ).thenReturn(false);
 
         when(orderTableRepository.save(orderTable1)).thenReturn(orderTable1);
@@ -173,7 +173,7 @@ class TableGroupServiceTest {
                 .thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
         ).thenReturn(true);
 
         // when & then

@@ -94,7 +94,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void updaeOrderStatus() {
         // given
-        String expectedOrderStatus = OrderStatus.MEAL.name();
+        OrderStatus expectedOrderStatus = OrderStatus.MEAL;
         주문 = 주문_생성_요청(주문).as(Order.class);
         Order 업데이트된_주문 = new Order(
                 주문.getId(),
@@ -108,7 +108,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), 업데이트된_주문);
 
         // then
-        주문_상태_수정됨(response, expectedOrderStatus);
+        주문_상태_수정됨(response, expectedOrderStatus.name());
 
     }
 
