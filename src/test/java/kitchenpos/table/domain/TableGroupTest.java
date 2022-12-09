@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -26,5 +27,15 @@ class TableGroupTest {
         assertThatThrownBy(() -> new TableGroup(orderTables))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("주문 테이블의 갯수가 2보다 작을 수 없다.")
+    @Test
+    void name() {
+        List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTable());
+        assertThatThrownBy(() -> new TableGroup(orderTables))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
 }
