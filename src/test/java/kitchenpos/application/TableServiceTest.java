@@ -1,8 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -28,13 +27,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -87,7 +83,7 @@ class TableServiceTest {
         );
 
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
         ).thenReturn(false);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
@@ -135,7 +131,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable(1L, 4, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
         ).thenReturn(true);
 

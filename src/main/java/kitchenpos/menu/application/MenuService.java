@@ -21,27 +21,15 @@ import java.util.Optional;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
-            final ProductDao productDao,
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
             final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.menuProductDao = menuProductDao;
-        this.productDao = productDao;
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
@@ -73,10 +61,6 @@ public class MenuService {
         }
 
         final Menu savedMenu = menuRepository.save(menu);
-
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-//        savedMenu.setMenuProducts(savedMenuProducts);
-
         return savedMenu;
     }
 

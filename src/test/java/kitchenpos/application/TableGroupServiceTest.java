@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -31,19 +29,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
-    @Mock
-    private TableGroupDao tableGroupDao;
-
-    @Mock
     private TableGroupRepository tableGroupRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -151,7 +143,7 @@ class TableGroupServiceTest {
         when(orderTableRepository.findAllByTableGroupId(tableGroup.getId()))
                 .thenReturn(Arrays.asList(orderTable1, orderTable2));
 
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
         ).thenReturn(false);
 
@@ -180,7 +172,7 @@ class TableGroupServiceTest {
         when(orderTableRepository.findAllByTableGroupId(tableGroup.getId()))
                 .thenReturn(Arrays.asList(orderTable1, orderTable2));
 
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
         ).thenReturn(true);
 

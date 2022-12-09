@@ -23,27 +23,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
-    private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
     public OrderService(
-            final MenuDao menuDao,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao,
             final MenuRepository menuRepository,
             final OrderTableRepository orderTableRepository,
             final OrderRepository orderRepository
     ) {
-        this.menuDao = menuDao;
-        this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
-        this.orderTableDao = orderTableDao;
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
         this.orderTableRepository = orderTableRepository;
@@ -77,14 +65,6 @@ public class OrderService {
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
-
-//        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-//        for (final OrderLineItem orderLineItem : orderLineItems) {
-//            orderLineItem.setOrder(savedOrder);
-//            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-//        }
-//        savedOrder.setOrderLineItems(savedOrderLineItems);
-
         return savedOrder;
     }
 
@@ -106,9 +86,6 @@ public class OrderService {
         savedOrder.setOrderStatus(orderStatus.name());
 
         orderRepository.save(savedOrder);
-
-//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
         return savedOrder;
     }
 }

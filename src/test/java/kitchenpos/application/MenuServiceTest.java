@@ -1,9 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
@@ -36,18 +32,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("MenuService 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-    @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private MenuGroupDao menuGroupDao;
-
-    @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
-
     @Mock
     private MenuGroupRepository menuGroupRepository;
 

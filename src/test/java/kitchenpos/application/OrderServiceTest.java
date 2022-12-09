@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
@@ -38,18 +37,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("OrderService 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
     @Mock
     private MenuRepository menuRepository;
 

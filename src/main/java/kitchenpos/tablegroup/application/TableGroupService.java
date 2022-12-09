@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -20,19 +21,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao,
-                             final OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+    public TableGroupService(
+            final OrderTableRepository orderTableRepository,
+            final TableGroupRepository tableGroupRepository,
+            final OrderRepository orderRepository
+    ) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -62,14 +62,6 @@ public class TableGroupService {
         tableGroup.setCreatedDate(LocalDateTime.now());
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-//        for (final OrderTable savedOrderTable : savedOrderTables) {
-//            savedOrderTable.setTableGroup(savedTableGroup);
-//            savedOrderTable.setEmpty(false);
-//            orderTableDao.save(savedOrderTable);
-//        }
-//        savedTableGroup.setOrderTables(savedOrderTables);
-
         return savedTableGroup;
     }
 
@@ -81,7 +73,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
