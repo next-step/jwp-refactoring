@@ -147,7 +147,7 @@ PUT /api/orders/{orderId}/order-status
 ## 2단계 - 서비스 리팩터링
 ### 요구 사항
 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트 구현
-- [ ] JPA를 사용한다면, `spring.jpa.hibernate.ddl-auto=validate` 옵션 설정
+- [x] JPA를 사용한다면, `spring.jpa.hibernate.ddl-auto=validate` 옵션 설정
 - [ ] 데이터베이스 스키마 변경 및 마이그레이션 필요 시, 아래 문서 활용
   - flyway 활용
 
@@ -161,6 +161,9 @@ PUT /api/orders/{orderId}/order-status
 - [ ] 함수 (또는 메소드) 길이가 10라인 넘지 않도록 구현
 - [ ] 배열 대신 컬렉션 사용
 - [ ] 모든 원시 값과 문자열을 포장 할 것
+  - [ ] name
+  - [ ] price
+  - [ ] quantity
 - [ ] 축약 금지
 - [ ] 일급 컬렉션 사용
 - [ ] 엔티티 작게 유지
