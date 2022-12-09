@@ -5,8 +5,10 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +39,12 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupDao tableGroupDao;
 
+    @Mock
+    private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private OrderTableRepository orderTableRepository;
+
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -49,8 +57,8 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(orderTableIds)).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
+        when(orderTableRepository.findAllByIdIn(orderTableIds)).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
 
         // when
         TableGroup result = tableGroupService.create(tableGroup);
@@ -93,7 +101,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
+        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -108,7 +116,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -124,7 +132,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
         orderTable1.setTableGroup(tableGroup);
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -140,15 +148,15 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
+        when(orderTableRepository.findAllByTableGroupId(tableGroup.getId()))
                 .thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
         ).thenReturn(false);
 
-        when(orderTableDao.save(orderTable1)).thenReturn(orderTable1);
-        when(orderTableDao.save(orderTable2)).thenReturn(orderTable2);
+        when(orderTableRepository.save(orderTable1)).thenReturn(orderTable1);
+        when(orderTableRepository.save(orderTable2)).thenReturn(orderTable2);
 
         // when
         tableGroupService.ungroup(tableGroup.getId());
@@ -169,7 +177,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
+        when(orderTableRepository.findAllByTableGroupId(tableGroup.getId()))
                 .thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(

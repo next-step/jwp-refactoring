@@ -4,6 +4,9 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
+import java.util.List;
 
+public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
+    List<OrderTable> findAllByIdIn(List<Long> orderTableIds);
+    List<OrderTable> findAllByTableGroupId(Long tableGroupId);
 }
