@@ -51,6 +51,7 @@ class MenuServiceTest {
     @Mock
     private ProductDao productDao;
 
+
     private Product 상품_후라이드치킨;
     private Menu 메뉴_기본;
     private MenuGroup 메뉴_그룹_기본;

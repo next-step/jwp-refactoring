@@ -48,6 +48,7 @@ class OrderServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
+
     private Order 주문;
     private OrderLineItem 주문_항목;
 
@@ -68,10 +69,10 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
 
         // when
-        Order 주문_생성_결과 = orderService.create(주문);
+        Order 주문_등록 = orderService.create(주문);
 
         // then
-        assertThat(주문_생성_결과).isEqualTo(주문);
+        assertThat(주문_등록).isEqualTo(주문);
     }
 
     @DisplayName("주문 항목이 없으면 주문할 수 없다.")

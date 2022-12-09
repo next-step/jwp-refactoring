@@ -29,6 +29,7 @@ class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 
+
     private MenuGroup 메뉴_그룹_기본;
     private MenuGroup 메뉴_그룹_요일;
 

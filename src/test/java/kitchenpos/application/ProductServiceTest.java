@@ -31,6 +31,7 @@ class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 
+
     private Product 강정치킨;
     private Product 후라이드치킨;
 
@@ -42,15 +43,15 @@ class ProductServiceTest {
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test
-    void create_product() {
+    void create() {
         // given
         when(productDao.save(any())).thenReturn(강정치킨);
 
         // when
-        Product product = productService.create(강정치킨);
+        Product 상품_등록 = productService.create(강정치킨);
 
         // then
-        assertThat(product).isEqualTo(강정치킨);
+        assertThat(상품_등록).isEqualTo(강정치킨);
     }
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다.")
