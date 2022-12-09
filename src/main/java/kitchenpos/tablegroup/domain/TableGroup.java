@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreatedDate
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)

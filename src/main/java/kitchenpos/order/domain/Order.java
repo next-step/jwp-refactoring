@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
