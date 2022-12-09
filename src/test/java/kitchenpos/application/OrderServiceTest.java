@@ -186,7 +186,7 @@ public class OrderServiceTest {
     void findAllOrders() {
         // given
         List<Order> orders = Arrays.asList(주문A, 주문B);
-        when(orderDao.findAll()).thenReturn(orders);
+        given(orderDao.findAll()).willReturn(orders);
         for(Order order: orders) {
             given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(order.getOrderLineItems());
         }
