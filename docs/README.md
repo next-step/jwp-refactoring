@@ -1,0 +1,14 @@
+### 테스트를 통한 코드 보호
+
+* [ ] `kitchenpos` 패키지의 코드를 보고 키친포스의 요구 사항을 `README.md`에 작성
+* [ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드 작성
+  * [ ] 모든 Business Object 에 대한 테스트 코드 작성
+  * [ ] `@SpringBootTest`를 이용한 통합 테스트 코드 또는<br> 
+    `@ExtendWith(MockitoExtension.class`를 이용한 단위 테스트 코드 작성
+* [ ] Lombok 없이 미션진행
+<hr>
+* http 디렉터리의 .http 파일(HTTP client)을 보고 어떤 요청을 받는지 참고
+* src/main/resources/db/migration 디렉터리의 .sql 파일을 보고 어떤 관계로 이루어져 있는지 참고
+
+![img.png](img.png)
+<hr>
