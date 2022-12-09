@@ -28,12 +28,21 @@ public class MenuProduct {
         this.product = product;
     }
 
+    public MenuProduct(long quantity, Product product) {
+        this.quantity = quantity;
+        this.product = product;
+    }
+
     public Long getSeq() {
         return seq;
     }
 
     public void setSeq(final Long seq) {
         this.seq = seq;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     public void setMenu(final Menu menu) {

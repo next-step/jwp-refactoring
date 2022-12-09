@@ -68,7 +68,7 @@ class OrderServiceTest {
         김치 = new Product(2L, "김치", BigDecimal.valueOf(1_000));
         공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
         한식 = new MenuGroup(1L, "한식");
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식, new ArrayList<>());
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식);
         불고기상품 = new MenuProduct(1L, 1L, 불고기정식, 불고기);
         김치상품 = new MenuProduct(2L, 1L, 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, 1L, 불고기정식, 공기밥);

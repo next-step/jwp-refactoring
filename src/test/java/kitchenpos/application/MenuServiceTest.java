@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -24,10 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @DisplayName("MenuService 테스트")
@@ -60,10 +65,10 @@ class MenuServiceTest {
         김치 = new Product(2L, "김치", BigDecimal.valueOf(1_000));
         공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
         한식 = new MenuGroup(1L, "한식");
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식, new ArrayList<>());
-        불고기상품 = new MenuProduct(1L, 불고기.getId(), 불고기정식, 불고기);
-        김치상품 = new MenuProduct(2L, 김치.getId(), 불고기정식, 김치);
-        공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 불고기정식, 공기밥);
+        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식);
+        불고기상품 = new MenuProduct(1L, 1L, 불고기정식, 불고기);
+        김치상품 = new MenuProduct(2L, 1L, 불고기정식, 김치);
+        공기밥상품 = new MenuProduct(3L, 1L, 불고기정식, 공기밥);
         불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
     }
 
@@ -71,14 +76,19 @@ class MenuServiceTest {
     @Test
     void createMenu() {
         // given
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(불고기상품, 김치상품, 공기밥상품)
+                .stream()
+                .map(MenuProductRequest::from)
+                .collect(Collectors.toList());
+        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice(), 한식.getId(), menuProductRequests);
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findById(불고기상품.getProduct().getId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치상품.getProduct().getId())).thenReturn(Optional.of(김치));
         when(productRepository.findById(공기밥상품.getProduct().getId())).thenReturn(Optional.of(공기밥));
-        when(menuRepository.save(불고기정식)).thenReturn(불고기정식);
+        when(menuRepository.save(any())).thenReturn(불고기정식);
 
         // when
-        Menu result = menuService.create(불고기정식);
+        MenuResponse result = menuService.create(request);
 
         // then
         assertAll(
@@ -91,10 +101,10 @@ class MenuServiceTest {
     @Test
     void createNullPriceMenuException() {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", null, 한식, new ArrayList<>());
+        MenuRequest request = MenuRequest.of("불고기정식", null, 한식.getId(), new ArrayList<>());
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(불고기정식))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -103,10 +113,10 @@ class MenuServiceTest {
     @ValueSource(ints = {-1, -1000, -20000})
     void createUnderZeroPriceMenuException(int input) {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(input), 한식, new ArrayList<>());
+        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(input), 한식.getId(), new ArrayList<>());
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(불고기정식))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -114,11 +124,11 @@ class MenuServiceTest {
     @Test
     void notExistMenuGroupException() {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(1_000), 한식, new ArrayList<>());
+        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(불고기정식))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -126,11 +136,11 @@ class MenuServiceTest {
     @Test
     void notExistProductException() {
         // given
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(1_000), 한식, new ArrayList<>());
+        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(불고기정식))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -143,9 +153,14 @@ class MenuServiceTest {
         when(productRepository.findById(불고기상품.getProduct().getId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치상품.getProduct().getId())).thenReturn(Optional.of(김치));
         when(productRepository.findById(공기밥상품.getProduct().getId())).thenReturn(Optional.of(공기밥));
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(불고기상품, 김치상품, 공기밥상품)
+                .stream()
+                .map(MenuProductRequest::from)
+                .collect(Collectors.toList());
+        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice(), 한식.getId(), menuProductRequests);
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(불고기정식))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

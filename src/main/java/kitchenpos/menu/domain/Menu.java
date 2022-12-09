@@ -4,6 +4,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,16 +19,21 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {}
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
     }
 
     public Long getId() {
@@ -68,6 +74,11 @@ public class Menu {
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public void addProduct(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
+        menuProduct.setMenu(this);
     }
 
     @Override

@@ -5,6 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -36,10 +39,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private Product 김치;
     private Product 공기밥;
     private MenuGroup 한식;
-    private MenuProduct 불고기상품;
-    private MenuProduct 김치상품;
-    private MenuProduct 공기밥상품;
-    private Menu 불고기정식;
+    private MenuProductRequest 불고기상품;
+    private MenuProductRequest 김치상품;
+    private MenuProductRequest 공기밥상품;
+    private MenuRequest 불고기정식;
+    private MenuResponse 불고기정식응답;
     private Order 주문;
     private OrderTable 주문테이블;
     private OrderLineItem 불고기정식주문;
@@ -51,20 +55,19 @@ class OrderAcceptanceTest extends AcceptanceTest {
         김치 = 상품_생성_요청(new Product(2L, "김치", BigDecimal.valueOf(1_000))).as(Product.class);
         공기밥 = 상품_생성_요청(new Product(3L, "공기밥", BigDecimal.valueOf(1_000))).as(Product.class);
         한식 = 메뉴그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
-        불고기상품 = new MenuProduct(null, 1L, 불고기정식, 불고기);
-        김치상품 = new MenuProduct(null, 1L, 불고기정식, 김치);
-        공기밥상품 = new MenuProduct(null, 1L, 불고기정식, 공기밥);
-        불고기정식 = 메뉴_생성_요청(new Menu(
-                1L,
+        불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
+        김치상품 = MenuProductRequest.of(김치.getId(), 1L);
+        공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
+        불고기정식응답 = 메뉴_생성_요청(MenuRequest.of(
                 "불고기정식",
                 BigDecimal.valueOf(12_000L),
-                한식,
+                한식.getId(),
                 Arrays.asList(불고기상품, 김치상품, 공기밥상품)
-        )).as(Menu.class);
+        )).as(MenuResponse.class);
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
-        불고기정식주문 = new OrderLineItem(null, 불고기정식.getId(), 1);
+        불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 1);
         주문 = new Order(null, 주문테이블, null, null, Arrays.asList(불고기정식주문));
     }
 

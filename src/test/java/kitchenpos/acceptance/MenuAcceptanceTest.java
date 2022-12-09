@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -31,10 +33,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
     private Product 김치;
     private Product 공기밥;
     private MenuGroup 한식;
-    private MenuProduct 불고기상품;
-    private MenuProduct 김치상품;
-    private MenuProduct 공기밥상품;
-    private Menu 불고기정식;
+    private MenuProductRequest 불고기상품;
+    private MenuProductRequest 김치상품;
+    private MenuProductRequest 공기밥상품;
+    private MenuRequest 불고기정식;
 
     @BeforeEach
     public void setUp() {
@@ -44,11 +46,11 @@ class MenuAcceptanceTest extends AcceptanceTest {
         공기밥 = 상품_생성_요청(new Product(3L, "공기밥", BigDecimal.valueOf(1_000))).as(Product.class);
         한식 = 메뉴그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
 
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식, new ArrayList<>());
-        불고기상품 = new MenuProduct(null, 1L, 불고기정식, 불고기);
-        김치상품 = new MenuProduct(null, 1L, 불고기정식, 김치);
-        공기밥상품 = new MenuProduct(null, 1L, 불고기정식, 공기밥);
-        불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
+
+        불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
+        김치상품 = MenuProductRequest.of(김치.getId(), 1L);
+        공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
+        불고기정식 = MenuRequest.of("불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), Arrays.asList(불고기상품, 김치상품, 공기밥상품));
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -65,20 +67,20 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllMenu() {
         // given
-        불고기정식 = 메뉴_생성_요청(불고기정식).as(Menu.class);
+        MenuResponse 불고기정식응답 = 메뉴_생성_요청(불고기정식).as(MenuResponse.class);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
         // then
-        메뉴_목록_응답됨(response, Arrays.asList(불고기정식.getId()));
+        메뉴_목록_응답됨(response, Arrays.asList(불고기정식응답.getId()));
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
+                .body(request)
                 .when().post("/api/menus")
                 .then().log().all()
                 .extract();
