@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Menu {
     public static final String MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "메뉴 그룹이 없을 수 없습니다.";
+    public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
     private Long id;
     private String name;
     private BigDecimal price;
@@ -14,6 +15,9 @@ public class Menu {
     public Menu(String name, BigDecimal price, Long menuGroupId) {
         if (menuGroupId == null) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+        }
+        if (price == null) {
+            throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
         }
         this.name = name;
         this.price = price;
