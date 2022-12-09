@@ -20,14 +20,15 @@ public class Menu {
     }
 
     public static Menu of(long id, String name, BigDecimal price) {
-        return new Menu(id,name,price,null,null);
+        return new Menu(id, name, price, null, null);
     }
+
     public static Menu of(long id, String name, BigDecimal price, Long menuGroupId) {
-        return new Menu(id,name,price,menuGroupId,null);
+        return new Menu(id, name, price, menuGroupId, null);
     }
 
     public static Menu of(long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(id,name,price,menuGroupId,menuProducts);
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
     public Long getId() {
