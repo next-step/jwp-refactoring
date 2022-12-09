@@ -9,6 +9,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +65,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(null, 불고기정식.getId(), 1);
-        주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(불고기정식주문));
+        주문 = new Order(null, 주문테이블, null, null, Arrays.asList(불고기정식주문));
     }
 
     @DisplayName("주문을 생성한다.")
@@ -98,7 +99,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문 = 주문_생성_요청(주문).as(Order.class);
         Order 업데이트된_주문 = new Order(
                 주문.getId(),
-                주문.getOrderTableId(),
+                주문.getOrderTable(),
                 expectedOrderStatus,
                 주문.getOrderedTime(),
                 주문.getOrderLineItems()
@@ -145,9 +146,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_목록_응답됨(ExtractableResponse<Response> response, List<Long> orderIds) {
-        List<Long> ids = response.jsonPath().getList(".", Order.class)
+        List<Long> ids = response.jsonPath().getList(".", OrderResponse.class)
                         .stream()
-                        .map(Order::getId)
+                        .map(OrderResponse::getId)
                         .collect(Collectors.toList());
 
         assertAll(

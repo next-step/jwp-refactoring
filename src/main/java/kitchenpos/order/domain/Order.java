@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.ordertable.domain.OrderTable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +12,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
@@ -18,17 +19,20 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderLineItem> orderLineItems;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderTable orderTable;
+
     protected Order() {}
 
     public Order(
             Long id,
-            Long orderTableId,
+            OrderTable orderTable,
             OrderStatus orderStatus,
             LocalDateTime orderedTime,
             List<OrderLineItem> orderLineItems
     ) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -42,12 +46,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(final OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -72,5 +76,16 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderStatus=" + orderStatus +
+                ", orderedTime=" + orderedTime +
+                ", orderLineItems=" + orderLineItems +
+                ", orderTable=" + orderTable +
+                '}';
     }
 }

@@ -8,6 +8,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -74,7 +75,7 @@ class OrderServiceTest {
         불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
 
         주문테이블 = new OrderTable(1L, 0, false);
-        주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>());
+        주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>());
         불고기정식주문 = new OrderLineItem(1L, 불고기정식.getId(), 1);
         주문.setOrderLineItems(Arrays.asList(불고기정식주문));
     }
@@ -88,7 +89,7 @@ class OrderServiceTest {
                         .map(OrderLineItem::getMenuId)
                         .collect(Collectors.toList());
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
-        when(orderTableRepository.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
+        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(주문)).thenReturn(주문);
 
         // when
@@ -105,7 +106,7 @@ class OrderServiceTest {
     @Test
     void emptyOrderLineItemsException() {
         // given
-        주문 = new Order(1L, 주문테이블.getId(), null, LocalDateTime.now(), new ArrayList<>());
+        주문 = new Order(1L, 주문테이블, null, LocalDateTime.now(), new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -132,7 +133,7 @@ class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
-        when(orderTableRepository.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -149,7 +150,7 @@ class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
-        when(orderTableRepository.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
+        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문테이블));
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -163,13 +164,13 @@ class OrderServiceTest {
         when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
 
         // when
-        List<Order> results = orderService.list();
+        List<OrderResponse> results = orderService.list();
 
         // then
         assertAll(
                 () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(주문.getId()),
-                () -> assertThat(results.get(0).getOrderStatus()).isEqualTo(주문.getOrderStatus())
+                () -> assertThat(results.get(0).getOrderStatus()).isEqualTo(주문.getOrderStatus().name())
         );
     }
 
@@ -180,7 +181,7 @@ class OrderServiceTest {
         OrderStatus expectedStatus = OrderStatus.MEAL;
         Order updatedOrder = new Order(
                 주문.getId(),
-                주문.getOrderTableId(),
+                주문.getOrderTable(),
                 expectedStatus,
                 주문.getOrderedTime(),
                 주문.getOrderLineItems()
@@ -189,12 +190,12 @@ class OrderServiceTest {
         when(orderRepository.save(주문)).thenReturn(주문);
 
         // when
-        Order result = orderService.changeOrderStatus(주문.getId(), updatedOrder);
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), updatedOrder);
 
         // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(주문.getId()),
-                () -> assertThat(result.getOrderStatus()).isEqualTo(expectedStatus)
+                () -> assertThat(result.getOrderStatus()).isEqualTo(expectedStatus.name())
         );
     }
 
@@ -213,7 +214,7 @@ class OrderServiceTest {
         주문.setOrderStatus(OrderStatus.COMPLETION);
         Order updatedOrder = new Order(
                 주문.getId(),
-                주문.getOrderTableId(),
+                주문.getOrderTable(),
                 OrderStatus.MEAL,
                 주문.getOrderedTime(),
                 주문.getOrderLineItems()
