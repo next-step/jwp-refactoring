@@ -69,9 +69,9 @@ class OrderServiceTest {
         공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
         한식 = new MenuGroup(1L, "한식");
         불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), new ArrayList<>());
-        불고기상품 = new MenuProduct(1L, 불고기정식.getId(), 불고기.getId(), 1L);
-        김치상품 = new MenuProduct(2L, 불고기정식.getId(), 김치.getId(), 1L);
-        공기밥상품 = new MenuProduct(3L, 불고기정식.getId(), 공기밥.getId(), 1L);
+        불고기상품 = new MenuProduct(1L, 불고기.getId(), 1L);
+        김치상품 = new MenuProduct(2L, 김치.getId(), 1L);
+        공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 1L);
         불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
 
         주문테이블 = new OrderTable(1L, null, 0, false);

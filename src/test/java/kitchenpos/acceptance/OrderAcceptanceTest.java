@@ -50,9 +50,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
         김치 = 상품_생성_요청(new Product(2L, "김치", BigDecimal.valueOf(1_000))).as(Product.class);
         공기밥 = 상품_생성_요청(new Product(3L, "공기밥", BigDecimal.valueOf(1_000))).as(Product.class);
         한식 = 메뉴그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
-        불고기상품 = new MenuProduct(1L, null, 불고기.getId(), 1L);
-        김치상품 = new MenuProduct(2L, null, 김치.getId(), 1L);
-        공기밥상품 = new MenuProduct(3L, null, 공기밥.getId(), 1L);
+        불고기상품 = new MenuProduct(1L, 불고기.getId(), 1L);
+        김치상품 = new MenuProduct(2L, 김치.getId(), 1L);
+        공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 1L);
         불고기정식 = 메뉴_생성_요청(new Menu(
                 1L,
                 "불고기정식",
