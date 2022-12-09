@@ -6,8 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.domain.Menu.MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
-import static kitchenpos.menu.domain.Menu.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.menu.domain.Menu.*;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,9 +33,18 @@ class MenuTest {
     @DisplayName("가격이 없을 경우 메뉴를 생성할 수 없다.")
     @ParameterizedTest
     @ValueSource(strings = {"메뉴 A"})
-    void name(String name) {
+    void constructor_fail_price(String name) {
         assertThatThrownBy(() -> new Menu(name, null, new MenuGroup(1L, "메뉴그룹").getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("가격이 0원보다 작을 경우 메뉴를 생성할 수 없다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"메뉴 A"})
+    void constructor_fail_price_negative(String name) {
+        assertThatThrownBy(() -> new Menu(name, BigDecimal.valueOf(-1), new MenuGroup(1L, "메뉴그룹").getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(PRICE_NEGATIVE_EXCEPTION_MESSAGE);
     }
 }
