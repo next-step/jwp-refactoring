@@ -6,12 +6,13 @@ public class MenuGroup {
 
     public MenuGroup() {}
 
-    public MenuGroup(String name) {
+    public MenuGroup(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public static MenuGroup create(String name) {
-        return new MenuGroup(name);
+    public static MenuGroup of(Long id, String name) {
+        return new MenuGroup(id, name);
     }
 
     public Long getId() {

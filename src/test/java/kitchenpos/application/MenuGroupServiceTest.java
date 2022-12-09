@@ -33,9 +33,9 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup1 = generateMenuGroup("menuGroup1");
-        menuGroup2 = generateMenuGroup("menuGroup2");
-        menuGroup3 = generateMenuGroup("menuGroup3");
+        menuGroup1 = generateMenuGroup(1L, "menuGroup1");
+        menuGroup2 = generateMenuGroup(2L, "menuGroup2");
+        menuGroup3 = generateMenuGroup(3L, "menuGroup3");
     }
 
     @Test
@@ -56,8 +56,8 @@ class MenuGroupServiceTest {
         assertThat(menuGroup.getName()).isEqualTo(menuGroup1.getName());
     }
 
-    public static MenuGroup generateMenuGroup(String name) {
-        return MenuGroup.create(name);
+    public static MenuGroup generateMenuGroup(Long id, String name) {
+        return MenuGroup.of(id, name);
     }
 
 }
