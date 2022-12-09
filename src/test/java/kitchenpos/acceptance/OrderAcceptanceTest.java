@@ -95,15 +95,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrders() {
         // given
-        ExtractableResponse<Response> createResponse1 = 주문_등록되어_있음(주문A);
-        ExtractableResponse<Response> createResponse2 = 주문_등록되어_있음(주문B);
+        ExtractableResponse<Response> 주문A_응답 = 주문_등록되어_있음(주문A);
+        ExtractableResponse<Response> 주문B_응답 = 주문_등록되어_있음(주문B);
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
         // then
         주문_목록_응답됨(response);
-        주문_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        주문_목록_포함됨(response, Arrays.asList(주문A_응답, 주문B_응답));
     }
 
     @DisplayName("주문 상태를 변경한다.")

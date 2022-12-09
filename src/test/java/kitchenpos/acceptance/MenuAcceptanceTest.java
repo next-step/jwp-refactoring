@@ -72,15 +72,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllProducts() {
         // given
-        ExtractableResponse<Response> createResponse1 = 메뉴_등록되어_있음(불고기버거세트);
-        ExtractableResponse<Response> createResponse2 = 메뉴_등록되어_있음(치킨버거세트);
+        ExtractableResponse<Response> 불고기버거_생성_응답 = 메뉴_등록되어_있음(불고기버거세트);
+        ExtractableResponse<Response> 치킨버거_생성_응답 = 메뉴_등록되어_있음(치킨버거세트);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
         // then
         메뉴_목록_응답됨(response);
-        메뉴_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        메뉴_목록_포함됨(response, Arrays.asList(불고기버거_생성_응답, 치킨버거_생성_응답));
     }
 
     private static void 메뉴_생성됨(ExtractableResponse<Response> response) {
