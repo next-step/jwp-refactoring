@@ -66,13 +66,12 @@ public class OrderService {
 
         final Order savedOrder = orderDao.save(order);
 
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+//        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
+//        for (final OrderLineItem orderLineItem : orderLineItems) {
+//            orderLineItem.setOrder(savedOrder);
+//            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+//        }
+//        savedOrder.setOrderLineItems(savedOrderLineItems);
 
         return savedOrder;
     }

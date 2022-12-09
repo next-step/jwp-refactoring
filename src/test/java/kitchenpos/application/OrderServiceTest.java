@@ -76,7 +76,7 @@ class OrderServiceTest {
 
         주문테이블 = new OrderTable(1L, 0, false);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        불고기정식주문 = new OrderLineItem(1L, 주문.getId(), 불고기정식.getId(), 1);
+        불고기정식주문 = new OrderLineItem(1L, 불고기정식.getId(), 1);
         주문.setOrderLineItems(Arrays.asList(불고기정식주문));
     }
 
@@ -91,7 +91,6 @@ class OrderServiceTest {
         when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderDao.save(주문)).thenReturn(주문);
-        when(orderLineItemDao.save(불고기정식주문)).thenReturn(불고기정식주문);
 
         // when
         Order result = orderService.create(주문);
