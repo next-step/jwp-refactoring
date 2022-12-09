@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.domain.OrderTableFixture.createTable;
+import static kitchenpos.domain.TableGroupFixture.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -53,7 +54,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록할 수 있다.")
     @Test
     void create() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = createTableGroup(1L, LocalDateTime.now(), orderTables);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).willReturn(orderTables);
         given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
 
@@ -67,7 +68,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 비어있다면 테이블 그룹을 등록할 수 없다.")
     @Test
     void createWithEmptyOrderTables() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Collections.emptyList());
+        TableGroup tableGroup = createTableGroup(1L, LocalDateTime.now(), Collections.emptyList());
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -76,7 +77,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 2개보다 작을 경우 테이블 그룹을 등록할 수 없다.")
     @Test
     void createWithOrderTablesMinCriteria() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Collections.singletonList(주문테이블_A));
+        TableGroup tableGroup = createTableGroup(1L, LocalDateTime.now(), Collections.singletonList(주문테이블_A));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +86,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 등록되지 않은 경우 테이블 그룹을 등록할 수 없다.")
     @Test
     void createWithNotExistOrderTables() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = createTableGroup(1L, LocalDateTime.now(), orderTables);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).willReturn(Collections.emptyList());
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -96,7 +97,7 @@ class TableGroupServiceTest {
     @Test
     void createWithNotEmptyOrderTable() {
         주문테이블_A.setEmpty(false);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = createTableGroup(1L, LocalDateTime.now(), orderTables);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).willReturn(orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -107,7 +108,7 @@ class TableGroupServiceTest {
     @Test
     void createWithAlreadyTableGroup() {
         주문테이블_A.setTableGroupId(1L);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = createTableGroup(1L, LocalDateTime.now(), orderTables);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).willReturn(orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))

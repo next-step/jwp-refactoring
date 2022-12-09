@@ -7,6 +7,7 @@ import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_�
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_해제_요청;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_해제됨;
 import static kitchenpos.domain.OrderTableFixture.createTable;
+import static kitchenpos.domain.TableGroupFixture.createTableGroup;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -28,12 +29,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문테이블_A = 주문_테이블_생성되어_있음(createTable(5, true)).as(OrderTable.class);
         OrderTable 주문테이블_B = 주문_테이블_생성되어_있음(createTable(6, true)).as(OrderTable.class);
 
-        단체테이블 = new TableGroup(null, null, Arrays.asList(주문테이블_A, 주문테이블_B));
+        단체테이블 = createTableGroup(Arrays.asList(주문테이블_A, 주문테이블_B));
     }
 
     @DisplayName("테이블 그룹을 등록한다.")
     @Test
-    void createTableGroup() {
+    void create() {
         ExtractableResponse<Response> response = 테이블_그룹_생성_요청(단체테이블);
 
         테이블_그룹_생성됨(response);
