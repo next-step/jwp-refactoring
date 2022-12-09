@@ -48,10 +48,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         짜장면상품 = createMenuProduct(1L, null, 짜장면.getId(), 1L);
         짬뽕상품 = createMenuProduct(2L, null, 짬뽕.getId(), 1L);
         탕수육상품 = createMenuProduct(3L, null, 탕수육.getId(), 1L);
-        단무지상품 = createMenuProduct(3L, null, 단무지.getId(), 1L);
-        짜장면_탕수육_1인_메뉴_세트 = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(8500L),
+        단무지상품 = createMenuProduct(4L, null, 단무지.getId(), 1L);
+        짜장면_탕수육_1인_메뉴_세트 = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
-        짬뽕_탕수육_1인_메뉴_세트 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(9000L),
+        짬뽕_탕수육_1인_메뉴_세트 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕상품, 탕수육상품, 단무지상품));
     }
 
