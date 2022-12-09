@@ -25,10 +25,8 @@ import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-
     @InjectMocks
     private ProductService productService;
-
     @Mock
     private ProductDao productDao;
 
@@ -52,7 +50,7 @@ public class ProductServiceTest {
 
     @DisplayName("상품을 추가할 경우 추가된 상품정보를 반환")
     @ParameterizedTest
-    @ValueSource(longs = {1,342,21,3423,4})
+    @ValueSource(longs = {1, 342, 21, 3423, 4})
     public void returnProduct(long id) {
         Product product = new Product();
         product.setPrice(BigDecimal.valueOf(1500));
