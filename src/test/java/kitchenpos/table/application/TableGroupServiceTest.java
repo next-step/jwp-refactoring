@@ -63,6 +63,7 @@ class TableGroupServiceTest {
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(orderTable);
+        orderTables.add(orderTable);
         tableGroup = tableGroupDao.save(new TableGroup(orderTables));
         orderTable.setTableGroupId(tableGroup.getId());
         orderTableDao.save(orderTable);

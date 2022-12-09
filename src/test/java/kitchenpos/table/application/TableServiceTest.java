@@ -93,9 +93,11 @@ class TableServiceTest {
     @Test
     void changeEmpty_fail_notTableGroup() {
 
-        OrderTable orderTable = orderTableDao.save(new OrderTable());
+        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
+        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
         List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(orderTable);
+        orderTables.add(orderTable1);
+        orderTables.add(orderTable2);
         TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
 
         final OrderTable savedOrderTable = orderTableDao.findById(1L)

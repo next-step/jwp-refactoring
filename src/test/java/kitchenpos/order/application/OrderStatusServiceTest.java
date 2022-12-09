@@ -61,16 +61,20 @@ class OrderStatusServiceTest {
     void setUp() {
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
         List<MenuProduct> menuProducts = new ArrayList<>();
-        OrderTable orderTable = orderTableDao.save(new OrderTable());
+        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
+        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
         Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
         List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(orderTable);
+        orderTables.add(orderTable1);
+        orderTables.add(orderTable2);
         TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
-        orderTable.setTableGroupId(tableGroup.getId());
-        orderTableDao.save(orderTable);
+        orderTable1.setTableGroupId(tableGroup.getId());
+        orderTable2.setTableGroupId(tableGroup.getId());
+        orderTableDao.save(orderTable1);
+        orderTableDao.save(orderTable2);
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
+        order = orderDao.save(new Order(orderTable1.getId(), orderLineItems));
         orderStatusService = new OrderStatusService(orderDao, orderLineItemDao);
     }
 
