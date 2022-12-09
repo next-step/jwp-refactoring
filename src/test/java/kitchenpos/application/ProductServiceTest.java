@@ -13,12 +13,15 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.강정치킨;
+import static kitchenpos.fixture.ProductFixture.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
@@ -31,11 +34,8 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void create_product() {
-        // given
-        Product 강정치킨 = create(1L, "강정치킨", BigDecimal.valueOf(17_000));
+        // given && when
         when(productDao.save(any())).thenReturn(강정치킨);
-
-        // when
         Product product = productService.create(강정치킨);
 
         // then
@@ -46,21 +46,18 @@ class ProductServiceTest {
     @Test
     void create_price_fail() {
         // given
-        Product 강정치킨 = create(1L, "강정치킨", BigDecimal.valueOf(-10_000));
+        Product 상품_가격_오류 = new Product();
+        상품_가격_오류.setPrice(BigDecimal.valueOf(-100_000));
 
         // when && then
-        assertThatThrownBy(() -> productService.create(강정치킨))
+        assertThatThrownBy(() -> productService.create(상품_가격_오류))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test
     void find_products() {
-        // given
-        Product 강정치킨 = create(1L, "강정치킨", BigDecimal.valueOf(17_000));
-        Product 후라이드치킨 = create(2L, "후라이드치킨", BigDecimal.valueOf(15_000));
-
-        // when
+        // given &&  when
         when(productService.list()).thenReturn(Arrays.asList(강정치킨, 후라이드치킨));
         List<Product> 상품_목록 = productService.list();
 
@@ -69,14 +66,6 @@ class ProductServiceTest {
                 () -> assertThat(상품_목록).hasSize(2),
                 () -> assertThat(상품_목록).containsExactly(강정치킨, 후라이드치킨)
         );
-    }
-
-    private static Product create(Long id, String name, BigDecimal price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 
 }
