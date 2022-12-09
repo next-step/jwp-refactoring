@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class Menu {
+    public static final String MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "메뉴 그룹이 없을 수 없습니다.";
     private Long id;
     private String name;
     private BigDecimal price;
@@ -11,6 +12,9 @@ public class Menu {
     private List<MenuProduct> menuProducts;
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
+        if (menuGroupId == null) {
+            throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+        }
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
