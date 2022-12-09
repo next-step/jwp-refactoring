@@ -46,11 +46,16 @@ public class Menu {
         }
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
+    public void create(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(menuProduct -> addMenuProduct(menuProduct));
+        validatePrice();
+    }
+
+    void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.addMenuProduct(this, menuProduct);
     }
 
-    public void validatePrice() {
+    private void validatePrice() {
         this.menuProducts.validatePrice(this.price.getPrice());
     }
 
@@ -85,11 +90,11 @@ public class Menu {
         }
 
         Menu menu = (Menu) o;
-        return Objects.equals(name, menu.name) && Objects.equals(menuGroup, menu.menuGroup);
+        return Objects.equals(name, menu.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, menuGroup);
+        return Objects.hash(name);
     }
 }

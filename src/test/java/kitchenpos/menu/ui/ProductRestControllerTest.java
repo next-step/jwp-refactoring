@@ -65,7 +65,7 @@ class ProductRestControllerTest extends ControllerTest {
         given(productService.create(any(ProductRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(스테이크))
+                        .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }

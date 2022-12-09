@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class MenuService {
@@ -41,9 +38,9 @@ public class MenuService {
                 .orElseThrow(() -> new EntityNotFoundException(MenuGroupExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 
-    private List<Product> findAllProductByIds(Set<Long> productIds) {
+    private List<Product> findAllProductByIds(List<Long> productIds) {
         List<Product> products = productRepository.findAllById(productIds);
-        if(productIds.size() != products.size()) {
+        if (productIds.size() != products.size()) {
             throw new EntityNotFoundException(ProductExceptionCode.NOT_FOUND_BY_ID.getMessage());
         }
 
@@ -52,8 +49,6 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        return menuRepository.findAll().stream()
-                .map(MenuResponse::of)
-                .collect(toList());
+        return MenuResponse.list(menuRepository.findAll());
     }
 }

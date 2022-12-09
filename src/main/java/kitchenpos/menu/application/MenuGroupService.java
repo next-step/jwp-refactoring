@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
@@ -26,8 +24,6 @@ public class MenuGroupService {
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        return menuGroupRepository.findAll().stream()
-                .map(MenuGroupResponse::of)
-                .collect(toList());
+        return MenuGroupResponse.list(menuGroupRepository.findAll());
     }
 }

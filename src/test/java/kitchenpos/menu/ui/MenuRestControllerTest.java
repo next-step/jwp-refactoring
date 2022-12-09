@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -44,7 +45,7 @@ class MenuRestControllerTest extends ControllerTest {
     private Product 스파게티;
     private Product 스테이크;
     private Product 에이드;
-    private HashMap<Long, Long> quantityOfProducts;
+    private List<MenuProductRequest> menuProducts;
 
     @BeforeEach
     public void setUp() {
@@ -57,25 +58,23 @@ class MenuRestControllerTest extends ControllerTest {
         스파게티 = new Product("스파게티", new BigDecimal(18000));
         에이드 = new Product("에이드", new BigDecimal(3500));
 
-        양식_세트.addMenuProduct(new MenuProduct(양식_세트, 스테이크, 1L));
-        양식_세트.addMenuProduct(new MenuProduct(양식_세트, 스파게티, 1L));
-        양식_세트.addMenuProduct(new MenuProduct(양식_세트, 에이드, 2L));
-
-        quantityOfProducts = new HashMap<>();
-        quantityOfProducts.put(PRODUCT_ID_1, 1L);
-        quantityOfProducts.put(PRODUCT_ID_2, 1L);
-        quantityOfProducts.put(PRODUCT_ID_3, 2L);
-
         ReflectionTestUtils.setField(양식, "id", 1L);
         ReflectionTestUtils.setField(양식_세트, "id", 1L);
         ReflectionTestUtils.setField(스테이크, "id", PRODUCT_ID_1);
         ReflectionTestUtils.setField(스파게티, "id", PRODUCT_ID_2);
         ReflectionTestUtils.setField(에이드, "id", PRODUCT_ID_3);
+
+        양식_세트.create(Arrays.asList(new MenuProduct(양식_세트, 스테이크, 1L),
+                new MenuProduct(양식_세트, 스파게티, 1L), new MenuProduct(양식_세트, 에이드, 2L)));
+
+        menuProducts = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L),
+                new MenuProductRequest(스파게티.getId(), 1L),
+                new MenuProductRequest(에이드.getId(), 2L));
     }
 
     @Test
     void 메뉴_등록() throws Exception {
-        MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(50000), 양식.getId(), quantityOfProducts);
+        MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(50000), 양식.getId(), menuProducts);
         given(menuService.create(any(MenuRequest.class))).willReturn(MenuResponse.of(양식_세트));
 
         webMvc.perform(post("/api/menus")
@@ -84,13 +83,13 @@ class MenuRestControllerTest extends ControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is("양식 세트")))
                 .andExpect(jsonPath("$.price", is(50000)))
-                .andExpect(jsonPath("$.menuGroupId", is(양식.getId().intValue())))
+                .andExpect(jsonPath("$.menuGroup.id", is(양식.getId().intValue())))
                 .andExpect(jsonPath("$.menuProducts", hasSize(3)));
     }
 
     @Test
     void 메뉴_등록_실패() throws Exception {
-        MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(55000), 양식.getId(), quantityOfProducts);
+        MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(55000), 양식.getId(), menuProducts);
         given(menuService.create(any(MenuRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/menus")

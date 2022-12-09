@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -26,8 +24,6 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductResponse> list() {
-        return productRepository.findAll().stream()
-                .map(ProductResponse::of)
-                .collect(toList());
+        return ProductResponse.list(productRepository.findAll());
     }
 }

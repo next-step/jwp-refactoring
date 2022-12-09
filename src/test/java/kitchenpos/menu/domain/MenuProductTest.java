@@ -28,7 +28,7 @@ class MenuProductTest {
 
     @Test
     void 동등성_테스트() {
-        assertEquals(new MenuProduct(양식_세트, 스테이크, 1), new MenuProduct(양식_세트, 스테이크, 1));
+        assertEquals(new MenuProduct(양식_세트, 스테이크, 1L), new MenuProduct(양식_세트, 스테이크, 1L));
     }
 
     @Test

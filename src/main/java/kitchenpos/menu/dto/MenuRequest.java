@@ -10,27 +10,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toList;
+
 public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private HashMap<Long, Long> quantityOfProducts;
+    private List<MenuProductRequest> menuProducts;
 
     public MenuRequest() {}
 
-    public MenuRequest(String name, BigDecimal price, Long menuGroupId, HashMap<Long, Long> quantityOfProducts) {
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.quantityOfProducts = quantityOfProducts;
+        this.menuProducts = menuProducts;
     }
 
     public Menu toMenu(MenuGroup menuGroup, List<Product> products) {
         Menu menu = new Menu(name, price, menuGroup);
-        products.forEach(product -> {
-            menu.addMenuProduct(new MenuProduct(menu, product, quantityOfProducts.get(product.getId())));
-        });
-        menu.validatePrice();
+        List<MenuProduct> allMenuProducts = menuProducts.stream()
+                .map(request -> request.toMenuProducts(menu, products))
+                .collect(toList());
+        menu.create(allMenuProducts);
 
         return menu;
     }
@@ -47,11 +49,13 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public HashMap<Long, Long> getQuantityOfProducts() {
-        return quantityOfProducts;
+    public List<MenuProductRequest> getMenuProducts() {
+        return menuProducts;
     }
 
-    public Set<Long> findAllProductIds() {
-        return quantityOfProducts.keySet();
+    public List<Long> findAllProductIds() {
+        return menuProducts.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(toList());
     }
 }

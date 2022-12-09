@@ -4,6 +4,7 @@ import kitchenpos.menu.exception.MenuExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 
@@ -18,6 +19,7 @@ class MenuProductsTest {
     private MenuProducts 양식_세트_목록;
     private MenuProduct 스테이크;
     private MenuProduct 스파게티;
+    private MenuProduct 에이드;
 
     @BeforeEach
     void setUp() {
@@ -25,6 +27,7 @@ class MenuProductsTest {
         양식_세트 = new Menu("양식 세트", new BigDecimal(50000), 양식);
         스테이크 = new MenuProduct(양식_세트, new Product("스테이크", new BigDecimal(25000)), 1);
         스파게티 = new MenuProduct(양식_세트, new Product("스파게티", new BigDecimal(18000)), 1);
+        에이드 = new MenuProduct(양식_세트, new Product("에이드", new BigDecimal(3500)), 2);
 
         양식_세트_목록 = new MenuProducts();
         양식_세트_목록.addMenuProduct(양식_세트, 스테이크);
@@ -33,8 +36,6 @@ class MenuProductsTest {
 
     @Test
     void 메뉴_상품을_추가() {
-        MenuProduct 에이드 = new MenuProduct(양식_세트, new Product("에이드", new BigDecimal(3500)), 2);
-
         양식_세트_목록.addMenuProduct(양식_세트, 에이드);
 
         assertThat(양식_세트_목록.getMenuProducts()).hasSize(3);

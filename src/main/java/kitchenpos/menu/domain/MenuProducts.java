@@ -36,12 +36,9 @@ public class MenuProducts {
     }
 
     private BigDecimal getTotalAmount() {
-        //BigDecimal totalAmount = BigDecimal.ZERO;
         return menuProducts.stream()
                 .map(MenuProduct::calculateAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        //return totalAmount;
     }
 
     private boolean isMenuPriceGreaterThanTotalAmount(BigDecimal price, BigDecimal totalAmount) {
