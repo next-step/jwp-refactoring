@@ -166,6 +166,6 @@ PUT /api/orders/{orderId}/order-status
   - [x] Quantity
   - [x] NumberOfGuests
 - [ ] 축약 금지
-- [ ] 일급 컬렉션 사용
+- [x] 일급 컬렉션 사용
 - [ ] 엔티티 작게 유지
 - [ ] 인스턴스 변수가 3개 이상인 클래스 사용하지 않음

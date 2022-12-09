@@ -19,6 +19,10 @@ public class OrderTable {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
+    public void ungroup() {
+        this.tableGroupId = null;
+    }
+
     public Long getId() {
         return id;
     }
