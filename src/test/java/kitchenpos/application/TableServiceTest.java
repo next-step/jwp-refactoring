@@ -4,6 +4,7 @@ import static kitchenpos.domain.OrderTableTestFixture.generateOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -49,7 +50,7 @@ public class TableServiceTest {
     @Test
     void createTable() {
         // given
-        when(orderTableDao.save(주문테이블A)).thenReturn(주문테이블A);
+        given(orderTableDao.save(주문테이블A)).willReturn(주문테이블A);
 
         // when
         OrderTable saveOrderTable = tableService.create(주문테이블A);
@@ -66,7 +67,7 @@ public class TableServiceTest {
     void findAllTables() {
         // given
         List<OrderTable> orderTables = Arrays.asList(주문테이블A, 주문테이블B);
-        when(orderTableDao.findAll()).thenReturn(orderTables);
+        given(orderTableDao.findAll()).willReturn(orderTables);
 
         // when
         List<OrderTable> findOrderTables = tableService.list();
@@ -84,10 +85,10 @@ public class TableServiceTest {
         // given
         boolean isEmpty = 주문테이블A.isEmpty();
         OrderTable changeOrderTable = generateOrderTable(null, 주문테이블A.getNumberOfGuests(), !isEmpty);
-        when(orderTableDao.findById(주문테이블A.getId())).thenReturn(Optional.of(주문테이블A));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블A.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-        when(orderTableDao.save(주문테이블A)).thenReturn(주문테이블A);
+        given(orderTableDao.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블A.getId(),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderTableDao.save(주문테이블A)).willReturn(주문테이블A);
 
         // when
         OrderTable resultOrderTable = tableService.changeEmpty(주문테이블A.getId(), changeOrderTable);
@@ -102,7 +103,7 @@ public class TableServiceTest {
         // given
         boolean isEmpty = 주문테이블A.isEmpty();
         OrderTable changeOrderTable = generateOrderTable(null, 주문테이블A.getNumberOfGuests(), !isEmpty);
-        when(orderTableDao.findById(10L)).thenReturn(Optional.empty());
+        given(orderTableDao.findById(10L)).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -115,7 +116,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = generateOrderTable(5L, 1L, 4, false);
         OrderTable changeOrderTable = generateOrderTable(null, 주문테이블A.getNumberOfGuests(), !orderTable.isEmpty());
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -128,9 +129,9 @@ public class TableServiceTest {
         // given
         boolean isEmpty = 주문테이블A.isEmpty();
         OrderTable changeOrderTable = generateOrderTable(null, 주문테이블A.getNumberOfGuests(), !isEmpty);
-        when(orderTableDao.findById(주문테이블A.getId())).thenReturn(Optional.of(주문테이블A));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블A.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        given(orderTableDao.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블A.getId(),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -143,8 +144,8 @@ public class TableServiceTest {
     void changeNumberOfGuestsInTable(int expectNumberOfGuests) {
         // given
         OrderTable changeOrderTable = generateOrderTable(null, expectNumberOfGuests, 주문테이블A.isEmpty());
-        when(orderTableDao.findById(주문테이블A.getId())).thenReturn(Optional.of(주문테이블A));
-        when(orderTableDao.save(주문테이블A)).thenReturn(주문테이블A);
+        given(orderTableDao.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
+        given(orderTableDao.save(주문테이블A)).willReturn(주문테이블A);
 
         // when
         OrderTable resultOrderTable = tableService.changeNumberOfGuests(주문테이블A.getId(), changeOrderTable);
@@ -171,7 +172,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = generateOrderTable(5L, 1L, 4, false);
         OrderTable changeOrderTable = generateOrderTable(null, 1, orderTable.isEmpty());
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.empty());
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -184,7 +185,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = generateOrderTable(5L, 1L, 4, true);
         OrderTable changeOrderTable = generateOrderTable(null, 1, orderTable.isEmpty());
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

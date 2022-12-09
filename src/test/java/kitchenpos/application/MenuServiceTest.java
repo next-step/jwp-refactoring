@@ -8,6 +8,7 @@ import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -84,14 +85,14 @@ public class MenuServiceTest {
     @Test
     void createMenu() {
         // given
-        when(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(감자튀김상품.getProductId())).thenReturn(Optional.of(감자튀김));
-        when(productDao.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
-        when(productDao.findById(불고기버거상품.getProductId())).thenReturn(Optional.of(불고기버거));
-        when(menuDao.save(불고기버거세트)).thenReturn(불고기버거세트);
-        when(menuProductDao.save(감자튀김상품)).thenReturn(감자튀김상품);
-        when(menuProductDao.save(콜라상품)).thenReturn(콜라상품);
-        when(menuProductDao.save(불고기버거상품)).thenReturn(불고기버거상품);
+        given(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
+        given(productDao.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
+        given(productDao.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
+        given(menuDao.save(불고기버거세트)).willReturn(불고기버거세트);
+        given(menuProductDao.save(감자튀김상품)).willReturn(감자튀김상품);
+        given(menuProductDao.save(콜라상품)).willReturn(콜라상품);
+        given(menuProductDao.save(불고기버거상품)).willReturn(불고기버거상품);
 
         // when
         Menu saveMenu = menuService.create(불고기버거세트);
@@ -133,7 +134,7 @@ public class MenuServiceTest {
         // given
         Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 10L,
                 Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        when(menuGroupDao.existsById(10L)).thenReturn(false);
+        given(menuGroupDao.existsById(10L)).willReturn(false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -145,8 +146,8 @@ public class MenuServiceTest {
         // given
         Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(),
                 singletonList(감자튀김상품));
-        when(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(감자튀김상품.getProductId())).thenReturn(Optional.empty());
+        given(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(감자튀김상품.getProductId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -158,10 +159,10 @@ public class MenuServiceTest {
         // given
         Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(9500L), 햄버거세트.getId(),
                 Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        when(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(감자튀김상품.getProductId())).thenReturn(Optional.of(감자튀김));
-        when(productDao.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
-        when(productDao.findById(불고기버거상품.getProductId())).thenReturn(Optional.of(불고기버거));
+        given(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
+        given(productDao.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
+        given(productDao.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -172,9 +173,9 @@ public class MenuServiceTest {
     void findAllMenus() {
         // given
         List<Menu> menus = Arrays.asList(불고기버거세트, 치킨버거세트);
-        when(menuDao.findAll()).thenReturn(menus);
-        when(menuProductDao.findAllByMenuId(불고기버거세트.getId())).thenReturn(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        when(menuProductDao.findAllByMenuId(치킨버거세트.getId())).thenReturn(Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        given(menuDao.findAll()).willReturn(menus);
+        given(menuProductDao.findAllByMenuId(불고기버거세트.getId())).willReturn(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
+        given(menuProductDao.findAllByMenuId(치킨버거세트.getId())).willReturn(Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
 
         // when
         List<Menu> findMenus = menuService.list();

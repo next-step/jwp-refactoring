@@ -4,6 +4,7 @@ import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -44,7 +45,7 @@ public class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        when(productDao.save(감자튀김)).thenReturn(감자튀김);
+        given(productDao.save(감자튀김)).willReturn(감자튀김);
 
         // when
         Product saveProduct = productService.create(감자튀김);
@@ -83,7 +84,7 @@ public class ProductServiceTest {
     void findAllProducts() {
         // given
         List<Product> products = Arrays.asList(감자튀김, 콜라);
-        when(productDao.findAll()).thenReturn(products);
+        given(productDao.findAll()).willReturn(products);
 
         // when
         List<Product> findProducts = productService.list();

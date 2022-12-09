@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -40,7 +41,7 @@ public class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        when(menuGroupDao.save(햄버거세트)).thenReturn(햄버거세트);
+        given(menuGroupDao.save(햄버거세트)).willReturn(햄버거세트);
 
         // when
         MenuGroup saveMenuGroup = menuGroupService.create(햄버거세트);
@@ -57,7 +58,7 @@ public class MenuGroupServiceTest {
     void findAllMenuGroups() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(햄버거세트, 햄버거단품);
-        when(menuGroupDao.findAll()).thenReturn(menuGroups);
+        given(menuGroupDao.findAll()).willReturn(menuGroups);
 
         // when
         List<MenuGroup> findMenuGroups = menuGroupService.list();

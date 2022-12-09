@@ -11,6 +11,7 @@ import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -106,11 +107,11 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문A.getOrderTableId())).thenReturn(Optional.of(주문테이블A));
-        when(orderDao.save(주문A)).thenReturn(주문A);
-        when(orderLineItemDao.save(불고기버거세트주문)).thenReturn(불고기버거세트주문);
-        when(orderLineItemDao.save(치킨버거세트주문)).thenReturn(치킨버거세트주문);
+        given(menuDao.countByIdIn(menuIds)).willReturn((long) menuIds.size());
+        given(orderTableDao.findById(주문A.getOrderTableId())).willReturn(Optional.of(주문테이블A));
+        given(orderDao.save(주문A)).willReturn(주문A);
+        given(orderLineItemDao.save(불고기버거세트주문)).willReturn(불고기버거세트주문);
+        given(orderLineItemDao.save(치킨버거세트주문)).willReturn(치킨버거세트주문);
 
         // when
         Order order = orderService.create(주문A);
@@ -142,7 +143,7 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn(0L);
+        given(menuDao.countByIdIn(menuIds)).willReturn(0L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문A));
@@ -156,8 +157,8 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문A.getOrderTableId())).thenReturn(Optional.empty());
+        given(menuDao.countByIdIn(menuIds)).willReturn((long) menuIds.size());
+        given(orderTableDao.findById(주문A.getOrderTableId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문A));
@@ -173,8 +174,8 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(order.getOrderTableId())).thenReturn(Optional.of(orderTable));
+        given(menuDao.countByIdIn(menuIds)).willReturn((long) menuIds.size());
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -187,7 +188,7 @@ public class OrderServiceTest {
         List<Order> orders = Arrays.asList(주문A, 주문B);
         when(orderDao.findAll()).thenReturn(orders);
         for(Order order: orders) {
-            when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(order.getOrderLineItems());
+            given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(order.getOrderLineItems());
         }
 
         // when
@@ -206,8 +207,8 @@ public class OrderServiceTest {
         // given
         String expectOrderStatus = OrderStatus.MEAL.name();
         Order changeOrder = generateOrder(주문B.getId(), 주문B.getOrderTableId(), expectOrderStatus, 주문B.getOrderedTime(), 주문B.getOrderLineItems());
-        when(orderDao.findById(주문B.getId())).thenReturn(Optional.of(주문B));
-        when(orderDao.save(주문B)).thenReturn(주문B);
+        given(orderDao.findById(주문B.getId())).willReturn(Optional.of(주문B));
+        given(orderDao.save(주문B)).willReturn(주문B);
 
         // when
         Order resultOrder = orderService.changeOrderStatus(주문B.getId(), changeOrder);
@@ -221,7 +222,7 @@ public class OrderServiceTest {
     void changeOrderStatusThrowErrorWhenOrderIsNotExists() {
         // given
         Long notExistsOrderId = 5L;
-        when(orderDao.findById(notExistsOrderId)).thenReturn(Optional.empty());
+        given(orderDao.findById(notExistsOrderId)).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(notExistsOrderId, 주문B));
@@ -234,7 +235,7 @@ public class OrderServiceTest {
         Order order = generateOrder(주문테이블B.getId(), OrderStatus.COMPLETION.name(), null,
                 Arrays.asList(불고기버거세트주문, 치킨버거세트주문));
         Order changeOrder = generateOrder(order.getId(), order.getOrderTableId(), OrderStatus.MEAL.name(), order.getOrderedTime(), order.getOrderLineItems());
-        when(orderDao.findById(order.getId())).thenReturn(Optional.of(order));
+        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrder));
