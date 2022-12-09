@@ -102,7 +102,7 @@ class TableServiceTest {
         OrderTable 주문테이블_자리있음 = OrderTable.of(주문테이블_비어있음.getId(), 주문테이블_비어있음.getTableGroupId(), 주문테이블_비어있음.getNumberOfGuests(), false);
 
         // when/then
-        assertThatIllegalArgumentException().isThrownBy(() ->tableService.changeEmpty(주문테이블_비어있음.getId(), 주문테이블_자리있음));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(주문테이블_비어있음.getId(), 주문테이블_자리있음));
     }
 
     @DisplayName("단체 지정이 된 주문 테이블은 빈자리 여부를 변경할 수 없다.")
@@ -113,7 +113,7 @@ class TableServiceTest {
         when(orderTableDao.findById(주문테이블_비어있음_단체1.getId())).thenReturn(Optional.of(주문테이블_비어있음_단체1));
 
         // when/then
-        assertThatIllegalArgumentException().isThrownBy(() ->tableService.changeEmpty(주문테이블_비어있음_단체1.getId(), 주문테이블_자리있음));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(주문테이블_비어있음_단체1.getId(), 주문테이블_자리있음));
     }
 
     @DisplayName("조리중/식사중인 주문 테이블은 빈자리 여부를 변경할 수 없다.")
