@@ -74,7 +74,7 @@ class OrderServiceTest {
         공기밥상품 = new MenuProduct(3L, 공기밥.getId(), 1L);
         불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
 
-        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문테이블 = new OrderTable(1L, 0, false);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         불고기정식주문 = new OrderLineItem(1L, 주문.getId(), 불고기정식.getId(), 1);
         주문.setOrderLineItems(Arrays.asList(불고기정식주문));

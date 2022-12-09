@@ -44,15 +44,13 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, true);
+        OrderTable orderTable2 = new OrderTable(2L, 4, true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         when(orderTableDao.findAllByIdIn(orderTableIds)).thenReturn(Arrays.asList(orderTable1, orderTable2));
         when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
-        when(orderTableDao.save(orderTable1)).thenReturn(orderTable1);
-        when(orderTableDao.save(orderTable2)).thenReturn(orderTable2);
 
         // when
         TableGroup result = tableGroupService.create(tableGroup);
@@ -79,7 +77,7 @@ class TableGroupServiceTest {
     @Test
     void minumumOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1));
 
         // when & then
@@ -91,8 +89,8 @@ class TableGroupServiceTest {
     @Test
     void notExistOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, true);
+        OrderTable orderTable2 = new OrderTable(2L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
@@ -106,8 +104,8 @@ class TableGroupServiceTest {
     @Test
     void notEmptyOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 4, false);
-        OrderTable orderTable2 = new OrderTable(2L, null, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, false);
+        OrderTable orderTable2 = new OrderTable(2L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
@@ -121,9 +119,10 @@ class TableGroupServiceTest {
     @Test
     void alreadyTableGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, true);
+        OrderTable orderTable2 = new OrderTable(2L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        orderTable1.setTableGroup(tableGroup);
 
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
@@ -136,8 +135,8 @@ class TableGroupServiceTest {
     @Test
     void unTableGroup() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 1L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, true);
+        OrderTable orderTable2 = new OrderTable(2L, 4, true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
@@ -156,8 +155,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
-                () -> assertThat(orderTable2.getTableGroupId()).isNull()
+                () -> assertThat(orderTable1.getTableGroup()).isNull(),
+                () -> assertThat(orderTable2.getTableGroup()).isNull()
         );
     }
 
@@ -165,8 +164,8 @@ class TableGroupServiceTest {
     @Test
     void unTableGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 1L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, 4, true);
+        OrderTable orderTable2 = new OrderTable(2L, 4, true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 

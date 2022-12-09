@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +43,7 @@ class TableServiceTest {
     @Test
     void createOrderTable() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable = new OrderTable(1L, 4, true);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
 
         // when
@@ -58,7 +60,7 @@ class TableServiceTest {
     @Test
     void findAllOrderTable() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable = new OrderTable(1L, 4, true);
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
 
         // when
@@ -77,10 +79,9 @@ class TableServiceTest {
     void updateOrderTableEmpty() {
         // given
         boolean expectedEmpty = false;
-        OrderTable orderTable = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable = new OrderTable(1L, 4, true);
         OrderTable updatedTable = new OrderTable(
                 orderTable.getId(),
-                null,
                 orderTable.getNumberOfGuests(),
                 expectedEmpty
         );
@@ -106,7 +107,7 @@ class TableServiceTest {
     @Test
     void updateNotExistOrderTableEmptyException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable = new OrderTable(1L, 4, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.empty());
 
         // when & then
@@ -118,7 +119,9 @@ class TableServiceTest {
     @Test
     void updateGroupTableEmptyException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, true);
+        OrderTable orderTable = new OrderTable(1L, 4, true);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable));
+        orderTable.setTableGroup(tableGroup);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
@@ -130,7 +133,7 @@ class TableServiceTest {
     @Test
     void updateWrongOrderStatusEmptyException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable = new OrderTable(1L, 4, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
@@ -146,10 +149,9 @@ class TableServiceTest {
     void updateNumberOfGuest() {
         // given
         int expectedGuestNumber = 6;
-        OrderTable orderTable = new OrderTable(1L, null, 4, false);
+        OrderTable orderTable = new OrderTable(1L, 4, false);
         OrderTable updatedTable = new OrderTable(
                 orderTable.getId(),
-                orderTable.getTableGroupId(),
                 expectedGuestNumber,
                 orderTable.isEmpty()
         );
@@ -171,10 +173,9 @@ class TableServiceTest {
     @Test
     void guestNumberLowerThanZero() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 0, false);
+        OrderTable orderTable = new OrderTable(1L, 0, false);
         OrderTable updatedTable = new OrderTable(
                 orderTable.getId(),
-                orderTable.getTableGroupId(),
                 -1,
                 orderTable.isEmpty()
         );
@@ -188,7 +189,7 @@ class TableServiceTest {
     @Test
     void notExistOrderTableUpdateException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 0, false);
+        OrderTable orderTable = new OrderTable(1L, 0, false);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.empty());
 
         // when & then
@@ -200,7 +201,7 @@ class TableServiceTest {
     @Test
     void emptyOrderTableUpdateException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 0, true);
+        OrderTable orderTable = new OrderTable(1L, 0, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
