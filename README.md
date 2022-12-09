@@ -161,9 +161,10 @@ PUT /api/orders/{orderId}/order-status
 - [ ] 함수 (또는 메소드) 길이가 10라인 넘지 않도록 구현
 - [ ] 배열 대신 컬렉션 사용
 - [ ] 모든 원시 값과 문자열을 포장 할 것
-  - [ ] name
-  - [ ] price
-  - [ ] quantity
+  - [x] Name
+  - [x] Price
+  - [x] Quantity
+  - [x] NumberOfGuests
 - [ ] 축약 금지
 - [ ] 일급 컬렉션 사용
 - [ ] 엔티티 작게 유지
