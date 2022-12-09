@@ -1,4 +1,4 @@
-package kitchenpos;
+package kitchenpos.common;
 
 import org.flywaydb.core.internal.util.Pair;
 import org.slf4j.Logger;
