@@ -10,7 +10,7 @@ import kitchenpos.domain.MenuGroup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class MenuGroupAcceptanceTestUtils {
+class MenuGroupAcceptanceTestUtils {
     private static final String MENU_GROUP_PATH = "/api/menu-groups";
 
     public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
@@ -30,6 +30,10 @@ public class MenuGroupAcceptanceTestUtils {
                 .when().post(MENU_GROUP_PATH)
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String name) {
+        return 메뉴_그룹_생성_요청(name);
     }
 
     public static void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {
