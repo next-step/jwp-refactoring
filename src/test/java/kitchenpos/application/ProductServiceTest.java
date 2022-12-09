@@ -32,7 +32,7 @@ class ProductServiceTest {
     @Test
     void create_product() {
         // given
-        Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17_000));
+        Product 강정치킨 = create(1L, "강정치킨", BigDecimal.valueOf(17_000));
         when(productDao.save(any())).thenReturn(강정치킨);
 
         // when
@@ -46,7 +46,7 @@ class ProductServiceTest {
     @Test
     void create_price_fail() {
         // given
-        Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(-10_000));
+        Product 강정치킨 = create(1L, "강정치킨", BigDecimal.valueOf(-10_000));
 
         // when && then
         assertThatThrownBy(() -> productService.create(강정치킨))
@@ -57,8 +57,8 @@ class ProductServiceTest {
     @Test
     void find_products() {
         // given
-        Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17_000));
-        Product 후라이드치킨 = new Product("후라이드치킨", BigDecimal.valueOf(15_000));
+        Product 강정치킨 = create(1L, "강정치킨", BigDecimal.valueOf(17_000));
+        Product 후라이드치킨 = create(2L, "후라이드치킨", BigDecimal.valueOf(15_000));
 
         // when
         when(productService.list()).thenReturn(Arrays.asList(강정치킨, 후라이드치킨));
@@ -69,6 +69,14 @@ class ProductServiceTest {
                 () -> assertThat(상품_목록).hasSize(2),
                 () -> assertThat(상품_목록).containsExactly(강정치킨, 후라이드치킨)
         );
+    }
+
+    private static Product create(Long id, String name, BigDecimal price) {
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setPrice(price);
+        return product;
     }
 
 }
