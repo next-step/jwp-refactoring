@@ -11,7 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @ActiveProfiles("test")
@@ -25,8 +26,16 @@ public class DatabaseCleanup implements InitializingBean {
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .collect(Collectors.toList());
+                .map(e -> {
+                    if(e.getName().equalsIgnoreCase("order")) {
+                        return "orders";
+                    }
+
+                    System.out.println(e.getName());
+
+                    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName());
+                })
+                .collect(toList());
     }
 
     @Transactional
