@@ -1,5 +1,9 @@
-package kitchenpos.menu;
+package kitchenpos.menu.application;
 
+import kitchenpos.menu.persistence.MenuDao;
+import kitchenpos.menu.persistence.MenuProductDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.ProductDao;
 import kitchenpos.product.Product;
 import kitchenpos.menugroup.MenuGroupDao;

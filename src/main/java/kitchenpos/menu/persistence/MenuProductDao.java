@@ -1,4 +1,6 @@
-package kitchenpos.menu;
+package kitchenpos.menu.persistence;
+
+import kitchenpos.menu.domain.MenuProduct;
 
 import java.util.List;
 import java.util.Optional;

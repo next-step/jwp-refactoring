@@ -1,6 +1,6 @@
 package kitchenpos.order;
 
-import kitchenpos.menu.MenuDao;
+import kitchenpos.menu.persistence.MenuDao;
 import kitchenpos.table.OrderTableDao;
 import kitchenpos.table.OrderTable;
 import org.springframework.stereotype.Service;

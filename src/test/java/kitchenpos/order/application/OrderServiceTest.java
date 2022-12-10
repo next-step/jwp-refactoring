@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.order.OrderService;
-import kitchenpos.menu.MenuDao;
+import kitchenpos.menu.persistence.MenuDao;
 import kitchenpos.order.OrderDao;
 import kitchenpos.order.OrderLineItemDao;
 import kitchenpos.table.OrderTableDao;

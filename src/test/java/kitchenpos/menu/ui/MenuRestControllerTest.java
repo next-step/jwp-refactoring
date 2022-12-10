@@ -2,10 +2,9 @@ package kitchenpos.menu.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.menu.Menu;
-import kitchenpos.menu.MenuProduct;
-import kitchenpos.menu.MenuRestController;
-import kitchenpos.menu.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.application.MenuService;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

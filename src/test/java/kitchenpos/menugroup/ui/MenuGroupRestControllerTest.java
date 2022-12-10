@@ -2,7 +2,7 @@ package kitchenpos.menugroup.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.menu.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.MenuGroup;
 import kitchenpos.menugroup.MenuGroupService;
 import kitchenpos.menugroup.MenuGroupRestController;

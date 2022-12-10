@@ -1,13 +1,12 @@
 package kitchenpos.menu.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.menu.MenuDao;
-import kitchenpos.menu.MenuService;
+import kitchenpos.menu.persistence.MenuDao;
 import kitchenpos.menugroup.MenuGroupDao;
-import kitchenpos.menu.MenuProductDao;
+import kitchenpos.menu.persistence.MenuProductDao;
 import kitchenpos.product.ProductDao;
-import kitchenpos.menu.Menu;
-import kitchenpos.menu.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.Product;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
