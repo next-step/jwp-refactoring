@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.common;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

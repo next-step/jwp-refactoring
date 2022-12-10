@@ -2,10 +2,10 @@ package kitchenpos.tablegroup.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.application.TableGroupService;
+import kitchenpos.tablegroup.TableGroupService;
 import kitchenpos.table.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.ui.TableGroupRestController;
+import kitchenpos.tablegroup.TableGroup;
+import kitchenpos.tablegroup.TableGroupRestController;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
