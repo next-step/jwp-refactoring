@@ -6,7 +6,6 @@ import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +26,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest<OrderTable> {
 	Long 테이블_아이디;
 
 	TableGroupAcceptanceTest tableGroups;
+	OrderAcceptanceTest orders;
 
 	/**
 	 * Feature: 주문 테이블 관리 기능
@@ -37,6 +37,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest<OrderTable> {
 	@BeforeEach
 	void setup() {
 		tableGroups = new TableGroupAcceptanceTest();
+		orders = new OrderAcceptanceTest();
 
 		주문_테이블 = 주문_테이블();
 		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(주문_테이블);
@@ -134,13 +135,21 @@ class OrderTableAcceptanceTest extends AcceptanceTest<OrderTable> {
 	}
 
 	/**
+	 * Given 주문 테이블이 등록되어 있고
 	 * Given 주문 상태가 '조리중' 또는 '식사중'인 주문이 등록되어 있을 때
 	 * When 주문 테이블을 빈 테이블로 변경 요청할 경우
 	 * Then 주문 테이블 수정에 실패한다
 	 */
 	@Test
-	@Disabled
 	void 주문_상태가_조리중_이거나_식사중임() {
+		// given
+		OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(주문_테이블(10));
+		// given
+		orders.주문_등록되어_있음(주문_테이블);
+		// when
+		ExtractableResponse<Response> 수정_요청_응답 = 빈_주문_테이블_수정_요청(주문_테이블);
+		// then
+		수정_실패함(수정_요청_응답);
 	}
 
 	private void 테이블_수정됨(ExtractableResponse<Response> 수정_요청_응답, OrderTable 주문_테이블) {
