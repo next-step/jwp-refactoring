@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import static kitchenpos.application.MenuGroupServiceTest.createMenuGroup;
+import static kitchenpos.application.ProductServiceTest.createProducts;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -8,10 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
@@ -126,7 +126,7 @@ class MenuServiceTest {
 		verify(menuDao, times(1)).findAll();
 	}
 
-	private Menu createMenu(List<Product> products, MenuGroup menuGroup) {
+	public static Menu createMenu(List<Product> products, MenuGroup menuGroup) {
 		Menu menu = new Menu();
 
 		menu.setId(1L);
@@ -139,24 +139,6 @@ class MenuServiceTest {
 		menu.setMenuGroupId(menuGroup.getId());
 
 		return menu;
-	}
-
-	private static MenuGroup createMenuGroup() {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setId(1L);
-		menuGroup.setName("베이커리");
-		return menuGroup;
-	}
-
-	private List<Product> createProducts(int ...prices) {
-		return Arrays.stream(prices)
-			.mapToObj(price -> {
-				Product product = new Product();
-				product.setId(ThreadLocalRandom.current().nextLong(1, 100));
-				product.setName("상품");
-				product.setPrice(BigDecimal.valueOf(price));
-				return product;
-			}).collect(Collectors.toList());
 	}
 
 	private static List<MenuProduct> createMenuProducts(List<Product> products) {

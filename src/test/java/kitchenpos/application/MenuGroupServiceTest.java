@@ -41,4 +41,11 @@ class MenuGroupServiceTest {
 
 		verify(menuGroupDao, times(1)).findAll();
 	}
+
+	public static MenuGroup createMenuGroup() {
+		MenuGroup menuGroup = new MenuGroup();
+		menuGroup.setId(1L);
+		menuGroup.setName("베이커리");
+		return menuGroup;
+	}
 }

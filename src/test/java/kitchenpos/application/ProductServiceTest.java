@@ -8,7 +8,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,5 +82,16 @@ class ProductServiceTest {
 
         assertThat(actualProducts).containsExactlyInAnyOrderElementsOf(expectedProducts);
         verify(productDao, times(1)).findAll();
+    }
+
+    public static List<Product> createProducts(int ...prices) {
+        return Arrays.stream(prices)
+            .mapToObj(price -> {
+                Product product = new Product();
+                product.setId(ThreadLocalRandom.current().nextLong(1, 100));
+                product.setName("상품");
+                product.setPrice(BigDecimal.valueOf(price));
+                return product;
+            }).collect(Collectors.toList());
     }
 }
