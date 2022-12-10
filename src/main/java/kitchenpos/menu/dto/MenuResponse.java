@@ -27,7 +27,10 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(Menu menu) {
-        List<MenuProductResponse> menuProductResponses = menu.getMenuProducts().unmodifiableMenuProducts().stream().map(MenuProductResponse::from)
+        List<MenuProductResponse> menuProductResponses = menu.getMenuProducts()
+                .unmodifiableMenuProducts()
+                .stream()
+                .map(MenuProductResponse::from)
                 .collect(Collectors.toList());
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), menuProductResponses);
     }

@@ -17,7 +17,7 @@ public class MenuTestFixture {
     }
 
     public static Menu generateMenu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return Menu.of(null, name, price, menuGroup, menuProducts);
+        return Menu.of(name, price, menuGroup, MenuProducts.from(menuProducts));
     }
 
     public static MenuRequest generateMenuRequest(Name name, Price price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
