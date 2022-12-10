@@ -1,6 +1,4 @@
-package kitchenpos.domain;
-
-import java.math.BigDecimal;
+package kitchenpos.menu.domain;
 
 public class MenuGroup {
     private Long id;
