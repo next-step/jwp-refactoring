@@ -4,6 +4,10 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.UpdateEmptyRequest;
+import kitchenpos.ordertable.dto.UpdateNumberOfGuestsRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -39,11 +43,13 @@ class TableServiceTest {
     @Test
     void createOrderTable() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 4, true);
+        OrderTable orderTable = new OrderTable(4, true);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
 
         // when
-        OrderTable result = tableService.create(orderTable);
+        OrderTableResponse result = tableService.create(
+                OrderTableRequest.of(orderTable.getNumberOfGuests(), orderTable.isEmpty())
+        );
 
         // then
         assertAll(
@@ -60,7 +66,7 @@ class TableServiceTest {
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
 
         // when
-        List<OrderTable> results = tableService.list();
+        List<OrderTableResponse> results = tableService.list();
 
         // then
         assertAll(
@@ -76,11 +82,7 @@ class TableServiceTest {
         // given
         boolean expectedEmpty = false;
         OrderTable orderTable = new OrderTable(1L, 4, true);
-        OrderTable updatedTable = new OrderTable(
-                orderTable.getId(),
-                orderTable.getNumberOfGuests(),
-                expectedEmpty
-        );
+        UpdateEmptyRequest request = UpdateEmptyRequest.of(expectedEmpty);
 
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
@@ -90,7 +92,7 @@ class TableServiceTest {
 
 
         // when
-        OrderTable result = tableService.changeEmpty(orderTable.getId(), updatedTable);
+        OrderTableResponse result = tableService.changeEmpty(orderTable.getId(), request);
 
         // then
         assertAll(
@@ -104,10 +106,11 @@ class TableServiceTest {
     void updateNotExistOrderTableEmptyException() {
         // given
         OrderTable orderTable = new OrderTable(1L, 4, true);
+        UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable.isEmpty());
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -118,10 +121,11 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable));
         orderTable.setTableGroup(tableGroup);
+        UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable.isEmpty());
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -130,13 +134,14 @@ class TableServiceTest {
     void updateWrongOrderStatusEmptyException() {
         // given
         OrderTable orderTable = new OrderTable(1L, 4, true);
+        UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable.isEmpty());
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
         ).thenReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -146,17 +151,12 @@ class TableServiceTest {
         // given
         int expectedGuestNumber = 6;
         OrderTable orderTable = new OrderTable(1L, 4, false);
-        OrderTable updatedTable = new OrderTable(
-                orderTable.getId(),
-                expectedGuestNumber,
-                orderTable.isEmpty()
-        );
-
+        UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(expectedGuestNumber);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
 
         // when
-        OrderTable result = tableService.changeNumberOfGuests(orderTable.getId(), updatedTable);
+        OrderTableResponse result = tableService.changeNumberOfGuests(orderTable.getId(), request);
 
         // then
         assertAll(
@@ -170,14 +170,11 @@ class TableServiceTest {
     void guestNumberLowerThanZero() {
         // given
         OrderTable orderTable = new OrderTable(1L, 0, false);
-        OrderTable updatedTable = new OrderTable(
-                orderTable.getId(),
-                -1,
-                orderTable.isEmpty()
-        );
+        UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(-1);
+
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), updatedTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -186,10 +183,11 @@ class TableServiceTest {
     void notExistOrderTableUpdateException() {
         // given
         OrderTable orderTable = new OrderTable(1L, 0, false);
+        UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(0);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -198,10 +196,11 @@ class TableServiceTest {
     void emptyOrderTableUpdateException() {
         // given
         OrderTable orderTable = new OrderTable(1L, 0, true);
+        UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(0);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
