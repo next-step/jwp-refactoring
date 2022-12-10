@@ -35,7 +35,7 @@ public class MenuGroupServiceTest {
         menuGroup.setId(Arbitraries.longs().greaterOrEqual(1).sample());
         doReturn(menuGroup).when(menuGroupDao).save(menuGroup);
 
-        assertThat(menuGroupService.create(menuGroup)).isEqualTo(menuGroup.getId());
+        assertThat(menuGroupService.create(menuGroup).getId()).isEqualTo(menuGroup.getId());
     }
 
     @DisplayName("메뉴그룹목록을 조회할 경우 저장된 메뉴그룹목록반환")
