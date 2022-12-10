@@ -58,13 +58,14 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 등록되지 않는 메뉴가 있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsMenu() {
-        List<OrderLineItem> orderLineItems = FixtureMonkey.create()
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
         List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("orderLineItems", orderLineItems)
                 .sample();
@@ -78,13 +79,14 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
-        List<OrderLineItem> orderLineItems = FixtureMonkey.create()
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
         List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("orderLineItems", orderLineItems)
                 .sample();
@@ -100,13 +102,14 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문테이블이 공석이면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyTable() {
-        List<OrderLineItem> orderLineItems = FixtureMonkey.create()
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
         List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("orderLineItems", orderLineItems)
                 .sample();
@@ -126,7 +129,8 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문을 반환")
     @Test
     public void returnOrder() {
-        List<OrderLineItem> orderLineItems = FixtureMonkey.create()
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .setNull("orderId")
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
@@ -136,12 +140,12 @@ public class OrderServiceTest {
         List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("id", 150l)
                 .set("orderLineItems", orderLineItems)
                 .sample();
-        OrderTable orderTable = FixtureMonkey.create()
+        OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .set("empty", false)
                 .sample();
@@ -166,11 +170,12 @@ public class OrderServiceTest {
     @DisplayName("주문목록을 조회할경우 주문목록 반환")
     @Test
     public void returnOrders() {
-        List<OrderLineItem> orderLineItems = FixtureMonkey.create()
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .setNull("orderId")
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
-        List<Order> orders = FixtureMonkey.create()
+        List<Order> orders = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("id", 150l)
                 .set("orderLineItems", orderLineItems)
