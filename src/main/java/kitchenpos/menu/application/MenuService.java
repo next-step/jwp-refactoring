@@ -36,32 +36,21 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        final BigDecimal price = request.getPrice();
-
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        /////////////////////////////////////
-        List<Product> products = productRepository.findAllById(request.getMenuProductIds());
-
-
-        /////////////////////////////////////
-        List<MenuProductRequest> menuProductRequests = request.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProductRequest menuProductrequest : menuProductRequests) {
-            final Product product = productRepository.findById(menuProductrequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-
-            sum = sum.add(product.getPrice().value().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+                .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 존재하지 않습니다."));
+        List<Product> products = findAllProductByIds(request.getMenuProductIds());
 
         final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, products));
         return MenuResponse.from(savedMenu);
+    }
+
+    private List<Product> findAllProductByIds(List<Long> ids) {
+        List<Product> products = productRepository.findAllById(ids);
+        if (products.size() != ids.size()) {
+            throw new IllegalArgumentException("등록되지 않은 상품이 존재합니다.");
+        }
+
+        return products;
     }
 
     public List<MenuResponse> list() {
