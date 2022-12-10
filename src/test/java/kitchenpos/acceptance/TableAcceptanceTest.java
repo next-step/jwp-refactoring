@@ -30,8 +30,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        table1 = new OrderTable(null, 2, false);
-        table2 = new OrderTable(null, 3, false);
+        table1 = OrderTable.of(null, 2, false);
+        table2 = OrderTable.of(null, 3, false);
     }
 
     /**
@@ -71,7 +71,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되지 않은 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyFail() {
-        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(1L, new OrderTable(1L, 3, false));
+        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(1L, OrderTable.of(1L, 3, false));
 
         빈_상태_변경_요청_실패됨(response);
     }
@@ -121,7 +121,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     void changeEmpty() {
         OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(table1).as(OrderTable.class);
 
-        OrderTable 변경할_주문_테이블 = new OrderTable(주문_테이블.getId(), 주문_테이블.getNumberOfGuests(), !주문_테이블.isEmpty());
+        OrderTable 변경할_주문_테이블 = OrderTable.of(주문_테이블.getId(), 주문_테이블.getNumberOfGuests(), !주문_테이블.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(주문_테이블.getId(), 변경할_주문_테이블);
 
         빈_상태_변경됨(response, 변경할_주문_테이블.isEmpty());
@@ -134,7 +134,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("방문한 손님 수가 0보다 작은경우 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsFail() {
-        OrderTable 방문한_손님_수가_0보다_작은_주문_테이블 = new OrderTable(1L, -1, false);
+        OrderTable 방문한_손님_수가_0보다_작은_주문_테이블 = OrderTable.of(1L, -1, false);
         ExtractableResponse<Response> response =
                 주문_테이블_방문한_손님_수_변경_요청(1L, 방문한_손님_수가_0보다_작은_주문_테이블);
 
@@ -148,7 +148,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되지 않은 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsFail2() {
-        OrderTable 등록되지_않은_주문_테이블 = new OrderTable(1L, 10, false);
+        OrderTable 등록되지_않은_주문_테이블 = OrderTable.of(1L, 10, false);
         ExtractableResponse<Response> response = 주문_테이블_방문한_손님_수_변경_요청(1L, 등록되지_않은_주문_테이블);
 
         방문한_손님_수_변경_실패됨(response);
@@ -163,9 +163,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuestsFail3() {
         OrderTable 빈_상태_주문_테이블 =
-                주문_테이블_등록되어_있음(new OrderTable(null, 0, true)).as(OrderTable.class);
+                주문_테이블_등록되어_있음(OrderTable.of(null, 0, true)).as(OrderTable.class);
 
-        OrderTable 방문한_손님_수_변경한_주문_테이블 = new OrderTable(빈_상태_주문_테이블.getId(), 10, false);
+        OrderTable 방문한_손님_수_변경한_주문_테이블 = OrderTable.of(빈_상태_주문_테이블.getId(), 10, false);
         ExtractableResponse<Response> response =
                 주문_테이블_방문한_손님_수_변경_요청(빈_상태_주문_테이블.getId(), 방문한_손님_수_변경한_주문_테이블);
 
@@ -182,7 +182,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     void changeNumberOfGuests() {
         OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(table1).as(OrderTable.class);
 
-        OrderTable 방문한_손님_수_변경_주문_테이블 = new OrderTable(주문_테이블.getId(), 10, 주문_테이블.isEmpty());
+        OrderTable 방문한_손님_수_변경_주문_테이블 = OrderTable.of(주문_테이블.getId(), 10, 주문_테이블.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_방문한_손님_수_변경_요청(주문_테이블.getId(), 방문한_손님_수_변경_주문_테이블);
 
         방문한_손님_수_변경됨(response, 방문한_손님_수_변경_주문_테이블.getNumberOfGuests());

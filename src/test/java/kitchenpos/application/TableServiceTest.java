@@ -39,8 +39,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        table1 = new OrderTable(null, 2, false);
-        비어있는_주문_테이블 = new OrderTable(null, 0, true);
+        table1 = OrderTable.of(null, 2, false);
+        비어있는_주문_테이블 = OrderTable.of(null, 0, true);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -101,10 +101,10 @@ class TableServiceTest {
         boolean isEmpty = table1.isEmpty();
         when(orderTableDao.findById(any())).thenReturn(Optional.of(table1));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
-        when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, table1.getNumberOfGuests(), !isEmpty));
+        when(orderTableDao.save(any())).thenReturn(OrderTable.of(1L, table1.getNumberOfGuests(), !isEmpty));
 
         OrderTable result = tableService.changeEmpty(1L,
-                new OrderTable(1L, table1.getNumberOfGuests(), !table1.isEmpty()));
+                OrderTable.of(1L, table1.getNumberOfGuests(), !table1.isEmpty()));
 
         Assertions.assertThat(result.isEmpty()).isEqualTo(!isEmpty);
     }
@@ -112,7 +112,7 @@ class TableServiceTest {
     @DisplayName("방문한 손님 수가 0보다 작은경우 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsException() {
-        OrderTable orderTable = new OrderTable(1L, -1, true);
+        OrderTable orderTable = OrderTable.of(1L, -1, true);
 
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -123,7 +123,7 @@ class TableServiceTest {
     void changeNumberOfGuestsException2() {
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
-        OrderTable orderTable = new OrderTable(table1.getId(), 4, table1.isEmpty());
+        OrderTable orderTable = OrderTable.of(table1.getId(), 4, table1.isEmpty());
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(table1.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -133,7 +133,7 @@ class TableServiceTest {
     void changeNumberOfGuestsException3() {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
 
-        OrderTable orderTable = new OrderTable(비어있는_주문_테이블.getId(), 2, 비어있는_주문_테이블.isEmpty());
+        OrderTable orderTable = OrderTable.of(비어있는_주문_테이블.getId(), 2, 비어있는_주문_테이블.isEmpty());
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(비어있는_주문_테이블.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -141,7 +141,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable orderTable = new OrderTable(table1.getId(), 4, table1.isEmpty());
+        OrderTable orderTable = OrderTable.of(table1.getId(), 4, table1.isEmpty());
 
         when(orderTableDao.findById(any())).thenReturn(Optional.of(table1));
         when(orderTableDao.save(any())).thenReturn(orderTable);
