@@ -31,6 +31,10 @@ public class TableGroup {
         return new TableGroup(id, orderTables);
     }
 
+    public static TableGroup creatEmpty() {
+        return new TableGroup(null, LocalDateTime.now());
+    }
+
     public Long getId() {
         return id;
     }

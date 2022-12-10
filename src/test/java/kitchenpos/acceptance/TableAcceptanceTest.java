@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
@@ -31,8 +30,10 @@ import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -111,11 +112,15 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정된 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyFail2() {
-        OrderTable 등록된_빈_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 등록된_빈_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 등록된_빈_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 등록된_빈_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(등록된_빈_주문_테이블1, 등록된_빈_주문_테이블2);
-        단체_지정_등록되어_있음(TableGroup.of(1L, 주문_테이블_목록));
+        List<OrderTableResponse> 주문_테이블_목록 = Arrays.asList(등록된_빈_주문_테이블1, 등록된_빈_주문_테이블2);
+        단체_지정_등록되어_있음(
+                TableGroupRequest.from(주문_테이블_목록.stream()
+                        .map(OrderTableResponse::getId)
+                        .collect(Collectors.toList()))
+        );
 
         OrderTableRequest 변경할_주문_테이블 =
                 OrderTableRequest.of(등록된_빈_주문_테이블1.getNumberOfGuests(), !등록된_빈_주문_테이블1.isEmpty());
@@ -150,7 +155,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         ).as(MenuResponse.class);
 
         // And 주문 테이블 등록되어 있음
-        OrderTable 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
@@ -192,7 +197,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         ).as(MenuResponse.class);
 
         // And 주문 테이블 등록되어 있음
-        OrderTable 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
         // And 주문 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
@@ -218,7 +223,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블의 빈 상태를 변경할 수 있다.")
     @Test
     void changeEmpty() {
-        OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
         OrderTableRequest 변경할_주문_테이블 = OrderTableRequest.of(주문_테이블.getNumberOfGuests(), !주문_테이블.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(주문_테이블.getId(), 변경할_주문_테이블);
@@ -261,8 +266,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록된 주문 테이블이 빈 상태이면 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsFail3() {
-        OrderTable 빈_상태_주문_테이블 =
-                주문_테이블_등록되어_있음(OrderTableRequest.of(0, true)).as(OrderTable.class);
+        OrderTableResponse 빈_상태_주문_테이블 =
+                주문_테이블_등록되어_있음(OrderTableRequest.of(0, true)).as(OrderTableResponse.class);
 
         OrderTableRequest 방문한_손님_수_변경한_주문_테이블 = OrderTableRequest.of(10, false);
         ExtractableResponse<Response> response =
@@ -279,7 +284,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
         OrderTableRequest 방문한_손님_수_변경_주문_테이블 = OrderTableRequest.of(10, 주문_테이블.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_방문한_손님_수_변경_요청(주문_테이블.getId(), 방문한_손님_수_변경_주문_테이블);

@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
@@ -29,6 +28,7 @@ import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,8 +42,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private MenuGroupResponse 두마리메뉴;
     private ProductResponse 후라이드;
     private MenuResponse 후라이드치킨;
-    private OrderTable 주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
+    private OrderTableResponse 주문_테이블;
+    private OrderTableResponse 비어있는_주문_테이블;
 
     /**
      * Given 메뉴 그룹 등록되어 있음
@@ -65,8 +65,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         후라이드치킨 = 메뉴_등록되어_있음(MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록))
                 .as(MenuResponse.class);
 
-        주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false)).as(OrderTable.class);
-        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, true)).as(OrderTable.class);
+        주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false)).as(OrderTableResponse.class);
+        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, true)).as(OrderTableResponse.class);
 
     }
 

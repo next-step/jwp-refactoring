@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -27,8 +26,10 @@ import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,11 +59,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정을 할 수 있다.")
     @Test
     void create() {
-        OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
-        TableGroup 단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
-        ExtractableResponse<Response> response = 단체_지정_요청함(단체_지정);
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
+        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정요청);
 
         단체_지정이됨(response);
     }
@@ -75,10 +76,10 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블이 2개 이상이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createFail() {
-        OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        TableGroup 단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1));
+        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId()));
 
-        ExtractableResponse<Response> response = 단체_지정_요청함(단체_지정);
+        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정요청);
 
         단체_지정_실패함(response);
     }
@@ -94,10 +95,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         주문_테이블_등록되어_있음(비어있는_주문_테이블1);
         주문_테이블_등록되어_있음(비어있는_주문_테이블2);
 
-        OrderTable 등록되지_않은_주문테이블1 = OrderTable.of(3L, 1, false);
-        OrderTable 등록되지_않은_주문테이블2 = OrderTable.of(4L, 2, false);
-        ExtractableResponse<Response> response =
-                단체_지정_요청함(TableGroup.of(1L, Arrays.asList(등록되지_않은_주문테이블1, 등록되지_않은_주문테이블2)));
+        ExtractableResponse<Response> response = 단체_지정_요청함(TableGroupRequest.from(Arrays.asList(3L, 4L)));
 
         단체_지정_실패함(response);
     }
@@ -110,12 +108,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록된 주문 테이블 하나라도 빈 테이블이면 단체 지정을 할 수 없다.")
     @Test
     void createFail3() {
-        OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 비어있지_않은_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false))
-                .as(OrderTable.class);
+        OrderTableResponse 주문_테이블 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 비어있지_않은_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false))
+                .as(OrderTableResponse.class);
 
-        ExtractableResponse<Response> response =
-                단체_지정_요청함(TableGroup.of(1L, Arrays.asList(주문_테이블, 비어있지_않은_주문_테이블)));
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블.getId(), 비어있지_않은_주문_테이블.getId()));
+        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정요청);
 
         단체_지정_실패함(response);
     }
@@ -129,12 +127,13 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("이미 단체 지정이 된 주문 테이블이면 단체 지정을 할 수 없다.")
     @Test
     void createFail4() {
-        OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
-        단체_지정_등록되어_있음(TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2)));
+        TableGroupRequest 단체지정 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
+        단체_지정_등록되어_있음(단체지정);
 
-        ExtractableResponse<Response> response = 단체_지정_요청함(TableGroup.of(2L, Arrays.asList(주문_테이블1, 주문_테이블2)));
+        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정);
 
         단체_지정_실패함(response);
     }
@@ -148,13 +147,13 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정을 취소할 수 있다.")
     @Test
     void ungroup() {
-        OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
-        TableGroup 단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
-        단체_지정_등록되어_있음(단체_지정);
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
+        TableGroup 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroup.class);
 
-        ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체_지정.getId());
+        ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
 
         단체_지정_취소됨(response);
     }
@@ -186,12 +185,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         ).as(MenuResponse.class);
 
         // And 주문 테이블 여러개 등록되어 있음
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
         // And 단체 지정 되어 있음
-        TableGroup 단체지정 = 단체_지정_등록되어_있음(TableGroup.of(1L, Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2)))
-                .as(TableGroup.class);
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(등록된_주문_테이블1.getId(), 등록된_주문_테이블2.getId()));
+        TableGroup 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroup.class);
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
@@ -233,12 +232,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         ).as(MenuResponse.class);
 
         // And 주문 테이블 여러개 등록되어 있음
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
         // And 단체 지정 되어 있음
-        TableGroup 단체지정 = 단체_지정_등록되어_있음(TableGroup.of(1L, Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2)))
-                .as(TableGroup.class);
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(등록된_주문_테이블1.getId(), 등록된_주문_테이블2.getId()));
+        TableGroup 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroup.class);
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));

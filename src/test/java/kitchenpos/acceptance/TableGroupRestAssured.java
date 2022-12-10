@@ -3,21 +3,21 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 public class TableGroupRestAssured {
     private TableGroupRestAssured() {
     }
 
-    public static ExtractableResponse<Response> 단체_지정_등록되어_있음(TableGroup tableGroup) {
-        return 단체_지정_요청함(tableGroup);
+    public static ExtractableResponse<Response> 단체_지정_등록되어_있음(TableGroupRequest request) {
+        return 단체_지정_요청함(request);
     }
 
-    public static ExtractableResponse<Response> 단체_지정_요청함(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_요청함(TableGroupRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(tableGroup)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/table-groups")
                 .then().log().all()
