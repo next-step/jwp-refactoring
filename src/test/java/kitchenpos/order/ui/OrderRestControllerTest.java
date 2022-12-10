@@ -3,7 +3,7 @@ package kitchenpos.order.ui;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
