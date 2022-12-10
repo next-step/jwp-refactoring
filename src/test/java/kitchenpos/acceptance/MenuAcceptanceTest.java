@@ -34,8 +34,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
 	/**
 	 * Feature: 메뉴 관리 기능
 	 * Background
-	 *   when 상품을 등록을 요청하면
-	 *   then 상품 등록에 성공한다
+	 *   When 상품 등록을 요청하면
+	 *   Then 상품 등록에 성공한다
 	 */
 	@BeforeEach
 	void setup() {
