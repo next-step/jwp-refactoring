@@ -43,6 +43,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private Product 김치;
     private Product 공기밥;
     private MenuGroup 한식;
+    private Menu 불고기정식메뉴;
     private MenuProductRequest 불고기상품;
     private MenuProductRequest 김치상품;
     private MenuProductRequest 공기밥상품;
@@ -63,16 +64,17 @@ class OrderAcceptanceTest extends AcceptanceTest {
         불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
         김치상품 = MenuProductRequest.of(김치.getId(), 1L);
         공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
+        불고기정식메뉴 = new Menu("불고기정식", BigDecimal.valueOf(12_000L), 한식);
         불고기정식응답 = 메뉴_생성_요청(MenuRequest.of(
-                "불고기정식",
-                BigDecimal.valueOf(12_000L),
-                한식.getId(),
+                불고기정식메뉴.getName(),
+                불고기정식메뉴.getPrice(),
+                불고기정식메뉴.getMenuGroup().getId(),
                 Arrays.asList(불고기상품, 김치상품, 공기밥상품)
         )).as(MenuResponse.class);
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
-        불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 1);
+        불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 불고기정식메뉴);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
         불고기정식주문요청 = new OrderLineItemRequest(불고기정식응답.getId(), 1L);
     }

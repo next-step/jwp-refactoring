@@ -79,9 +79,8 @@ class OrderServiceTest {
         불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
 
         주문테이블 = new OrderTable(1L, 0, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>());
-        불고기정식주문 = new OrderLineItem(1L, 불고기정식.getId(), 1);
-        주문.setOrderLineItems(Arrays.asList(불고기정식주문));
+        불고기정식주문 = new OrderLineItem(1L, 불고기정식);
+        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
         불고기정식주문요청 = new OrderLineItemRequest(불고기정식.getMenuGroup().getId(), 1L);
     }
 
@@ -91,8 +90,10 @@ class OrderServiceTest {
         // given
         List<Long> menuIds = 주문.getOrderLineItems()
                         .stream()
-                        .map(OrderLineItem::getMenuId)
+                        .map(OrderLineItem::getMenu)
+                        .map(Menu::getId)
                         .collect(Collectors.toList());
+        when(menuRepository.findAllById(menuIds)).thenReturn(Arrays.asList(불고기정식));
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(주문)).thenReturn(주문);
@@ -137,7 +138,8 @@ class OrderServiceTest {
         // given
         List<Long> menuIds = 주문.getOrderLineItems()
                 .stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItem::getMenu)
+                .map(Menu::getId)
                 .collect(Collectors.toList());
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
 
@@ -156,7 +158,8 @@ class OrderServiceTest {
         주문테이블.setEmpty(true);
         List<Long> menuIds = 주문.getOrderLineItems()
                 .stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItem::getMenu)
+                .map(Menu::getId)
                 .collect(Collectors.toList());
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());

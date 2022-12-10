@@ -1,33 +1,35 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderLineItemRequest {
-    private Long menu;
+    private Long menuId;
     private Long quantity;
 
     protected OrderLineItemRequest() {}
 
-    public OrderLineItemRequest(Long menu, Long quantity) {
-        this.menu = menu;
+    public OrderLineItemRequest(Long menuId, Long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public Long getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Long getQuantity() {
         return quantity;
     }
 
-    public OrderLineItem createOrderLineItem() {
-        return new OrderLineItem(menu, quantity);
+    public OrderLineItem createOrderLineItem(List<Menu> menus) {
+        Menu menu = menus.stream()
+                .filter(item -> item.getId().equals(menuId))
+                .findFirst()
+                .get();
+
+        return new OrderLineItem(quantity, menu);
     }
 }

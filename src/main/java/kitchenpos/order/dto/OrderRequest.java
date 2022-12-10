@@ -1,5 +1,6 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -33,9 +34,9 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order createOrder(OrderTable orderTable) {
+    public Order createOrder(OrderTable orderTable, List<Menu> menus) {
         List<OrderLineItem> orderLineItems = getOrderLineItems().stream()
-                .map(OrderLineItemRequest::createOrderLineItem)
+                .map(item -> item.createOrderLineItem(menus))
                 .collect(Collectors.toList());
         return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
