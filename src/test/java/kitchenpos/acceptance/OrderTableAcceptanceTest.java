@@ -162,11 +162,20 @@ class OrderTableAcceptanceTest extends AcceptanceTest<OrderTable> {
 			.collect(Collectors.toList());
 	}
 
-	public static OrderTable 주문_테이블() {
+	public static OrderTable 주문_테이블(int numberOfGuests) {
 		OrderTable orderTable = new OrderTable();
-		orderTable.setNumberOfGuests(0);
-		orderTable.setEmpty(true);
+		orderTable.setNumberOfGuests(numberOfGuests);
+		orderTable.setEmpty(numberOfGuests < 1);
 		return orderTable;
+	}
+
+	public static OrderTable 주문_테이블() {
+		return 주문_테이블(0);
+	}
+
+	public OrderTable 주문_테이블_등록되어_있음(OrderTable 주문_테이블) {
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(주문_테이블);
+		return 등록됨(등록_요청_응답);
 	}
 
 	@Override

@@ -90,7 +90,7 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 
 		// when
 		int 유효하지_않은_메뉴_가격 = -1;
-		Menu 메뉴 = 메뉴(메뉴_그룹, 유효하지_않은_메뉴_가격);
+		Menu 메뉴 = 메뉴(메뉴_그룹, 유효하지_않은_메뉴_가격, 메뉴상품(상품_아이디_목록));
 		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(메뉴);
 		// then
 		등록_실패함(등록_요청_응답);
@@ -104,26 +104,38 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 
 		// when
 		유효하지_않은_메뉴_가격 = 메뉴가격 * 2;
-		메뉴 = 메뉴(메뉴_그룹, 유효하지_않은_메뉴_가격);
+		메뉴 = 메뉴(메뉴_그룹, 유효하지_않은_메뉴_가격, 메뉴상품(상품_아이디_목록));
 		등록_요청_응답 = 등록_요청(메뉴);
 		// then
 		등록_실패함(등록_요청_응답);
 	}
 
 	private Menu 메뉴(MenuGroup 메뉴_그룹) {
-		return 메뉴(메뉴_그룹, 메뉴가격);
+		return 메뉴(메뉴_그룹, 메뉴가격, 메뉴상품(상품_아이디_목록));
 	}
 
-	private Menu 메뉴(MenuGroup 메뉴_그룹, int price) {
+	public static Menu 메뉴(MenuGroup 메뉴_그룹, List<Product> 상품, int 가격) {
+		List<Long> 상품_아이디_목록 = 상품.stream()
+			.map(Product::getId)
+			.collect(Collectors.toList());
 		Menu menu = new Menu();
 		menu.setName(메뉴명);
 		menu.setMenuGroupId(메뉴_그룹.getId());
 		menu.setMenuProducts(메뉴상품(상품_아이디_목록));
-		menu.setPrice(BigDecimal.valueOf(price));
+		menu.setPrice(BigDecimal.valueOf(가격));
 		return menu;
 	}
 
-	private List<MenuProduct> 메뉴상품(List<Long> 상품_아이디_목록) {
+	public static Menu 메뉴(MenuGroup 메뉴_그룹, int 가격, List<MenuProduct> 메뉴상품) {
+		Menu menu = new Menu();
+		menu.setName(메뉴명);
+		menu.setMenuGroupId(메뉴_그룹.getId());
+		menu.setMenuProducts(메뉴상품);
+		menu.setPrice(BigDecimal.valueOf(가격));
+		return menu;
+	}
+
+	private static List<MenuProduct> 메뉴상품(List<Long> 상품_아이디_목록) {
 		return 상품_아이디_목록.stream()
 			.map(id -> {
 				MenuProduct menuProduct = new MenuProduct();
@@ -132,6 +144,11 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 				return menuProduct;
 			})
 			.collect(Collectors.toList());
+	}
+
+	public Menu 메뉴_등록되어_있음(Menu 메뉴) {
+		ExtractableResponse<Response> 등록_요청 = 등록_요청(메뉴);
+		return 등록됨(등록_요청);
 	}
 
 	@Override
@@ -148,5 +165,4 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 	protected Class<Menu> getDomainClass() {
 		return Menu.class;
 	}
-
 }

@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.ToLongFunction;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,6 +70,12 @@ class ProductAcceptanceTest extends AcceptanceTest<Product> {
 		return product;
 	}
 
+	public List<Product> 상품_등록되어_있음(List<Product> 상품_목록) {
+		return 상품_목록.stream()
+			.map(product -> 등록됨(등록_요청(product)))
+			.collect(Collectors.toList());
+	}
+
 	@Override
 	protected String getRequestPath() {
 		return REQUEST_PATH;
@@ -83,5 +90,4 @@ class ProductAcceptanceTest extends AcceptanceTest<Product> {
 	protected Class<Product> getDomainClass() {
 		return Product.class;
 	}
-
 }
