@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.acceptance.TableAcceptanceStep.*;
+import static kitchenpos.acceptance.OrderTableAcceptanceStep.*;
 import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
-public class TableAcceptanceTest extends AcceptanceTest {
+public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;

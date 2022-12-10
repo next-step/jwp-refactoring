@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class TableAcceptanceStep {
+public class OrderTableAcceptanceStep {
 
     public static ExtractableResponse<Response> 등록된_주문_테이블(OrderTable orderTable) {
         return 주문_테이블_생성_요청(orderTable);
