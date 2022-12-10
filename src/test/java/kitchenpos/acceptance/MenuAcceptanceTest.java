@@ -13,7 +13,6 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;

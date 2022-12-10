@@ -15,10 +15,8 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -28,6 +26,7 @@ import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,16 +37,16 @@ import org.springframework.http.HttpStatus;
 @DisplayName("단체 지정 관련 인수 테스트")
 class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 비어있는_주문_테이블1;
-    private OrderTable 비어있는_주문_테이블2;
+    private OrderTableRequest 비어있는_주문_테이블1;
+    private OrderTableRequest 비어있는_주문_테이블2;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        비어있는_주문_테이블1 = OrderTable.of(null, 3, true);
-        비어있는_주문_테이블2 = OrderTable.of(null, 2, true);
+        비어있는_주문_테이블1 = OrderTableRequest.of(3, true);
+        비어있는_주문_테이블2 = OrderTableRequest.of(2, true);
 
     }
 
@@ -112,7 +111,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail3() {
         OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 비어있지_않은_주문_테이블 = 주문_테이블_등록되어_있음(OrderTable.of(null, 2, false))
+        OrderTable 비어있지_않은_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false))
                 .as(OrderTable.class);
 
         ExtractableResponse<Response> response =

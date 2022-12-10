@@ -71,7 +71,8 @@ class TableServiceTest {
     void changeEmptyException() {
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, table1))
+        boolean empty = table1.isEmpty();
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -81,7 +82,8 @@ class TableServiceTest {
         table1.setTableGroupId(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(table1));
 
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, table1))
+        boolean empty = table1.isEmpty();
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,7 +93,8 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(table1));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(true);
 
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, table1))
+        boolean empty = table1.isEmpty();
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -103,8 +106,7 @@ class TableServiceTest {
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(OrderTable.of(1L, table1.getNumberOfGuests(), !isEmpty));
 
-        OrderTable result = tableService.changeEmpty(1L,
-                OrderTable.of(1L, table1.getNumberOfGuests(), !table1.isEmpty()));
+        OrderTable result = tableService.changeEmpty(1L, !table1.isEmpty());
 
         Assertions.assertThat(result.isEmpty()).isEqualTo(!isEmpty);
     }
@@ -115,7 +117,8 @@ class TableServiceTest {
         OrderTable orderTable = OrderTable.of(1L, -1, true);
 
         Long orderTableId = orderTable.getId();
-        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable))
+        int numberOfGuests = orderTable.getNumberOfGuests();
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -126,7 +129,8 @@ class TableServiceTest {
 
         Long orderTableId = table1.getId();
         OrderTable orderTable = OrderTable.of(orderTableId, 4, table1.isEmpty());
-        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable))
+        int numberOfGuests = orderTable.getNumberOfGuests();
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -137,7 +141,8 @@ class TableServiceTest {
 
         Long orderTableId = 비어있는_주문_테이블.getId();
         OrderTable orderTable = OrderTable.of(orderTableId, 2, 비어있는_주문_테이블.isEmpty());
-        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable))
+        int numberOfGuests = orderTable.getNumberOfGuests();
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -149,8 +154,9 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(table1));
         when(orderTableDao.save(any())).thenReturn(orderTable);
 
-        OrderTable result = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        int numberOfGuests = orderTable.getNumberOfGuests();
+        OrderTable result = tableService.changeNumberOfGuests(orderTable.getId(), numberOfGuests);
 
-        Assertions.assertThat(result.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        Assertions.assertThat(result.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 }
