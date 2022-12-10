@@ -12,6 +12,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
@@ -50,6 +51,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private Order 주문;
     private OrderTable 주문테이블;
     private OrderLineItem 불고기정식주문;
+    private OrderLineItemRequest 불고기정식주문요청;
 
     @BeforeEach
     public void setUp() {
@@ -72,13 +74,14 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 1);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
+        불고기정식주문요청 = new OrderLineItemRequest(불고기정식응답.getId(), 1L);
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void createOrder() {
         // when
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         ExtractableResponse<Response> response = 주문_생성_요청(request);
 
         // then
@@ -89,7 +92,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrder() {
         // given
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
 
         // when
@@ -104,7 +107,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void updateOrderStatus() {
         // given
         OrderStatus expectedOrderStatus = OrderStatus.MEAL;
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
         UpdateOrderStatusRequest updateRequest = UpdateOrderStatusRequest.of(OrderStatus.MEAL.name());
 

@@ -8,6 +8,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
@@ -63,6 +64,7 @@ class OrderServiceTest {
     private Order 주문;
     private OrderTable 주문테이블;
     private OrderLineItem 불고기정식주문;
+    private OrderLineItemRequest 불고기정식주문요청;
 
     @BeforeEach
     void setUp() {
@@ -80,6 +82,7 @@ class OrderServiceTest {
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>());
         불고기정식주문 = new OrderLineItem(1L, 불고기정식.getId(), 1);
         주문.setOrderLineItems(Arrays.asList(불고기정식주문));
+        불고기정식주문요청 = new OrderLineItemRequest(불고기정식.getMenuGroup().getId(), 1L);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -93,7 +96,7 @@ class OrderServiceTest {
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(주문)).thenReturn(주문);
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
 
         // when
         OrderResponse result = orderService.create(request);
@@ -120,7 +123,7 @@ class OrderServiceTest {
     @Test
     void notExistOrderLineItemsException() {
         // given
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         when(menuRepository.countByIdIn(anyList())).thenReturn(10);
 
         // when & then
@@ -136,7 +139,7 @@ class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
 
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.empty());
@@ -155,7 +158,7 @@ class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문테이블));
 
