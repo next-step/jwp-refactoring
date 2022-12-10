@@ -1,5 +1,7 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
+import static kitchenpos.acceptance.OrderAcceptanceTestUtils.주문_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,6 +17,12 @@ import org.springframework.http.MediaType;
 
 class TableAcceptanceTestUtils {
     private static final String TABLE_PATH = "/api/tables";
+
+    public static OrderTable 주문이_들어간_테이블() {
+        OrderTable 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(null, 2, false).as(OrderTable.class);
+        주문_등록되어_있음(주문이_들어간_테이블, 메뉴_면류_짜장면());
+        return 주문이_들어간_테이블;
+    }
 
     public static ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
         return RestAssured.given().log().all()

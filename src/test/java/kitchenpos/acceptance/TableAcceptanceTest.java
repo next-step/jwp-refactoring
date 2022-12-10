@@ -98,7 +98,14 @@ class TableAcceptanceTest extends AcceptanceTest {
                     // TODO : 단체 테이블 테스트 작성 후 작성
                 }),
                 dynamicTest("주문 테이블 수정시 주문 상태가 요리 중 또는 식사 중이면 안된다.", () -> {
-                    // TODO : 주문 테스트 작성 후 작성
+                    // given
+                    OrderTable 주문이_들어간_테이블 = 주문이_들어간_테이블();
+
+                    // when
+                    ExtractableResponse<Response> response = 주문_테이블_빈_테이블_수정_요청(주문이_들어간_테이블.getId());
+
+                    // then
+                    비어있는_테이블로_수정_실패(response);
                 }),
                 dynamicTest("주문 테이블을 빈 테이블로 수정한다.", () -> {
                     // when

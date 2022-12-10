@@ -149,4 +149,4 @@ POST /api/orders/{orderId}/order-status
     - [x] 메뉴
     - [ ] 주문 테이블
     - [ ] 단체 테이블
-    - [ ] 주문
+    - [x] 주문
