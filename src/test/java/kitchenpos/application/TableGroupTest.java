@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
-@DisplayName("주문 테이블 비즈니스 테스트")
+@DisplayName("단체 지정 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class TableGroupTest {
     @Mock
