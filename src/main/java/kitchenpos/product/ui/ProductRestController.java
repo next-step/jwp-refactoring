@@ -25,14 +25,12 @@ public class ProductRestController {
         final ProductResponse productResponse = productService.create(productRequest);
         final URI uri = URI.create("/api/products/" + productResponse.getId());
         return ResponseEntity.created(uri)
-                .body(productResponse)
-                ;
+                .body(productResponse);
     }
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> list() {
         return ResponseEntity.ok()
-                .body(productService.list())
-                ;
+                .body(productService.list());
     }
 }

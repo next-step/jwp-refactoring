@@ -24,14 +24,12 @@ public class MenuRestController {
         final MenuResponse menuResponse = menuService.create(menuRequest);
         final URI uri = URI.create("/api/menus/" + menuResponse.getId());
         return ResponseEntity.created(uri)
-                .body(menuResponse)
-                ;
+                .body(menuResponse);
     }
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
-                .body(menuService.list())
-                ;
+                .body(menuService.list());
     }
 }
