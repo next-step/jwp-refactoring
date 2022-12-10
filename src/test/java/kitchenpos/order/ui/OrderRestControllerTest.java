@@ -6,7 +6,7 @@ import kitchenpos.order.OrderService;
 import kitchenpos.menu.Menu;
 import kitchenpos.order.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.OrderStatus;
 import kitchenpos.order.OrderRestController;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;

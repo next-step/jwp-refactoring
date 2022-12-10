@@ -4,7 +4,6 @@ import kitchenpos.menu.MenuDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.table.OrderTableDao;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

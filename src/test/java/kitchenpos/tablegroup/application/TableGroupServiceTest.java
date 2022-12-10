@@ -5,7 +5,7 @@ import kitchenpos.tablegroup.TableGroupService;
 import kitchenpos.order.OrderDao;
 import kitchenpos.table.OrderTableDao;
 import kitchenpos.tablegroup.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.OrderStatus;
 import kitchenpos.table.OrderTable;
 import kitchenpos.tablegroup.TableGroup;
 import net.jqwik.api.Arbitraries;

@@ -4,7 +4,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.table.TableService;
 import kitchenpos.order.OrderDao;
 import kitchenpos.table.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.OrderStatus;
 import kitchenpos.table.OrderTable;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;

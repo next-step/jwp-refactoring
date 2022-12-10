@@ -8,7 +8,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.table.OrderTableDao;
 import kitchenpos.order.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.OrderStatus;
 import kitchenpos.table.OrderTable;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
