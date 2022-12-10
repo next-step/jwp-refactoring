@@ -143,4 +143,8 @@ class TableServiceTest {
         return OrderTable.of(id, tableGroupId, 0, true);
     }
 
+    public static OrderTable generateOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return OrderTable.of(id, null, numberOfGuests, empty);
+    }
+
 }
