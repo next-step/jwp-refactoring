@@ -29,6 +29,7 @@ import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
-        후라이드 = 상품_등록되어_있음(Product.of(1L, "후라이드", BigDecimal.valueOf(16_000))).as(Product.class);
+        후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000))).as(Product.class);
 
         List<MenuProductRequest> 메뉴상품_목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
         후라이드치킨 = 메뉴_등록되어_있음(MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록))
