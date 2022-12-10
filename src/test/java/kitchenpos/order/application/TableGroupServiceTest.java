@@ -2,27 +2,39 @@ package kitchenpos.order.application;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
+import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
+import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroup;
 import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroupRequest;
+import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.order.application.TableGroupService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +48,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -47,17 +59,30 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    private Product 불고기버거;
+    private MenuProduct 불고기버거상품;
+    private MenuGroup 햄버거단품;
+    private Menu 불고기버거단품;
+    private OrderLineItemRequest 불고기버거세트주문요청;
+    private Order 주문;
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
     private OrderTable 주문테이블C;
     private OrderTable 주문테이블D;
 
+
     @BeforeEach
     void setUp() {
+        불고기버거 = generateProduct("불고기버거", BigDecimal.valueOf(4000L));
+        불고기버거상품 = generateMenuProduct(불고기버거, 1L);
+        햄버거단품 = generateMenuGroup("햄버거단품");
+        불고기버거단품 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(불고기버거상품));
+        불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거단품.getId(), 2);
         주문테이블A = generateOrderTable(1L, null, 5, true);
-        주문테이블B = generateOrderTable(2L, null, 4, true);
+        주문테이블B = generateOrderTable(2L, null, 4, false);
         주문테이블C = generateOrderTable(3L, null, 5, true);
         주문테이블D = generateOrderTable(4L, null, 4, true);
+        주문 = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거단품)));
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 설정한다.")
@@ -138,10 +163,9 @@ public class TableGroupServiceTest {
     void ungroup() {
         // given
         TableGroup 단체 = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
         given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
-        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문));
 
         // when
         tableGroupService.ungroup(단체.getId());
@@ -159,9 +183,7 @@ public class TableGroupServiceTest {
         // given
         TableGroup 단체 = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
         given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
-        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체.getId()));

@@ -44,6 +44,11 @@ public class TableGroup {
         }
     }
 
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::validateIfNotCompletionOrder);
+        orderTables.ungroupOrderTables();
+    }
+
     public Long getId() {
         return id;
     }

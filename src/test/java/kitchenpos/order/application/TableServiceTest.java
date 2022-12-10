@@ -1,24 +1,38 @@
 package kitchenpos.order.application;
 
+import static java.util.Collections.singletonList;
+import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
+import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTableRequest;
+import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroup;
+import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.order.application.TableService;
+import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +48,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -42,13 +56,25 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
+    private Product 불고기버거;
+    private MenuProduct 불고기버거상품;
+    private MenuGroup 햄버거단품;
+    private Menu 불고기버거단품;
+    private OrderLineItemRequest 불고기버거세트주문요청;
+    private Order 주문;
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
 
     @BeforeEach
     void setUp() {
+        불고기버거 = generateProduct("불고기버거", BigDecimal.valueOf(4000L));
+        불고기버거상품 = generateMenuProduct(불고기버거, 1L);
+        햄버거단품 = generateMenuGroup("햄버거단품");
+        불고기버거단품 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(불고기버거상품));
+        불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거단품.getId(), 2);
         주문테이블A = generateOrderTable(1L, null, 5, false);
         주문테이블B = generateOrderTable(2L, null, 4, false);
+        주문 = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거단품)));
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -91,12 +117,12 @@ public class TableServiceTest {
     @Test
     void changeTableEmpty() {
         // given
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
         boolean isEmpty = 주문테이블A.isEmpty();
         int numberOfGuests = 주문테이블A.getNumberOfGuests().value();
         OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(numberOfGuests, !isEmpty);
         given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블A.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.findAllByOrderTableId(주문테이블A.getId())).willReturn(singletonList(주문));
 
         // when
         OrderTableResponse resultOrderTable = tableService.changeEmpty(주문테이블A.getId(), changeOrderTableRequest);
@@ -114,7 +140,8 @@ public class TableServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(10L, changeOrderTableRequest));
+                () -> tableService.changeEmpty(10L, changeOrderTableRequest))
+                .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
     }
 
     @DisplayName("단체 지정이 되어 있는 테이블은 비어있는지 여부를 변경할 수 없다.")
@@ -128,7 +155,8 @@ public class TableServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(orderTable.getId(), changeOrderTableRequest));
+                () -> tableService.changeEmpty(orderTable.getId(), changeOrderTableRequest))
+                .withMessage(ErrorCode.단체_그룹_지정되어_있음.getErrorMessage());
     }
 
     @DisplayName("주문 테이블의 주문 상태가 조리중이거나 식사중이면 비어있는지 여부를 변경할 수 없다.")
@@ -137,12 +165,12 @@ public class TableServiceTest {
         // given
         OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(3, true);
         given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블A.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderRepository.findAllByOrderTableId(주문테이블A.getId())).willReturn(singletonList(주문));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블A.getId(), changeOrderTableRequest));
+                () -> tableService.changeEmpty(주문테이블A.getId(), changeOrderTableRequest))
+                .withMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
     }
 
     @ParameterizedTest(name = "주문 테이블에 방문한 손님 수를 변경한다. (변경된 손님 수: {0})")
@@ -164,10 +192,12 @@ public class TableServiceTest {
     void changeNumberOfGuestsInTableThrowErrorWhenNumberOfGuestIsSmallerThanZero(int expectNumberOfGuests) {
         // given
         OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(expectNumberOfGuests, false);
+        given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeNumberOfGuests(주문테이블A.getId(), changeOrderTableRequest));
+                () -> tableService.changeNumberOfGuests(주문테이블A.getId(), changeOrderTableRequest))
+                .withMessage(ErrorCode.방문한_손님_수는_0보다_작을_수_없음.getErrorMessage());
     }
 
     @DisplayName("존재하지 않는 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
@@ -180,7 +210,8 @@ public class TableServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTableRequest));
+                () -> tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTableRequest))
+                .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
     }
 
     @DisplayName("주문 테이블이 비어있는 경우, 방문한 손님 수를 변경할 수 없다.")
@@ -193,6 +224,7 @@ public class TableServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTableRequest));
+                () -> tableService.changeNumberOfGuests(orderTable.getId(), changeOrderTableRequest))
+                .withMessage(ErrorCode.비어있는_주문_테이블.getErrorMessage());
     }
 }

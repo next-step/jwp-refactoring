@@ -1,12 +1,14 @@
 package kitchenpos.order.application;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
-import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItem;
+import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
+import static kitchenpos.order.domain.OrderTestFixture.generateOrderRequest;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -17,19 +19,20 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,10 +50,7 @@ public class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -71,8 +71,8 @@ public class OrderServiceTest {
     private Menu 치킨버거세트;
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
-    private OrderLineItem 불고기버거세트주문;
-    private OrderLineItem 치킨버거세트주문;
+    private OrderLineItemRequest 불고기버거세트주문요청;
+    private OrderLineItemRequest 치킨버거세트주문요청;
     private Order 주문A;
     private Order 주문B;
 
@@ -93,35 +93,30 @@ public class OrderServiceTest {
                 Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
         주문테이블A = generateOrderTable(1L, null, 5, false);
         주문테이블B = generateOrderTable(2L, null, 7, false);
-        불고기버거세트주문 = generateOrderLineItem(1L, null, 불고기버거세트.getId(), 2);
-        치킨버거세트주문 = generateOrderLineItem(2L, null, 치킨버거세트.getId(), 1);
-        주문A = generateOrder(주문테이블A.getId(), null, null, Arrays.asList(불고기버거세트주문, 치킨버거세트주문));
-        주문B = generateOrder(주문테이블B.getId(), null, null, singletonList(불고기버거세트주문));
+        불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거세트.getId(), 2);
+        치킨버거세트주문요청 = generateOrderLineItemRequest(치킨버거세트.getId(), 1);
+        주문A = generateOrder(주문테이블A, Arrays.asList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트), 치킨버거세트주문요청.toOrderLineItem(치킨버거세트)));
+        주문B = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트)));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void createOrder() {
         // given
-        List<Long> menuIds = 주문A.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-        given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
-        given(orderTableRepository.findById(주문A.getOrderTableId())).willReturn(Optional.of(주문테이블A));
-        given(orderDao.save(주문A)).willReturn(주문A);
-        given(orderLineItemDao.save(불고기버거세트주문)).willReturn(불고기버거세트주문);
-        given(orderLineItemDao.save(치킨버거세트주문)).willReturn(치킨버거세트주문);
+        OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
+        Order 주문 = Order.of(주문테이블A, OrderLineItems.from(singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트))));
+        given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
+        given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(주문테이블A));
+        given(orderRepository.save(주문)).willReturn(주문);
 
         // when
-        Order order = orderService.create(주문A);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
         assertAll(
-                () -> assertThat(order.getOrderedTime()).isNotNull(),
-                () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(order.getId()).isEqualTo(불고기버거세트주문.getOrderId()),
-                () -> assertThat(order.getId()).isEqualTo(치킨버거세트주문.getOrderId())
+                () -> assertThat(orderResponse.getOrderedTime()).isNotNull(),
+                () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+                () -> assertThat(orderResponse.getId()).isEqualTo(주문.getId())
         );
     }
 
@@ -129,39 +124,37 @@ public class OrderServiceTest {
     @Test
     void createOrderThrowErrorWhenOrderLineItemIsEmpty() {
         // given
-        Order order = generateOrder(주문테이블A.getId(), null, null, null);
+        OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, emptyList());
+        given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
+                .withMessage(ErrorCode.주문_항목은_비어있을_수_없음.getErrorMessage());
     }
 
     @DisplayName("주문 생성 시, 주문 항목 내에 등록되지 않은 메뉴가 있다면 예외가 발생한다.")
     @Test
     void createOrderThrowErrorWhenOrderLineItemHasUnregisteredMenu() {
         // given
-        List<Long> menuIds = 주문A.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-        given(menuRepository.countByIdIn(menuIds)).willReturn(0L);
+        OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
+        given(menuRepository.findById(불고기버거세트주문요청.getMenuId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문A));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
+                .withMessage(ErrorCode.존재하지_않는_메뉴.getErrorMessage());
     }
 
     @DisplayName("등록되어 있지않은 주문 테이블을 가진 주문은 생성될 수 없다.")
     @Test
     void createOrderThrowErrorWhenOrderTableIsNotExists() {
         // given
-        List<Long> menuIds = 주문A.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-        given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
-        given(orderTableRepository.findById(주문A.getOrderTableId())).willReturn(Optional.empty());
+        OrderRequest orderRequest = generateOrderRequest(10L, OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
+        given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
+        given(orderTableRepository.findById(10L)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문A));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
+                .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
     }
 
     @DisplayName("주문 테이블이 비어있을 경우 주문은 생성될 수 없다.")
@@ -169,16 +162,13 @@ public class OrderServiceTest {
     void createOrderThrowErrorWhenOrderTableIsEmpty() {
         // given
         OrderTable orderTable = generateOrderTable(4L, null, 6, true);
-        Order order = generateOrder(orderTable.getId(), null, null, singletonList(불고기버거세트주문));
-        List<Long> menuIds = order.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-        given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        OrderRequest orderRequest = generateOrderRequest(orderTable.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
+        given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
+        given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
+                .withMessage(ErrorCode.주문_테이블은_비어있으면_안됨.getErrorMessage());
     }
 
     @DisplayName("주문 전체 목록을 조회한다.")
@@ -186,18 +176,15 @@ public class OrderServiceTest {
     void findAllOrders() {
         // given
         List<Order> orders = Arrays.asList(주문A, 주문B);
-        given(orderDao.findAll()).willReturn(orders);
-        for(Order order: orders) {
-            given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(order.getOrderLineItems());
-        }
+        given(orderRepository.findAll()).willReturn(orders);
 
         // when
-        List<Order> findOrders = orderService.list();
+        List<OrderResponse> findOrders = orderService.list();
 
         // then
         assertAll(
                 () -> assertThat(findOrders).hasSize(orders.size()),
-                () -> assertThat(findOrders).containsExactly(주문A, 주문B)
+                () -> assertThat(findOrders.stream().map(OrderResponse::getId)).containsExactly(주문A.getId(), 주문B.getId())
         );
     }
 
@@ -205,13 +192,12 @@ public class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        String expectOrderStatus = OrderStatus.MEAL.name();
-        Order changeOrder = generateOrder(주문B.getId(), 주문B.getOrderTableId(), expectOrderStatus, 주문B.getOrderedTime(), 주문B.getOrderLineItems());
-        given(orderDao.findById(주문B.getId())).willReturn(Optional.of(주문B));
-        given(orderDao.save(주문B)).willReturn(주문B);
+        OrderStatus expectOrderStatus = OrderStatus.MEAL;
+        OrderRequest changeOrderRequest = generateOrderRequest(주문테이블B.getId(), expectOrderStatus, singletonList(불고기버거세트주문요청));
+        given(orderRepository.findById(주문B.getId())).willReturn(Optional.of(주문B));
 
         // when
-        Order resultOrder = orderService.changeOrderStatus(주문B.getId(), changeOrder);
+        OrderResponse resultOrder = orderService.changeOrderStatus(주문B.getId(), changeOrderRequest);
 
         // then
         assertThat(resultOrder.getOrderStatus()).isEqualTo(expectOrderStatus);
@@ -221,23 +207,26 @@ public class OrderServiceTest {
     @Test
     void changeOrderStatusThrowErrorWhenOrderIsNotExists() {
         // given
+        OrderRequest orderRequest = generateOrderRequest(주문테이블B.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
         Long notExistsOrderId = 5L;
-        given(orderDao.findById(notExistsOrderId)).willReturn(Optional.empty());
+        given(orderRepository.findById(notExistsOrderId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(notExistsOrderId, 주문B));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(notExistsOrderId, orderRequest))
+                .withMessage(ErrorCode.존재하지_않는_주문.getErrorMessage());
     }
 
     @DisplayName("이미 완료된 주문이면 주문 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusThrowErrorWhenOrderStatusAlreadyComplete() {
         // given
-        Order order = generateOrder(주문테이블B.getId(), OrderStatus.COMPLETION.name(), null,
-                Arrays.asList(불고기버거세트주문, 치킨버거세트주문));
-        Order changeOrder = generateOrder(order.getId(), order.getOrderTableId(), OrderStatus.MEAL.name(), order.getOrderedTime(), order.getOrderLineItems());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        Order order = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트)));
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+        OrderRequest changeOrderRequest = generateOrderRequest(주문테이블B.getId(), OrderStatus.MEAL, singletonList(불고기버거세트주문요청));
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrder));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrderRequest))
+                .withMessage(ErrorCode.이미_완료된_주문.getErrorMessage());
     }
 }

@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.domain.TableGroup;
 
 public class OrderTableTestFixture {
 

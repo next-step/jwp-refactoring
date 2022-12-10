@@ -1,11 +1,10 @@
 package kitchenpos.order.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -16,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -40,14 +39,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-
-        // TODO 주문 리팩토링 시 수정 필요
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        List<Order> orders = findAllOrderByOrderTableId(orderTable);
+        orderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
         return OrderTableResponse.from(orderTable);
     }
 
@@ -61,5 +54,9 @@ public class TableService {
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage()));
+    }
+
+    private List<Order> findAllOrderByOrderTableId(OrderTable orderTable) {
+        return orderRepository.findAllByOrderTableId(orderTable.getId());
     }
 }

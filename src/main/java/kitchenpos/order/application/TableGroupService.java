@@ -1,11 +1,10 @@
 package kitchenpos.order.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderTables;
@@ -19,12 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderDao orderDao;
+
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -40,20 +40,8 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         OrderTables orderTables = tableGroup.getOrderTables();
-
-        // TODO order 리팩토링 시 변경 필요
-        final List<OrderTable> orderTableList = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTableList.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        orderTables.ungroupOrderTables();
+        List<Order> orders = findAllOrderByOrderTableIds(orderTables);
+        tableGroup.ungroup(orders);
     }
 
     private List<OrderTable> findAllOrderTablesById(List<Long> ids) {
@@ -70,5 +58,13 @@ public class TableGroupService {
     private TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_단체_그룹.getErrorMessage()));
+    }
+
+    private List<Order> findAllOrderByOrderTableIds(OrderTables orderTables) {
+        List<Long> orderTableIds = orderTables.unmodifiableOrderTables()
+                .stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 }
