@@ -1,7 +1,6 @@
 package kitchenpos.menugroup.ui;
 
 import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class MenuGroupRestController {
     @GetMapping("/api/menu-groups")
     public ResponseEntity<List<MenuGroupResponse>> list() {
         return ResponseEntity.ok()
-                .body(menuGroupService.list())
+                .body(menuGroupService.findAll())
                 ;
     }
 }

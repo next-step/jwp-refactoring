@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
@@ -12,10 +11,7 @@ import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,7 +49,7 @@ public class MenuService {
         return products;
     }
 
-    public List<MenuResponse> list() {
+    public List<MenuResponse> findAll() {
         return menuRepository.findAll()
                 .stream()
                 .map(MenuResponse::from)

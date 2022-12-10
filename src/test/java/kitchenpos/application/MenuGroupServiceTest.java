@@ -53,7 +53,7 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(한식));
 
         // when
-        List<MenuGroupResponse> results = menuGroupService.list();
+        List<MenuGroupResponse> results = menuGroupService.findAll();
 
         // then
         assertAll(

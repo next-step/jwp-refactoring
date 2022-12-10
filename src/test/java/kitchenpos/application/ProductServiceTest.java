@@ -75,7 +75,7 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when
-        List<ProductResponse> results = productService.list();
+        List<ProductResponse> results = productService.findAll();
 
         // then
         assertAll(

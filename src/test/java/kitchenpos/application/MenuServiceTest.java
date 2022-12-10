@@ -168,7 +168,7 @@ class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(menus);
 
         // when
-        List<MenuResponse> results = menuService.list();
+        List<MenuResponse> results = menuService.findAll();
 
         // then
         assertAll(
