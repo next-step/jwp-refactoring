@@ -16,8 +16,6 @@ class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup> {
 	static final String REQUEST_PATH = "/api/menu-groups";
 	static final String 메뉴명 = "푸드";
 
-	Long 메뉴_그룹_아이디;
-
 	/**
 	 * Feature: 메뉴 그룹 관리
 	 * When 메뉴 그룹 등록을 요청하면

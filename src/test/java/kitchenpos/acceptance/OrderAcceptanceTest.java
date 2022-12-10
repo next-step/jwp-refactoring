@@ -79,11 +79,11 @@ public class OrderAcceptanceTest extends AcceptanceTest<Order> {
 
 	@Override
 	protected ToLongFunction<Order> idExtractor() {
-		return null;
+		return Order::getId;
 	}
 
 	@Override
 	protected Class<Order> getDomainClass() {
-		return null;
+		return Order.class;
 	}
 }

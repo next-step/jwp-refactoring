@@ -30,8 +30,8 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 
 	List<Long> 상품_아이디_목록 = new ArrayList<>();
 
-	MenuGroupAcceptanceTest menuGroupAcceptanceTest;
-	ProductAcceptanceTest productAcceptanceTest;
+	MenuGroupAcceptanceTest menuGroups;
+	ProductAcceptanceTest products;
 
 	/**
 	 * Feature: 메뉴 관리 기능
@@ -41,8 +41,8 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 	 */
 	@BeforeEach
 	void setup() {
-		menuGroupAcceptanceTest = new MenuGroupAcceptanceTest();
-		productAcceptanceTest = new ProductAcceptanceTest();
+		menuGroups = new MenuGroupAcceptanceTest();
+		products = new ProductAcceptanceTest();
 
 		List<Product> 상품_목록 = Lists.newArrayList(상품("너티 크루아상", 3000),
 												 상품("단호박 크림 수프", 6000),
@@ -50,8 +50,8 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 		상품_아이디_목록.addAll(
 			상품_목록.stream()
 			.map(상품 -> {
-				ExtractableResponse<Response> 등록_응답 = productAcceptanceTest.등록_요청(상품);
-				return productAcceptanceTest.등록됨(등록_응답).getId();
+				ExtractableResponse<Response> 등록_응답 = products.등록_요청(상품);
+				return products.등록됨(등록_응답).getId();
 			}).collect(Collectors.toList()));
 	}
 
@@ -64,7 +64,7 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 	 */
 	@Test
 	void 메뉴_관리() {
-		MenuGroup 메뉴_그룹 = menuGroupAcceptanceTest.메뉴_그룹_등록되어_있음();
+		MenuGroup 메뉴_그룹 = menuGroups.메뉴_그룹_등록되어_있음();
 
 		Menu 메뉴 = 메뉴(메뉴_그룹);
 
@@ -86,7 +86,7 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 	@Test
 	void 메뉴_등록_실패() {
 		// given
-		MenuGroup 메뉴_그룹 = menuGroupAcceptanceTest.메뉴_그룹_등록되어_있음();
+		MenuGroup 메뉴_그룹 = menuGroups.메뉴_그룹_등록되어_있음();
 
 		// when
 		int 유효하지_않은_메뉴_가격 = -1;

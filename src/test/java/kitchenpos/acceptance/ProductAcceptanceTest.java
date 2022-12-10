@@ -17,9 +17,9 @@ import kitchenpos.domain.Product;
 class ProductAcceptanceTest extends AcceptanceTest<Product> {
 
 	static final String REQUEST_PATH = "/api/products";
+
 	int 상품가격 = 1000;
 	String 상품명 = "스파게티";
-
 	Long 상품_아이디;
 
 	/**
