@@ -29,24 +29,20 @@ public class MenuGroupServiceTest {
     private MenuGroupDao menuGroupDao;
 
     @DisplayName("메뉴그룹 추가할 경우 추가된 메뉴그룹정보를 반환")
-    @ParameterizedTest
-    @ValueSource(longs = {1, 342, 21, 3423, 4})
-    public void returnMenuGroup(long id) {
+    @Test
+    public void returnMenuGroup() {
         MenuGroup menuGroup = new MenuGroup();
-        MenuGroup mockMenuGroup = new MenuGroup();
-        mockMenuGroup.setId(id);
-        doReturn(mockMenuGroup).when(menuGroupDao).save(menuGroup);
+        menuGroup.setId(Arbitraries.longs().greaterOrEqual(1).sample());
+        doReturn(menuGroup).when(menuGroupDao).save(menuGroup);
 
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
-
-        assertThat(savedMenuGroup.getId()).isEqualTo(id);
+        assertThat(menuGroupService.create(menuGroup)).isEqualTo(menuGroup.getId());
     }
 
     @DisplayName("메뉴그룹목록을 조회할 경우 저장된 메뉴그룹목록반환")
     @Test
     public void returnMenuGroups() {
-        FixtureMonkey sut = FixtureMonkey.create();
-        List<MenuGroup> mockMenuGroups = sut.giveMeBuilder(MenuGroup.class)
+        List<MenuGroup> mockMenuGroups = FixtureMonkey.create()
+                .giveMeBuilder(MenuGroup.class)
                 .set("id", Arbitraries.longs().between(1, 5))
                 .sampleList(5);
         doReturn(mockMenuGroups).when(menuGroupDao).findAll();
