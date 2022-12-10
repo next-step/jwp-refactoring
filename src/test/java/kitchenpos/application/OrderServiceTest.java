@@ -170,7 +170,8 @@ class OrderServiceTest {
     void changeOrderStatusException() {
         when(orderDao.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문))
+        Long orderId = 주문.getId();
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 주문))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -181,7 +182,8 @@ class OrderServiceTest {
 
         Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
         상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(상태변경_주문.getId(), 상태변경_주문))
+        Long orderId = 상태변경_주문.getId();
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 상태변경_주문))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

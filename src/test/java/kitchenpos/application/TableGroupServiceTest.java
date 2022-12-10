@@ -89,7 +89,8 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 비어있지_않은_주문_테이블);
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(TableGroup.of(1L, 주문_테이블_목록)))
+        TableGroup 단체지정 = TableGroup.of(1L, 주문_테이블_목록);
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -100,7 +101,8 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 단체_지정된_주문_테이블);
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(TableGroup.of(1L, 주문_테이블_목록)))
+        TableGroup 단체지정 = TableGroup.of(1L, 주문_테이블_목록);
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
