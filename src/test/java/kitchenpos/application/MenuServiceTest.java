@@ -52,7 +52,7 @@ class MenuServiceTest {
     void setUp() {
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
         후라이드치킨상품 = MenuProduct.of(1L, 1L, 1L, 2);
-        후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, Arrays.asList(후라이드치킨상품));
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, Arrays.asList(후라이드치킨상품));
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -75,7 +75,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격이 없으면(null) 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", null, 1L, Arrays.asList(후라이드치킨상품));
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", null, 1L, Arrays.asList(후라이드치킨상품));
 
         Assertions.assertThatThrownBy(() -> menuService.create(후라이드치킨))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +85,7 @@ class MenuServiceTest {
     @Test
     void createException2() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨상품);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(-1), 1L, 메뉴상품_목록);
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(-1), 1L, 메뉴상품_목록);
 
         Assertions.assertThatThrownBy(() -> menuService.create(후라이드치킨))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -114,7 +114,7 @@ class MenuServiceTest {
     @Test
     void createException5() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨상품);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(50_000), 1L, 메뉴상품_목록);
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(50_000), 1L, 메뉴상품_목록);
 
         when(menuGroupDao.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(후라이드));

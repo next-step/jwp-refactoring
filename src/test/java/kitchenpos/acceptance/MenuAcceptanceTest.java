@@ -54,7 +54,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(후라이드치킨);
 
@@ -69,7 +69,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
-        Menu 가격없는_후라이드치킨 = new Menu(1L, "후라이드치킨", null, 두마리메뉴.getId(), 메뉴상품_목록);
+        Menu 가격없는_후라이드치킨 = Menu.of(1L, "후라이드치킨", null, 두마리메뉴.getId(), 메뉴상품_목록);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(가격없는_후라이드치킨);
 
@@ -84,7 +84,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail2() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
-        Menu 음수가격_후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(-1), 두마리메뉴.getId(), 메뉴상품_목록);
+        Menu 음수가격_후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(-1), 두마리메뉴.getId(), 메뉴상품_목록);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(음수가격_후라이드치킨);
 
@@ -99,7 +99,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail3() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
-        Menu 메뉴그룹_없는_후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 0L, 메뉴상품_목록);
+        Menu 메뉴그룹_없는_후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 0L, 메뉴상품_목록);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(메뉴그룹_없는_후라이드치킨);
 
@@ -115,7 +115,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createFail4() {
         MenuProduct 상품_등록되어있지_않은_메뉴_상품 = MenuProduct.of(1L, null, 0L, 2);
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(상품_등록되어있지_않은_메뉴_상품);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(후라이드치킨);
 
@@ -131,7 +131,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createFail5() {
         MenuProduct 후라이드치킨_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2);
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(50_000), 두마리메뉴.getId(), 메뉴상품_목록);
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(50_000), 두마리메뉴.getId(), 메뉴상품_목록);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(후라이드치킨);
 
@@ -147,7 +147,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
+        Menu 후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
         메뉴_등록되어_있음(후라이드치킨);
 
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
