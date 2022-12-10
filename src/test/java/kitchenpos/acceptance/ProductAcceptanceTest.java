@@ -33,11 +33,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
 	@BeforeEach
 	void setup() {
 		int 상품가격 = 1000;
-		Product 상품 = 상품(상품가격);
+		Product 상품 = 상품("스파게티", 상품가격);
 
-		ExtractableResponse<Response> 등록_응답 = RestAssuredUtils.post(REQUEST_PATH, 상품);
-		assertThat(등록_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		상품_아이디 = 등록_응답.body().as(Product.class).getId();
+		상품_아이디 = 상품_등록_요청(상품);
 	}
 
 	/**
@@ -58,15 +56,21 @@ class ProductAcceptanceTest extends AcceptanceTest {
 	@Test
 	void 상품_등록_실패() {
 		int 상품가격 = -1;
-		Product 상품 = 상품(상품가격);
+		Product 상품 = 상품("스파게티", 상품가격);
 
 		ExtractableResponse<Response> 등록_응답 = RestAssuredUtils.post(REQUEST_PATH, 상품);
 
 		상품_등록_실패함(등록_응답);
 	}
 
+	public static Long 상품_등록_요청(Product 상품) {
+		ExtractableResponse<Response> 등록_응답 = RestAssuredUtils.post(REQUEST_PATH, 상품);
+		assertThat(등록_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		return 등록_응답.body().as(Product.class).getId();
+	}
+
 	private void 상품_목록_조회() {
-		ExtractableResponse<Response> 목록_응답 = RestAssuredUtils.getAll(REQUEST_PATH);
+		ExtractableResponse<Response> 목록_응답 = RestAssuredUtils.get(REQUEST_PATH);
 
 		상품_목록_조회됨(목록_응답, 상품_아이디);
 	}
@@ -82,9 +86,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
 	}
 
-	private Product 상품(int price) {
+	public static Product 상품(String name, int price) {
 		Product product = new Product();
-		product.setName("나만의 스파게티");
+		product.setName(name);
 		product.setPrice(BigDecimal.valueOf(price));
 		return product;
 	}

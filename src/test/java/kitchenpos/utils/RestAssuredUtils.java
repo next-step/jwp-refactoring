@@ -18,7 +18,7 @@ public class RestAssuredUtils {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> getAll(String path) {
+	public static ExtractableResponse<Response> get(String path) {
 		return RestAssured.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when().log().all()
