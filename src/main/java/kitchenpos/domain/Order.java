@@ -10,6 +10,26 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
+    private Order(Long id, long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public static Order of(long id, long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(id, orderTableId, orderStatus, orderedTime, null);
+    }
+
+    public static Order of(long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(null, orderTableId, orderStatus, orderedTime, null);
+    }
+
     public Long getId() {
         return id;
     }
