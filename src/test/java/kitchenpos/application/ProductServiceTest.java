@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,9 +44,9 @@ class ProductServiceTest {
     void create() {
         when(productDao.save(any())).thenReturn(버팔로윙);
 
-        Product result = productService.create(버팔로윙);
+        ProductResponse result = productService.create(버팔로윙);
 
-        assertThat(result).isEqualTo(버팔로윙);
+        assertThat(result).isEqualTo(ProductResponse.from(버팔로윙));
     }
 
     @DisplayName("상품 생성 시 가격이 null 이면 예외가 발생한다.")
@@ -71,11 +72,11 @@ class ProductServiceTest {
     void list() {
         when(productDao.findAll()).thenReturn(Arrays.asList(버팔로윙, 치킨텐더));
 
-        List<Product> results = productService.list();
+        List<ProductResponse> results = productService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(2),
-                () -> assertThat(results).containsExactly(버팔로윙, 치킨텐더)
+                () -> assertThat(results).containsExactly(ProductResponse.from(버팔로윙), ProductResponse.from(치킨텐더))
         );
     }
 }
