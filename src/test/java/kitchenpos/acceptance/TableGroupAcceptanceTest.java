@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
@@ -26,6 +25,8 @@ import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -192,9 +193,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                 .as(TableGroup.class);
 
         // And 주문(조리) 등록되어 있음
-        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        주문_등록되어_있음(Order.of(등록된_주문_테이블1.getId(), 주문항목)).as(Order.class);
-        주문_등록되어_있음(Order.of(등록된_주문_테이블2.getId(), 주문항목)).as(Order.class);
+        List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목)).as(Order.class);
+        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목)).as(Order.class);
 
         // When 단체 지정 취소 요청함
         ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
@@ -240,14 +241,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                 .as(TableGroup.class);
 
         // And 주문(조리) 등록되어 있음
-        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = 주문_등록되어_있음(Order.of(등록된_주문_테이블1.getId(), 주문항목)).as(Order.class);
-        주문_등록되어_있음(Order.of(등록된_주문_테이블2.getId(), 주문항목)).as(Order.class);
+        List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        Order 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목)).as(Order.class);
+        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목)).as(Order.class);
 
         // And 주문 상태(식사) 변경되어 있음
-        Order 식사상태_주문 = Order.of(주문.getId(), 주문.getOrderTableId(), 주문.getOrderLineItems());
-        식사상태_주문.setOrderStatus(OrderStatus.MEAL.name());
-        OrderRestAssured.주문_상태_변경_요청(식사상태_주문.getId(), 식사상태_주문);
+        OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
 
         // When 단체 지정 취소 요청함
         ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());

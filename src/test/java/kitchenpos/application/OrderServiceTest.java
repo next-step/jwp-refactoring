@@ -155,9 +155,7 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
 
-        Order 상태변경_주문 = Order.of(주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
-        Order result = orderService.changeOrderStatus(주문.getId(), 상태변경_주문);
+        Order result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
@@ -170,8 +168,7 @@ class OrderServiceTest {
     void changeOrderStatusException() {
         when(orderDao.findById(any())).thenReturn(Optional.empty());
 
-        Long orderId = 주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 주문))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -181,9 +178,8 @@ class OrderServiceTest {
         when(orderDao.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
         Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
         Long orderId = 상태변경_주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 상태변경_주문))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
