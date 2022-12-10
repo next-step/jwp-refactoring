@@ -30,7 +30,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    void 메뉴그룹을_생성할_수_있다() {
+    void 메뉴그룹을_등록할_수_있다() {
         given(menuGroupDao.save(후라이드치킨)).willReturn(후라이드치킨);
 
         MenuGroup 저장된_후라이드치킨 = menuGroupService.create(후라이드치킨);
