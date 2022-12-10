@@ -3,6 +3,8 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -63,10 +65,9 @@ class MenuServiceTest {
 		menu.getMenuProducts().forEach(
 			menuProduct -> when(menuProductDao.save(menuProduct)).thenReturn(menuProduct));
 
-		Menu createdMenu = menuService.create(menu);
+		menuService.create(menu);
 
-		assertThat(createdMenu).isNotNull();
-		assertThat(createdMenu).isEqualTo(menu);
+		verify(menuDao, times(1)).save(menu);
 	}
 
 	@Test
@@ -122,6 +123,7 @@ class MenuServiceTest {
 
 		assertThat(menus).isNotEmpty();
 		assertThat(menus).containsExactly(menu);
+		verify(menuDao, times(1)).findAll();
 	}
 
 	private Menu createMenu(List<Product> products, MenuGroup menuGroup) {
