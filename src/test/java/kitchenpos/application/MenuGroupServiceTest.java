@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -30,24 +30,21 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        뼈치킨 = MenuGroup.of(1L, "뼈치킨");
-        순살치킨 = MenuGroup.of(2L, "순살치킨");
+        뼈치킨 = new MenuGroup("뼈치킨");
+        순살치킨 = new MenuGroup("순살치킨");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void 메뉴그룹_생성() {
         // given
-        when(menuGroupDao.save(뼈치킨)).thenReturn(뼈치킨);
+        when(menuGroupRepository.save(뼈치킨)).thenReturn(뼈치킨);
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(뼈치킨);
 
         // then
-        assertAll(
-                () -> assertThat(savedMenuGroup.getId()).isNotNull(),
-                () -> assertThat(savedMenuGroup.getName()).isEqualTo(뼈치킨.getName())
-        );
+        assertThat(savedMenuGroup).isEqualTo(뼈치킨);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
@@ -55,7 +52,7 @@ class MenuGroupServiceTest {
     void 메뉴그룹_목록_조회() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(뼈치킨, 순살치킨);
-        when(menuGroupDao.findAll()).thenReturn(menuGroups);
+        when(menuGroupRepository.findAll()).thenReturn(menuGroups);
 
         // when
         List<MenuGroup> selectMenuGroups = menuGroupService.list();
