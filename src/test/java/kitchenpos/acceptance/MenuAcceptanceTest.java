@@ -5,10 +5,9 @@ import static kitchenpos.acceptance.MenuRestAssured.메뉴_등록되어_있음;
 import static kitchenpos.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록되어_있음;
-import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroupRequest;
-import static kitchenpos.domain.MenuProductTestFixture.generateMenuProduct;
-import static kitchenpos.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.domain.MenuProductTestFixture.generateMenuProductRequest;
+import static kitchenpos.domain.MenuTestFixture.generateMenuRequest;
 import static kitchenpos.domain.ProductTestFixture.generateProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -16,13 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,12 +37,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 치킨버거;
     private ProductResponse 콜라;
     private MenuGroupResponse 햄버거세트;
-    private MenuProduct 감자튀김상품;
-    private MenuProduct 불고기버거상품;
-    private MenuProduct 치킨버거상품;
-    private MenuProduct 콜라상품;
-    private Menu 불고기버거세트;
-    private Menu 치킨버거세트;
+    private List<MenuProductRequest> 불고기버거상품요청 = new ArrayList<>();
+    private List<MenuProductRequest> 치킨버거상품요청 = new ArrayList<>();
+    private MenuRequest 불고기버거세트요청;
+    private MenuRequest 치킨버거세트요청;
 
     @BeforeEach
     public void setUp() {
@@ -52,19 +50,21 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         콜라 = 상품_등록되어_있음(generateProductRequest("콜라", BigDecimal.valueOf(1500L))).as(ProductResponse.class);
         불고기버거 = 상품_등록되어_있음(generateProductRequest("불고기버거", BigDecimal.valueOf(4000L))).as(ProductResponse.class);
         치킨버거 = 상품_등록되어_있음(generateProductRequest("치킨버거", BigDecimal.valueOf(4500L))).as(ProductResponse.class);
-        감자튀김상품 = generateMenuProduct(1L, null, 감자튀김.getId(), 1L);
-        콜라상품 = generateMenuProduct(2L, null, 콜라.getId(), 1L);
-        불고기버거상품 = generateMenuProduct(3L, null, 불고기버거.getId(), 1L);
-        치킨버거상품 = generateMenuProduct(3L, null, 치킨버거.getId(), 1L);
-        불고기버거세트 = generateMenu("불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        치킨버거세트 = generateMenu("치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        불고기버거상품요청.add(generateMenuProductRequest(감자튀김.getId(), 1L));
+        불고기버거상품요청.add(generateMenuProductRequest(콜라.getId(), 1L));
+        불고기버거상품요청.add(generateMenuProductRequest(불고기버거.getId(), 1L));
+        치킨버거상품요청.add(generateMenuProductRequest(감자튀김.getId(), 1L));
+        치킨버거상품요청.add(generateMenuProductRequest(콜라.getId(), 1L));
+        치킨버거상품요청.add(generateMenuProductRequest(치킨버거.getId(), 1L));
+        불고기버거세트요청 = generateMenuRequest("불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(), 불고기버거상품요청);
+        치킨버거세트요청 = generateMenuRequest("치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(), 치킨버거상품요청);
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void createMenu() {
         // when
-        ExtractableResponse<Response> response = 메뉴_생성_요청(불고기버거세트);
+        ExtractableResponse<Response> response = 메뉴_생성_요청(불고기버거세트요청);
 
         // then
         메뉴_생성됨(response);
@@ -74,8 +74,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllProducts() {
         // given
-        ExtractableResponse<Response> 불고기버거_생성_응답 = 메뉴_등록되어_있음(불고기버거세트);
-        ExtractableResponse<Response> 치킨버거_생성_응답 = 메뉴_등록되어_있음(치킨버거세트);
+        ExtractableResponse<Response> 불고기버거_생성_응답 = 메뉴_등록되어_있음(불고기버거세트요청);
+        ExtractableResponse<Response> 치킨버거_생성_응답 = 메뉴_등록되어_있음(치킨버거세트요청);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
@@ -101,8 +101,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultMenuIds = response.jsonPath().getList(".", Menu.class).stream()
-                .map(Menu::getId)
+        List<Long> resultMenuIds = response.jsonPath().getList(".", MenuResponse.class).stream()
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultMenuIds).containsAll(expectedMenuIds);

@@ -1,26 +1,21 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.domain.MenuTestFixture.generateMenu;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
-import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuRequest;
 import org.springframework.http.MediaType;
 
 public class MenuRestAssured {
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {
-        return 메뉴_생성_요청(menu);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest menuRequest) {
+        return 메뉴_생성_요청(menuRequest);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
         return RestAssured
                 .given().log().all()
-                .body(menu)
+                .body(menuRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all()

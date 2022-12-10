@@ -12,20 +12,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -44,7 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -83,13 +82,13 @@ public class OrderServiceTest {
         불고기버거 = generateProduct(3L, "불고기버거", BigDecimal.valueOf(4000L));
         치킨버거 = generateProduct(4L, "치킨버거", BigDecimal.valueOf(4500L));
         햄버거세트 = generateMenuGroup(1L, "햄버거세트");
-        감자튀김상품 = generateMenuProduct(1L, null, 감자튀김.getId(), 1L);
-        콜라상품 = generateMenuProduct(2L, null, 콜라.getId(), 1L);
-        불고기버거상품 = generateMenuProduct(3L, null, 불고기버거.getId(), 1L);
-        치킨버거상품 = generateMenuProduct(3L, null, 치킨버거.getId(), 1L);
-        불고기버거세트 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(),
+        감자튀김상품 = generateMenuProduct(1L, null, 감자튀김, 1L);
+        콜라상품 = generateMenuProduct(2L, null, 콜라, 1L);
+        불고기버거상품 = generateMenuProduct(3L, null, 불고기버거, 1L);
+        치킨버거상품 = generateMenuProduct(3L, null, 치킨버거, 1L);
+        불고기버거세트 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트,
                 Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(),
+        치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트,
                 Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
         주문테이블A = generateOrderTable(1L, null, 5, false);
         주문테이블B = generateOrderTable(2L, null, 7, false);
@@ -107,7 +106,7 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        given(menuDao.countByIdIn(menuIds)).willReturn((long) menuIds.size());
+        given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
         given(orderTableDao.findById(주문A.getOrderTableId())).willReturn(Optional.of(주문테이블A));
         given(orderDao.save(주문A)).willReturn(주문A);
         given(orderLineItemDao.save(불고기버거세트주문)).willReturn(불고기버거세트주문);
@@ -143,7 +142,7 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        given(menuDao.countByIdIn(menuIds)).willReturn(0L);
+        given(menuRepository.countByIdIn(menuIds)).willReturn(0L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문A));
@@ -157,7 +156,7 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        given(menuDao.countByIdIn(menuIds)).willReturn((long) menuIds.size());
+        given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
         given(orderTableDao.findById(주문A.getOrderTableId())).willReturn(Optional.empty());
 
         // when & then
@@ -174,7 +173,7 @@ public class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        given(menuDao.countByIdIn(menuIds)).willReturn((long) menuIds.size());
+        given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when & then

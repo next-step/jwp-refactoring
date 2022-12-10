@@ -1,8 +1,11 @@
 package kitchenpos.domain;
 
+import static kitchenpos.domain.Price.ZERO_PRICE;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.common.constant.ErrorCode;
@@ -10,7 +13,7 @@ import kitchenpos.common.constant.ErrorCode;
 @Embeddable
 public class MenuProducts {
 
-    //@OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
@@ -28,6 +31,18 @@ public class MenuProducts {
         if(menuProducts.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.메뉴_상품은_비어있을_수_없음.getErrorMessage());
         }
+    }
+
+    public Price totalPrice() {
+        Price totalPrice = ZERO_PRICE;
+        for(MenuProduct menuProduct: menuProducts) {
+            totalPrice = totalPrice.add(menuProduct.totalPrice());
+        }
+        return totalPrice;
+    }
+
+    public void setUpMenu(final Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.setUpMenu(menu));
     }
 
     public List<MenuProduct> unmodifiableMenuProducts() {

@@ -1,9 +1,10 @@
 package kitchenpos.application;
 
-import static java.util.Collections.singletonList;
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.domain.MenuProductTestFixture.generateMenuProduct;
+import static kitchenpos.domain.MenuProductTestFixture.generateMenuProductRequest;
 import static kitchenpos.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.domain.MenuTestFixture.generateMenuRequest;
 import static kitchenpos.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -11,17 +12,23 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,13 +44,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private MenuProductDao menuProductDao;
 
     @Mock
     private ProductRepository productRepository;
@@ -62,6 +66,7 @@ public class MenuServiceTest {
     private MenuProduct 콜라상품;
     private Menu 불고기버거세트;
     private Menu 치킨버거세트;
+    private List<MenuProductRequest> 불고기버거상품요청 = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -70,39 +75,37 @@ public class MenuServiceTest {
         불고기버거 = generateProduct(3L, "불고기버거", BigDecimal.valueOf(4000L));
         치킨버거 = generateProduct(4L, "치킨버거", BigDecimal.valueOf(4500L));
         햄버거세트 = generateMenuGroup(1L, "햄버거세트");
-        감자튀김상품 = generateMenuProduct(1L, null, 감자튀김.getId(), 1L);
-        콜라상품 = generateMenuProduct(2L, null, 콜라.getId(), 1L);
-        불고기버거상품 = generateMenuProduct(3L, null, 불고기버거.getId(), 1L);
-        치킨버거상품 = generateMenuProduct(3L, null, 치킨버거.getId(), 1L);
-        불고기버거세트 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(),
+        감자튀김상품 = generateMenuProduct(1L, null, 감자튀김, 1L);
+        콜라상품 = generateMenuProduct(2L, null, 콜라, 1L);
+        불고기버거상품 = generateMenuProduct(3L, null, 불고기버거, 1L);
+        치킨버거상품 = generateMenuProduct(3L, null, 치킨버거, 1L);
+        불고기버거세트 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트,
                 Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트.getId(),
+        치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트,
                 Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        불고기버거상품요청.add(generateMenuProductRequest(감자튀김.getId(), 1L));
+        불고기버거상품요청.add(generateMenuProductRequest(콜라.getId(), 1L));
+        불고기버거상품요청.add(generateMenuProductRequest(불고기버거.getId(), 1L));
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void createMenu() {
         // given
-        given(menuGroupRepository.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
-        given(productRepository.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
-        given(productRepository.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
-        given(productRepository.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
-        given(menuDao.save(불고기버거세트)).willReturn(불고기버거세트);
-        given(menuProductDao.save(감자튀김상품)).willReturn(감자튀김상품);
-        given(menuProductDao.save(콜라상품)).willReturn(콜라상품);
-        given(menuProductDao.save(불고기버거상품)).willReturn(불고기버거상품);
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), 불고기버거세트.getPrice(), 햄버거세트.getId(), 불고기버거상품요청);
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(햄버거세트));
+        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
+        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
+        given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
+        given(menuRepository.save(menuRequest.toMenu(햄버거세트, MenuProducts.from(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품))))).willReturn(불고기버거세트);
 
         // when
-        Menu saveMenu = menuService.create(불고기버거세트);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
         assertAll(
-                () -> assertThat(saveMenu.getId()).isNotNull(),
-                () -> assertThat(saveMenu.getMenuProducts()).containsExactly(감자튀김상품, 콜라상품, 불고기버거상품),
-                () -> assertThat(saveMenu.getId()).isEqualTo(감자튀김상품.getMenuId()),
-                () -> assertThat(saveMenu.getId()).isEqualTo(콜라상품.getMenuId()),
-                () -> assertThat(saveMenu.getId()).isEqualTo(불고기버거상품.getMenuId())
+                () -> assertThat(menuResponse.getId()).isNotNull(),
+                () -> assertThat(menuResponse.getMenuProductResponses().stream().map(MenuProductResponse::getProductId)).containsExactly(감자튀김.getId(), 콜라.getId(), 불고기버거.getId())
         );
     }
 
@@ -110,10 +113,11 @@ public class MenuServiceTest {
     @Test
     void createMenuThrowErrorWhenPriceIsNull() {
         // given
-        Menu menu = generateMenu(1L, "불고기버거세트", null, 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
+        BigDecimal price = null;
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), price, 햄버거세트.getId(), 불고기버거상품요청);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("가격이 0원 미만인 메뉴는 생성할 수 없다.")
@@ -121,50 +125,67 @@ public class MenuServiceTest {
     @ValueSource(longs = {-1000, -2000})
     void createMenuThrowErrorWhenPriceIsSmallerThenZero(long price) {
         // given
-        Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(price), 햄버거세트.getId(), Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(price), 햄버거세트.getId(), 불고기버거상품요청);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("존재하는 메뉴 그룹에 속하지 않는 메뉴는 생성할 수 없다.")
     @Test
     void createMenuThrowErrorWhenMenuGroupIsNotExists() {
         // given
-        Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 10L,
-                Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        given(menuGroupRepository.existsById(10L)).willReturn(false);
+        Long notExistsMenuGroupId = 10L;
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(8500L), notExistsMenuGroupId, 불고기버거상품요청);
+        given(menuGroupRepository.findById(notExistsMenuGroupId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+                .withMessage(ErrorCode.존재하지_않는_메뉴_그룹.getErrorMessage());
+    }
+
+    @DisplayName("메뉴에 메뉴 상품이 존재하지 않으면 해당 메뉴를 생성할 수 없다.")
+    @Test
+    void createMenuThrowErrorWhenMenuProductIsEmpty() {
+        // given
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(3000L), 햄버거세트.getId(), menuProductRequests);
+        given(menuGroupRepository.findById(햄버거세트.getId())).willReturn(Optional.of(햄버거세트));
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+                .withMessage(ErrorCode.메뉴_상품은_비어있을_수_없음.getErrorMessage());
     }
 
     @DisplayName("존재하지 않는 상품이 메뉴에 존재하면 해당 메뉴를 생성할 수 없다.")
     @Test
     void createMenuThrowErrorWhenMenuProductIsNotExists() {
         // given
-        Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(),
-                singletonList(감자튀김상품));
-        given(menuGroupRepository.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
-        given(productRepository.findById(감자튀김상품.getProductId())).willReturn(Optional.empty());
+        Long notExistsMenuProductId = 10L;
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        menuProductRequests.add(generateMenuProductRequest(notExistsMenuProductId, 1L));
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(3000L), 햄버거세트.getId(), menuProductRequests);
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(햄버거세트));
+        given(productRepository.findById(notExistsMenuProductId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+                .withMessage(ErrorCode.존재하지_않는_상품.getErrorMessage());
     }
 
     @DisplayName("메뉴의 가격은 해당 메뉴에 존재하는 메뉴 상품들의 가격의 합보다 클 수 없다.")
     @Test
     void createMenuThrowErrorWhenMenuPriceIsBiggerThanMenuProductsPriceSum() {
         // given
-        Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(9500L), 햄버거세트.getId(),
-                Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        given(menuGroupRepository.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
-        given(productRepository.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
-        given(productRepository.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
-        given(productRepository.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(9500L), 햄버거세트.getId(), 불고기버거상품요청);
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(햄버거세트));
+        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
+        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
+        given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+                .withMessage(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
     }
 
     @DisplayName("메뉴 전체 목록을 조회한다.")
@@ -172,17 +193,15 @@ public class MenuServiceTest {
     void findAllMenus() {
         // given
         List<Menu> menus = Arrays.asList(불고기버거세트, 치킨버거세트);
-        given(menuDao.findAll()).willReturn(menus);
-        given(menuProductDao.findAllByMenuId(불고기버거세트.getId())).willReturn(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
-        given(menuProductDao.findAllByMenuId(치킨버거세트.getId())).willReturn(Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        given(menuRepository.findAll()).willReturn(menus);
 
         // when
-        List<Menu> findMenus = menuService.list();
+        List<MenuResponse> findMenus = menuService.list();
 
         // then
         assertAll(
                 () -> assertThat(findMenus).hasSize(menus.size()),
-                () -> assertThat(findMenus).containsExactly(불고기버거세트, 치킨버거세트)
+                () -> assertThat(findMenus.stream().map(MenuResponse::getName)).containsExactly(불고기버거세트.getName().value(), 치킨버거세트.getName().value())
         );
     }
 }
