@@ -6,6 +6,8 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,13 +49,14 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 4, true);
         OrderTable orderTable2 = new OrderTable(2L, 4, true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest request = TableGroupRequest.of(orderTableIds);
 
         when(orderTableRepository.findAllByIdIn(orderTableIds)).thenReturn(Arrays.asList(orderTable1, orderTable2));
         when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
 
         // when
-        TableGroup result = tableGroupService.create(tableGroup);
+        TableGroupResponse result = tableGroupService.create(request);
 
         // then
         assertAll(
@@ -66,10 +69,10 @@ class TableGroupServiceTest {
     @Test
     void emptyOrderTableException() {
         // given
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), new ArrayList<>());
+        TableGroupRequest request = TableGroupRequest.of(new ArrayList<>());
 
         // when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -78,10 +81,10 @@ class TableGroupServiceTest {
     void minumumOrderTableException() {
         // given
         OrderTable orderTable1 = new OrderTable(1L, 4, true);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1));
+        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId()));
 
         // when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,12 +94,12 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTable1 = new OrderTable(1L, 4, true);
         OrderTable orderTable2 = new OrderTable(2L, 4, true);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
 
         // when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -106,12 +109,12 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTable1 = new OrderTable(1L, 4, false);
         OrderTable orderTable2 = new OrderTable(2L, 4, true);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,11 +126,12 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, 4, true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
         orderTable1.setTableGroup(tableGroup);
+        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
