@@ -35,14 +35,12 @@ public class TableGroupRestControllerTest extends ControllerTest {
     @Test
     public void returnTableGroup() throws Exception {
         TableGroup tableGroup = getTableGroup();
-        String tableGroupCreated = tableGroup.getCreatedDate().toString();
         doReturn(tableGroup).when(tableGroupService).create(any(TableGroup.class));
 
         webMvc.perform(post("/api/table-groups")
                         .content(mapper.writeValueAsString(new TableGroup()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(tableGroup.getId().intValue())))
-                .andExpect(jsonPath("$.createdDate", is(tableGroupCreated.substring(0, tableGroupCreated.length() - 2))))
                 .andExpect(jsonPath("$.orderTables", hasSize(tableGroup.getOrderTables().size())))
                 .andExpect(status().isCreated());
     }

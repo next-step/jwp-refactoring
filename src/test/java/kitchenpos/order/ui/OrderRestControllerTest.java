@@ -39,7 +39,6 @@ public class OrderRestControllerTest extends ControllerTest {
     public void returnOrder() throws Exception {
         Order order = getOrder();
         doReturn(order).when(orderService).create(any(Order.class));
-        String orderTime = order.getOrderedTime().toString();
 
         webMvc.perform(post("/api/orders")
                         .content(mapper.writeValueAsString(new Menu()))
@@ -47,7 +46,6 @@ public class OrderRestControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.id", is(order.getId().intValue())))
                 .andExpect(jsonPath("$.orderTableId", is(order.getOrderTableId().intValue())))
                 .andExpect(jsonPath("$.orderStatus", is(order.getOrderStatus())))
-                .andExpect(jsonPath("$.orderedTime", is(orderTime.substring(0, orderTime.length() - 2))))
                 .andExpect(jsonPath("$.orderLineItems", hasSize(order.getOrderLineItems().size())))
                 .andExpect(status().isCreated());
     }

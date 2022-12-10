@@ -178,11 +178,12 @@ public class MenuServiceTest {
                 () -> assertThat(returnedMenu.getPrice()).isEqualTo(BigDecimal.valueOf(0)));
     }
 
-    @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
+    @DisplayName("메뉴목록을 조회하는경우 메뉴목록을 반환")
     @Test
     public void returnMenus() {
         List<Menu> menus = fixtureMonkey
                 .giveMeBuilder(Menu.class)
+                .set("id",Arbitraries.longs().between(1,1000l))
                 .setNull("menuProducts")
                 .sampleList(5);
         List<MenuProduct> menuProducts = fixtureMonkey
