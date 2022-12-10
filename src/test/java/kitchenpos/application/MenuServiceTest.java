@@ -16,6 +16,8 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -63,12 +65,12 @@ class MenuServiceTest {
         when(menuDao.save(any())).thenReturn(후라이드치킨);
         when(menuProductDao.save(any())).thenReturn(후라이드치킨상품);
 
-        Menu result = menuService.create(후라이드치킨);
+        MenuResponse result = menuService.create(후라이드치킨);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
                 () -> assertThat(result.getMenuProducts()).hasSize(1),
-                () -> assertThat(result.getMenuProducts().get(0)).isEqualTo(후라이드치킨상품)
+                () -> assertThat(result.getMenuProducts().get(0).getSeq()).isEqualTo(후라이드치킨상품.getSeq())
         );
     }
 
@@ -129,11 +131,12 @@ class MenuServiceTest {
         when(menuDao.findAll()).thenReturn(Arrays.asList(후라이드치킨));
         when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(후라이드치킨상품));
 
-        List<Menu> results = menuService.list();
+        List<MenuResponse> results = menuService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(1),
-                () -> assertThat(results.get(0).getMenuProducts()).containsExactly(후라이드치킨상품)
+                () -> assertThat(results.get(0).getMenuProducts())
+                        .containsExactly(MenuProductResponse.from(후라이드치킨상품))
         );
     }
 }

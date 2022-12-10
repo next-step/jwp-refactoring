@@ -13,12 +13,12 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -163,12 +163,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
-        List<Menu> menus = response.jsonPath().getList(".", Menu.class);
+        List<MenuResponse> menus = response.jsonPath().getList(".", MenuResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(menus).hasSize(1)
-//                ,
-//                () -> assertThat(menus.get(0).getMenuProducts()).containsExactly(후라이드치킨_상품)
         );
     }
 }

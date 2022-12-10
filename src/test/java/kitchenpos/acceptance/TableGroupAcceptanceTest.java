@@ -15,7 +15,6 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -26,6 +25,7 @@ import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -179,9 +179,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
-        Menu 후라이드치킨 = 메뉴_등록되어_있음(
+        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
                 MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
-        ).as(Menu.class);
+        ).as(MenuResponse.class);
 
         // And 주문 테이블 여러개 등록되어 있음
         OrderTable 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
@@ -227,9 +227,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
-        Menu 후라이드치킨 = 메뉴_등록되어_있음(
+        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
                 MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
-        ).as(Menu.class);
+        ).as(MenuResponse.class);
 
         // And 주문 테이블 여러개 등록되어 있음
         OrderTable 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
