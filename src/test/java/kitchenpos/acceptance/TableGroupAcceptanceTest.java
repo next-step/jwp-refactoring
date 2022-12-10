@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -27,9 +28,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, 4, true))
+        주문테이블_A = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(4), true))
                 .as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, 4, true))
+        주문테이블_B = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(4), true))
                 .as(OrderTable.class);
         우테캠_PRO_단체 = TableGroupRequest.of(Arrays.asList(주문테이블_A.getId(), 주문테이블_B.getId()));
     }

@@ -90,6 +90,12 @@ public class Order {
         orderLineItems.forEach(item -> item.setOrder(this));
     }
 
+    public void validateOrderStatusShouldComplete() {
+        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalArgumentException("계산 완료된 주문이 아닙니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

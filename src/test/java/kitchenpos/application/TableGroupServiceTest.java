@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -46,8 +47,8 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
         TableGroupRequest request = TableGroupRequest.of(orderTableIds);
@@ -80,7 +81,7 @@ class TableGroupServiceTest {
     @Test
     void minumumOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
         TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId()));
 
         // when & then
@@ -92,8 +93,8 @@ class TableGroupServiceTest {
     @Test
     void notExistOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
@@ -107,8 +108,8 @@ class TableGroupServiceTest {
     @Test
     void notEmptyOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, false);
-        OrderTable orderTable2 = new OrderTable(2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), false);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(anyList())).thenReturn(Arrays.asList(orderTable1, orderTable2));
@@ -122,8 +123,8 @@ class TableGroupServiceTest {
     @Test
     void alreadyTableGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
         orderTable1.setTableGroup(tableGroup);
         TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
@@ -139,8 +140,8 @@ class TableGroupServiceTest {
     @Test
     void unTableGroup() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 
@@ -168,8 +169,8 @@ class TableGroupServiceTest {
     @Test
     void unTableGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, 4, true);
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2));
 

@@ -14,6 +14,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -78,7 +79,7 @@ class OrderServiceTest {
         김치상품 = new MenuProduct(2L, 1L, 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, 1L, 불고기정식, 공기밥);
 
-        주문테이블 = new OrderTable(1L, 0, false);
+        주문테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
         불고기정식주문 = new OrderLineItem(1L, 불고기정식);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.addOrderLineItem(불고기정식주문);
@@ -156,7 +157,8 @@ class OrderServiceTest {
     @Test
     void emptyOrderTableException() {
         // given
-        주문테이블.setEmpty(true);
+        Order order = new Order(주문테이블, OrderStatus.COMPLETION, LocalDateTime.now());
+        주문테이블.updateEmpty(true, Arrays.asList(order));
         List<Long> menuIds = 주문.getOrderLineItems()
                 .stream()
                 .map(OrderLineItem::getMenu)

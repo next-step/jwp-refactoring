@@ -1,8 +1,10 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -10,7 +12,8 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -19,13 +22,13 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -47,19 +50,35 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        return numberOfGuests.value();
     }
 
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void updateEmpty(boolean empty, List<Order> orders) {
+        validateHasTableGroup();
+        orders.forEach(Order::validateOrderStatusShouldComplete);
+
         this.empty = empty;
+    }
+
+    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
+        validateShouldNotEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateShouldNotEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블이 빈 상태가 아닙니다.");
+        }
+    }
+
+    private void validateHasTableGroup() {
+        if (tableGroup != null) {
+            throw new IllegalArgumentException("이미 단체그룹으로 지정되어 있습니다.");
+        }
     }
 
     @Override

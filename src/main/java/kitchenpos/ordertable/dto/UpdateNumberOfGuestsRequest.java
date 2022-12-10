@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.dto;
 
+import kitchenpos.ordertable.domain.NumberOfGuests;
+
 public class UpdateNumberOfGuestsRequest {
     private int numberOfGuests;
 
@@ -13,7 +15,7 @@ public class UpdateNumberOfGuestsRequest {
         return new UpdateNumberOfGuestsRequest(numberOfGuests);
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
+    public NumberOfGuests getNumberOfGuests() {
+        return new NumberOfGuests(numberOfGuests);
     }
 }

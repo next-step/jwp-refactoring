@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +26,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = new OrderTable(null, 4,  false);
-        주문테이블_B = new OrderTable(null, 4,  false);
+        주문테이블_A = new OrderTable(new NumberOfGuests(4),  false);
+        주문테이블_B = new OrderTable(new NumberOfGuests(4),  false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -61,7 +62,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
                 주문테이블_A.getId(),
-                주문테이블_A.getNumberOfGuests(),
+                new NumberOfGuests(주문테이블_A.getNumberOfGuests()),
                 expectEmpty
         );
 
@@ -80,7 +81,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
                 주문테이블_A.getId(),
-                expectedNumberOfGuest,
+                new NumberOfGuests(expectedNumberOfGuest),
                 주문테이블_A.isEmpty()
         );
 
