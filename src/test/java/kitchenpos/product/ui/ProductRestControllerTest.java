@@ -2,9 +2,8 @@ package kitchenpos.product.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.product.ProductService;
-import kitchenpos.product.Product;
-import kitchenpos.product.ProductRestController;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
