@@ -1,7 +1,5 @@
 package kitchenpos.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.ToLongFunction;
@@ -11,15 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.utils.RestAssuredUtils;
 
 @DisplayName("주문 테이블 관리")
 class OrderTableAcceptanceTest extends AcceptanceTest2<OrderTable> {
@@ -31,6 +26,8 @@ class OrderTableAcceptanceTest extends AcceptanceTest2<OrderTable> {
 	OrderTable 주문_테이블;
 	Long 테이블_아이디;
 
+	TableGroupAcceptanceTest tableGroups;
+
 	/**
 	 * Feature: 주문 테이블 관리 기능
 	 * Background
@@ -39,6 +36,8 @@ class OrderTableAcceptanceTest extends AcceptanceTest2<OrderTable> {
 	 */
 	@BeforeEach
 	void setup() {
+		tableGroups = new TableGroupAcceptanceTest();
+
 		주문_테이블 = 주문_테이블();
 		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(주문_테이블);
 		테이블_아이디 = 등록됨(등록_요청_응답).getId();
@@ -120,10 +119,10 @@ class OrderTableAcceptanceTest extends AcceptanceTest2<OrderTable> {
 	@Test
 	void 주문_테이블이_그룹_테이블에_존재함() {
 		// given
-		List<OrderTable> 주문_테이블_목록 = 테이블_등록_요청2(주문_테이블(), 주문_테이블());
+		List<OrderTable> 주문_테이블_목록 = 테이블_등록됨(주문_테이블(), 주문_테이블());
 
 		// given
-		TableGroup 테이블_그룹 = TableGroupAcceptanceTest.그룹_테이블_등록되어_있음(주문_테이블_목록);
+		TableGroup 테이블_그룹 = tableGroups.그룹_테이블_등록되어_있음(주문_테이블_목록);
 
 		// when
 		OrderTable 수정_주문_테이블 = 테이블_그룹.getOrderTables().get(0);
@@ -157,44 +156,12 @@ class OrderTableAcceptanceTest extends AcceptanceTest2<OrderTable> {
 		return 수정_요청(NUMBER_OF_GUESTS_REQUEST_PATH, orderTable);
 	}
 
-	public List<OrderTable> 테이블_등록_요청2(OrderTable... orderTables) {
+	public List<OrderTable> 테이블_등록됨(OrderTable... orderTables) {
 		return Arrays.stream(orderTables)
 			.map(orderTable -> 등록됨(등록_요청(orderTable)))
 			.collect(Collectors.toList());
 	}
 
-	@Deprecated
-	public static List<OrderTable> 테이블_등록_요청(List<OrderTable> orderTables) {
-		return orderTables.stream()
-			.peek(orderTable -> orderTable.setId(테이블_등록_요청(orderTable)))
-			.collect(Collectors.toList());
-	}
-
-	@Deprecated
-	public static Long 테이블_등록_요청(OrderTable orderTable) {
-		ExtractableResponse<Response> 등록_응답 = RestAssuredUtils.post(TABLES_REQUEST_PATH, orderTable);
-		assertThat(등록_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		return 등록_응답.body().as(OrderTable.class).getId();
-	}
-
-	@Deprecated
-	public static void 테이블_등록됨(Long 테이블_아이디) {
-		List<OrderTable> orderTables = 테이블_목록_조회();
-
-		assertThat(orderTables)
-			.extracting(OrderTable::getId)
-			.contains(테이블_아이디);
-	}
-
-	@Deprecated
-	private static List<OrderTable> 테이블_목록_조회() {
-		ExtractableResponse<Response> 목록_응답 = RestAssuredUtils.get(TABLES_REQUEST_PATH);
-
-		assertThat(목록_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-		return 목록_응답.body().as(new TypeRef<List<OrderTable>>() {});
-	}
-
-	@Deprecated
 	public static OrderTable 주문_테이블() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(0);

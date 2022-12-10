@@ -36,4 +36,12 @@ public class RestAssuredUtils {
 			.then().log().all()
 			.extract();
 	}
+
+	public static ExtractableResponse<Response> delete(String requestPath, Long id) {
+		return RestAssured.given().log().all()
+			.when().log().all()
+			.delete(requestPath, id)
+			.then().log().all()
+			.extract();
+	}
 }

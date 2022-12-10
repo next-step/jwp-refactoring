@@ -8,6 +8,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import io.restassured.RestAssured;
 import kitchenpos.utils.DatabaseCleanUtils;
 
+@Deprecated
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AcceptanceTest {
 

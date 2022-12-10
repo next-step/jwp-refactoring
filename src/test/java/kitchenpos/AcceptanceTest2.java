@@ -83,6 +83,14 @@ public abstract class AcceptanceTest2<T> {
         assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
     }
 
+    protected ExtractableResponse<Response> 삭제_요청(String requestPath, Long id) {
+        return RestAssuredUtils.delete(requestPath, id);
+    }
+
+    protected void 삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private boolean isEqual(T actual, T expected, Function<T,?> compareExtractor) {
         return compareExtractor.apply(actual).equals(compareExtractor.apply(expected));
     }

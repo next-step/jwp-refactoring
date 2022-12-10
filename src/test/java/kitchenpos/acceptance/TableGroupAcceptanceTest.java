@@ -1,32 +1,30 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceTest.주문_테이블;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.newArrayList;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ToLongFunction;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.AcceptanceTest2;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.utils.RestAssuredUtils;
 
 @DisplayName("테이블 그룹 관리")
-class TableGroupAcceptanceTest extends AcceptanceTest {
+class TableGroupAcceptanceTest extends AcceptanceTest2<TableGroup> {
 
 	static final String GROUP_REQUEST_PATH = "/api/table-groups";
 	static final String UNGROUP_REQUEST_PATH = "/api/table-groups/{tableGroupId}";
 
 	List<OrderTable> 주문_테이블_목록;
-	TableGroup 테이블_그룹;
+	OrderTableAcceptanceTest orderTables;
 
 	/**
 	 * Feature: 테이블 그룹 관리 기능
@@ -36,21 +34,28 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 	 */
 	@BeforeEach
 	void setup() {
-		주문_테이블_목록 = 주문_테이블_목록_생성();
+		orderTables = new OrderTableAcceptanceTest();
+		주문_테이블_목록 = orderTables.테이블_등록됨(주문_테이블(), 주문_테이블());
 	}
 
 	/**
-	 * Given 주문 테이블이 생성되어 있고
-	 * When 테이블 그룹 생성을 요청하면
-	 * Then 테이블 그룹 생성에 성공한다
+	 * Scenario: 테이블 그룹을 관리한다
+	 * When 테이블 그룹 등록을 요청하면
+	 * Then 테이블 그룹 등록에 성공한다
+	 * When 테이블 그룹 해제를 요청하면
+	 * Then 테이블 그룹 해제에 성공한다
 	 */
 	@Test
 	void 테이블_그룹_생성() {
-		TableGroup 주문_테이블_그룹 = 테이블_그룹(주문_테이블_목록);
+		// when
+		TableGroup 주문_테이블_그룹 = 주문_테이블_그룹(주문_테이블_목록);
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(주문_테이블_그룹);
+		// then
+		주문_테이블_그룹 = 등록됨(등록_요청_응답);
 
-		ExtractableResponse<Response> 생성_응답 = 그룹_테이블_등록_요청(주문_테이블_그룹);
-
-		그룹_테이블_등록됨(생성_응답);
+		// when
+		ExtractableResponse<Response> 해제_요청_응답 = 테이블_그룹_해제_요청(주문_테이블_그룹);
+		테이블_그룹_해제됨(해제_요청_응답);
 	}
 
 	/**
@@ -60,12 +65,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 	 */
 	@Test
 	void 주문_테이블이_존재하지_않음() {
-		OrderTable 주문_테이블 = 주문_테이블();
-		TableGroup 주문_테이블_그룹 = 테이블_그룹(Lists.newArrayList(주문_테이블));
+		OrderTable 새_주문_테이블 = 주문_테이블();
+		TableGroup 주문_테이블_그룹 = 주문_테이블_그룹(newArrayList(새_주문_테이블));
 
-		ExtractableResponse<Response> 생성_응답 = 그룹_테이블_등록_요청(주문_테이블_그룹);
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(주문_테이블_그룹);
 
-		그룹_테이블_등록_실패함(생성_응답);
+		등록_실패함(등록_요청_응답);
 	}
 
 	/**
@@ -74,57 +79,57 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 	 * Then 테이블 그룹 생성에 실패한다
 	 */
 	@Test
-	void 주문_테이블_목록이_빈배열() {
-		TableGroup 주문_테이블_그룹 = 테이블_그룹(Lists.newArrayList(주문_테이블()));
+	void 주문_테이블_목록이_2개_미만() {
+		TableGroup 주문_테이블_그룹 = 주문_테이블_그룹(newArrayList(주문_테이블()));
 
-		ExtractableResponse<Response> 생성_응답 = 그룹_테이블_등록_요청(주문_테이블_그룹);
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(주문_테이블_그룹);
 
-		그룹_테이블_등록_실패함(생성_응답);
+		등록_실패함(등록_요청_응답);
 	}
 
-	private void 그룹_테이블_등록_실패함(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
+	/**
+	 * Given 주문 테이블 그룹이 생성되어 있고
+	 * Given 주문 테이블의 상태가 '조리중'이거나 '식사중'일 때
+	 * When 테이블 그룹 해제를 요청하면
+	 * Then 테이블 그룹 해제가 실패한다.
+	 */
+	@Disabled
+	@Test
+	void 주문_테이블_그룹_해제_실패() {
 	}
 
-	public static Long 그룹_테이블_등록됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		Long tableGroupId = response.body().as(TableGroup.class).getId();
-		assertThat(tableGroupId).isNotNull();
-		return tableGroupId;
+	public TableGroup 그룹_테이블_등록되어_있음(List<OrderTable> orderTables) {
+		TableGroup 테이블_그룹 = 주문_테이블_그룹(orderTables);
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(테이블_그룹);
+		return 등록됨(등록_요청_응답);
 	}
 
-	private List<OrderTable> 주문_테이블_목록_생성() {
-		List<OrderTable> orderTables = new ArrayList<>();
-		orderTables.addAll(
-			Lists.newArrayList(주문_테이블_등록_요청(),
-							   주문_테이블_등록_요청(),
-							   주문_테이블_등록_요청()));
-		return orderTables;
-	}
-
-	private static OrderTable 주문_테이블_등록_요청() {
-		OrderTable orderTable = 주문_테이블();
-		Long tableId = OrderTableAcceptanceTest.테이블_등록_요청(orderTable);
-		OrderTableAcceptanceTest.테이블_등록됨(tableId);
-		orderTable.setId(tableId);
-		return orderTable;
-	}
-
-	public static ExtractableResponse<Response> 그룹_테이블_등록_요청(TableGroup tableGroup) {
-		return RestAssuredUtils.post(GROUP_REQUEST_PATH, tableGroup);
-	}
-
-	public static TableGroup 테이블_그룹(List<OrderTable> orderTables) {
+	private TableGroup 주문_테이블_그룹(List<OrderTable> orderTables) {
 		TableGroup tableGroup = new TableGroup();
 		tableGroup.setOrderTables(orderTables);
 		return tableGroup;
 	}
 
-	public static TableGroup 그룹_테이블_등록되어_있음(List<OrderTable> orderTables) {
-		TableGroup 테이블_그룹 = 테이블_그룹(orderTables);
-		ExtractableResponse<Response> 테이블_그룹_생성_응답 = 그룹_테이블_등록_요청(테이블_그룹);
-		그룹_테이블_등록됨(테이블_그룹_생성_응답);
-		return 테이블_그룹_생성_응답.body().as(TableGroup.class);
+	private void 테이블_그룹_해제됨(ExtractableResponse<Response> 해제_요청_응답) {
+		super.삭제됨(해제_요청_응답);
 	}
 
+	private ExtractableResponse<Response> 테이블_그룹_해제_요청(TableGroup 주문_테이블_그룹) {
+		return 삭제_요청(UNGROUP_REQUEST_PATH, 주문_테이블_그룹.getId());
+	}
+
+	@Override
+	protected String getRequestPath() {
+		return GROUP_REQUEST_PATH;
+	}
+
+	@Override
+	protected ToLongFunction<TableGroup> idExtractor() {
+		return TableGroup::getId;
+	}
+
+	@Override
+	protected Class<TableGroup> getDomainClass() {
+		return TableGroup.class;
+	}
 }
