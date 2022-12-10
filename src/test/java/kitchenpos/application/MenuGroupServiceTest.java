@@ -1,14 +1,19 @@
 package kitchenpos.application;
 
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -40,16 +45,42 @@ public class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        given(menuGroupDao.save(햄버거세트)).willReturn(햄버거세트);
+        MenuGroupRequest menuGroupRequest = generateMenuGroupRequest(햄버거세트.getName());
+        MenuGroup menuGroup = menuGroupRequest.toMenuGroup();
+        given(menuGroupRepository.save(menuGroup)).willReturn(햄버거세트);
 
         // when
-        MenuGroup saveMenuGroup = menuGroupService.create(햄버거세트);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         // then
         assertAll(
-                () -> assertThat(saveMenuGroup.getId()).isNotNull(),
-                () -> assertThat(saveMenuGroup.getName()).isEqualTo(햄버거세트.getName())
+                () -> assertThat(menuGroupResponse.getId()).isNotNull(),
+                () -> assertThat(menuGroupResponse.getName()).isEqualTo(햄버거세트.getName().value())
         );
+    }
+
+    @DisplayName("메뉴 그룹명이 null이면 생성할 수 없다.")
+    @Test
+    void createMenuGroupThrowErrorWhenMenuGroupIsNull() {
+        // given
+        String name = null;
+        MenuGroupRequest menuGroupRequest = generateMenuGroupRequest(name);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> menuGroupService.create(menuGroupRequest))
+                .withMessage(ErrorCode.이름은_비어_있을_수_없음.getErrorMessage());
+    }
+
+    @DisplayName("메뉴 그룹명이 비어있이면 생성할 수 없다.")
+    @Test
+    void createMenuGroupThrowErrorWhenMenuGroupIsEmpty() {
+        // given
+        String name = "";
+        MenuGroupRequest menuGroupRequest = generateMenuGroupRequest(name);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> menuGroupService.create(menuGroupRequest))
+                .withMessage(ErrorCode.이름은_비어_있을_수_없음.getErrorMessage());
     }
 
     @DisplayName("메뉴 그룹 전체 목록을 조회한다.")
@@ -57,15 +88,16 @@ public class MenuGroupServiceTest {
     void findAllMenuGroups() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(햄버거세트, 햄버거단품);
-        given(menuGroupDao.findAll()).willReturn(menuGroups);
+        given(menuGroupRepository.findAll()).willReturn(menuGroups);
 
         // when
-        List<MenuGroup> findMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> findMenuGroups = menuGroupService.list();
 
         // then
         assertAll(
                 () -> assertThat(findMenuGroups).hasSize(menuGroups.size()),
-                () -> assertThat(findMenuGroups).containsExactly(햄버거세트, 햄버거단품)
+                () -> assertThat(findMenuGroups.stream().map(MenuGroupResponse::getName))
+                        .containsExactly(햄버거세트.getName().value(), 햄버거단품.getName().value())
         );
     }
 }

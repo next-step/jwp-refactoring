@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_목록_조회_요청;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
-import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -11,7 +11,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,14 @@ import org.springframework.http.HttpStatus;
 @DisplayName("메뉴 그룹 관련 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 햄버거세트;
-    private MenuGroup 햄버거단품;
+    private MenuGroupRequest 햄버거세트;
+    private MenuGroupRequest 햄버거단품;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        햄버거세트 = generateMenuGroup(1L, "햄버거세트");
-        햄버거단품 = generateMenuGroup(2L, "햄버거단품");
+        햄버거세트 = generateMenuGroupRequest("햄버거세트");
+        햄버거단품 = generateMenuGroupRequest("햄버거단품");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
@@ -69,8 +70,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultMenuGroupIds = response.jsonPath().getList(".", MenuGroup.class).stream()
-                .map(MenuGroup::getId)
+        List<Long> resultMenuGroupIds = response.jsonPath().getList(".", MenuGroupResponse.class).stream()
+                .map(MenuGroupResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultMenuGroupIds).containsAll(expectedMenuGroupIds);

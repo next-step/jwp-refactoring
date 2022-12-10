@@ -6,6 +6,7 @@ import static kitchenpos.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static kitchenpos.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.domain.ProductTestFixture.generateProductRequest;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 불고기버거;
     private ProductResponse 치킨버거;
     private ProductResponse 콜라;
-    private MenuGroup 햄버거세트;
+    private MenuGroupResponse 햄버거세트;
     private MenuProduct 감자튀김상품;
     private MenuProduct 불고기버거상품;
     private MenuProduct 치킨버거상품;
@@ -46,7 +47,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        햄버거세트 = 메뉴_그룹_등록되어_있음(generateMenuGroup("햄버거세트")).as(MenuGroup.class);
+        햄버거세트 = 메뉴_그룹_등록되어_있음(generateMenuGroupRequest("햄버거세트")).as(MenuGroupResponse.class);
         감자튀김 = 상품_등록되어_있음(generateProductRequest("감자튀김", BigDecimal.valueOf(3000L))).as(ProductResponse.class);
         콜라 = 상품_등록되어_있음(generateProductRequest("콜라", BigDecimal.valueOf(1500L))).as(ProductResponse.class);
         불고기버거 = 상품_등록되어_있음(generateProductRequest("불고기버거", BigDecimal.valueOf(4000L))).as(ProductResponse.class);

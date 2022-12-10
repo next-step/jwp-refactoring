@@ -1,27 +1,29 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupRestAssured {
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(Long id, String name) {
-        return 메뉴_그룹_생성_요청(generateMenuGroup(id, name));
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String name) {
+        return 메뉴_그룹_생성_요청(generateMenuGroupRequest(name));
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
-        return 메뉴_그룹_생성_요청(menuGroup);
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupRequest menuGroupRequest) {
+        return 메뉴_그룹_생성_요청(menuGroupRequest);
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroupRequest menuGroupRequest) {
         return RestAssured
                 .given().log().all()
-                .body(menuGroup)
+                .body(menuGroupRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menu-groups")
                 .then().log().all()
