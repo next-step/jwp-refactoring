@@ -53,24 +53,22 @@ public class MenuServiceTest {
     }
 
     @DisplayName("메뉴가격이 0보다 작은경우 예외발생")
-    @ParameterizedTest
-    @ValueSource(ints = {-1, -2, -3, -100, -999})
-    public void throwsExceptionWhenNegativePrice(int price) {
+    @Test
+    public void throwsExceptionWhenNegativePrice() {
         Menu menu = new Menu();
-        menu.setPrice(BigDecimal.valueOf(price));
+        menu.setPrice(BigDecimal.valueOf(Arbitraries.integers().lessOrEqual(-1).sample()));
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴가 속한 메뉴그룹이 없는경우 예외발생")
-    @ParameterizedTest
-    @ValueSource(longs = {1, 2, 3, 100, 99})
-    public void throwsExceptionWhenNoneExistsMeneGroup(long menuGroupId) {
+    @Test
+    public void throwsExceptionWhenNoneExistsMeneGroup() {
         Menu menu = new Menu();
         menu.setPrice(BigDecimal.valueOf(15000));
-        menu.setMenuGroupId(menuGroupId);
-        doReturn(false).when(menuGroupDao).existsById(menuGroupId);
+        menu.setMenuGroupId(Arbitraries.longs().sample());
+        doReturn(false).when(menuGroupDao).existsById(menu.getMenuGroupId());
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -93,7 +91,7 @@ public class MenuServiceTest {
     }
 
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
-    @RepeatedTest(100)
+    @Test
     public void throwsExceptionWhenMenuPriceGreater() {
         FixtureMonkey sut = FixtureMonkey.create();
         Product product = sut.giveMeBuilder(Product.class)
@@ -119,7 +117,7 @@ public class MenuServiceTest {
     }
 
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
-    @RepeatedTest(100)
+    @Test
     public void returnMenu() {
         FixtureMonkey sut = FixtureMonkey.create();
         Product product = sut.giveMeBuilder(Product.class)
