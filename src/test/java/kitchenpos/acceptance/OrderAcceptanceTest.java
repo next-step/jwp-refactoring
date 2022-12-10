@@ -1,5 +1,7 @@
 package kitchenpos.acceptance;
 
+import java.util.function.ToLongFunction;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +13,10 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 
 @DisplayName("주문 관련 기능")
-public class OrderAcceptanceTest extends AcceptanceTest {
+public class OrderAcceptanceTest extends AcceptanceTest<Order> {
+
+	static final String REQUEST_PATH = "/api/orders";
+	static final String ORDER_STATUS_REQUEST_PATH = "/api/orders/{orderId}/order-status";
 
 	/**
 	 * Feature: 주문 관리 기능
@@ -65,5 +70,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
 	public static Order 조리중_주문(OrderTable orderTable) {
 		return 주문(orderTable, OrderStatus.COOKING.name());
+	}
+
+	@Override
+	protected String getRequestPath() {
+		return REQUEST_PATH;
+	}
+
+	@Override
+	protected ToLongFunction<Order> idExtractor() {
+		return null;
+	}
+
+	@Override
+	protected Class<Order> getDomainClass() {
+		return null;
 	}
 }

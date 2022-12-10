@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest2;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 @DisplayName("주문 테이블 관리")
-class OrderTableAcceptanceTest extends AcceptanceTest2<OrderTable> {
+class OrderTableAcceptanceTest extends AcceptanceTest<OrderTable> {
 
 	static final String TABLES_REQUEST_PATH = "/api/tables";
 	static final String EMPTY_REQUEST_PATH = "/api/tables/{orderTableId}/empty";

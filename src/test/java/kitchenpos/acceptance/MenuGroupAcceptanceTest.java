@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest2;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
 
 @DisplayName("메뉴 그룹 관리")
-class MenuGroupAcceptanceTest extends AcceptanceTest2<MenuGroup> {
+class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup> {
 
 	static final String REQUEST_PATH = "/api/menu-groups";
 	static final String 메뉴명 = "푸드";

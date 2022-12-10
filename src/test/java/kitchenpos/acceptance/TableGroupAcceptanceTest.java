@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest2;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 @DisplayName("테이블 그룹 관리")
-class TableGroupAcceptanceTest extends AcceptanceTest2<TableGroup> {
+class TableGroupAcceptanceTest extends AcceptanceTest<TableGroup> {
 
 	static final String GROUP_REQUEST_PATH = "/api/table-groups";
 	static final String UNGROUP_REQUEST_PATH = "/api/table-groups/{tableGroupId}";

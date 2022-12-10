@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest2;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
 
 @DisplayName("상품 관리")
-class ProductAcceptanceTest extends AcceptanceTest2<Product> {
+class ProductAcceptanceTest extends AcceptanceTest<Product> {
 
 	static final String REQUEST_PATH = "/api/products";
 	int 상품가격 = 1000;

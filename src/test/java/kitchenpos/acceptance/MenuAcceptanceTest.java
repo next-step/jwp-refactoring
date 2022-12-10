@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest2;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 
 @DisplayName("메뉴 관리")
-class MenuAcceptanceTest extends AcceptanceTest2<Menu> {
+class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 
 	static final String MENU_REQUEST_PATH = "/api/menus";
 	static final int 메뉴가격 = 10_000;
