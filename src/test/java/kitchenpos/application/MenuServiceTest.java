@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -65,7 +66,7 @@ class MenuServiceTest {
         김치 = new Product(2L, "김치", BigDecimal.valueOf(1_000));
         공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
         한식 = new MenuGroup(1L, "한식");
-        불고기정식 = new Menu(1L, "불고기정식", BigDecimal.valueOf(12_000L), 한식);
+        불고기정식 = new Menu(1L, "불고기정식", new MenuPrice(BigDecimal.valueOf(12_000L)), 한식);
         불고기상품 = new MenuProduct(1L, 1L, 불고기정식, 불고기);
         김치상품 = new MenuProduct(2L, 1L, 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, 1L, 불고기정식, 공기밥);
@@ -80,7 +81,7 @@ class MenuServiceTest {
                 .stream()
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
-        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice(), 한식.getId(), menuProductRequests);
+        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findById(불고기상품.getProduct().getId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치상품.getProduct().getId())).thenReturn(Optional.of(김치));
@@ -148,7 +149,7 @@ class MenuServiceTest {
     @Test
     void menuPriceException() {
         // given
-        불고기정식.setPrice(BigDecimal.valueOf(200_000));
+        불고기정식.setPrice(new MenuPrice(BigDecimal.valueOf(200_000)));
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findById(불고기상품.getProduct().getId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치상품.getProduct().getId())).thenReturn(Optional.of(김치));
@@ -157,7 +158,7 @@ class MenuServiceTest {
                 .stream()
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
-        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice(), 한식.getId(), menuProductRequests);
+        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
 
         // when & then
         assertThatThrownBy(() -> menuService.create(request))

@@ -1,6 +1,7 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 
@@ -44,7 +45,7 @@ public class MenuRequest {
     }
 
     public Menu createMenu(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(name, price, menuGroup);
+        Menu menu = new Menu(name, new MenuPrice(price), menuGroup);
         menuProducts.forEach(menuProduct -> menu.addProduct(menuProduct));
         return menu;
     }
