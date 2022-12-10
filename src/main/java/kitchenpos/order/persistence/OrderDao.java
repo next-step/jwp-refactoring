@@ -1,4 +1,6 @@
-package kitchenpos.order;
+package kitchenpos.order.persistence;
+
+import kitchenpos.order.domain.Order;
 
 import java.util.List;
 import java.util.Optional;
