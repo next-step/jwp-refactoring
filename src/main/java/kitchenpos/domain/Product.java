@@ -7,7 +7,7 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    private Product() {}
+    public Product() {}
 
     private Product(Long id, String name, BigDecimal price) {
         this.id = id;
