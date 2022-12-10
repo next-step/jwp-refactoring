@@ -1,5 +1,6 @@
 package kitchenpos.menugroup.ui;
 
+import com.navercorp.fixturemonkey.ArbitraryBuilder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
@@ -32,8 +33,8 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @DisplayName("메뉴그룹생성을 요청하면 생성된 메뉴그룹를 응답")
     @Test
     public void returnMenu() throws Exception {
-        MenuGroup menuGroup = getMenuGroup();
-        doReturn(menuGroup).when(menuGroupService).create(any(MenuGroup.class));
+        MenuGroup menuGroup = getMenuGroupBuilder().sample();
+        doReturn(menuGroup).when(menuGroupService).create(any(MenuGroupRequest.class));
 
         webMvc.perform(post("/api/menu-groups")
                         .content(mapper.writeValueAsString(new MenuGroupRequest()))
@@ -46,8 +47,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @DisplayName("메뉴그룹목록을 요청하면 메뉴그룹목록을 응답")
     @Test
     public void returnMenus() throws Exception {
-        List<MenuGroup> menuGroups = FixtureMonkey.create()
-                .giveMeBuilder(MenuGroup.class)
+        List<MenuGroup> menuGroups = getMenuGroupBuilder()
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
         doReturn(menuGroups).when(menuGroupService).list();
 
@@ -56,12 +56,12 @@ public class MenuGroupRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private MenuGroup getMenuGroup() {
-        return FixtureMonkey.builder().defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+    private ArbitraryBuilder<MenuGroup> getMenuGroupBuilder() {
+        return FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
                 .build()
                 .giveMeBuilder(MenuGroup.class)
                 .set("id", Arbitraries.longs().between(1, 100))
-                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .sample();
+                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample());
     }
 }
