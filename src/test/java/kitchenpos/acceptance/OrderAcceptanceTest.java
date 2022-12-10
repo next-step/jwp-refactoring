@@ -72,7 +72,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 주문 = new Order(주문_테이블.getId(), 주문_항목);
+        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -86,7 +86,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 항목이 비어있으면 주문을 생성할 수 없다.")
     @Test
     void createFail() {
-        Order 주문 = new Order(주문_테이블.getId(), Collections.emptyList());
+        Order 주문 = Order.of(주문_테이블.getId(), Collections.emptyList());
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -101,7 +101,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail2() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(0L, 2));
-        Order 주문 = new Order(주문_테이블.getId(), 주문_항목);
+        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -116,7 +116,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail3() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 주문 = new Order(0L, 주문_항목);
+        Order 주문 = Order.of(0L, 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -131,7 +131,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail4() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 주문 = new Order(비어있는_주문_테이블.getId(), 주문_항목);
+        Order 주문 = Order.of(비어있는_주문_테이블.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -147,7 +147,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 주문 = new Order(주문_테이블.getId(), 주문_항목);
+        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
 
         Order 등록된_주문 = 주문_등록되어_있음(주문).as(Order.class);
 
@@ -165,7 +165,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 주문 = new Order(주문_테이블.getId(), 주문_항목);
+        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
 
         Order 등록된_주문 = 주문_등록되어_있음(주문).as(Order.class);
         등록된_주문.setOrderStatus(OrderStatus.MEAL.name());
@@ -182,7 +182,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusFail() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 등록되지_않은_주문 = new Order(0L, 주문_테이블.getId(), 주문_항목);
+        Order 등록되지_않은_주문 = Order.of(0L, 주문_테이블.getId(), 주문_항목);
         등록되지_않은_주문.setOrderStatus(OrderStatus.MEAL.name());
 
         ExtractableResponse<Response> response = 주문_상태_변경_요청(등록되지_않은_주문.getId(), 등록되지_않은_주문);
@@ -200,7 +200,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusFail2() {
         List<OrderLineItem> 주문_항목 = Arrays.asList(new OrderLineItem(후라이드치킨.getId(), 2));
-        Order 등록된_주문 = 주문_등록되어_있음(new Order(주문_테이블.getId(), 주문_항목)).as(Order.class);
+        Order 등록된_주문 = 주문_등록되어_있음(Order.of(주문_테이블.getId(), 주문_항목)).as(Order.class);
 
         등록된_주문.setOrderStatus(OrderStatus.COMPLETION.name());
         Order 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), 등록된_주문).as(Order.class);

@@ -67,9 +67,9 @@ class OrderServiceTest {
 
         주문항목 = new OrderLineItem(1L, null, 후라이드치킨.getId(), 2);
         List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
-        주문 = new Order(1L, 주문_테이블.getId(), 주문항목_목록);
+        주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
 
-        계산완료_주문 = new Order(2L, 주문_테이블.getId(), 주문항목_목록);
+        계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
         계산완료_주문.setOrderStatus(OrderStatus.COMPLETION.name());
     }
 
@@ -93,7 +93,7 @@ class OrderServiceTest {
     @DisplayName("주문 항목이 비어있으면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        Order order = new Order(1L, Collections.emptyList());
+        Order order = Order.of(1L, Collections.emptyList());
 
         Assertions.assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -107,7 +107,7 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 new OrderLineItem(1L, 2),
                 new OrderLineItem(2L, 1));
-        Order order = new Order(1L, orderLineItems);
+        Order order = Order.of(1L, orderLineItems);
 
         Assertions.assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -155,7 +155,7 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
 
-        Order 상태변경_주문 = new Order(주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
+        Order 상태변경_주문 = Order.of(주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
         상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
         Order result = orderService.changeOrderStatus(주문.getId(), 상태변경_주문);
 
@@ -179,7 +179,7 @@ class OrderServiceTest {
     void changeOrderStatusException2() {
         when(orderDao.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
-        Order 상태변경_주문 = new Order(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
+        Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
         상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
         Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(상태변경_주문.getId(), 상태변경_주문))
                 .isInstanceOf(IllegalArgumentException.class);

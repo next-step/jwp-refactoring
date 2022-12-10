@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,19 +12,31 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {
+    private Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private Order(Long id,
+                  Long orderTableId,
+                  String orderStatus,
+                  LocalDateTime orderedTime,
+                  List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+    }
+
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+    }
+
+    public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(id, orderTableId, orderStatus, orderedTime, Collections.emptyList());
     }
 
     public Long getId() {
