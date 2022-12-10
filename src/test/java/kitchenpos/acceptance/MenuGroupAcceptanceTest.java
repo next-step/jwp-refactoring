@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Collectors;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
-        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(MenuGroup.of(1L, "퍼스트클래스 피자"));
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(MenuGroupRequest.from("퍼스트클래스 피자"));
 
         메뉴_그룹_생성됨(response);
     }
@@ -39,8 +40,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
-        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MenuGroup.of(1L, "퍼스트클래스 피자"));
-        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MenuGroup.of(2L, "비즈니스클래스 피자"));
+        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("퍼스트클래스 피자"));
+        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("비즈니스클래스 피자"));
 
         ExtractableResponse<Response> listResponse = 메뉴_그룹_목록_조회_요청();
 

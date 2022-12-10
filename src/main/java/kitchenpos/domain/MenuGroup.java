@@ -18,6 +18,10 @@ public class MenuGroup {
         return new MenuGroup(id, MenuGroupName.from(name));
     }
 
+    public static MenuGroup from(String name) {
+        return new MenuGroup(null, MenuGroupName.from(name));
+    }
+
     public Long getId() {
         return id;
     }

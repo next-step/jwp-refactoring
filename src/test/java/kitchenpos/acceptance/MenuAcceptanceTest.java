@@ -17,6 +17,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,11 +39,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
+        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroup.class);
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
         후라이드치킨_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2);
 
-        메뉴_그룹_등록되어_있음(두마리메뉴);
         상품_등록되어_있음(후라이드);
     }
 
