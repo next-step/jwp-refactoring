@@ -39,10 +39,6 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Name getName() {
         return name;
     }
