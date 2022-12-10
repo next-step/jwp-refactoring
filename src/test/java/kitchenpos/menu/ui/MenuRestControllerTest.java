@@ -49,7 +49,7 @@ public class MenuRestControllerTest extends ControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    @DisplayName("메뉴생성을 요청하면 생성된 메뉴를 응답")
+    @DisplayName("메뉴생성을 요청하면 메뉴생성 실패응답")
     @Test
     public void throwsExceptionWhenMenuCreate() throws Exception {
         doThrow(new IllegalArgumentException()).when(menuService).create(any(Menu.class));
