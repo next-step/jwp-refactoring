@@ -4,7 +4,6 @@ import static kitchenpos.acceptance.OrderTableAcceptanceTest.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.assertj.core.util.Lists;
@@ -70,13 +69,13 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * Given 주문 테이블 목록이 빈 배열일 경우
+	 * Given 주문 테이블 목록이 2개 미만일 경우
 	 * When 테이블 그룹 생성을 요청하면
 	 * Then 테이블 그룹 생성에 실패한다
 	 */
 	@Test
 	void 주문_테이블_목록이_빈배열() {
-		TableGroup 주문_테이블_그룹 = 테이블_그룹(Collections.emptyList());
+		TableGroup 주문_테이블_그룹 = 테이블_그룹(Lists.newArrayList(주문_테이블()));
 
 		ExtractableResponse<Response> 생성_응답 = 그룹_테이블_등록_요청(주문_테이블_그룹);
 
@@ -87,7 +86,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
 	}
 
-	private Long 그룹_테이블_등록됨(ExtractableResponse<Response> response) {
+	public static Long 그룹_테이블_등록됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		Long tableGroupId = response.body().as(TableGroup.class).getId();
 		assertThat(tableGroupId).isNotNull();
@@ -111,11 +110,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 		return orderTable;
 	}
 
-	private ExtractableResponse<Response> 그룹_테이블_등록_요청(TableGroup tableGroup) {
+	public static ExtractableResponse<Response> 그룹_테이블_등록_요청(TableGroup tableGroup) {
 		return RestAssuredUtils.post(GROUP_REQUEST_PATH, tableGroup);
 	}
 
-	private TableGroup 테이블_그룹(List<OrderTable> orderTables) {
+	public static TableGroup 테이블_그룹(List<OrderTable> orderTables) {
 		TableGroup tableGroup = new TableGroup();
 		tableGroup.setOrderTables(orderTables);
 		return tableGroup;

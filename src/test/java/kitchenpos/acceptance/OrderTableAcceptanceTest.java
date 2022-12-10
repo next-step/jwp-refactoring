@@ -1,9 +1,14 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.TableGroupAcceptanceTest.그룹_테이블_등록_요청;
+import static kitchenpos.acceptance.TableGroupAcceptanceTest.그룹_테이블_등록됨;
+import static kitchenpos.acceptance.TableGroupAcceptanceTest.테이블_그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +20,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.utils.RestAssuredUtils;
 
 @DisplayName("주문 테이블 관리")
@@ -30,8 +36,8 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 	/**
 	 * Feature: 주문 테이블 관리 기능
 	 * Background
-	 *   when 주문 테이블 등록을 요청하면
-	 *   then 주문 테이블 등록에 성공한다
+	 *   When 주문 테이블 등록을 요청하면
+	 *   Then 주문 테이블 등록에 성공한다
 	 */
 	@BeforeEach
 	void setup() {
@@ -104,6 +110,28 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
+	 * Given 주문 테이블이 2개이상 등록하고
+	 * Given 그룹 테이블에 해당 주문 테이블들을 생성하고
+	 * When 주문 테이블을 빈 테이블로 수정 요청할 경우
+	 * Then 주문 테이블 수정에 실패한다
+	 */
+	@Test
+	void 주문_테이블이_그룹_테이블에_존재함() {
+		List<OrderTable> 주문_테이블_목록
+			= 테이블_등록_요청(Lists.newArrayList(주문_테이블(), 주문_테이블(), 주문_테이블()));
+
+		TableGroup 테이블_그룹 = 테이블_그룹(주문_테이블_목록);
+		ExtractableResponse<Response> 테이블_그룹_생성_응답 = 그룹_테이블_등록_요청(테이블_그룹);
+		그룹_테이블_등록됨(테이블_그룹_생성_응답);
+
+		OrderTable 수정_주문_테이블 = 주문_테이블_목록.get(0);
+		수정_주문_테이블.setEmpty(false);
+		ExtractableResponse<Response> 수정_응답 = 빈_주문_테이블_수정_요청(수정_주문_테이블);
+
+		테이블_수정_실패함(수정_응답);
+	}
+
+	/**
 	 * Given 주문 상태가 '조리중' 또는 '식사중'인 주문이 등록되어 있을 때
 	 * When 주문 테이블을 빈 테이블로 변경 요청할 경우
 	 * Then 주문 테이블 수정에 실패한다
@@ -111,15 +139,6 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 	@Test
 	@Disabled
 	void 주문_상태가_조리중_이거나_식사중임() {
-	}
-
-	/**
-	 * When 주문 테이블이 그룹 테이블에 존재할 경우
-	 * Then 주문 테이블 수정에 실패한다
-	 */
-	@Test
-	@Disabled
-	void 주문_테이블이_그룹_테이블에_존재함() {
 	}
 
 	private void 테이블_수정_실패함(ExtractableResponse<Response> 주문_테이블) {
@@ -136,6 +155,12 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 
 	private ExtractableResponse<Response> 주문_테이블_수정_요청(String path, OrderTable orderTable) {
 		return RestAssuredUtils.put(path, orderTable.getId(), orderTable);
+	}
+
+	public static List<OrderTable> 테이블_등록_요청(List<OrderTable> orderTables) {
+		return orderTables.stream()
+			.peek(orderTable -> orderTable.setId(테이블_등록_요청(orderTable)))
+			.collect(Collectors.toList());
 	}
 
 	public static Long 테이블_등록_요청(OrderTable orderTable) {
