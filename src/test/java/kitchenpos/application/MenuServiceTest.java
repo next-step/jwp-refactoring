@@ -82,6 +82,20 @@ class MenuServiceTest {
         assertThat(메뉴_기본_등록).isEqualTo(메뉴_기본);
     }
 
+    @DisplayName("메뉴를 구성하는 메뉴 상품들에 상품이 존재하지 않으면 등록할 수 없다.")
+    @Test
+    void create_error_not_found_product() {
+        // given
+        메뉴_상품_후라이드_치킨.setProductId(null);
+        메뉴_기본.setMenuProducts(Arrays.asList(메뉴_상품_후라이드_치킨));
+
+        when(menuGroupDao.existsById(any())).thenReturn(true);
+
+        // when && then
+        assertThatThrownBy(() -> menuService.create(메뉴_기본))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("메뉴의 가격이 0 원 이상이어야 한다.")
     @Test
     void create_error_menu_price_minus() {

@@ -14,6 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -137,21 +141,32 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문의 상태를 변경할 수 있다.")
-    @Test
-    void update_order_status() {
+    @DisplayName("주문의 주문 상태가 조리 또는 식사중 일 경우 상태를 변경할 수 있다.")
+    @ParameterizedTest(name = "#{index} - 주문 상태를 {2}에서 {3}로 변경할 수 있다.")
+    @MethodSource("order_status_info")
+    void update_order_status(OrderStatus 기존주문상태, OrderStatus 변경주문상태, String s, String s2) {
         // given
+        주문.setOrderStatus(기존주문상태.name());
         Order 주문상태_식사중_변경 = new Order();
-        주문상태_식사중_변경.setOrderStatus(OrderStatus.MEAL.name());
+        주문상태_식사중_변경.setOrderStatus(변경주문상태.name());
 
         when(orderDao.findById(any())).thenReturn(Optional.of(주문));
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문_항목));
 
         // when
-        Order 주문_상태_변경_결과 = orderService.changeOrderStatus(주문상태_식사중_변경.getId(), 주문상태_식사중_변경);
+        Order 주문_상태_변경_결과 = orderService.changeOrderStatus(주문.getId(), 주문상태_식사중_변경);
 
         // then
-        assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(변경주문상태.name());
+    }
+
+    private static Stream<Arguments> order_status_info() {
+        return Stream.of(
+                Arguments.of(OrderStatus.MEAL, OrderStatus.COOKING, "조리", "식사"),
+                Arguments.of(OrderStatus.COOKING, OrderStatus.MEAL, "식사", "조리"),
+                Arguments.of(OrderStatus.MEAL, OrderStatus.COMPLETION, "조리", "계산 완료"),
+                Arguments.of(OrderStatus.COOKING, OrderStatus.COMPLETION, "식사", "계산 완료")
+        );
     }
 
     @DisplayName("주문이 저장되어 있지 않으면 주문의 상태를 변경할 수 없다.")
@@ -161,7 +176,7 @@ class OrderServiceTest {
         Order 주문상태_식사중_변경 = new Order();
         주문상태_식사중_변경.setOrderStatus(OrderStatus.MEAL.name());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문상태_식사중_변경.getId(), 주문상태_식사중_변경))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문상태_식사중_변경))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

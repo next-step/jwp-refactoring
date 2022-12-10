@@ -128,7 +128,7 @@ public class TableGroupServiceTest {
         );
     }
 
-    @DisplayName("테이블 그룹의 주문 테이블 리스트 중에 주문상태가 요리 식사 중인 경우 테이블 그룹 등록을 해제할 수 없다.")
+    @DisplayName("테이블 그룹의 주문 테이블 리스트 중에 주문상태가 조리 또는 식사 중인 경우 테이블 그룹 등록을 해제할 수 없다.")
     @Test
     void ungroup_error_table_meal() {
         // given

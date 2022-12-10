@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -92,7 +93,7 @@ class TableServiceTest {
 
     }
 
-    @DisplayName("테이블이 값이 저장되어 있지 않으면 테이블의 상태를 변경할 수 없다.")
+    @DisplayName("테이블이 저장되어 있지 않으면 테이블의 상태를 변경할 수 없다.")
     @Test
     void update_error_not_found_table() {
         // when && then
@@ -100,7 +101,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 그룹이 등록되어 있다면 변경할 수 없다.")
+    @DisplayName("테이블에 테이블 그룹이 등록되어 있다면 변경할 수 없다.")
     @Test
     void update_error_exist_table_group() {
         // given
@@ -112,7 +113,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 주문의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.")
+    @DisplayName("주문 테이블의 주문의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.")
     @Test
     void update_error_table_status() {
         // given
@@ -154,7 +155,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 테이블의 값이 저장되어 있지 않다면 손님의 수를 변경할 수 없다.")
+    @DisplayName("요청한 테이블을 찾을 수 없으면 손님의 수를 변경할 수 없다.")
     @Test
     void error_change_not_found_table() {
         // when && then
@@ -162,7 +163,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 테이블이 빈테이블인 경우 손님의 수를 변경할 수 없다.")
+    @DisplayName("요청한 테이블이 존재하지 않으면 손님의 수를 변경할 수 없다.")
     @Test
     void error_change_number_table_empty() {
         // given
