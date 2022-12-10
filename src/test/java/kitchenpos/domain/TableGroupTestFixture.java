@@ -1,15 +1,19 @@
 package kitchenpos.domain;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import kitchenpos.dto.TableGroupRequest;
 
 public class TableGroupTestFixture {
 
-    public static TableGroup generateTableGroup(Long id, LocalDateTime createTime, List<OrderTable> orderTables) {
-        return TableGroup.of(id, createTime, orderTables);
+    public static TableGroup generateTableGroup(Long id, List<OrderTable> orderTables) {
+        return TableGroup.of(id, orderTables);
     }
 
     public static TableGroup generateTableGroup(List<OrderTable> orderTables) {
-        return TableGroup.of(null, null, orderTables);
+        return TableGroup.of(null, orderTables);
+    }
+
+    public static TableGroupRequest generateTableGroupRequest(List<Long> orderTables) {
+        return new TableGroupRequest(orderTables);
     }
 }

@@ -1,77 +1,50 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.OrderTables;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+        this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return savedTableGroup;
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        List<OrderTable> orderTables = findAllOrderTablesById(tableGroupRequest.getOrderTables());
+        final TableGroup tableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
+        return TableGroupResponse.from(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        OrderTables orderTables = tableGroup.getOrderTables();
 
-        final List<Long> orderTableIds = orderTables.stream()
+        // TODO order 리팩토링 시 변경 필요
+        final List<OrderTable> orderTableList = orderTableRepository.findAllByTableGroupId(tableGroupId);
+
+        final List<Long> orderTableIds = orderTableList.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
@@ -80,9 +53,22 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+        orderTables.ungroupOrderTables();
+    }
+
+    private List<OrderTable> findAllOrderTablesById(List<Long> ids) {
+        return ids.stream()
+                .map(this::findOrderTableById)
+                .collect(Collectors.toList());
+    }
+
+    private OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage()));
+    }
+
+    private TableGroup findTableGroupById(Long id) {
+        return tableGroupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_단체_그룹.getErrorMessage()));
     }
 }

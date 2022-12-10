@@ -1,20 +1,27 @@
 package kitchenpos.application;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static kitchenpos.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.domain.TableGroupTestFixture.generateTableGroup;
+import static kitchenpos.domain.TableGroupTestFixture.generateTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
+import java.util.Optional;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,43 +38,46 @@ public class TableGroupServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
 
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
-    private TableGroup 단체A;
+    private OrderTable 주문테이블C;
+    private OrderTable 주문테이블D;
 
     @BeforeEach
     void setUp() {
         주문테이블A = generateOrderTable(1L, null, 5, true);
         주문테이블B = generateOrderTable(2L, null, 4, true);
-        단체A = generateTableGroup(1L, null, Arrays.asList(주문테이블A, 주문테이블B));
+        주문테이블C = generateOrderTable(3L, null, 5, true);
+        주문테이블D = generateOrderTable(4L, null, 4, true);
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 설정한다.")
     @Test
     void createTableGroup() {
         // given
-        given(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
-        given(tableGroupDao.save(단체A)).willReturn(단체A);
-        given(orderTableDao.save(주문테이블A)).willReturn(주문테이블A);
-        given(orderTableDao.save(주문테이블B)).willReturn(주문테이블B);
+        TableGroupRequest tableGroupRequest = generateTableGroupRequest(Arrays.asList(주문테이블C.getId(), 주문테이블D.getId()));
+        TableGroup 단체 = generateTableGroup(1L, Arrays.asList(주문테이블C, 주문테이블D));
+        given(orderTableRepository.findById(주문테이블C.getId())).willReturn(Optional.of(주문테이블A));
+        given(orderTableRepository.findById(주문테이블D.getId())).willReturn(Optional.of(주문테이블B));
+        given(tableGroupRepository.save(any())).willReturn(단체);
 
         // when
-        TableGroup saveTableGroup = tableGroupService.create(단체A);
+        TableGroupResponse saveTableGroup = tableGroupService.create(tableGroupRequest);
 
         // then
         assertAll(
-                () -> assertThat(주문테이블A.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
-                () -> assertThat(주문테이블B.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
-                () -> assertThat(주문테이블A.isEmpty()).isFalse(),
-                () -> assertThat(주문테이블B.isEmpty()).isFalse(),
+                () -> assertThat(주문테이블C.getTableGroup().getId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블D.getTableGroup().getId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블C.isEmpty()).isFalse(),
+                () -> assertThat(주문테이블D.isEmpty()).isFalse(),
                 () -> assertThat(saveTableGroup.getCreatedDate()).isNotNull()
         );
     }
@@ -76,65 +86,69 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupThrowErrorWhenOrderTableSizeIsSmallerThenTwo() {
         // given
-        TableGroup tableGroup = generateTableGroup(2L, null, singletonList(주문테이블A));
+        TableGroupRequest tableGroupRequest = generateTableGroupRequest(singletonList(주문테이블A.getId()));
+        given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage(ErrorCode.주문_테이블은_2개_이상여야함.getErrorMessage());
     }
 
     @DisplayName("등록되지 않은 주문 테이블을 가진 단체는 생성할 수 없다.")
     @Test
     void createTableGroupThrowErrorWhenOrderTableIsNotExists() {
         // given
-        given(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문테이블A));
+        TableGroupRequest tableGroupRequest = generateTableGroupRequest(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()));
+        given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
+        given(orderTableRepository.findById(주문테이블B.getId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(단체A));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
     }
 
-    @DisplayName("단체 생성 시, 해당 단체에 속할 주문 테이블들 중 빈 테이블이 아닌 테이블이 있으면 예외가 발생한다.")
+    @DisplayName("단체 생성 시, 해당 단체에 속할 주문 테이블이 없으면 예외가 발생한다.")
     @Test
     void createTableGroupThrowErrorWhenOrderTableIsNotEmpty() {
         // given
-        OrderTable orderTable = generateOrderTable(null, 5, false);
-        TableGroup tableGroup = generateTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블A));
-        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블A.getId()))).willReturn(
-                Arrays.asList(orderTable, 주문테이블A));
+        TableGroupRequest tableGroupRequest = generateTableGroupRequest(emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage(ErrorCode.주문_테이블_집합은_비어있을_수_없음.getErrorMessage());
     }
 
     @DisplayName("단체 생성 시, 다른 단체에 포함된 주문 테이블이 있다면 예외가 발생한다.")
     @Test
     void createTableGroupThrowErrorWhenOrderTableInOtherTableGroup() {
         // given
-        OrderTable orderTable = generateOrderTable(1L, 5, true);
-        TableGroup tableGroup = generateTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블A));
-        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블A.getId()))).willReturn(
-                Arrays.asList(orderTable, 주문테이블A));
+        generateTableGroup(1L, Arrays.asList(주문테이블C, 주문테이블D));
+        TableGroupRequest tableGroupRequest = generateTableGroupRequest(Arrays.asList(주문테이블B.getId(), 주문테이블C.getId()));
+        given(orderTableRepository.findById(주문테이블B.getId())).willReturn(Optional.of(주문테이블B));
+        given(orderTableRepository.findById(주문테이블C.getId())).willReturn(Optional.of(주문테이블C));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage(ErrorCode.주문_테이블에_이미_단체_그룹_지정됨.getErrorMessage());
     }
 
     @DisplayName("단체 지정을 해제한다.")
     @Test
     void ungroup() {
         // given
-        given(orderTableDao.findAllByTableGroupId(단체A.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
+        TableGroup 단체 = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
+        given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
+        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-        given(orderTableDao.save(주문테이블A)).willReturn(주문테이블A);
-        given(orderTableDao.save(주문테이블B)).willReturn(주문테이블B);
 
         // when
-        tableGroupService.ungroup(단체A.getId());
+        tableGroupService.ungroup(단체.getId());
 
         // then
         assertAll(
-                () -> assertThat(주문테이블A.getTableGroupId()).isNull(),
-                () -> assertThat(주문테이블B.getTableGroupId()).isNull()
+                () -> assertThat(주문테이블A.getTableGroup()).isNull(),
+                () -> assertThat(주문테이블B.getTableGroup()).isNull()
         );
     }
 
@@ -142,11 +156,13 @@ public class TableGroupServiceTest {
     @Test
     void upGroupThrowErrorWhenOrderTableStatusIsCookingOrMeal() {
         // given
-        given(orderTableDao.findAllByTableGroupId(단체A.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
+        TableGroup 단체 = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
+        given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
+        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체A.getId()));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체.getId()));
     }
 }

@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -29,6 +28,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +52,7 @@ public class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -107,7 +107,7 @@ public class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
-        given(orderTableDao.findById(주문A.getOrderTableId())).willReturn(Optional.of(주문테이블A));
+        given(orderTableRepository.findById(주문A.getOrderTableId())).willReturn(Optional.of(주문테이블A));
         given(orderDao.save(주문A)).willReturn(주문A);
         given(orderLineItemDao.save(불고기버거세트주문)).willReturn(불고기버거세트주문);
         given(orderLineItemDao.save(치킨버거세트주문)).willReturn(치킨버거세트주문);
@@ -157,7 +157,7 @@ public class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
-        given(orderTableDao.findById(주문A.getOrderTableId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(주문A.getOrderTableId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문A));
@@ -174,7 +174,7 @@ public class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         given(menuRepository.countByIdIn(menuIds)).willReturn((long) menuIds.size());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
