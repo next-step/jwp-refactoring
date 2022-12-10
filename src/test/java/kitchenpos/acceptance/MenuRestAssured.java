@@ -3,21 +3,21 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
+import kitchenpos.dto.MenuRequest;
 import org.springframework.http.MediaType;
 
 public class MenuRestAssured {
     private MenuRestAssured() {
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {
-        return 메뉴_생성_요청(menu);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest request) {
+        return 메뉴_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(menu)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all()

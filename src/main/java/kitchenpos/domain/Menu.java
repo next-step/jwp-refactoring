@@ -29,6 +29,10 @@ public class Menu {
         return new Menu(id, MenuName.from(name), price, menuGroupId, menuProducts);
     }
 
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(null, MenuName.from(name), price, menuGroupId, menuProducts);
+    }
+
     public Long getId() {
         return id;
     }

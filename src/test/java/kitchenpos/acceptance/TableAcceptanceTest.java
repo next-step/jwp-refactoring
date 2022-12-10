@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -29,6 +28,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -140,9 +141,9 @@ class TableAcceptanceTest extends AcceptanceTest {
         ).as(Product.class);
 
         // And 메뉴 등록되어 있음
-        List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, 1L, 후라이드.getId(), 2));
+        List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
         Menu 후라이드치킨 = 메뉴_등록되어_있음(
-                Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
+                MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
         ).as(Menu.class);
 
         // And 주문 테이블 등록되어 있음
@@ -183,9 +184,9 @@ class TableAcceptanceTest extends AcceptanceTest {
         ).as(Product.class);
 
         // And 메뉴 등록되어 있음
-        List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, 1L, 후라이드.getId(), 2));
+        List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
         Menu 후라이드치킨 = 메뉴_등록되어_있음(
-                Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
+                MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
         ).as(Menu.class);
 
         // And 주문 테이블 등록되어 있음
