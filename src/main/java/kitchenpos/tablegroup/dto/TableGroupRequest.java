@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TableGroupRequest {
-
     private List<Long> orderTableIds;
 
     protected TableGroupRequest() {}

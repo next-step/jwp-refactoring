@@ -5,7 +5,7 @@ public class UpdateNumberOfGuestsRequest {
 
     protected UpdateNumberOfGuestsRequest() {}
 
-    public UpdateNumberOfGuestsRequest(int numberOfGuests) {
+    private UpdateNumberOfGuestsRequest(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 

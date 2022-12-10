@@ -13,8 +13,7 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
-    protected OrderResponse() {
-    }
+    protected OrderResponse() {}
 
     private OrderResponse(
             Long id,

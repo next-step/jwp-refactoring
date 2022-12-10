@@ -11,9 +11,13 @@ public class OrderLineItemRequest {
 
     protected OrderLineItemRequest() {}
 
-    public OrderLineItemRequest(Long menuId, Long quantity) {
+    private OrderLineItemRequest(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItemRequest of(Long menuId, Long quantity) {
+        return new OrderLineItemRequest(menuId, quantity);
     }
 
     public Long getMenuId() {

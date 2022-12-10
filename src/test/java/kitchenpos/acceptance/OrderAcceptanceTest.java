@@ -76,7 +76,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 불고기정식메뉴);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
-        불고기정식주문요청 = new OrderLineItemRequest(불고기정식응답.getId(), 1L);
+        불고기정식주문요청 = OrderLineItemRequest.of(불고기정식응답.getId(), 1L);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -138,7 +138,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, UpdateOrderStatusRequest request) {
+    private ExtractableResponse<Response> 주문_상태_수정_요청(Long id, UpdateOrderStatusRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

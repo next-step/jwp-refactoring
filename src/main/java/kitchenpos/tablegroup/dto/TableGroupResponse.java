@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TableGroupResponse {
-
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTableResponse> orderTables;

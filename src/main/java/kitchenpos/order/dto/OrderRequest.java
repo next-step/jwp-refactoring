@@ -11,22 +11,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderRequest {
-
-    private long orderTableId;
+    private Long orderTableId;
     private List<OrderLineItemRequest> orderLineItems;
 
     protected OrderRequest() {}
 
-    private OrderRequest(long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+    private OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderRequest of(long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+    public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         return new OrderRequest(orderTableId, orderLineItems);
     }
 
-    public long getOrderTableId() {
+    public Long getOrderTableId() {
         return orderTableId;
     }
 

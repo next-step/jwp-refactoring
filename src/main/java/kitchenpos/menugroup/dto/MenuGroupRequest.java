@@ -11,8 +11,7 @@ public class MenuGroupRequest {
 
     private String name;
 
-    protected MenuGroupRequest() {
-    }
+    protected MenuGroupRequest() {}
 
     private MenuGroupRequest(String name) {
         this.name = name;
