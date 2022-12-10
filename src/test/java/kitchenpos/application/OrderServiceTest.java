@@ -80,7 +80,8 @@ class OrderServiceTest {
 
         주문테이블 = new OrderTable(1L, 0, false);
         불고기정식주문 = new OrderLineItem(1L, 불고기정식);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
+        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
+        주문.addOrderLineItem(불고기정식주문);
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식.getMenuGroup().getId(), 1L);
     }
 

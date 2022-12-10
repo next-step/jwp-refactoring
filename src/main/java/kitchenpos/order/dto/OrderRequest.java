@@ -34,9 +34,12 @@ public class OrderRequest {
     }
 
     public Order createOrder(OrderTable orderTable, List<Menu> menus) {
+        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
         List<OrderLineItem> orderLineItems = getOrderLineItems().stream()
                 .map(item -> item.createOrderLineItem(menus))
                 .collect(Collectors.toList());
-        return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+
+        orderLineItems.forEach(order::addOrderLineItem);
+        return order;
     }
 }

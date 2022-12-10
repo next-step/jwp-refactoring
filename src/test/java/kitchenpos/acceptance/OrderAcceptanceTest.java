@@ -75,7 +75,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 불고기정식메뉴);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
+        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
+        주문.addOrderLineItem(불고기정식주문);
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식응답.getId(), 1L);
     }
 

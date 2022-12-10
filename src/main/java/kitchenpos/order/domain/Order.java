@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
@@ -38,19 +39,17 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        updateOrderLineItems(orderLineItems);
+        this.orderLineItems = orderLineItems;
     }
 
     public Order(
             OrderTable orderTable,
             OrderStatus orderStatus,
-            LocalDateTime orderedTime,
-            List<OrderLineItem> orderLineItems
+            LocalDateTime orderedTime
     ) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        updateOrderLineItems(orderLineItems);
     }
 
     public Long getId() {
@@ -79,6 +78,11 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+        orderLineItem.setOrder(this);
     }
 
     private void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
