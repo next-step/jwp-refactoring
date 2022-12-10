@@ -42,7 +42,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(table1).as(OrderTable.class);
         OrderTable 주문_테이블2 = 주문_테이블_등록되어_있음(table2).as(OrderTable.class);
 
-        TableGroup 단체_지정 = new TableGroup(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
+        TableGroup 단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
         ExtractableResponse<Response> response = 단체_지정_요청함(단체_지정);
 
         단체_지정이됨(response);
@@ -57,7 +57,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail() {
         OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(table1).as(OrderTable.class);
-        TableGroup 단체_지정 = new TableGroup(1L, Arrays.asList(주문_테이블1));
+        TableGroup 단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1));
 
         ExtractableResponse<Response> response = 단체_지정_요청함(단체_지정);
 
@@ -78,7 +78,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 등록되지_않은_주문테이블1 = OrderTable.of(3L, 1, false);
         OrderTable 등록되지_않은_주문테이블2 = OrderTable.of(4L, 2, false);
         ExtractableResponse<Response> response =
-                단체_지정_요청함(new TableGroup(1L, Arrays.asList(등록되지_않은_주문테이블1, 등록되지_않은_주문테이블2)));
+                단체_지정_요청함(TableGroup.of(1L, Arrays.asList(등록되지_않은_주문테이블1, 등록되지_않은_주문테이블2)));
 
         단체_지정_실패함(response);
     }
@@ -96,7 +96,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 .as(OrderTable.class);
 
         ExtractableResponse<Response> response =
-                단체_지정_요청함(new TableGroup(1L, Arrays.asList(주문_테이블, 비어있지_않은_주문_테이블)));
+                단체_지정_요청함(TableGroup.of(1L, Arrays.asList(주문_테이블, 비어있지_않은_주문_테이블)));
 
         단체_지정_실패함(response);
     }
@@ -113,9 +113,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(table1).as(OrderTable.class);
         OrderTable 주문_테이블2 = 주문_테이블_등록되어_있음(table2).as(OrderTable.class);
 
-        단체_지정_등록되어_있음(new TableGroup(1L, Arrays.asList(주문_테이블1, 주문_테이블2)));
+        단체_지정_등록되어_있음(TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2)));
 
-        ExtractableResponse<Response> response = 단체_지정_요청함(new TableGroup(2L, Arrays.asList(주문_테이블1, 주문_테이블2)));
+        ExtractableResponse<Response> response = 단체_지정_요청함(TableGroup.of(2L, Arrays.asList(주문_테이블1, 주문_테이블2)));
 
         단체_지정_실패함(response);
     }
@@ -132,7 +132,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문_테이블1 = 주문_테이블_등록되어_있음(table1).as(OrderTable.class);
         OrderTable 주문_테이블2 = 주문_테이블_등록되어_있음(table2).as(OrderTable.class);
 
-        TableGroup 단체_지정 = new TableGroup(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
+        TableGroup 단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
         단체_지정_등록되어_있음(단체_지정);
 
         ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체_지정.getId());

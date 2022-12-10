@@ -23,8 +23,8 @@ class TableGroupTest {
     @DisplayName("id가 같은 두 객체는 동등하다.")
     @Test
     void equalsTest() {
-        TableGroup tableGroup1 = new TableGroup(1L, 주문_테이블_목록);
-        TableGroup tableGroup2 = new TableGroup(1L, 주문_테이블_목록);
+        TableGroup tableGroup1 = TableGroup.of(1L, 주문_테이블_목록);
+        TableGroup tableGroup2 = TableGroup.of(1L, 주문_테이블_목록);
 
         Assertions.assertThat(tableGroup1).isEqualTo(tableGroup2);
     }
@@ -32,8 +32,8 @@ class TableGroupTest {
     @DisplayName("id가 다르면 두 객체는 동등하지 않다.")
     @Test
     void equalsTest2() {
-        TableGroup tableGroup1 = new TableGroup(1L, 주문_테이블_목록);
-        TableGroup tableGroup2 = new TableGroup(2L, 주문_테이블_목록);
+        TableGroup tableGroup1 = TableGroup.of(1L, 주문_테이블_목록);
+        TableGroup tableGroup2 = TableGroup.of(2L, 주문_테이블_목록);
 
         Assertions.assertThat(tableGroup1).isNotEqualTo(tableGroup2);
     }

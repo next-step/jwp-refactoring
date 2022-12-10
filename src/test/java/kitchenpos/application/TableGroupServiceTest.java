@@ -48,7 +48,7 @@ class TableGroupServiceTest {
         주문_테이블1 = OrderTable.of(1L, 2, true);
         주문_테이블2 = OrderTable.of(2L, 2, true);
 
-        단체_지정 = new TableGroup(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
+        단체_지정 = TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
     }
 
     @DisplayName("단체 지정을 할 수 있다.")
@@ -67,7 +67,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정할 주문 테이블이 2개 이상이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createException() {
-        TableGroup tableGroup = new TableGroup(1L, Arrays.asList(주문_테이블1));
+        TableGroup tableGroup = TableGroup.of(1L, Arrays.asList(주문_테이블1));
 
         Assertions.assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -89,7 +89,7 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 비어있지_않은_주문_테이블);
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(new TableGroup(1L, 주문_테이블_목록)))
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(TableGroup.of(1L, 주문_테이블_목록)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -100,7 +100,7 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 단체_지정된_주문_테이블);
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(new TableGroup(1L, 주문_테이블_목록)))
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(TableGroup.of(1L, 주문_테이블_목록)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

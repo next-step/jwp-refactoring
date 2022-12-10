@@ -9,13 +9,26 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
-    public TableGroup() {
+    private TableGroup() {
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
+    private TableGroup(Long id, LocalDateTime createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
+    private TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate) {
+        return new TableGroup(id, createdDate);
+    }
+
+    public static TableGroup of(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, orderTables);
     }
 
     public Long getId() {
