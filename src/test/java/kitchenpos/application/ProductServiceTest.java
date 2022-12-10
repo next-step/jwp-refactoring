@@ -3,6 +3,8 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -44,6 +46,7 @@ class ProductServiceTest {
         Product createdProduct = productService.create(product);
 
         assertThat(product).isEqualTo(createdProduct);
+        verify(productDao, times(1)).save(product);
     }
 
     @Test
@@ -75,5 +78,6 @@ class ProductServiceTest {
         List<Product> actualProducts = productService.list();
 
         assertThat(actualProducts).containsExactlyInAnyOrderElementsOf(expectedProducts);
+        verify(productDao, times(1)).findAll();
     }
 }
