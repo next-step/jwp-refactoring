@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
@@ -30,6 +29,7 @@ import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,7 +151,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
         TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
-        TableGroup 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroup.class);
+        TableGroupResponse 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroupResponse.class);
 
         ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
 
@@ -190,7 +190,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // And 단체 지정 되어 있음
         TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(등록된_주문_테이블1.getId(), 등록된_주문_테이블2.getId()));
-        TableGroup 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroup.class);
+        TableGroupResponse 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroupResponse.class);
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
@@ -237,7 +237,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // And 단체 지정 되어 있음
         TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(등록된_주문_테이블1.getId(), 등록된_주문_테이블2.getId()));
-        TableGroup 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroup.class);
+        TableGroupResponse 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroupResponse.class);
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));

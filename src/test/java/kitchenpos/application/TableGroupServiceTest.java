@@ -15,7 +15,9 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,14 +45,14 @@ class TableGroupServiceTest {
 
     private OrderTable 주문_테이블1;
     private OrderTable 주문_테이블2;
-    private TableGroupRequest 단체지정;
+    private TableGroupRequest 단체지정요청;
 
     @BeforeEach
     void setUp() {
         주문_테이블1 = OrderTable.of(1L, 2, true);
         주문_테이블2 = OrderTable.of(2L, 2, true);
 
-        단체지정 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
+        단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
     }
 
     @DisplayName("단체 지정을 할 수 있다.")
@@ -61,17 +63,19 @@ class TableGroupServiceTest {
         when(orderTableDao.save(주문_테이블1)).thenReturn(주문_테이블1);
         when(orderTableDao.save(주문_테이블2)).thenReturn(주문_테이블2);
 
-        TableGroup result = tableGroupService.create(단체지정);
+        TableGroupResponse result = tableGroupService.create(단체지정요청);
 
-        assertThat(result.getOrderTables()).containsExactly(주문_테이블1, 주문_테이블2);
+        assertThat(result.getOrderTables()).containsExactly(
+                OrderTableResponse.from(주문_테이블1), OrderTableResponse.from(주문_테이블2)
+        );
     }
 
     @DisplayName("단체 지정할 주문 테이블이 2개 이상이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createException() {
-        TableGroupRequest 단체지정 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId()));
+        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId()));
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정))
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -80,7 +84,7 @@ class TableGroupServiceTest {
     void createException2() {
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Collections.emptyList());
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정))
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,12 +95,12 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 비어있지_않은_주문_테이블);
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
 
-        TableGroupRequest 단체지정 =
+        TableGroupRequest 단체지정요청 =
                 TableGroupRequest.from(주문_테이블_목록.stream()
                         .map(OrderTable::getId)
                         .collect(Collectors.toList()));
 
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정))
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -107,11 +111,11 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 단체_지정된_주문_테이블);
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
 
-        TableGroupRequest 단체지정 =
+        TableGroupRequest 단체지정요청 =
                 TableGroupRequest.from(주문_테이블_목록.stream()
                         .map(OrderTable::getId)
                         .collect(Collectors.toList()));
-        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정))
+        Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
