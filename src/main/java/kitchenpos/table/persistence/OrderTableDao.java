@@ -1,4 +1,6 @@
-package kitchenpos.table;
+package kitchenpos.table.persistence;
+
+import kitchenpos.table.domain.OrderTable;
 
 import java.util.List;
 import java.util.Optional;

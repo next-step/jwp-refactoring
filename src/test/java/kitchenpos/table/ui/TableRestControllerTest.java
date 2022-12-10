@@ -2,9 +2,8 @@ package kitchenpos.table.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.table.TableService;
-import kitchenpos.table.OrderTable;
-import kitchenpos.table.TableRestController;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

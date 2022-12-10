@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.table.TableService;
 import kitchenpos.order.persistence.OrderDao;
-import kitchenpos.table.OrderTableDao;
+import kitchenpos.table.persistence.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

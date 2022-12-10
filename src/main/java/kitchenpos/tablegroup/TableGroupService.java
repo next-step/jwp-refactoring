@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup;
 
 import kitchenpos.order.persistence.OrderDao;
-import kitchenpos.table.OrderTableDao;
+import kitchenpos.table.persistence.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

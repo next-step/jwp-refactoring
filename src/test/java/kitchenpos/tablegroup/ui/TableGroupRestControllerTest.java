@@ -3,7 +3,7 @@ package kitchenpos.tablegroup.ui;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
 import kitchenpos.tablegroup.TableGroupService;
-import kitchenpos.table.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.TableGroup;
 import kitchenpos.tablegroup.TableGroupRestController;
 import net.jqwik.api.Arbitraries;
