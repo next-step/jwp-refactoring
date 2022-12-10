@@ -1,9 +1,9 @@
 package kitchenpos.menugroup.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.MenuGroupDao;
+import kitchenpos.menugroup.MenuGroup;
+import kitchenpos.menugroup.MenuGroupService;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,9 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴그룹 추가할 경우 추가된 메뉴그룹정보를 반환")
     @Test
     public void returnMenuGroup() {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(Arbitraries.longs().greaterOrEqual(1).sample());
+        MenuGroup menuGroup = MenuGroup.builder()
+                .id(Arbitraries.longs().greaterOrEqual(1).sample())
+                .build();
         doReturn(menuGroup).when(menuGroupDao).save(menuGroup);
 
         assertThat(menuGroupService.create(menuGroup).getId()).isEqualTo(menuGroup.getId());
