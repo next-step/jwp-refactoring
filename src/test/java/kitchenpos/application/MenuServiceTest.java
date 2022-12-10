@@ -62,9 +62,9 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        불고기 = new Product(1L, "불고기", BigDecimal.valueOf(10_000));
-        김치 = new Product(2L, "김치", BigDecimal.valueOf(1_000));
-        공기밥 = new Product(3L, "공기밥", BigDecimal.valueOf(1_000));
+        불고기 = new Product(1L, "불고기", new Price(BigDecimal.valueOf(10_000)));
+        김치 = new Product(2L, "김치", new Price(BigDecimal.valueOf(1_000)));
+        공기밥 = new Product(3L, "공기밥", new Price(BigDecimal.valueOf(1_000)));
         한식 = new MenuGroup(1L, "한식");
         불고기정식 = new Menu(1L, "불고기정식", new Price(BigDecimal.valueOf(12_000L)), 한식);
         불고기상품 = new MenuProduct(1L, 1L, 불고기정식, 불고기);

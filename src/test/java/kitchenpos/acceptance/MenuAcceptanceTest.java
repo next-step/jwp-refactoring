@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -10,6 +11,8 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,9 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
-    private Product 불고기;
-    private Product 김치;
-    private Product 공기밥;
+    private ProductResponse 불고기;
+    private ProductResponse 김치;
+    private ProductResponse 공기밥;
     private MenuGroup 한식;
     private MenuProductRequest 불고기상품;
     private MenuProductRequest 김치상품;
@@ -41,9 +44,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        불고기 = 상품_생성_요청(new Product(1L, "불고기", BigDecimal.valueOf(10_000))).as(Product.class);
-        김치 = 상품_생성_요청(new Product(2L, "김치", BigDecimal.valueOf(1_000))).as(Product.class);
-        공기밥 = 상품_생성_요청(new Product(3L, "공기밥", BigDecimal.valueOf(1_000))).as(Product.class);
+        불고기 = 상품_생성_요청(ProductRequest.of("불고기", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        김치 = 상품_생성_요청(ProductRequest.of("김치", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        공기밥 = 상품_생성_요청(ProductRequest.of("공기밥", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
         한식 = 메뉴그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
 
 
