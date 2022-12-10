@@ -3,6 +3,8 @@ package kitchenpos.menu.dto;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
+import java.util.List;
+
 public class MenuProductRequest {
     private Long productId;
     private Long quantity;
@@ -30,7 +32,17 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct createMenuProduct(Product product) {
+    public MenuProduct createMenuProduct(List<Product> products) {
+        Product product = findProduct(products);
         return new MenuProduct(quantity, product);
+    }
+
+    private Product findProduct(List<Product> products) {
+        System.out.println(productId);
+        products.forEach(product -> System.out.println(product.getId()));
+        return products.stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .get();
     }
 }

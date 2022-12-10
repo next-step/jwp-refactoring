@@ -4,8 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuPrice;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -65,7 +64,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
         김치상품 = MenuProductRequest.of(김치.getId(), 1L);
         공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
-        불고기정식메뉴 = new Menu("불고기정식", new MenuPrice(BigDecimal.valueOf(12_000L)), 한식);
+        불고기정식메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000L)), 한식);
         불고기정식응답 = 메뉴_생성_요청(MenuRequest.of(
                 불고기정식메뉴.getName(),
                 불고기정식메뉴.getPrice().value(),

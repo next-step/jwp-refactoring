@@ -1,9 +1,9 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Menu {
     private Long id;
     private String name;
     @Embedded
-    private MenuPrice price;
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
@@ -24,14 +24,14 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, MenuPrice price, MenuGroup menuGroup) {
+    public Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -53,11 +53,11 @@ public class Menu {
         this.name = name;
     }
 
-    public MenuPrice getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public void setPrice(final MenuPrice price) {
+    public void setPrice(final Price price) {
         this.price = price;
     }
 
@@ -73,7 +73,11 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void addProduct(MenuProduct menuProduct) {
+    public void addProducts(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addProduct);
+    }
+
+    private void addProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
         menuProduct.setMenu(this);
     }

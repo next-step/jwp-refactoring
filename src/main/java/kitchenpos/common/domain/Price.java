@@ -1,18 +1,18 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Embeddable
-public class MenuPrice {
+public class Price {
     private static final int ZERO = 0;
 
     @Column(nullable = false)
     private BigDecimal price;
 
-    protected MenuPrice() {}
+    protected Price() {}
 
-    public MenuPrice(BigDecimal price) {
+    public Price(BigDecimal price) {
         validate(price);
         this.price = price;
     }
