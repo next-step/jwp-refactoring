@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -24,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.core.Is.is;
 
 
 @WebMvcTest(MenuRestController.class)
@@ -41,11 +41,11 @@ public class MenuRestControllerTest extends ControllerTest {
         webMvc.perform(post("/api/menus")
                         .content(mapper.writeValueAsString(new Menu()))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id",is(menu.getId().intValue())))
-                .andExpect(jsonPath("$.name",is(menu.getName())))
-                .andExpect(jsonPath("$.price",is(menu.getPrice().intValue())))
-                .andExpect(jsonPath("$.menuGroupId",is(menu.getMenuGroupId().intValue())))
-                .andExpect(jsonPath("$.menuProducts",hasSize(menu.getMenuProducts().size())))
+                .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(menu.getName())))
+                .andExpect(jsonPath("$.price", is(menu.getPrice().intValue())))
+                .andExpect(jsonPath("$.menuGroupId", is(menu.getMenuGroupId().intValue())))
+                .andExpect(jsonPath("$.menuProducts", hasSize(menu.getMenuProducts().size())))
                 .andExpect(status().isCreated());
     }
 
@@ -76,10 +76,10 @@ public class MenuRestControllerTest extends ControllerTest {
     private Menu getMenu() {
         return FixtureMonkey.create()
                 .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1,100))
+                .set("id", Arbitraries.longs().between(1, 100))
                 .set("price", BigDecimal.valueOf(15000))
-                .set("name",Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .set("menuGroupId", Arbitraries.longs().between(1,50))
+                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .set("menuGroupId", Arbitraries.longs().between(1, 50))
                 .set("menuProducts", getMenuProducts())
                 .sample();
     }
@@ -87,7 +87,7 @@ public class MenuRestControllerTest extends ControllerTest {
     private List<MenuProduct> getMenuProducts() {
         return FixtureMonkey.create()
                 .giveMeBuilder(MenuProduct.class)
-                .set("id",Arbitraries.longs().between(1,20))
+                .set("id", Arbitraries.longs().between(1, 20))
                 .sampleList(10);
     }
 }
