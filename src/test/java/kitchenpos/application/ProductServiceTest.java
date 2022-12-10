@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static kitchenpos.domain.ProductTestFixture.generateProduct;
+import static kitchenpos.domain.ProductTestFixture.generateProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,8 +10,11 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -44,16 +48,18 @@ public class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        given(productDao.save(감자튀김)).willReturn(감자튀김);
+        ProductRequest productRequest = generateProductRequest(감자튀김.getName(), 감자튀김.getPrice());
+        Product product = productRequest.toProduct();
+        given(productRepository.save(product)).willReturn(감자튀김);
 
         // when
-        Product saveProduct = productService.create(감자튀김);
+        ProductResponse productResponse = productService.create(productRequest);
 
         // then
         assertAll(
-                () -> assertThat(saveProduct.getId()).isNotNull(),
-                () -> assertThat(saveProduct.getName()).isEqualTo(감자튀김.getName()),
-                () -> assertThat(saveProduct.getPrice()).isEqualTo(감자튀김.getPrice())
+                () -> assertThat(productResponse.getId()).isNotNull(),
+                () -> assertThat(productResponse.getName()).isEqualTo(감자튀김.getName().value()),
+                () -> assertThat(productResponse.getPrice()).isEqualTo(감자튀김.getPrice().value())
         );
     }
 
@@ -61,10 +67,11 @@ public class ProductServiceTest {
     @Test
     void createProductThrowErrorWhenPriceIsNull() {
         // given
-        Product product = generateProduct(3L, "감자튀김", null);
+        ProductRequest productRequest = generateProductRequest(감자튀김.getName().value(), null);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest))
+                .withMessage(ErrorCode.가격은_비어있을_수_없음.getErrorMessage());
     }
 
     @DisplayName("가격이 0원 미만인 상품은 생성할 수 없다.")
@@ -72,10 +79,11 @@ public class ProductServiceTest {
     @ValueSource(longs = {-1000, -2000})
     void createProductThrowErrorWhenPriceIsSmallerThenZero(long price) {
         // given
-        Product product = generateProduct(3L, "감자튀김", BigDecimal.valueOf(price));
+        ProductRequest productRequest = generateProductRequest(감자튀김.getName().value(), BigDecimal.valueOf(price));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest))
+                .withMessage(ErrorCode.가격은_0보다_작을_수_없음.getErrorMessage());
     }
 
     @DisplayName("상품 전체 목록을 조회한다.")
@@ -83,15 +91,16 @@ public class ProductServiceTest {
     void findAllProducts() {
         // given
         List<Product> products = Arrays.asList(감자튀김, 콜라);
-        given(productDao.findAll()).willReturn(products);
+        given(productRepository.findAll()).willReturn(products);
 
         // when
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
 
         // then
         assertAll(
                 () -> assertThat(findProducts).hasSize(products.size()),
-                () -> assertThat(findProducts).containsExactly(감자튀김, 콜라)
+                () -> assertThat(findProducts.stream().map(ProductResponse::getName))
+                        .containsExactly(감자튀김.getName().value(), 콜라.getName().value())
         );
     }
 }

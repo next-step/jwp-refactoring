@@ -16,6 +16,7 @@ import static kitchenpos.domain.OrderLineItemTestFixture.generateOrderLineItem;
 import static kitchenpos.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.domain.ProductTestFixture.generateProduct;
+import static kitchenpos.domain.ProductTestFixture.generateProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -33,6 +34,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,10 +43,10 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 관련 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private Product 감자튀김;
-    private Product 불고기버거;
-    private Product 치킨버거;
-    private Product 콜라;
+    private ProductResponse 감자튀김;
+    private ProductResponse 불고기버거;
+    private ProductResponse 치킨버거;
+    private ProductResponse 콜라;
     private MenuGroup 햄버거세트;
     private MenuProduct 감자튀김상품;
     private MenuProduct 불고기버거상품;
@@ -63,10 +65,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         햄버거세트 = 메뉴_그룹_등록되어_있음(generateMenuGroup("햄버거세트")).as(MenuGroup.class);
-        감자튀김 = 상품_등록되어_있음(generateProduct("감자튀김", BigDecimal.valueOf(3000L))).as(Product.class);
-        콜라 = 상품_등록되어_있음(generateProduct("콜라", BigDecimal.valueOf(1500L))).as(Product.class);
-        불고기버거 = 상품_등록되어_있음(generateProduct("불고기버거", BigDecimal.valueOf(4000L))).as(Product.class);
-        치킨버거 = 상품_등록되어_있음(generateProduct("치킨버거", BigDecimal.valueOf(4500L))).as(Product.class);
+        감자튀김 = 상품_등록되어_있음(generateProductRequest("감자튀김", BigDecimal.valueOf(3000L))).as(ProductResponse.class);
+        콜라 = 상품_등록되어_있음(generateProductRequest("콜라", BigDecimal.valueOf(1500L))).as(ProductResponse.class);
+        불고기버거 = 상품_등록되어_있음(generateProductRequest("불고기버거", BigDecimal.valueOf(4000L))).as(ProductResponse.class);
+        치킨버거 = 상품_등록되어_있음(generateProductRequest("치킨버거", BigDecimal.valueOf(4500L))).as(ProductResponse.class);
         감자튀김상품 = generateMenuProduct(1L, null, 감자튀김.getId(), 1L);
         콜라상품 = generateMenuProduct(2L, null, 콜라.getId(), 1L);
         불고기버거상품 = generateMenuProduct(3L, null, 불고기버거.getId(), 1L);

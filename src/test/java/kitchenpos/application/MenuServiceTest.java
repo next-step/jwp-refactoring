@@ -17,11 +17,11 @@ import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -85,9 +85,9 @@ public class MenuServiceTest {
     void createMenu() {
         // given
         given(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
-        given(productDao.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
-        given(productDao.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
+        given(productRepository.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
+        given(productRepository.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
+        given(productRepository.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
         given(menuDao.save(불고기버거세트)).willReturn(불고기버거세트);
         given(menuProductDao.save(감자튀김상품)).willReturn(감자튀김상품);
         given(menuProductDao.save(콜라상품)).willReturn(콜라상품);
@@ -146,7 +146,7 @@ public class MenuServiceTest {
         Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(8500L), 햄버거세트.getId(),
                 singletonList(감자튀김상품));
         given(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(감자튀김상품.getProductId())).willReturn(Optional.empty());
+        given(productRepository.findById(감자튀김상품.getProductId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -159,9 +159,9 @@ public class MenuServiceTest {
         Menu menu = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(9500L), 햄버거세트.getId(),
                 Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
         given(menuGroupDao.existsById(불고기버거세트.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
-        given(productDao.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
-        given(productDao.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
+        given(productRepository.findById(감자튀김상품.getProductId())).willReturn(Optional.of(감자튀김));
+        given(productRepository.findById(콜라상품.getProductId())).willReturn(Optional.of(콜라));
+        given(productRepository.findById(불고기버거상품.getProductId())).willReturn(Optional.of(불고기버거));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));

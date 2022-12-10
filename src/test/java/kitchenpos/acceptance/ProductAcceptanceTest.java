@@ -4,6 +4,7 @@ import static kitchenpos.acceptance.ProductRestAssured.상품_등록되어_있�
 import static kitchenpos.acceptance.ProductRestAssured.상품_목록_조회_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_생성_요청;
 import static kitchenpos.domain.ProductTestFixture.generateProduct;
+import static kitchenpos.domain.ProductTestFixture.generateProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -13,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,14 +24,14 @@ import org.springframework.http.HttpStatus;
 @DisplayName("상품 관련 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
-    private Product 감자튀김;
-    private Product 콜라;
+    private ProductRequest 감자튀김;
+    private ProductRequest 콜라;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        감자튀김 = generateProduct(1L, "감자튀김", BigDecimal.valueOf(3000L));
-        콜라 = generateProduct(2L, "콜라", BigDecimal.valueOf(1500L));
+        감자튀김 = generateProductRequest("감자튀김", BigDecimal.valueOf(3000L));
+        콜라 = generateProductRequest("콜라", BigDecimal.valueOf(1500L));
     }
 
     @DisplayName("상품을 생성한다.")
@@ -70,8 +73,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultProductIds = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getId)
+        List<Long> resultProductIds = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultProductIds).containsAll(expectedProductIds);

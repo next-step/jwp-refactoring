@@ -1,28 +1,28 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.domain.ProductTestFixture.generateProduct;
+import static kitchenpos.domain.ProductTestFixture.generateProductRequest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 public class ProductRestAssured {
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(Long id, String name, BigDecimal price) {
-        return 상품_생성_요청(generateProduct(id, name, price));
+    public static ExtractableResponse<Response> 상품_등록되어_있음(String name, BigDecimal price) {
+        return 상품_생성_요청(generateProductRequest(name, price));
     }
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(Product product) {
-        return 상품_생성_요청(product);
+    public static ExtractableResponse<Response> 상품_등록되어_있음(ProductRequest productRequest) {
+        return 상품_생성_요청(productRequest);
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
         return RestAssured
                 .given().log().all()
-                .body(product)
+                .body(productRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/products")
                 .then().log().all()
