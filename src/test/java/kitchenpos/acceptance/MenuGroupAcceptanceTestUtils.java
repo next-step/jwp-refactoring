@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 class MenuGroupAcceptanceTestUtils {
     private static final String MENU_GROUP_PATH = "/api/menu-groups";
 
+    private MenuGroupAcceptanceTestUtils() {}
+
     public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
         return RestAssured.given().log().all()
                 .when().get(MENU_GROUP_PATH)
@@ -32,8 +34,10 @@ class MenuGroupAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String name) {
-        return 메뉴_그룹_생성_요청(name);
+    public static MenuGroup 메뉴_그룹_등록되어_있음(String name) {
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(name);
+        메뉴_그룹_생성됨(response);
+        return response.as(MenuGroup.class);
     }
 
     public static void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {

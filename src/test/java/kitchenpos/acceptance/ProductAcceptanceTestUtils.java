@@ -14,6 +14,8 @@ import org.springframework.http.MediaType;
 class ProductAcceptanceTestUtils {
     private static final String PRODUCT_PATH = "/api/products";
 
+    private ProductAcceptanceTestUtils() {}
+
     public static ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured.given().log().all()
                 .when().get(PRODUCT_PATH)
@@ -34,8 +36,10 @@ class ProductAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(String name, BigDecimal price) {
-        return 상품_생성_요청(name, price);
+    public static Product 상품_등록되어_있음(String name, BigDecimal price) {
+        ExtractableResponse<Response> response = 상품_생성_요청(name, price);
+        상품_생성됨(response);
+        return response.as(Product.class);
     }
 
     public static void 상품_생성됨(ExtractableResponse<Response> response) {

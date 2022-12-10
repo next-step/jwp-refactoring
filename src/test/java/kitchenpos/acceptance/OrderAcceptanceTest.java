@@ -28,8 +28,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> orderAcceptance() {
         return Stream.of(
                 dynamicTest("테이블과 메뉴를 생성한다.", () -> {
-                    테이블 = 주문_테이블_등록되어_있음(null, 1, false).as(OrderTable.class);
-                    비어있는_테이블 = 주문_테이블_생성_요청(null, 0, true).as(OrderTable.class);
+                    테이블 = 주문_테이블_등록되어_있음(null, 1, false);
+                    비어있는_테이블 = 주문_테이블_등록되어_있음(null, 0, true);
                     메뉴_면류_짜장면 = 메뉴_면류_짜장면();
                 }),
                 dynamicTest("주문 등록시 주문 항목은 필수이다.", () -> {
@@ -79,7 +79,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
                     주문_상태_수정_실패(response);
                 }),
-                dynamicTest("주문의 상태를 수정한다. (요리 -> 식사)", () -> {
+                dynamicTest("주문의 상태를 수정한다. (조리 -> 식사)", () -> {
                     ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), OrderStatus.MEAL);
 
                     주문_상태_수정됨(response);

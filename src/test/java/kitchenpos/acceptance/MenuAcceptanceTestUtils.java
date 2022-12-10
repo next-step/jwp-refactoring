@@ -20,16 +20,17 @@ import org.springframework.http.MediaType;
 class MenuAcceptanceTestUtils {
     private static final String MENU_PATH = "/api/menus";
 
+    private MenuAcceptanceTestUtils() {}
+
     public static Menu 메뉴_면류_짜장면() {
-        Product 짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000)).as(Product.class);
-        MenuGroup 면류 = 메뉴_그룹_등록되어_있음("면류").as(MenuGroup.class);
+        Product 짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000));
+        MenuGroup 면류 = 메뉴_그룹_등록되어_있음("면류");
         MenuProduct 짜장면_1그릇 = new MenuProduct();
         짜장면_1그릇.setSeq(1L);
         짜장면_1그릇.setMenuId(면류.getId());
         짜장면_1그릇.setProductId(짜장면.getId());
         짜장면_1그릇.setQuantity(1L);
-        return 메뉴_등록되어_있음(짜장면.getName(), 면류.getId(), 짜장면.getPrice(), Collections.singletonList(짜장면_1그릇))
-                .as(Menu.class);
+        return 메뉴_등록되어_있음(짜장면.getName(), 면류.getId(), 짜장면.getPrice(), Collections.singletonList(짜장면_1그릇));
     }
 
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
@@ -54,8 +55,10 @@ class MenuAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(String name, Long menuGroupId, BigDecimal price, List<MenuProduct> menuProducts) {
-        return 메뉴_생성_요청(name, menuGroupId, price, menuProducts);
+    public static Menu 메뉴_등록되어_있음(String name, Long menuGroupId, BigDecimal price, List<MenuProduct> menuProducts) {
+        ExtractableResponse<Response> response = 메뉴_생성_요청(name, menuGroupId, price, menuProducts);
+        메뉴_생성됨(response);
+        return response.as(Menu.class);
     }
 
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {

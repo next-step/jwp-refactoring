@@ -92,7 +92,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("빈 테이블로 수정시 주문 상태가 요리 중 또는 식사 중이면 안된다.")
+    @DisplayName("빈 테이블로 수정시 주문 상태가 조리 중 또는 식사 중이면 안된다.")
     void updateEmptyTableByOrderStatusIsCookingOrMeal() {
         // given
         OrderTable changeTable = emptyTableRequest(true);

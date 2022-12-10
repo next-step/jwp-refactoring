@@ -20,6 +20,8 @@ import org.springframework.http.MediaType;
 class OrderAcceptanceTestUtils {
     private static final String ORDER_PATH = "/api/orders";
 
+    private OrderAcceptanceTestUtils() {}
+
     public static ExtractableResponse<Response> 주문_목록_조회_요청() {
         return RestAssured.given().log().all()
                 .when().get(ORDER_PATH)
@@ -60,8 +62,10 @@ class OrderAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_등록되어_있음(OrderTable orderTable, Menu... menus) {
-        return 주문_생성_요청(orderTable, menus);
+    public static Order 주문_등록되어_있음(OrderTable orderTable, Menu... menus) {
+        ExtractableResponse<Response> response = 주문_생성_요청(orderTable, menus);
+        주문_생성됨(response);
+        return response.as(Order.class);
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {

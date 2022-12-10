@@ -31,9 +31,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000)).as(Product.class);
-        짬뽕 = 상품_등록되어_있음("짬뽕", BigDecimal.valueOf(8000)).as(Product.class);
-        면류 = 메뉴_그룹_등록되어_있음("면류").as(MenuGroup.class);
+        짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000));
+        짬뽕 = 상품_등록되어_있음("짬뽕", BigDecimal.valueOf(8000));
+        면류 = 메뉴_그룹_등록되어_있음("면류");
         짜장면_1그릇 = menuProduct(1L, null, 짜장면.getId(), 1);
     }
 
