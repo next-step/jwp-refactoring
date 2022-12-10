@@ -3,12 +3,12 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class MenuServiceTest {
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -57,10 +57,10 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         인기그룹 = MenuGroup.of(1L, "인기그룹");
-        허니콤보 = Product.of(1L, "허니콤보", BigDecimal.valueOf(20000));
-        뿌링클순살 = Product.of(2L, "뿌링클순살", BigDecimal.valueOf(22000));
-        치즈볼 = Product.of(3L, "치즈볼", BigDecimal.valueOf(5000));
-        콜라 = Product.of(4L, "콜라", BigDecimal.valueOf(2000));
+        허니콤보 = new Product("허니콤보", BigDecimal.valueOf(20000));
+        뿌링클순살 = new Product( "뿌링클순살", BigDecimal.valueOf(22000));
+        치즈볼 = new Product("치즈볼", BigDecimal.valueOf(5000));
+        콜라 = new Product("콜라", BigDecimal.valueOf(2000));
         허니콤보_상품 = MenuProduct.of(1L, 1L, 허니콤보.getId(), 1);
         허니콤보_치즈볼 = MenuProduct.of(2L, 1L, 치즈볼.getId(), 1);
         뿌링클순살_상품 = MenuProduct.of(3L, 2L, 뿌링클순살.getId(), 1);
@@ -74,8 +74,8 @@ class MenuServiceTest {
     void 메뉴_생성() {
         // given
         when(menuGroupDao.existsById(인기그룹.getId())).thenReturn(true);
-        when(productDao.findById(허니콤보.getId())).thenReturn(Optional.of(허니콤보));
-        when(productDao.findById(치즈볼.getId())).thenReturn(Optional.of(치즈볼));
+        when(productRepository.save(허니콤보)).thenReturn(허니콤보);
+        when(productRepository.save(치즈볼)).thenReturn(치즈볼);
         when(menuDao.save(허니콤보세트)).thenReturn(허니콤보세트);
         when(menuProductDao.save(허니콤보_상품)).thenReturn(허니콤보_상품);
         when(menuProductDao.save(허니콤보_치즈볼)).thenReturn(허니콤보_치즈볼);
@@ -119,7 +119,7 @@ class MenuServiceTest {
     void 등록되지_않은_상품이_있는_메뉴_생성() {
         // given
         when(menuGroupDao.existsById(인기그룹.getId())).thenReturn(true);
-        when(productDao.findById(허니콤보.getId())).thenReturn(Optional.of(허니콤보));
+        when(productRepository.findById(허니콤보.getId())).thenReturn(Optional.of(허니콤보));
 
         // when / then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(허니콤보세트));
@@ -130,8 +130,8 @@ class MenuServiceTest {
     void 메뉴상품들의_합보다_비싼_메뉴_생성() {
         // given
         when(menuGroupDao.existsById(인기그룹.getId())).thenReturn(true);
-        when(productDao.findById(허니콤보.getId())).thenReturn(Optional.of(허니콤보));
-        when(productDao.findById(치즈볼.getId())).thenReturn(Optional.of(치즈볼));
+        when(productRepository.findById(허니콤보.getId())).thenReturn(Optional.of(허니콤보));
+        when(productRepository.findById(치즈볼.getId())).thenReturn(Optional.of(치즈볼));
         Menu menu = Menu.of(5L, "허니콤보세트", BigDecimal.valueOf(50000), 인기그룹.getId(), Arrays.asList(허니콤보_상품, 허니콤보_치즈볼));
 
         // when / then
