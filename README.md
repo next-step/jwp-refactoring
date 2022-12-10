@@ -114,3 +114,10 @@ PUT /api/orders/{orderId}/order-status
 - 요구사항 작성
 - 요구사항을 토대로 테스트 코드 작성(@SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드)
 - Lombok없이 진행하기
+
+## Step2 서비스 리팩터링
+- 단위 테스트가 가능한 코드와 어려운 코드를 분리해 단위 테스트를 구현
+- Spring Data JPA 사용시 `spring.jpa.hibernate.ddl-auto=validate` 필수
+- 데이터 스키마 변경 및 마이그레이션이 필요하다면 [여기](https://meetup.toast.com/posts/173)
+- Lombok없이 진행하기
+- 자바 코드 컨벤션 지키기
