@@ -29,24 +29,24 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품의 가격이 null이면 exception이 발생함")
-    void create() {
-        Product product = Product.of(1L,"상품", null);
+    void throwExceptionWhenProductPriceIsNull() {
+        Product product = Product.of(1L, "상품", null);
 
         assertThatThrownBy(() -> service.create(product)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("상품의 가격이 음수이면 exception이 발생함")
-    void create2() {
-        Product product = Product.of(1L,"상품", BigDecimal.valueOf(-1));
+    void throwExceptionWhenProductPriceIsNegative() {
+        Product product = Product.of(1L, "상품", BigDecimal.valueOf(-1));
 
         assertThatThrownBy(() -> service.create(product)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("상품을 생성한다")
-    void create3() {
-        Product product = Product.of(1L,"상품", BigDecimal.valueOf(10000));
+    void createProduct() {
+        Product product = Product.of(1L, "상품", BigDecimal.valueOf(10000));
         given(productDao.save(any())).willReturn(product);
 
         Product saved = service.create(product);
@@ -56,7 +56,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("저장된 상품을 모두 조회할 수 있다")
-    void list() {
+    void queryAllProducts() {
         List<Product> products = Arrays.asList(
                 Product.of(1L, "상품1", BigDecimal.valueOf(10000)),
                 Product.of(2L, "상품2", BigDecimal.valueOf(10000))

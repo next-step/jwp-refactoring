@@ -45,7 +45,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 가격이 null이면 exception이 발생함")
-    void create() {
+    void throwExceptionWhenMenuPriceIsNull() {
         Menu menu = getMenu(null);
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -53,7 +53,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 가격이 음수이면 exception이 발생함")
-    void create2() {
+    void throwExceptionWhenMenuPriceIsNegative() {
         Menu menu = getMenu(-1);
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -61,18 +61,18 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 그룹 아이디가 존재하지 않으면 exception이 발생함")
-    void create3() {
+    void throwExceptionWhenMenuGroupIdNotExist() {
         given(menuGroupDao.existsById(anyLong())).willReturn(false);
 
-        Menu menu = getMenu(10000, getTwoMenuProducts());
+        Menu menu = getMenu(10000, getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("메뉴 그룹이 가진 상품의 아이디가 존재하지 않으면 exception이 발생함")
-    void create4() {
-        Menu menu = getMenu(10000, getTwoMenuProducts());
+    void throwExceptionWhenIdOfProductContainedByMenuGroupNotExist() {
+        Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
         given(menuGroupDao.existsById(menuId)).willReturn(true);
         given(productDao.findById(product1Id)).willReturn(Optional.empty());
@@ -81,11 +81,11 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 그룹의 가격은 각 상품의 합보다 클 수 없다")
-    void create5() {
+    @DisplayName("메뉴 가격은 각 상품의 합보다 클 수 없다")
+    void menuPriceCanNotBeBiggerThanSumOfProductPriceMultipliedByQuantity() {
         Product 상품1 = Product.of(product1Id, "상품1", BigDecimal.valueOf(1000L));
         Product 상품2 = Product.of(product2Id, "상품2", BigDecimal.valueOf(1000L));
-        Menu menu = getMenu(10000, getTwoMenuProducts());
+        Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
         given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
         given(productDao.findById(product1Id)).willReturn(Optional.of(상품1));
@@ -95,31 +95,10 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 그룹의 가격은 각 상품의 합보다 클 수 없다")
-    void create6åå() {
-        Product 상품1 = Product.of(product1Id, "상품1", BigDecimal.valueOf(1000L));
-        Product 상품2 = Product.of(product2Id, "상품2", BigDecimal.valueOf(1000L));
-        List<MenuProduct> menuProducts = getTwoMenuProducts();
-        Menu menu = getMenu(8000, menuProducts);
-
-        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(product1Id)).willReturn(Optional.of(상품1));
-        given(productDao.findById(product2Id)).willReturn(Optional.of(상품2));
-        given(menuDao.save(menu)).willReturn(menu);
-        given(menuProductDao.save(menuProducts.get(0))).willReturn(menuProducts.get(0));
-        given(menuProductDao.save(menuProducts.get(1))).willReturn(menuProducts.get(1));
-
-        Menu savedMenu = service.create(menu);
-
-        assertThat(savedMenu).isEqualTo(menu);
-    }
-
-
-    @Test
     @DisplayName("메뉴를 조회하고, 메뉴 상품을 가지고 있다")
-    void list() {
+    void menuHasMenuProducts() {
         Menu menu = getMenu(8000);
-        List<MenuProduct> menuProducts = getTwoMenuProducts();
+        List<MenuProduct> menuProducts = getTwoMenuProducts(menuId,product1Id,3, product2Id, 5);
 
         given(menuDao.findAll()).willReturn(Arrays.asList(menu));
         given(menuProductDao.findAllByMenuId(menuId)).willReturn(menuProducts);
@@ -138,10 +117,10 @@ class MenuServiceTest {
         return Menu.of(menuId, "메뉴", BigDecimal.valueOf(price), menuGroupId, menuProducts);
     }
 
-    private List<MenuProduct> getTwoMenuProducts() {
+    private List<MenuProduct> getTwoMenuProducts(Long menuId, Long product1Id, long product1Quantity, Long product2Id, long product2Quantity) {
         return Arrays.asList(
-                MenuProduct.of(menuId, product1Id, 3),
-                MenuProduct.of(menuId, product2Id, 5)
+                MenuProduct.of(menuId, product1Id, product1Quantity),
+                MenuProduct.of(menuId, product2Id, product2Quantity)
         );
     }
 }

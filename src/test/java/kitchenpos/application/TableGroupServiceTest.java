@@ -50,7 +50,7 @@ public class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정 생성 시 주문 테이블이 비었을 경우 Exception")
-    public void test1() {
+    public void throwExceptionOrderTableIsEmpty() {
         TableGroup emptyTableGroup = TableGroup.of(1L, LocalDateTime.now());
 
         assertThatThrownBy(() -> tableGroupService.create(emptyTableGroup)).isInstanceOf(IllegalArgumentException.class);
@@ -58,25 +58,25 @@ public class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정 생성 시 주문 테이블이 2개 미만일 경우 Exception")
-    public void test2() {
+    public void throwExceptionNumberOfOrderTableIsLessThanTwo() {
         TableGroup tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTable1);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("단체 지정 생성 시 주문 테이블 수와 저장된 단체 테이블의 주문 테이블 수가 다를 경우 Exception")
-    public void test3() {
+    @DisplayName("단체 지정 생성 시 주문 테이블 수와 저장된 단체 지정의 주문 테이블 수가 다를 경우 Exception")
+    public void throwExceptionWhenOrderTableDataIntegrityIsViolated() {
         List<Long> orderTableIds = getOrderTableIds(tableGroup);
 
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(orderTable1, orderTable2, orderTable3));
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(orderTable1));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("단체 지정 생성 시 주문 테이블이 비어있지 않으면 Exception")
-    public void test4() {
+    public void throwExceptionWhenOrderTableIsNotEmpty() {
         OrderTable orderTable1 = OrderTable.of(1L, null, 4, false);
         OrderTable orderTable2 = OrderTable.of(2L, null, 4, false);
         TableGroup tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTable1, orderTable2);
@@ -86,7 +86,7 @@ public class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정 생성 시 이미 단체 지정된 테이블은 단체로 지정 불가")
-    public void test5() {
+    public void canNotCreateTableGroupWhenOrderTableIsAlreadyGrouped() {
         OrderTable orderTable1 = OrderTable.of(1L, 1L, 4, false);
         OrderTable orderTable2 = OrderTable.of(2L, 2L, 4, false);
         TableGroup tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTable1, orderTable2);
@@ -96,7 +96,7 @@ public class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정 생성")
-    public void create() {
+    public void createTableGroup() {
         OrderTable orderTable1 = OrderTable.of(1L, null, 4, true);
         OrderTable orderTable2 = OrderTable.of(2L, null, 4, true);
         TableGroup tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTable1, orderTable2);
@@ -110,7 +110,7 @@ public class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정 해제 시 주문 상태가 COOKING이거나 MEAL이면 Exception")
-    public void test6() {
+    public void throwExceptionWhenTryToUnGroupOrderIsCookingOrMeal() {
         OrderTable orderTable1 = OrderTable.of(1L, null, 4, true);
         OrderTable orderTable2 = OrderTable.of(2L, null, 4, true);
         TableGroup tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTable1, orderTable2);

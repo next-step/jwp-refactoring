@@ -33,7 +33,7 @@ public class MenuGroupServiceTest {
 
     @Test
     @DisplayName("메뉴 그룹 생성")
-    public void create() {
+    public void createMenuGroup() {
         given(menuGroupDao.save(any(MenuGroup.class))).willReturn(menuGroup);
 
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
@@ -42,7 +42,7 @@ public class MenuGroupServiceTest {
 
     @Test
     @DisplayName("메뉴 그룹 조회")
-    public void list() {
+    public void queryMenuGroup() {
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup));
 
         List<MenuGroup> menuGroups = menuGroupService.list();

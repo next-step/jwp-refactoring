@@ -42,10 +42,17 @@ public class OrderServiceTest {
     private OrderLineItem orderLineItem;
     private Order order;
 
+    private Long orderId = 1L;
+    private Long menuId = 1L;
+    private Long orderTableId = 1L;
+    private Long tableGroupId = 1L;
+
+    private int numberOfGuests = 4;
+
     @BeforeEach
     void setUp() {
-        orderLineItem = getOrderLineItem(1L, 1L);
-        order = getOrder(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItem);
+        orderLineItem = getOrderLineItem(orderId, menuId);
+        order = getOrder(orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItem);
     }
 
     private OrderLineItem getOrderLineItem(long orderId, long menuId) {
@@ -55,7 +62,8 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 시 주문 항목이 비어있으면 Exception")
     public void createEmptyException() {
-        Order emptyOrder = getEmptyOrder(2L, OrderStatus.COOKING.name(), LocalDateTime.now());
+        Long emptyOrderTableId = 2L;
+        Order emptyOrder = getEmptyOrder(emptyOrderTableId, OrderStatus.COOKING.name(), LocalDateTime.now());
 
         assertThatThrownBy(() -> orderService.create(emptyOrder)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -64,14 +72,17 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 시 주문 항목이 메뉴에 존재하지 않으면 Exception")
     public void createOrderLineItemsNotExistsException() {
-        given(menuDao.countByIdIn(any(List.class))).willReturn(2L);
+        final Long menuCountById = 2L;
+        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
+
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지 않을 경우 Exception")
     public void createTableNotExistsException() {
-        given(menuDao.countByIdIn(any(List.class))).willReturn(1L);
+        final Long menuCountById = 1L;
+        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -80,24 +91,25 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 테이블이 비어있을 경우 Exception")
     public void createEmptyTableException() {
-        OrderTable orderTable = getOrderTable(1L, 1L, 4, true);
-
-        given(menuDao.countByIdIn(any(List.class))).willReturn(1L);
+        OrderTable orderTable = getOrderTable(orderTableId, tableGroupId, numberOfGuests, true);
+        final Long menuCountById = 1L;
+        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private OrderTable getOrderTable(long id, long tableGroupId, int numberOfGuests, boolean empty) {
-        return OrderTable.of(id,tableGroupId,numberOfGuests,empty);
+        return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
     }
 
     @Test
     @DisplayName("주문 생성")
     public void create() {
-         OrderTable orderTable = getOrderTable(1L, 1L, 4, false);
+        OrderTable orderTable = getOrderTable(orderTableId, tableGroupId, numberOfGuests, false);
 
-        given(menuDao.countByIdIn(any(List.class))).willReturn(1L);
+        final Long menuCountById = 1L;
+        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
@@ -117,19 +129,19 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 변경 시 존재하지 않는 주문이면 Exception")
     public void changeOrderStatusNotExistsException() {
-        Order changedOrder = getOrder(1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
+        Order changedOrder = getOrder(orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
 
         given(orderDao.findById(any())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changedOrder)).isInstanceOf(
+        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, changedOrder)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 변경 시 완료상태일 경우 Exception")
     public void changeOrderStatusCompletionException() {
-        Order completedOrder = getOrder(1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItem);
-        Order changedOrder = getOrder(1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
+        Order completedOrder = getOrder(orderTableId, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItem);
+        Order changedOrder = getOrder(orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
 
         given(orderDao.findById(completedOrder.getId())).willReturn(Optional.of(completedOrder));
 
@@ -140,7 +152,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 변경")
     public void changeOrderStatus() {
-        Order changedOrder = getOrder(1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
+        Order changedOrder = getOrder(orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
 
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 

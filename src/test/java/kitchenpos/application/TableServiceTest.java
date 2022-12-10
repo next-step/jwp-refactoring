@@ -37,7 +37,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블 생성")
-    public void create() {
+    public void createOrderTable() {
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         OrderTable createdOrderTable = tableService.create(orderTable);
@@ -47,7 +47,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블 조회")
-    public void list() {
+    public void queryOrderTable() {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable));
 
         assertThat(tableService.list()).contains(orderTable);
@@ -55,7 +55,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블 비울 때 주문 테이블 존재하지 않음 Exception")
-    public void test1() {
+    public void throwExceptionWhenOrderTableIsNotExist() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
@@ -63,8 +63,8 @@ public class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블 비울 때 이미 단체로 지정됐을 경우 Exception")
-    public void test2() {
+    @DisplayName("주문 테이블 비울 때 주문 테이블이 이미 단체 지정됐을 경우 Exception")
+    public void throwExceptionWhenOrderTableToBeEmptyWasAlreadyGrouped() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
@@ -72,8 +72,8 @@ public class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블 비울 때 COOKING 또는 MEAL 상태일 때 Exception")
-    public void test3() {
+    @DisplayName("주문 테이블 비울 때 주문 상태가 COOKING 또는 MEAL 이면 Exception")
+    public void throwExceptionWhenChangeOrderTableToEmptyOrderStatusIsCookingOrMeal() {
         OrderTable orderTable = OrderTable.of(1L, null, 4, false);
 
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
@@ -100,7 +100,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("고객 수 변경 시 0 미만이면 Exception")
-    public void test4() {
+    public void throwExceptionNumberOfGuestsIsNotPositive() {
         OrderTable orderTable = OrderTable.of(1L, null, -1, true);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
@@ -108,16 +108,16 @@ public class TableServiceTest {
     }
 
     @Test
-    @DisplayName("고객 수 변경 시 존재하지 않는 테이블이면 Exception")
-    public void test5() {
+    @DisplayName("고객 수 변경 시 존재하지 않는 주문 테이블이면 Exception")
+    public void throwExceptionWhenTryToChangeNumberOfGuestsOrderTableIsNotExist() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("고객 수 변경 시 비어있는 테이블이면 Exception")
-    public void test6() {
+    @DisplayName("고객 수 변경 시 비어있는 주문 테이블이면 Exception")
+    public void throwExceptionWhenTryToChangeNumberOfGuestsOrderTableIsEmpty() {
         OrderTable emptyOrderTable = OrderTable.of(1L, null, 4, true);
         given(orderTableDao.findById(emptyOrderTable.getId())).willReturn(Optional.of(emptyOrderTable));
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, emptyOrderTable)).isInstanceOf(
@@ -126,7 +126,7 @@ public class TableServiceTest {
 
     @Test
     @DisplayName("고객 수 변경")
-    public void test7() {
+    public void changeNumberOfGuests() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
