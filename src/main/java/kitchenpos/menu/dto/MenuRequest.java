@@ -53,8 +53,7 @@ public class MenuRequest {
 
     public Menu createMenu(MenuGroup menuGroup, List<Product> products) {
         Menu menu = new Menu(name, new Price(price), menuGroup);
-        MenuProducts menuProducts = createMenuProducts(products);
-        menu.addProducts(menuProducts.getMenuProducts());
+        menu.setMenuProducts(createMenuProducts(products));
 
         return menu;
     }

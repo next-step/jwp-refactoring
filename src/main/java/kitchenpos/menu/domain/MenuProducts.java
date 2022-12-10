@@ -1,6 +1,9 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
+
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,17 +13,21 @@ public class MenuProducts {
     private static final int ZERO = 0;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
 
     public MenuProducts(List<MenuProduct> menuProducts) {
-        validate(menuProducts);
         this.menuProducts = menuProducts;
     }
 
-    private void validate(List<MenuProduct> menuProducts) {
+    public Price totalMenuPrice() {
+        Price total = new Price(BigDecimal.valueOf(0));
+        for (MenuProduct menuProduct : menuProducts) {
+            total = total.add(menuProduct.calculatePrice());
+        }
 
+        return total;
     }
 
     public List<MenuProduct> getMenuProducts() {

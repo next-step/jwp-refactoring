@@ -4,7 +4,6 @@ import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,8 +18,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
@@ -66,20 +65,20 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void setMenuProducts(MenuProducts menuProducts) {
+        validatePrice(menuProducts.totalMenuPrice());
+
         this.menuProducts = menuProducts;
+        menuProducts.getMenuProducts().forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
-    public void addProducts(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(this::addProduct);
-    }
-
-    private void addProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
+    private void validatePrice(Price totalPrice) {
+        if (price.isBiggerThan(totalPrice)) {
+            throw new IllegalArgumentException("메뉴의 가격이 전체 메뉴 상품 가격의 합보다 클 수 없습니다.");
+        }
     }
 
     @Override

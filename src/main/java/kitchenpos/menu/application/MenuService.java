@@ -53,7 +53,7 @@ public class MenuService {
             final Product product = productRepository.findById(menuProductrequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
 
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
+            sum = sum.add(product.getPrice().value().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
         }
 
         if (price.compareTo(sum) > 0) {

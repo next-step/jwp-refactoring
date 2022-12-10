@@ -70,7 +70,6 @@ class MenuServiceTest {
         불고기상품 = new MenuProduct(1L, 1L, 불고기정식, 불고기);
         김치상품 = new MenuProduct(2L, 1L, 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, 1L, 불고기정식, 공기밥);
-        불고기정식.setMenuProducts(Arrays.asList(불고기상품, 김치상품, 공기밥상품));
     }
 
     @DisplayName("메뉴를 생성한다.")

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Embeddable
-public class Price {
+public class Price implements Comparable<Price> {
     private static final int ZERO = 0;
 
     @Column(nullable = false)
@@ -36,5 +36,25 @@ public class Price {
         if (price.compareTo(BigDecimal.ZERO) < ZERO) {
             throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
         }
+    }
+
+    public Price add(Price another) {
+        return new Price(price.add(another.price));
+    }
+
+    public Price multiply(BigDecimal value) {
+        return new Price(price.multiply(value));
+    }
+
+    public boolean isBiggerThan(Price totalPrice) {
+        if (price.compareTo(totalPrice.price) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int compareTo(Price another) {
+        return price.compareTo(another.price);
     }
 }

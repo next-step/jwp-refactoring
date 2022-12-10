@@ -38,7 +38,6 @@ public class MenuProductRequest {
     }
 
     private Product findProduct(List<Product> products) {
-        System.out.println(productId);
         products.forEach(product -> System.out.println(product.getId()));
         return products.stream()
                 .filter(product -> product.getId().equals(productId))
