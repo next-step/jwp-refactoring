@@ -91,6 +91,10 @@ public abstract class AcceptanceTest<T> {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    protected void 삭제_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isNotEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
     private boolean isEqual(T actual, T expected, Function<T,?> compareExtractor) {
         return compareExtractor.apply(actual).equals(compareExtractor.apply(expected));
     }

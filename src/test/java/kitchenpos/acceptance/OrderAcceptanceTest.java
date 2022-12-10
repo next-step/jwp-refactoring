@@ -193,6 +193,12 @@ public class OrderAcceptanceTest extends AcceptanceTest<Order> {
 		return orderLineItem;
 	}
 
+	public Order 주문_등록되어_있음(OrderTable 주문_테이블) {
+		setup();
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(조리중_주문(주문_테이블, Lists.newArrayList(메뉴)));
+		return 등록됨(등록_요청_응답);
+	}
+
 	@Override
 	protected String getRequestPath() {
 		return REQUEST_PATH;

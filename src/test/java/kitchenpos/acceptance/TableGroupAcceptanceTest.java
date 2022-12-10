@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.ToLongFunction;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +24,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest<TableGroup> {
 
 	List<OrderTable> 주문_테이블_목록;
 	OrderTableAcceptanceTest orderTables;
+	OrderAcceptanceTest orders;
 
 	/**
 	 * Feature: 테이블 그룹 관리 기능
@@ -34,6 +34,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest<TableGroup> {
 	 */
 	@BeforeEach
 	void setup() {
+		orders = new OrderAcceptanceTest();
 		orderTables = new OrderTableAcceptanceTest();
 		주문_테이블_목록 = orderTables.테이블_등록됨(주문_테이블(), 주문_테이블());
 	}
@@ -88,14 +89,29 @@ class TableGroupAcceptanceTest extends AcceptanceTest<TableGroup> {
 	}
 
 	/**
-	 * Given 주문 테이블 그룹이 생성되어 있고
-	 * Given 주문 테이블의 상태가 '조리중'이거나 '식사중'일 때
+	 * Given 두 개의 주문 테이블이 등록되어 있고
+	 * Given 주문 테이블 그룹이 등록되어 있고
+	 * Given 주문이 등록되어 있고
 	 * When 테이블 그룹 해제를 요청하면
 	 * Then 테이블 그룹 해제가 실패한다.
 	 */
-	@Disabled
 	@Test
 	void 주문_테이블_그룹_해제_실패() {
+		// given
+		OrderTable 주문_테이블1 = orderTables.주문_테이블_등록되어_있음(주문_테이블());
+		OrderTable 주문_테이블2 = orderTables.주문_테이블_등록되어_있음(주문_테이블());
+		// given
+		TableGroup 그룹_테이블 = 그룹_테이블_등록되어_있음(newArrayList(주문_테이블1, 주문_테이블2));
+		// given
+		orders.주문_등록되어_있음(주문_테이블1);
+		// when
+		ExtractableResponse<Response> 해제_요청_응답 = 테이블_그룹_해제_요청(그룹_테이블);
+		// then
+		테이블_그룹_해제_실패함(해제_요청_응답);
+	}
+
+	private void 테이블_그룹_해제_실패함(ExtractableResponse<Response> response) {
+		삭제_실패함(response);
 	}
 
 	public TableGroup 그룹_테이블_등록되어_있음(List<OrderTable> orderTables) {
