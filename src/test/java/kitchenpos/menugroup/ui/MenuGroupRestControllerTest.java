@@ -1,10 +1,11 @@
 package kitchenpos.menugroup.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
         doReturn(menuGroup).when(menuGroupService).create(any(MenuGroup.class));
 
         webMvc.perform(post("/api/menu-groups")
-                        .content(mapper.writeValueAsString(new Menu()))
+                        .content(mapper.writeValueAsString(new MenuGroupRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(menuGroup.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(menuGroup.getName())))
@@ -56,7 +57,8 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     }
 
     private MenuGroup getMenuGroup() {
-        return FixtureMonkey.create()
+        return FixtureMonkey.builder().defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(MenuGroup.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
