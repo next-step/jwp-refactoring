@@ -6,7 +6,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.ProductDao;
 import kitchenpos.product.Product;
-import kitchenpos.menugroup.MenuGroupDao;
+import kitchenpos.menugroup.persistence.MenuGroupDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

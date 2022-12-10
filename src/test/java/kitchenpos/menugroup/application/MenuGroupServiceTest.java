@@ -1,9 +1,8 @@
 package kitchenpos.menugroup.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.menugroup.MenuGroupDao;
-import kitchenpos.menugroup.MenuGroup;
-import kitchenpos.menugroup.MenuGroupService;
+import kitchenpos.menugroup.persistence.MenuGroupDao;
+import kitchenpos.menugroup.domain.MenuGroup;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
