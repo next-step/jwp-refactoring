@@ -65,7 +65,7 @@ class OrderServiceTest {
         주문_테이블 = OrderTable.of(1L, 3, false);
         비어있는_주문_테이블 = OrderTable.of(2L, 2, true);
 
-        주문항목 = new OrderLineItem(1L, null, 후라이드치킨.getId(), 2);
+        주문항목 = OrderLineItem.of(1L, null, 후라이드치킨.getId(), 2);
         List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
         주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
 
@@ -105,8 +105,8 @@ class OrderServiceTest {
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
 
         List<OrderLineItem> orderLineItems = Arrays.asList(
-                new OrderLineItem(1L, 2),
-                new OrderLineItem(2L, 1));
+                OrderLineItem.of(1L, 2),
+                OrderLineItem.of(2L, 1));
         Order order = Order.of(1L, orderLineItems);
 
         Assertions.assertThatThrownBy(() -> orderService.create(order))
