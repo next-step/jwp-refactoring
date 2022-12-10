@@ -40,7 +40,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
-        후라이드치킨_상품 = new MenuProduct(1L, null, 후라이드.getId(), 2);
+        후라이드치킨_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2);
 
         메뉴_그룹_등록되어_있음(두마리메뉴);
         상품_등록되어_있음(후라이드);
@@ -113,7 +113,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품에 등록되지 않은 메뉴 상품으로 메뉴를 생성할 수 없다.")
     @Test
     void createFail4() {
-        MenuProduct 상품_등록되어있지_않은_메뉴_상품 = new MenuProduct(1L, null, 0L, 2);
+        MenuProduct 상품_등록되어있지_않은_메뉴_상품 = MenuProduct.of(1L, null, 0L, 2);
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(상품_등록되어있지_않은_메뉴_상품);
         Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
 
@@ -129,7 +129,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴의 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성할 수 없다.")
     @Test
     void createFail5() {
-        MenuProduct 후라이드치킨_상품 = new MenuProduct(1L, null, 후라이드.getId(), 2);
+        MenuProduct 후라이드치킨_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2);
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드치킨_상품);
         Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(50_000), 두마리메뉴.getId(), 메뉴상품_목록);
 

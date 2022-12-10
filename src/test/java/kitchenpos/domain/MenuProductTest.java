@@ -10,8 +10,8 @@ class MenuProductTest {
     @DisplayName("id가 같은 두 객체는 동등하다.")
     @Test
     void equalsTest() {
-        MenuProduct menuProduct1 = new MenuProduct(1L, 1L, 1L, 2);
-        MenuProduct menuProduct2 = new MenuProduct(1L, 1L, 1L, 2);
+        MenuProduct menuProduct1 = MenuProduct.of(1L, 1L, 1L, 2);
+        MenuProduct menuProduct2 = MenuProduct.of(1L, 1L, 1L, 2);
 
         Assertions.assertThat(menuProduct1).isEqualTo(menuProduct2);
     }
@@ -19,8 +19,8 @@ class MenuProductTest {
     @DisplayName("id가 다르면 두 객체는 동등하지 않다.")
     @Test
     void equalsTest2() {
-        MenuProduct menuProduct1 = new MenuProduct(1L, 1L, 1L, 2);
-        MenuProduct menuProduct2 = new MenuProduct(2L, 1L, 1L, 2);
+        MenuProduct menuProduct1 = MenuProduct.of(1L, 1L, 1L, 2);
+        MenuProduct menuProduct2 = MenuProduct.of(2L, 1L, 1L, 2);
 
         Assertions.assertThat(menuProduct1).isNotEqualTo(menuProduct2);
     }

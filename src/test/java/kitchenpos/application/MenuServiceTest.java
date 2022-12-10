@@ -51,7 +51,7 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
-        후라이드치킨상품 = new MenuProduct(1L, 1L, 1L, 2);
+        후라이드치킨상품 = MenuProduct.of(1L, 1L, 1L, 2);
         후라이드치킨 = new Menu(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, Arrays.asList(후라이드치킨상품));
     }
 
