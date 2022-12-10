@@ -35,7 +35,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
     public void returnOderTable() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class).sample();
+        OrderTable orderTable = FixtureMonkey.create()
+                .giveMeBuilder(OrderTable.class)
+                .sample();
         orderTable.setTableGroupId(13l);
         doReturn(new OrderTable()).when(orderTableDao).save(orderTable);
 
@@ -45,7 +47,10 @@ public class TableServiceTest {
     @DisplayName("주문테이블목록을 조회할경우 주문테이블목록 반환")
     @Test
     public void returnOderTables() {
-        List<OrderTable> orderTables = FixtureMonkey.create().giveMeBuilder(OrderTable.class).set("id", 13l).set("empty", true).sampleList(100);
+        List<OrderTable> orderTables = FixtureMonkey.create()
+                .giveMeBuilder(OrderTable.class).set("id", 13l)
+                .set("empty", true)
+                .sampleList(100);
         doReturn(orderTables).when(orderTableDao).findAll();
 
         List<OrderTable> returnedTables = tableService.list();
@@ -55,7 +60,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class).sample();
+        OrderTable orderTable = FixtureMonkey.create()
+                .giveMeBuilder(OrderTable.class)
+                .sample();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTable())).isInstanceOf(IllegalArgumentException.class);
@@ -64,8 +71,12 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class).set("tableGroupId", 13l).sample();
-        doReturn(Optional.ofNullable(FixtureMonkey.create().giveMeBuilder(OrderTable.class).set("tableGroupId", 13l).sample())).when(orderTableDao).findById(orderTable.getId());
+        OrderTable orderTable = FixtureMonkey.create()
+                .giveMeBuilder(OrderTable.class)
+                .set("tableGroupId", 13l).sample();
+        doReturn(Optional.ofNullable(orderTable))
+                .when(orderTableDao)
+                .findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTable())).isInstanceOf(IllegalArgumentException.class);
     }
@@ -73,7 +84,10 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class).setNull("tableGroupId").sample();
+        OrderTable orderTable = FixtureMonkey.create()
+                .giveMeBuilder(OrderTable.class)
+                .setNull("tableGroupId")
+                .sample();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(true).when(orderDao).existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
 
@@ -83,8 +97,17 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")
     @Test
     public void returnOrderTableWithEmpty() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class).setNull("tableGroupId").set("empty", false).sample();
-        OrderTable savedTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class).setNull("tableGroupId").set("empty", true).sample();
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        OrderTable orderTable = fixtureMonkey
+                .giveMeBuilder(OrderTable.class)
+                .setNull("tableGroupId")
+                .set("empty", false)
+                .sample();
+        OrderTable savedTable = fixtureMonkey
+                .giveMeBuilder(OrderTable.class)
+                .setNull("tableGroupId")
+                .set("empty", true)
+                .sample();
         doReturn(Optional.ofNullable(savedTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(false).when(orderDao).existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
         doReturn(savedTable).when(orderTableDao).save(savedTable);
@@ -131,11 +154,12 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 수정된 테이블을 반환")
     @Test
     public void returnOrderTableWithGuest() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class)
+        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
+        OrderTable orderTable = fixtureMonkey.giveMeBuilder(OrderTable.class)
                 .set("numberOfGuests", 15)
                 .set("empty", false)
                 .sample();
-        OrderTable findTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class)
+        OrderTable findTable = fixtureMonkey.giveMeBuilder(OrderTable.class)
                 .set("numberOfGuests", 5)
                 .set("empty", false)
                 .sample();
