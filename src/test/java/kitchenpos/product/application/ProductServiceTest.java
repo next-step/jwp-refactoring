@@ -1,9 +1,9 @@
 package kitchenpos.product.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.ProductService;
+import kitchenpos.product.ProductDao;
+import kitchenpos.product.Product;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

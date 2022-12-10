@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.application.OrderService;
+import kitchenpos.order.OrderService;
 import kitchenpos.menu.MenuDao;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
+import kitchenpos.order.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;

@@ -2,12 +2,12 @@ package kitchenpos.order.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.application.OrderService;
+import kitchenpos.order.OrderService;
 import kitchenpos.menu.Menu;
-import kitchenpos.domain.Order;
+import kitchenpos.order.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.ui.OrderRestController;
+import kitchenpos.order.OrderRestController;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

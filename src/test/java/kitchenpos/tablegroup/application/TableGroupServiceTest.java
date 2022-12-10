@@ -2,7 +2,7 @@ package kitchenpos.tablegroup.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
