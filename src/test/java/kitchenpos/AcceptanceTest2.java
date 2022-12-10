@@ -3,6 +3,7 @@ package kitchenpos;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,36 @@ public abstract class AcceptanceTest2<T> {
         assertThat(actualList)
             .extracting(idExtractor()::applyAsLong)
             .contains(expectedId);
+    }
+
+    protected ExtractableResponse<Response> 수정_요청(String requestPath, T requestBody) {
+        return RestAssuredUtils.put(requestPath,
+                                    idExtractor().applyAsLong(requestBody),
+                                    requestBody);
+    }
+
+    protected void 수정됨(ExtractableResponse<Response> response, T expected,
+        Function<T, ?> compareExtractor) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<T> actualList = 목록_조회();
+        T actual = actualList.stream()
+            .filter(body -> isEqual(expected, body))
+            .findFirst().get();
+
+        assertThat(isEqual(actual, expected, compareExtractor)).isTrue();
+    }
+
+    protected void 수정_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
+    }
+
+    private boolean isEqual(T actual, T expected, Function<T,?> compareExtractor) {
+        return compareExtractor.apply(actual).equals(compareExtractor.apply(expected));
+    }
+
+    private boolean isEqual(T expected, T body) {
+        return idExtractor().applyAsLong(expected) == idExtractor().applyAsLong(body);
     }
 
     protected abstract String getRequestPath();

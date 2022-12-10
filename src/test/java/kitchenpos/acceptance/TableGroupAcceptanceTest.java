@@ -120,4 +120,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 		return tableGroup;
 	}
 
+	public static TableGroup 그룹_테이블_등록되어_있음(List<OrderTable> orderTables) {
+		TableGroup 테이블_그룹 = 테이블_그룹(orderTables);
+		ExtractableResponse<Response> 테이블_그룹_생성_응답 = 그룹_테이블_등록_요청(테이블_그룹);
+		그룹_테이블_등록됨(테이블_그룹_생성_응답);
+		return 테이블_그룹_생성_응답.body().as(TableGroup.class);
+	}
+
 }
