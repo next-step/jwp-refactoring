@@ -9,6 +9,8 @@ public class OrderTableResponse {
     private int numberOfGuests;
     private boolean empty;
 
+    protected OrderTableResponse() {}
+
     private OrderTableResponse(Long id, Long tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;

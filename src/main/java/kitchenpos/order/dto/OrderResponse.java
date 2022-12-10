@@ -30,7 +30,7 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse from(Order order) {
         return new OrderResponse(
                 order.getId(),
                 order.getOrderTable().getId(),

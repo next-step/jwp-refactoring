@@ -12,7 +12,9 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,14 +71,15 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 1);
-        주문 = new Order(null, 주문테이블, null, null, Arrays.asList(불고기정식주문));
+        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(불고기정식주문));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void createOrder() {
         // when
-        ExtractableResponse<Response> response = 주문_생성_요청(주문);
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        ExtractableResponse<Response> response = 주문_생성_요청(request);
 
         // then
         주문_생성됨(response);
@@ -85,42 +89,37 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrder() {
         // given
-        주문 = 주문_생성_요청(주문).as(Order.class);
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
         // then
-        주문_목록_응답됨(response, Arrays.asList(주문.getId()));
+        주문_목록_응답됨(response, Arrays.asList(생성된_주문.getId()));
     }
 
     @DisplayName("주문 상태를 수정할 수 있다.")
     @Test
-    void updaeOrderStatus() {
+    void updateOrderStatus() {
         // given
         OrderStatus expectedOrderStatus = OrderStatus.MEAL;
-        주문 = 주문_생성_요청(주문).as(Order.class);
-        Order 업데이트된_주문 = new Order(
-                주문.getId(),
-                주문.getOrderTable(),
-                expectedOrderStatus,
-                주문.getOrderedTime(),
-                주문.getOrderLineItems()
-        );
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문));
+        OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
+        UpdateOrderStatusRequest updateRequest = UpdateOrderStatusRequest.of(OrderStatus.MEAL.name());
 
         // when
-        ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), 업데이트된_주문);
+        ExtractableResponse<Response> response = 주문_상태_수정_요청(생성된_주문.getId(), updateRequest);
 
         // then
         주문_상태_수정됨(response, expectedOrderStatus.name());
-
     }
 
-    private ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    private ExtractableResponse<Response> 주문_생성_요청(OrderRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(request)
                 .when().post("/api/orders")
                 .then().log().all()
                 .extract();
@@ -134,11 +133,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, Order order) {
+    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, UpdateOrderStatusRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(request)
                 .when().put("/api/orders/{id}/order-status", id)
                 .then().log().all()
                 .extract();

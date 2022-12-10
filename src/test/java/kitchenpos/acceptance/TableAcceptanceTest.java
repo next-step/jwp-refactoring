@@ -138,7 +138,7 @@ class TableAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        System.out.println(ids);
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(ids).containsAll(tableIds)
