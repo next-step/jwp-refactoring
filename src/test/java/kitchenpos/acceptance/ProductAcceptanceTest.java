@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,9 +106,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_목록에_등록된_상품이_포함됨(ExtractableResponse<Response> listResponse,
                                     List<ExtractableResponse<Response>> createResponses) {
-        List<Product> products = listResponse.jsonPath().getList(".", Product.class);
-        List<Product> createdProducts = createResponses.stream()
-                .map(it -> it.as(Product.class))
+        List<ProductResponse> products = listResponse.jsonPath().getList(".", ProductResponse.class);
+        List<ProductResponse> createdProducts = createResponses.stream()
+                .map(it -> it.as(ProductResponse.class))
                 .collect(Collectors.toList());
 
         assertAll(

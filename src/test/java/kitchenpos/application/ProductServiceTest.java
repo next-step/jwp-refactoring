@@ -11,7 +11,6 @@ import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,24 +46,6 @@ class ProductServiceTest {
         ProductResponse result = productService.create(버팔로윙);
 
         assertThat(result).isEqualTo(ProductResponse.from(버팔로윙));
-    }
-
-    @DisplayName("상품 생성 시 가격이 null 이면 예외가 발생한다.")
-    @Test
-    void createException() {
-        Product product = Product.of(1L, "product", null);
-
-        Assertions.assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("상품 생성 시 가격이 0보다 작으면 예외가 발생한다.")
-    @Test
-    void createException2() {
-        Product product = Product.of(1L, "product", BigDecimal.valueOf(-1));
-
-        Assertions.assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품 목록을 조회한다.")

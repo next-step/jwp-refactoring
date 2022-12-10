@@ -47,8 +47,9 @@ public class ProductResponse {
             return false;
         }
         ProductResponse that = (ProductResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-                && Objects.equals(price, that.price);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(price.longValue(), that.price.longValue());
     }
 
     @Override
