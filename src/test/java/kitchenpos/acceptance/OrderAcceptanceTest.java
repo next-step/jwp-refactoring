@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -26,6 +25,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 관련 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 두마리메뉴;
+    private MenuGroupResponse 두마리메뉴;
     private Product 후라이드;
     private Menu 후라이드치킨;
     private OrderTable 주문_테이블;
@@ -52,7 +52,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroup.class);
+        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         후라이드 = 상품_등록되어_있음(Product.of(1L, "후라이드", BigDecimal.valueOf(16_000))).as(Product.class);
 

@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -29,6 +28,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -132,7 +132,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyFail3() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
         Product 후라이드 = 상품_등록되어_있음(
@@ -175,7 +175,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyFail4() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
         Product 후라이드 = 상품_등록되어_있음(

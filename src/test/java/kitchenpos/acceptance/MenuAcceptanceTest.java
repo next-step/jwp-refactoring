@@ -14,10 +14,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus;
 @DisplayName("메뉴 관련 인수 테스트")
 class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 두마리메뉴;
+    private MenuGroupResponse 두마리메뉴;
     private Product 후라이드;
     private MenuProduct 후라이드치킨_상품;
 
@@ -39,7 +39,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroup.class);
+        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
         후라이드치킨_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2);
 

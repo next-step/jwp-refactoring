@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,9 +43,9 @@ class MenuGroupServiceTest {
     void create() {
         when(menuGroupDao.save(any())).thenReturn(group1);
 
-        MenuGroup result = menuGroupService.create(group1);
+        MenuGroupResponse result = menuGroupService.create(group1);
 
-        assertThat(result).isEqualTo(group1);
+        assertThat(result.getName()).isEqualTo("group1");
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
@@ -52,11 +53,12 @@ class MenuGroupServiceTest {
     void list() {
         when(menuGroupDao.findAll()).thenReturn(Arrays.asList(group1, group2));
 
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         assertAll(
                 () -> assertThat(list).hasSize(2),
-                () -> assertThat(list).containsExactly(group1, group2)
+                () -> assertThat(list.get(0).getName()).isEqualTo("group1"),
+                () -> assertThat(list.get(1).getName()).isEqualTo("group2")
         );
     }
 }
