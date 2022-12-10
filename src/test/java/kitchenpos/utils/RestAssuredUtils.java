@@ -26,4 +26,14 @@ public class RestAssuredUtils {
 			.then().log().all()
 			.extract();
 	}
+
+	public static <T> ExtractableResponse<Response> put(String path, Long id, T requestBody) {
+		return RestAssured.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(requestBody)
+			.when().log().all()
+			.put(path, id)
+			.then().log().all()
+			.extract();
+	}
 }
