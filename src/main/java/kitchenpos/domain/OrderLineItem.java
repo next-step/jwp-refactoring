@@ -1,10 +1,20 @@
 package kitchenpos.domain;
 
 public class OrderLineItem {
+
     private Long seq;
     private Long orderId;
     private Long menuId;
     private long quantity;
+
+    public OrderLineItem() {}
+
+    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+        this.seq = seq;
+        this.orderId = orderId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
 
     public Long getSeq() {
         return seq;
@@ -36,5 +46,37 @@ public class OrderLineItem {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public static class Builder {
+
+        private Long seq;
+        private Long orderId;
+        private Long menuId;
+        private long quantity;
+
+        public Builder seq(Long seq) {
+            this.seq = seq;
+            return this;
+        }
+
+        public Builder orderId(Long orderId) {
+            this.orderId = orderId;
+            return this;
+        }
+
+        public Builder menuId(Long menuId) {
+            this.menuId = menuId;
+            return this;
+        }
+
+        public Builder quantity(long quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public OrderLineItem build() {
+            return new OrderLineItem(seq, orderId, menuId, quantity);
+        }
     }
 }
