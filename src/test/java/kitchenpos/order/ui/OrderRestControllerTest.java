@@ -36,7 +36,7 @@ public class OrderRestControllerTest extends ControllerTest {
 
     @DisplayName("주문생성을 요청하면 생성된 주문 응답")
     @Test
-    public void returnMenu() throws Exception {
+    public void returnOrder() throws Exception {
         Order order = getOrder();
         doReturn(order).when(orderService).create(any(Order.class));
         String orderTime = order.getOrderedTime().toString();
@@ -54,7 +54,7 @@ public class OrderRestControllerTest extends ControllerTest {
 
     @DisplayName("주문생성을 요청하면 주문생성 실패응답")
     @Test
-    public void throwsExceptionWhenMenuCreate() throws Exception {
+    public void throwsExceptionWhenOrderCreate() throws Exception {
         doThrow(new IllegalArgumentException()).when(orderService).create(any(Order.class));
 
         webMvc.perform(post("/api/orders")
@@ -63,9 +63,9 @@ public class OrderRestControllerTest extends ControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("메뉴목록을 요청하면 메뉴목록을 응답")
+    @DisplayName("주문목록을 요청하면 메뉴목록을 응답")
     @Test
-    public void returnMenus() throws Exception {
+    public void returnOrders() throws Exception {
         List<Order> orders = FixtureMonkey.create()
                 .giveMeBuilder(Order.class)
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
