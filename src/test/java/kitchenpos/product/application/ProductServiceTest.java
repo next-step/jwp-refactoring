@@ -5,6 +5,7 @@ import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import net.jqwik.api.Arbitraries;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,12 @@ public class ProductServiceTest {
     private ProductService productService;
     @Mock
     private ProductDao productDao;
+    public static FixtureMonkey fixtureMonkey;
+
+    @BeforeAll
+    public static void setup() {
+        fixtureMonkey = FixtureMonkey.create();
+    }
 
     @DisplayName("상품가격이 없는경우 예외발생")
     @Test
@@ -67,8 +74,7 @@ public class ProductServiceTest {
     @DisplayName("상품목록을 조회할 경우 저장된 상품목록반환")
     @Test
     public void returnProducts() {
-        FixtureMonkey sut = FixtureMonkey.create();
-        List<Product> mockProducts = sut.giveMeBuilder(Product.class)
+        List<Product> mockProducts = fixtureMonkey.giveMeBuilder(Product.class)
                 .set("price", BigDecimal.valueOf(Arbitraries.integers().greaterOrEqual(1000).sample()))
                 .set("id", Arbitraries.longs().between(1, 5))
                 .sampleList(5);

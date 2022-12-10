@@ -7,6 +7,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import net.jqwik.api.Arbitraries;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,11 +32,17 @@ public class TableServiceTest {
     private OrderDao orderDao;
     @Mock
     private OrderTableDao orderTableDao;
+    public static FixtureMonkey fixtureMonkey;
+
+    @BeforeAll
+    public static void setup() {
+        fixtureMonkey = FixtureMonkey.create();
+    }
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
     public void returnOderTable() {
-        OrderTable orderTable = FixtureMonkey.create()
+        OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .sample();
         orderTable.setTableGroupId(13l);
@@ -47,7 +54,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블목록을 조회할경우 주문테이블목록 반환")
     @Test
     public void returnOderTables() {
-        List<OrderTable> orderTables = FixtureMonkey.create()
+        List<OrderTable> orderTables = fixtureMonkey
                 .giveMeBuilder(OrderTable.class).set("id", 13l)
                 .set("empty", true)
                 .sampleList(100);
@@ -60,7 +67,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
-        OrderTable orderTable = FixtureMonkey.create()
+        OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .sample();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
@@ -71,7 +78,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        OrderTable orderTable = FixtureMonkey.create()
+        OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .set("tableGroupId", 13l).sample();
         doReturn(Optional.ofNullable(orderTable))
@@ -84,7 +91,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
-        OrderTable orderTable = FixtureMonkey.create()
+        OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .setNull("tableGroupId")
                 .sample();
@@ -97,7 +104,6 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")
     @Test
     public void returnOrderTableWithEmpty() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .setNull("tableGroupId")
@@ -118,7 +124,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 손님수가 0보다 작으면 예외발생")
     @Test
     public void throwsExceptionWhenGuestNumberIsNegative() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class)
+        OrderTable orderTable = fixtureMonkey
+                .giveMeBuilder(OrderTable.class)
                 .set("numberOfGuests", Arbitraries.integers().lessOrEqual(-1))
                 .sample();
 
@@ -129,7 +136,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class)
+        OrderTable orderTable = fixtureMonkey
+                .giveMeBuilder(OrderTable.class)
                 .set("numberOfGuests", Arbitraries.integers().greaterOrEqual(0))
                 .sample();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
@@ -141,7 +149,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 테이블이 공석이면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyTable() {
-        OrderTable orderTable = FixtureMonkey.create().giveMeBuilder(OrderTable.class)
+        OrderTable orderTable = fixtureMonkey
+                .giveMeBuilder(OrderTable.class)
                 .set("numberOfGuests", Arbitraries.integers().greaterOrEqual(0))
                 .set("empty", true)
                 .sample();
@@ -154,7 +163,6 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 수정된 테이블을 반환")
     @Test
     public void returnOrderTableWithGuest() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         OrderTable orderTable = fixtureMonkey.giveMeBuilder(OrderTable.class)
                 .set("numberOfGuests", 15)
                 .set("empty", false)
