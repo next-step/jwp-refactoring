@@ -8,6 +8,9 @@ public class Product {
     private ProductName name;
     private BigDecimal price;
 
+    private Product() {
+    }
+
     private Product(Long id, ProductName name, BigDecimal price) {
         this.id = id;
         this.name = name;

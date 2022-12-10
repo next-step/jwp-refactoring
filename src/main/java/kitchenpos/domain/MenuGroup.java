@@ -6,6 +6,9 @@ public class MenuGroup {
     private Long id;
     private MenuGroupName name;
 
+    private MenuGroup() {
+    }
+
     private MenuGroup(Long id, MenuGroupName name) {
         this.id = id;
         this.name = name;
