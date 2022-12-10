@@ -11,6 +11,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import net.jqwik.api.Arbitraries;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,11 +43,17 @@ public class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
     @Mock
     private OrderTableDao orderTableDao;
+    public static FixtureMonkey fixtureMonkey;
+
+    @BeforeAll
+    public static void setup() {
+        fixtureMonkey = FixtureMonkey.create();
+    }
 
     @DisplayName("주문을 추가할 경우 주문항목이 없으면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyOrderItems() {
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("orderLineItems", Collections.EMPTY_LIST)
                 .sample();
@@ -58,7 +65,6 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 등록되지 않는 메뉴가 있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsMenu() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
@@ -79,7 +85,6 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
@@ -102,7 +107,6 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문테이블이 공석이면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyTable() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
@@ -129,7 +133,6 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문을 반환")
     @Test
     public void returnOrder() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .setNull("orderId")
@@ -170,7 +173,6 @@ public class OrderServiceTest {
     @DisplayName("주문목록을 조회할경우 주문목록 반환")
     @Test
     public void returnOrders() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .setNull("orderId")
@@ -206,14 +208,14 @@ public class OrderServiceTest {
     @DisplayName("주문상태를 수정할 경우 계산완료된 주문이면 예외발생")
     @Test
     public void throwsExceptionWhenCompleteOrder() {
-        Long orderId = Arbitraries.longs().between(1, 1000).sample();
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
+                .set("id", Arbitraries.longs().between(1, 1000).sample())
                 .set("orderStatus", OrderStatus.COMPLETION.name())
                 .sample();
-        doReturn(Optional.ofNullable(order)).when(orderDao).findById(orderId);
+        doReturn(Optional.ofNullable(order)).when(orderDao).findById(order.getId());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, new Order()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -221,11 +223,11 @@ public class OrderServiceTest {
     @Test
     public void returnOrderWithChangedStatus() {
         Long orderId = Arbitraries.longs().between(1, 1000).sample();
-        Order findOrder = FixtureMonkey.create()
+        Order findOrder = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("orderStatus", OrderStatus.COOKING.name())
                 .sample();
-        Order order = FixtureMonkey.create()
+        Order order = fixtureMonkey
                 .giveMeBuilder(Order.class)
                 .set("orderStatus", OrderStatus.COMPLETION.name())
                 .sample();
