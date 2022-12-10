@@ -17,7 +17,9 @@ public class MenuGroupRequest {
     }
 
     public MenuGroup toMenuGroup(){
-        return MenuGroup.builder().build();
+        return MenuGroup.builder()
+                .name(name)
+                .build();
     }
 }
 
