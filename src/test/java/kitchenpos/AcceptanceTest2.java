@@ -32,21 +32,21 @@ public abstract class AcceptanceTest2<T> {
         databaseCleanup.cleanUp();
     }
 
-    protected ExtractableResponse<Response> 등록_요청() {
-        return RestAssuredUtils.post(getRequestPath(), 도메인_생성());
+    public ExtractableResponse<Response> 등록_요청(T requestBody) {
+        return 등록_요청(getRequestPath(), requestBody);
     }
 
-    protected ExtractableResponse<Response> 등록_요청(T requestBody) {
-        return RestAssuredUtils.post(getRequestPath(), requestBody);
+    private ExtractableResponse<Response> 등록_요청(String requestPath, T requestBody) {
+        return RestAssuredUtils.post(requestPath, requestBody);
+    }
+
+    public T 등록됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        return response.body().as(getDomainClass());
     }
 
     protected void 등록_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
-    }
-
-    protected T 등록됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.body().as(getDomainClass());
     }
 
     protected List<T> 목록_조회() {
@@ -61,8 +61,6 @@ public abstract class AcceptanceTest2<T> {
     }
 
     protected abstract String getRequestPath();
-
-    protected abstract T 도메인_생성();
 
     protected abstract ToLongFunction<T> idExtractor();
 

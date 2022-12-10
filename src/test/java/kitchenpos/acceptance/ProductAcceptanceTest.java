@@ -1,7 +1,5 @@
 package kitchenpos.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.ToLongFunction;
@@ -9,13 +7,11 @@ import java.util.function.ToLongFunction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
 import kitchenpos.domain.Product;
-import kitchenpos.utils.RestAssuredUtils;
 
 @DisplayName("상품 관리")
 class ProductAcceptanceTest extends AcceptanceTest2<Product> {
@@ -34,7 +30,8 @@ class ProductAcceptanceTest extends AcceptanceTest2<Product> {
 	 */
 	@BeforeEach
 	void setup() {
-		ExtractableResponse<Response> 상품_등록_응답 = 등록_요청();
+		Product 상품 = 상품(상품명, 상품가격);
+		ExtractableResponse<Response> 상품_등록_응답 = 등록_요청(상품);
 
 		상품_아이디 = 등록됨(상품_등록_응답).getId();
 	}
@@ -65,17 +62,6 @@ class ProductAcceptanceTest extends AcceptanceTest2<Product> {
 		등록_실패함(등록_요청_응답);
 	}
 
-	@Deprecated
-	public static Long 상품_등록됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		return response.body().as(Product.class).getId();
-	}
-
-	@Deprecated
-	public static ExtractableResponse<Response> 상품_등록_요청(Product 상품) {
-		return RestAssuredUtils.post(REQUEST_PATH, 상품);
-	}
-
 	public static Product 상품(String name, int price) {
 		Product product = new Product();
 		product.setName(name);
@@ -86,11 +72,6 @@ class ProductAcceptanceTest extends AcceptanceTest2<Product> {
 	@Override
 	protected String getRequestPath() {
 		return REQUEST_PATH;
-	}
-
-	@Override
-	protected Product 도메인_생성() {
-		return 상품(상품명, 상품가격);
 	}
 
 	@Override
