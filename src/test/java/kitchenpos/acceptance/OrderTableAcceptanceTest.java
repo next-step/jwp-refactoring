@@ -138,13 +138,13 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 		return RestAssuredUtils.put(path, orderTable.getId(), orderTable);
 	}
 
-	private Long 테이블_등록_요청(OrderTable orderTable) {
+	public static Long 테이블_등록_요청(OrderTable orderTable) {
 		ExtractableResponse<Response> 등록_응답 = RestAssuredUtils.post(TABLE_REQUEST_PATH, orderTable);
 		assertThat(등록_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		return 등록_응답.body().as(OrderTable.class).getId();
 	}
 
-	private void 테이블_등록됨(Long 테이블_아이디) {
+	public static void 테이블_등록됨(Long 테이블_아이디) {
 		List<OrderTable> orderTables = 테이블_목록_조회();
 
 		assertThat(orderTables)
@@ -152,7 +152,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 			.contains(테이블_아이디);
 	}
 
-	private List<OrderTable> 테이블_목록_조회() {
+	private static List<OrderTable> 테이블_목록_조회() {
 		ExtractableResponse<Response> 목록_응답 = RestAssuredUtils.get(TABLE_REQUEST_PATH);
 
 		assertThat(목록_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -176,11 +176,10 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 
 	}
 
-	private OrderTable 주문_테이블() {
+	public static OrderTable 주문_테이블() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(0);
 		orderTable.setEmpty(true);
 		return orderTable;
 	}
-
 }
