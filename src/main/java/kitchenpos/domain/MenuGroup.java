@@ -1,8 +1,23 @@
 package kitchenpos.domain;
 
+import java.math.BigDecimal;
+
 public class MenuGroup {
     private Long id;
     private String name;
+
+    public MenuGroup() {
+
+    }
+
+    private MenuGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static MenuGroup of(long id, String name) {
+        return new MenuGroup(id, name);
+    }
 
     public Long getId() {
         return id;
