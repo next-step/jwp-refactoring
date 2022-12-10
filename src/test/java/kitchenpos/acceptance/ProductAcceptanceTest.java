@@ -35,7 +35,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		int 상품가격 = 1000;
 		Product 상품 = 상품("스파게티", 상품가격);
 
-		상품_아이디 = 상품_등록_요청(상품);
+		ExtractableResponse<Response> 상품_등록_응답 = 상품_등록_요청(상품);
+
+		상품_아이디 = 상품_등록됨(상품_등록_응답);
 	}
 
 	/**
@@ -45,7 +47,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
 	 */
 	@Test
 	void 상품_관리() {
-		상품_목록_조회();
+		List<Product> 상품_목록 = 상품_목록_조회();
+		상품_목록_조회됨(상품_목록, 상품_아이디);
 	}
 
 	/**
@@ -63,21 +66,23 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		상품_등록_실패함(등록_응답);
 	}
 
-	public static Long 상품_등록_요청(Product 상품) {
-		ExtractableResponse<Response> 등록_응답 = RestAssuredUtils.post(REQUEST_PATH, 상품);
-		assertThat(등록_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		return 등록_응답.body().as(Product.class).getId();
+	public static Long 상품_등록됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		return response.body().as(Product.class).getId();
 	}
 
-	private void 상품_목록_조회() {
-		ExtractableResponse<Response> 목록_응답 = RestAssuredUtils.get(REQUEST_PATH);
-
-		상품_목록_조회됨(목록_응답, 상품_아이디);
+	public static ExtractableResponse<Response> 상품_등록_요청(Product 상품) {
+		return RestAssuredUtils.post(REQUEST_PATH, 상품);
 	}
 
-	private void 상품_목록_조회됨(ExtractableResponse<Response> response, Long ...expectedProductId) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.body().as(new TypeRef<List<Product>>(){}))
+	private List<Product> 상품_목록_조회() {
+		ExtractableResponse<Response> response = RestAssuredUtils.get(REQUEST_PATH);
+
+		return response.body().as(new TypeRef<List<Product>>(){});
+	}
+
+	private void 상품_목록_조회됨(List<Product> products, Long expectedProductId) {
+		assertThat(products)
 			.extracting(Product::getId)
 			.contains(expectedProductId);
 	}

@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품;
+import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import kitchenpos.utils.RestAssuredUtils;
 
 @DisplayName("메뉴 관리")
@@ -39,12 +42,15 @@ class MenuAcceptanceTest extends AcceptanceTest {
 	 */
 	@BeforeEach
 	void setup() {
-		Long 상품_아이디 = ProductAcceptanceTest.상품_등록_요청(상품("너티 크루아상", 3000));
-		상품_아이디_목록.add(상품_아이디);
-		상품_아이디 = ProductAcceptanceTest.상품_등록_요청(상품("단호박 크림 수프", 6000));
-		상품_아이디_목록.add(상품_아이디);
-		상품_아이디 = ProductAcceptanceTest.상품_등록_요청(상품("사과 가득 젤리", 4000));
-		상품_아이디_목록.add(상품_아이디);
+		List<Product> 상품_목록 = Lists.newArrayList(상품("너티 크루아상", 3000),
+														 상품("단호박 크림 수프", 6000),
+														 상품("사과 가득 젤리", 4000));
+		상품_아이디_목록.addAll(
+			상품_목록.stream()
+			.map(상품 -> {
+				ExtractableResponse<Response> 응답 = 상품_등록_요청(상품);
+				return ProductAcceptanceTest.상품_등록됨(응답);
+			}).collect(Collectors.toList()));
 	}
 
 	/**
