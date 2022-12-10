@@ -46,6 +46,34 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * When 가격이 없는 상품 생성 요청
+     * Then 상품 생성 실패함
+     */
+    @DisplayName("가격이 없는 상품은 생성할 수 없다.")
+    @Test
+    void createFail() {
+        Product 가격없는_상품 = Product.of(1L, "가격없는_상품", null);
+
+        ExtractableResponse<Response> response = 상품_생성_요청(가격없는_상품);
+
+        상품_생성_실패함(response);
+    }
+
+    /**
+     * When 가격이 음수인 상품 생성 요청
+     * Then 상품 생성 실패함
+     */
+    @DisplayName("가격이 음수인 상품은 생성할 수 없다.")
+    @Test
+    void createFail2() {
+        Product 가격이_음수인_상품 = Product.of(1L, "가격이_음수인_상품", BigDecimal.valueOf(-1));
+
+        ExtractableResponse<Response> response = 상품_생성_요청(가격이_음수인_상품);
+
+        상품_생성_실패함(response);
+    }
+
+    /**
      * Given 상품 여러개 등록됨
      * When 상품 목록 조회 요청
      * Then 상품 목록 조회됨
@@ -65,6 +93,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 상품_생성_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
