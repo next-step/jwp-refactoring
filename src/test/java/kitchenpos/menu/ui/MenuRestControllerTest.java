@@ -3,7 +3,7 @@ package kitchenpos.menu.ui;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
 import kitchenpos.menu.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.MenuProduct;
 import kitchenpos.menu.MenuRestController;
 import kitchenpos.menu.MenuService;
 import net.jqwik.api.Arbitraries;
