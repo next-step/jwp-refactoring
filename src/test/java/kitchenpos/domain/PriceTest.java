@@ -64,4 +64,35 @@ public class PriceTest {
         // then
         assertThat(multiplyPrice.value()).isEqualTo(BigDecimal.valueOf(actualPrice * actualQuantity));
     }
+
+    @DisplayName("가격에 가격을 더할 수 있다.")
+    @Test
+    void addPrice() {
+        // given
+        BigDecimal actualPrice = BigDecimal.valueOf(5000);
+        BigDecimal addPrice = BigDecimal.valueOf(3000);
+        Price price = Price.from(actualPrice);
+
+        // when
+        Price result = price.add(Price.from(addPrice));
+
+        // then
+        assertThat(result.value()).isEqualTo(actualPrice.add(addPrice));
+    }
+
+    @DisplayName("가격을 서로 비교할 수 있다.")
+    @Test
+    void comparePrice() {
+        // given
+        BigDecimal smallDecimal = BigDecimal.valueOf(3000);
+        BigDecimal bigDecimal = BigDecimal.valueOf(4000);
+        Price smallPrice = Price.from(smallDecimal);
+        Price bigPrice = Price.from(bigDecimal);
+
+        // when
+        int compare = smallPrice.compareTo(bigPrice);
+
+        // then
+        assertThat(compare).isEqualTo(smallDecimal.compareTo(bigDecimal));
+    }
 }
