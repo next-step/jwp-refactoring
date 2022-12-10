@@ -1,6 +1,9 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
+import static kitchenpos.acceptance.OrderAcceptanceTestUtils.주문_등록되어_있음;
 import static kitchenpos.acceptance.TableAcceptanceTestUtils.*;
+import static kitchenpos.acceptance.TableGroupAcceptanceTestUtils.단체_테이블_등록되어_있음;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
@@ -87,17 +90,27 @@ class TableAcceptanceTest extends AcceptanceTest {
                     테이블_손님_수_수정됨(response);
                     테이블_손님_수_검증(response, 3);
                 }),
-                dynamicTest("주문 테이블 수정시 주문 테이블로 등록되어 있어야 한다.", () -> {
+                dynamicTest("비어있는 테이블로 수정시 주문 테이블로 등록되어 있어야 한다.", () -> {
                     // when
                     ExtractableResponse<Response> response = 주문_테이블_빈_테이블_수정_요청(존재하지_않는_테이블.getId());
 
                     // then
                     비어있는_테이블로_수정_실패(response);
                 }),
-                dynamicTest("주문 테이블 수정시 주문 테이블은 단체 테이블이 아니어야 한다.", () -> {
-                    // TODO : 단체 테이블 테스트 작성 후 작성
+                dynamicTest("비어있는 테이블로 수정시 주문 테이블은 단체 테이블이 아니어야 한다.", () -> {
+                    // given
+                    OrderTable 테이블 = 주문_테이블_등록되어_있음(null, 0, true);
+                    OrderTable 테이블2 = 주문_테이블_등록되어_있음(null, 0, true);
+                    단체_테이블_등록되어_있음(테이블, 테이블2);
+                    주문_등록되어_있음(테이블, 메뉴_면류_짜장면());
+
+                    // when
+                    ExtractableResponse<Response> response = 주문_테이블_빈_테이블_수정_요청(테이블.getId());
+
+                    // then
+                    비어있는_테이블로_수정_실패(response);
                 }),
-                dynamicTest("주문 테이블 수정시 주문 상태가 요리 중 또는 식사 중이면 안된다.", () -> {
+                dynamicTest("비어있는 테이블로 수정시 주문 상태가 조리 중 또는 식사 중이면 안된다.", () -> {
                     // given
                     OrderTable 주문이_들어간_테이블 = 주문이_들어간_테이블();
 
@@ -107,7 +120,7 @@ class TableAcceptanceTest extends AcceptanceTest {
                     // then
                     비어있는_테이블로_수정_실패(response);
                 }),
-                dynamicTest("주문 테이블을 빈 테이블로 수정한다.", () -> {
+                dynamicTest("주문 테이블을 비어있는 테이블로 수정한다.", () -> {
                     // when
                     ExtractableResponse<Response> response = 주문_테이블_빈_테이블_수정_요청(비어있는_테이블.getId());
 

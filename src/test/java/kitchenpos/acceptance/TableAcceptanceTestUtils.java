@@ -18,8 +18,10 @@ import org.springframework.http.MediaType;
 class TableAcceptanceTestUtils {
     private static final String TABLE_PATH = "/api/tables";
 
+    private TableAcceptanceTestUtils() {}
+
     public static OrderTable 주문이_들어간_테이블() {
-        OrderTable 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(null, 2, false).as(OrderTable.class);
+        OrderTable 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(null, 2, false);
         주문_등록되어_있음(주문이_들어간_테이블, 메뉴_면류_짜장면());
         return 주문이_들어간_테이블;
     }
@@ -69,8 +71,10 @@ class TableAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_등록되어_있음(Long tableGroupId, int numberOfGuests, boolean empty) {
-        return 주문_테이블_생성_요청(tableGroupId, numberOfGuests, empty);
+    public static OrderTable 주문_테이블_등록되어_있음(Long tableGroupId, int numberOfGuests, boolean empty) {
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(tableGroupId, numberOfGuests, empty);
+        주문_테이블_생성됨(response);
+        return response.as(OrderTable.class);
     }
 
     public static void 주문_테이블_생성됨(ExtractableResponse<Response> response) {
