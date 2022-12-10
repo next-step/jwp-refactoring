@@ -4,15 +4,44 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+@Entity
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus orderStatus;
+
+    @Column(nullable = false)
     private LocalDateTime orderedTime;
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
-    private Order() {
+    @Deprecated
+    private Long orderTableId;
+
+    protected Order() {
     }
 
     private Order(Long id,
@@ -22,7 +51,7 @@ public class Order {
                   List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.valueOf(orderStatus);
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
@@ -56,11 +85,11 @@ public class Order {
     }
 
     public String getOrderStatus() {
-        return orderStatus;
+        return orderStatus.name();
     }
 
     public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
     public LocalDateTime getOrderedTime() {

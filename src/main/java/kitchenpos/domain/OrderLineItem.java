@@ -1,14 +1,35 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
+    private Order order;
+
+    @Column(nullable = false)
     private Long menuId;
+
+    @Column(nullable = false)
     private long quantity;
 
-    private OrderLineItem() {
+    @Deprecated
+    private Long orderId;
+
+    protected OrderLineItem() {
     }
 
     private OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
