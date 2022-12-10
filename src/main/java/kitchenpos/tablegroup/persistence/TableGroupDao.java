@@ -1,4 +1,6 @@
-package kitchenpos.tablegroup;
+package kitchenpos.tablegroup.persistence;
+
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.List;
 import java.util.Optional;
