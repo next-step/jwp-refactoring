@@ -10,6 +10,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import net.jqwik.api.Arbitraries;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,13 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
     @Mock
     private ProductDao productDao;
+
+    public static FixtureMonkey fixtureMonkey;
+
+    @BeforeAll
+    public static void setup() {
+        fixtureMonkey = FixtureMonkey.create();
+    }
 
     @DisplayName("메뉴가격이 없는경우 예외발생")
     @Test
@@ -74,12 +82,17 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 구성하는 상품이 없는경우 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsProduct() {
-        Menu menu = new Menu();
-        List<MenuProduct> mockProducts = FixtureMonkey.create().giveMeBuilder(MenuProduct.class).sampleList(5);
-        menu.setPrice(BigDecimal.valueOf(15000));
-        menu.setMenuGroupId(15l);
-        menu.setMenuProducts(mockProducts);
-        doReturn(true).when(menuGroupDao).existsById(15l);
+        List<MenuProduct> mockProducts = fixtureMonkey.giveMeBuilder(MenuProduct.class)
+                .set("productId", Arbitraries.longs().between(1, 1000))
+                .sampleList(5);
+        Menu menu = fixtureMonkey
+                .giveMeBuilder(Menu.class)
+                .set("id", Arbitraries.longs().between(1, 100))
+                .set("price", BigDecimal.valueOf(15000))
+                .set("menuGroupId", Arbitraries.longs().between(1, 50))
+                .set("menuProducts", mockProducts)
+                .sample();
+        doReturn(true).when(menuGroupDao).existsById(menu.getMenuGroupId());
         doReturn(Optional.empty()).when(productDao).findById(anyLong());
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -89,7 +102,6 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
     @Test
     public void throwsExceptionWhenMenuPriceGreater() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         Product product = fixtureMonkey.giveMeBuilder(Product.class)
                 .set("price", BigDecimal.valueOf(Arbitraries.integers().between(1000, 1500).sample()))
                 .sample();
@@ -97,13 +109,16 @@ public class MenuServiceTest {
                 .set("quantity", Arbitraries.integers().between(1, 5))
                 .set("productId", 13l)
                 .sampleList(5);
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.valueOf(200000));
-        menu.setMenuGroupId(15l);
-        menu.setMenuProducts(menuProduct);
+        Menu menu = fixtureMonkey
+                .giveMeBuilder(Menu.class)
+                .set("id", Arbitraries.longs().between(1, 100))
+                .set("price", BigDecimal.valueOf(200000))
+                .set("menuGroupId", Arbitraries.longs().between(1, 50))
+                .set("menuProducts", menuProduct)
+                .sample();
         doReturn(true)
                 .when(menuGroupDao)
-                .existsById(15l);
+                .existsById(menu.getMenuGroupId());
         doReturn(Optional.ofNullable(product))
                 .when(productDao)
                 .findById(anyLong());
@@ -115,7 +130,6 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         Product product = fixtureMonkey.giveMeBuilder(Product.class)
                 .set("price", BigDecimal.valueOf(Arbitraries.integers().between(1000, 1500).sample()))
                 .sample();
@@ -134,13 +148,16 @@ public class MenuServiceTest {
                 .set("menuGroupId", 15l)
                 .set("menuProducts", menuProducts)
                 .sample();
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.valueOf(0l));
-        menu.setMenuGroupId(15l);
-        menu.setMenuProducts(menuProducts);
+        Menu menu = fixtureMonkey
+                .giveMeBuilder(Menu.class)
+                .set("id", Arbitraries.longs().between(1, 100))
+                .set("price", BigDecimal.valueOf(0))
+                .set("menuGroupId", Arbitraries.longs().between(1, 50))
+                .set("menuProducts", menuProducts)
+                .sample();
         doReturn(true)
                 .when(menuGroupDao)
-                .existsById(15l);
+                .existsById(menu.getMenuGroupId());
         doReturn(Optional.ofNullable(product))
                 .when(productDao)
                 .findById(anyLong());
@@ -164,7 +181,6 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
     @Test
     public void returnMenus() {
-        FixtureMonkey fixtureMonkey = FixtureMonkey.create();
         List<Menu> menus = fixtureMonkey
                 .giveMeBuilder(Menu.class)
                 .setNull("menuProducts")
