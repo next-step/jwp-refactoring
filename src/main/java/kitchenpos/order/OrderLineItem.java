@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order;
 
 public class OrderLineItem {
     private Long seq;
