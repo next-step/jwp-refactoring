@@ -30,12 +30,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("단체 지정 관련 인수 테스트")
-public class TableGroupAcceptanceTest extends AcceptanceTest {
+class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 비어있는_주문_테이블1;
     private OrderTable 비어있는_주문_테이블2;
-    private OrderTable 비어있지않은_주문_테이블1;
-    private OrderTable 비어있지않은_주문_테이블2;
 
     @Override
     @BeforeEach
@@ -45,8 +43,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         비어있는_주문_테이블1 = OrderTable.of(null, 3, true);
         비어있는_주문_테이블2 = OrderTable.of(null, 2, true);
 
-        비어있지않은_주문_테이블1 = OrderTable.of(null, 2, false);
-        비어있지않은_주문_테이블2 = OrderTable.of(null, 2, false);
     }
 
     /**

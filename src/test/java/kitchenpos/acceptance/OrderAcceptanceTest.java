@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("주문 관련 인수 테스트")
-public class OrderAcceptanceTest extends AcceptanceTest {
+class OrderAcceptanceTest extends AcceptanceTest {
 
     private MenuGroup 두마리메뉴;
     private Product 후라이드;

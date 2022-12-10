@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴 관련 인수 테스트")
-public class MenuAcceptanceTest extends AcceptanceTest {
+class MenuAcceptanceTest extends AcceptanceTest {
 
     private MenuGroup 두마리메뉴;
     private Product 후라이드;
