@@ -38,84 +38,91 @@ class TableGroupServiceTest {
     @Mock
     private OrderDao orderDao;
 
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
-    private OrderTable orderTable3;
-    private OrderTable orderTable4;
+    private OrderTable 메뉴테이블1;
+    private OrderTable 메뉴테이블2;
+    private OrderTable 메뉴테이블3;
+    private OrderTable 메뉴테이블4;
 
-    List<Long> orderTableIds;
+    List<Long> 메뉴테이블_아이디들;
 
-    private TableGroup tableGroup;
+    private TableGroup 단체지정;
 
 
     @BeforeEach
     void setUp() {
-        orderTable1 = generateOrderTable(1L, 5, true);
-        orderTable2 = generateOrderTable(2L, 3, true);
-        orderTable3 = generateOrderTable(3L, 3, false);
-        orderTable4 = generateOrderTable(4L, 1L,3, false);
+        메뉴테이블1 = generateOrderTable(1L, 5, true);
+        메뉴테이블2 = generateOrderTable(2L, 3, true);
+        메뉴테이블3 = generateOrderTable(3L, 3, false);
+        메뉴테이블4 = generateOrderTable(4L, 1L,3, false);
 
-        orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
+        메뉴테이블_아이디들 = Arrays.asList(메뉴테이블1.getId(), 메뉴테이블2.getId());
 
-        tableGroup = generateTable(1L, Arrays.asList(orderTable1, orderTable2));
+        단체지정 = generateTable(1L, Arrays.asList(메뉴테이블1, 메뉴테이블2));
     }
 
     @Test
     @DisplayName("단체 지정을 할 수 있다.")
     void tableGroupTest1() {
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
-        given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
-        given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
+        given(orderTableDao.findAllByIdIn(메뉴테이블_아이디들)).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블2));
+        given(tableGroupDao.save(단체지정)).willReturn(단체지정);
+        given(orderTableDao.save(메뉴테이블1)).willReturn(메뉴테이블1);
+        given(orderTableDao.save(메뉴테이블2)).willReturn(메뉴테이블2);
 
-        TableGroup createdTableGroup = tableGroupService.create(tableGroup);
-        assertThat(createdTableGroup.getId()).isEqualTo(tableGroup.getId());
+        TableGroup 추가된_단체지정 = tableGroupService.create(단체지정);
+        assertThat(추가된_단체지정.getId()).isEqualTo(단체지정.getId());
     }
 
     @Test
     @DisplayName("단체 지정 : 주문 테이블은 필수값이며, 2개 미만이어선 안된다.")
     void tableGroupTest2() {
-        TableGroup nullOrderTable = generateTable(1L, null);
-        TableGroup lessThan2OrderTable = generateTable(2L, Arrays.asList(orderTable1));
+        TableGroup 주문테이블이_NULL인_단체지정 = generateTable(1L, null);
+        TableGroup 주문테이블이_2개미만인_단체지정 = generateTable(2L, Arrays.asList(메뉴테이블1));
 
-        assertThatThrownBy(() -> tableGroupService.create(nullOrderTable)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> tableGroupService.create(lessThan2OrderTable)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(주문테이블이_NULL인_단체지정))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(주문테이블이_2개미만인_단체지정))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("단체 지정 : 주문 테이블은 존재하는 주문 테이블들로만 구성되야 한다.")
     void tableGroupTest3() {
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(orderTable1));
+        given(orderTableDao.findAllByIdIn(메뉴테이블_아이디들)).willReturn(Arrays.asList(메뉴테이블1));
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(단체지정))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("단체 지정 : 다른 테이블 그룹에 속한 주문 테이블로는 요청할 수 없다.")
     void tableGroupTest4() {
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(orderTable1, orderTable4));
+        given(orderTableDao.findAllByIdIn(메뉴테이블_아이디들)).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블4));
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(단체지정))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("단체 지정을 제거할 수 있다.")
     void tableGroupTest5() {
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-        given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
-        given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
+        given(orderTableDao.findAllByTableGroupId(단체지정.getId())).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(메뉴테이블1.getId(), 메뉴테이블2.getId()),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderTableDao.save(메뉴테이블1)).willReturn(메뉴테이블1);
+        given(orderTableDao.save(메뉴테이블2)).willReturn(메뉴테이블2);
 
-        tableGroupService.ungroup(tableGroup.getId());
+        tableGroupService.ungroup(단체지정.getId());
     }
 
     @Test
     @DisplayName("단체 지정 제거 : 주문 테이블의 상태가 조리중이거나 식사중이면 안된다.")
     void tableGroupTest6() {
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderTableDao.findAllByTableGroupId(단체지정.getId())).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(메뉴테이블1.getId(), 메뉴테이블2.getId()),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.ungroup(단체지정.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
 
     }
 

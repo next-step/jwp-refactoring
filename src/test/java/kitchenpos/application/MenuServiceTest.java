@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.MenuGroupServiceTest.generateMenuGroup;
+import static kitchenpos.application.MenuGroupServiceTest.메뉴그룹_생성;
 import static kitchenpos.application.ProductServiceTest.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -48,90 +48,103 @@ class MenuServiceTest {
     @Mock
     private ProductDao productDao;
 
-    private MenuGroup menuGroup;
+    private MenuGroup 메뉴그룹;
 
-    private Product product1;
-    private Product product2;
+    private Product 상품1;
+    private Product 상품2;
 
-    private List<MenuProduct> menuProducts1;
+    private MenuProduct 메뉴상품1;
+    private MenuProduct 메뉴상품2;
 
-    private Menu menu1;
-    private Menu menu2;
-    private Menu menu3;
+    private List<MenuProduct> 메뉴상품들;
+
+    private Menu 메뉴1;
+    private Menu 메뉴2;
+    private Menu 메뉴3;
+    private Menu 메뉴4;
+    private Menu 메뉴5;
 
     @BeforeEach
     void setUp() {
-        menuGroup = generateMenuGroup(1L, "menuGroup");
+        메뉴그룹 = 메뉴그룹_생성(1L, "menuGroup");
 
-        product1 = generateProduct(1L, "product1", new BigDecimal(1000));
-        product2 = generateProduct(2L, "product2", new BigDecimal(1500));
+        상품1 = generateProduct(1L, "product1", 가격(1000));
+        상품2 = generateProduct(2L, "product2", 가격(1500));
 
-        menuProducts1 = new ArrayList<>();
-        menuProducts1.add(generateMenuProduct(product1.getId(), 1));
-        menuProducts1.add(generateMenuProduct(product2.getId(), 1));
+        메뉴상품1 = generateMenuProduct(상품1.getId(), 1);
+        메뉴상품2 = generateMenuProduct(상품2.getId(), 1);
 
-        menu1 = generateMenu(1L, "menu1", new BigDecimal(2500), menuGroup.getId(), menuProducts1);
-        menu2 = generateMenu(2L, "menu2", new BigDecimal(1000), menuGroup.getId(), menuProducts1);
-        menu3 = generateMenu(3L, "menu3", new BigDecimal(1500), menuGroup.getId(), menuProducts1);
+        메뉴상품들 = Arrays.asList(메뉴상품1, 메뉴상품2);
+
+        메뉴1 = generateMenu(1L, "menu1", 가격(2500), 메뉴그룹.getId(), 메뉴상품들);
+        메뉴2 = generateMenu(2L, "menu2", 가격(1000), 메뉴그룹.getId(), 메뉴상품들);
+        메뉴3 = generateMenu(3L, "menu3", 가격(1500), 메뉴그룹.getId(), 메뉴상품들);
     }
 
     @Test
     @DisplayName("전체 메뉴를 조회할 수 있다.")
     void menuTest1() {
-        given(menuDao.findAll()).willReturn(Arrays.asList(menu1, menu2, menu3));
-        given(menuProductDao.findAllByMenuId(any(Long.class))).willReturn(menuProducts1);
+        List<Menu> 메뉴들 = 메뉴들_생성();
 
-        List<Menu> products = menuService.list();
-        assertThat(products.size()).isEqualTo(3);
+        given(menuDao.findAll()).willReturn(메뉴들);
+        given(menuProductDao.findAllByMenuId(any(Long.class))).willReturn(메뉴상품들);
+
+        List<Menu> 조회된_메뉴들 = menuService.list();
+        assertThat(조회된_메뉴들.size()).isEqualTo(메뉴들.size());
     }
 
     @Test
     @DisplayName("새로운 메뉴를 추가할 수 있다.")
     void menuTest2() {
-        given(menuGroupDao.existsById(menu1.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(product1.getId())).willReturn(Optional.of(product1));
-        given(productDao.findById(product2.getId())).willReturn(Optional.of(product2));
-        given(menuDao.save(any(Menu.class))).willReturn(menu1);
+        given(menuGroupDao.existsById(메뉴1.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(상품1.getId())).willReturn(Optional.of(상품1));
+        given(productDao.findById(상품2.getId())).willReturn(Optional.of(상품2));
+        given(menuDao.save(any(Menu.class))).willReturn(메뉴1);
 
-        Menu menu = menuService.create(menu1);
-        assertThat(menu.getName()).isEqualTo(menu1.getName());
+        Menu 추가된_메뉴 = menuService.create(메뉴1);
+        assertThat(추가된_메뉴.getName()).isEqualTo(메뉴1.getName());
     }
 
     @Test
-    @DisplayName("메뉴 가격은 필수값이며, 음수여서는 안된다.")
+    @DisplayName("새로운 메뉴 추가 : 메뉴 가격은 필수값이며, 음수여서는 안된다.")
     void menuTest3() {
-        Menu nullPriceMenu = generateMenu(4L, "nullPriceMenu", null, menuGroup.getId(), menuProducts1);
-        Menu negativePriceMenu = generateMenu(5L, "negativePriceMenu", new BigDecimal(-1), menuGroup.getId(), menuProducts1);
+        Menu 가격이_NULL인_메뉴 = generateMenu(1L, "menu1", null, 메뉴그룹.getId(), 메뉴상품들);
+        Menu 가격이_음수인_메뉴 = generateMenu(2L, "menu2", 가격(-1), 메뉴그룹.getId(), 메뉴상품들);
 
-        assertThatThrownBy(() -> menuService.create(nullPriceMenu)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> menuService.create(negativePriceMenu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(가격이_NULL인_메뉴))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(가격이_음수인_메뉴))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("존재하지 않는 메뉴 그룹으로 요청할 수 없다.")
+    @DisplayName("새로운 메뉴 추가 : 존재하지 않는 메뉴 그룹으로 요청할 수 없다.")
     void menuTest4() {
-        Menu nullMenuGroupMenu = generateMenu(6L, "nullMenuGroupMenu", new BigDecimal(1500), 999L, menuProducts1);
+        Menu 메뉴그룹이_NULL인_메뉴 = generateMenu(1L, "menu1", 가격(1500), 999L, 메뉴상품들);
 
-        assertThatThrownBy(() -> menuService.create(nullMenuGroupMenu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(메뉴그룹이_NULL인_메뉴))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("존재하지 않는 상품으로 요청할 수 없다.")
+    @DisplayName("새로운 메뉴 추가 : 존재하지 않는 상품으로 요청할 수 없다.")
     void menuTest5() {
-        List<MenuProduct> notFoundMenuProducts = new ArrayList<>();
-        notFoundMenuProducts.add(generateMenuProduct(999L, 1));
+        List<MenuProduct> 존재하지않는_제품이포함된_메뉴제품들 = new ArrayList<>();
+        존재하지않는_제품이포함된_메뉴제품들.add(generateMenuProduct(999L, 1));
 
-        Menu nullMenuGroupMenu = generateMenu(6L, "nullMenuGroupMenu", new BigDecimal(1500), menuGroup.getId(), notFoundMenuProducts);
+        Menu 존재하지않는_제품이포함된_메뉴 = generateMenu(1L, "menu1", 가격(1500), 메뉴그룹.getId(), 존재하지않는_제품이포함된_메뉴제품들);
 
-        assertThatThrownBy(() -> menuService.create(nullMenuGroupMenu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(존재하지않는_제품이포함된_메뉴))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("메뉴 가격은 메뉴 상품들의 가격의 합보다 크면 안된다.")
+    @DisplayName("새로운 메뉴 추가 : 메뉴 가격은 메뉴 상품들의 가격의 합보다 크면 안된다.")
     void menuTest6() {
-        Menu gatherThenPriceGroupMenu = generateMenu(6L, "nullMenuGroupMenu", new BigDecimal(3000), menuGroup.getId(), menuProducts1);
+        Menu 상품들의_가격의합보다_큰메뉴 = generateMenu(1L, "menu1", 가격(3000), 메뉴그룹.getId(), 메뉴상품들);
 
-        assertThatThrownBy(() -> menuService.create(gatherThenPriceGroupMenu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(상품들의_가격의합보다_큰메뉴))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     public static Menu generateMenu(Long id, String name, BigDecimal price,
@@ -141,6 +154,14 @@ class MenuServiceTest {
 
     public static MenuProduct generateMenuProduct(Long productId, long quantity) {
         return MenuProduct.of(null, null, productId, quantity);
+    }
+
+    private List<Menu> 메뉴들_생성() {
+        return Arrays.asList(메뉴1, 메뉴2, 메뉴3);
+    }
+
+    private BigDecimal 가격(int price) {
+        return new BigDecimal(price);
     }
 
 }

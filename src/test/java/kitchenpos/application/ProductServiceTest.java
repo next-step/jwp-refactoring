@@ -29,47 +29,59 @@ class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 
-    private Product product1;
-    private Product product2;
-    private Product product3;
+    private Product 상품1;
+    private Product 상품2;
+    private Product 상품3;
 
     @BeforeEach
     void setUp() {
-        product1 = generateProduct(1L, "product1", new BigDecimal(1000));
-        product2 = generateProduct(2L, "product2", new BigDecimal(1500));
-        product3 = generateProduct(3L, "product3", new BigDecimal(1300));
+        상품1 = generateProduct(1L, "product1", 가격(1000));
+        상품2 = generateProduct(2L, "product2", 가격(1500));
+        상품3 = generateProduct(3L, "product3", 가격(1300));
     }
 
     @Test
     @DisplayName("전체 상품을 조회할 수 있다.")
     void projectTest1() {
-        given(productDao.findAll()).willReturn(Arrays.asList(product1, product2, product3));
+        List<Product> 상품들 = 상품들_생성();
 
-        List<Product> products = productService.list();
-        assertThat(products.size()).isEqualTo(3);
+        given(productDao.findAll()).willReturn(상품들);
+
+        List<Product> 조회된_상품들 = productService.list();
+        assertThat(조회된_상품들.size()).isEqualTo(상품들.size());
     }
 
     @Test
     @DisplayName("새로운 상품을 추가할 수 있다.")
     void projectTest2() {
-        given(productDao.save(any(Product.class))).willReturn(product1);
+        given(productDao.save(any(Product.class))).willReturn(상품1);
 
-        Product product = productService.create(product1);
-        assertThat(product.getName()).isEqualTo(product1.getName());
+        Product 추가된_상품 = productService.create(상품1);
+        assertThat(추가된_상품.getName()).isEqualTo(상품1.getName());
     }
 
     @Test
-    @DisplayName("상품 가격은 필수값이며, 음수여서는 안된다.")
+    @DisplayName("새로운 상품 추가 : 상품 가격은 필수값이며, 음수여서는 안된다.")
     void projectTest3() {
-        Product nullPriceProduct = generateProduct(4L, "nullPriceProduct", null);
-        Product negativePriceProduct = generateProduct(5L, "negativePriceProduct", new BigDecimal(-1));
+        Product 가격이_NULL인_상품 = generateProduct(1L, "product1", null);
+        Product 가격이_음수인_상품 = generateProduct(2L, "product2", 가격(-1));
 
-        assertThatThrownBy(() -> productService.create(nullPriceProduct)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> productService.create(negativePriceProduct)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(가격이_NULL인_상품))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(가격이_음수인_상품))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     public static Product generateProduct(Long id, String name, BigDecimal price) {
         return Product.of(id, name, price);
+    }
+
+    private List<Product> 상품들_생성() {
+        return Arrays.asList(상품1, 상품2, 상품3);
+    }
+
+    private BigDecimal 가격(int price) {
+        return new BigDecimal(price);
     }
 
 }

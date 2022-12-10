@@ -27,37 +27,43 @@ class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 
-    private MenuGroup menuGroup1;
-    private MenuGroup menuGroup2;
-    private MenuGroup menuGroup3;
+    private MenuGroup 메뉴그룹1;
+    private MenuGroup 메뉴그룹2;
+    private MenuGroup 메뉴그룹3;
 
     @BeforeEach
     void setUp() {
-        menuGroup1 = generateMenuGroup(1L, "menuGroup1");
-        menuGroup2 = generateMenuGroup(2L, "menuGroup2");
-        menuGroup3 = generateMenuGroup(3L, "menuGroup3");
+        메뉴그룹1 = 메뉴그룹_생성(1L, "menuGroup1");
+        메뉴그룹2 = 메뉴그룹_생성(2L, "menuGroup2");
+        메뉴그룹3 = 메뉴그룹_생성(3L, "menuGroup3");
     }
 
     @Test
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void menuGroupTest1() {
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2, menuGroup3));
+        List<MenuGroup> 메뉴그룹들 = 메뉴그룹들_생성();
 
-        List<MenuGroup> menuGroups = menuGroupService.list();
-        assertThat(menuGroups.size()).isEqualTo(3);
+        given(menuGroupDao.findAll()).willReturn(메뉴그룹들);
+
+        List<MenuGroup> 조회된_메뉴그룹들 = menuGroupService.list();
+        assertThat(조회된_메뉴그룹들.size()).isEqualTo(메뉴그룹들.size());
     }
 
     @Test
     @DisplayName("새로운 메뉴 그룹을 추가할 수 있다.")
     void menuGroupTest2() {
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(menuGroup1);
+        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(메뉴그룹1);
 
-        MenuGroup menuGroup = menuGroupService.create(menuGroup1);
-        assertThat(menuGroup.getName()).isEqualTo(menuGroup1.getName());
+        MenuGroup 생성된_메뉴그룹 = menuGroupService.create(메뉴그룹1);
+        assertThat(생성된_메뉴그룹.getName()).isEqualTo(메뉴그룹1.getName());
     }
 
-    public static MenuGroup generateMenuGroup(Long id, String name) {
+    public static MenuGroup 메뉴그룹_생성(Long id, String name) {
         return MenuGroup.of(id, name);
+    }
+
+    private List<MenuGroup> 메뉴그룹들_생성() {
+        return Arrays.asList(메뉴그룹1, 메뉴그룹2, 메뉴그룹3);
     }
 
 }
