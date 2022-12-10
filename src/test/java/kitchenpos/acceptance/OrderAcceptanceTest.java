@@ -28,6 +28,7 @@ import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -152,7 +153,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
         OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
 
-        Order 등록된_주문 = 주문_등록되어_있음(주문).as(Order.class);
+        OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
 
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
@@ -170,7 +171,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
         OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
 
-        Order 등록된_주문 = 주문_등록되어_있음(주문).as(Order.class);
+        OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
 
         String orderStatus = OrderStatus.MEAL.name();
         ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(orderStatus));
@@ -202,10 +203,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusFail2() {
         List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        Order 등록된_주문 = 주문_등록되어_있음(OrderRequest.of(주문_테이블.getId(), 주문_항목)).as(Order.class);
+        OrderResponse 등록된_주문 = 주문_등록되어_있음(OrderRequest.of(주문_테이블.getId(), 주문_항목)).as(OrderResponse.class);
 
-        Order 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(OrderStatus.COMPLETION.name()))
-                .as(Order.class);
+        OrderResponse 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(OrderStatus.COMPLETION.name()))
+                .as(OrderResponse.class);
 
         ExtractableResponse<Response> response =
                 주문_상태_변경_요청(계산완료된_주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
@@ -221,8 +222,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private void 주문_목록_조회됨(ExtractableResponse<Response> response, Order order) {
-        List<Order> orders = response.jsonPath().getList(".", Order.class);
+    private void 주문_목록_조회됨(ExtractableResponse<Response> response, OrderResponse order) {
+        List<OrderResponse> orders = response.jsonPath().getList(".", OrderResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),

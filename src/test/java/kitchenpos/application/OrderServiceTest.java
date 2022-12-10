@@ -21,6 +21,8 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -81,12 +83,13 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
         when(orderLineItemDao.save(any())).thenReturn(주문항목);
 
-        Order result = orderService.create(주문);
+        OrderResponse result = orderService.create(주문);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
                 () -> assertThat(result.getOrderLineItems()).hasSize(1),
-                () -> assertThat(result.getOrderLineItems()).containsExactly(주문항목)
+                () -> assertThat(result.getOrderLineItems())
+                        .containsExactly(OrderLineItemResponse.from(주문항목))
         );
     }
 
@@ -139,12 +142,13 @@ class OrderServiceTest {
         when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
 
-        List<Order> results = orderService.list();
+        List<OrderResponse> results = orderService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(1),
-                () -> assertThat(results.get(0)).isEqualTo(주문),
-                () -> assertThat(results.get(0).getOrderLineItems()).containsExactly(주문항목)
+                () -> assertThat(results.get(0)).isEqualTo(OrderResponse.from(주문)),
+                () -> assertThat(results.get(0).getOrderLineItems())
+                        .containsExactly(OrderLineItemResponse.from(주문항목))
         );
     }
 
@@ -155,7 +159,7 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
 
-        Order result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
@@ -168,7 +172,8 @@ class OrderServiceTest {
     void changeOrderStatusException() {
         when(orderDao.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
+        String orderStatus = OrderStatus.MEAL.name();
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, orderStatus))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -179,7 +184,8 @@ class OrderServiceTest {
 
         Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
         Long orderId = 상태변경_주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL.name()))
+        String orderStatus = OrderStatus.MEAL.name();
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, orderStatus))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

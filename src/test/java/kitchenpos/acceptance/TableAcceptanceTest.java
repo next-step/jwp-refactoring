@@ -31,6 +31,7 @@ import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -152,7 +153,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(Order.class);
+        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목));
 
         // When 주문 테이블 빈 상태 변경 요청
         OrderTable 변경할_주문_테이블 =
@@ -195,7 +196,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         // And 주문 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        Order 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(Order.class);
+        OrderResponse 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(OrderResponse.class);
 
         // And 주문 상태(식사) 변경되어 있음
         OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
