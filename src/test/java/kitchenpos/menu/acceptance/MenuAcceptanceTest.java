@@ -44,6 +44,20 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * When : 가격이 0 이하인 상품을 생성하면
+     * Then : 상품 생성이 실패한다
+     */
+    @DisplayName("상품을 생성 실패")
+    @Test
+    void createProductFailed() {
+        // when
+        ExtractableResponse<Response> response = 상품_생성_요청("순살치킨", new BigDecimal(-1));
+
+        // then
+        상품_생성_실패됨(response);
+    }
+
+    /**
      * Given : 상품이 생성되어 있다
      * When : 상품 목록 조회를 요청하면
      * Then : 상품 목록을 응답한다.
@@ -107,6 +121,44 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_생성됨(response);
+    }
+
+    /**
+     * Given : 메뉴그룹과 상품이 생성되어 있다.
+     * When : 메뉴 가격이 0 미만인 경우 생성을 요청하면
+     * Then : 메뉴가 생성이 실패한다
+     */
+    @DisplayName("메뉴 생성 실패(가격미달) 인수 테스트")
+    @Test
+    void createMenuFailed1() {
+        // given
+        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
+
+        // when
+        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", new BigDecimal(-1), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+
+        // then
+        메뉴_생성_실패됨(response);
+    }
+
+    /**
+     * Given : 메뉴그룹과 상품이 생성되어 있다.
+     * When : 메뉴 가격이 구성되는 상품 가격의 총합보다 더 크면,
+     * Then : 메뉴가 생성이 실패한다
+     */
+    @DisplayName("메뉴 생성 실패(상품가격 총합 초과) 인수 테스트")
+    @Test
+    void createMenuFailed2() {
+        // given
+        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
+
+        // when
+        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", new BigDecimal(27_001), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+
+        // then
+        메뉴_생성_실패됨(response);
     }
 
     /**
@@ -206,4 +258,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
+    public static void 상품_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }
