@@ -25,7 +25,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
+    @JoinColumn(name = "order_table_id_v2", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)

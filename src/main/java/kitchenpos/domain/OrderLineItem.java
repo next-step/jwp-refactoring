@@ -17,7 +17,7 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
+    @JoinColumn(name = "order_id_v2", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Order order;
 
     @Column(nullable = false)
@@ -46,6 +46,11 @@ public class OrderLineItem {
     public static OrderLineItem of(Long seq, Long orderId, Long menuId, long quantity) {
         return new OrderLineItem(seq, orderId, menuId, quantity);
     }
+
+    public static OrderLineItem of(Long seq, Long menuId, long quantity) {
+        return new OrderLineItem(seq, null, menuId, quantity);
+    }
+
 
     public Long getSeq() {
         return seq;
