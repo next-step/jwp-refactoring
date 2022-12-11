@@ -6,6 +6,7 @@ import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class TableRestControllerTest extends ControllerTest {
     @DisplayName("주문테이블 생성을 요청하면 생성된 주문테이블응답")
     @Test
     public void returnTable() throws Exception {
-        OrderTable orderTable = getOrderTable();
+        OrderTableResponse orderTable = getOrderTableResponse();
         doReturn(orderTable).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
@@ -71,11 +72,9 @@ public class TableRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private OrderTable getOrderTable() {
-        return  FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(OrderTable.class)
+    private OrderTableResponse getOrderTableResponse() {
+        return  FixtureMonkey.create()
+                .giveMeBuilder(OrderTableResponse.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("tableGroupId", Arbitraries.longs().between(1, 100))
                 .set("numberOfGuests", Arbitraries.integers().between(2, 5))

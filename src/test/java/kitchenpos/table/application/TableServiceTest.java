@@ -4,6 +4,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.persistence.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -64,8 +65,8 @@ public class TableServiceTest {
                 .sampleList(100);
         doReturn(orderTables).when(orderTableDao).findAll();
 
-        List<OrderTable> returnedTables = tableService.list();
-        assertAll(() -> assertThat(returnedTables).hasSize(100), () -> assertThat(returnedTables.stream().map(OrderTable::getId)).allMatch(id -> id == 13l), () -> assertThat(returnedTables.stream().map(OrderTable::isEmpty)).allMatch(empty -> empty));
+        List<OrderTableResponse> returnedTables = tableService.list();
+        assertAll(() -> assertThat(returnedTables).hasSize(100), () -> assertThat(returnedTables.stream().map(OrderTableResponse::getId)).allMatch(id -> id == 13l), () -> assertThat(returnedTables.stream().map(OrderTableResponse::isEmpty)).allMatch(empty -> empty));
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 주문테이블이 등록안되있으면 예외발생")

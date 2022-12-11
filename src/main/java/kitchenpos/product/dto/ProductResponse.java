@@ -15,7 +15,7 @@ public class ProductResponse {
         this.money = money;
     }
 
-    public static ProductResponse from(Product product){
+    public static ProductResponse of(Product product){
         return new ProductResponse(product.getId(),product.getName(),product.getPrice());
     }
 
