@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.exception.MenuPriceGreaterThanAmountException;
 
 @Embeddable
 public class MenuPrice {
@@ -33,6 +34,12 @@ public class MenuPrice {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public void checkLessOrEqualTotalAmount(BigDecimal amount) {
+        if (price.compareTo(amount) > 0) {
+            throw new MenuPriceGreaterThanAmountException(ExceptionMessage.MENU_PRICE_GREATER_THAN_AMOUNT);
+        }
     }
 
     @Override
