@@ -3,6 +3,8 @@ package kitchenpos.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.InvalidNumberOfGuestsSize;
 
 @Embeddable
 public class NumberOfGuests {
@@ -23,7 +25,7 @@ public class NumberOfGuests {
 
     private static void checkNumberOfGuestsGreaterOrEqualsZero(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidNumberOfGuestsSize(ExceptionMessage.INVALID_NUMBER_OF_GUESTS_SIZE);
         }
     }
 

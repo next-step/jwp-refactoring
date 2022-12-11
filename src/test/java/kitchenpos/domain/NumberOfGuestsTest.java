@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.InvalidNumberOfGuestsSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +33,8 @@ class NumberOfGuestsTest {
     @Test
     void createException() {
         Assertions.assertThatThrownBy(() -> NumberOfGuests.from(-1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidNumberOfGuestsSize.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_NUMBER_OF_GUESTS_SIZE);
     }
 
     @DisplayName("방문자 수가 변경된다.")

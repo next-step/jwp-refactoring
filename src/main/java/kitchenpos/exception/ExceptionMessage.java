@@ -8,6 +8,7 @@ public class ExceptionMessage {
     public static final String MENU_PRICE_GREATER_THAN_AMOUNT = "메뉴 가격이 메뉴 상품 금액(상품가격 * 상품수량) 보다 작거나 같아야합니다.";
     public static final String EMPTY_ORDER_LINE_ITEM = "주문 시 주문항목이 비어있으면 안됩니다.";
     public static final String EMPTY_ORDER_TABLE = "주문 시 주문 테이블이 빈 상태여서는 안됩니다.";
+    public static final String INVALID_NUMBER_OF_GUESTS_SIZE = "방문한 손님 수는 음수일 수 없습니다.";
 
     private ExceptionMessage() {
     }
