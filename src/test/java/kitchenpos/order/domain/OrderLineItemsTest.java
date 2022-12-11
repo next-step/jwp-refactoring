@@ -4,9 +4,11 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.tablegroup.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -29,13 +31,21 @@ class OrderLineItemsTest {
         양식_세트 = new Menu("양식 세트", new BigDecimal(22000), 양식);
         스파게티 = new Product("스파게티", new BigDecimal(18000));
         에이드 = new Product("에이드", new BigDecimal(4000));
+
         주문테이블 = new OrderTable(1, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
+
+        ReflectionTestUtils.setField(양식, "id", 1L);
+        ReflectionTestUtils.setField(양식_세트, "id", 1L);
+        ReflectionTestUtils.setField(주문테이블, "id", 1L);
+
+        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
+
+        ReflectionTestUtils.setField(주문, "id", 1L);
 
         양식_세트.create(Arrays.asList(new MenuProduct(양식_세트, 스파게티, 1L),
                 new MenuProduct(양식_세트, 에이드, 2L)));
 
-        양식_세트_주문 = new OrderLineItem(주문, 양식_세트, 1L);
+        양식_세트_주문 = new OrderLineItem(주문, 양식_세트.getId(), 1L);
     }
 
     @Test

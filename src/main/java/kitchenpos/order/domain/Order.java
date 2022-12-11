@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
 import kitchenpos.order.exception.OrderExceptionCode;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,8 +14,7 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -26,36 +24,20 @@ public class Order extends BaseEntity {
 
     protected Order() {}
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        validate(orderTable);
-
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }
 
-    private void validate(OrderTable orderTable) {
-        if(Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(OrderExceptionCode.REQUIRED_ORDER_TABLE.getMessage());
-        }
-
-        if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException(OrderExceptionCode.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
-        }
-    }
-
     public void order(List<OrderLineItem> orderLineItems) {
-        if(CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(OrderExceptionCode.ORDER_LINE_ITEMS_CANNOT_BE_EMPTY.getMessage());
-        }
-
-        orderLineItems.forEach(orderLineItem -> addOrderLineItem(orderLineItem));
+        orderLineItems.forEach(this::addOrderLineItem);
     }
 
     void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.addOrderLineItem(this, orderLineItem);
     }
 
-    public void checkForChangingOrderTable() {
+    public void checkCookingOrEatingMealOrder() {
         if(orderStatus.isCooking() || orderStatus.isMeal()) {
             throw new IllegalArgumentException(OrderExceptionCode.CANNOT_BE_CHANGED.getMessage());
         }
@@ -73,8 +55,8 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
