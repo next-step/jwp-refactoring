@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class TableGroupServiceTest {
     private OrderTableDao orderTableDao;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Mock
     private OrderTable orderTable;
@@ -43,7 +43,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupRepository);
     }
 
     @Test
@@ -54,7 +54,7 @@ class TableGroupServiceTest {
         given(orderTable.getTableGroupId()).willReturn(null);
         given(orderTable2.isEmpty()).willReturn(true);
         given(orderTable2.getTableGroupId()).willReturn(null);
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
         TableGroup createTableGroup = tableGroupService.create(tableGroup);
 
