@@ -1,6 +1,5 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTestFixture.메뉴_등록되어_있음;
 import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_목록_조회_요청;
 import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_목록_조회됨;
 import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_목록_포함됨;
@@ -11,11 +10,11 @@ import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_생성되�
 import static kitchenpos.acceptance.OrderAcceptanceTestFixture.주문_생성됨;
 import static kitchenpos.acceptance.TableAcceptanceTestFixture.주문_테이블_생성되어_있음;
 import static kitchenpos.domain.MenuFixture.createMenu;
-import static kitchenpos.domain.MenuGroupFixture.createMenuGroup;
 import static kitchenpos.domain.MenuProductFixture.createMenuProduct;
 import static kitchenpos.domain.OrderFixture.createOrder;
 import static kitchenpos.domain.OrderLineItemFixture.createOrderLineItem;
 import static kitchenpos.domain.OrderTableFixture.createTable;
+import static kitchenpos.menu.acceptance.MenuAcceptanceTestFixture.메뉴_등록되어_있음;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestFixture.메뉴_그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTestFixture.상품_등록_되어_있음;
 
@@ -24,13 +23,13 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroupFixture;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.ProductFixture;
@@ -41,15 +40,6 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
-    private ProductResponse 후라이드치킨;
-    private ProductResponse 양념치킨;
-    private ProductResponse 콜라;
-    private MenuGroupResponse 추천메뉴;
-    private MenuProduct 후라이드치킨상품;
-    private MenuProduct 양념치킨상품;
-    private MenuProduct 콜라상품;
-    private Menu 두마리치킨;
-    private Menu 양념세트;
     private Order 주문_A;
     private Order 주문_B;
 
@@ -57,18 +47,25 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void orderSetUp() {
         super.setUp();
 
-        후라이드치킨 = 상품_등록_되어_있음(ProductFixture.후라이드치킨).as(ProductResponse.class);
-        양념치킨 = 상품_등록_되어_있음(ProductFixture.양념치킨).as(ProductResponse.class);
-        콜라 = 상품_등록_되어_있음(ProductFixture.콜라).as(ProductResponse.class);
+        ProductResponse 후라이드치킨 = 상품_등록_되어_있음(ProductFixture.후라이드치킨).as(ProductResponse.class);
+        ProductResponse 양념치킨 = 상품_등록_되어_있음(ProductFixture.양념치킨).as(ProductResponse.class);
+        ProductResponse 콜라 = 상품_등록_되어_있음(ProductFixture.콜라).as(ProductResponse.class);
 
-        추천메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupFixture.추천메뉴).as(MenuGroupResponse.class);
+        MenuGroupResponse 추천메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupFixture.추천메뉴).as(MenuGroupResponse.class);
 
-        후라이드치킨상품 = createMenuProduct(후라이드치킨.getId(), 1);
-        양념치킨상품 = createMenuProduct(양념치킨.getId(), 1);
-        콜라상품 = createMenuProduct(콜라.getId(), 1);
+        MenuProduct 후라이드치킨상품 = new MenuProduct(후라이드치킨.getId(), 1);
+        MenuProduct 양념치킨상품 = new MenuProduct(양념치킨.getId(), 1);
+        MenuProduct 콜라상품 = new MenuProduct(콜라.getId(), 1);
 
-        두마리치킨 = 메뉴_등록되어_있음(createMenu("두마리치킨", new BigDecimal(3000), 추천메뉴.getId(), Arrays.asList(후라이드치킨상품, 양념치킨상품))).as(Menu.class);
-        양념세트 = 메뉴_등록되어_있음(createMenu("양념세트", new BigDecimal(2500), 추천메뉴.getId(), Arrays.asList(양념치킨상품, 콜라상품))).as(Menu.class);
+        Menu twoChicken = new Menu("두마리치킨", new BigDecimal(3000), 추천메뉴.getId());
+        twoChicken.addMenuProduct(후라이드치킨상품);
+        twoChicken.addMenuProduct(양념치킨상품);
+        MenuResponse 두마리치킨 = 메뉴_등록되어_있음(twoChicken).as(MenuResponse.class);
+
+        Menu spiceSet = new Menu("양념세트", new BigDecimal(2500), 추천메뉴.getId());
+        spiceSet.addMenuProduct(양념치킨상품);
+        spiceSet.addMenuProduct(콜라상품);
+        MenuResponse 양념세트 = 메뉴_등록되어_있음(spiceSet).as(MenuResponse.class);
 
         OrderTable 주문테이블_A = 주문_테이블_생성되어_있음(createTable(5, false)).as(OrderTable.class);
         OrderTable 주문테이블_B = 주문_테이블_생성되어_있음(createTable(3, false)).as(OrderTable.class);
