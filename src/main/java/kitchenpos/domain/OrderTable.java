@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -23,6 +24,9 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
+
+    @Embedded
+    private Orders orders;
 
     @Column(nullable = false)
     private int numberOfGuests;
