@@ -1,13 +1,12 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.fixture.MenuFixture;
 import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.MenuProductFixture;
 import kitchenpos.fixture.ProductFixture;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +55,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void set_up() {
-        상품_후라이드치킨 = ProductFixture.create( "후라이드치킨", BigDecimal.valueOf(15_000));
+        상품_후라이드치킨 = ProductFixture.create("후라이드치킨", BigDecimal.valueOf(15_000));
         메뉴_상품_후라이드_치킨 = MenuProductFixture.create(1L, ProductFixture.후라이드치킨.getId(), 1L);
         메뉴_그룹_기본 = MenuGroupFixture.create(1L, "메뉴 그룹 기본");
         메뉴_기본 = MenuFixture.create(

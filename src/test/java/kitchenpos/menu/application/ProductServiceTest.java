@@ -1,9 +1,10 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.fixture.ProductFixture;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.fixture.ProductFixture;
-import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,10 +50,13 @@ class ProductServiceTest {
         when(productRepository.save(any())).thenReturn(강정치킨);
 
         // when
-        Product 상품_등록 = productService.create(강정치킨);
+        ProductResponse 상품_등록 = productService.create(new ProductRequest("강정치킨", BigDecimal.valueOf(18_000)));
 
         // then
-        assertThat(상품_등록).isEqualTo(강정치킨);
+        assertAll(
+                () -> assertThat(상품_등록.getName()).isEqualTo(강정치킨.getName()),
+                () -> assertThat(상품_등록.getPrice()).isEqualTo(강정치킨.getPrice())
+        );
     }
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다.")
@@ -67,15 +71,18 @@ class ProductServiceTest {
     @Test
     void find_products() {
         // given
-        when(productService.list()).thenReturn(Arrays.asList(강정치킨, 후라이드치킨));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(강정치킨, 후라이드치킨));
 
         // when
-        List<Product> 상품_목록 = productService.list();
+        List<ProductResponse> 상품목록 = productService.list();
 
         // then
         assertAll(
-                () -> assertThat(상품_목록).hasSize(2),
-                () -> assertThat(상품_목록).containsExactly(강정치킨, 후라이드치킨)
+                () -> assertThat(상품목록).hasSize(2),
+                () -> assertThat(상품목록.get(0).getName()).isEqualTo(강정치킨.getName()),
+                () -> assertThat(상품목록.get(0).getPrice()).isEqualTo(강정치킨.getPrice()),
+                () -> assertThat(상품목록.get(1).getName()).isEqualTo(후라이드치킨.getName()),
+                () -> assertThat(상품목록.get(1).getPrice()).isEqualTo(후라이드치킨.getPrice())
         );
     }
 
