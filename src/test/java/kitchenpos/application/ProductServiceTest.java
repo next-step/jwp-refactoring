@@ -58,8 +58,11 @@ class ProductServiceTest {
     @Test
     void create_price_fail() {
         // given
-        Product 상품_가격_오류 = new Product();
-        상품_가격_오류.setPrice(BigDecimal.valueOf(-100_000));
+        Product 상품_가격_오류 = new Product(
+                1L,
+                "name",
+                BigDecimal.valueOf(-100_000)
+        );
 
         // when && then
         assertThatThrownBy(() -> productService.create(상품_가격_오류))
