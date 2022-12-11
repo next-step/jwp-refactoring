@@ -1,13 +1,15 @@
 package kitchenpos.menu.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.persistence.MenuDao;
 import kitchenpos.menu.persistence.MenuGroupDao;
 import kitchenpos.menu.persistence.MenuProductDao;
-import kitchenpos.product.persistence.ProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.persistence.ProductDao;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -44,8 +46,13 @@ public class MenuServiceTest {
 
     public static FixtureMonkey fixtureMonkey;
 
+    public static FixtureMonkey builderFixtureMonkey;
+
     @BeforeAll
     public static void setup() {
+        builderFixtureMonkey = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build();
         fixtureMonkey = FixtureMonkey.create();
     }
 
@@ -101,8 +108,9 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
     @Test
     public void throwsExceptionWhenMenuPriceGreater() {
-        Product product = fixtureMonkey.giveMeBuilder(Product.class)
-                .set("price", BigDecimal.valueOf(Arbitraries.integers().between(1000, 1500).sample()))
+        Product product = builderFixtureMonkey
+                .giveMeBuilder(Product.class)
+                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sample();
         List<MenuProduct> menuProduct = fixtureMonkey.giveMeBuilder(MenuProduct.class)
                 .set("quantity", Arbitraries.integers().between(1, 5))
@@ -129,8 +137,9 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        Product product = fixtureMonkey.giveMeBuilder(Product.class)
-                .set("price", BigDecimal.valueOf(Arbitraries.integers().between(1000, 1500).sample()))
+        Product product = builderFixtureMonkey
+                .giveMeBuilder(Product.class)
+                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sample();
         MenuProduct menuProduct = fixtureMonkey.giveMeBuilder(MenuProduct.class)
                 .set("menuId", Arbitraries.longs().between(1, 5))
@@ -182,7 +191,7 @@ public class MenuServiceTest {
     public void returnMenus() {
         List<Menu> menus = fixtureMonkey
                 .giveMeBuilder(Menu.class)
-                .set("id",Arbitraries.longs().between(1,1000l))
+                .set("id", Arbitraries.longs().between(1, 1000l))
                 .setNull("menuProducts")
                 .sampleList(5);
         List<MenuProduct> menuProducts = fixtureMonkey
