@@ -13,6 +13,10 @@ public class ExceptionMessage {
     public static final String CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED = "단체 지정이 되어있는 주문 테이블은 빈 상태를 변경할 수 없습니다.";
     public static final String CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL = "주문 상태가 조리 또는 식사이면 주문 테이블의 빈 상태를 변경할 수 없습니다.";
     public static final String CAN_NOT_CHANGE_NUMBER_OF_GUESTS = "주문 테이블이 빈 테이블이면 방문한 손님 수를 변경할 수 없습니다.";
+    public static final String CAN_NOT_UN_GROUP_ORDER_TABLES = "주문 테이블들의 상태가 조리 또는 식사이면 단체 지정을 취소할 수 없습니다.";
+    public static final String INVALID_ORDER_TABLE_SIZE = "주문 테이블이 2개 이상일 때 단체 지정을 할 수 있습니다.";
+    public static final String NOT_EMPTY_ORDER_TABLE_EXIST = "빈 테이블이 아닌 주문 테이블이 있이서 단체 지정을 할 수 없습니다.";
+    public static final String ALREADY_GROUPED_ORDER_TABLE_EXIST = "이미 단체 지정된 주문 테이블이 있어서 단체 지정을 할 수 없습니다.";
 
     private ExceptionMessage() {
     }

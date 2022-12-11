@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.exception.CannotGroupOrderTablesException;
+import kitchenpos.exception.CannotUnGroupOrderTablesException;
+import kitchenpos.exception.ExceptionMessage;
 
 @Embeddable
 public class OrderTables {
@@ -44,7 +47,7 @@ public class OrderTables {
 
     private void checkAllUnGroupableOrderStatus() {
         if (anyMatchedBy(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new CannotUnGroupOrderTablesException(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
         }
     }
 
@@ -56,7 +59,7 @@ public class OrderTables {
 
     private void checkOrderTableSizeGreaterThanMinSize() {
         if (orderTables.isEmpty() || orderTables.size() < MIN_ORDER_TABLE_SIZE) {
-            throw new IllegalArgumentException();
+            throw new CannotGroupOrderTablesException(ExceptionMessage.INVALID_ORDER_TABLE_SIZE);
         }
     }
 
@@ -64,7 +67,7 @@ public class OrderTables {
         boolean isNotEmpty = orderTables.stream().anyMatch(it -> !it.isEmpty());
 
         if (isNotEmpty) {
-            throw new IllegalArgumentException();
+            throw new CannotGroupOrderTablesException(ExceptionMessage.NOT_EMPTY_ORDER_TABLE_EXIST);
         }
     }
 
@@ -72,7 +75,7 @@ public class OrderTables {
         boolean alreadyRegistered = orderTables.stream().anyMatch(it -> Objects.nonNull(it.getTableGroupId()));
 
         if (alreadyRegistered) {
-            throw new IllegalArgumentException();
+            throw new CannotGroupOrderTablesException(ExceptionMessage.ALREADY_GROUPED_ORDER_TABLE_EXIST);
         }
     }
 }
