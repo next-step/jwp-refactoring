@@ -39,7 +39,15 @@ public class OrderTable {
     }
 
     public void groupBy(Long tableGroupId) {
+        if (isGrouped()) {
+            throw new IllegalArgumentException(IS_GROUPED);
+        }
+
         this.tableGroupId = tableGroupId;
+    }
+
+    public void ungroup() {
+        this.tableGroupId = null;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {

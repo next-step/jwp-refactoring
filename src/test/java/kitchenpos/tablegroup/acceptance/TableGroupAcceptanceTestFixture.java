@@ -1,26 +1,26 @@
-package kitchenpos.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class TableGroupAcceptanceTestFixture {
-    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroupRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(request)
                 .when().post("/api/table-groups")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 테이블_그룹_생성되어_있음(TableGroup tableGroup) {
-        return 테이블_그룹_생성_요청(tableGroup);
+    public static ExtractableResponse<Response> 테이블_그룹_생성되어_있음(TableGroupRequest request) {
+        return 테이블_그룹_생성_요청(request);
     }
 
     public static ExtractableResponse<Response> 테이블_그룹_해제_요청(Long tableGroupId) {
