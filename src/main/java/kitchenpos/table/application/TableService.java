@@ -1,7 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -9,9 +10,7 @@ import kitchenpos.table.persistence.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,20 +37,15 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        List<Order> savedOrders = orderDao.findAllByOrderTableId(orderTableId);
+        boolean isBeforeComplete = savedOrders.stream().anyMatch(order -> order.getOrderStatus()
+                .equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name()));
+        if (isBeforeComplete) {
             throw new IllegalArgumentException();
         }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
+        savedOrderTable.chnageEmpty(orderTable.isEmpty());
         return orderTableDao.save(savedOrderTable);
     }
 

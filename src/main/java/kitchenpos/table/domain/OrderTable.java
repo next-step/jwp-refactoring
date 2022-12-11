@@ -1,12 +1,14 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
+
 public class OrderTable {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable(){}
+    public OrderTable() {}
 
     private OrderTable(OrderTableBuilder builder) {
         this.id = builder.id;
@@ -78,7 +80,10 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void chnageEmpty(final boolean empty) {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException();
+        }
         this.empty = empty;
     }
 }

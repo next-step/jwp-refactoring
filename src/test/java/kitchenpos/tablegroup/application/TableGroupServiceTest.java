@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.persistence.OrderTableDao;
@@ -43,7 +44,9 @@ public class TableGroupServiceTest {
 
     @BeforeAll
     public static void setup() {
-        fixtureMonkey = FixtureMonkey.create();
+        fixtureMonkey = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build();
     }
 
     @DisplayName("테이블그룹을 추가할 경우 소속된 테이블이 없으면 예외발생")
