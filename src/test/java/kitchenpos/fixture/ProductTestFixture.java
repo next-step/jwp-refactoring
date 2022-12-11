@@ -32,6 +32,6 @@ public class ProductTestFixture {
     }
 
     public static Product 상품생성(ProductRequest request) {
-        return Product.of(request.getId(), request.getName(), request.getPrice());
+        return Product.of(request.getName(), request.getPrice());
     }
 }
