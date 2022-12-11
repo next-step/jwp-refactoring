@@ -73,12 +73,12 @@
 ### 요구 사항 체크리스트
 - [ ] 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다.
   - [ ] Menu
-  - [ ] MenuGroup
+  - [X] MenuGroup
   - [ ] MenuProduct
   - [ ] Order
   - [ ] OrderLineItem
   - [ ] OrderStatus
   - [ ] OrderTable
-  - [ ] Product
+  - [X] Product
   - [ ] TableGroup
 

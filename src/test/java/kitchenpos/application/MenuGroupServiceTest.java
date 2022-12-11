@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
@@ -28,21 +31,23 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
+    private MenuGroupRequest 중국집_1인_메뉴_세트_요청;
     private MenuGroup 중국집_1인_메뉴_세트;
 
     @BeforeEach
     void setUp() {
-        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트();
+        중국집_1인_메뉴_세트_요청 = 중국집_1인_메뉴_세트_요청();
+        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청);
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
         // given
-        when(menuGroupDao.save(중국집_1인_메뉴_세트)).thenReturn(중국집_1인_메뉴_세트);
+        when(menuGroupDao.save(any())).thenReturn(중국집_1인_메뉴_세트);
 
         // when
-        MenuGroup saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트);
+        MenuGroup saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트_요청);
 
         // then
         assertThat(saveMenuGroup.getId()).isNotNull();

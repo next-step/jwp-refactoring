@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트_요청;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuTestFixture.짜장면_탕수육_1인_메뉴_세트;
 import static kitchenpos.fixture.MenuTestFixture.짬뽕_탕수육_1인_메뉴_세트;
@@ -73,7 +74,7 @@ class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트();
+        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청());
         짜장면 = 상품생성(짜장면_요청());
         탕수육 = 상품생성(탕수육_요청());
         짬뽕 = 상품생성(짬뽕_요청());
