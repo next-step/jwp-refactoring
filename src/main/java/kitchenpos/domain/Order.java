@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -9,6 +10,17 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
+
+    public Order() {
+    }
+
+    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = OrderStatus.COOKING.name();
+    }
 
     public Long getId() {
         return id;
