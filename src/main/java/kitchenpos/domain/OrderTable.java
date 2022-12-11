@@ -29,8 +29,8 @@ public class OrderTable {
     @Embedded
     private Orders orders = Orders.createEmpty();
 
-    @Column(nullable = false)
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Column(nullable = false)
     private boolean empty;
@@ -43,7 +43,7 @@ public class OrderTable {
         this.tableGroup = Optional.ofNullable(tableGroupId)
                 .map(it -> TableGroup.of(it, LocalDateTime.now()))
                 .orElse(null);
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
@@ -80,19 +80,15 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         if (this.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
     public boolean isEmpty() {
