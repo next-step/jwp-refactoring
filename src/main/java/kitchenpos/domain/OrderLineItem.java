@@ -26,42 +26,29 @@ public class OrderLineItem {
     @Column(nullable = false)
     private long quantity;
 
-    @Deprecated
-    private Long orderId;
-
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+    private OrderLineItem(Long seq, Long menuId, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItem of(Long menuId, long quantity) {
-        return new OrderLineItem(null, null, menuId, quantity);
-    }
-
-    public static OrderLineItem of(Long seq, Long orderId, Long menuId, long quantity) {
-        return new OrderLineItem(seq, orderId, menuId, quantity);
+        return new OrderLineItem(null, menuId, quantity);
     }
 
     public static OrderLineItem of(Long seq, Long menuId, long quantity) {
-        return new OrderLineItem(seq, null, menuId, quantity);
+        return new OrderLineItem(seq, menuId, quantity);
     }
-
 
     public Long getSeq() {
         return seq;
     }
 
     public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+        return order.getId();
     }
 
     public Long getMenuId() {
