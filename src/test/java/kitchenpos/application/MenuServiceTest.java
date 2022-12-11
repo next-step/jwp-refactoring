@@ -80,7 +80,6 @@ class MenuServiceTest {
         MenuProduct menuProduct = new MenuProduct(1L, 1L, 1L, 1l);
         MenuProduct menuProduct2 = new MenuProduct(2L, 1L, 2L, 1l);
         Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
-        Product 후라이드치킨_상품2 = new Product(2L, "후라이드치킨", new BigDecimal(16000.00));
         Menu 메뉴의_가격이_메뉴_상품들_가격의_합보다_높은경우 = new Menu(1L, "후라이드치킨", new BigDecimal(40000.00), 1L,
                 Arrays.asList(menuProduct, menuProduct2));
         given(menuGroupRepository.existsById(any())).willReturn(true);

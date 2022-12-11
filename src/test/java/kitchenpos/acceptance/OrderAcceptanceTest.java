@@ -18,7 +18,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class OrderAcceptanceTest extends BaseAcceptanceTest {
 
     MenuGroup 후라이드치킨_메뉴그룹 = new MenuGroup(1L, "후라이드치킨");
-    Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
+    ProductRequest 후라이드치킨_상품 = new ProductRequest(1L, "후라이드치킨", new BigDecimal(16000.00));
     MenuProduct 후라이드치킨_메뉴상품 = new MenuProduct(1L, 1L, 1L, 1);
     Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(후라이드치킨_메뉴상품));
     OrderTable 빈_주문_테이블 = new OrderTable(null, 1L, 1, true);
@@ -231,7 +231,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private ResultActions 상품_등록(Product product) throws Exception {
+    private ResultActions 상품_등록(ProductRequest product) throws Exception {
         return mvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(product))
