@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.domain.Menu;
@@ -20,16 +21,40 @@ import org.springframework.test.web.servlet.ResultActions;
 class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
+    Product 양념치킨_상품 = new Product(2L, "양념치킨", new BigDecimal(16000.00));
     MenuProduct 후라이드치킨_메뉴상품 = new MenuProduct(1L, 1L, 1L, 1);
+    MenuProduct 양념치킨_메뉴상품 = new MenuProduct(2L, 1L, 2L, 1);
     MenuGroup 후라이드치킨_메뉴그룹 = new MenuGroup(1L, "후라이드치킨");
     MenuGroup 양념치킨_메뉴그룹 = new MenuGroup(2L, "양념치킨");
+    MenuGroup 두마리치킨_메뉴그룹 = new MenuGroup(1L, "두마리치킨");
     Menu 후라이드치킨_메뉴 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(후라이드치킨_메뉴상품));
+    Menu 두마리치킨_메뉴 = new Menu(1L, "두마리치킨", new BigDecimal(40000.00), 1L, Arrays.asList(후라이드치킨_메뉴상품, 양념치킨_메뉴상품));
 
     @Test
-    void 메뉴등록시_가격이_0원_이하면_오류발생() throws Exception {
-        Menu 잘못된_가격이_측정된_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L, null);
+    void 메뉴등록시_가격이_0원_미만이면_오류발생() throws Exception {
+        Menu 가격이_0원_미만인_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L, null);
+
+        ResultActions resultActions = 메뉴_등록(가격이_0원_미만인_메뉴);
+
+        메뉴_등록_실패(resultActions);
+    }
+
+    @Test
+    void 메뉴등록시_가격이_null_이면_오류발생() throws Exception {
+        Menu 잘못된_가격이_측정된_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", null, 1L, null);
 
         ResultActions resultActions = 메뉴_등록(잘못된_가격이_측정된_메뉴);
+
+        메뉴_등록_실패(resultActions);
+    }
+
+    @Test
+    void 메뉴의_가격은_메뉴상품들_가격의_합보다_낮아야_한다() throws Exception {
+        메뉴그룹_등록(두마리치킨_메뉴그룹);
+        상품_등록(후라이드치킨_상품);
+        상품_등록(양념치킨_상품);
+
+        ResultActions resultActions = 메뉴_등록(두마리치킨_메뉴);
 
         메뉴_등록_실패(resultActions);
     }

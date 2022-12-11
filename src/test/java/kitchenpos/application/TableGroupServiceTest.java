@@ -71,6 +71,15 @@ class TableGroupServiceTest {
     }
 
     @Test
+    void 주문_테이블은_필수로_지정해야_한다() {
+        TableGroup 주문_테이블을_지정하지_않은_경우 = new TableGroup(1L, LocalDateTime.now(), null);
+
+        ThrowingCallable 주문_테이블을_지정하지_않은_단체_지정 = () -> tableGroupService.create(주문_테이블을_지정하지_않은_경우);
+
+        assertThatIllegalArgumentException().isThrownBy(주문_테이블을_지정하지_않은_단체_지정);
+    }
+
+    @Test
     void 등록_된_주문_테이블만_단체_지정이_가능하다() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
         given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.singletonList(orderTable3));

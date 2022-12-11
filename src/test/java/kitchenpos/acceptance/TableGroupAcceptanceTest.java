@@ -52,6 +52,15 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
+    void 주문_테이블은_필수로_지정해야_한다() throws Exception {
+        OrderTable 주문_테이블을_지정하지_않은_경우 = null;
+
+        ResultActions resultActions = 단체_지정(주문_테이블을_지정하지_않은_경우);
+
+        단체_지정_실패(resultActions);
+    }
+
+    @Test
     void 등록_된_주문_테이블만_단체_지정이_가능하다() throws Exception {
         OrderTable 등록_되지_않은_주문_테이블 = new OrderTable(null, null, 2, true);
         OrderTable 등록_되지_않은_주문_테이블2 = new OrderTable(null, null, 2, true);

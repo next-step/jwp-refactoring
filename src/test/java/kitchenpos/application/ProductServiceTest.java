@@ -50,6 +50,15 @@ class ProductServiceTest {
     }
 
     @Test
+    void 상품_가격이_null_이면_오류발생() {
+        Product 가격이_null_인_상품 = new Product(1L, "후라이드치킨", null);
+
+        ThrowingCallable 가격이_null_인_상품_등록 = () -> productService.create(가격이_null_인_상품);
+
+        assertThatIllegalArgumentException().isThrownBy(가격이_null_인_상품_등록);
+    }
+
+    @Test
     void 상품_목록을_조회할_수_있다() {
         Product 후라이드치킨 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
         given(productDao.findAll()).willReturn(Collections.singletonList(후라이드치킨));

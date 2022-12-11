@@ -5,7 +5,6 @@ import java.util.List;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,11 +54,5 @@ public class TableRestController {
         return ResponseEntity.ok()
                 .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
                 ;
-    }
-
-    @ExceptionHandler(value = {IllegalArgumentException.class})
-    public ResponseEntity handleIllegalArgsException(Exception e) {
-        return ResponseEntity.badRequest()
-                .build();
     }
 }

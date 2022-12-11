@@ -5,7 +5,6 @@ import java.util.List;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,11 +42,5 @@ public class OrderRestController {
             @RequestBody final Order order
     ) {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, order));
-    }
-
-    @ExceptionHandler(value = {IllegalArgumentException.class})
-    public ResponseEntity handleIllegalArgsException(Exception e) {
-        return ResponseEntity.badRequest()
-                .build();
     }
 }

@@ -25,6 +25,15 @@ class ProductAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
+    void 상품_가격은_null_이면_안된다() throws Exception {
+        Product 가격이_null_인_상품 = new Product(1L, "후라이드치킨", null);
+
+        ResultActions resultActions = 상품_등록(가격이_null_인_상품);
+
+        상품_등록_실패(resultActions);
+    }
+
+    @Test
     void 상품을_등록할_수_있다() throws Exception {
         Product 후라이드치킨 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
 
