@@ -82,7 +82,9 @@ class MenuServiceTest {
                 .collect(Collectors.toList());
         MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
-        when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(불고기, 김치, 공기밥));
+        when(productRepository.findById(불고기.getId())).thenReturn(Optional.of(불고기));
+        when(productRepository.findById(김치.getId())).thenReturn(Optional.of(김치));
+        when(productRepository.findById(공기밥.getId())).thenReturn(Optional.of(공기밥));
         when(menuRepository.save(any())).thenReturn(불고기정식);
 
         // when
@@ -148,7 +150,9 @@ class MenuServiceTest {
         // given
         불고기정식.setPrice(new Price(BigDecimal.valueOf(200_000)));
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
-        when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(불고기, 김치, 공기밥));
+        when(productRepository.findById(불고기.getId())).thenReturn(Optional.of(불고기));
+        when(productRepository.findById(김치.getId())).thenReturn(Optional.of(김치));
+        when(productRepository.findById(공기밥.getId())).thenReturn(Optional.of(공기밥));
         List<MenuProductRequest> menuProductRequests = Arrays.asList(불고기상품, 김치상품, 공기밥상품)
                 .stream()
                 .map(MenuProductRequest::from)

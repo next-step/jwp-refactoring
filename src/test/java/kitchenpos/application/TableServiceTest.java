@@ -6,6 +6,7 @@ import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.dto.UpdateEmptyRequest;
@@ -119,14 +120,17 @@ class TableServiceTest {
     @Test
     void updateGroupTableEmptyException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), true);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable));
-        orderTable.setTableGroup(tableGroup);
-        UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable.isEmpty());
-        when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
+        TableGroup tableGroup = new TableGroup(
+                LocalDateTime.now(),
+                new OrderTables(Arrays.asList(orderTable1, orderTable2)));
+        orderTable1.setTableGroup(tableGroup);
+        UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable1.isEmpty());
+        when(orderTableRepository.findById(orderTable1.getId())).thenReturn(Optional.of(orderTable1));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), request))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -71,7 +71,7 @@ public class OrderTable {
 
     private void validateShouldNotEmpty() {
         if (isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 빈 상태가 아닙니다.");
+            throw new IllegalArgumentException("주문 테이블이 빈 상태입니다.");
         }
     }
 
@@ -79,6 +79,10 @@ public class OrderTable {
         if (tableGroup != null) {
             throw new IllegalArgumentException("이미 단체그룹으로 지정되어 있습니다.");
         }
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     @Override

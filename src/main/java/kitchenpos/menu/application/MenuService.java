@@ -41,12 +41,14 @@ public class MenuService {
     }
 
     private List<Product> findAllProductByIds(List<Long> ids) {
-        List<Product> products = productRepository.findAllById(ids);
-        if (products.size() != ids.size()) {
-            throw new IllegalArgumentException("등록되지 않은 상품이 존재합니다.");
-        }
+        return ids.stream()
+                .map(this::findProductById)
+                .collect(Collectors.toList());
+    }
 
-        return products;
+    private Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
     }
 
     public List<MenuResponse> findAll() {

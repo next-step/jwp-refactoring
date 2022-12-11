@@ -1,12 +1,15 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup {
@@ -16,18 +19,20 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     protected TableGroup() {}
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        orderTables.validateGroup();
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
+        orderTables.validateGroup();
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
@@ -44,8 +49,20 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.get()
+                .stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::validateOrderStatusShouldComplete);
+        orderTables.ungroup();
     }
 
     @Override
