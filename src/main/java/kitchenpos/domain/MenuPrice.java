@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.common.PriceValidator;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.exception.InvalidMenuPriceException;
 import kitchenpos.exception.MenuPriceGreaterThanAmountException;
 
 @Embeddable
@@ -22,14 +22,8 @@ public class MenuPrice {
     }
 
     public static MenuPrice from(BigDecimal price) {
-        checkNotNull(price);
+        PriceValidator.checkPriceGreaterThanZero(price, ExceptionMessage.INVALID_MENU_PRICE);
         return new MenuPrice(price);
-    }
-
-    private static void checkNotNull(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidMenuPriceException(ExceptionMessage.INVALID_MENU_PRICE);
-        }
     }
 
     public BigDecimal getPrice() {

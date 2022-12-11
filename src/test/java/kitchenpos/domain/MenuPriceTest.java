@@ -2,7 +2,7 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.exception.MenuPriceGreaterThanAmountException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class MenuPriceTest {
     @Test
     void createException() {
         Assertions.assertThatThrownBy(() -> MenuPrice.from(null))
-                .isInstanceOf(InvalidMenuPriceException.class)
+                .isInstanceOf(InvalidPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
     }
 
@@ -43,7 +43,7 @@ class MenuPriceTest {
     @Test
     void createException2() {
         Assertions.assertThatThrownBy(() -> MenuPrice.from(BigDecimal.valueOf(-1)))
-                .isInstanceOf(InvalidMenuPriceException.class)
+                .isInstanceOf(InvalidPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
     }
 

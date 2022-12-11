@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.exception.InvalidMenuNameSizeException;
+import kitchenpos.exception.InvalidNameSizeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class MenuNameTest {
     @NullAndEmptySource
     void nullOrEmpty(String input) {
         Assertions.assertThatThrownBy(() -> MenuName.from(input))
-                .isInstanceOf(InvalidMenuNameSizeException.class)
+                .isInstanceOf(InvalidNameSizeException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_NAME_SIZE);
     }
 

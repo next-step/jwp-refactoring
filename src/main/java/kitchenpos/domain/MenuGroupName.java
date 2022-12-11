@@ -3,9 +3,8 @@ package kitchenpos.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.common.NameValidator;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.exception.InvalidMenuGroupNameSizeException;
-import org.springframework.util.StringUtils;
 
 @Embeddable
 public class MenuGroupName {
@@ -21,16 +20,8 @@ public class MenuGroupName {
     }
 
     public static MenuGroupName from(String name) {
-        checkNotNull(name);
+        NameValidator.checkNotNull(name, ExceptionMessage.INVALID_MENU_GROUP_NAME_SIZE);
         return new MenuGroupName(name);
-    }
-
-    private static void checkNotNull(String name) {
-        if (StringUtils.hasText(name)) {
-            return;
-        }
-
-        throw new InvalidMenuGroupNameSizeException(ExceptionMessage.INVALID_MENU_GROUP_NAME_SIZE);
     }
 
     public String getName() {

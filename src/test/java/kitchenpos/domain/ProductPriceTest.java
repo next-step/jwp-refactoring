@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.InvalidPriceException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,14 +32,16 @@ class ProductPriceTest {
     @Test
     void createException() {
         Assertions.assertThatThrownBy(() -> ProductPrice.from(null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_PRODUCT_PRICE);
     }
 
     @DisplayName("상품 가격이 0보다 작으면 예외가 발생한다.")
     @Test
     void createException2() {
         Assertions.assertThatThrownBy(() -> ProductPrice.from(BigDecimal.valueOf(-1)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_PRODUCT_PRICE);
     }
 
 }

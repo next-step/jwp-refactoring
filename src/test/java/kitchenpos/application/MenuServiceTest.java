@@ -21,7 +21,7 @@ import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.exception.MenuPriceGreaterThanAmountException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,7 +96,7 @@ class MenuServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.of(후라이드));
 
         Assertions.assertThatThrownBy(() -> menuService.create(가격_없는_메뉴요청))
-                .isInstanceOf(InvalidMenuPriceException.class)
+                .isInstanceOf(InvalidPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
     }
 
@@ -107,7 +107,7 @@ class MenuServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.of(후라이드));
 
         Assertions.assertThatThrownBy(() -> menuService.create(음수_가격_메뉴요청))
-                .isInstanceOf(InvalidMenuPriceException.class)
+                .isInstanceOf(InvalidPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
     }
 
