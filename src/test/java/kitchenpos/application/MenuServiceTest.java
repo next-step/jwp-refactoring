@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class MenuServiceTest {
+class MenuServiceTest {
 
     @Mock
     private MenuDao menuDao;

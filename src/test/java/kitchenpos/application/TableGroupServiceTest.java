@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("단체 지정 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class TableGroupServiceTest {
+class TableGroupServiceTest {
 
     @Mock
     private OrderDao orderDao;

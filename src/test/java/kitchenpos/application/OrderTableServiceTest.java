@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("주문 테이블 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class OrderTableServiceTest {
+class OrderTableServiceTest {
 
     @Mock
     private OrderDao orderDao;

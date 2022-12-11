@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("주문 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
+class OrderServiceTest {
 
     @Mock
     private MenuDao menuDao;
