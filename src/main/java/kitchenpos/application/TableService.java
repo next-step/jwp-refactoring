@@ -43,7 +43,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.from(savedOrderTable);
     }

@@ -83,7 +83,7 @@ public class OrderTable {
         return numberOfGuests.getNumberOfGuests();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         if (this.isEmpty()) {
             throw new IllegalArgumentException();
         }

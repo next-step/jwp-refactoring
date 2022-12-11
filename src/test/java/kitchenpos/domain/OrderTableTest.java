@@ -78,7 +78,7 @@ class OrderTableTest {
     void changeNumberOfGuestsException() {
         OrderTable 주문_테이블 = OrderTable.of(10, false);
 
-        Assertions.assertThatThrownBy(() -> 주문_테이블.setNumberOfGuests(-1))
+        Assertions.assertThatThrownBy(() -> 주문_테이블.changeNumberOfGuests(-1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +87,7 @@ class OrderTableTest {
     void changeNumberOfGuestsException2() {
         OrderTable 주문_테이블 = OrderTable.of(10, true);
 
-        Assertions.assertThatThrownBy(() -> 주문_테이블.setNumberOfGuests(1))
+        Assertions.assertThatThrownBy(() -> 주문_테이블.changeNumberOfGuests(1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -97,7 +97,7 @@ class OrderTableTest {
     void changeNumberOfGuests(int input, int expected) {
         OrderTable 주문_테이블 = OrderTable.of(10, false);
 
-        주문_테이블.setNumberOfGuests(input);
+        주문_테이블.changeNumberOfGuests(input);
 
         Assertions.assertThat(주문_테이블.getNumberOfGuests()).isEqualTo(expected);
     }
