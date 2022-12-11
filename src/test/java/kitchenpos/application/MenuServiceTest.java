@@ -12,11 +12,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.ProductRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,14 +33,14 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
     private ProductRepository productRepository;
     private MenuService menuService;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productRepository);
+        menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productRepository);
     }
 
     @Test
