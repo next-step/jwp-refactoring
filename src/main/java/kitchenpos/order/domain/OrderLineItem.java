@@ -6,6 +6,50 @@ public class OrderLineItem {
     private Long menuId;
     private long quantity;
 
+    public OrderLineItem(){}
+
+    private OrderLineItem(OrderLineItemBuilder builder) {
+        this.seq = builder.seq;
+        this.orderId = builder.orderId;
+        this.menuId = builder.menuId;
+        this.quantity = builder.quantity;
+    }
+
+    public static OrderLineItemBuilder builder() {
+        return new OrderLineItemBuilder();
+    }
+
+    public static class OrderLineItemBuilder {
+        private Long seq;
+        private Long orderId;
+        private Long menuId;
+        private long quantity;
+
+        public OrderLineItemBuilder seq(Long seq) {
+            this.seq = seq;
+            return this;
+        }
+
+        public OrderLineItemBuilder orderId(Long orderId) {
+            this.orderId = orderId;
+            return this;
+        }
+
+        public OrderLineItemBuilder menuId(Long menuId) {
+            this.menuId = menuId;
+            return this;
+        }
+
+        public OrderLineItemBuilder quantity(long quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public OrderLineItem build(){
+            return new OrderLineItem(this);
+        }
+    }
+
     public Long getSeq() {
         return seq;
     }

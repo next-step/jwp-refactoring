@@ -1,7 +1,9 @@
 package kitchenpos.table.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.persistence.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +38,9 @@ public class TableServiceTest {
 
     @BeforeAll
     public static void setup() {
-        fixtureMonkey = FixtureMonkey.create();
+        fixtureMonkey = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build();
     }
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
@@ -43,11 +48,11 @@ public class TableServiceTest {
     public void returnOderTable() {
         OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
+                .set("tableGroupId",443l)
                 .sample();
-        orderTable.setTableGroupId(13l);
-        doReturn(new OrderTable()).when(orderTableDao).save(orderTable);
+        doReturn(orderTable).when(orderTableDao).save(any(OrderTable.class));
 
-        assertThat(tableService.create(orderTable).getTableGroupId()).isNull();
+        assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(443l);
     }
 
     @DisplayName("주문테이블목록을 조회할경우 주문테이블목록 반환")
@@ -71,7 +76,7 @@ public class TableServiceTest {
                 .sample();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTable())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
@@ -84,7 +89,7 @@ public class TableServiceTest {
                 .when(orderTableDao)
                 .findById(orderTable.getId());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTable())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
@@ -97,7 +102,7 @@ public class TableServiceTest {
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(true).when(orderDao).existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTable())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")

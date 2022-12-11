@@ -1,9 +1,11 @@
 package kitchenpos.table.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,10 +35,10 @@ public class TableRestControllerTest extends ControllerTest {
     @Test
     public void returnTable() throws Exception {
         OrderTable orderTable = getOrderTable();
-        doReturn(orderTable).when(tableService).create(any(OrderTable.class));
+        doReturn(orderTable).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                        .content(mapper.writeValueAsString(new OrderTable()))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(orderTable.getId().intValue())))
                 .andExpect(jsonPath("$.tableGroupId", is(orderTable.getTableGroupId().intValue())))
@@ -48,10 +50,10 @@ public class TableRestControllerTest extends ControllerTest {
     @DisplayName("주문테이블생성을 요청하면 주문생성 실패응답")
     @Test
     public void throwsExceptionWhenTableCreate() throws Exception {
-        doThrow(new IllegalArgumentException()).when(tableService).create(any(OrderTable.class));
+        doThrow(new IllegalArgumentException()).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                        .content(mapper.writeValueAsString(new OrderTable()))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -70,7 +72,9 @@ public class TableRestControllerTest extends ControllerTest {
     }
 
     private OrderTable getOrderTable() {
-        return FixtureMonkey.create()
+        return  FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(OrderTable.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("tableGroupId", Arbitraries.longs().between(1, 100))

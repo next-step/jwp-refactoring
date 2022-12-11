@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,7 +63,7 @@ public class TableGroupServiceTest {
     public void throwsExceptionWhenLessThen2Table() {
         TableGroup tableGroup = fixtureMonkey
                 .giveMeBuilder(TableGroup.class)
-                .set("orderTables", Arrays.asList(new OrderTable[]{new OrderTable()}))
+                .set("orderTables", Arrays.asList(OrderTable.builder().build()))
                 .sample();
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -144,7 +145,7 @@ public class TableGroupServiceTest {
         doReturn(tableGroup)
                 .when(tableGroupDao)
                 .save(tableGroup);
-        doReturn(new OrderTable())
+        doReturn(OrderTable.builder().build())
                 .when(orderTableDao)
                 .save(any(OrderTable.class));
 
@@ -156,7 +157,7 @@ public class TableGroupServiceTest {
                 () -> assertThat(savedOrderTables.stream().map(OrderTable::isEmpty).collect(Collectors.toList()))
                         .allMatch(isEmpty -> !isEmpty),
                 () -> assertThat(savedOrderTables.stream().map(OrderTable::getTableGroupId).collect(Collectors.toList()))
-                        .allMatch(tableGroupId -> tableGroupId == savedTableGroup.getId()));
+                        .allMatch(tableGroupId -> Objects.equals(tableGroupId, savedTableGroup.getId())));
     }
 
     @DisplayName("테이블그룹을 해제할경우 테이블이 조리중이거나 식사중이면 예외발생")

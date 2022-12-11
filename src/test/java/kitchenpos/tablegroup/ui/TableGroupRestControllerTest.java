@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
@@ -21,7 +22,8 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -74,7 +76,9 @@ public class TableGroupRestControllerTest extends ControllerTest {
     }
 
     private TableGroup getTableGroup() {
-        return FixtureMonkey.create()
+        return FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(TableGroup.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("createdDate", LocalDateTime.now())
@@ -84,7 +88,9 @@ public class TableGroupRestControllerTest extends ControllerTest {
     }
 
     private List<OrderTable> getTables() {
-        return FixtureMonkey.create()
+        return FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(OrderTable.class)
                 .sampleList(Arbitraries.integers().between(1, 3).sample());
     }

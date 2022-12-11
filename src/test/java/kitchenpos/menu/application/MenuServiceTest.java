@@ -46,27 +46,24 @@ public class MenuServiceTest {
 
     public static FixtureMonkey fixtureMonkey;
 
-    public static FixtureMonkey builderFixtureMonkey;
-
     @BeforeAll
     public static void setup() {
-        builderFixtureMonkey = FixtureMonkey.builder()
+        fixtureMonkey = FixtureMonkey.builder()
                 .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
                 .build();
-        fixtureMonkey = FixtureMonkey.create();
     }
 
     @DisplayName("메뉴가격이 없는경우 예외발생")
     @Test
     public void throwsExceptionWhenNullPrice() {
-        assertThatThrownBy(() -> menuService.create(new Menu()))
+        assertThatThrownBy(() -> menuService.create(Menu.builder().build()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴가격이 0보다 작은경우 예외발생")
     @Test
     public void throwsExceptionWhenNegativePrice() {
-        Menu menu = new Menu();
+        Menu menu = Menu.builder().build();;
         menu.setPrice(BigDecimal.valueOf(Arbitraries.integers().lessOrEqual(-1).sample()));
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -76,9 +73,10 @@ public class MenuServiceTest {
     @DisplayName("메뉴가 속한 메뉴그룹이 없는경우 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsMeneGroup() {
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.valueOf(15000));
-        menu.setMenuGroupId(Arbitraries.longs().sample());
+        Menu menu = Menu.builder()
+                .price(BigDecimal.valueOf(15000))
+                .menuGroupId(Arbitraries.longs().sample())
+                .build();
         doReturn(false).when(menuGroupDao).existsById(menu.getMenuGroupId());
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -108,7 +106,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
     @Test
     public void throwsExceptionWhenMenuPriceGreater() {
-        Product product = builderFixtureMonkey
+        Product product = fixtureMonkey
                 .giveMeBuilder(Product.class)
                 .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sample();
@@ -137,7 +135,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        Product product = builderFixtureMonkey
+        Product product = fixtureMonkey
                 .giveMeBuilder(Product.class)
                 .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sample();

@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.Menu;
@@ -40,7 +41,7 @@ public class OrderRestControllerTest extends ControllerTest {
         doReturn(order).when(orderService).create(any(Order.class));
 
         webMvc.perform(post("/api/orders")
-                        .content(mapper.writeValueAsString(new Menu()))
+                        .content(mapper.writeValueAsString(Menu.builder().build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(order.getId().intValue())))
                 .andExpect(jsonPath("$.orderTableId", is(order.getOrderTableId().intValue())))
@@ -55,7 +56,7 @@ public class OrderRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(orderService).create(any(Order.class));
 
         webMvc.perform(post("/api/orders")
-                        .content(mapper.writeValueAsString(new Order()))
+                        .content(mapper.writeValueAsString(Order.builder().build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -74,7 +75,9 @@ public class OrderRestControllerTest extends ControllerTest {
     }
 
     private Order getOrder() {
-        return FixtureMonkey.create()
+        return   FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(Order.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("orderTableId", Arbitraries.longs().between(1, 100))
@@ -85,7 +88,9 @@ public class OrderRestControllerTest extends ControllerTest {
     }
 
     private List<OrderLineItem> getOrderLineItems() {
-        return FixtureMonkey.create()
+        return  FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(OrderLineItem.class)
                 .set("id", Arbitraries.longs().between(1, 20))
                 .sampleList(10);

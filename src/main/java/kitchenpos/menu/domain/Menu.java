@@ -10,6 +10,57 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
+    public Menu(){}
+
+    private Menu(MenuBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.price = builder.price;
+        this.menuGroupId = builder.menuGroupId;
+        this.menuProducts = builder.menuProducts;
+    }
+
+    public static MenuBuilder builder() {
+        return new MenuBuilder();
+    }
+
+    public static class MenuBuilder {
+        private Long id;
+        private String name;
+        private BigDecimal price;
+        private Long menuGroupId;
+        private List<MenuProduct> menuProducts;
+
+        public MenuBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public MenuBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public MenuBuilder price(BigDecimal price) {
+            this.price = price;
+            return this;
+        }
+
+        public MenuBuilder menuGroupId(Long menuGroupId) {
+            this.menuGroupId = menuGroupId;
+            return this;
+        }
+
+        public MenuBuilder menuProducts(List<MenuProduct> menuProducts) {
+            this.menuProducts = menuProducts;
+            return this;
+        }
+
+        public Menu build() {
+            return new Menu(this);
+        }
+    }
+
     public Long getId() {
         return id;
     }

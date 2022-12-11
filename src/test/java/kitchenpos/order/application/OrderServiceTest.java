@@ -1,14 +1,15 @@
 package kitchenpos.order.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.persistence.MenuDao;
-import kitchenpos.order.persistence.OrderDao;
-import kitchenpos.order.persistence.OrderLineItemDao;
-import kitchenpos.table.persistence.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.order.persistence.OrderLineItemDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.persistence.OrderTableDao;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +47,9 @@ public class OrderServiceTest {
 
     @BeforeAll
     public static void setup() {
-        fixtureMonkey = FixtureMonkey.create();
+        fixtureMonkey = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build();
     }
 
     @DisplayName("주문을 추가할 경우 주문항목이 없으면 예외발생")
@@ -116,7 +119,7 @@ public class OrderServiceTest {
                 .giveMeBuilder(Order.class)
                 .set("orderLineItems", orderLineItems)
                 .sample();
-        OrderTable orderTable = FixtureMonkey.create()
+        OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .set("empty", true)
                 .sample();
@@ -138,7 +141,7 @@ public class OrderServiceTest {
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
         OrderLineItem orderLineItem = orderLineItems.stream()
                 .findFirst()
-                .orElse(new OrderLineItem());
+                .orElse(OrderLineItem.builder().build());
         List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
@@ -200,7 +203,7 @@ public class OrderServiceTest {
         Long orderId = Arbitraries.longs().between(1, 1000).sample();
         doReturn(Optional.empty()).when(orderDao).findById(orderId);
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, new Order()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, Order.builder().build()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -214,7 +217,7 @@ public class OrderServiceTest {
                 .sample();
         doReturn(Optional.ofNullable(order)).when(orderDao).findById(order.getId());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), Order.builder().build()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -230,7 +233,7 @@ public class OrderServiceTest {
                 .giveMeBuilder(Order.class)
                 .set("orderStatus", OrderStatus.COMPLETION.name())
                 .sample();
-        List<OrderLineItem> orderLineItems = FixtureMonkey.create()
+        List<OrderLineItem> orderLineItems = fixtureMonkey
                 .giveMeBuilder(OrderLineItem.class)
                 .sampleList(Arbitraries.integers().between(1, 100).sample());
         doReturn(Optional.ofNullable(findOrder)).when(orderDao).findById(orderId);

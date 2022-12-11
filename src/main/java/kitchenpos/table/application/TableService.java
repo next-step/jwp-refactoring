@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.persistence.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +23,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
-        return orderTableDao.save(orderTable);
+    public OrderTable create(final OrderTableRequest orderTableRequest) {
+        return orderTableDao.save(orderTableRequest.toOrderTable());
     }
 
     public List<OrderTable> list() {

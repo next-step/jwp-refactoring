@@ -1,10 +1,11 @@
 package kitchenpos.menu.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.application.MenuService;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ public class MenuRestControllerTest extends ControllerTest {
         doReturn(menu).when(menuService).create(any(Menu.class));
 
         webMvc.perform(post("/api/menus")
-                        .content(mapper.writeValueAsString(new Menu()))
+                        .content(mapper.writeValueAsString(Menu.builder().build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(menu.getName())))
@@ -54,7 +55,7 @@ public class MenuRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(menuService).create(any(Menu.class));
 
         webMvc.perform(post("/api/menus")
-                        .content(mapper.writeValueAsString(new Menu()))
+                        .content(mapper.writeValueAsString(Menu.builder().build()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -62,7 +63,9 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnMenus() throws Exception {
-        List<Menu> menus = FixtureMonkey.create()
+        List<Menu> menus = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(Menu.class)
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
         doReturn(menus).when(menuService).list();
@@ -73,7 +76,9 @@ public class MenuRestControllerTest extends ControllerTest {
     }
 
     private Menu getMenu() {
-        return FixtureMonkey.create()
+        return  FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(Menu.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("price", BigDecimal.valueOf(15000))
@@ -84,7 +89,9 @@ public class MenuRestControllerTest extends ControllerTest {
     }
 
     private List<MenuProduct> getMenuProducts() {
-        return FixtureMonkey.create()
+        return  FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(MenuProduct.class)
                 .set("id", Arbitraries.longs().between(1, 20))
                 .sampleList(10);
