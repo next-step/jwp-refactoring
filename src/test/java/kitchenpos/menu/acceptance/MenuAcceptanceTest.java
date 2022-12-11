@@ -10,7 +10,6 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,11 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-    }
 
     /**
      * When : 상품 생성을 요청하면
