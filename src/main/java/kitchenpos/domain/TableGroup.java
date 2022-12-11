@@ -35,11 +35,6 @@ public class TableGroup {
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
-    }
-
-    private TableGroup(OrderTables orderTables) {
-        this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
         orderTables.registerTableGroup(this);
     }
 
@@ -52,7 +47,7 @@ public class TableGroup {
     }
 
     public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(OrderTables.from(orderTables));
+        return new TableGroup(null, OrderTables.from(orderTables));
     }
 
     public static TableGroup createEmpty() {

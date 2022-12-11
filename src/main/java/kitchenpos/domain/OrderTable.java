@@ -108,12 +108,25 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public Orders getOrders() {
+        return orders;
+    }
+
     public void addOrder(Order order) {
         this.orders.add(order);
     }
 
     public void registerTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void unGroup() {
+        this.tableGroup = null;
+    }
+
+    public boolean isGrouping() {
+        return this.tableGroup == null;
     }
 
     @Override

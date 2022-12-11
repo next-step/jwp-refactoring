@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -33,13 +34,24 @@ public class OrderTables {
         checkOrderTableSizeGreaterThanMinSize();
         checkAllOrderTablesAreEmpty();
         checkAllOrderTablesNotYetRegisteredTableGroup();
+        orderTables.forEach(it -> it.registerTableGroup(tableGroup));
+    }
 
-        orderTables.forEach(
-                it -> {
-                    it.registerTableGroup(tableGroup);
-                    it.changeEmpty(false);
-                }
-        );
+    public void unGroup() {
+        checkAllUnGroupableOrderStatus();
+        orderTables.forEach(OrderTable::unGroup);
+    }
+
+    private void checkAllUnGroupableOrderStatus() {
+        if (anyMatchedBy(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean anyMatchedBy(List<OrderStatus> orderStatuses) {
+        return orderTables.stream()
+                .map(OrderTable::getOrders)
+                .anyMatch(it -> it.anyMatchedIn(orderStatuses));
     }
 
     private void checkOrderTableSizeGreaterThanMinSize() {
