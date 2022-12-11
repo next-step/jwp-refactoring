@@ -9,6 +9,8 @@ public class ProductResponse {
     private String name;
     private BigDecimal money;
 
+    public ProductResponse(){}
+
     private ProductResponse(Long id,String name,BigDecimal money){
         this.id = id;
         this.name = name;
@@ -29,5 +31,17 @@ public class ProductResponse {
 
     public BigDecimal getMoney() {
         return money;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
     }
 }

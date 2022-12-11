@@ -7,6 +7,7 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -29,13 +31,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ProductRestController.class)
 public class ProductRestControllerTest extends ControllerTest {
+
     @MockBean
     private ProductService productService;
 
     @DisplayName("상품생성을 요청하면 생성된 상품응답")
     @Test
     public void returnProduct() throws Exception {
-        Product product = getProduct();
+        ProductResponse product = getProduct();
+        System.out.println("money value="+product.getMoney().intValue());
         doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
@@ -43,7 +47,7 @@ public class ProductRestControllerTest extends ControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(product.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(product.getName())))
-                .andExpect(jsonPath("$.price", is(product.getPrice().intValue())))
+                .andExpect(jsonPath("$.money", is(product.getMoney().intValue())))
                 .andExpect(status().isCreated());
     }
 
@@ -75,12 +79,13 @@ public class ProductRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private Product getProduct() {
-        return Product.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .money(Money.of(Arbitraries.longs().greaterOrEqual(5000).sample()))
-                .build();
+    private ProductResponse getProduct() {
+        return FixtureMonkey.create()
+                .giveMeBuilder(ProductResponse.class)
+                .set("id", Arbitraries.longs().between(1, 100).sample())
+                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .set("money", BigDecimal.valueOf(20000))
+                .sample();
     }
 }
 

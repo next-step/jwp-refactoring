@@ -74,7 +74,7 @@ public class ProductServiceTest {
                 .build();
         doReturn(mockProduct).when(productDao).save(any(Product.class));
 
-        Product savedProduct = productService.create(productRequest);
+        ProductResponse savedProduct = productService.create(productRequest);
 
         assertThat(savedProduct.getId()).isEqualTo(id);
     }
