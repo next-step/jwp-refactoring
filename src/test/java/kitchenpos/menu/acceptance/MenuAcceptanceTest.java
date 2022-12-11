@@ -1,6 +1,7 @@
 package kitchenpos.menu.acceptance;
 
 
+import static java.util.Collections.singletonList;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTestFixture.메뉴_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTestFixture.메뉴_목록_조회_요청;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTestFixture.메뉴_목록_조회됨;
@@ -15,11 +16,11 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.acceptance.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroupFixture;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuRequest.MenuProductRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.domain.ProductFixture;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,33 +32,22 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 양념치킨;
     private ProductResponse 콜라;
     private MenuGroupResponse 추천메뉴;
-    private MenuProduct 후라이드치킨상품;
-    private MenuProduct 양념치킨상품;
-    private MenuProduct 콜라상품;
-    private Menu 두마리치킨;
-    private Menu 양념세트;
+    private MenuRequest 두마리치킨;
+    private MenuRequest 양념세트;
 
     @BeforeEach
     void menuSetUp() {
         super.setUp();
 
-        후라이드치킨 = 상품_등록_되어_있음(ProductFixture.후라이드치킨).as(ProductResponse.class);
-        양념치킨 = 상품_등록_되어_있음(ProductFixture.양념치킨).as(ProductResponse.class);
-        콜라 = 상품_등록_되어_있음(ProductFixture.콜라).as(ProductResponse.class);
-
-        추천메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupFixture.추천메뉴).as(MenuGroupResponse.class);
-
-        후라이드치킨상품 = new MenuProduct(후라이드치킨.getId(), 1);
-        양념치킨상품 = new MenuProduct(양념치킨.getId(), 1);
-        콜라상품 = new MenuProduct(콜라.getId(), 1);
-
-        두마리치킨 = new Menu("두마리치킨", new BigDecimal(3000), 추천메뉴.getId());
-        두마리치킨.addMenuProduct(후라이드치킨상품);
-        두마리치킨.addMenuProduct(양념치킨상품);
-
-        양념세트 = new Menu("양념세트", new BigDecimal(2500), 추천메뉴.getId());
-        양념세트.addMenuProduct(양념치킨상품);
-        양념세트.addMenuProduct(콜라상품);
+        후라이드치킨 = 상품_등록_되어_있음(new ProductRequest("후라이드치킨", BigDecimal.valueOf(15000))).as(ProductResponse.class);
+        양념치킨 = 상품_등록_되어_있음(new ProductRequest("양념치킨", BigDecimal.valueOf(18000))).as(ProductResponse.class);
+        콜라 = 상품_등록_되어_있음(new ProductRequest("콜라", BigDecimal.valueOf(1000))).as(ProductResponse.class);
+        추천메뉴 = 메뉴_그룹_등록되어_있음(new MenuGroupRequest("추천메뉴")).as(MenuGroupResponse.class);
+        MenuProductRequest 두마리치킨상품 = new MenuProductRequest(후라이드치킨.getId(), 2);
+        MenuProductRequest 양념치킨상품 = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 콜라상품 = new MenuProductRequest(콜라.getId(), 1);
+        두마리치킨 = new MenuRequest("두마리치킨", new BigDecimal(25000), 추천메뉴.getId(), singletonList(두마리치킨상품));
+        양념세트 = new MenuRequest("양념세트", new BigDecimal(17000), 추천메뉴.getId(), Arrays.asList(양념치킨상품, 콜라상품));
     }
 
     @DisplayName("메뉴를 등록한다.")

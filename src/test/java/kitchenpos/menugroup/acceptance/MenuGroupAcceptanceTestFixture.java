@@ -7,26 +7,23 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceTestFixture {
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(menuGroup.getName());
-
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroupRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuGroupRequest)
+                .body(request)
                 .when().post("/api/menu-groups")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
-        return 메뉴_그룹_생성_요청(menuGroup);
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupRequest request) {
+        return 메뉴_그룹_생성_요청(request);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {

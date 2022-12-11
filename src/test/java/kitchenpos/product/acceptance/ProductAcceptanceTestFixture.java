@@ -14,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class ProductAcceptanceTestFixture {
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
-        ProductRequest request = new ProductRequest(product.getName(), product.getPrice());
-
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
@@ -25,8 +23,8 @@ public class ProductAcceptanceTestFixture {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 상품_등록_되어_있음(Product product) {
-        return 상품_생성_요청(product);
+    public static ExtractableResponse<Response> 상품_등록_되어_있음(ProductRequest request) {
+        return 상품_생성_요청(request);
     }
 
     public static ExtractableResponse<Response> 상품_목록_조회_요청() {

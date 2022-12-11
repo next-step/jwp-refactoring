@@ -11,23 +11,28 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.acceptance.AcceptanceTest;
-import kitchenpos.menugroup.domain.MenuGroupFixture;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("메뉴 그룹 관련 기능")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
+    private MenuGroupRequest 추천메뉴;
+    private MenuGroupRequest 인기메뉴;
 
     @BeforeEach
     void menuGroupSetUp() {
         super.setUp();
+
+        추천메뉴 = new MenuGroupRequest("추천메뉴");
+        인기메뉴 = new MenuGroupRequest("인기메뉴");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
-        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(MenuGroupFixture.추천메뉴);
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(추천메뉴);
 
         메뉴_그룹_생성됨(response);
     }
@@ -35,8 +40,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void getMenuGroupList() {
-        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MenuGroupFixture.추천메뉴);
-        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MenuGroupFixture.인기메뉴);
+        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(추천메뉴);
+        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(인기메뉴);
 
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
 

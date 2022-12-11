@@ -7,20 +7,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuRequest.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MenuAcceptanceTestFixture {
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
-        List<MenuProductRequest> menuProducts = menu.getMenuProducts().stream()
-                .map(it -> new MenuProductRequest(it.getProductId(), it.getQuantity()))
-                .collect(Collectors.toList());
-        MenuRequest request = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProducts);
-
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
@@ -29,8 +22,8 @@ public class MenuAcceptanceTestFixture {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {
-        return 메뉴_생성_요청(menu);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest request) {
+        return 메뉴_생성_요청(request);
     }
 
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {

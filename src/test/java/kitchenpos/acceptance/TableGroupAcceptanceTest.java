@@ -1,19 +1,19 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.TableAcceptanceTestFixture.주문_테이블_생성되어_있음;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_생성_요청;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_생성되어_있음;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_생성됨;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_해제_요청;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestFixture.테이블_그룹_해제됨;
-import static kitchenpos.domain.OrderTableFixture.createTable;
 import static kitchenpos.domain.TableGroupFixture.createTableGroup;
+import static kitchenpos.ordertable.acceptance.TableAcceptanceTestFixture.주문_테이블_생성되어_있음;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ordertable.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void tableGroupSetUp() {
         super.setUp();
 
-        OrderTable 주문테이블_A = 주문_테이블_생성되어_있음(createTable(5, true)).as(OrderTable.class);
-        OrderTable 주문테이블_B = 주문_테이블_생성되어_있음(createTable(6, true)).as(OrderTable.class);
+        OrderTable 주문테이블_A = 주문_테이블_생성되어_있음(new TableRequest(5, true)).as(OrderTable.class);
+        OrderTable 주문테이블_B = 주문_테이블_생성되어_있음(new TableRequest(6, true)).as(OrderTable.class);
 
         단체테이블 = createTableGroup(Arrays.asList(주문테이블_A, 주문테이블_B));
     }

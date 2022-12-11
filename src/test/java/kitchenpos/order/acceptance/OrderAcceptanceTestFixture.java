@@ -7,32 +7,25 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderRequest.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class OrderAcceptanceTestFixture {
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
-        List<OrderLineItemRequest> orderLineItemRequests = order.getOrderLineItems().stream()
-                .map(it -> new OrderLineItemRequest(it.getMenuId(), it.getQuantity()))
-                .collect(Collectors.toList());
-        OrderRequest orderRequest = new OrderRequest(order.getOrderTableId(), orderLineItemRequests);
-
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderRequest)
+                .body(request)
                 .when().post("/api/orders")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_생성되어_있음(Order order) {
-        return 주문_생성_요청(order);
+    public static ExtractableResponse<Response> 주문_생성되어_있음(OrderRequest request) {
+        return 주문_생성_요청(request);
     }
 
     public static ExtractableResponse<Response> 주문_목록_조회_요청() {
