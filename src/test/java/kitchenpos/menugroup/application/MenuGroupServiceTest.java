@@ -4,6 +4,7 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.persistence.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
 import net.jqwik.api.Arbitraries;
@@ -50,9 +51,9 @@ public class MenuGroupServiceTest {
                 .sampleList(5);
         doReturn(mockMenuGroups).when(menuGroupDao).findAll();
 
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
-        List<Long> menuGroupIds = menuGroups.stream().map(MenuGroup::getId).collect(Collectors.toList());
+        List<Long> menuGroupIds = menuGroups.stream().map(MenuGroupResponse::getId).collect(Collectors.toList());
         assertAll(() -> assertThat(menuGroupIds).containsAnyOf(1l, 2l, 3l, 4l, 5l));
     }
 }
