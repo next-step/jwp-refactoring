@@ -88,6 +88,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 조회 인수 테스트")
     @Test
     void findMenus() {
+        // given
+        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
+        메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+
         // when
         ExtractableResponse<Response> response = 메뉴_조회_요청();
 

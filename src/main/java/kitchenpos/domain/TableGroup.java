@@ -15,6 +15,11 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public TableGroup(Long id, List<OrderTable> orderTables) {
+        this.id = id;
+        this.orderTables = orderTables;
+    }
+
     public Long getId() {
         return id;
     }

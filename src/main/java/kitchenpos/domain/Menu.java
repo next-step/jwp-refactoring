@@ -20,6 +20,14 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
     public Long getId() {
         return id;
     }

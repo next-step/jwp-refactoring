@@ -86,40 +86,31 @@
     - 주문
   - [x] 분석한 도메인 간의 관계를 말로 잘 풀어서 요구사항을 정리 해 본다.
 - [ ] 키친포스의 요구사항을 토대로 테스트 코드를 작성
-  - [ ] Business Object 에 대한 테스트 코드 작성
-    - [ ] `Product`
-    - [ ] `Menu`
-    - [ ] `Menu Group` 
-    - [ ] `Menu Product` 
-    - [ ] `Order` 
-    - [ ] `Order Line Item` 
-    - [ ] `Order Table` 
-    - [ ] `Table Group` 
   - [ ] `@SpringBootTest`로 통합 테스트 코드 작성
     - [ ] 메뉴 통합테스트
     - [ ] 주문 통합테스트
-  - [ ] `@ExtendWith(MockitoExtension.class)` 를 이용해 단위 테스트 코드 작성
-    - [ ] `Product`
-      - [ ] create 단위 테스트 작성 
-      - [ ] list 단위 테스트 작성
-    - [ ] `MenuGroup`
-      - [ ] create 단위 테스트 작성
-      - [ ] list 단위 테스트 작성
-    - [ ] `Menu`
-      - [ ] create 단위 테스트 작성
-      - [ ] list 단위 테스트 작성
-    - [ ] `TableGroup`
-      - [ ] create 단위 테스트 작성
-      - [ ] ungroup 단위 테스트 작성
-    - [ ] `Table`
-      - [ ] create 단위 테스트 작성
-      - [ ] list 단위 테스트 작성
-      - [ ] changeEmpty 단위 테스트 작성
-      - [ ] changeNumberOfGuests 단위 테스트 작성
-    - [ ] `Order`
-      - [ ] create 단위 테스트 작성
-      - [ ] list 단위 테스트 작성
-      - [ ] changeOrderStatus 단위 테스트 작성
+  - [x] `@ExtendWith(MockitoExtension.class)` 를 이용해 단위 테스트 코드 작성
+    - [x] `Product`
+      - [x] create 단위 테스트 작성 
+      - [x] list 단위 테스트 작성
+    - [x] `MenuGroup`
+      - [x] create 단위 테스트 작성
+      - [x] list 단위 테스트 작성
+    - [x] `Menu`
+      - [x] create 단위 테스트 작성
+      - [x] list 단위 테스트 작성
+    - [x] `Table`
+      - [x] create 단위 테스트 작성
+      - [x] list 단위 테스트 작성
+      - [x] changeEmpty 단위 테스트 작성
+      - [x] changeNumberOfGuests 단위 테스트 작성
+    - [x] `Order`
+      - [x] create 단위 테스트 작성
+      - [x] list 단위 테스트 작성
+      - [x] changeOrderStatus 단위 테스트 작성
+    - [x] `TableGroup`
+      - [x] create 단위 테스트 작성
+      - [x] ungroup 단위 테스트 작성
   - [x] 인수 테스트 코드 작성
     - [x] 메뉴 인수 테스트 작성
     - [x] 주문 인수 테스트 작성
