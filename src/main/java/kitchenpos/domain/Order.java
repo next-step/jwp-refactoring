@@ -1,7 +1,9 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Order {
     private Long id;
@@ -9,6 +11,33 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
+
+    private Order() {
+    }
+
+    private Order(Long id,
+                  Long orderTableId,
+                  String orderStatus,
+                  LocalDateTime orderedTime,
+                  List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+    }
+
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+    }
+
+    public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(id, orderTableId, orderStatus, orderedTime, Collections.emptyList());
+    }
 
     public Long getId() {
         return id;
@@ -48,5 +77,22 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Order order = (Order) o;
+        return id.equals(order.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

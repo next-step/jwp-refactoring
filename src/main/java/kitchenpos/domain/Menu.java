@@ -5,10 +5,29 @@ import java.util.List;
 
 public class Menu {
     private Long id;
-    private String name;
+    private MenuName name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
+
+    private Menu() {
+    }
+
+    private Menu(Long id, MenuName name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId) {
+        return new Menu(id, MenuName.from(name), price, menuGroupId, null);
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, MenuName.from(name), price, menuGroupId, menuProducts);
+    }
 
     public Long getId() {
         return id;
@@ -19,27 +38,15 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
