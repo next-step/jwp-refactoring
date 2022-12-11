@@ -1,7 +1,11 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class Menu {
     private Long id;
@@ -22,8 +26,32 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId,
-                          List<MenuProduct> menuProducts) {
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts,
+                          Function<Long, Boolean> existsById, Function<Long, Optional<Product>> findById) {
+
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (!existsById.apply(menuGroupId)) {
+            throw new IllegalArgumentException();
+        }
+
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            final Product product = findById.apply(menuProduct.getProductId())
+                    .orElseThrow(IllegalArgumentException::new);
+            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+
         return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 

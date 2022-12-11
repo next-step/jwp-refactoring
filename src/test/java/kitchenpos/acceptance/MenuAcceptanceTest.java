@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +35,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuProduct 짬뽕메뉴상품;
     private MenuProduct 탕수육메뉴상품;
     private MenuProduct 단무지메뉴상품;
-    private Menu 짜장면_탕수육_1인_메뉴_세트;
-    private Menu 짬뽕_탕수육_1인_메뉴_세트;
+    private MenuRequest 짜장면_탕수육_1인_메뉴_세트;
+    private MenuRequest 짬뽕_탕수육_1인_메뉴_세트;
 
     @BeforeEach
     public void setUp() {

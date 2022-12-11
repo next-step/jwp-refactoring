@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -15,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MenuAcceptanceStep {
 
-    public static ExtractableResponse<Response> 등록된_메뉴(Menu menu) {
+    public static ExtractableResponse<Response> 등록된_메뉴(MenuRequest menu) {
         return 메뉴_생성_요청(menu);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menu) {
         return RestAssured
                 .given().log().all()
                 .body(menu)
@@ -53,8 +55,8 @@ public class MenuAcceptanceStep {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultMenuIds = response.jsonPath().getList(".", Menu.class).stream()
-                .map(Menu::getId)
+        List<Long> resultMenuIds = response.jsonPath().getList(".", MenuResponse.class).stream()
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultMenuIds).containsAll(expectedMenuIds);
