@@ -91,7 +91,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
 
         if (Objects.nonNull(this.getTableGroupId())) {
             throw new IllegalArgumentException();

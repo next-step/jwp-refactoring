@@ -35,7 +35,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        savedOrderTable.setEmpty(empty);
+        savedOrderTable.changeEmpty(empty);
 
         return OrderTableResponse.from(savedOrderTable);
     }

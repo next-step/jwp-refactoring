@@ -32,7 +32,7 @@ class OrderTableTest {
         OrderTable 단체_지정된_주문_테이블 = OrderTable.of(1L, 1L, 10, false);
 
         boolean empty = !단체_지정된_주문_테이블.isEmpty();
-        Assertions.assertThatThrownBy(() -> 단체_지정된_주문_테이블.setEmpty(empty))
+        Assertions.assertThatThrownBy(() -> 단체_지정된_주문_테이블.changeEmpty(empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -43,7 +43,7 @@ class OrderTableTest {
         Order.order(조리상태_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
 
         boolean empty = !조리상태_주문_테이블.isEmpty();
-        Assertions.assertThatThrownBy(() -> 조리상태_주문_테이블.setEmpty(empty))
+        Assertions.assertThatThrownBy(() -> 조리상태_주문_테이블.changeEmpty(empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -55,7 +55,7 @@ class OrderTableTest {
         주문.setOrderStatus(OrderStatus.MEAL.name());
 
         boolean empty = !식사상태_주문_테이블.isEmpty();
-        Assertions.assertThatThrownBy(() -> 식사상태_주문_테이블.setEmpty(empty))
+        Assertions.assertThatThrownBy(() -> 식사상태_주문_테이블.changeEmpty(empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -66,7 +66,7 @@ class OrderTableTest {
         Order 주문 = Order.order(주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
 
-        주문_테이블.setEmpty(!주문_테이블.isEmpty());
+        주문_테이블.changeEmpty(!주문_테이블.isEmpty());
 
         Assertions.assertThat(주문_테이블.isEmpty()).isTrue();
     }
