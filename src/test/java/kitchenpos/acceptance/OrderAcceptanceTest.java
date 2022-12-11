@@ -1,10 +1,11 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
+import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
+import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_생성_요청_객체_생성;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
-import static kitchenpos.domain.MenuProductTest.메뉴상품_생성;
+import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,9 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -37,8 +40,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private Product 소머리국밥;
     private Product 순대국밥;
     private MenuGroup 식사;
-    private Menu 소머리국밥_메뉴;
-    private Menu 순대국밥_메뉴;
+    private MenuResponse 소머리국밥_메뉴;
+    private MenuResponse 순대국밥_메뉴;
 
     private OrderTable 주문_테이블_1;
     private OrderTable 주문_테이블_2;
@@ -51,11 +54,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(Product.class);
         식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroup.class);
 
-        MenuProduct 소머리국밥_메뉴상품 = 메뉴상품_생성(null, null, 소머리국밥.getId(), 1L);
-        소머리국밥_메뉴 = 메뉴_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000), 식사.getId(), Arrays.asList(소머리국밥_메뉴상품)).as(Menu.class);
+        MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);
+        소머리국밥_메뉴 = 메뉴_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000), 식사.getId(), Arrays.asList(소머리국밥_메뉴상품)).as(MenuResponse.class);
 
-        MenuProduct 순대국밥_메뉴상품 = 메뉴상품_생성(null, null, 순대국밥.getId(), 2L);
-        순대국밥_메뉴 = 메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사.getId(), Arrays.asList(순대국밥_메뉴상품)).as(Menu.class);
+        MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(순대국밥.getId(), 2L);
+        순대국밥_메뉴 = 메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사.getId(), Arrays.asList(순대국밥_메뉴상품)).as(MenuResponse.class);
 
         주문_테이블_1 = 주문_테이블_등록되어_있음(2, false).as(OrderTable.class);
         주문_테이블_2 = 주문_테이블_등록되어_있음(4, false).as(OrderTable.class);

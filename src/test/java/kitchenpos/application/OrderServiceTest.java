@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
-import static kitchenpos.domain.MenuProductTest.메뉴상품_생성;
-import static kitchenpos.domain.MenuTest.메뉴_생성;
+import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
 import static kitchenpos.domain.OrderTableTest.주문_테이블_생성;
 import static kitchenpos.domain.OrderTest.주문_생성;
+import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
+import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,13 +20,13 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,11 +71,11 @@ class OrderServiceTest {
         소머리국밥 = 상품_생성(2L, "소머리국밥", BigDecimal.valueOf(8000));
         식사 = 메뉴그룹_생성(1L, "식사");
 
-        미역국_메뉴상품 = 메뉴상품_생성(null, 미역국.getId(), 미역국.getId(), 1L);
-        미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사.getId(), Arrays.asList(미역국_메뉴상품));
+        미역국_메뉴상품 = 메뉴상품_생성(null, null, 미역국, 1L);
+        미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사, Arrays.asList(미역국_메뉴상품));
 
-        소머리국밥_메뉴상품 = 메뉴상품_생성(null, 소머리국밥.getId(), 소머리국밥.getId(), 1L);
-        소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사.getId(), Arrays.asList(소머리국밥_메뉴상품));
+        소머리국밥_메뉴상품 = 메뉴상품_생성(null, null, 소머리국밥, 1L);
+        소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사, Arrays.asList(소머리국밥_메뉴상품));
 
         주문_항목 = 주문_항목_생성(1L, null, 소머리국밥.getId(), 2);
         주문_테이블 = 주문_테이블_생성(1L, null, 2, false);
@@ -121,7 +121,7 @@ class OrderServiceTest {
         when(orderDao.findById(any())).thenReturn(Optional.of(주문));
         when(orderDao.save(any(Order.class))).thenReturn(주문);
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문_항목));
-        Order 상태_변경_주문 = 주문_생성(null, null, OrderStatus.MEAL.name(),null, null);
+        Order 상태_변경_주문 = 주문_생성(null, null, OrderStatus.MEAL.name(), null, null);
 
         // when
         orderService.changeOrderStatus(주문.getId(), 상태_변경_주문);

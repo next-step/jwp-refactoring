@@ -1,8 +1,9 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
+import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
+import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_생성_요청_객체_생성;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
-import static kitchenpos.domain.MenuProductTest.메뉴상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -14,8 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +40,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(Product.class);
         식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroup.class);
 
-        MenuProduct 순대국밥_메뉴상품 = 메뉴상품_생성(null, null, 순대국밥.getId(), 1L);
+        MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(순대국밥.getId(), 1L);
         메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사.getId(), Arrays.asList(순대국밥_메뉴상품));
     }
 
@@ -50,11 +52,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         String name = "소머리국밥";
         BigDecimal price = BigDecimal.valueOf(8000);
         Long menuGroupId = 식사.getId();
-        MenuProduct 소머리국밥_메뉴상품 = 메뉴상품_생성(null, null, 소머리국밥.getId(), 1L);
-        List<MenuProduct> menuProducts = Arrays.asList(소머리국밥_메뉴상품);
+        MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(소머리국밥_메뉴상품);
 
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청(name, price, menuGroupId, menuProducts);
+        ExtractableResponse<Response> response = 메뉴_등록_요청(name, price, menuGroupId, menuProductRequests);
 
         // then
         메뉴_등록됨(response);
@@ -70,16 +72,16 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(response);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return 메뉴_등록_요청(name, price, menuGroupId, menuProducts);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return 메뉴_등록_요청(name, price, menuGroupId, menuProductRequests);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", name);
         params.put("price", price);
         params.put("menuGroupId", menuGroupId);
-        params.put("menuProducts", menuProducts);
+        params.put("menuProducts", menuProductRequests);
 
         return RestAssured
                 .given().log().all()
