@@ -17,6 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.exception.EmptyOrderLineItemException;
+import kitchenpos.exception.EmptyOrderTableException;
+import kitchenpos.exception.ExceptionMessage;
 import org.springframework.util.CollectionUtils;
 
 @Entity
@@ -87,13 +90,13 @@ public class Order {
 
     private static void checkNotEmpty(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderLineItemException(ExceptionMessage.EMPTY_ORDER_LINE_ITEM);
         }
     }
 
     private static void checkOrderTableIsNotEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableException(ExceptionMessage.EMPTY_ORDER_TABLE);
         }
     }
 
