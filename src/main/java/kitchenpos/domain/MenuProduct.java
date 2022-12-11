@@ -30,39 +30,21 @@ public class MenuProduct {
     @Column(nullable = false)
     private long quantity;
 
-    @Deprecated
-    private Long menuId;
-
-    @Deprecated
-    private Long productId;
-
     protected MenuProduct() {
     }
 
-    private MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    private MenuProduct(Long seq, Product product, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
-    private MenuProduct(Long seq, Long menuId, Product product, long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProduct(seq, menuId, productId, quantity);
-    }
-
-    public static MenuProduct of(Long productId, long quantity) {
-        return new MenuProduct(null, null, productId, quantity);
+    public static MenuProduct of(Long seq, Product product, long quantity) {
+        return new MenuProduct(seq, product, quantity);
     }
 
     public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(null, null, product, quantity);
+        return new MenuProduct(null, product, quantity);
     }
 
     public Long getSeq() {
@@ -70,11 +52,11 @@ public class MenuProduct {
     }
 
     public Long getMenuId() {
-        return menuId;
+        return menu.getId();
     }
 
     public Long getProductId() {
-        return productId;
+        return product.getId();
     }
 
     public long getQuantity() {

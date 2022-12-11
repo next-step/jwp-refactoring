@@ -20,6 +20,7 @@ import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Product;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
@@ -64,8 +65,9 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MenuGroup 두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
+        Product 후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
 
-        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(1L, 1L, 1L, 2));
+        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(후라이드, 2));
         후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴, 메뉴상품_목록);
 
         주문_테이블 = OrderTable.of(1L, 3, false);
