@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
 
     private Product 강정치킨;
@@ -45,7 +45,7 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        when(productDao.save(any())).thenReturn(강정치킨);
+        when(productRepository.save(any())).thenReturn(강정치킨);
 
         // when
         Product 상품_등록 = productService.create(강정치킨);

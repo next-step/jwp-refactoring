@@ -3,11 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import kitchenpos.fixture.MenuFixture;
 import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.MenuProductFixture;
@@ -49,7 +45,7 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
 
     private Product 상품_후라이드치킨;
@@ -72,7 +68,7 @@ class MenuServiceTest {
     void create() {
         // given
         when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(productRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
         when(menuDao.save(any())).thenReturn(메뉴_기본);
 
         // when
@@ -128,7 +124,7 @@ class MenuServiceTest {
         메뉴_요금_많이.setPrice(BigDecimal.valueOf(1_000_000));
         메뉴_요금_많이.setMenuProducts(Arrays.asList(메뉴_상품_후라이드_치킨));
         when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(productRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
 
         // when && then
         assertThatThrownBy(() -> menuService.create(메뉴_요금_많이))
