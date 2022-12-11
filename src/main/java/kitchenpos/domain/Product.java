@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class Product {
@@ -21,8 +22,15 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
+        validatePrice(price);
         this.name = name;
         this.price = price;
+    }
+
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
