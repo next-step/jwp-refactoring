@@ -1,5 +1,6 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
@@ -29,6 +30,6 @@ public class ProductRequest {
     }
 
     public Product createProduct() {
-        return new Product(name, new Price(price));
+        return new Product(new Name(name), new Price(price));
     }
 }

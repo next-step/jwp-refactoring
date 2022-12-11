@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
@@ -62,11 +63,11 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        불고기 = new Product(1L, "불고기", new Price(BigDecimal.valueOf(10_000)));
-        김치 = new Product(2L, "김치", new Price(BigDecimal.valueOf(1_000)));
-        공기밥 = new Product(3L, "공기밥", new Price(BigDecimal.valueOf(1_000)));
-        한식 = new MenuGroup(1L, "한식");
-        불고기정식 = new Menu(1L, "불고기정식", new Price(BigDecimal.valueOf(12_000L)), 한식);
+        불고기 = new Product(1L, new Name("불고기"), new Price(BigDecimal.valueOf(10_000)));
+        김치 = new Product(2L, new Name("김치"), new Price(BigDecimal.valueOf(1_000)));
+        공기밥 = new Product(3L, new Name("공기밥"), new Price(BigDecimal.valueOf(1_000)));
+        한식 = new MenuGroup(1L, new Name("한식"));
+        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식);
         불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기정식, 불고기);
         김치상품 = new MenuProduct(2L, new Quantity(1L), 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, new Quantity(1L), 불고기정식, 공기밥);
@@ -80,7 +81,7 @@ class MenuServiceTest {
                 .stream()
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
-        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
+        MenuRequest request = MenuRequest.of(불고기정식.getName().value(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
         when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findById(불고기.getId())).thenReturn(Optional.of(불고기));
         when(productRepository.findById(김치.getId())).thenReturn(Optional.of(김치));
@@ -157,7 +158,7 @@ class MenuServiceTest {
                 .stream()
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
-        MenuRequest request = MenuRequest.of(불고기정식.getName(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
+        MenuRequest request = MenuRequest.of(불고기정식.getName().value(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
 
         // when & then
         assertThatThrownBy(() -> menuService.create(request))

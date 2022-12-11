@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
@@ -17,7 +18,7 @@ public class MenuProductTest {
     void calculatePrice() {
         // given
         Quantity quantity = new Quantity(3L);
-        Product product = new Product("불고기", new Price(BigDecimal.valueOf(12_000)));
+        Product product = new Product(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)));
         MenuProduct menuProduct = new MenuProduct(quantity, product);
 
         // when

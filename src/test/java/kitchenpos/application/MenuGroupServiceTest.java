@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
@@ -32,11 +33,11 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        MenuGroup 한식 = new MenuGroup("한식");
+        MenuGroup 한식 = new MenuGroup(new Name("한식"));
         when(menuGroupRepository.save(한식)).thenReturn(한식);
 
         // when
-        MenuGroupResponse result = menuGroupService.create(MenuGroupRequest.of(한식.getName()));
+        MenuGroupResponse result = menuGroupService.create(MenuGroupRequest.of(한식.getName().value()));
 
         // then
         assertAll(
@@ -49,7 +50,7 @@ class MenuGroupServiceTest {
     @Test
     void findAllMenuGroup() {
         // given
-        MenuGroup 한식 = new MenuGroup(1L, "한식");
+        MenuGroup 한식 = new MenuGroup(1L, new Name("한식"));
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(한식));
 
         // when

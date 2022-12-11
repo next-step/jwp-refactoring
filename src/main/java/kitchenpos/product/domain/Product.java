@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
@@ -10,19 +11,20 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
     @Embedded
     private Price price;
 
     protected Product() {}
 
-    public Product(Long id, String name, Price price) {
+    public Product(Long id, Name name, Price price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    public Product(String name, Price price) {
+    public Product(Name name, Price price) {
         this.name = name;
         this.price = price;
     }
@@ -31,7 +33,7 @@ public class Product {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

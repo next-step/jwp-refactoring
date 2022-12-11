@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.application.ProductService;
@@ -36,11 +37,12 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        Product product = new Product("떡볶이", new Price(BigDecimal.valueOf(3_000)));
+        Product product = new Product(new Name("떡볶이"), new Price(BigDecimal.valueOf(3_000)));
         when(productRepository.save(product)).thenReturn(product);
+        ProductRequest request = ProductRequest.of(product.getName().value(), product.getPrice().value());
 
         // when
-        ProductResponse result = productService.create(ProductRequest.of(product.getName(), product.getPrice().value()));
+        ProductResponse result = productService.create(request);
 
         // then
         assertAll(
@@ -71,7 +73,7 @@ class ProductServiceTest {
     @Test
     void findAllProduct() {
         // given
-        Product product = new Product(1L, "떡볶이", new Price(BigDecimal.valueOf(3_000)));
+        Product product = new Product(1L, new Name("떡볶이"), new Price(BigDecimal.valueOf(3_000)));
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when

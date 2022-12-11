@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
@@ -10,6 +11,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -46,6 +49,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 김치;
     private ProductResponse 공기밥;
     private MenuGroup 한식;
+    private MenuGroupResponse 생성된_한식;
     private Menu 불고기정식메뉴;
     private MenuProductRequest 불고기상품;
     private MenuProductRequest 김치상품;
@@ -63,13 +67,17 @@ class OrderAcceptanceTest extends AcceptanceTest {
         불고기 = 상품_생성_요청(ProductRequest.of("불고기", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
         김치 = 상품_생성_요청(ProductRequest.of("김치", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
         공기밥 = 상품_생성_요청(ProductRequest.of("공기밥", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
-        한식 = 메뉴그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
+
+        생성된_한식 = 메뉴그룹_생성_요청(MenuGroupRequest.of("한식")).as(MenuGroupResponse.class);
+        한식 = new MenuGroup(생성된_한식.getId(), new Name(생성된_한식.getName()));
+
         불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
         김치상품 = MenuProductRequest.of(김치.getId(), 1L);
         공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
-        불고기정식메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000L)), 한식);
+
+        불고기정식메뉴 = new Menu(new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식);
         불고기정식응답 = 메뉴_생성_요청(MenuRequest.of(
-                불고기정식메뉴.getName(),
+                불고기정식메뉴.getName().value(),
                 불고기정식메뉴.getPrice().value(),
                 불고기정식메뉴.getMenuGroup().getId(),
                 Arrays.asList(불고기상품, 김치상품, 공기밥상품)
