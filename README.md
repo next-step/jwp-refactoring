@@ -75,7 +75,7 @@
   - [X] Menu
   - [X] MenuGroup
   - [ ] MenuProduct
-  - [ ] Order
+  - [X] Order
   - [ ] OrderLineItem
   - [ ] OrderStatus
   - [X] OrderTable

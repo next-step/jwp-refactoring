@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
+import kitchenpos.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,8 +46,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private OrderTable 주문테이블2;
     private OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문;
     private OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문;
-    private Order 주문1;
-    private Order 주문2;
+    private OrderRequest 주문1;
+    private OrderRequest 주문2;
 
     @BeforeEach
     public void setUp() {

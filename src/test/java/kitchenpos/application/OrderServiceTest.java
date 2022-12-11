@@ -6,6 +6,8 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,6 +72,8 @@ class OrderServiceTest {
     private OrderTable 주문테이블2;
     private OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문;
     private OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문;
+    private OrderRequest 주문1_요청;
+    private OrderRequest 주문2_요청;
     private Order 주문1;
     private Order 주문2;
 
@@ -92,8 +96,10 @@ class OrderServiceTest {
         주문테이블2 = 주문테이블_생성(주문테이블2_요청());
         짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(1L, null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
         짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(2L, null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
-        주문1 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
-        주문2 = createOrder(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        주문1_요청 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
+        주문2_요청 = createOrder(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        주문1 = Order.of(주문1_요청.getId(), 주문1_요청.getOrderTableId(), 주문1_요청.getOrderStatus(), 주문1_요청.getOrderLineItems());
+        주문2 = Order.of(주문2_요청.getId(), 주문2_요청.getOrderTableId(), 주문2_요청.getOrderStatus(), 주문2_요청.getOrderLineItems());
     }
 
     @DisplayName("주문 생성 작업을 성공한다.")
@@ -106,12 +112,12 @@ class OrderServiceTest {
                 .collect(Collectors.toList());
         when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
         when(orderTableDao.findById(주문1.getOrderTableId())).thenReturn(Optional.of(주문테이블1));
-        when(orderDao.save(주문1)).thenReturn(주문1);
+        when(orderDao.save(any())).thenReturn(주문1);
         when(orderLineItemDao.save(짜장면_탕수육_1인_메뉴_세트주문)).thenReturn(짜장면_탕수육_1인_메뉴_세트주문);
         when(orderLineItemDao.save(짬뽕_탕수육_1인_메뉴_세트주문)).thenReturn(짬뽕_탕수육_1인_메뉴_세트주문);
 
         // when
-        Order order = orderService.create(주문1);
+        OrderResponse order = orderService.create(주문1_요청);
 
         // then
         assertAll(
@@ -125,7 +131,7 @@ class OrderServiceTest {
     @Test
     void createWithException1() {
         // given
-        Order order = createOrder(주문테이블1.getId(), null, null, null);
+        OrderRequest order = createOrder(주문테이블1.getId(), null, null, null);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -138,7 +144,7 @@ class OrderServiceTest {
         when(menuDao.countByIdIn(any())).thenReturn(0L);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
     }
 
     @DisplayName("주문을 생성할 때, 주문 테이블이 등록되어 있지 않으면 IllegalArgumentException을 반환한다.")
@@ -153,7 +159,7 @@ class OrderServiceTest {
         when(orderTableDao.findById(주문1.getOrderTableId())).thenReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
     }
 
     @DisplayName("주문 목록 조회 작업을 성공한다.")
@@ -167,12 +173,12 @@ class OrderServiceTest {
         }
 
         // when
-        List<Order> findOrders = orderService.list();
+        List<OrderResponse> findOrders = orderService.list();
 
         // then
         assertAll(
                 () -> assertThat(findOrders).hasSize(orders.size()),
-                () -> assertThat(findOrders).containsExactly(주문1, 주문2)
+                () -> assertThat(findOrders).containsExactly(OrderResponse.from(주문1), OrderResponse.from(주문2))
         );
     }
 
@@ -195,7 +201,8 @@ class OrderServiceTest {
     @Test
     void changeOrderWithException1() {
         // given
-        Order 미등록_주문 = createOrder(10L, null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        OrderRequest 미등록_주문_요청 = createOrder(10L, null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        Order 미등록_주문 = Order.of(미등록_주문_요청.getId(), 미등록_주문_요청.getOrderTableId(), 미등록_주문_요청.getOrderStatus(), 미등록_주문_요청.getOrderLineItems());
         when(orderDao.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then
