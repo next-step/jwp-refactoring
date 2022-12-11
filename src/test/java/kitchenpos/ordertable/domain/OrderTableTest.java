@@ -56,12 +56,34 @@ class OrderTableTest {
                 .hasMessage("사용중이지 않은 테이블은 손님 수를 변경할 수 없습니다.");
     }
 
-    @DisplayName("단체 테이블 지정 여부를 확인할 수 있다.")
+    @DisplayName("단체 테이블로 지정할 수 있다.")
     @Test
     void isGrouped() {
         OrderTable tableA = new OrderTable(0, true);
         tableA.groupBy(1L);
 
         assertThat(tableA.isGrouped()).isTrue();
+    }
+
+    @DisplayName("이미 단체 테이블로 지정된 경우 단체 테이블로 지정할 수 없다.")
+    @Test
+    void groupBy() {
+        OrderTable tableA = new OrderTable(0, true);
+        tableA.groupBy(1L);
+
+        assertThatThrownBy(() -> tableA.groupBy(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("단체 테이블로 지정되어 있습니다.");
+    }
+
+    @DisplayName("단체 테이블 지정을 해제할 수 있다.")
+    @Test
+    void ungroup() {
+        OrderTable tableA = new OrderTable(0, true);
+        tableA.groupBy(1L);
+
+        tableA.ungroup();
+
+        assertThat(tableA.isGrouped()).isFalse();
     }
 }
