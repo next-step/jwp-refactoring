@@ -10,18 +10,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.exception.MenuPriceGreaterThanAmountException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,17 +42,21 @@ class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
-
-    @Mock
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private MenuGroupRepository menuGroupRepository;
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
+    private MenuRepository menuRepository;
 
     @InjectMocks
     private MenuService menuService;
 
+    private MenuGroup 두마리메뉴;
     private Product 후라이드;
     private MenuProduct 후라이드치킨상품;
     private Menu 후라이드치킨;
@@ -61,6 +68,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
+        두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
         후라이드치킨상품 = MenuProduct.of(1L, 1L, 1L, 2);
         후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, Arrays.asList(후라이드치킨상품));
@@ -76,10 +84,9 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(후라이드));
-        when(menuDao.save(any())).thenReturn(후라이드치킨);
-        when(menuProductDao.save(any())).thenReturn(후라이드치킨상품);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(두마리메뉴));
+        when(productRepository.findById(any())).thenReturn(Optional.of(후라이드));
+        when(menuRepository.save(any())).thenReturn(후라이드치킨);
 
         MenuResponse result = menuService.create(메뉴요청);
 
@@ -93,6 +100,9 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격이 없으면(null) 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException() {
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(두마리메뉴));
+        when(productRepository.findById(any())).thenReturn(Optional.of(후라이드));
+
         Assertions.assertThatThrownBy(() -> menuService.create(가격_없는_메뉴요청))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
@@ -101,6 +111,9 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격이 음수면 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException2() {
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(두마리메뉴));
+        when(productRepository.findById(any())).thenReturn(Optional.of(후라이드));
+
         Assertions.assertThatThrownBy(() -> menuService.create(음수_가격_메뉴요청))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
@@ -109,7 +122,7 @@ class MenuServiceTest {
     @DisplayName("메뉴의 메뉴그룹이 존재하지 않으면 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        when(menuGroupDao.existsById(any())).thenReturn(false);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴그룹_없는_메뉴요청))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -118,8 +131,8 @@ class MenuServiceTest {
     @DisplayName("상품에 등록되지 않은 메뉴 상품으로 메뉴를 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.empty());
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(두마리메뉴));
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴요청))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -128,11 +141,12 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성 시 예외가 발생한다.")
     @Test
     void createException5() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(후라이드));
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(두마리메뉴));
+        when(productRepository.findById(any())).thenReturn(Optional.of(후라이드));
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴상품_가격합을_넘는_메뉴요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuPriceGreaterThanAmountException.class)
+                .hasMessageStartingWith(ExceptionMessage.MENU_PRICE_GREATER_THAN_AMOUNT);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
