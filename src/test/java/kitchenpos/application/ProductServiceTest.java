@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.domain.ProductTestFixture.createProduct;
+import static kitchenpos.domain.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -35,8 +35,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        짜장면 = createProduct(1L, "짜장면", BigDecimal.valueOf(8000L));
-        단무지 = createProduct(2L, "단무지", BigDecimal.valueOf(0L));
+        짜장면 = 짜장면();
+        단무지 = 단무지();
     }
 
     @DisplayName("상품 생성 작업을 성공한다.")

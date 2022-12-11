@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
-import static kitchenpos.domain.MenuProductTestFixture.createMenuProduct;
+import static kitchenpos.domain.MenuGroupTestFixture.중국집_1인_메뉴_세트;
+import static kitchenpos.domain.MenuProductTestFixture.*;
 import static kitchenpos.domain.MenuTestFixture.createMenu;
-import static kitchenpos.domain.ProductTestFixture.createProduct;
+import static kitchenpos.domain.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -64,15 +64,15 @@ class MenuServiceTest {
 
     @BeforeEach
     public void setUp() {
-        중국집_1인_메뉴_세트 = createMenuGroup(1L,"중국집_1인_메뉴_세트");
-        짜장면 = createProduct(1L,"짜장면", BigDecimal.valueOf(8000L));
-        짬뽕 = createProduct(2L,"짬뽕", BigDecimal.valueOf(9000L));
-        탕수육 = createProduct(3L,"탕수육", BigDecimal.valueOf(12000L));
-        단무지 = createProduct(4L,"단무지", BigDecimal.valueOf(0L));
-        짜장면상품 = createMenuProduct(1L, null, 짜장면.getId(), 1L);
-        짬뽕상품 = createMenuProduct(2L, null, 짬뽕.getId(), 1L);
-        탕수육상품 = createMenuProduct(3L, null, 탕수육.getId(), 1L);
-        단무지상품 = createMenuProduct(4L, null, 단무지.getId(), 1L);
+        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트();
+        짜장면 = 짜장면();
+        탕수육 = 탕수육();
+        짬뽕 = 짬뽕();
+        단무지 = 단무지();
+        짜장면상품 = 짜장면상품();
+        짬뽕상품 = 짬뽕상품();
+        탕수육상품 = 탕수육상품();
+        단무지상품 = 단무지상품();
         짜장면_탕수육_1인_메뉴_세트 = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
         짬뽕_탕수육_1인_메뉴_세트 = createMenu(2L,"짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),

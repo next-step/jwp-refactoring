@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.domain.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,8 +40,8 @@ class OrderTableServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = createOrderTable(1L, null, 5, false);
-        주문테이블2 = createOrderTable(2L, null, 4, false);
+        주문테이블1 = 주문테이블1();
+        주문테이블2 = 주문테이블2();
     }
 
     @DisplayName("주문 테이블 생성 작업을 성공한다.")
@@ -135,7 +135,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException1() {
         // given
-        OrderTable orderTable = createOrderTable(3L,null, -1, false);
+        OrderTable orderTable = createOrderTable(3L, null, -1, false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

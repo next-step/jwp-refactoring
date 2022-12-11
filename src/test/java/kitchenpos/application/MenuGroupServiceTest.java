@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.domain.MenuGroupTestFixture.중국집_1인_메뉴_세트;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -32,7 +32,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        중국집_1인_메뉴_세트 = createMenuGroup(1L, "중국집_1인_메뉴_세트");
+        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트();
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
