@@ -1,7 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.exception.OrderTableExceptionCode;
-import kitchenpos.order.exception.TableGroupExceptionCode;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.exception.TableGroupExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,8 +69,8 @@ class OrderTablesTest {
     void 다른_테이블_그룹에_포함되어_있으면_테이블_그룹을_생성할_수_없음() {
         OrderTables 주문_테이블_목록 = new OrderTables();
 
-        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderEmpty(true));
-        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderEmpty(true));
+        단체_주문_테이블1.changeEmpty(true);
+        단체_주문_테이블2.changeEmpty(true);
 
         assertThatThrownBy(() -> {
             주문_테이블_목록.group(새로운_단체_테이블, Arrays.asList(단체_주문_테이블1, 단체_주문_테이블3));

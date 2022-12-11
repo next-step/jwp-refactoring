@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
 import kitchenpos.common.BaseEntity;
 
@@ -27,8 +27,7 @@ public class TableGroup extends BaseEntity {
         this.orderTables.addOrderTable(this, orderTable);
     }
 
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::checkForChangingOrderTable);
+    public void ungroup() {
         this.orderTables.ungroup();
     }
 

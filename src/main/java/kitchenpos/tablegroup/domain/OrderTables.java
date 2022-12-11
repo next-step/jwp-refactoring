@@ -1,6 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.exception.TableGroupExceptionCode;
+import kitchenpos.tablegroup.exception.TableGroupExceptionCode;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
@@ -20,11 +20,8 @@ public class OrderTables {
 
     public void group(TableGroup tableGroup, List<OrderTable> target) {
         validate(target);
-        target.forEach(orderTable -> {
-            orderTable.checkOrderTableForTableGrouping();
-            orderTable.changeEmpty(false, Collections.emptyList());
-            addOrderTable(tableGroup, orderTable);
-        });
+        target.forEach(OrderTable::group);
+        target.forEach(orderTable -> addOrderTable(tableGroup, orderTable));
     }
 
     private void validate(List<OrderTable> target) {
@@ -49,8 +46,9 @@ public class OrderTables {
     }
 
     public void ungroup() {
-        orderTables.forEach(orderTable -> orderTable.ungroup());
+        orderTables.forEach(OrderTable::ungroup);
     }
+
 
     public List<OrderTable> getOrderTables() {
         return Collections.unmodifiableList(orderTables);
