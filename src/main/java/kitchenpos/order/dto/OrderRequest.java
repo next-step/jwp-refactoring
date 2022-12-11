@@ -5,7 +5,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 

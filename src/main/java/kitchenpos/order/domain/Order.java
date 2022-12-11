@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -24,7 +23,7 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
 
@@ -52,7 +51,7 @@ public class Order {
             throw new IllegalArgumentException();
         }
 
-        orderLineItems.forEach(orderLineItem -> addOrderLineItem(orderLineItem));
+        orderLineItems.forEach(this::addOrderLineItem);
     }
 
     void addOrderLineItem(OrderLineItem orderLineItem) {

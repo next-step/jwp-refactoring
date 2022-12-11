@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderLineItemTest {
     private MenuGroup 뼈치킨;

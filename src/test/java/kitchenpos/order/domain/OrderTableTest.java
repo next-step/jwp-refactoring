@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +50,7 @@ class OrderTableTest {
         OrderTable 주문_테이블 = new OrderTable(5, false);
         Order order = new Order(주문_테이블, OrderStatus.COMPLETION);
 
-        주문_테이블.changeEmpty(true, Arrays.asList(order));
+        주문_테이블.changeEmpty(true, Collections.singletonList(order));
 
         assertTrue(주문_테이블.isEmpty());
     }
@@ -70,7 +69,7 @@ class OrderTableTest {
         OrderTable 주문_테이블 = new OrderTable(5, false);
         Order order = new Order(주문_테이블, orderStatus);
 
-        assertThatThrownBy(() -> 주문_테이블.changeEmpty(true, Arrays.asList(order)))
+        assertThatThrownBy(() -> 주문_테이블.changeEmpty(true, Collections.singletonList(order)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

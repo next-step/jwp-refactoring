@@ -7,13 +7,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class TableGroupTest {
     private TableGroup 단체_테이블;
@@ -51,7 +49,7 @@ class TableGroupTest {
     @DisplayName("2개 미만 테이블 목록으로 단체 지정을 할 수 없다.")
     @Test
     void 테이블목록_2개미만_단체_지정() {
-        assertThatThrownBy(() -> 단체_테이블.group(Arrays.asList(단체_주문_테이블1)))
+        assertThatThrownBy(() -> 단체_테이블.group(Collections.singletonList(단체_주문_테이블1)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
