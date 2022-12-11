@@ -11,12 +11,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
@@ -40,7 +40,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
     }
 
     @Test
@@ -50,7 +50,7 @@ class MenuServiceTest {
         Menu 후라이드치킨_메뉴 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(menuProduct));
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.of(후라이드치킨_상품));
-        given(menuDao.save(any())).willReturn(후라이드치킨_메뉴);
+        given(menuRepository.save(any())).willReturn(후라이드치킨_메뉴);
 
         Menu menu = menuService.create(후라이드치킨_메뉴);
 
@@ -117,7 +117,7 @@ class MenuServiceTest {
     void 메뉴_목록을_조회할_수_있다() {
         Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, null);
         Menu 양념치킨 = new Menu(2L, "양념치킨", new BigDecimal(18000.00), 1L, null);
-        given(menuDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         List<Menu> menus = menuService.list();
 

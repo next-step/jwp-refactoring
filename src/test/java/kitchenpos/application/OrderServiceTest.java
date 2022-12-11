@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -18,6 +17,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.MenuRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class OrderServiceTest {
     @Mock
     private Order order = new Order();
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -42,14 +42,14 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+        orderService = new OrderService(menuRepository, orderDao, orderLineItemDao, orderTableDao);
     }
 
     @Test
     void 주문을_등록할_수_있다() {
         OrderTable orderTable = new OrderTable(1L, 1L, 1, false);
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-        given(menuDao.countByIdIn(any())).willReturn(1l);
+        given(menuRepository.countByIdIn(any())).willReturn(1l);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
 
@@ -80,7 +80,7 @@ class OrderServiceTest {
     @Test
     void 등록_된_주문_테이블만_지정할_수_있다() {
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-        given(menuDao.countByIdIn(any())).willReturn(1l);
+        given(menuRepository.countByIdIn(any())).willReturn(1l);
         given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(order);
@@ -92,7 +92,7 @@ class OrderServiceTest {
     void 주문_테이블은_비어있으면_안된다() {
         OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-        given(menuDao.countByIdIn(any())).willReturn(1l);
+        given(menuRepository.countByIdIn(any())).willReturn(1l);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
 
         ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(order);
