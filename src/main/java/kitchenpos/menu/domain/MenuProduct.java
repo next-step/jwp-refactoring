@@ -50,7 +50,7 @@ public class MenuProduct {
     }
 
     public void updateMenu(Menu menu) {
-        if(this.menu != menu) {
+        if (this.menu != menu) {
             this.menu = menu;
             menu.addMenuProduct(this);
         }

@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.OrderTableError;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -32,7 +33,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
         List<Order> orders = orderRepository.findAllByOrderTableId(savedOrderTable.getId());
 
         savedOrderTable.changeEmpty(request.isEmpty(), orders);
@@ -43,7 +44,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, OrderTableRequest request) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));

@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.MenuError;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +21,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
 
@@ -27,13 +29,12 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MenuError.INVALID_PRICE);
         }
         if (menuGroup == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MenuError.REQUIRED_MENU_GROUP);
         }
 
-        this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -41,7 +42,7 @@ public class Menu {
 
     public void validatePrice() {
         if (price.compareTo(menuProducts.getTotalPrice()) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MenuError.INVALID_PRICE);
         }
     }
 

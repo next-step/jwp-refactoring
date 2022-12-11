@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.OrderError;
+import kitchenpos.exception.OrderLineItemError;
+import kitchenpos.exception.OrderTableError;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -37,18 +40,17 @@ public class Order {
     }
 
     private void validate(OrderTable orderTable) {
-        if(Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException();
+        if (Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(OrderTableError.NOT_FOUND);
         }
-
-        if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(OrderTableError.CANNOT_EMPTY);
         }
     }
 
     public void order(List<OrderLineItem> orderLineItems) {
-        if(CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException(OrderLineItemError.CANNOT_EMPTY);
         }
 
         orderLineItems.forEach(this::addOrderLineItem);
@@ -59,14 +61,14 @@ public class Order {
     }
 
     public void checkOngoingOrderTable() {
-        if(orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL) {
-            throw new IllegalArgumentException();
+        if (orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL) {
+            throw new IllegalArgumentException(OrderError.CANNOT_CHANGE);
         }
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderError.CANNOT_CHANGE_STATUS);
         }
 
         this.orderStatus = orderStatus;

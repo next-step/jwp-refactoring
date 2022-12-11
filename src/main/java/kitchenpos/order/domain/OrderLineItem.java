@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.OrderError;
+import kitchenpos.exception.OrderLineItemError;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
@@ -25,13 +27,13 @@ public class OrderLineItem {
 
     public OrderLineItem(Order order, Menu menu, long quantity) {
         if (Objects.isNull(order)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderLineItemError.REQUIRED_ORDER);
         }
         if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderLineItemError.REQUIRED_MENU);
         }
-        if (quantity < 0 ){
-            throw new IllegalArgumentException();
+        if (quantity < 0) {
+            throw new IllegalArgumentException(OrderLineItemError.INVALID_QUANTITY);
         }
 
         updateOrder(order);

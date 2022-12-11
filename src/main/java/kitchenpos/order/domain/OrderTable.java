@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.OrderTableError;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -29,20 +31,20 @@ public class OrderTable {
 
     public void checkOrderTableIsEmpty() {
         if (!empty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderTableError.IS_NOT_EMPTY);
         }
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
-        if(this.tableGroup != tableGroup) {
+        if (this.tableGroup != tableGroup) {
             this.tableGroup = tableGroup;
             tableGroup.addOrderTable(this);
         }
     }
 
     public void changeEmpty(boolean empty, List<Order> orders) {
-        if(Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException();
+        if (Objects.nonNull(this.tableGroup)) {
+            throw new IllegalArgumentException(OrderTableError.HAS_GROUP);
         }
         orders.forEach(Order::checkOngoingOrderTable);
         this.empty = empty;
@@ -50,10 +52,10 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int numberOfGuests) {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderTableError.IS_EMPTY);
         }
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderTableError.INVALID_NUMBER_OF_GUESTS);
         }
         this.numberOfGuests = numberOfGuests;
     }

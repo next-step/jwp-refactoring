@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
 
@@ -23,7 +23,7 @@ public class MenuProducts {
     }
 
     public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
-        if(!menuProducts.contains(menuProduct)) {
+        if (!menuProducts.contains(menuProduct)) {
             this.menuProducts.add(menuProduct);
             menuProduct.updateMenu(menu);
         }

@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.OrderTableError;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
@@ -31,11 +32,11 @@ public class OrderTables {
 
     private void validate(List<OrderTable> target) {
         if (CollectionUtils.isEmpty(target)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderTableError.REQUIRED_ORDER_TABLE_LIST);
         }
 
         if (target.size() < MIN_ORDER_TABLES_SIZE) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(OrderTableError.INVALID_ORDER_TABLE_LIST_SIZE);
         }
     }
 
@@ -51,7 +52,7 @@ public class OrderTables {
     }
 
     public void ungroup() {
-        orderTables.forEach(orderTable -> orderTable.ungroup());
+        orderTables.forEach(OrderTable::ungroup);
     }
 
     public List<OrderTable> getOrderTables() {

@@ -1,5 +1,8 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.MenuError;
+import kitchenpos.exception.OrderError;
+import kitchenpos.exception.OrderTableError;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
@@ -28,7 +31,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(OrderRequest request) {
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
         List<Menu> menus = findAllMenuById(request.findAllMenuIds());
         Order order = request.toOrder(orderTable, OrderStatus.COOKING, menus);
 
@@ -37,8 +40,8 @@ public class OrderService {
 
     private List<Menu> findAllMenuById(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
-        if(menuIds.size() != menus.size()) {
-            throw new EntityNotFoundException();
+        if (menuIds.size() != menus.size()) {
+            throw new EntityNotFoundException(MenuError.NOT_FOUND);
         }
         return menus;
     }
@@ -50,7 +53,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(Long orderId, OrderStatus request) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException());
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(OrderError.NOT_FOUND));
         order.changeOrderStatus(request);
 
         return OrderResponse.of(orderRepository.save(order));

@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.OrderTableError;
+import kitchenpos.exception.TableGroupError;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -25,7 +27,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(tableGroupRequest.getOrderTables());
         if (tableGroupRequest.getOrderTables().size() != orderTables.size()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException(OrderTableError.NOT_FOUND);
         }
         return TableGroupResponse.of(tableGroupRepository.save(TableGroupRequest.toTableGroup(orderTables)));
     }
@@ -33,7 +35,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException(TableGroupError.NOT_FOUND));
         List<Order> orders = orderRepository.findAllByOrderTableIdIn(tableGroup.getOrderTableIds());
 
         tableGroup.ungroup(orders);
