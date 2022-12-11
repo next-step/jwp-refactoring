@@ -12,8 +12,8 @@ import java.util.Arrays;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.등록된_주문_테이블;
 import static kitchenpos.acceptance.TableGroupAcceptanceStep.*;
-import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
-import static kitchenpos.domain.TableGroupTestFixture.createTableGroup;
+import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
 
 @DisplayName("단체 지정 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {

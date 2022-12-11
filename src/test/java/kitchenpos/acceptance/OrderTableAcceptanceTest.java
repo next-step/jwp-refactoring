@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.*;
-import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {

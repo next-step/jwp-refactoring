@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuGroupAcceptanceStep {

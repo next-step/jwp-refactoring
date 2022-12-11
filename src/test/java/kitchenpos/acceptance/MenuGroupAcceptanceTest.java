@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.acceptance.MenuGroupAcceptanceStep.*;
-import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
 
 @DisplayName("메뉴 그룹 관련 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {

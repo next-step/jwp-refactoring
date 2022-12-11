@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.domain.MenuGroupTestFixture.중국집_1인_메뉴_세트;
-import static kitchenpos.domain.MenuProductTestFixture.*;
-import static kitchenpos.domain.MenuTestFixture.createMenu;
-import static kitchenpos.domain.ProductTestFixture.*;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트;
+import static kitchenpos.fixture.MenuProductTestFixture.*;
+import static kitchenpos.fixture.MenuTestFixture.createMenu;
+import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -55,28 +55,28 @@ class MenuServiceTest {
     private Product 탕수육;
     private Product 단무지;
     private MenuGroup 중국집_1인_메뉴_세트;
-    private MenuProduct 짜장면상품;
-    private MenuProduct 짬뽕상품;
-    private MenuProduct 탕수육상품;
-    private MenuProduct 단무지상품;
+    private MenuProduct 짜장면메뉴상품;
+    private MenuProduct 짬뽕메뉴상품;
+    private MenuProduct 탕수육메뉴상품;
+    private MenuProduct 단무지메뉴상품;
     private Menu 짜장면_탕수육_1인_메뉴_세트;
     private Menu 짬뽕_탕수육_1인_메뉴_세트;
 
     @BeforeEach
     public void setUp() {
         중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트();
-        짜장면 = 짜장면();
-        탕수육 = 탕수육();
-        짬뽕 = 짬뽕();
-        단무지 = 단무지();
-        짜장면상품 = 짜장면상품();
-        짬뽕상품 = 짬뽕상품();
-        탕수육상품 = 탕수육상품();
-        단무지상품 = 단무지상품();
+        짜장면 = 상품생성(짜장면_요청());
+        탕수육 = 상품생성(탕수육_요청());
+        짬뽕 = 상품생성(짬뽕_요청());
+        단무지 = 상품생성(단무지_요청());
+        짜장면메뉴상품 = 짜장면메뉴상품();
+        짬뽕메뉴상품 = 짬뽕메뉴상품();
+        탕수육메뉴상품 = 탕수육메뉴상품();
+        단무지메뉴상품 = 단무지메뉴상품();
         짜장면_탕수육_1인_메뉴_세트 = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
-                중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
+                중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         짬뽕_탕수육_1인_메뉴_세트 = createMenu(2L,"짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
-                중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕상품, 탕수육상품, 단무지상품));
+                중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
     }
 
     @DisplayName("메뉴 생성 작업을 성공한다.")
@@ -84,13 +84,13 @@ class MenuServiceTest {
     void create() {
         // given
         when(menuGroupDao.existsById(짜장면_탕수육_1인_메뉴_세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(짜장면상품.getProductId())).thenReturn(Optional.of(짜장면));
-        when(productDao.findById(탕수육상품.getProductId())).thenReturn(Optional.of(탕수육));
-        when(productDao.findById(단무지상품.getProductId())).thenReturn(Optional.of(단무지));
+        when(productDao.findById(짜장면메뉴상품.getProductId())).thenReturn(Optional.of(짜장면));
+        when(productDao.findById(탕수육메뉴상품.getProductId())).thenReturn(Optional.of(탕수육));
+        when(productDao.findById(단무지메뉴상품.getProductId())).thenReturn(Optional.of(단무지));
         when(menuDao.save(짜장면_탕수육_1인_메뉴_세트)).thenReturn(짜장면_탕수육_1인_메뉴_세트);
-        when(menuProductDao.save(짜장면상품)).thenReturn(짜장면상품);
-        when(menuProductDao.save(탕수육상품)).thenReturn(탕수육상품);
-        when(menuProductDao.save(단무지상품)).thenReturn(단무지상품);
+        when(menuProductDao.save(짜장면메뉴상품)).thenReturn(짜장면메뉴상품);
+        when(menuProductDao.save(탕수육메뉴상품)).thenReturn(탕수육메뉴상품);
+        when(menuProductDao.save(단무지메뉴상품)).thenReturn(단무지메뉴상품);
 
         // when
         Menu saveMenu = menuService.create(짜장면_탕수육_1인_메뉴_세트);
@@ -98,7 +98,7 @@ class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(saveMenu.getId()).isNotNull(),
-                () -> assertThat(saveMenu.getMenuProducts()).containsExactly(짜장면상품, 탕수육상품, 단무지상품)
+                () -> assertThat(saveMenu.getMenuProducts()).containsExactly(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품)
         );
     }
 
@@ -107,7 +107,7 @@ class MenuServiceTest {
     void createWithException() {
         // given
         Menu menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(-1000L),
-                짜장면_탕수육_1인_메뉴_세트.getId(), Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
+                짜장면_탕수육_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -118,7 +118,7 @@ class MenuServiceTest {
     void createWithException2() {
         // given
         Menu menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 10L,
-                Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
+                Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         when(menuGroupDao.existsById(10L)).thenReturn(false);
 
         // when & then
@@ -130,9 +130,9 @@ class MenuServiceTest {
     void createWithException3() {
         // given
         Menu menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(),
-                singletonList(짜장면상품));
+                singletonList(짜장면메뉴상품));
         when(menuGroupDao.existsById(짜장면_탕수육_1인_메뉴_세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(짜장면상품.getProductId())).thenReturn(Optional.empty());
+        when(productDao.findById(짜장면메뉴상품.getProductId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -143,11 +143,11 @@ class MenuServiceTest {
     void createWithException4() {
         // given
         Menu menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(),
-                Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
+                Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         when(menuGroupDao.existsById(짜장면_탕수육_1인_메뉴_세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(짜장면상품.getProductId())).thenReturn(Optional.of(짜장면));
-        when(productDao.findById(탕수육상품.getProductId())).thenReturn(Optional.of(탕수육));
-        when(productDao.findById(단무지상품.getProductId())).thenReturn(Optional.of(단무지));
+        when(productDao.findById(짜장면메뉴상품.getProductId())).thenReturn(Optional.of(짜장면));
+        when(productDao.findById(탕수육메뉴상품.getProductId())).thenReturn(Optional.of(탕수육));
+        when(productDao.findById(단무지메뉴상품.getProductId())).thenReturn(Optional.of(단무지));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -159,8 +159,8 @@ class MenuServiceTest {
         // given
         List<Menu> menus = Arrays.asList(짜장면_탕수육_1인_메뉴_세트, 짬뽕_탕수육_1인_메뉴_세트);
         when(menuDao.findAll()).thenReturn(menus);
-        when(menuProductDao.findAllByMenuId(짜장면_탕수육_1인_메뉴_세트.getId())).thenReturn(Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
-        when(menuProductDao.findAllByMenuId(짬뽕_탕수육_1인_메뉴_세트.getId())).thenReturn(Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
+        when(menuProductDao.findAllByMenuId(짜장면_탕수육_1인_메뉴_세트.getId())).thenReturn(Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
+        when(menuProductDao.findAllByMenuId(짬뽕_탕수육_1인_메뉴_세트.getId())).thenReturn(Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
 
         // when
         List<Menu> findMenus = menuService.list();
