@@ -72,6 +72,10 @@ public class OrderLineItem {
         return quantity;
     }
 
+    public void setup(Order order) {
+        this.order = order;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -42,7 +42,7 @@ class OrderTableTest {
     @Test
     void changeEmptyException2() {
         OrderTable 조리상태_주문_테이블 = OrderTable.of(10, false);
-        Order.order(조리상태_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order.of(조리상태_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
 
         boolean empty = !조리상태_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> 조리상태_주문_테이블.changeEmpty(empty))
@@ -53,7 +53,7 @@ class OrderTableTest {
     @Test
     void changeEmptyException3() {
         OrderTable 식사상태_주문_테이블 = OrderTable.of(10, false);
-        Order 주문 = Order.order(식사상태_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문 = Order.of(식사상태_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
         주문.setOrderStatus(OrderStatus.MEAL.name());
 
         boolean empty = !식사상태_주문_테이블.isEmpty();
@@ -65,7 +65,7 @@ class OrderTableTest {
     @Test
     void changeEmpty() {
         OrderTable 주문_테이블 = OrderTable.of(10, false);
-        Order 주문 = Order.order(주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문 = Order.of(주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
 
         주문_테이블.changeEmpty(!주문_테이블.isEmpty());

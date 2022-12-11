@@ -77,9 +77,9 @@ class OrderTablesTest {
     @Test
     void ungroupException() {
         OrderTable 주문_테이블1 = OrderTable.of(10, true);
-        Order.order(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
         OrderTable 주문_테이블2 = OrderTable.of(10, true);
-        Order.order(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+        Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
 
         OrderTables orderTables = OrderTables.from(Arrays.asList(주문_테이블1, 주문_테이블2));
 
@@ -91,11 +91,11 @@ class OrderTablesTest {
     @Test
     void ungroupException2() {
         OrderTable 주문_테이블1 = OrderTable.of(10, true);
-        Order 주문1 = Order.order(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
         주문1.setOrderStatus(OrderStatus.COMPLETION.name());
 
         OrderTable 주문_테이블2 = OrderTable.of(10, true);
-        Order 주문2 = Order.order(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+        Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
         주문2.setOrderStatus(OrderStatus.MEAL.name());
 
         OrderTables orderTables = OrderTables.from(Arrays.asList(주문_테이블1, 주문_테이블2));

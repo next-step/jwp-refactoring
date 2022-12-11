@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,8 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "orders")
@@ -37,8 +37,8 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     @Deprecated
     private Long orderTableId;
@@ -55,16 +55,18 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.valueOf(orderStatus);
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
+        checkNotEmpty(orderLineItems);
+        checkOrderTableIsNotEmpty(orderTable);
         orderTable.addOrder(this);
+        this.orderLineItems.setup(this);
     }
 
     public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
@@ -79,8 +81,20 @@ public class Order {
         return new Order(id, orderTableId, orderStatus, orderedTime, Collections.emptyList());
     }
 
-    public static Order order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         return new Order(orderTable, orderLineItems);
+    }
+
+    private static void checkNotEmpty(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static void checkOrderTableIsNotEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -95,10 +109,6 @@ public class Order {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus.name();
     }
@@ -111,16 +121,12 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
     }
 
     @Override
