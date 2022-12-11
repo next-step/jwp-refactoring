@@ -67,9 +67,9 @@ class MenuServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 등록 API - 메뉴 그룹 존재 X")
+    @DisplayName("메뉴 등록 API - 메뉴 그룹 존재 하지 않음")
     @Test
-    void create_menuGroup_notExists() {
+    void create_menu_group_not_exists() {
         // given
         MenuProduct menuProduct = menuProductParam(1L, 2L);
         Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
@@ -80,9 +80,9 @@ class MenuServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 등록 API - 메뉴 상품 존재 X")
+    @DisplayName("메뉴 등록 API - 메뉴 상품 존재 하지 않음")
     @Test
-    void create_product_notExists() {
+    void create_product_not_exists() {
         // given
         MenuProduct menuProduct = menuProductParam(1L, 2L);
         Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));

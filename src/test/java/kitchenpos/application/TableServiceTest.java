@@ -64,9 +64,9 @@ class TableServiceTest {
         assertThat(actual).hasSize(2);
     }
 
-    @DisplayName("주문 테이블 비우기 API - ID에 해당하는 주문 테이블 존재 X")
+    @DisplayName("주문 테이블 비우기 API - ID에 해당하는 주문 테이블 존재하지 않음")
     @Test
-    void changeEmpty_savedOrderTable_notExists() {
+    void changeEmpty_saved_order_table_not_exists() {
         // given
         Long orderTableId = 1L;
         boolean empty = false;
@@ -80,7 +80,7 @@ class TableServiceTest {
 
     @DisplayName("주문 테이블 비우기 API - ID에 해당하는 주문 테이블 단체 지정 이미 존재")
     @Test
-    void changeEmpty_savedOrderTable_tableGroupId_isNotNull() {
+    void changeEmpty_saved_order_table_table_group_id_is_not_null() {
         // given
         Long orderTableId = 1L;
         Long tableGroupId = 1L;
@@ -113,7 +113,7 @@ class TableServiceTest {
 
     @DisplayName("주문 테이블 비우기 API")
     @Test
-    void changeEmpty_() {
+    void changeEmpty() {
         // given
         Long orderTableId = 1L;
         Long tableGroupId = null;
@@ -133,7 +133,7 @@ class TableServiceTest {
 
     @DisplayName("방문한 손님수 수정 API - 방문한 손님수 0 미만")
     @Test
-    void changeNumberOfGuests_numberOfGuests_lessThan0() {
+    void changeNumberOfGuests_number_of_guests_less_than_0() {
         // given
         Long orderTableId = 1L;
         int numberOfGuests = -1;
@@ -144,9 +144,9 @@ class TableServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("방문한 손님수 수정 API - ID에 해당하는 주문 테이블 존재 X")
+    @DisplayName("방문한 손님수 수정 API - ID에 해당하는 주문 테이블 존재 하지 않음")
     @Test
-    void changeNumberOfGuests_savedOrderTable_notExists() {
+    void changeNumberOfGuests_saved_order_table_not_exists() {
         // given
         Long orderTableId = 1L;
         int numberOfGuests = 4;
@@ -160,7 +160,7 @@ class TableServiceTest {
 
     @DisplayName("방문한 손님수 수정 API - ID에 해당하는 주문 테이블이 빈 테이블")
     @Test
-    void changeNumberOfGuests_savedOrderTable_isEmpty() {
+    void changeNumberOfGuests_saved_order_table_is_empty() {
         // given
         Long orderTableId = 1L;
         int numberOfGuests = 4;

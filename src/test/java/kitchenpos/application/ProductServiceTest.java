@@ -70,6 +70,7 @@ class ProductServiceTest {
         );
     }
 
+    @DisplayName("상품 목록 조회 API")
     @Test
     void list() {
         // given

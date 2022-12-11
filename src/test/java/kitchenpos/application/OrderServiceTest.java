@@ -46,7 +46,7 @@ class OrderServiceTest {
 
     @DisplayName("주문 등록 API - 빈 주문 항목")
     @Test
-    void create_orderLineItems_empty() {
+    void create_order_line_items_is_empty() {
         // given
         Order order = orderParam(1L, Collections.emptyList());
 
@@ -55,9 +55,9 @@ class OrderServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 등록 API - 동록 되어 있지 않은 주문 항목 메뉴")
+    @DisplayName("주문 등록 API - 등록 되어 있지 않은 주문 항목 메뉴")
     @Test
-    void create_orderLineItems_invalidMenu() {
+    void create_order_line_items_not_exists() {
         // given
         Long menuId1 = 1L;
         Long menuId2 = 2L;
@@ -72,9 +72,9 @@ class OrderServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 등록 API - 동록 되어 있지 않은 주문 테이블")
+    @DisplayName("주문 등록 API - 등록 되어 있지 않은 주문 테이블")
     @Test
-    void create_orderTable_notExists() {
+    void create_order_table_not_exists() {
         // given
         Long orderTableId = 1L;
         Long menuId1 = 1L;
@@ -93,7 +93,7 @@ class OrderServiceTest {
 
     @DisplayName("주문 등록 API - 주문 테이블 빈 테이블")
     @Test
-    void create_orderTable_empty() {
+    void create_order_table_is_empty() {
         // given
         Long orderTableId = 1L;
         Long menuId1 = 1L;
@@ -165,10 +165,10 @@ class OrderServiceTest {
         assertThat(orders.get(0).getOrderLineItems()).containsExactly(savedOrderLineItem1, savedOrderLineItem2);
     }
 
-    @DisplayName("주문 수정 API - 저장된 주문 존재 X")
+    @DisplayName("주문 수정 API - 저장된 주문 존재 하지 않음")
     @ParameterizedTest
     @EnumSource
-    void changeOrderStatus_saveOrder_notExists(OrderStatus orderStatus) {
+    void changeOrderStatus_save_order_not_exists(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
         Order order = orderParam(orderStatus.name());
@@ -182,7 +182,7 @@ class OrderServiceTest {
     @DisplayName("주문 수정 API - 이미 완료된 주문")
     @ParameterizedTest
     @EnumSource
-    void changeOrderStatus_saveOrder_already_completion(OrderStatus orderStatus) {
+    void changeOrderStatus_save_order_already_completion(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
         Order order = orderParam(orderStatus.name());

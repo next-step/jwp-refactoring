@@ -36,7 +36,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 등록 API - 주문 테이블 없음")
     @Test
-    void create_empty_orderTables() {
+    void create_empty_order_tables() {
         // given
         TableGroup tableGroup = tableGroupParam(Collections.emptyList());
 
@@ -47,7 +47,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 등록 API - 주문 테이블 2개 미만")
     @Test
-    void create_orderTables_lessThan2() {
+    void create_order_tables_less_than_2() {
         // given
         TableGroup tableGroup = tableGroupParam(Collections.singletonList(orderTableParam(1L)));
 
@@ -58,7 +58,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 등록 API - 등록되어있지 않는 주문 테이블 존재")
     @Test
-    void create_orderTables_notSaved() {
+    void create_order_tables_not_saved() {
         // given
         Long orderTableId1 = 1L;
         Long orderTableId2 = 2L;
@@ -74,7 +74,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 등록 API - 비어있지 않은 주문 테이블 존재")
     @Test
-    void create_orderTable_not_empty() {
+    void create_order_table_not_empty() {
         // given
         Long orderTableId1 = 1L;
         Long orderTableId2 = 2L;
@@ -93,7 +93,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 등록 API - 다른 단체 지정에 연결되어있는 주문 테이블 존재")
     @Test
-    void create_orderTable_tableGroupId_exists() {
+    void create_order_table_table_group_id_exists() {
         // given
         Long orderTableId1 = 1L;
         Long orderTableId2 = 2L;
@@ -145,7 +145,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 해제 API - 주문 상태 조리중 또는 식사중")
     @Test
-    void upgroup_cooking_or_meal() {
+    void ungroup_cooking_or_meal() {
         // given
         long tableGroupId = 1L;
         OrderTable orderTable1 = savedOrderTable(1L, tableGroupId, false);
