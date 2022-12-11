@@ -43,5 +43,4 @@ public class TableGroupAcceptanceStep {
     public static void 단체_해제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
 }

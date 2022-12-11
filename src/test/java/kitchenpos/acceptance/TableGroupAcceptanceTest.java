@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         super.setUp();
         주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, true)).as(OrderTable.class);
         주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, true)).as(OrderTable.class);
-        단체1 = createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroupRequest tableGroupRequest = createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
+        단체1 = TableGroup.of(tableGroupRequest.getId(), tableGroupRequest.getCreatedDate(), tableGroupRequest.getOrderTables());
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 지정한다.")

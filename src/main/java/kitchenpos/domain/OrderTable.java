@@ -58,10 +58,10 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
 
-        if (existsByOrderTableIdAndOrderStatusIn.apply(
-                id, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (existsByOrderTableIdAndOrderStatusIn.apply(id, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
+
         this.empty = empty;
     }
 }

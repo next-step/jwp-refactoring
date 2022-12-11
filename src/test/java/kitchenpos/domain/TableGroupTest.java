@@ -1,0 +1,30 @@
+package kitchenpos.domain;
+
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.주문테이블_생성;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class TableGroupTest {
+
+    @Test
+    void of() {
+        // when
+        long expectedId = 1L;
+        OrderTable 주문테이블1 = 주문테이블_생성(createOrderTable(1L, null, 10, true));
+        OrderTable 주문테이블2 = 주문테이블_생성(createOrderTable(2L, null, 20, true));
+        TableGroup 단체1 = TableGroup.of(expectedId, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
+
+        // then
+        assertAll(
+                () -> assertThat(단체1).isNotNull(),
+                () -> assertThat(단체1.getId()).isEqualTo(expectedId),
+                () -> assertThat(단체1.getOrderTables()).containsExactly(주문테이블1, 주문테이블2)
+        );
+    }
+}
