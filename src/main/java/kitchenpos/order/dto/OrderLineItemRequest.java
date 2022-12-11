@@ -1,5 +1,6 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
 
@@ -34,6 +35,6 @@ public class OrderLineItemRequest {
                 .findFirst()
                 .get();
 
-        return new OrderLineItem(quantity, menu);
+        return new OrderLineItem(new Quantity(quantity), menu);
     }
 }

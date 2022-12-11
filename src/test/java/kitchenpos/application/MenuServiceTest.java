@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
@@ -67,9 +68,9 @@ class MenuServiceTest {
         공기밥 = new Product(3L, "공기밥", new Price(BigDecimal.valueOf(1_000)));
         한식 = new MenuGroup(1L, "한식");
         불고기정식 = new Menu(1L, "불고기정식", new Price(BigDecimal.valueOf(12_000L)), 한식);
-        불고기상품 = new MenuProduct(1L, 1L, 불고기정식, 불고기);
-        김치상품 = new MenuProduct(2L, 1L, 불고기정식, 김치);
-        공기밥상품 = new MenuProduct(3L, 1L, 불고기정식, 공기밥);
+        불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기정식, 불고기);
+        김치상품 = new MenuProduct(2L, new Quantity(1L), 불고기정식, 김치);
+        공기밥상품 = new MenuProduct(3L, new Quantity(1L), 불고기정식, 공기밥);
     }
 
     @DisplayName("메뉴를 생성한다.")

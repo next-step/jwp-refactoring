@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -77,7 +78,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(0), false))
                 .as(OrderTable.class);
-        불고기정식주문 = new OrderLineItem(null, 불고기정식응답.getId(), 불고기정식메뉴);
+        불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식메뉴);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.addOrderLineItem(불고기정식주문);
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식응답.getId(), 1L);

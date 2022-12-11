@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
@@ -22,8 +23,8 @@ public class MenuProductsTest {
         // given
         Product product1 = new Product("불고기", new Price(BigDecimal.valueOf(12_000)));
         Product product2 = new Product("잡채", new Price(BigDecimal.valueOf(8_000)));
-        MenuProduct menuProduct1 = new MenuProduct(1L, product1);
-        MenuProduct menuProduct2 = new MenuProduct(1L, product2);
+        MenuProduct menuProduct1 = new MenuProduct(new Quantity(1L), product1);
+        MenuProduct menuProduct2 = new MenuProduct(new Quantity(1L), product2);
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(menuProduct1, menuProduct2));
 
         // when

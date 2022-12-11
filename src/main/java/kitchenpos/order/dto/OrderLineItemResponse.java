@@ -20,7 +20,7 @@ public class OrderLineItemResponse {
         this.seq = orderLineItem.getSeq();
         this.orderId = orderLineItem.getOrder().getId();
         this.menuId = orderLineItem.getMenu().getId();
-        this.quantity = orderLineItem.getQuantity();
+        this.quantity = orderLineItem.getQuantity().value();
     }
 
     public static List<OrderLineItemResponse> list(List<OrderLineItem> orderLineItems) {
