@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 @Entity
 public class TableGroup {
 
+    private static final int MIN_ORDER_TABLE_SIZE = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,6 +39,28 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public TableGroup(List<OrderTable> orderTables) {
+        this.createdDate = LocalDateTime.now();
+        this.orderTables = orderTables;
+
+        if (orderTables.isEmpty() || orderTables.size() < MIN_ORDER_TABLE_SIZE) {
+            throw new IllegalArgumentException();
+        }
+
+        for (final OrderTable orderTable : orderTables) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        orderTables.forEach(
+                it -> {
+                    it.registerTableGroup(this);
+                    it.changeEmpty(false);
+                }
+        );
+    }
+
     public static TableGroup of(Long id, LocalDateTime createdDate) {
         return new TableGroup(id, createdDate);
     }
@@ -45,8 +69,8 @@ public class TableGroup {
         return new TableGroup(id, orderTables);
     }
 
-    public static TableGroup creatEmpty() {
-        return new TableGroup(null, LocalDateTime.now());
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
     public Long getId() {

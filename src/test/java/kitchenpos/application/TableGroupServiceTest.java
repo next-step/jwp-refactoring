@@ -7,14 +7,15 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
@@ -38,7 +39,10 @@ class TableGroupServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -58,10 +62,9 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 할 수 있다.")
     @Test
     void create() {
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
-        when(tableGroupDao.save(any())).thenReturn(TableGroup.creatEmpty());
-        when(orderTableDao.save(주문_테이블1)).thenReturn(주문_테이블1);
-        when(orderTableDao.save(주문_테이블2)).thenReturn(주문_테이블2);
+        when(orderTableRepository.findById(주문_테이블1.getId())).thenReturn(Optional.of(주문_테이블1));
+        when(orderTableRepository.findById(주문_테이블2.getId())).thenReturn(Optional.of(주문_테이블2));
+        when(tableGroupRepository.save(any())).thenReturn(TableGroup.of(1L, Arrays.asList(주문_테이블1, 주문_테이블2)));
 
         TableGroupResponse result = tableGroupService.create(단체지정요청);
 
@@ -82,7 +85,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정할 주문 테이블이 등록된 주문 테이블이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createException2() {
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Collections.emptyList());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -92,9 +95,10 @@ class TableGroupServiceTest {
     @Test
     void createException3() {
         OrderTable 비어있지_않은_주문_테이블 = OrderTable.of(3L, 3, false);
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 비어있지_않은_주문_테이블);
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
+        when(orderTableRepository.findById(비어있지_않은_주문_테이블.getId())).thenReturn(Optional.of(비어있지_않은_주문_테이블));
+        when(orderTableRepository.findById(주문_테이블1.getId())).thenReturn(Optional.of(주문_테이블1));
 
+        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 비어있지_않은_주문_테이블);
         TableGroupRequest 단체지정요청 =
                 TableGroupRequest.from(주문_테이블_목록.stream()
                         .map(OrderTable::getId)
@@ -108,13 +112,15 @@ class TableGroupServiceTest {
     @Test
     void createException4() {
         OrderTable 단체_지정된_주문_테이블 = OrderTable.of(3L, 2L, 3, true);
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 단체_지정된_주문_테이블);
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(주문_테이블_목록);
+        when(orderTableRepository.findById(단체_지정된_주문_테이블.getId())).thenReturn(Optional.of(단체_지정된_주문_테이블));
+        when(orderTableRepository.findById(주문_테이블1.getId())).thenReturn(Optional.of(주문_테이블1));
 
+        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 단체_지정된_주문_테이블);
         TableGroupRequest 단체지정요청 =
                 TableGroupRequest.from(주문_테이블_목록.stream()
                         .map(OrderTable::getId)
                         .collect(Collectors.toList()));
+
         Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }

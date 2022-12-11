@@ -112,6 +112,10 @@ public class OrderTable {
         this.orders.add(order);
     }
 
+    public void registerTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
