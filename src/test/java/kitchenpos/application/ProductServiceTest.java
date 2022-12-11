@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -45,10 +48,13 @@ class ProductServiceTest {
         when(productRepository.save(치킨)).thenReturn(치킨);
 
         // when
-        Product saveProduct = productService.create(치킨);
+        ProductResponse saveProduct = productService.create(new ProductRequest(치킨.getName(), 치킨.getPrice()));
 
         // then
-        assertThat(saveProduct).isEqualTo(치킨);
+        assertAll(
+                () -> assertThat(saveProduct.getName()).isEqualTo(치킨.getName()),
+                () -> assertThat(saveProduct.getPrice()).isEqualTo(치킨.getPrice())
+        );
     }
 
     @DisplayName("상품 목록을 조회한다.")
@@ -59,12 +65,13 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(products);
 
         // when
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
 
         // then
         assertAll(
                 () -> assertThat(findProducts).hasSize(products.size()),
-                () -> assertThat(findProducts).containsExactly(치킨, 치즈볼)
+                () -> assertThat(findProducts.stream().map(ProductResponse::getName).collect(Collectors.toList()))
+                        .containsExactly(치킨.getName(), 치즈볼.getName())
         );
     }
 }
