@@ -20,8 +20,7 @@ public class Product {
 
     }
 
-    public Product(Long id, String name, BigDecimal price) {
-        this.id = id;
+    public Product(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }

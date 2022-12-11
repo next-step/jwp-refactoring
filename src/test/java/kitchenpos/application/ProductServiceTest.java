@@ -37,8 +37,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void set_up() {
-        후라이드치킨 = ProductFixture.create(1L, "후라이드치킨", BigDecimal.valueOf(15_000));
-        강정치킨 = ProductFixture.create(2L, "강정치킨", BigDecimal.valueOf(18_000));
+        후라이드치킨 = ProductFixture.create("후라이드치킨", BigDecimal.valueOf(15_000));
+        강정치킨 = ProductFixture.create("강정치킨", BigDecimal.valueOf(18_000));
     }
 
     @DisplayName("상품을 등록할 수 있다.")
@@ -59,7 +59,6 @@ class ProductServiceTest {
     void create_price_fail() {
         // given
         Product 상품_가격_오류 = new Product(
-                1L,
                 "name",
                 BigDecimal.valueOf(-100_000)
         );
