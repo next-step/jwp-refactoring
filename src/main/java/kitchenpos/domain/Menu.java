@@ -31,18 +31,7 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    @Deprecated
-    private Long menuGroupId;
-
     protected Menu() {
-    }
-
-    private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = MenuName.from(name);
-        this.price = MenuPrice.from(price);
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = MenuProducts.from(menuProducts);
     }
 
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -55,17 +44,8 @@ public class Menu {
         this.menuProducts.setup(this);
     }
 
-
-    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId) {
-        return new Menu(id, name, price, menuGroupId, null);
-    }
-
-    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroupId, menuProducts);
-    }
-
-    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(null, name, price, menuGroupId, menuProducts);
+    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -89,14 +69,11 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = MenuProducts.from(menuProducts);
-    }
 }

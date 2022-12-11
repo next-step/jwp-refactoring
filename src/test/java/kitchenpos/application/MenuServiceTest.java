@@ -63,7 +63,7 @@ class MenuServiceTest {
         두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
         후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
         후라이드치킨상품 = MenuProduct.of(1L, 1L, 1L, 2);
-        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, Arrays.asList(후라이드치킨상품));
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴, Arrays.asList(후라이드치킨상품));
 
         List<MenuProductRequest> 메뉴상품요청목록 = Arrays.asList(MenuProductRequest.of(1L, 2));
         메뉴요청 = MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 1L, 메뉴상품요청목록);

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
@@ -62,9 +63,10 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        MenuGroup 두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
 
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(1L, 1L, 1L, 2));
-        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, 메뉴상품_목록);
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴, 메뉴상품_목록);
 
         주문_테이블 = OrderTable.of(1L, 3, false);
         비어있는_주문_테이블 = OrderTable.of(2L, 2, true);
