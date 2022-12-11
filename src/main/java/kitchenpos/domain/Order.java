@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.exception.EmptyOrderTableException;
 import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.OrderStatusChangeException;
 
 @Entity
 @Table(name = "orders")
@@ -70,7 +71,7 @@ public class Order {
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusChangeException(ExceptionMessage.ORDER_STATUS_CHANGE);
         }
 
         this.orderStatus = orderStatus;
