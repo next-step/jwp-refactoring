@@ -1,8 +1,11 @@
 package kitchenpos.product.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import kitchenpos.product.persistence.ProductDao;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
+import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.persistence.ProductDao;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,25 +34,28 @@ public class ProductServiceTest {
     @Mock
     private ProductDao productDao;
     public static FixtureMonkey fixtureMonkey;
+    public static FixtureMonkey builderFixtureMonkey;
 
     @BeforeAll
     public static void setup() {
+        builderFixtureMonkey = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build();
         fixtureMonkey = FixtureMonkey.create();
     }
 
     @DisplayName("상품가격이 없는경우 예외발생")
     @Test
     public void throwsExceptionWhenNullPrice() {
-        assertThatThrownBy(() -> productService.create(new Product()))
+        assertThatThrownBy(() -> productService.create(new ProductRequest()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품가격이 0보다 작은경우 예외발생")
     @ParameterizedTest
-    @ValueSource(ints = {-1, -2, -3, -100, -999})
-    public void throwsExceptionWhenNegativePrice(int price) {
-        Product product = new Product();
-        product.setPrice(BigDecimal.valueOf(price));
+    @ValueSource(longs = {-1, -2, -3, -100, -999})
+    public void throwsExceptionWhenNegativePrice(long price) {
+        ProductRequest product = new ProductRequest("product", price);
 
         assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -58,14 +65,15 @@ public class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(longs = {1, 342, 21, 3423, 4})
     public void returnProduct(long id) {
-        Product product = new Product();
-        product.setPrice(BigDecimal.valueOf(1500));
-        Product mockProduct = new Product();
-        mockProduct.setPrice(BigDecimal.valueOf(1500));
-        mockProduct.setId(id);
-        doReturn(mockProduct).when(productDao).save(product);
+        ProductRequest productRequest = new ProductRequest("product", 1500l);
 
-        Product savedProduct = productService.create(product);
+        Product mockProduct = Product.builder()
+                .money(Money.of(1500l))
+                .id(id)
+                .build();
+        doReturn(mockProduct).when(productDao).save(any(Product.class));
+
+        Product savedProduct = productService.create(productRequest);
 
         assertThat(savedProduct.getId()).isEqualTo(id);
     }
@@ -73,9 +81,10 @@ public class ProductServiceTest {
     @DisplayName("상품목록을 조회할 경우 저장된 상품목록반환")
     @Test
     public void returnProducts() {
-        List<Product> mockProducts = fixtureMonkey.giveMeBuilder(Product.class)
-                .set("price", BigDecimal.valueOf(Arbitraries.integers().greaterOrEqual(1000).sample()))
+        List<Product> mockProducts = builderFixtureMonkey
+                .giveMeBuilder(Product.class)
                 .set("id", Arbitraries.longs().between(1, 5))
+                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sampleList(5);
         doReturn(mockProducts).when(productDao).findAll();
 
