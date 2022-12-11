@@ -4,6 +4,8 @@ import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("주문 테이블 테스트")
 class OrderTableTest {
@@ -69,5 +71,34 @@ class OrderTableTest {
         주문_테이블.changeEmpty(!주문_테이블.isEmpty());
 
         Assertions.assertThat(주문_테이블.isEmpty()).isTrue();
+    }
+
+    @DisplayName("주문 테이블의 방문한 손님 수가 0 미만이면 방문한 손님 수를 변경 시 예외가 발생한다.")
+    @Test
+    void changeNumberOfGuestsException() {
+        OrderTable 주문_테이블 = OrderTable.of(10, false);
+
+        Assertions.assertThatThrownBy(() -> 주문_테이블.setNumberOfGuests(-1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 테이블이 빈 테이블이면 방문한 손님 수를 변경 시 예외가 발생한다.")
+    @Test
+    void changeNumberOfGuestsException2() {
+        OrderTable 주문_테이블 = OrderTable.of(10, true);
+
+        Assertions.assertThatThrownBy(() -> 주문_테이블.setNumberOfGuests(1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("방문한 손님 수를 변경한다.")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @CsvSource(value = {"1:1", "5:5"}, delimiter = ':')
+    void changeNumberOfGuests(int input, int expected) {
+        OrderTable 주문_테이블 = OrderTable.of(10, false);
+
+        주문_테이블.setNumberOfGuests(input);
+
+        Assertions.assertThat(주문_테이블.getNumberOfGuests()).isEqualTo(expected);
     }
 }
