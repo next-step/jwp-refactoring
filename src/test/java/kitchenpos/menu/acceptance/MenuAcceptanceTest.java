@@ -1,24 +1,21 @@
 package kitchenpos.menu.acceptance;
 
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.menu.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.menu.acceptance.MenuAcceptance.*;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성_요청;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성됨;
+import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성_요청;
+import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성됨;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -100,35 +97,36 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_조회됨(response);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menuRequest = new Menu(name, price, menuGroupId, menuProducts);
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuRequest)
-                .when().post("/api/menus")
-                .then().log().all()
-                .extract();
-    }
+    /**
+     * Scenario : 메뉴를 생성
+     *
+     * Given : 상품이 등록되어 있음
+     * And : 메뉴그룹이 등록되어 있음
+     * When : 메뉴를 생성한다.
+     * Then : 메뉴가 생성된다.
+     * And : 메뉴 목록을 조회한다.
+     * And : 메뉴 목록이 조회된다.
+     */
+    @DisplayName("메뉴생성 관련 통합 인수테스트")
+    @Test
+    void menuIntegrationTest() {
+        // given
+        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", new BigDecimal(9000));
+        Long productId = createProductResponse.jsonPath().getLong("id");
+        상품_생성됨(createProductResponse);
 
-    public static ExtractableResponse<Response> 메뉴_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/api/menus")
-                .then().log().all()
-                .extract();
-    }
+        // and
+        ExtractableResponse<Response> createMenuGroupResponse = 메뉴그룹_생성_요청("세마리치킨");
+        Long menuGroupId = createMenuGroupResponse.jsonPath().getLong("id");
+        메뉴그룹_생성됨(createMenuGroupResponse);
 
-    public static void 메뉴_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 메뉴_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        // when
+        ExtractableResponse<Response> createMenuResponse = 메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+        // And
+        메뉴_생성됨(createMenuResponse);
+        // And
+        ExtractableResponse<Response> menuListResponse = 메뉴_조회_요청();
+        // And
+        메뉴_조회됨(menuListResponse);
     }
 }

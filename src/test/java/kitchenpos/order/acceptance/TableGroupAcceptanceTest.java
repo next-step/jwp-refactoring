@@ -1,20 +1,16 @@
 package kitchenpos.order.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import static kitchenpos.order.acceptance.OrderTableAcceptanceTest.주문테이블_생성_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.order.acceptance.OrderTableAcceptance.주문테이블_생성_요청;
+import static kitchenpos.order.acceptance.TableGroupAcceptance.*;
 
 @DisplayName("테이블그룹(단체) 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -76,37 +72,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         TableGroup tableGroup = 단체테이블_생성_요청(주문테이블1, 주문테이블2).as(TableGroup.class);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete("/api/table-groups/{tableGroupId}", tableGroup.getId())
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 단체테이블_해체_요청(tableGroup.getId());
 
         // then
         단체테이블_해체됨(response);
-    }
-
-    public static ExtractableResponse<Response> 단체테이블_생성_요청(OrderTable mergeSource1, OrderTable mergeSource2) {
-        TableGroup tableGroupRequest = new TableGroup(Lists.newArrayList(mergeSource1, mergeSource2));
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroupRequest)
-                .when().post("/api/table-groups")
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 단체테이블_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 단체테이블_해체됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 단체테이블_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

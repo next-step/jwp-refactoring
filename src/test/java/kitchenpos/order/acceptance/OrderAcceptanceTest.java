@@ -1,6 +1,5 @@
 package kitchenpos.order.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
@@ -9,17 +8,17 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.menu.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.order.acceptance.OrderTableAcceptanceTest.주문테이블_빈테이블_여부_수정_요청;
-import static kitchenpos.order.acceptance.OrderTableAcceptanceTest.주문테이블_생성_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.menu.acceptance.MenuAcceptance.*;
+import static kitchenpos.menu.acceptance.MenuAcceptance.메뉴_조회됨;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성_요청;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성됨;
+import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성_요청;
+import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성됨;
+import static kitchenpos.order.acceptance.OrderAcceptance.*;
+import static kitchenpos.order.acceptance.OrderTableAcceptance.*;
 
 @DisplayName("주문 관련 기능 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -131,59 +130,72 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_수정_실패됨(response);
     }
 
+    /**
+     * Scenario : 주문을 성공적으로 생성
+     *
+     * Given : 상품이 등록되어 있음
+     * And : 메뉴그룹이 등록되어 있음
+     * When : 메뉴를 생성한다.
+     * Then : 메뉴가 생성된다.
+     * And : 메뉴 목록을 조회한다.
+     * And : 메뉴 목록이 조회된다.
+     *
+     * Given : 빈 테이블을 생성한다.
+     * And : 빈 테이블이 생성됨
+     * And : 빈 테이블을 주문 가능한 테이블 상태로 변경(empty --> false)
+     * And : 빈 테이블의 손님의 수를 2명으로 변경
+     * When : 테이블에서 주문을 요청한다.
+     * Then : 주문이 요청이 성공함.
+     * And : 주문 목록을 조회 요청
+     * And : 주문 목록을 조회함
+     */
+    @DisplayName("주문 관련 통합 인수 테스트")
+    @Test
+    void orderIntegrationTest() {
+        // given
+        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", new BigDecimal(9000));
+        Long productId = createProductResponse.jsonPath().getLong("id");
+        상품_생성됨(createProductResponse);
 
-    public static ExtractableResponse<Response> 주문_상태_수정_요청(Long orderId, String OrderStatus) {
-        Order orderRequest = new Order();
-        orderRequest.setOrderStatus(OrderStatus);
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderRequest)
-                .when().put("/api/orders/{orderId}/order-status", orderId)
-                .then().log().all()
-                .extract();
-    }
+        // and
+        ExtractableResponse<Response> createMenuGroupResponse = 메뉴그룹_생성_요청("세마리치킨");
+        Long menuGroupId = createMenuGroupResponse.jsonPath().getLong("id");
+        메뉴그룹_생성됨(createMenuGroupResponse);
 
-    public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, Menu menu) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menu.getId());
-        Order orderRequest = new Order(orderTable.getId(), Lists.newArrayList(orderLineItem));
+        // when
+        ExtractableResponse<Response> createMenuResponse = 메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+        Menu 메뉴 = createMenuResponse.as(Menu.class);
+        // And
+        메뉴_생성됨(createMenuResponse);
+        // And
+        ExtractableResponse<Response> menuListResponse = 메뉴_조회_요청();
+        // And
+        메뉴_조회됨(menuListResponse);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderRequest)
-                .when().post("/api/orders")
-                .then().log().all()
-                .extract();
-    }
 
-    public static ExtractableResponse<Response> 주문_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/api/orders")
-                .then().log().all()
-                .extract();
-    }
+        // given
+        ExtractableResponse<Response> createOrderTableResponse = 주문테이블_생성_요청(0, true);
+        OrderTable 주문테이블 = createOrderTableResponse.as(OrderTable.class);
+        // and
+        주문테이블_생성됨(createOrderTableResponse);
+        // and
+        ExtractableResponse<Response> changeEmptyResponse = 주문테이블_빈테이블_여부_수정_요청(주문테이블.getId(), false);
+        주문테이블 = changeEmptyResponse.as(OrderTable.class);
+        // and
+        주문테이블_수정됨(changeEmptyResponse);
+        // and
+        ExtractableResponse<Response> orderTableChangeNumberOfGuestsResponse = 주문테이블_손님수_수정_요청(주문테이블.getId(), 2);
+        주문테이블 = orderTableChangeNumberOfGuestsResponse.as(OrderTable.class);
+        // and
+        주문테이블_수정됨(orderTableChangeNumberOfGuestsResponse);
 
-    public static void 주문_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 주문_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 주문_상태_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 주문_상태_수정_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 주문_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        // when
+        ExtractableResponse<Response> createOrderResponse = 주문_생성_요청(주문테이블, 메뉴);
+        // then
+        주문_생성됨(createOrderResponse);
+        // and
+        ExtractableResponse<Response> ordersResponse = 주문_목록_조회_요청();
+        // and
+        주문_목록_조회됨(ordersResponse);
     }
 }
