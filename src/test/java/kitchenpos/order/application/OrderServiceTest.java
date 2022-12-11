@@ -3,14 +3,17 @@ package kitchenpos.order.application;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.exception.MenuExceptionCode;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderExceptionCode;
-import kitchenpos.order.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,20 +34,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @DisplayName("OrderService 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -61,65 +62,25 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         주문테이블 = new OrderTable(2, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
+
+        ReflectionTestUtils.setField(주문테이블, "id", 1L);
+
+        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
         양식_세트1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);
         양식_세트2 = new Menu("양식 세트2", new BigDecimal(50000), 양식);
 
-        ReflectionTestUtils.setField(주문테이블, "id", 1L);
         ReflectionTestUtils.setField(주문, "id", 1L);
         ReflectionTestUtils.setField(양식, "id", 1L);
         ReflectionTestUtils.setField(양식_세트1, "id", 1L);
         ReflectionTestUtils.setField(양식_세트2, "id", 2L);
 
-        주문_메뉴1 = new OrderLineItem(주문, 양식_세트1, 1L);
-        주문_메뉴2 = new OrderLineItem(주문, 양식_세트2, 1L);
+        주문_메뉴1 = new OrderLineItem(주문, 양식_세트1.getId(), 1L);
+        주문_메뉴2 = new OrderLineItem(주문, 양식_세트2.getId(), 1L);
 
         주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
         주문.order(주문_메뉴_목록);
-    }
-
-    @Test
-    void 주문_테이블이_등록되어_있지_않으면_주문할_수_없음() {
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> {
-            orderService.create(new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                    OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2))));
-        }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
-    }
-
-    @Test
-    void 주문_메뉴_중_등록되지_않은_메뉴가_있으면_주문할_수_없음() {
-        OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
-
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.findAllMenuIds()))
-                .willReturn(Arrays.asList(양식_세트1));
-
-        assertThatThrownBy(() -> {
-            orderService.create(request);
-        }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(MenuExceptionCode.NOT_FOUND_BY_ID.getMessage());
-    }
-
-    @Test
-    void 주문_테이블이_빈_테이블이면_주문할_수_없음() {
-        주문테이블.changeEmpty(true, Collections.emptyList());
-        OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
-
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.findAllMenuIds()))
-                .willReturn(Arrays.asList(양식_세트1, 양식_세트2));
-
-        assertThatThrownBy(() -> {
-            orderService.create(request);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OrderExceptionCode.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
     }
 
     @Test
@@ -127,9 +88,7 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.findAllMenuIds()))
-                .willReturn(Arrays.asList(양식_세트1, 양식_세트2));
+        willDoNothing().given(orderValidator).validateToCreateOrder(anyLong(), anyList());
         given(orderRepository.save(any(Order.class))).willReturn(주문);
 
         OrderResponse orderResponse = orderService.create(request);

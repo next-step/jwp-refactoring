@@ -6,7 +6,7 @@ public enum OrderExceptionCode {
     NOT_FOUND_BY_ID("The order table not found by id."),
     CANNOT_CHANGE_COMPLETION_ORDER("A completed order cannot be changed."),
     ORDER_TABLE_CANNOT_BE_EMPTY("The order cannot be ordered from an empty order table."),
-    ORDER_LINE_ITEMS_CANNOT_BE_EMPTY("The empty order products cannot be requested when creating an order.");
+    MUST_BE_GREATER_THAN_MINIMUM_SIZE("The order menus size cannot be smaller than the minimum size.");
 
     private static final String TITLE = "[ERROR] ";
 

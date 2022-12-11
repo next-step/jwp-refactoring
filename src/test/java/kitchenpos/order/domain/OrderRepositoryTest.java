@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,12 +30,12 @@ class OrderRepositoryTest {
         주문테이블1 = orderTableRepository.save(new OrderTable(2, false));
         주문테이블2 = orderTableRepository.save(new OrderTable(2, false));
 
-        orderRepository.save(new Order(주문테이블1, OrderStatus.COMPLETION));
-        orderRepository.save(new Order(주문테이블1, OrderStatus.MEAL));
-        orderRepository.save(new Order(주문테이블1, OrderStatus.COOKING));
+        orderRepository.save(new Order(주문테이블1.getId(), OrderStatus.COMPLETION));
+        orderRepository.save(new Order(주문테이블1.getId(), OrderStatus.MEAL));
+        orderRepository.save(new Order(주문테이블1.getId(), OrderStatus.COOKING));
 
-        orderRepository.save(new Order(주문테이블2, OrderStatus.COMPLETION));
-        orderRepository.save(new Order(주문테이블2, OrderStatus.MEAL));
+        orderRepository.save(new Order(주문테이블2.getId(), OrderStatus.COMPLETION));
+        orderRepository.save(new Order(주문테이블2.getId(), OrderStatus.MEAL));
     }
 
     @Test

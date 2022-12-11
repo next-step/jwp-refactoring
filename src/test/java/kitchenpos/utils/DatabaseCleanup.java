@@ -31,8 +31,6 @@ public class DatabaseCleanup implements InitializingBean {
                         return "orders";
                     }
 
-                    System.out.println(e.getName());
-
                     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName());
                 })
                 .collect(toList());
