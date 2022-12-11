@@ -23,4 +23,8 @@ public class Money {
             throw new IllegalArgumentException();
         }
     }
+
+    public BigDecimal value() {
+        return amount;
+    }
 }

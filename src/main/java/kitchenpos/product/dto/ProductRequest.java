@@ -23,4 +23,19 @@ public class ProductRequest {
                 .build();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
