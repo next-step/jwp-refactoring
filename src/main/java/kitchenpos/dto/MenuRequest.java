@@ -46,17 +46,6 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public Menu toMenu() {
-        return Menu.of(
-                name,
-                price,
-                menuGroupId,
-                menuProducts.stream()
-                        .map(it -> MenuProduct.of(it.getProductId(), it.getQuantity()))
-                        .collect(Collectors.toList())
-        );
-    }
-
     public Menu toMenu(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return Menu.of(name, price, menuGroup, menuProducts);
     }
