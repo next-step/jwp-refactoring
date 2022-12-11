@@ -3,7 +3,6 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -11,16 +10,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
@@ -39,16 +37,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -91,10 +86,9 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.save(any())).thenReturn(주문항목);
+        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderRepository.save(any())).thenReturn(주문);
 
         OrderResponse result = orderService.create(주문요청);
 
@@ -118,7 +112,7 @@ class OrderServiceTest {
     @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException2() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+        when(menuRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.create(메뉴등록_안된_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -127,8 +121,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -137,8 +131,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
+        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
 
         Assertions.assertThatThrownBy(() -> orderService.create(비어있는_주문_테이블_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -147,8 +141,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void list() {
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
 
         List<OrderResponse> results = orderService.list();
 
@@ -163,9 +156,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(주문));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
 
         OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);
 
@@ -178,7 +169,7 @@ class OrderServiceTest {
     @DisplayName("주문이 없으면 주문의 상태 변경 시 예외가 발생한다.")
     @Test
     void changeOrderStatusException() {
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -187,7 +178,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태가 계산 완료이면 주문의 상태 변경 시 예외가 발생한다.")
     @Test
     void changeOrderStatusException2() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(계산완료_주문));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
         Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
         Long orderId = 상태변경_주문.getId();
