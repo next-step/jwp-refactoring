@@ -72,6 +72,10 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public boolean isComplete() {
+        return this.orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
     public List<Long> findMenus() {
         return Collections.unmodifiableList(this.orderLineItems.assignedMenu());
     }
