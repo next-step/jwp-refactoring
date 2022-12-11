@@ -1,7 +1,7 @@
 package kitchenpos.table;
 
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

@@ -1,7 +1,12 @@
 package kitchenpos.order;
 
+
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -110,18 +115,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private static List<OrderLineItem> toOrderLoneItems(Menu[] menus) {
         return Arrays.stream(menus)
-                     .map(m -> {
-                         OrderLineItem orderLineItem = new OrderLineItem();
-                         orderLineItem.setMenuId(m.getId());
-                         orderLineItem.setQuantity(1L);
-                         return orderLineItem;
-                     })
-                     .collect(Collectors.toList());
+                .map(m -> {
+                    OrderLineItem orderLineItem = new OrderLineItem();
+                    orderLineItem.setMenuId(m.getId());
+                    orderLineItem.setQuantity(1L);
+                    return orderLineItem;
+                })
+                .collect(Collectors.toList());
     }
 
     public static ResponseEntity<List<Order>> 주문_목록_조회_요청() {
         return restTemplate().exchange("/api/orders", HttpMethod.GET, null,
-                                       new ParameterizedTypeReference<List<Order>>() {});
+                new ParameterizedTypeReference<List<Order>>() {
+                });
     }
 
     public static ResponseEntity<Order> 주문_상태_변경_요청(Order order, OrderStatus status) {
@@ -131,7 +137,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         Map<String, Object> request = new HashMap<>();
         request.put("orderStatus", status.name());
         return restTemplate().exchange("/api/orders/{orderId}/order-status", HttpMethod.PUT,
-                                       new HttpEntity<>(request), Order.class, urlVariables);
+                new HttpEntity<>(request), Order.class, urlVariables);
     }
 
     public static void 주문_생성됨(ResponseEntity<Order> response) {
@@ -162,13 +168,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static void 주문_목록_주문에_주문_항목이_포함됨(ResponseEntity<List<Order>> response, Menu... menus) {
         List<Long> menuIds = response.getBody()
-                                     .stream()
-                                     .flatMap(o -> o.getOrderLineItems().stream())
-                                     .map(OrderLineItem::getMenuId)
-                                     .collect(Collectors.toList());
+                .stream()
+                .flatMap(o -> o.getOrderLineItems().stream())
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
         List<Long> expectedIds = Arrays.stream(menus)
-                                       .map(Menu::getId)
-                                       .collect(Collectors.toList());
+                .map(Menu::getId)
+                .collect(Collectors.toList());
         assertThat(menuIds).containsExactlyElementsOf(expectedIds);
     }
 }

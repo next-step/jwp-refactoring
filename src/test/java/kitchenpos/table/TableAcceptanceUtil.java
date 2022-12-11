@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 import static kitchenpos.menu.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
 import static kitchenpos.order.OrderAcceptanceTest.주문_등록됨;
