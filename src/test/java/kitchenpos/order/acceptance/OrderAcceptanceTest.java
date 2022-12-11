@@ -20,7 +20,6 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.acceptance.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuRequest.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -31,6 +30,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderRequest.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.dto.TableRequest;
+import kitchenpos.ordertable.dto.TableResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,8 +42,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 후라이드치킨;
     private MenuGroupResponse 추천메뉴;
     private MenuResponse 두마리치킨;
-    private OrderTable 주문테이블_A;
-    private OrderTable 주문테이블_B;
+    private TableResponse 주문테이블_A;
+    private TableResponse 주문테이블_B;
     private OrderRequest 주문_A;
     private OrderRequest 주문_B;
 
@@ -55,8 +55,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         추천메뉴 = 메뉴_그룹_등록되어_있음(new MenuGroupRequest("추천메뉴")).as(MenuGroupResponse.class);
         MenuProductRequest 두마리치킨상품 = new MenuProductRequest(후라이드치킨.getId(), 2);
         두마리치킨 = 메뉴_등록되어_있음(new MenuRequest("두마리치킨", new BigDecimal(25000), 추천메뉴.getId(), singletonList(두마리치킨상품))).as(MenuResponse.class);
-        주문테이블_A = 주문_테이블_생성되어_있음(new TableRequest(5, false)).as(OrderTable.class);
-        주문테이블_B = 주문_테이블_생성되어_있음(new TableRequest(3, false)).as(OrderTable.class);
+        주문테이블_A = 주문_테이블_생성되어_있음(new TableRequest(5, false)).as(TableResponse.class);
+        주문테이블_B = 주문_테이블_생성되어_있음(new TableRequest(3, false)).as(TableResponse.class);
         OrderLineItemRequest 주문항목_A = new OrderLineItemRequest(두마리치킨.getId(), 1);
         OrderLineItemRequest 주문항목_B = new OrderLineItemRequest(두마리치킨.getId(), 2);
         주문_A = new OrderRequest(주문테이블_A.getId(), singletonList(주문항목_A));
