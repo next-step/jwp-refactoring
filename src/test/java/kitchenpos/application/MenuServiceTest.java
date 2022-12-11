@@ -57,7 +57,7 @@ class MenuServiceTest {
 
     @Test
     void 메뉴를_등록할_수_있다() {
-        Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨_스파게티_더블세트_메뉴", new BigDecimal(6_0000), 1L, Arrays.asList(치킨_두마리,
+        Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨_스파게티_더블세트_메뉴", new BigDecimal(60_000), 1L, Arrays.asList(치킨_두마리,
                 스파게티_이인분));
         given(menuGroupDao.existsById(1L)).willReturn(true);
         given(productDao.findById(1L)).willReturn(Optional.of(치킨));
@@ -95,15 +95,15 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격은 모든 메뉴 상품의 (가격 * 수량)의 합보다 작거나 같아야한다")
     @Test
     void createWithPriceGoeMenuPrice() {
-        Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨_스파게티_더블세트_메뉴", new BigDecimal(6_0000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
+        Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨_스파게티_더블세트_메뉴", new BigDecimal(60_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
         assertThatThrownBy(() -> menuService.create(치킨_스파게티_더블세트_메뉴))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 메뉴_목록을_조회할_수_있다() {
-        Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨_스파게티_더블세트_메뉴", new BigDecimal(6_0000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
-        Menu 치킨_피자_더블세트_메뉴 = new Menu(1L, "치킨_피자_더블세트_메뉴", new BigDecimal(10_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
+        Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨_스파게티_더블세트_메뉴", new BigDecimal(60_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
+        Menu 치킨_피자_더블세트_메뉴 = new Menu(1L, "치킨_피자_더블세트_메뉴", new BigDecimal(50_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
         given(menuDao.findAll()).willReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴, 치킨_피자_더블세트_메뉴));
 
         List<Menu> menus = menuService.list();
