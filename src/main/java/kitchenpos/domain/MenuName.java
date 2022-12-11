@@ -1,12 +1,20 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidMenuNameSizeException;
 import org.springframework.util.StringUtils;
 
+@Embeddable
 public class MenuName {
+
+    @Column(nullable = false)
     private String name;
+
+    protected MenuName() {
+    }
 
     private MenuName(String name) {
         this.name = name;
