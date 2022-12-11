@@ -3,9 +3,12 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.exception.MenuPriceGreaterThanAmountException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("메뉴 가격 테스트")
 class MenuPriceTest {
@@ -42,5 +45,18 @@ class MenuPriceTest {
         Assertions.assertThatThrownBy(() -> MenuPrice.from(BigDecimal.valueOf(-1)))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_MENU_PRICE);
+    }
+
+    @DisplayName("메뉴 가격이 메뉴 상품 금액(상품 가격 * 수량) 의 합보다 크면 예외가 발생한다.")
+    @ParameterizedTest(name = "{index} | {displayName} | {arguments}")
+    @ValueSource(ints = {17000, 18000, 20000})
+    void checkLessOrEqualTotalAmount(int input) {
+        MenuPrice menuPrice = MenuPrice.from(BigDecimal.valueOf(30000));
+
+        BigDecimal amount = BigDecimal.valueOf(input);
+        Assertions.assertThatThrownBy(() -> menuPrice.checkLessOrEqualTotalAmount(amount))
+                .isInstanceOf(MenuPriceGreaterThanAmountException.class)
+                .hasMessageStartingWith(ExceptionMessage.MENU_PRICE_GREATER_THAN_AMOUNT);
+
     }
 }
