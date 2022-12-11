@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.MenuProductExceptionCode;
-import kitchenpos.utils.NumberUtil;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,29 +18,26 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    private long quantity;
+    @Embedded
+    private MenuProductQuantity quantity;
 
     protected MenuProduct() {}
 
     public MenuProduct(Menu menu, Product product, long quantity) {
-        validate(menu, product, quantity);
+        validate(menu, product);
 
         updateMenu(menu);
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new MenuProductQuantity(quantity);
     }
 
-    private void validate(Menu menu, Product product, long quantity) {
+    private void validate(Menu menu, Product product) {
         if(Objects.isNull(menu)) {
             throw new IllegalArgumentException(MenuProductExceptionCode.REQUIRED_MENU.getMessage());
         }
 
         if(Objects.isNull(product)) {
             throw new IllegalArgumentException(MenuProductExceptionCode.REQUIRED_PRODUCT.getMessage());
-        }
-
-        if(NumberUtil.isNotPositiveNumber(quantity)) {
-            throw new IllegalArgumentException(MenuProductExceptionCode.INVALID_QUANTITY.getMessage());
         }
     }
 
@@ -53,7 +49,7 @@ public class MenuProduct {
     }
 
     public BigDecimal calculateAmount() {
-        return this.product.calculateAmount(quantity);
+        return this.product.calculateAmount(getQuantity());
     }
 
     public Long getSeq() {
@@ -69,7 +65,7 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 
     @Override

@@ -1,8 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.exception.OrderLineItemExceptionCode;
-import kitchenpos.utils.NumberUtil;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,22 +14,15 @@ public class OrderLineItem {
 
     private Long menuId;
 
-    private long quantity;
+    @Embedded
+    private OrderLineItemQuantity quantity;
 
     protected OrderLineItem() {}
 
     public OrderLineItem(Order order, Long menuId, long quantity) {
-        validate(quantity);
-
         updateOrder(order);
         this.menuId = menuId;
-        this.quantity = quantity;
-    }
-
-    private void validate(long quantity) {
-        if (NumberUtil.isNotPositiveNumber(quantity)) {
-            throw new IllegalArgumentException(OrderLineItemExceptionCode.INVALID_QUANTITY.getMessage());
-        }
+        this.quantity = new OrderLineItemQuantity(quantity);
     }
 
     void updateOrder(Order order) {
@@ -55,7 +45,7 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 
     @Override
