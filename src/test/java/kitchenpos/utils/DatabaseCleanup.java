@@ -29,5 +29,4 @@ public class DatabaseCleanup {
     private void execute(final JdbcTemplate jdbcTemplate, final String query) {
         jdbcTemplate.execute(query);
     }
-
 }
