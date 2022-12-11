@@ -19,7 +19,6 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;

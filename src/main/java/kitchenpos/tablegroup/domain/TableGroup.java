@@ -37,12 +37,13 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public Long getId() {
-        return id;
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::validateOrderStatusShouldComplete);
+        orderTables.ungroup();
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -58,11 +59,6 @@ public class TableGroup {
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-    }
-
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::validateOrderStatusShouldComplete);
-        orderTables.ungroup();
     }
 
     @Override

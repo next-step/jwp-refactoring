@@ -33,30 +33,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void setTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests.value();
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
     public void updateEmpty(boolean empty, List<Order> orders) {
         validateHasTableGroup();
         orders.forEach(Order::validateOrderStatusShouldComplete);
@@ -83,6 +59,26 @@ public class OrderTable {
 
     public void ungroup() {
         this.tableGroup = null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public void setTableGroup(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests.value();
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     @Override

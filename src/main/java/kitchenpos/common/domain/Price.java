@@ -47,10 +47,7 @@ public class Price implements Comparable<Price> {
     }
 
     public boolean isBiggerThan(Price totalPrice) {
-        if (price.compareTo(totalPrice.price) > 0) {
-            return true;
-        }
-        return false;
+        return price.compareTo(totalPrice.price) > ZERO;
     }
 
     @Override

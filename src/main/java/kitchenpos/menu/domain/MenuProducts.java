@@ -10,19 +10,17 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    private static final int ZERO = 0;
-
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
 
     public MenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        this.menuProducts = new ArrayList<>(menuProducts);
     }
 
     public Price totalMenuPrice() {
-        Price total = new Price(BigDecimal.valueOf(0));
+        Price total = new Price(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
             total = total.add(menuProduct.calculatePrice());
         }
@@ -30,7 +28,7 @@ public class MenuProducts {
         return total;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProduct> get() {
         return Collections.unmodifiableList(menuProducts);
     }
 }

@@ -2,7 +2,6 @@ package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.math.BigDecimal;
 
 @Embeddable
 public class Quantity {

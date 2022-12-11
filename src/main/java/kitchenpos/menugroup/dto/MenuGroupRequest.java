@@ -1,11 +1,6 @@
 package kitchenpos.menugroup.dto;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 public class MenuGroupRequest {
 

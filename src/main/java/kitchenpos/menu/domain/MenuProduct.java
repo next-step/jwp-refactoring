@@ -53,16 +53,8 @@ public class MenuProduct {
         return product;
     }
 
-    public void setProduct(final Product product) {
-        this.product = product;
-    }
-
     public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final Quantity quantity) {
-        this.quantity = quantity;
     }
 
     public Price calculatePrice() {

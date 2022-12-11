@@ -40,16 +40,8 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Price getPrice() {
@@ -65,14 +57,14 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+        return menuProducts.get();
     }
 
     public void setMenuProducts(MenuProducts menuProducts) {
         validatePrice(menuProducts.totalMenuPrice());
 
         this.menuProducts = menuProducts;
-        menuProducts.getMenuProducts().forEach(menuProduct -> menuProduct.setMenu(this));
+        menuProducts.get().forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
     private void validatePrice(Price totalPrice) {

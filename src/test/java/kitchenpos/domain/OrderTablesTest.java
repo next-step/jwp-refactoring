@@ -1,15 +1,11 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 

@@ -7,14 +7,11 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuProductsTest {
     @DisplayName("전체 메뉴 상품의 총 가격의 합을 알 수 있다.")
