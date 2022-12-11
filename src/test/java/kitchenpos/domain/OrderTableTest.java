@@ -1,6 +1,10 @@
 package kitchenpos.domain;
 
 import java.util.Arrays;
+import kitchenpos.exception.CannotChangeEmptyException;
+import kitchenpos.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.InvalidNumberOfGuestsSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +39,8 @@ class OrderTableTest {
 
         boolean empty = !단체_지정된_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> 단체_지정된_주문_테이블.changeEmpty(empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeEmptyException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED);
     }
 
     @DisplayName("주문 테이블의 주문 상태가 조리이면 주문 테이블의 empty 변경 시 예외가 발생한다.")
@@ -46,7 +51,8 @@ class OrderTableTest {
 
         boolean empty = !조리상태_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> 조리상태_주문_테이블.changeEmpty(empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeEmptyException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
     }
 
     @DisplayName("주문 테이블의 주문 상태가 식사이면 주문 테이블의 empty 변경 시 예외가 발생한다.")
@@ -58,7 +64,8 @@ class OrderTableTest {
 
         boolean empty = !식사상태_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> 식사상태_주문_테이블.changeEmpty(empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeEmptyException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
     }
 
     @DisplayName("주문 테이블의 empty 상태가 변경된다.")
@@ -79,7 +86,8 @@ class OrderTableTest {
         OrderTable 주문_테이블 = OrderTable.of(10, false);
 
         Assertions.assertThatThrownBy(() -> 주문_테이블.changeNumberOfGuests(-1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidNumberOfGuestsSize.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_NUMBER_OF_GUESTS_SIZE);
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 방문한 손님 수를 변경 시 예외가 발생한다.")
@@ -88,7 +96,8 @@ class OrderTableTest {
         OrderTable 주문_테이블 = OrderTable.of(10, true);
 
         Assertions.assertThatThrownBy(() -> 주문_테이블.changeNumberOfGuests(1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeNumberOfGuestsException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_NUMBER_OF_GUESTS);
     }
 
     @DisplayName("방문한 손님 수를 변경한다.")

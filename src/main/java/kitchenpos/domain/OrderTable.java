@@ -14,6 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.exception.CannotChangeEmptyException;
+import kitchenpos.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.exception.ExceptionMessage;
 
 @Entity
 public class OrderTable {
@@ -85,7 +88,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         if (this.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeNumberOfGuestsException(ExceptionMessage.CAN_NOT_CHANGE_NUMBER_OF_GUESTS);
         }
 
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
@@ -98,11 +101,11 @@ public class OrderTable {
     public void changeEmpty(final boolean empty) {
 
         if (Objects.nonNull(this.getTableGroupId())) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeEmptyException(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED);
         }
 
         if (orders.anyMatchedIn(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeEmptyException(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
         }
 
         this.empty = empty;

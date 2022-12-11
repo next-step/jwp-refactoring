@@ -10,6 +10,9 @@ public class ExceptionMessage {
     public static final String EMPTY_ORDER_TABLE = "주문 시 주문 테이블이 빈 상태여서는 안됩니다.";
     public static final String INVALID_NUMBER_OF_GUESTS_SIZE = "방문한 손님 수는 음수일 수 없습니다.";
     public static final String ORDER_STATUS_CHANGE = "계산 완료된 상태에서는 주문 상태를 변경할 수 없습니다.";
+    public static final String CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED = "단체 지정이 되어있는 주문 테이블은 빈 상태를 변경할 수 없습니다.";
+    public static final String CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL = "주문 상태가 조리 또는 식사이면 주문 테이블의 빈 상태를 변경할 수 없습니다.";
+    public static final String CAN_NOT_CHANGE_NUMBER_OF_GUESTS = "주문 테이블이 빈 테이블이면 방문한 손님 수를 변경할 수 없습니다.";
 
     private ExceptionMessage() {
     }
