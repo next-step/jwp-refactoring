@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Column;
@@ -91,6 +92,15 @@ public class OrderTable {
     }
 
     public void setEmpty(final boolean empty) {
+
+        if (Objects.nonNull(this.getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (orders.anyMatchedIn(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
+
         this.empty = empty;
     }
 

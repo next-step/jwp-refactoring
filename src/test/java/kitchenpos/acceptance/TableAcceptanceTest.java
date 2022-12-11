@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
@@ -302,9 +301,9 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private void 주문_테이블_목록에_등록된_주문_테이블_포함됨(ExtractableResponse<Response> listResponse,
                                            List<ExtractableResponse<Response>> createResponses) {
-        List<OrderTable> orderTables = listResponse.jsonPath().getList(".", OrderTable.class);
-        List<OrderTable> createdOrderTables = createResponses.stream()
-                .map(it -> it.as(OrderTable.class))
+        List<OrderTableResponse> orderTables = listResponse.jsonPath().getList(".", OrderTableResponse.class);
+        List<OrderTableResponse> createdOrderTables = createResponses.stream()
+                .map(it -> it.as(OrderTableResponse.class))
                 .collect(Collectors.toList());
 
         assertAll(
@@ -320,7 +319,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     private void 빈_상태_변경됨(ExtractableResponse<Response> response, boolean empty) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(empty)
+                () -> assertThat(response.as(OrderTableResponse.class).isEmpty()).isEqualTo(empty)
         );
     }
 
@@ -331,7 +330,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     private void 방문한_손님_수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(numberOfGuests)
+                () -> assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(numberOfGuests)
         );
     }
 }
