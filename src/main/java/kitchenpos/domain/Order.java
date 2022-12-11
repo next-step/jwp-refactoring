@@ -17,15 +17,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id_v2", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
+    @JoinColumn(name = "order_table_id_v2", foreignKey = @ForeignKey(name = "fk_orders_order_table_v2"), nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)

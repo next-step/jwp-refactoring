@@ -17,7 +17,7 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(name = "order_id_v2", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
+    @JoinColumn(name = "order_id_v2", foreignKey = @ForeignKey(name = "fk_order_line_item_orders_v2"), nullable = false)
     private Order order;
 
     @Column(nullable = false)
