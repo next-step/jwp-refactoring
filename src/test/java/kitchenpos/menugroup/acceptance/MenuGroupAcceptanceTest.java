@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.menugroup.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

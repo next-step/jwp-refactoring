@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.domain.MenuTest.메뉴_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
@@ -21,7 +21,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;

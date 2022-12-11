@@ -1,7 +1,7 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static kitchenpos.domain.MenuProductTest.메뉴상품_생성;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
