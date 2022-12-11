@@ -1,0 +1,21 @@
+spring:
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+        SQL: debug
