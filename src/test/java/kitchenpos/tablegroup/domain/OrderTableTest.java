@@ -1,7 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.exception.OrderExceptionCode;
-import kitchenpos.order.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,7 +35,7 @@ class OrderTableTest {
         단체_주문_테이블1.ungroup();
 
         assertThatThrownBy(() -> {
-            단체_주문_테이블1.checkOrderTableForTableGrouping();
+            단체_주문_테이블1.group();
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableExceptionCode.NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
     }
@@ -50,31 +48,10 @@ class OrderTableTest {
     }
 
     @Test
-    void 다른_테이블_그룹에_포함되어_있으면_빈_테이블로_변경할_수_없음() {
-        assertThatThrownBy(() -> {
-            단체_주문_테이블1.changeEmpty(true, Collections.emptyList());
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OrderTableExceptionCode.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 요리중이거나_식사중인_주문이_있다면_빈_테이블로_변경할_수_없음(OrderStatus orderStatus) {
-        OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, orderStatus);
-
-        assertThatThrownBy(() -> {
-            주문_테이블.changeEmpty(true, Arrays.asList(order));
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OrderExceptionCode.CANNOT_BE_CHANGED.getMessage());
-    }
-
-    @Test
     void 빈_테이블로_변경() {
         OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, OrderStatus.COMPLETION);
 
-        주문_테이블.changeEmpty(true, Arrays.asList(order));
+        주문_테이블.changeEmpty(true);
 
         assertTrue(주문_테이블.isEmpty());
     }

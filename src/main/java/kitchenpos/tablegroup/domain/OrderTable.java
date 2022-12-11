@@ -1,9 +1,8 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,48 +15,56 @@ public class OrderTable {
     private TableGroup tableGroup;
 
     @Embedded
-    private OrderGuests numberOfGuests = new OrderGuests();
+    private TableGuests numberOfGuests = new TableGuests();
 
     @Embedded
-    private OrderEmpty empty = new OrderEmpty();
+    private TableEmpty empty = new TableEmpty();
 
     protected OrderTable() {}
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.tableGroup = null;
-        this.numberOfGuests = new OrderGuests(numberOfGuests);
-        this.empty = new OrderEmpty(empty);
+        this.numberOfGuests = new TableGuests(numberOfGuests);
+        this.empty = new TableEmpty(empty);
     }
 
     void updateTableGroup(TableGroup tableGroup) {
-        if(this.tableGroup != tableGroup) {
+        if (this.tableGroup != tableGroup) {
             this.tableGroup = tableGroup;
             tableGroup.addOrderTable(this);
         }
     }
 
-    public void checkOrderTableForTableGrouping() {
-        this.empty.validateForTableGrouping();
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroup);
     }
 
-    private void checkTableGroup() {
-        if(Objects.nonNull(this.tableGroup)) {
+    public void changeEmpty(boolean request) {
+        this.empty = new TableEmpty(request);
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = this.numberOfGuests.changeNumberOfGuests(numberOfGuests, isEmpty());
+    }
+
+    public void group() {
+        checkForTableGrouping();
+        changeEmpty(false);
+    }
+
+    private void checkForTableGrouping() {
+        if (hasTableGroup()) {
             throw new IllegalArgumentException(OrderTableExceptionCode.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+        }
+
+        if (!isEmpty()) {
+            throw new IllegalArgumentException(
+                    OrderTableExceptionCode.NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
         }
     }
 
     public void ungroup() {
         this.tableGroup = null;
-    }
-
-    public void changeEmpty(boolean empty, List<Order> orders) {
-        checkTableGroup();
-        orders.forEach(Order::checkForChangingOrderTable);
-        this.empty = this.empty.changeEmpty(empty);
-    }
-
-    public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = this.numberOfGuests.changeNumberOfGuests(numberOfGuests, isEmpty());
     }
 
     public Long getId() {

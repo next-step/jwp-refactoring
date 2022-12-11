@@ -1,19 +1,19 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import kitchenpos.utils.NumberUtil;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class OrderGuests {
+public class TableGuests {
     @Column
     private int numberOfGuests;
 
-    protected OrderGuests() {}
+    protected TableGuests() {}
 
-    public OrderGuests(int numberOfGuests) {
+    public TableGuests(int numberOfGuests) {
         validate(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
@@ -24,12 +24,12 @@ public class OrderGuests {
         }
     }
 
-    public OrderGuests changeNumberOfGuests(int numberOfGuests, boolean empty) {
-        if(empty) {
+    public TableGuests changeNumberOfGuests(int numberOfGuests, boolean empty) {
+        if (empty) {
             throw new IllegalArgumentException(OrderTableExceptionCode.NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
         }
 
-        return new OrderGuests(numberOfGuests);
+        return new TableGuests(numberOfGuests);
     }
 
     public int getNumberOfGuests() {
