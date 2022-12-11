@@ -62,24 +62,11 @@ public class ProductServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("상품등록 가격 데이터가 0이하인 경우 오류 테스트")
-    @ParameterizedTest
-    @ValueSource(longs = {-1, -10})
-    void createProductPriceUnderZeroExceptionTest(Long input) {
-        assertThatThrownBy(() -> productService.create(new Product(4L, "멸추김밥", new BigDecimal(input))))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("상품중복등록 오류 테스트")
+    @DisplayName("상품등록 가격 데이터가 0보다 작은 경우 오류 테스트")
     @Test
-    void createProductNameDuplicatedExceptionTest() {
-        //given
-        when(productService.create(참치김밥)).thenReturn(참치김밥);
-        Product 이름중복참치김밥 = new Product(11L, "참치김밥", new BigDecimal(3000));
-
-        //when
-        //then
-        assertThatThrownBy(() -> productService.create(이름중복참치김밥))
+    void createProductPriceUnderZeroExceptionTest(Long input) {
+        assertThatThrownBy(() -> productService.create(new Product(4L, "멸추김밥", new BigDecimal(-1))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
 }
