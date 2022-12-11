@@ -9,9 +9,9 @@ import static org.mockito.BDDMockito.given;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -39,7 +39,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @Test
@@ -111,7 +111,7 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정을_해제할_수_있다() {
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Collections.singletonList(orderTable));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         ThrowingCallable 단체_지정을_해제할_수_있다 = () -> tableGroupService.ungroup(1L);
 
@@ -121,7 +121,7 @@ class TableGroupServiceTest {
     @Test
     void 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우_해제가_불가능하다() {
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Collections.singletonList(orderTable));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         ThrowingCallable 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우 = () -> tableGroupService.ungroup(1L);
 

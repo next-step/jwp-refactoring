@@ -9,8 +9,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -32,7 +32,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderDao, orderTableRepository);
+        tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @Test
@@ -60,7 +60,7 @@ class TableServiceTest {
     void 주문_테이블의_비어있음_여부를_수정할_수_있다() {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.getTableGroupId()).willReturn(null);
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable changeEmptyOrderTable = tableService.changeEmpty(1L, this.orderTable);
@@ -92,7 +92,7 @@ class TableServiceTest {
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.getTableGroupId()).willReturn(null);
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, orderTable);
 

@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ class OrderServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
@@ -42,7 +42,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderDao, orderLineItemDao, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderLineItemDao, orderTableRepository);
     }
 
     @Test
@@ -51,7 +51,7 @@ class OrderServiceTest {
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
         given(menuRepository.countByIdIn(any())).willReturn(1l);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(order);
+        given(orderRepository.save(order)).willReturn(order);
 
         Order createOrder = orderService.create(order);
 
@@ -102,7 +102,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_목록을_조회할_수_있다() {
-        given(orderDao.findAll()).willReturn(Collections.singletonList(order));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(order));
 
         List<Order> orders = orderService.list();
 
@@ -114,7 +114,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_상태를_변경할_수_있다() {
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
         given(order.getOrderStatus()).willReturn(OrderStatus.COOKING.name());
 
         Order saveOrder = orderService.changeOrderStatus(1L, this.order);
@@ -124,7 +124,7 @@ class OrderServiceTest {
 
     @Test
     void 등록_된_주문의_상태만_변경할_수_있다() {
-        given(orderDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록되지_않은_주문의_상태변경 = () -> orderService.changeOrderStatus(1L, order);
 
@@ -133,7 +133,7 @@ class OrderServiceTest {
 
     @Test
     void 이미_완료된_주문의_상태는_변경할_수_없다() {
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
         given(order.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
 
         ThrowingCallable 이미_완료된_주문의_상태_변경 = () -> orderService.changeOrderStatus(1L, order);
