@@ -5,6 +5,7 @@ import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.persistence.ProductDao;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
@@ -88,10 +89,10 @@ public class ProductServiceTest {
                 .sampleList(5);
         doReturn(mockProducts).when(productDao).findAll();
 
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
-        List<BigDecimal> productPrice = products.stream().map(Product::getPrice).collect(Collectors.toList());
-        List<Long> productIds = products.stream().map(Product::getId).collect(Collectors.toList());
+        List<BigDecimal> productPrice = products.stream().map(ProductResponse::getMoney).collect(Collectors.toList());
+        List<Long> productIds = products.stream().map(ProductResponse::getId).collect(Collectors.toList());
         assertAll(
                 () -> assertThat(productPrice).allMatch(bigDecimal -> bigDecimal.intValue() >= 1000),
                 () -> assertThat(productIds).containsAnyOf(1l, 2l, 3l, 4l, 5l));
