@@ -1,11 +1,11 @@
-package kitchenpos.order.ui;
+package kitchenpos.tablegroup.ui;
 
 import kitchenpos.ControllerTest;
-import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

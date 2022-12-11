@@ -1,11 +1,15 @@
-package kitchenpos.order.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
-import kitchenpos.order.exception.OrderTableExceptionCode;
-import kitchenpos.order.exception.TableGroupExceptionCode;
+import kitchenpos.order.application.OrderValidator;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.exception.TableGroupExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +19,13 @@ import java.util.List;
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(TableGroupRepository tableGroupRepository,
-            OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository,
+            TableValidator tableValidator) {
         this.tableGroupRepository = tableGroupRepository;
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -41,20 +45,16 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(Long tableGroupId) {
-        TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTableIds());
+        TableGroup saveTableGroup = findTableGroupById(tableGroupId);
+        tableValidator.validateToUngroup(saveTableGroup.getOrderTableIds());
 
-        tableGroup.ungroup(orders);
+        saveTableGroup.ungroup();
 
-        tableGroupRepository.save(tableGroup);
+        tableGroupRepository.save(saveTableGroup);
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new EntityNotFoundException(TableGroupExceptionCode.NOT_FOUND_BY_ID.getMessage()));
-    }
-
-    private List<Order> findAllOrderByOrderTableIds(List<Long> orderTableIds) {
-        return orderRepository.findAllByOrderTableIds(orderTableIds);
     }
 }

@@ -1,4 +1,4 @@
-package kitchenpos.order.exception;
+package kitchenpos.tablegroup.exception;
 
 public enum TableGroupExceptionCode {
     ORDER_TABLES_CANNOT_BE_EMPTY("The order tables cannot be empty collection."),
