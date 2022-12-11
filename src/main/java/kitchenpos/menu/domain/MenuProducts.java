@@ -21,4 +21,11 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
+
+    public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
+        if(!menuProducts.contains(menuProduct)) {
+            this.menuProducts.add(menuProduct);
+            menuProduct.updateMenu(menu);
+        }
+    }
 }

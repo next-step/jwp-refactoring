@@ -48,4 +48,11 @@ public class MenuProduct {
     public long getQuantity() {
         return quantity;
     }
+
+    public void updateMenu(Menu menu) {
+        if(this.menu != menu) {
+            this.menu = menu;
+            menu.addMenuProduct(this);
+        }
+    }
 }

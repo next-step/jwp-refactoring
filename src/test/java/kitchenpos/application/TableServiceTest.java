@@ -1,66 +1,70 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import kitchenpos.table.application.TableService;
+import kitchenpos.order.application.TableService;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
+
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
+
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable 주문테이블_비어있음;
-    private OrderTable 주문테이블_2명;
-    private OrderTable 주문테이블_비어있음_단체1;
-    private OrderTable 주문테이블_5명_단체2;
+    private TableGroup 단체테이블;
+    private OrderTable 주문테이블1;
+    private OrderTable 주문테이블2;
 
     @BeforeEach
     void setUp() {
-        주문테이블_비어있음 = OrderTable.of(1L, null, 0, true);
-        주문테이블_2명 = OrderTable.of(2L, null, 2, false);
-        주문테이블_비어있음_단체1 = OrderTable.of(3L, 1L, 0, true);
-        주문테이블_5명_단체2 = OrderTable.of(4L, 1L, 5, false);
-        TableGroup 단체지정 = TableGroup.of(1L, LocalDateTime.MIN, Arrays.asList(주문테이블_비어있음_단체1, 주문테이블_5명_단체2));
+        단체테이블 = new TableGroup();
+        주문테이블1 = new OrderTable(2, false);
+        주문테이블2 = new OrderTable(3, false);
+
+        ReflectionTestUtils.setField(단체테이블, "id", 1L);
+        ReflectionTestUtils.setField(주문테이블1, "id", 1L);
+        ReflectionTestUtils.setField(주문테이블2, "id", 2L);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void 주문테이블_생성() {
         // given
-        when(tableService.create(주문테이블_비어있음)).thenReturn(주문테이블_비어있음);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문테이블1);
 
-        // when
-        OrderTable savedOrderTable = tableService.create(주문테이블_비어있음);
+        OrderTableResponse response = tableService.create(
+                new OrderTableRequest(주문테이블1.getNumberOfGuests(), 주문테이블1.isEmpty()));
 
-        // then
         assertAll(
-                () -> assertThat(savedOrderTable.getTableGroupId()).isEqualTo(주문테이블_비어있음.getTableGroupId()),
-                () -> assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(주문테이블_비어있음.getNumberOfGuests()),
-                () -> assertThat(savedOrderTable.isEmpty()).isEqualTo(주문테이블_비어있음.isEmpty())
+                () -> assertThat(주문테이블1.getId()).isEqualTo(response.getId()),
+                () -> assertThat(주문테이블1.getNumberOfGuests()).isEqualTo(response.getNumberOfGuests())
         );
     }
 
@@ -68,16 +72,14 @@ class TableServiceTest {
     @Test
     void 주문테이블_목록_조회() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(주문테이블_비어있음, 주문테이블_비어있음_단체1, 주문테이블_5명_단체2);
-        when(tableService.list()).thenReturn(orderTables);
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
-        // when
-        List<OrderTable> selectOrderTables = tableService.list();
+        List<OrderTableResponse> responses = tableService.list();
 
-        // then
         assertAll(
-                () -> assertThat(selectOrderTables).hasSize(orderTables.size()),
-                () -> assertThat(selectOrderTables).isEqualTo(orderTables)
+                () -> assertThat(responses).hasSize(2),
+                () -> assertThat(responses.stream().map(OrderTableResponse::getId).collect(toList()))
+                        .containsExactly(주문테이블1.getId(), 주문테이블2.getId())
         );
     }
 
@@ -85,96 +87,100 @@ class TableServiceTest {
     @Test
     void 주문테이블_빈자리_여부_변경() {
         // given
-        OrderTable 주문테이블_자리있음 = OrderTable.of(주문테이블_비어있음.getId(), 주문테이블_비어있음.getTableGroupId(), 주문테이블_비어있음.getNumberOfGuests(), false);
-        when(orderTableDao.findById(주문테이블_비어있음.getId())).thenReturn(Optional.of(주문테이블_비어있음));
-        when(tableService.changeEmpty(주문테이블_비어있음.getId(), 주문테이블_자리있음)).thenReturn(주문테이블_자리있음);
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
+                .thenReturn(Arrays.asList(new Order(주문테이블1, OrderStatus.COMPLETION)));
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문테이블1);
 
-        // when
-        OrderTable updateTable = tableService.changeEmpty(주문테이블_비어있음.getId(), 주문테이블_자리있음);
+        OrderTableRequest request = new OrderTableRequest(0, true);
+        OrderTableResponse response = tableService.changeEmpty(주문테이블1.getId(), request);
 
-        // then
-        assertThat(updateTable.isEmpty()).isEqualTo(주문테이블_자리있음.isEmpty());
+        assertThat(response.isEmpty()).isTrue();
     }
 
     @DisplayName("등록되지 않은 주문 테이블은 빈자리 여부를 변경할 수 없다.")
     @Test
     void 등록되지_않은_주문테이블_빈자리_여부_변경() {
-        // given
-        OrderTable 주문테이블_자리있음 = OrderTable.of(주문테이블_비어있음.getId(), 주문테이블_비어있음.getTableGroupId(), 주문테이블_비어있음.getNumberOfGuests(), false);
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.empty());
 
-        // when/then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(주문테이블_비어있음.getId(), 주문테이블_자리있음));
+        assertThatThrownBy(
+                () -> tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
+        ).isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("단체 지정이 된 주문 테이블은 빈자리 여부를 변경할 수 없다.")
     @Test
     void 단체_주문테이블_빈자리_여부_변경() {
         // given
-        OrderTable 주문테이블_자리있음 = OrderTable.of(주문테이블_비어있음_단체1.getId(), 주문테이블_비어있음_단체1.getTableGroupId(), 주문테이블_비어있음_단체1.getNumberOfGuests(), false);
-        when(orderTableDao.findById(주문테이블_비어있음_단체1.getId())).thenReturn(Optional.of(주문테이블_비어있음_단체1));
+        ReflectionTestUtils.setField(주문테이블1, "empty", true);
+        ReflectionTestUtils.setField(주문테이블2, "empty", true);
+        단체테이블.group(Arrays.asList(주문테이블1, 주문테이블2));
 
-        // when/then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(주문테이블_비어있음_단체1.getId(), 주문테이블_자리있음));
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+
+        assertThatThrownBy(() ->
+            tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("조리중/식사중인 주문 테이블은 빈자리 여부를 변경할 수 없다.")
-    @Test
-    void 조리중_식사중인_주문테이블_빈자리_여부_변경() {
+    @ParameterizedTest
+    @ValueSource(strings = { "COOKING", "MEAL" })
+    void 조리중_식사중인_주문테이블_빈자리_여부_변경(OrderStatus orderStatus) {
         // given
-        OrderTable orderTable = OrderTable.of(4L, null, 2, true);
-        OrderTable orderTable_isNotEmpty = OrderTable.of(4L, null, 2, false);
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .thenReturn(true);
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
+                .thenReturn(Arrays.asList(new Order(주문테이블1, orderStatus)));
 
-        // when/then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable_isNotEmpty));
+        assertThatThrownBy(() ->
+            tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블의 손님 수를 변경한다.")
     @Test
     void 주문테이블_손님수_변경() {
         // given
-        OrderTable 주문테이블_5명 = OrderTable.of(주문테이블_2명.getId(), 주문테이블_2명.getTableGroupId(), 5, 주문테이블_2명.isEmpty());
-        when(orderTableDao.findById(주문테이블_2명.getId())).thenReturn(Optional.of(주문테이블_2명));
-        when(tableService.changeNumberOfGuests(주문테이블_2명.getId(), 주문테이블_5명)).thenReturn(주문테이블_5명);
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문테이블1);
 
-        // when
-        OrderTable updateOrderTable = tableService.changeNumberOfGuests(주문테이블_2명.getId(), 주문테이블_5명);
+        OrderTableResponse response = tableService.changeNumberOfGuests(주문테이블1.getId(),
+                new OrderTableRequest(5, false));
 
-        // then
-        assertThat(updateOrderTable.getNumberOfGuests()).isEqualTo(주문테이블_5명.getNumberOfGuests());
+        assertThat(response.getNumberOfGuests()).isEqualTo(5);
     }
 
     @DisplayName("주문 테이블의 손님 수를 음수로 변경할 수 없다.")
     @Test
     void 음수_주문테이블_손님수_변경() {
         // given
-        OrderTable 주문테이블_음수 = OrderTable.of(주문테이블_2명.getId(), 주문테이블_2명.getTableGroupId(), -1, 주문테이블_2명.isEmpty());
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         // when / then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_2명.getId(), 주문테이블_음수));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블1.getId(),
+                new OrderTableRequest(-5, false)));
     }
 
     @DisplayName("등록되지 않은 주문 테이블은 손님 수를 변경할 수 없다.")
     @Test
     void 등록되지_않은_주문테이블_손님수_변경() {
         // given
-        OrderTable 주문테이블_5명 = OrderTable.of(주문테이블_2명.getId(), 주문테이블_2명.getTableGroupId(), 5, 주문테이블_2명.isEmpty());
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.empty());
 
-        // when / then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_2명.getId(), 주문테이블_5명));
+        assertThatThrownBy(() ->
+            tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderTableRequest(5, false))
+        ).isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("빈 주문 테이블은 손님 수를 변경할 수 없다.")
     @Test
     void 빈_주문테이블_손님수_변경() {
         // given
-        OrderTable 주문테이블_5명 = OrderTable.of(주문테이블_비어있음.getId(), 주문테이블_비어있음.getTableGroupId(), 5, 주문테이블_비어있음.isEmpty());
-        when(orderTableDao.findById(주문테이블_비어있음.getId())).thenReturn(Optional.of(주문테이블_비어있음));
+        주문테이블1.changeEmpty(true, Collections.emptyList());
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
-        // when / then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_비어있음.getId(), 주문테이블_5명));
+        assertThatThrownBy(() ->
+            tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderTableRequest(5, false))
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 }
