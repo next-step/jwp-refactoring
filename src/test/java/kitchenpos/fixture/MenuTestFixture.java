@@ -1,6 +1,7 @@
 package kitchenpos.fixture;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuRequest;
 
@@ -33,6 +34,6 @@ public class MenuTestFixture {
     }
 
     public static Menu 메뉴_세트_생성(MenuRequest request) {
-        return Menu.of(request.getId(), request.getName(), request.getPrice(), request.getMenuGroupId(), request.getMenuProducts());
+        return Menu.of(request.getId(), request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), request.getMenuProducts());
     }
 }

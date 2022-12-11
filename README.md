@@ -82,7 +82,7 @@
   - [X] Product
   - [X] TableGroup
 - [ ] JPA로 Migration
-  - [ ] Menu
+  - [X] Menu
   - [X] MenuGroup
   - [ ] MenuProduct
   - [ ] Order
