@@ -5,9 +5,9 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ class OrderValidatorTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderValidator orderValidator;
@@ -42,7 +42,7 @@ class OrderValidatorTest {
     @Test
     void validateTable() {
         Order order = new Order(1000L);
-        given(orderTableDao.findById(1000L)).willReturn(Optional.empty());
+        given(orderTableRepository.findById(1000L)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderValidator.validateTable(order))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -53,8 +53,8 @@ class OrderValidatorTest {
     @Test
     void validateTableEmpty() {
         Order order = new Order(1L);
-        OrderTable orderTable = new OrderTable(1L, null, 0, true);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        OrderTable orderTable = new OrderTable(0, true);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> orderValidator.validateTable(order))
                 .isInstanceOf(IllegalArgumentException.class)
