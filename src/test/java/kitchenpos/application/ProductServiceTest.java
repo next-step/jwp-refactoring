@@ -47,7 +47,7 @@ class ProductServiceTest {
         // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(product.getId()),
-                () -> assertThat(result.getName()).isEqualTo(product.getName()),
+                () -> assertThat(result.getName()).isEqualTo(product.getName().value()),
                 () -> assertThat(result.getPrice()).isEqualTo(product.getPrice().value())
         );
     }
@@ -83,7 +83,7 @@ class ProductServiceTest {
         assertAll(
                 () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(product.getId()),
-                () -> assertThat(results.get(0).getName()).isEqualTo(product.getName()),
+                () -> assertThat(results.get(0).getName()).isEqualTo(product.getName().value()),
                 () -> assertThat(results.get(0).getPrice()).isEqualTo(product.getPrice().value())
         );
     }

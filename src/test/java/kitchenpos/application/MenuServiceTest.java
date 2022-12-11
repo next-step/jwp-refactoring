@@ -94,7 +94,7 @@ class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(불고기정식.getId()),
-                () -> assertThat(result.getName()).isEqualTo(불고기정식.getName())
+                () -> assertThat(result.getName()).isEqualTo(불고기정식.getName().value())
         );
     }
 
@@ -179,7 +179,7 @@ class MenuServiceTest {
         assertAll(
                 () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(불고기정식.getId()),
-                () -> assertThat(results.get(0).getName()).isEqualTo(불고기정식.getName())
+                () -> assertThat(results.get(0).getName()).isEqualTo(불고기정식.getName().value())
         );
     }
 }

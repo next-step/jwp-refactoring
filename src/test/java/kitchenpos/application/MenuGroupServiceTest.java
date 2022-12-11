@@ -42,7 +42,7 @@ class MenuGroupServiceTest {
         // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(한식.getId()),
-                () -> assertThat(result.getName()).isEqualTo(한식.getName())
+                () -> assertThat(result.getName()).isEqualTo(한식.getName().value())
         );
     }
 
@@ -60,7 +60,7 @@ class MenuGroupServiceTest {
         assertAll(
                 () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(한식.getId()),
-                () -> assertThat(results.get(0).getName()).isEqualTo(한식.getName())
+                () -> assertThat(results.get(0).getName()).isEqualTo(한식.getName().value())
         );
     }
 }

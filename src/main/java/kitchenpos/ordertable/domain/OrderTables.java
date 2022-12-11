@@ -47,7 +47,7 @@ public class OrderTables {
     private void validateShouldEmpty() {
         boolean hasNotEmpty = orderTables.stream()
                 .anyMatch(orderTable -> !orderTable.isEmpty());
-
+        System.out.println("hasNotEmpy" + hasNotEmpty);
         if (hasNotEmpty) {
             throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_IS_NOT_EMPTY.getMessage());
         }

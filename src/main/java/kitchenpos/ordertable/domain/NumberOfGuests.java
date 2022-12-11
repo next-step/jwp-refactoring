@@ -3,6 +3,7 @@ package kitchenpos.ordertable.domain;
 import kitchenpos.common.constant.ErrorCode;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Embeddable
 public class NumberOfGuests {
