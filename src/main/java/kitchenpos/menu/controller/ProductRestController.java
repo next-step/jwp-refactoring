@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menu.controller;
 
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
