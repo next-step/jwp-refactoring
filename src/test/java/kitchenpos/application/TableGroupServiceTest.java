@@ -163,11 +163,11 @@ class TableGroupServiceTest {
     void ungroupException3() {
         OrderTable 주문_테이블1 = OrderTable.of(1L, 3, true);
         Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문1.setOrderStatus(OrderStatus.MEAL.name());
+        주문1.changeOrderStatus(OrderStatus.MEAL);
 
         OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
         Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
-        주문2.setOrderStatus(OrderStatus.MEAL.name());
+        주문2.changeOrderStatus(OrderStatus.MEAL);
 
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L, 주문_테이블_목록);

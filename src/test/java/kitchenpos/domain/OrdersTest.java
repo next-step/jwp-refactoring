@@ -15,9 +15,9 @@ class OrdersTest {
     @BeforeEach
     void setUp() {
         Order order1 = Order.of(1L, Arrays.asList(OrderLineItem.of(1L, 2)));
-        order1.setOrderStatus(OrderStatus.COOKING.name());
+        order1.changeOrderStatus(OrderStatus.COOKING);
         Order order2 = Order.of(1L, Arrays.asList(OrderLineItem.of(2L, 2)));
-        order2.setOrderStatus(OrderStatus.MEAL.name());
+        order2.changeOrderStatus(OrderStatus.MEAL);
 
         orders = Orders.from(Arrays.asList(order1, order2));
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 
 public class OrderResponse {
     private Long id;
@@ -46,8 +47,8 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public OrderStatus getOrderStatus() {
+        return OrderStatus.valueOf(orderStatus);
     }
 
     public LocalDateTime getOrderedTime() {

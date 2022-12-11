@@ -113,8 +113,12 @@ public class Order {
         return orderStatus.name();
     }
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -123,10 +127,6 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = OrderLineItems.from(orderLineItems);
     }
 
     @Override

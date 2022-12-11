@@ -104,7 +104,7 @@ class TableServiceTest {
     @Test
     void changeEmptyException4() {
         Order 주문 = Order.of(비어있지않은_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문.setOrderStatus(OrderStatus.MEAL.name());
+        주문.changeOrderStatus(OrderStatus.MEAL);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();

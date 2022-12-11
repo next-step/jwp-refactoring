@@ -79,7 +79,7 @@ class OrderServiceTest {
         주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
 
         계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
-        계산완료_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        계산완료_주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
         주문항목_없는_주문요청 = OrderRequest.of(주문_테이블.getId(), Collections.emptyList());
@@ -167,11 +167,11 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
 
-        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
+                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
         );
     }
 
@@ -180,8 +180,7 @@ class OrderServiceTest {
     void changeOrderStatusException() {
         when(orderDao.findById(any())).thenReturn(Optional.empty());
 
-        String orderStatus = OrderStatus.MEAL.name();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, orderStatus))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -192,8 +191,7 @@ class OrderServiceTest {
 
         Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
         Long orderId = 상태변경_주문.getId();
-        String orderStatus = OrderStatus.MEAL.name();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, orderStatus))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
