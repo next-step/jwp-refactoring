@@ -3,8 +3,13 @@ package kitchenpos.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,68 +17,88 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
+    private static final Long PRODUCT_ID_1 = 1L;
+    private static final Long PRODUCT_ID_2 = 2L;
+
     @Mock
     private MenuRepository menuRepository;
+    @Mock
+    private MenuGroupRepository menuGroupRepository;
+    @Mock
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
     private Product 허니콤보;
-    private Product 뿌링클순살;
     private Product 치즈볼;
-    private Product 콜라;
     private MenuGroup 인기그룹;
     private Menu 허니콤보세트;
-    private Menu 뿌링클순살세트;
+    private List<MenuProductRequest> menuProducts;
 
     @BeforeEach
     void setUp() {
         인기그룹 = new MenuGroup("인기그룹");
         허니콤보 = new Product("허니콤보", BigDecimal.valueOf(20000));
-        뿌링클순살 = new Product( "뿌링클순살", BigDecimal.valueOf(22000));
         치즈볼 = new Product("치즈볼", BigDecimal.valueOf(5000));
-        콜라 = new Product("콜라", BigDecimal.valueOf(2000));
         허니콤보세트 = new Menu("허니콤보세트", BigDecimal.valueOf(22000), 인기그룹);
-        뿌링클순살세트 = new Menu("뿌링클순살세트", BigDecimal.valueOf(24000), 인기그룹);
+
+        ReflectionTestUtils.setField(인기그룹, "id", 1L);
+        ReflectionTestUtils.setField(허니콤보, "id", PRODUCT_ID_1);
+        ReflectionTestUtils.setField(치즈볼, "id", PRODUCT_ID_2);
+        ReflectionTestUtils.setField(허니콤보세트, "id", 1L);
+
+        menuProducts = Arrays.asList(new MenuProductRequest(허니콤보.getId(), 1),
+                new MenuProductRequest(치즈볼.getId(), 1));
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void 메뉴_생성() {
+        MenuRequest request = new MenuRequest("허니콤보세트", new BigDecimal(22000), 인기그룹.getId(), menuProducts);
+
         // given
-        when(menuRepository.save(허니콤보세트)).thenReturn(허니콤보세트);
+        when(menuGroupRepository.findById(인기그룹.getId())).thenReturn(Optional.of(인기그룹));
+        when(productRepository.findAllById(request.getMenuProductIds()))
+                .thenReturn(Arrays.asList(허니콤보, 치즈볼));
+        when(menuRepository.save(any(Menu.class))).thenReturn(허니콤보세트);
 
         // when
-        Menu savedMenu = menuService.create(허니콤보세트);
+        MenuResponse menuResponse = menuService.create(request);
 
         // then
-        assertThat(savedMenu).isEqualTo(허니콤보세트);
+        assertAll(
+                () -> assertThat(menuResponse.getId()).isNotNull(),
+                () -> assertThat(menuResponse.getName()).isEqualTo("허니콤보세트"),
+                () -> assertThat(menuResponse.getPrice()).isEqualTo(new BigDecimal(22000)),
+                () -> assertThat(menuResponse.getId()).isEqualTo(허니콤보세트.getId())
+        );
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void 메뉴_목록_조회() {
         // given
-        List<Menu> menus = Arrays.asList(허니콤보세트, 뿌링클순살세트);
-        when(menuService.list()).thenReturn(menus);
+        when(menuRepository.findAll()).thenReturn(Collections.singletonList(허니콤보세트));
 
         // when
-        List<Menu> selectMenus = menuService.list();
+        List<MenuResponse> responses = menuService.list();
 
         // then
-        assertAll(
-                () -> assertThat(selectMenus).hasSize(menus.size()),
-                () -> assertThat(selectMenus).isEqualTo(menus)
-        );
+        assertThat(responses).hasSize(1);
     }
 }
