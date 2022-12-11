@@ -4,10 +4,7 @@ import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupFixture {
 
-    public static MenuGroup create(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
+    public static MenuGroup create(String name) {
+        return new MenuGroup(name);
     }
 }

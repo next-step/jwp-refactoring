@@ -5,7 +5,6 @@ import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.MenuProductFixture;
 import kitchenpos.fixture.ProductFixture;
 import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +38,7 @@ class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -57,7 +56,7 @@ class MenuServiceTest {
     void set_up() {
         상품_후라이드치킨 = ProductFixture.create("후라이드치킨", BigDecimal.valueOf(15_000));
         메뉴_상품_후라이드_치킨 = MenuProductFixture.create(1L, ProductFixture.후라이드치킨.getId(), 1L);
-        메뉴_그룹_기본 = MenuGroupFixture.create(1L, "메뉴 그룹 기본");
+        메뉴_그룹_기본 = MenuGroupFixture.create("메뉴 그룹 기본");
         메뉴_기본 = MenuFixture.create(
                 1L, BigDecimal.valueOf(15_000), 메뉴_그룹_기본.getId(), Arrays.asList(메뉴_상품_후라이드_치킨)
         );
@@ -67,7 +66,7 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
         when(menuDao.save(any())).thenReturn(메뉴_기본);
 
@@ -85,7 +84,7 @@ class MenuServiceTest {
         메뉴_상품_후라이드_치킨.setProductId(null);
         메뉴_기본.setMenuProducts(Arrays.asList(메뉴_상품_후라이드_치킨));
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
 
         // when && then
         assertThatThrownBy(() -> menuService.create(메뉴_기본))
@@ -123,7 +122,7 @@ class MenuServiceTest {
         Menu 메뉴_요금_많이 = new Menu();
         메뉴_요금_많이.setPrice(BigDecimal.valueOf(1_000_000));
         메뉴_요금_많이.setMenuProducts(Arrays.asList(메뉴_상품_후라이드_치킨));
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
 
         // when && then
