@@ -21,7 +21,9 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +59,11 @@ class OrderServiceTest {
     private Order 주문;
     private Order 계산완료_주문;
     private OrderLineItem 주문항목;
+    private OrderRequest 주문요청;
+    private OrderRequest 주문항목_없는_주문요청;
+    private OrderRequest 메뉴등록_안된_주문요청;
+    private OrderRequest 주문테이블_없는_주문요청;
+    private OrderRequest 비어있는_주문_테이블_주문요청;
 
     @BeforeEach
     void setUp() {
@@ -73,6 +80,12 @@ class OrderServiceTest {
 
         계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
         계산완료_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+
+        주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
+        주문항목_없는_주문요청 = OrderRequest.of(주문_테이블.getId(), Collections.emptyList());
+        메뉴등록_안된_주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(2L, 1)));
+        주문테이블_없는_주문요청 = OrderRequest.of(null, Arrays.asList(OrderLineItemRequest.of(1L, 2)));
+        비어있는_주문_테이블_주문요청 = OrderRequest.of(비어있는_주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
     }
 
     @DisplayName("주문을 생성한다.")
@@ -83,7 +96,7 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(주문);
         when(orderLineItemDao.save(any())).thenReturn(주문항목);
 
-        OrderResponse result = orderService.create(주문);
+        OrderResponse result = orderService.create(주문요청);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
@@ -98,7 +111,7 @@ class OrderServiceTest {
     void createException() {
         Order order = Order.of(1L, Collections.emptyList());
 
-        Assertions.assertThatThrownBy(() -> orderService.create(order))
+        Assertions.assertThatThrownBy(() -> orderService.create(주문항목_없는_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -107,12 +120,7 @@ class OrderServiceTest {
     void createException2() {
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
 
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-                OrderLineItem.of(1L, 2),
-                OrderLineItem.of(2L, 1));
-        Order order = Order.of(1L, orderLineItems);
-
-        Assertions.assertThatThrownBy(() -> orderService.create(order))
+        Assertions.assertThatThrownBy(() -> orderService.create(메뉴등록_안된_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,7 +130,7 @@ class OrderServiceTest {
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.create(주문))
+        Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -132,7 +140,7 @@ class OrderServiceTest {
         when(menuDao.countByIdIn(anyList())).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
 
-        Assertions.assertThatThrownBy(() -> orderService.create(주문))
+        Assertions.assertThatThrownBy(() -> orderService.create(비어있는_주문_테이블_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
