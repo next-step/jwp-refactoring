@@ -1,15 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,16 +39,10 @@ import static org.mockito.Mockito.when;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
-
-    @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -92,13 +84,8 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        when(productDao.findById(짜장면.getId())).thenReturn(Optional.of(짜장면));
-        when(productDao.findById(탕수육.getId())).thenReturn(Optional.of(탕수육));
-        when(productDao.findById(단무지.getId())).thenReturn(Optional.of(단무지));
-        when(menuDao.save(any())).thenReturn(짜장면_탕수육_1인_메뉴_세트);
-        when(menuProductDao.save(짜장면메뉴상품)).thenReturn(짜장면메뉴상품);
-        when(menuProductDao.save(탕수육메뉴상품)).thenReturn(탕수육메뉴상품);
-        when(menuProductDao.save(단무지메뉴상품)).thenReturn(단무지메뉴상품);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(중국집_1인_메뉴_세트));
+        when(menuRepository.save(any())).thenReturn(짜장면_탕수육_1인_메뉴_세트);
 
         // when
         MenuResponse saveMenu = menuService.create(짜장면_탕수육_1인_메뉴_세트_요청);
@@ -127,7 +114,6 @@ class MenuServiceTest {
         // given
         MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 10L,
                 Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
-        when(menuGroupDao.existsById(10L)).thenReturn(false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -139,7 +125,6 @@ class MenuServiceTest {
         // given
         MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(),
                 singletonList(짜장면메뉴상품));
-        when(productDao.findById(짜장면.getId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -151,9 +136,6 @@ class MenuServiceTest {
         // given
         MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(),
                 Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
-        when(productDao.findById(짜장면.getId())).thenReturn(Optional.of(짜장면));
-        when(productDao.findById(탕수육.getId())).thenReturn(Optional.of(탕수육));
-        when(productDao.findById(단무지.getId())).thenReturn(Optional.of(단무지));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -164,9 +146,7 @@ class MenuServiceTest {
     void list() {
         // given
         List<Menu> menus = Arrays.asList(메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청), 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청));
-        when(menuDao.findAll()).thenReturn(menus);
-        when(menuProductDao.findAllByMenuId(짜장면_탕수육_1인_메뉴_세트.getId())).thenReturn(Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
-        when(menuProductDao.findAllByMenuId(짬뽕_탕수육_1인_메뉴_세트.getId())).thenReturn(Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
+        when(menuRepository.findAll()).thenReturn(menus);
 
         // when
         List<MenuResponse> findMenus = menuService.list();

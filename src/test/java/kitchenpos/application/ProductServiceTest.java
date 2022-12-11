@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -50,13 +50,13 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        when(productDao.save(any())).thenReturn(짜장면);
+        when(productRepository.save(any())).thenReturn(짜장면);
 
         // when
         ProductResponse product = productService.create(짜장면_요청);
 
         // then
-        assertThat(product.getId()).isNotNull();
+        assertThat(product).isNotNull();
     }
 
     @DisplayName("가격이 0원 미만인 상품을 생성하면 IllegalArgumentException을 반환한다.")
@@ -74,7 +74,7 @@ class ProductServiceTest {
     void list() {
         // given
         List<Product> expected = Arrays.asList(짜장면, 단무지);
-        when(productDao.findAll()).thenReturn(expected);
+        when(productRepository.findAll()).thenReturn(expected);
 
         // when
         List<ProductResponse> actual = productService.list();

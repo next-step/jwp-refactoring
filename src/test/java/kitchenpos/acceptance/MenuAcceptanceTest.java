@@ -19,7 +19,7 @@ import static kitchenpos.acceptance.MenuAcceptanceStep.*;
 import static kitchenpos.acceptance.MenuGroupAcceptanceStep.등록된_메뉴_그룹;
 import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
 import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
-import static kitchenpos.fixture.MenuProductTestFixture.createMenuProduct;
+import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuTestFixture.createMenu;
 import static kitchenpos.fixture.ProductTestFixture.createProduct;
 
@@ -46,10 +46,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         짬뽕 = 등록된_상품(createProduct("짬뽕", BigDecimal.valueOf(9000L))).as(ProductResponse.class);
         탕수육 = 등록된_상품(createProduct("탕수육", BigDecimal.valueOf(12000L))).as(ProductResponse.class);
         단무지 = 등록된_상품(createProduct("단무지", BigDecimal.valueOf(0L))).as(ProductResponse.class);
-        짜장면메뉴상품 = createMenuProduct(1L, null, 짜장면.getId(), 1L);
-        짬뽕메뉴상품 = createMenuProduct(2L, null, 짬뽕.getId(), 1L);
-        탕수육메뉴상품 = createMenuProduct(3L, null, 탕수육.getId(), 1L);
-        단무지메뉴상품 = createMenuProduct(4L, null, 단무지.getId(), 1L);
+        짜장면메뉴상품 = 짜장면메뉴상품();
+        탕수육메뉴상품 = 탕수육메뉴상품();
+        짬뽕메뉴상품 = 짬뽕메뉴상품();
+        단무지메뉴상품 = 단무지메뉴상품();
         짜장면_탕수육_1인_메뉴_세트 = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         짬뽕_탕수육_1인_메뉴_세트 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),

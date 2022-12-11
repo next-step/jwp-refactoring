@@ -26,9 +26,9 @@ public class MenuProduct {
     }
 
     // TODO: 제거
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProduct(seq, null, null, quantity);
-    }
+//    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
+//        return new MenuProduct(seq, null, null, quantity);
+//    }
 
     public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
         return new MenuProduct(seq, menu, product, quantity);

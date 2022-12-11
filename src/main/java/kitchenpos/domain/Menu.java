@@ -2,11 +2,8 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
 
 @Entity
 public class Menu {
@@ -18,7 +15,7 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
     public Menu() {
