@@ -1,15 +1,13 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.order.application.OrderValidator;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
-import kitchenpos.tablegroup.exception.TableGroupExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +35,7 @@ public class TableGroupService {
     private List<OrderTable> findAllOrderTableByIds(List<Long> orderTableIds) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         if (orderTableIds.size() != orderTables.size()) {
-            throw new EntityNotFoundException(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
+            throw new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID);
         }
 
         return orderTables;
@@ -55,6 +53,6 @@ public class TableGroupService {
 
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new EntityNotFoundException(TableGroupExceptionCode.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID));
     }
 }

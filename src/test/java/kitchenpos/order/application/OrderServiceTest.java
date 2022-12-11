@@ -1,9 +1,9 @@
 package kitchenpos.order.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.exception.MenuExceptionCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -13,7 +13,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderExceptionCode;
 import kitchenpos.tablegroup.domain.OrderTable;
-import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -121,7 +119,7 @@ class OrderServiceTest {
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(주문.getId(), OrderStatus.COOKING);
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(OrderExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test

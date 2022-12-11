@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.tablegroup.domain.*;
 import kitchenpos.tablegroup.dto.OrderTableRequest;
 import kitchenpos.tablegroup.dto.OrderTableResponse;
@@ -98,7 +99,7 @@ class TableServiceTest {
         assertThatThrownBy(() -> {
             tableService.changeEmpty(주문테이블1.getId(), new TableEmpty(true));
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test
@@ -119,7 +120,7 @@ class TableServiceTest {
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(주문테이블1.getId(), new TableGuests(5));
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test

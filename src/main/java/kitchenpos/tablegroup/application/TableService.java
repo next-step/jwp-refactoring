@@ -1,13 +1,13 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableEmpty;
 import kitchenpos.tablegroup.domain.TableGuests;
 import kitchenpos.tablegroup.dto.OrderTableRequest;
 import kitchenpos.tablegroup.dto.OrderTableResponse;
-import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +45,7 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID));
     }
 
     @Transactional

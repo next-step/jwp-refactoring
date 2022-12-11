@@ -1,10 +1,10 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.exception.MenuExceptionCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -73,7 +73,7 @@ class TableValidatorTest {
         assertThatThrownBy(() -> {
             tableValidator.validateToCreateOrder(주문테이블.getId(), Arrays.asList(MENU_ID1, MENU_ID2));
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test
@@ -84,7 +84,7 @@ class TableValidatorTest {
         assertThatThrownBy(() -> {
             tableValidator.validateToCreateOrder(주문테이블.getId(), Arrays.asList(MENU_ID1, MENU_ID2));
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(MenuExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test

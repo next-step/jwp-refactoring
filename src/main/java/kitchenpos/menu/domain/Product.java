@@ -38,6 +38,10 @@ public class Product {
         return this.price.multiply(new BigDecimal(quantity));
     }
 
+    public boolean equalsId(Long productId) {
+        return this.id.equals(productId);
+    }
+
     public Long getId() {
         return id;
     }

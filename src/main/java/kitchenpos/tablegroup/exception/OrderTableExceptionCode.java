@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.exception;
 public enum OrderTableExceptionCode {
     NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP("An non-empty order table cannot be included in a table group."),
     ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP("This is an order table that is already included in another table group."),
-    NOT_FOUND_BY_ID("the order table not found by id."),
     INVALID_NUMBER_OF_GUESTS("The number of guests cannot be negative."),
     NUMBER_OF_GUESTS_CANNOT_BE_CHANGED("The number of guests an empty order table cannot be changed.");
 

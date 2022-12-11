@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.exception.OrderExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +45,6 @@ public class OrderService {
 
     private Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(OrderExceptionCode.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID));
     }
 }

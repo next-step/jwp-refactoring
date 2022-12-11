@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.exception.MenuExceptionCode;
 import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
@@ -46,13 +46,13 @@ public class TableValidator implements OrderValidator {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID));
     }
 
     private List<Menu> findAllMenuById(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
         if(menuIds.size() != menus.size()) {
-            throw new EntityNotFoundException(MenuExceptionCode.NOT_FOUND_BY_ID.getMessage());
+            throw new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID);
         }
 
         return menus;

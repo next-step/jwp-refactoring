@@ -47,7 +47,7 @@ public class Menu {
     }
 
     public void create(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> addMenuProduct(menuProduct));
+        menuProducts.forEach(this::addMenuProduct);
         validatePrice();
     }
 

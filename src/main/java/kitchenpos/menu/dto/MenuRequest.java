@@ -53,7 +53,7 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public List<Long> findAllProductIds() {
+    public List<Long> toProductIds() {
         return menuProducts.stream()
                 .map(MenuProductRequest::getProductId)
                 .collect(toList());
