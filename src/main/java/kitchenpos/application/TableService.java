@@ -18,8 +18,6 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
