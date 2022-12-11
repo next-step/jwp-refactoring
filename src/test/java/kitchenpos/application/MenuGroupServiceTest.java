@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class MenuGroupServiceTest {
         when(menuGroupDao.save(any())).thenReturn(중국집_1인_메뉴_세트);
 
         // when
-        MenuGroup saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트_요청);
+        MenuGroupResponse saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트_요청);
 
         // then
         assertThat(saveMenuGroup.getId()).isNotNull();
@@ -61,12 +62,12 @@ class MenuGroupServiceTest {
         when(menuGroupDao.findAll()).thenReturn(menuGroups);
 
         // when
-        List<MenuGroup> findMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> findMenuGroups = menuGroupService.list();
 
         // then
         assertAll(
                 () -> assertThat(findMenuGroups).hasSize(menuGroups.size()),
-                () -> assertThat(findMenuGroups).containsExactly(중국집_1인_메뉴_세트)
+                () -> assertThat(findMenuGroups).containsExactly(MenuGroupResponse.from(중국집_1인_메뉴_세트))
         );
     }
 }

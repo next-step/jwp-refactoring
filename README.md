@@ -83,7 +83,7 @@
   - [X] TableGroup
 - [ ] JPA로 Migration
   - [ ] Menu
-  - [ ] MenuGroup
+  - [X] MenuGroup
   - [ ] MenuProduct
   - [ ] Order
   - [ ] OrderLineItem
