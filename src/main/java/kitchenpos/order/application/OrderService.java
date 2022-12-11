@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -37,31 +38,22 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
-
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
+        final OrderTable orderTable = findOrderTableById(request.getOrderTableId());
 
         final Order savedOrder = orderRepository.save(request.createOrder(orderTable, menus));
         return OrderResponse.from(savedOrder);
+    }
+
+    private List<Menu> findAllMenuById(List<Long> menuIds) {
+        return menuIds.stream()
+                .map(this::findMenuById)
+                .collect(Collectors.toList());
+    }
+
+    private Menu findMenuById(Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage()));
     }
 
     public List<OrderResponse> findAll() {
@@ -73,16 +65,18 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final UpdateOrderStatusRequest request) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus);
-
+        final Order savedOrder = findOrderById(orderId);
+        savedOrder.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.from(orderRepository.save(savedOrder));
+    }
+
+    private OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage()));
+    }
+
+    private Order findOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.ORDER_IS_NOT_EXIST.getMessage()));
     }
 }

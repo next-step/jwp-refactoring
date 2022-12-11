@@ -48,9 +48,22 @@ public class Order {
             OrderStatus orderStatus,
             LocalDateTime orderedTime
     ) {
+        validate(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+    }
+
+    private void validate(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
+        }
+    }
+
+    public void validateOrderStatusShouldComplete() {
+        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_NOT_COMPLETE.getMessage());
+        }
     }
 
     public Long getId() {
@@ -69,6 +82,17 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public void updateOrderStatus(final OrderStatus status) {
+        validateUpdateOrderStatus(status);
+        this.orderStatus = status;
+    }
+
+    private void validateUpdateOrderStatus(OrderStatus status) {
+        if (OrderStatus.COMPLETION.equals(status)) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_COMPLETE.getMessage());
+        }
+    }
+
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
@@ -77,20 +101,9 @@ public class Order {
         return orderLineItems.get();
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-        orderLineItem.setOrder(this);
-    }
-
-    private void updateOrderLineItems(OrderLineItems orderLineItems) {
+    public void setOrderLineItems(OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
         orderLineItems.setOrder(this);
-    }
-
-    public void validateOrderStatusShouldComplete() {
-        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_NOT_COMPLETE.getMessage());
-        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
@@ -22,16 +23,19 @@ class TableGroupTest {
     @Test
     void unGroup() {
         // given
-        OrderTable orderTable1 = new OrderTable(new NumberOfGuests(4), true);
-        OrderTable orderTable2 = new OrderTable(new NumberOfGuests(4), true);
-        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
+        Order order1 = TestOrderFactory.createCompleteOrder();
+        Order order2 = TestOrderFactory.createCompleteOrder();
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        OrderTable orderTable1 = order1.getOrderTable();
+        OrderTable orderTable2 = order2.getOrderTable();
+
+        TableGroup tableGroup = new TableGroup(
+                LocalDateTime.now(),
+                new OrderTables(Arrays.asList(orderTable1, orderTable2))
+        );
+
         orderTable1.setTableGroup(tableGroup);
         orderTable2.setTableGroup(tableGroup);
-
-        Order order1 = new Order(orderTable1, OrderStatus.COMPLETION, LocalDateTime.now());
-        Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
         tableGroup.ungroup(Arrays.asList(order1, order2));
@@ -47,16 +51,15 @@ class TableGroupTest {
     @Test
     void unGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(new NumberOfGuests(4), true);
-        OrderTable orderTable2 = new OrderTable(new NumberOfGuests(4), true);
-        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
+        Order order1 = TestOrderFactory.createCompleteOrder();
+        Order order2 = TestOrderFactory.createCompleteOrder();
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
-        orderTable1.setTableGroup(tableGroup);
-        orderTable2.setTableGroup(tableGroup);
+        TableGroup tableGroup = new TableGroup(
+                LocalDateTime.now(),
+                new OrderTables(Arrays.asList(order1.getOrderTable(), order1.getOrderTable()))
+        );
 
-        Order order1 = new Order(orderTable1, OrderStatus.MEAL, LocalDateTime.now());
-        Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, LocalDateTime.now());
+        order1.setOrderStatus(OrderStatus.MEAL);
 
         // when & then
         assertThatThrownBy(() -> tableGroup.ungroup(Arrays.asList(order1, order2)))

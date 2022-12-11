@@ -15,6 +15,7 @@ import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -33,6 +34,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +90,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .as(OrderTable.class);
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식메뉴);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
-        주문.addOrderLineItem(불고기정식주문);
+        주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식응답.getId(), 1L);
     }
 
@@ -178,11 +180,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_상태_수정됨(ExtractableResponse<Response> response, String expect) {
-        String result = response.jsonPath().getString("orderStatus");
+        OrderResponse result = response.as(OrderResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(result).isEqualTo(expect)
+                () -> assertThat(result.getOrderStatus()).isEqualTo(expect)
         );
     }
 }

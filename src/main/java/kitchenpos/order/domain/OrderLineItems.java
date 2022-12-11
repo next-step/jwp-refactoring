@@ -21,7 +21,7 @@ public class OrderLineItems {
     }
 
     private void validate(List<OrderLineItem> orderLineItems) {
-        if(CollectionUtils.isEmpty(orderLineItems)) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException(ErrorCode.ORDER_LINE_ITEMS_IS_EMPTY.getMessage());
         }
     }
@@ -32,9 +32,5 @@ public class OrderLineItems {
 
     public List<OrderLineItem> get() {
         return Collections.unmodifiableList(orderLineItems);
-    }
-
-    public void add(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
     }
 }

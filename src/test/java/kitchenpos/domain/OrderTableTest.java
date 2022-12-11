@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,8 +22,8 @@ class OrderTableTest {
     @Test
     void updateEmpty() {
         // given
-        boolean expectEmpty = false;
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        boolean expectEmpty = true;
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
@@ -42,10 +43,9 @@ class OrderTableTest {
                 LocalDateTime.now(), new OrderTables(Arrays.asList(orderTable1, orderTable2))
         );
         orderTable1.setTableGroup(tableGroup);
-        Order order = new Order(orderTable1, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when & then
-        assertThatThrownBy(() -> orderTable1.updateEmpty(false, Arrays.asList(order)))
+        assertThatThrownBy(() -> orderTable1.updateEmpty(true, new ArrayList<>()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.ALREADY_TABLE_GROUP.getMessage());
     }
@@ -54,11 +54,11 @@ class OrderTableTest {
     @Test
     void updateEmptyNotCompletionException() {
         // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
 
         // when & then
-        assertThatThrownBy(() -> orderTable.updateEmpty(false, Arrays.asList(order)))
+        assertThatThrownBy(() -> orderTable.updateEmpty(true, Arrays.asList(order)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.ORDER_STATUS_NOT_COMPLETE.getMessage());
     }

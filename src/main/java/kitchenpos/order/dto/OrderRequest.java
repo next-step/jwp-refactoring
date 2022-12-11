@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 
@@ -39,7 +40,13 @@ public class OrderRequest {
                 .map(item -> item.createOrderLineItem(menus))
                 .collect(Collectors.toList());
 
-        orderLineItems.forEach(order::addOrderLineItem);
+        order.setOrderLineItems(new OrderLineItems(orderLineItems));
         return order;
+    }
+
+    public List<Long> findAllMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 }

@@ -84,7 +84,7 @@ class TableServiceTest {
     void updateOrderTableEmpty() {
         // given
         boolean expectedEmpty = false;
-        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(expectedEmpty);
 
@@ -138,7 +138,7 @@ class TableServiceTest {
     @Test
     void updateWrongOrderStatusEmptyException() {
         // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable.isEmpty());
 

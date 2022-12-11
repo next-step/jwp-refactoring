@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
@@ -143,14 +144,12 @@ class TableGroupServiceTest {
     @Test
     void unTableGroup() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
-        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
-        Order order1 = new Order(orderTable1, OrderStatus.COMPLETION, LocalDateTime.now());
-        Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, LocalDateTime.now());
-        List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
+        Order order1 = TestOrderFactory.createCompleteOrder();
+        Order order2 = TestOrderFactory.createCompleteOrder();
+        List<Long> orderTableIds = Arrays.asList(order1.getOrderTable().getId(), order2.getOrderTable().getId());
         TableGroup tableGroup = new TableGroup(
                 LocalDateTime.now(),
-                new OrderTables(Arrays.asList(orderTable1, orderTable2))
+                new OrderTables(Arrays.asList(order1.getOrderTable(), order2.getOrderTable()))
         );
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
@@ -162,8 +161,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(orderTable1.getTableGroup()).isNull(),
-                () -> assertThat(orderTable2.getTableGroup()).isNull()
+                () -> assertThat(order1.getOrderTable().getTableGroup()).isNull(),
+                () -> assertThat(order2.getOrderTable().getTableGroup()).isNull()
         );
     }
 
@@ -171,15 +170,14 @@ class TableGroupServiceTest {
     @Test
     void unTableGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
-        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
-        Order order1 = new Order(orderTable1, OrderStatus.MEAL, LocalDateTime.now());
-        Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, LocalDateTime.now());
-        List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
+        Order order1 = TestOrderFactory.createCompleteOrder();
+        Order order2 = TestOrderFactory.createCompleteOrder();
+        List<Long> orderTableIds = Arrays.asList(order1.getOrderTable().getId(), order2.getOrderTable().getId());
         TableGroup tableGroup = new TableGroup(
                 LocalDateTime.now(),
-                new OrderTables(Arrays.asList(orderTable1, orderTable2))
+                new OrderTables(Arrays.asList(order1.getOrderTable(), order2.getOrderTable()))
         );
+        order1.setOrderStatus(OrderStatus.MEAL);
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
         when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(Arrays.asList(order1, order2));
