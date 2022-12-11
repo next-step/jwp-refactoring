@@ -15,12 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
     private final MenuRepository menuRepository;
 
-    public MenuService(MenuGroupRepository menuGroupRepository, ProductRepository productRepository,
+    public MenuService(MenuGroupRepository menuGroupRepository,
+                       ProductRepository productRepository,
                        MenuRepository menuRepository) {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;

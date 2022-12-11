@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
 
     private final MenuRepository menuRepository;
@@ -48,8 +49,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+        final Order savedOrder = findOrderById(orderId);
 
         savedOrder.changeOrderStatus(orderStatus);
 
@@ -75,6 +75,11 @@ public class OrderService {
 
     private OrderTable findOrderTableById(OrderRequest request) {
         return orderTableRepository.findById(request.getOrderTableId())
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 }
