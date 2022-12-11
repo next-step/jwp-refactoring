@@ -6,8 +6,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,16 +22,16 @@ class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @Test
     void 메뉴그룹을_등록할_수_있다() {
-        given(menuGroupDao.save(후라이드치킨)).willReturn(후라이드치킨);
+        given(menuGroupRepository.save(후라이드치킨)).willReturn(후라이드치킨);
 
         MenuGroup 저장된_후라이드치킨 = menuGroupService.create(후라이드치킨);
 
@@ -43,7 +43,7 @@ class MenuGroupServiceTest {
 
     @Test
     void 메뉴그룹_목록을_조회할_수_있다() {
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         List<MenuGroup> menuGroups = menuGroupService.list();
 
