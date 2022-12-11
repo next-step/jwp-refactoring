@@ -16,10 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.exception.EmptyOrderLineItemException;
 import kitchenpos.exception.EmptyOrderTableException;
 import kitchenpos.exception.ExceptionMessage;
-import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "orders")
@@ -51,7 +49,6 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = OrderLineItems.from(orderLineItems);
-        checkNotEmpty(orderLineItems);
         checkOrderTableIsNotEmpty(orderTable);
         orderTable.addOrder(this);
         this.orderLineItems.setup(this);
@@ -63,12 +60,6 @@ public class Order {
 
     public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         return new Order(null, orderTable, orderLineItems);
-    }
-
-    private static void checkNotEmpty(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new EmptyOrderLineItemException(ExceptionMessage.EMPTY_ORDER_LINE_ITEM);
-        }
     }
 
     private static void checkOrderTableIsNotEmpty(OrderTable orderTable) {
@@ -105,20 +96,5 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
