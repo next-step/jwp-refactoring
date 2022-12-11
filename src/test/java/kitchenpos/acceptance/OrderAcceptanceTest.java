@@ -2,7 +2,7 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static kitchenpos.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
@@ -24,7 +24,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

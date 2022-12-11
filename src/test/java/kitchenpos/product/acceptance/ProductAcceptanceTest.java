@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
