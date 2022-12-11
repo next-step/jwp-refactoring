@@ -2,12 +2,11 @@ package kitchenpos.menugroup.ui;
 
 import com.navercorp.fixturemonkey.ArbitraryBuilder;
 import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.ui.MenuGroupRestController;
 import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.MenuGroupRestController;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @DisplayName("메뉴그룹생성을 요청하면 생성된 메뉴그룹를 응답")
     @Test
     public void returnMenu() throws Exception {
-        MenuGroup menuGroup = getMenuGroupBuilder().sample();
+        MenuGroupResponse menuGroup = getMenuGroupBuilder().sample();
         doReturn(menuGroup).when(menuGroupService).create(any(MenuGroupRequest.class));
 
         webMvc.perform(post("/api/menu-groups")
@@ -48,7 +47,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @DisplayName("메뉴그룹목록을 요청하면 메뉴그룹목록을 응답")
     @Test
     public void returnMenus() throws Exception {
-        List<MenuGroup> menuGroups = getMenuGroupBuilder()
+        List<MenuGroupResponse> menuGroups = getMenuGroupBuilder()
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
         doReturn(menuGroups).when(menuGroupService).list();
 
@@ -57,11 +56,10 @@ public class MenuGroupRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private ArbitraryBuilder<MenuGroup> getMenuGroupBuilder() {
+    private ArbitraryBuilder<MenuGroupResponse> getMenuGroupBuilder() {
         return FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
                 .build()
-                .giveMeBuilder(MenuGroup.class)
+                .giveMeBuilder(MenuGroupResponse.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample());
     }

@@ -4,8 +4,10 @@ import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupResponse {
 
-    private final String name;
-    private final Long id;
+    private String name;
+    private Long id;
+
+    public MenuGroupResponse(){}
 
     private MenuGroupResponse(final Long id, final String name) {
         this.id = id;
@@ -22,6 +24,14 @@ public class MenuGroupResponse {
 
     public String getName() {
         return name;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 
