@@ -36,6 +36,7 @@ public class Order {
             LocalDateTime orderedTime,
             OrderLineItems orderLineItems
     ) {
+        validate(orderTable);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -83,12 +84,12 @@ public class Order {
     }
 
     public void updateOrderStatus(final OrderStatus status) {
-        validateUpdateOrderStatus(status);
+        validateUpdateOrderStatus();
         this.orderStatus = status;
     }
 
-    private void validateUpdateOrderStatus(OrderStatus status) {
-        if (OrderStatus.COMPLETION.equals(status)) {
+    private void validateUpdateOrderStatus() {
+        if (OrderStatus.COMPLETION.equals(orderStatus)) {
             throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_COMPLETE.getMessage());
         }
     }
