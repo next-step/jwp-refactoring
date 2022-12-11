@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,19 +25,19 @@ class TableServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
     private OrderTable orderTable;
     private TableService tableService;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderDao, orderTableDao);
+        tableService = new TableService(orderDao, orderTableRepository);
     }
 
     @Test
     void 주문_테이블을_등록할_수_있다() {
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable createOrderTable = tableService.create(orderTable);
 
@@ -46,7 +46,7 @@ class TableServiceTest {
 
     @Test
     void 주문_테이블_목록을_조회할_수_있다() {
-        given(orderTableDao.findAll()).willReturn(Collections.singletonList(orderTable));
+        given(orderTableRepository.findAll()).willReturn(Collections.singletonList(orderTable));
 
         List<OrderTable> orderTables = tableService.list();
 
@@ -58,10 +58,10 @@ class TableServiceTest {
 
     @Test
     void 주문_테이블의_비어있음_여부를_수정할_수_있다() {
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.getTableGroupId()).willReturn(null);
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable changeEmptyOrderTable = tableService.changeEmpty(1L, this.orderTable);
 
@@ -70,7 +70,7 @@ class TableServiceTest {
 
     @Test
     void 등록_된_주문_테이블에_대해서만_비어있음_여부를_수정할_수_있다() {
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록되지_않은_주문테이블_수정 = () -> tableService.changeEmpty(1L, orderTable);
 
@@ -80,7 +80,7 @@ class TableServiceTest {
 
     @Test
     void 이미_단체_지정이_된_주문테이블은_수정할_수_없다() {
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.getTableGroupId()).willReturn(1L);
 
         ThrowingCallable 이미_단체_지정이_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, orderTable);
@@ -90,7 +90,7 @@ class TableServiceTest {
 
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.getTableGroupId()).willReturn(null);
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
@@ -102,9 +102,9 @@ class TableServiceTest {
     @Test
     void 주문_테이블의_방문한_손님수를_수정할_수_있다() {
         given(orderTable.getNumberOfGuests()).willReturn(1);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.isEmpty()).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable changeOrderTable = tableService.changeNumberOfGuests(1L, this.orderTable);
 
@@ -123,7 +123,7 @@ class TableServiceTest {
     @Test
     void 등록_된_주문_테이블에_대해서만_방문한_손님수를_수정할_수_있다() {
         given(orderTable.getNumberOfGuests()).willReturn(1);
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록되지_않은_주문_테이블_수정 = () -> tableService.changeNumberOfGuests(1L, orderTable);
 
@@ -133,7 +133,7 @@ class TableServiceTest {
     @Test
     void 빈_테이블은_수정할_수_없다() {
         given(orderTable.getNumberOfGuests()).willReturn(1);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTable.isEmpty()).willReturn(true);
 
         ThrowingCallable 빈_테이블_수정 = () -> tableService.changeNumberOfGuests(1L, orderTable);

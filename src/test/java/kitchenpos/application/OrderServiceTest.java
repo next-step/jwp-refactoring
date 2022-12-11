@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,12 +37,12 @@ class OrderServiceTest {
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderDao, orderLineItemDao, orderTableDao);
+        orderService = new OrderService(menuRepository, orderDao, orderLineItemDao, orderTableRepository);
     }
 
     @Test
@@ -50,7 +50,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 1, false);
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
         given(menuRepository.countByIdIn(any())).willReturn(1l);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
 
         Order createOrder = orderService.create(order);
@@ -81,7 +81,7 @@ class OrderServiceTest {
     void 등록_된_주문_테이블만_지정할_수_있다() {
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
         given(menuRepository.countByIdIn(any())).willReturn(1l);
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(order);
 
@@ -93,7 +93,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
         given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
         given(menuRepository.countByIdIn(any())).willReturn(1l);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(order);
 

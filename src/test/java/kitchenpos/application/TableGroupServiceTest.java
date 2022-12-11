@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,16 +26,12 @@ class TableGroupServiceTest {
 
     @Mock
     private OrderDao orderDao;
-
     @Mock
-    private OrderTableDao orderTableDao;
-
+    private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
-
     @Mock
     private OrderTable orderTable;
-
     @Mock
     private OrderTable orderTable2;
     private OrderTable orderTable3;
@@ -43,13 +39,13 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupRepository);
+        tableGroupService = new TableGroupService(orderDao, orderTableRepository, tableGroupRepository);
     }
 
     @Test
     void 단체_지정을_등록할_수_있다() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
         given(orderTable.isEmpty()).willReturn(true);
         given(orderTable.getTableGroupId()).willReturn(null);
         given(orderTable2.isEmpty()).willReturn(true);
@@ -82,7 +78,7 @@ class TableGroupServiceTest {
     @Test
     void 등록_된_주문_테이블만_단체_지정이_가능하다() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.singletonList(orderTable3));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.singletonList(orderTable3));
 
         ThrowingCallable 등록되지_않은_주문_테이블_단체_지정 = () -> tableGroupService.create(tableGroup);
 
@@ -92,7 +88,7 @@ class TableGroupServiceTest {
     @Test
     void 빈_테이블이_아닌_주문_테이블은_단체_지정이_불가능하다() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
         given(orderTable.isEmpty()).willReturn(false);
 
         ThrowingCallable 빈_테이블_단체지정 = () -> tableGroupService.create(tableGroup);
@@ -103,7 +99,7 @@ class TableGroupServiceTest {
     @Test
     void 이미_단체_지정이_된_주문_테이블은_단체_지정이_불가능하다() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
         given(orderTable.isEmpty()).willReturn(true);
         given(orderTable.getTableGroupId()).willReturn(2L);
 
@@ -114,7 +110,7 @@ class TableGroupServiceTest {
 
     @Test
     void 단체_지정을_해제할_수_있다() {
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Collections.singletonList(orderTable));
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Collections.singletonList(orderTable));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         ThrowingCallable 단체_지정을_해제할_수_있다 = () -> tableGroupService.ungroup(1L);
@@ -124,7 +120,7 @@ class TableGroupServiceTest {
 
     @Test
     void 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우_해제가_불가능하다() {
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Collections.singletonList(orderTable));
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Collections.singletonList(orderTable));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         ThrowingCallable 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우 = () -> tableGroupService.ungroup(1L);
