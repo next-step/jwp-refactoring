@@ -1,11 +1,11 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderEmpty;
-import kitchenpos.order.domain.OrderGuests;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableEmpty;
+import kitchenpos.tablegroup.domain.TableGuests;
+import kitchenpos.tablegroup.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableAcceptance {
@@ -28,7 +28,7 @@ public class TableAcceptance {
     }
 
     public static ExtractableResponse<Response> change_empty(Long orderTableId, boolean empty) {
-        OrderEmpty request = new OrderEmpty(empty);
+        TableEmpty request = new TableEmpty(empty);
 
         return RestAssured.given().log().all()
                 .body(request)
@@ -39,7 +39,7 @@ public class TableAcceptance {
     }
 
     public static ExtractableResponse<Response> change_number_of_guests(Long orderTableId, int numberOfGuests) {
-        OrderGuests request = new OrderGuests(numberOfGuests);
+        TableGuests request = new TableGuests(numberOfGuests);
 
         return RestAssured.given().log().all()
                 .body(request)

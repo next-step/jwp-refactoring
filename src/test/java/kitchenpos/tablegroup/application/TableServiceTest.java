@@ -1,11 +1,10 @@
-package kitchenpos.order.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.exception.OrderExceptionCode;
-import kitchenpos.order.exception.OrderTableExceptionCode;
+import kitchenpos.tablegroup.domain.*;
+import kitchenpos.tablegroup.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
+import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +26,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @DisplayName("TableService 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private TableValidator tableValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -97,46 +96,18 @@ class TableServiceTest {
         given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블1.getId(), new OrderEmpty(true));
+            tableService.changeEmpty(주문테이블1.getId(), new TableEmpty(true));
         }).isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test
-    void 다른_테이블_그룹에_포함되어_있으면_빈_주문_테이블로_변경할_수_없음() {
-        ReflectionTestUtils.setField(주문테이블1, "empty", new OrderEmpty(true));
-        ReflectionTestUtils.setField(주문테이블2, "empty", new OrderEmpty(true));
-        단체테이블.group(Arrays.asList(주문테이블1, 주문테이블2));
-
-        given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.of(주문테이블1));
-
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블1.getId(), new OrderEmpty(true));
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OrderTableExceptionCode.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 조리중이거나_식사중인_주문을_포함하고_있으면_빈_주문_테이블로_변경할_수_없음(OrderStatus orderStatus) {
-        given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.of(주문테이블1));
-        given(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .willReturn(Arrays.asList(new Order(주문테이블1, orderStatus)));
-
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블1.getId(), new OrderEmpty(true));
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OrderExceptionCode.CANNOT_BE_CHANGED.getMessage());
-    }
-
-    @Test
     void 주문_테이블을_빈_테이블로_변경() {
         given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.of(주문테이블1));
-        given(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .willReturn(Arrays.asList(new Order(주문테이블1, OrderStatus.COMPLETION)));
+        willDoNothing().given(tableValidator).validateToChangeEmpty(any(OrderTable.class));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문테이블1);
 
-        OrderTableResponse response = tableService.changeEmpty(주문테이블1.getId(), new OrderEmpty(true));
+        OrderTableResponse response = tableService.changeEmpty(주문테이블1.getId(), new TableEmpty(true));
 
         assertTrue(response.isEmpty());
     }
@@ -146,18 +117,18 @@ class TableServiceTest {
         given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderGuests(5));
+            tableService.changeNumberOfGuests(주문테이블1.getId(), new TableGuests(5));
         }).isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(OrderTableExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test
     void 주문_테이블이_빈_테이블이면_방문한_손님_수를_변경할_수_없음() {
-        주문테이블1.changeEmpty(true, Collections.emptyList());
+        주문테이블1.changeEmpty(true);
         given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.of(주문테이블1));
 
         assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderGuests(5));
+            tableService.changeNumberOfGuests(주문테이블1.getId(), new TableGuests(5));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableExceptionCode.NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
     }
@@ -167,7 +138,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.of(주문테이블1));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문테이블1);
 
-        OrderTableResponse response = tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderGuests(5));
+        OrderTableResponse response = tableService.changeNumberOfGuests(주문테이블1.getId(), new TableGuests(5));
 
         assertEquals(5, response.getNumberOfGuests());
     }

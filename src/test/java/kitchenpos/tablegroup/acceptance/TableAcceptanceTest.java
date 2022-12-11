@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -7,10 +7,10 @@ import kitchenpos.menu.acceptance.MenuAcceptance;
 import kitchenpos.menu.acceptance.MenuGroupAcceptance;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.acceptance.OrderAcceptance;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

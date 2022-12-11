@@ -1,6 +1,6 @@
-package kitchenpos.order.dto;
+package kitchenpos.tablegroup.dto;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTable;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +29,9 @@ public class OrderTableResponse {
     }
 
     public static List<OrderTableResponse> list(List<OrderTable> orderTables) {
-        return orderTables.stream().map(OrderTableResponse::new).collect(toList());
+        return orderTables.stream()
+                .map(OrderTableResponse::new)
+                .collect(toList());
     }
 
     public Long getId() {

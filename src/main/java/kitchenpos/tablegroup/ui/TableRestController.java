@@ -1,10 +1,10 @@
-package kitchenpos.order.ui;
+package kitchenpos.tablegroup.ui;
 
-import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderEmpty;
-import kitchenpos.order.domain.OrderGuests;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.tablegroup.application.TableService;
+import kitchenpos.tablegroup.domain.TableEmpty;
+import kitchenpos.tablegroup.domain.TableGuests;
+import kitchenpos.tablegroup.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,14 +32,14 @@ public class TableRestController {
     }
 
     @PutMapping("/{orderTableId}/empty")
-    public ResponseEntity<OrderTableResponse> changeEmpty(@PathVariable Long orderTableId,
-            @RequestBody OrderEmpty request) {
+    public ResponseEntity<OrderTableResponse> changeEmtpy(@PathVariable Long orderTableId,
+            @RequestBody TableEmpty request) {
         return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId, request));
     }
 
     @PutMapping("/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(@PathVariable Long orderTableId,
-            @RequestBody OrderGuests request) {
+            @RequestBody TableGuests request) {
         return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, request));
     }
 }
