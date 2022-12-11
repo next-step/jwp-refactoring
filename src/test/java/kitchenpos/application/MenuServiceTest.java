@@ -13,10 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,16 +31,16 @@ class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     private MenuService menuService;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productRepository);
     }
 
     @Test
@@ -47,8 +48,8 @@ class MenuServiceTest {
         MenuProduct menuProduct = new MenuProduct(1L, 2L, 1L, 1l);
         Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
         Menu 후라이드치킨_메뉴 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(menuProduct));
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨_상품));
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findById(any())).willReturn(Optional.of(후라이드치킨_상품));
         given(menuDao.save(any())).willReturn(후라이드치킨_메뉴);
 
         Menu menu = menuService.create(후라이드치킨_메뉴);
@@ -82,8 +83,8 @@ class MenuServiceTest {
         Product 후라이드치킨_상품2 = new Product(2L, "후라이드치킨", new BigDecimal(16000.00));
         Menu 메뉴의_가격이_메뉴_상품들_가격의_합보다_높은경우 = new Menu(1L, "후라이드치킨", new BigDecimal(40000.00), 1L,
                 Arrays.asList(menuProduct, menuProduct2));
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨_상품));
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findById(any())).willReturn(Optional.of(후라이드치킨_상품));
 
         ThrowingCallable 잘못된_가격의_메뉴_등록 = () -> menuService.create(메뉴의_가격이_메뉴_상품들_가격의_합보다_높은경우);
 
@@ -93,7 +94,7 @@ class MenuServiceTest {
     @Test
     void 등록_된_메뉴그룹만_지정할_수_있다() {
         Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, null);
-        given(menuGroupDao.existsById(any())).willReturn(false);
+        given(menuGroupRepository.existsById(any())).willReturn(false);
 
         ThrowingCallable 메뉴그룹이_등록되어_있지_않다 = () -> menuService.create(후라이드치킨);
 
@@ -104,8 +105,8 @@ class MenuServiceTest {
     void 등록_된_상품만_지정할_수_있다() {
         MenuProduct menuProduct = new MenuProduct(1L, 2L, 1L, 1l);
         Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(menuProduct));
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 상품이_등록되어_있지_않다 = () -> menuService.create(후라이드치킨);
 
