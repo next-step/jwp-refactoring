@@ -16,8 +16,11 @@ class OrderTest {
     @DisplayName("id가 같은 두 객체는 동등하다.")
     @Test
     void equalsTest() {
-        Order order1 = Order.of(1L, 1L, Collections.emptyList());
-        Order order2 = Order.of(1L, 1L, Collections.emptyList());
+        OrderTable orderTable = OrderTable.of(10, false);
+        List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(1L, 2));
+
+        Order order1 = Order.of(1L, orderTable, orderLineItems);
+        Order order2 = Order.of(1L, orderTable, orderLineItems);
 
         Assertions.assertThat(order1).isEqualTo(order2);
     }
@@ -25,8 +28,11 @@ class OrderTest {
     @DisplayName("id가 다르면 두 객체는 동등하지 않다.")
     @Test
     void equalsTest2() {
-        Order order1 = Order.of(1L, 1L, Collections.emptyList());
-        Order order2 = Order.of(2L, 1L, Collections.emptyList());
+        OrderTable orderTable = OrderTable.of(10, false);
+        List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(1L, 2));
+
+        Order order1 = Order.of(1L, orderTable, orderLineItems);
+        Order order2 = Order.of(2L, orderTable, orderLineItems);
 
         Assertions.assertThat(order1).isNotEqualTo(order2);
     }

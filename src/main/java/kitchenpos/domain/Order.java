@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -43,25 +42,11 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems;
 
-    @Deprecated
-    private Long orderTableId;
-
     protected Order() {
     }
 
-    private Order(Long id,
-                  Long orderTableId,
-                  String orderStatus,
-                  LocalDateTime orderedTime,
-                  List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
-        this.orderedTime = orderedTime;
-        this.orderLineItems = OrderLineItems.from(orderLineItems);
-    }
-
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
@@ -72,20 +57,12 @@ public class Order {
         this.orderLineItems.setup(this);
     }
 
-    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-    }
-
-    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-    }
-
-    public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        return new Order(id, orderTableId, orderStatus, orderedTime, Collections.emptyList());
+    public static Order of(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTable, orderLineItems);
     }
 
     public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderLineItems);
+        return new Order(null, orderTable, orderLineItems);
     }
 
     private static void checkNotEmpty(List<OrderLineItem> orderLineItems) {
@@ -100,28 +77,24 @@ public class Order {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus.name();
-    }
-
     public void changeOrderStatus(final OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
         this.orderStatus = orderStatus;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getOrderTableId() {
+        return orderTable.getId();
+    }
+
+    public String getOrderStatus() {
+        return orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {
@@ -141,7 +114,7 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return id.equals(order.id);
+        return Objects.equals(id, order.id);
     }
 
     @Override

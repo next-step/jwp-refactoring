@@ -25,6 +25,8 @@ import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.EmptyOrderTableException;
+import kitchenpos.exception.ExceptionMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -75,9 +77,9 @@ class OrderServiceTest {
 
         주문항목 = OrderLineItem.of(1L, null, 후라이드치킨.getId(), 2);
         List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
-        주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
+        주문 = Order.of(1L, 주문_테이블, 주문항목_목록);
 
-        계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
+        계산완료_주문 = Order.of(2L, 주문_테이블, 주문항목_목록);
         계산완료_주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
@@ -107,8 +109,6 @@ class OrderServiceTest {
     @DisplayName("주문 항목이 비어있으면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        Order order = Order.of(1L, Collections.emptyList());
-
         Assertions.assertThatThrownBy(() -> orderService.create(주문항목_없는_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -139,7 +139,8 @@ class OrderServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
 
         Assertions.assertThatThrownBy(() -> orderService.create(비어있는_주문_테이블_주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EmptyOrderTableException.class)
+                .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_TABLE);
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -184,8 +185,7 @@ class OrderServiceTest {
     void changeOrderStatusException2() {
         when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
-        Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        Long orderId = 상태변경_주문.getId();
+        Long orderId = 계산완료_주문.getId();
         Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL))
                 .isInstanceOf(IllegalArgumentException.class);
     }
