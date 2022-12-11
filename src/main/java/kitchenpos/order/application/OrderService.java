@@ -64,7 +64,7 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    public List<OrderResponse> list() {
+    public List<OrderResponse> findAll() {
         return orderRepository.findAll()
                 .stream()
                 .map(OrderResponse::from)

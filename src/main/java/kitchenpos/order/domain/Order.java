@@ -21,8 +21,8 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
@@ -34,7 +34,7 @@ public class Order {
             OrderTable orderTable,
             OrderStatus orderStatus,
             LocalDateTime orderedTime,
-            List<OrderLineItem> orderLineItems
+            OrderLineItems orderLineItems
     ) {
         this.id = id;
         this.orderTable = orderTable;
@@ -74,7 +74,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.get();
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
@@ -82,9 +82,9 @@ public class Order {
         orderLineItem.setOrder(this);
     }
 
-    private void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void updateOrderLineItems(OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
-        orderLineItems.forEach(item -> item.setOrder(this));
+        orderLineItems.setOrder(this);
     }
 
     public void validateOrderStatusShouldComplete() {

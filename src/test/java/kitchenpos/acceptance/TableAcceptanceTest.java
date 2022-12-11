@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,14 +22,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {
-    private OrderTable 주문테이블_A;
-    private OrderTable 주문테이블_B;
+    private OrderTableRequest 주문테이블_A;
+    private OrderTableRequest 주문테이블_B;
+    private OrderTableResponse 생성된_주문테이블_A;
+    private OrderTableResponse 생성된_주문테이블_B;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = new OrderTable(new NumberOfGuests(4),  false);
-        주문테이블_B = new OrderTable(new NumberOfGuests(4),  false);
+        주문테이블_A = OrderTableRequest.of(4, false);
+        주문테이블_B = OrderTableRequest.of(4, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -44,14 +48,14 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrderTable() {
         // given
-        주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(주문테이블_B).as(OrderTable.class);
+        생성된_주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTableResponse.class);
+        생성된_주문테이블_B = 주문테이블_생성_요청(주문테이블_B).as(OrderTableResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_목록_조회_요청();
 
         // then
-        주문테이블_목록_조회됨(response, Arrays.asList(주문테이블_A.getId(), 주문테이블_B.getId()));
+        주문테이블_목록_조회됨(response, Arrays.asList(생성된_주문테이블_A.getId(), 생성된_주문테이블_B.getId()));
     }
 
     @DisplayName("주문 테이블이 비어있는 상태를 변경할 수 있다.")
@@ -59,15 +63,15 @@ class TableAcceptanceTest extends AcceptanceTest {
     void updateOrderTableEmpty() {
         // given
         boolean expectEmpty = false;
-        주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
+        생성된_주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTableResponse.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
-                주문테이블_A.getId(),
+                생성된_주문테이블_A.getId(),
                 new NumberOfGuests(주문테이블_A.getNumberOfGuests()),
                 expectEmpty
         );
 
         // when
-        ExtractableResponse<Response> response = 주문테이블_빈_여부_수정_요청(주문테이블_A.getId(), 업데이트된_주문테이블_A);
+        ExtractableResponse<Response> response = 주문테이블_빈_여부_수정_요청(생성된_주문테이블_A.getId(), 업데이트된_주문테이블_A);
 
         // then
         주문테이블_빈_여부_수정됨(response, expectEmpty);
@@ -78,25 +82,25 @@ class TableAcceptanceTest extends AcceptanceTest {
     void updateNumberOfGuest() {
         // given
         int expectedNumberOfGuest = 8;
-        주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
+        생성된_주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTableResponse.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
-                주문테이블_A.getId(),
+                생성된_주문테이블_A.getId(),
                 new NumberOfGuests(expectedNumberOfGuest),
                 주문테이블_A.isEmpty()
         );
 
         // when
-        ExtractableResponse<Response> response = 주문테이블_손님수_수정_요청(주문테이블_A.getId(), 업데이트된_주문테이블_A);
+        ExtractableResponse<Response> response = 주문테이블_손님수_수정_요청(생성된_주문테이블_A.getId(), 업데이트된_주문테이블_A);
 
         // then
         주문테이블_손님수_수정됨(response, expectedNumberOfGuest);
     }
 
-    public static ExtractableResponse<Response> 주문테이블_생성_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_생성_요청(OrderTableRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(request)
                 .when().post("/api/tables")
                 .then().log().all()
                 .extract();
@@ -135,9 +139,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문테이블_목록_조회됨(ExtractableResponse<Response> response, List<Long> tableIds) {
-        List<Long> ids = response.jsonPath().getList(".", OrderTable.class)
+        List<Long> ids = response.jsonPath().getList(".", OrderTableResponse.class)
                 .stream()
-                .map(OrderTable::getId)
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
 
         assertAll(

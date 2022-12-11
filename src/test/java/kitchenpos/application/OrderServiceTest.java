@@ -182,7 +182,7 @@ class OrderServiceTest {
         when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
 
         // when
-        List<OrderResponse> results = orderService.list();
+        List<OrderResponse> results = orderService.findAll();
 
         // then
         assertAll(

@@ -28,9 +28,9 @@ public class OrderRestController {
     }
 
     @GetMapping("/api/orders")
-    public ResponseEntity<List<OrderResponse>> list() {
+    public ResponseEntity<List<OrderResponse>> findAll() {
         return ResponseEntity.ok()
-                .body(orderService.list())
+                .body(orderService.findAll())
                 ;
     }
 

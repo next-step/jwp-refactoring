@@ -18,7 +18,8 @@ public enum ErrorCode {
     ORDER_TABLE_IS_NOT_EXIST("존재하지 않는 주문테이블 입니다."),
     MENU_GROUP_IS_NOT_EXIST("메뉴그룹이 존재하지 않습니다."),
     PRODUCT_IS_NOT_EXIST("존재하지 않는 상품입니다."),
-    TABLE_GROUP_IS_NOT_EXIST("단체 그룹이 존재하지 않습니다.");
+    TABLE_GROUP_IS_NOT_EXIST("단체 그룹이 존재하지 않습니다."),
+    ORDER_LINE_ITEMS_IS_EMPTY("주문 항목이 비어있습니다.");
 
     private final String errorMessage;
 

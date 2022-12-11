@@ -51,7 +51,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
         불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
         김치상품 = MenuProductRequest.of(김치.getId(), 1L);
         공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
-        불고기정식 = MenuRequest.of("불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), Arrays.asList(불고기상품, 김치상품, 공기밥상품));
+        불고기정식 = MenuRequest.of(
+                "불고기정식",
+                BigDecimal.valueOf(12_000L),
+                한식.getId(),
+                Arrays.asList(불고기상품, 김치상품, 공기밥상품)
+        );
     }
 
     @DisplayName("메뉴를 생성한다.")

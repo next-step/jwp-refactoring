@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,17 +22,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단체 지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
-    private OrderTable 주문테이블_A;
-    private OrderTable 주문테이블_B;
+    private OrderTableResponse 주문테이블_A;
+    private OrderTableResponse 주문테이블_B;
     private TableGroupRequest 우테캠_PRO_단체;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(4), true))
-                .as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(4), true))
-                .as(OrderTable.class);
+        주문테이블_A = 주문테이블_생성_요청(OrderTableRequest.of(4, true))
+                .as(OrderTableResponse.class);
+        주문테이블_B = 주문테이블_생성_요청(OrderTableRequest.of(4, true))
+                .as(OrderTableResponse.class);
         우테캠_PRO_단체 = TableGroupRequest.of(Arrays.asList(주문테이블_A.getId(), 주문테이블_B.getId()));
     }
 
