@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
@@ -9,7 +10,7 @@ import javax.persistence.OneToMany;
 public class Orders {
 
     @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     protected Orders() {
     }
@@ -24,5 +25,11 @@ public class Orders {
 
     public List<Order> getOrders() {
         return Collections.unmodifiableList(orders);
+    }
+
+    public boolean anyMatchedIn(List<OrderStatus> orderStatuses) {
+        return orders.stream().anyMatch(
+                it -> orderStatuses.contains(OrderStatus.valueOf(it.getOrderStatus()))
+        );
     }
 }
