@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
@@ -37,12 +35,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-
-    @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private MenuProductDao menuProductDao;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -152,8 +144,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() {
-        when(menuDao.findAll()).thenReturn(Arrays.asList(후라이드치킨));
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(후라이드치킨상품));
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(후라이드치킨));
 
         List<MenuResponse> results = menuService.list();
 

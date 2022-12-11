@@ -2,8 +2,6 @@ package kitchenpos.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
@@ -18,16 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuProductDao menuProductDao;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
     private final MenuRepository menuRepository;
 
-    public MenuService(MenuDao menuDao, MenuProductDao menuProductDao, MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository, MenuRepository menuRepository) {
-        this.menuDao = menuDao;
-        this.menuProductDao = menuProductDao;
+    public MenuService(MenuGroupRepository menuGroupRepository, ProductRepository productRepository,
+                       MenuRepository menuRepository) {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
         this.menuRepository = menuRepository;
@@ -39,6 +33,13 @@ public class MenuService {
         List<MenuProduct> menuProducts = toMenuProducts(request);
         Menu menu = request.toMenu(menuGroup, menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
+    }
+
+    public List<MenuResponse> list() {
+        List<Menu> menus = menuRepository.findAll();
+        return menus.stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 
     private List<MenuProduct> toMenuProducts(MenuRequest request) {
@@ -56,17 +57,5 @@ public class MenuService {
     private MenuGroup findMenuGroupById(Long id) {
         return menuGroupRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public List<MenuResponse> list() {
-        final List<Menu> menus = menuDao.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-        }
-
-        return menus.stream()
-                .map(MenuResponse::from)
-                .collect(Collectors.toList());
     }
 }
