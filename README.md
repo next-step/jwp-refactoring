@@ -78,7 +78,7 @@
   - [ ] Order
   - [ ] OrderLineItem
   - [ ] OrderStatus
-  - [ ] OrderTable
+  - [X] OrderTable
   - [X] Product
   - [ ] TableGroup
 

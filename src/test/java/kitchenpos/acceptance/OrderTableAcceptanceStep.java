@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -15,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class OrderTableAcceptanceStep {
 
-    public static ExtractableResponse<Response> 등록된_주문_테이블(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 등록된_주문_테이블(OrderTableRequest orderTable) {
         return 주문_테이블_생성_요청(orderTable);
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest orderTable) {
         return RestAssured
                 .given().log().all()
                 .body(orderTable)
@@ -71,8 +73,8 @@ public class OrderTableAcceptanceStep {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultOrderTableIds = response.jsonPath().getList(".", OrderTable.class).stream()
-                .map(OrderTable::getId)
+        List<Long> resultOrderTableIds = response.jsonPath().getList(".", OrderTableResponse.class).stream()
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultOrderTableIds).containsAll(expectedOrderTableIds);

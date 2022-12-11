@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.주문테이블_생성;
 import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -46,8 +47,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = createOrderTable(1L, null, 10, true);
-        주문테이블2 = createOrderTable(2L, null, 20, true);
+        주문테이블1 = 주문테이블_생성(createOrderTable(1L, null, 10, true));
+        주문테이블2 = 주문테이블_생성(createOrderTable(2L, null, 20, true));
         단체1 = createTableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
     }
 
@@ -84,7 +85,7 @@ class TableGroupServiceTest {
     @Test
     void createWithException2() {
         // given
-        OrderTable orderTable = createOrderTable(null, 10, false);
+        OrderTable orderTable = 주문테이블_생성(createOrderTable(null, 10, false));
         TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블1));
         when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));
@@ -97,7 +98,7 @@ class TableGroupServiceTest {
     @Test
     void createWithException3() {
         // given
-        OrderTable orderTable = createOrderTable(3L, 10, true);
+        OrderTable orderTable = 주문테이블_생성(createOrderTable(3L, 10, true));
         TableGroup tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블1));
         when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));

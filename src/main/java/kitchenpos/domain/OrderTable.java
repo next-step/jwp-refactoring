@@ -1,12 +1,18 @@
 package kitchenpos.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BiFunction;
+
 public class OrderTable {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {}
+    public OrderTable() {
+    }
 
     private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
@@ -47,7 +53,15 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void setEmpty(final boolean empty, BiFunction<Long, List<String>, Boolean> existsByOrderTableIdAndOrderStatusIn) {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException();
+        }
+
+        if (existsByOrderTableIdAndOrderStatusIn.apply(
+                id, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
         this.empty = empty;
     }
 }

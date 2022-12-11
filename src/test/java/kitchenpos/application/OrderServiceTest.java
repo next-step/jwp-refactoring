@@ -25,8 +25,7 @@ import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세�
 import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuTestFixture.*;
 import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
-import static kitchenpos.fixture.OrderTableTestFixture.주문테이블1;
-import static kitchenpos.fixture.OrderTableTestFixture.주문테이블2;
+import static kitchenpos.fixture.OrderTableTestFixture.*;
 import static kitchenpos.fixture.OrderTestFixture.createOrder;
 import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,8 +88,8 @@ class OrderServiceTest {
         짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
         짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
         짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청);
-        주문테이블1 = 주문테이블1();
-        주문테이블2 = 주문테이블2();
+        주문테이블1 = 주문테이블_생성(주문테이블1_요청());
+        주문테이블2 = 주문테이블_생성(주문테이블2_요청());
         짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(1L, null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
         짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(2L, null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
         주문1 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));

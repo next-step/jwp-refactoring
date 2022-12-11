@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,13 @@ import java.util.List;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.*;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.주문테이블_생성;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
+    private OrderTableRequest 주문테이블1;
+    private OrderTableRequest 주문테이블2;
 
     @BeforeEach
     public void setUp() {
@@ -57,7 +59,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         // given
         OrderTable orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTable.class);
         boolean isEmpty = orderTable.isEmpty();
-        OrderTable changeOrderTable = createOrderTable(null, orderTable.getNumberOfGuests(), !isEmpty);
+        OrderTable changeOrderTable = 주문테이블_생성(createOrderTable(null, orderTable.getNumberOfGuests(), !isEmpty));
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_빈좌석_상태_변경_요청(orderTable.getId(),
@@ -73,7 +75,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         // given
         OrderTable orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTable.class);
         int numberOfGuests = 10;
-        OrderTable changeOrderTable = createOrderTable(null, numberOfGuests, orderTable.isEmpty());
+        OrderTable changeOrderTable = 주문테이블_생성(createOrderTable(null, numberOfGuests, orderTable.isEmpty()));
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_방문고객_인원_변경_요청(orderTable.getId(), changeOrderTable);

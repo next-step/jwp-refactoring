@@ -4,6 +4,8 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import static kitchenpos.fixture.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("주문 테이블 관련 서비스 테스트")
@@ -35,23 +38,27 @@ class OrderTableServiceTest {
     @InjectMocks
     private TableService tableService;
 
+    private OrderTableRequest 주문테이블1_요청;
+    private OrderTableRequest 주문테이블2_요청;
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = 주문테이블1();
-        주문테이블2 = 주문테이블2();
+        주문테이블1_요청 = 주문테이블1_요청();
+        주문테이블2_요청 = 주문테이블1_요청();
+        주문테이블1 = 주문테이블_생성(주문테이블1_요청);
+        주문테이블2 = 주문테이블_생성(주문테이블2_요청);
     }
 
     @DisplayName("주문 테이블 생성 작업을 성공한다.")
     @Test
     void create() {
         // given
-        when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
+        when(orderTableDao.save(any())).thenReturn(주문테이블1);
 
         // when
-        OrderTable orderTable = tableService.create(주문테이블1);
+        OrderTableResponse orderTable = tableService.create(주문테이블1_요청);
 
         // then
         assertThat(orderTable.getTableGroupId()).isNull();
@@ -78,14 +85,14 @@ class OrderTableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        주문테이블1.setEmpty(true);
+        주문테이블1.setEmpty(true, (id, orderStatuses) -> false);
         when(orderTableDao.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
         when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
 
         // when
-        OrderTable orderTable = tableService.changeEmpty(주문테이블1.getId(), 주문테이블1);
+        OrderTableResponse orderTable = tableService.changeEmpty(주문테이블1.getId(), 주문테이블1);
 
         // then
         assertThat(orderTable.isEmpty()).isEqualTo(주문테이블1.isEmpty());
@@ -95,7 +102,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmptyWithException1() {
         // given
-        OrderTable orderTable = createOrderTable(1L, 1L, 10, true);
+        OrderTable orderTable = 주문테이블_생성(createOrderTable(1L, 1L, 10, true));
         when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
@@ -125,7 +132,7 @@ class OrderTableServiceTest {
         when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
 
         // when
-        OrderTable orderTable = tableService.changeNumberOfGuests(주문테이블1.getId(), 주문테이블1);
+        OrderTableResponse orderTable = tableService.changeNumberOfGuests(주문테이블1.getId(), 주문테이블1);
 
         // then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
@@ -135,7 +142,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException1() {
         // given
-        OrderTable orderTable = createOrderTable(3L, null, -1, false);
+        OrderTable orderTable = 주문테이블_생성(createOrderTable(3L, null, -1, false));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -147,7 +154,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException2() {
         // given
-        OrderTable orderTable = createOrderTable(3L, 1L, 10, true);
+        OrderTable orderTable = 주문테이블_생성(createOrderTable(3L, 1L, 10, true));
         when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
