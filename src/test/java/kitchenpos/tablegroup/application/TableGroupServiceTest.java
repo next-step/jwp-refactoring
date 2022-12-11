@@ -2,11 +2,12 @@ package kitchenpos.tablegroup.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.persistence.OrderTableDao;
-import kitchenpos.tablegroup.persistence.TableGroupDao;
+import kitchenpos.table.persistence.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

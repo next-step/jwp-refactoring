@@ -2,9 +2,10 @@ package kitchenpos.menugroup.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.persistence.MenuGroupDao;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.persistence.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroup;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

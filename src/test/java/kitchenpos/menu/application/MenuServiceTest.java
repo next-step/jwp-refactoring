@@ -2,7 +2,7 @@ package kitchenpos.menu.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.menu.persistence.MenuDao;
-import kitchenpos.menugroup.persistence.MenuGroupDao;
+import kitchenpos.menu.persistence.MenuGroupDao;
 import kitchenpos.menu.persistence.MenuProductDao;
 import kitchenpos.product.persistence.ProductDao;
 import kitchenpos.menu.domain.Menu;
