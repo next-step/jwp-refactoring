@@ -6,20 +6,20 @@ import kitchenpos.product.domain.Product;
 public class ProductRequest {
 
     private String name;
-    private Long amount;
+    private Long money;
 
     public ProductRequest() {
     }
 
-    public ProductRequest(String name, Long amount) {
+    public ProductRequest(String name, Long money) {
         this.name = name;
-        this.amount = amount;
+        this.money = money;
     }
 
     public Product toProduct() {
         return Product.builder()
                 .name(name)
-                .money(Money.of(amount))
+                .money(Money.of(money))
                 .build();
     }
 
@@ -27,12 +27,12 @@ public class ProductRequest {
         return name;
     }
 
-    public Long getAmount() {
-        return amount;
+    public Long getMoney() {
+        return money;
     }
 
-    public void setAmount(Long amount) {
-        this.amount = amount;
+    public void setMoney(Long money) {
+        this.money = money;
     }
 
     public void setName(String name) {
