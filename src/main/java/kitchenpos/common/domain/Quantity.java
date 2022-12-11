@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import kitchenpos.common.constant.ErrorCode;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -19,7 +21,7 @@ public class Quantity {
 
     private void validate(Long quantity) {
         if (quantity < ZERO) {
-            throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.QUANTITY_SHOULD_OVER_ZERO.getMessage());
         }
     }
 

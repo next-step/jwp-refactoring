@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MenuProductsTest {
+class MenuProductsTest {
     @DisplayName("전체 메뉴 상품의 총 가격의 합을 알 수 있다.")
     @Test
     void totalPrice() {

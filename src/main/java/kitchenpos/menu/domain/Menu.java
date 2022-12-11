@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -71,7 +72,7 @@ public class Menu {
 
     private void validatePrice(Price totalPrice) {
         if (price.isBiggerThan(totalPrice)) {
-            throw new IllegalArgumentException("메뉴의 가격이 전체 메뉴 상품 가격의 합보다 클 수 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.MENU_PRICE_SHOULD_NOT_OVER_TOTAL_PRICE.getMessage());
         }
     }
 

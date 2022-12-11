@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -33,7 +34,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_GROUP_IS_NOT_EXIST.getMessage()));
         List<Product> products = findAllProductByIds(request.getMenuProductIds());
 
         final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, products));
@@ -48,7 +49,7 @@ public class MenuService {
 
     private Product findProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.PRODUCT_IS_NOT_EXIST.getMessage()));
     }
 
     public List<MenuResponse> findAll() {

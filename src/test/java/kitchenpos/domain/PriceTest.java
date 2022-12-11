@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,13 +11,13 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PriceTest {
+class PriceTest {
     @DisplayName("메뉴 가격은 null 일 수 없다.")
     @Test
     void priceNullException() {
         assertThatThrownBy(() -> new Price(null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("가격은 null 일 수 없습니다.");
+                .hasMessageContaining(ErrorCode.PRICE_SHOULD_NOT_NULL.getMessage());
     }
 
     @DisplayName("메뉴 가격은 0 이상이어야 한다.")
@@ -25,6 +26,6 @@ public class PriceTest {
     void priceUnderZeroException(int value) {
         assertThatThrownBy(() -> new Price(BigDecimal.valueOf(value)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("가격은 0 이상이어야 합니다.");
+                .hasMessageContaining(ErrorCode.PRICE_SHOULD_OVER_ZERO.getMessage());
     }
 }

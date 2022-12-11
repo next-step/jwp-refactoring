@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -63,6 +64,6 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문테이블 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage()));
     }
 }

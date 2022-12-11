@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
@@ -47,13 +48,13 @@ public class OrderTable {
 
     private void validateShouldNotEmpty() {
         if (isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 빈 상태입니다.");
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
         }
     }
 
     private void validateHasTableGroup() {
         if (tableGroup != null) {
-            throw new IllegalArgumentException("이미 단체그룹으로 지정되어 있습니다.");
+            throw new IllegalArgumentException(ErrorCode.ALREADY_TABLE_GROUP.getMessage());
         }
     }
 

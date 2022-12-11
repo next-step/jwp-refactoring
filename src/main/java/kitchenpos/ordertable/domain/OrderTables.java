@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.common.constant.ErrorCode;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -28,13 +29,13 @@ public class OrderTables {
 
     private void validateIsEmpty(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables)) {
-            throw new IllegalArgumentException("주문 테이블 목록에 주문 테이블이 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_IS_EMPTY.getMessage());
         }
     }
 
     private void validateMinimumSize(List<OrderTable> orderTables) {
         if (orderTables.size() < MINIMUM_SIZE) {
-            throw new IllegalArgumentException("주문 테이블은 2개 이상 존재해야 합니다.");
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_MINIMUM_IS_TWO.getMessage());
         }
     }
 
@@ -48,7 +49,7 @@ public class OrderTables {
                 .anyMatch(orderTable -> !orderTable.isEmpty());
 
         if (hasNotEmpty) {
-            throw new IllegalArgumentException("빈 상태가 아닌 주문테이블이 존재합니다.");
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_IS_NOT_EMPTY.getMessage());
         }
     }
 
@@ -57,7 +58,7 @@ public class OrderTables {
                 .anyMatch(orderTable -> orderTable.getTableGroup() != null);
 
         if (hasGroup) {
-            throw new IllegalArgumentException("이미 단체 지정된 주문 테이블이 존재합니다.");
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_HAS_GROUP_TABLE.getMessage());
         }
     }
 

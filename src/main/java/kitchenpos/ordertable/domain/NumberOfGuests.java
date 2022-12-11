@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.common.constant.ErrorCode;
+
 import javax.persistence.*;
 
 @Embeddable
@@ -17,7 +19,7 @@ public class NumberOfGuests {
 
     private void validate(int numberOfGuests) {
         if (numberOfGuests < ZERO) {
-            throw new IllegalArgumentException("손님수는 0보다 작을 수 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.NUMBER_OF_GUESTS_MINIMUM.getMessage());
         }
     }
 

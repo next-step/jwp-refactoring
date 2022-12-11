@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -55,7 +56,7 @@ public class TableGroupService {
 
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage()));
     }
 
     private List<Order> findAllOrderByTableIds(List<Long> ids) {
@@ -64,6 +65,6 @@ public class TableGroupService {
 
     private TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("단체 그룹이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TABLE_GROUP_IS_NOT_EXIST.getMessage()));
     }
 }

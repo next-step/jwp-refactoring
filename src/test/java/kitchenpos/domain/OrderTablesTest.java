@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -11,13 +12,13 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class OrderTablesTest {
+class OrderTablesTest {
     @DisplayName("주문 테이블 목록은 비어있을 수 없다.")
     @Test
     void orderTablesEmptyException() {
         assertThatThrownBy(() -> new OrderTables(new ArrayList<>()))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("주문 테이블 목록에 주문 테이블이 없습니다.");
+                .hasMessageContaining(ErrorCode.ORDER_TABLES_IS_EMPTY.getMessage());
     }
 
     @DisplayName("주문 테이블은 2개 이상이야 한다.")
@@ -29,6 +30,6 @@ public class OrderTablesTest {
         // when & then
         assertThatThrownBy(() -> new OrderTables(Arrays.asList(orderTable)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("주문 테이블은 2개 이상 존재해야 합니다.");
+                .hasMessageContaining(ErrorCode.ORDER_TABLES_MINIMUM_IS_TWO.getMessage());
     }
 }

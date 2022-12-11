@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import kitchenpos.common.constant.ErrorCode;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -28,13 +30,13 @@ public class Price implements Comparable<Price> {
 
     private void validatePriceIsNull(BigDecimal price) {
         if (price == null) {
-            throw new IllegalArgumentException("가격은 null 일 수 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.PRICE_SHOULD_NOT_NULL.getMessage());
         }
     }
 
     private void validatePriceUnderZero(BigDecimal price) {
         if (price.compareTo(BigDecimal.ZERO) < ZERO) {
-            throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
+            throw new IllegalArgumentException(ErrorCode.PRICE_SHOULD_OVER_ZERO.getMessage());
         }
     }
 

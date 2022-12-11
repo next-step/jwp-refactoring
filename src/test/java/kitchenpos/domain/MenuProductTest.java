@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MenuProductTest {
+class MenuProductTest {
     @DisplayName("메뉴상품 가격을 알 수 있다.")
     @Test
     void calculatePrice() {

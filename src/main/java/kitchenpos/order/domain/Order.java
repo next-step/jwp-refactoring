@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -88,7 +89,7 @@ public class Order {
 
     public void validateOrderStatusShouldComplete() {
         if (!OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalArgumentException("계산 완료된 주문이 아닙니다.");
+            throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_NOT_COMPLETE.getMessage());
         }
     }
 
