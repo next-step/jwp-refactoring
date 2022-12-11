@@ -27,7 +27,7 @@ public class OrderTable {
     private TableGroup tableGroup;
 
     @Embedded
-    private Orders orders;
+    private Orders orders = Orders.createEmpty();
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -102,6 +102,10 @@ public class OrderTable {
         }
 
         this.empty = empty;
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
     }
 
     @Override

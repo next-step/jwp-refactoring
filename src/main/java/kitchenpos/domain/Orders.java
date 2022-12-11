@@ -23,6 +23,10 @@ public class Orders {
         return new Orders(orders);
     }
 
+    public static Orders createEmpty() {
+        return new Orders(new ArrayList<>());
+    }
+
     public List<Order> getOrders() {
         return Collections.unmodifiableList(orders);
     }
@@ -31,5 +35,13 @@ public class Orders {
         return orders.stream().anyMatch(
                 it -> orderStatuses.contains(OrderStatus.valueOf(it.getOrderStatus()))
         );
+    }
+
+    public void add(Order order) {
+        if (this.orders.contains(order)) {
+            return;
+        }
+
+        this.orders.add(order);
     }
 }

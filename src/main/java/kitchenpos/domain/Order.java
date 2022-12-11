@@ -58,6 +58,15 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = orderLineItems;
+
+        orderTable.addOrder(this);
+    }
+
     public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
         return new Order(null, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
     }
@@ -68,6 +77,10 @@ public class Order {
 
     public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
         return new Order(id, orderTableId, orderStatus, orderedTime, Collections.emptyList());
+    }
+
+    public static Order order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderLineItems);
     }
 
     public Long getId() {
