@@ -47,8 +47,8 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public OrderStatus getOrderStatus() {
-        return OrderStatus.valueOf(orderStatus);
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {

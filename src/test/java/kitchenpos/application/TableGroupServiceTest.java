@@ -19,6 +19,9 @@ import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.CannotGroupOrderTablesException;
+import kitchenpos.exception.CannotUnGroupOrderTablesException;
+import kitchenpos.exception.ExceptionMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -103,7 +106,8 @@ class TableGroupServiceTest {
                         .collect(Collectors.toList()));
 
         Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotGroupOrderTablesException.class)
+                .hasMessageStartingWith(ExceptionMessage.NOT_EMPTY_ORDER_TABLE_EXIST);
     }
 
     @DisplayName("이미 단체 지정이 된 주문 테이블이면 단체 지정을 할 수 없다.")
@@ -120,7 +124,8 @@ class TableGroupServiceTest {
                         .collect(Collectors.toList()));
 
         Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotGroupOrderTablesException.class)
+                .hasMessageStartingWith(ExceptionMessage.ALREADY_GROUPED_ORDER_TABLE_EXIST);
     }
 
     @DisplayName("단체 지정을 취소할 수 있다.")
@@ -144,37 +149,38 @@ class TableGroupServiceTest {
     @Test
     void ungroupException2() {
         OrderTable 주문_테이블1 = OrderTable.of(1L, 3, true);
-        Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-
         OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
-        Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
-
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L, 주문_테이블_목록);
+
+        Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
 
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
 
         Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotUnGroupOrderTablesException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
     }
 
     @DisplayName("단체 지정된 주문 테이블들의 상태가 식사면 단체 지정을 취소할 수 없다.")
     @Test
     void ungroupException3() {
         OrderTable 주문_테이블1 = OrderTable.of(1L, 3, true);
-        Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문1.changeOrderStatus(OrderStatus.MEAL);
-
         OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
-        Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
-        주문2.changeOrderStatus(OrderStatus.MEAL);
-
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L, 주문_테이블_목록);
+
+        Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+
+        주문1.changeOrderStatus(OrderStatus.MEAL);
+        주문2.changeOrderStatus(OrderStatus.MEAL);
 
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
 
         Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotUnGroupOrderTablesException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
     }
 }

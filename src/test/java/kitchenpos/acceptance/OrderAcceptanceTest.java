@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -240,7 +239,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(orderStatus)
+                () -> assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(orderStatus)
         );
     }
 

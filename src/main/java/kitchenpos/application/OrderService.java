@@ -48,10 +48,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
         final Order savedOrder = findOrderById(orderId);
 
-        savedOrder.changeOrderStatus(orderStatus);
+        savedOrder.changeOrderStatus(OrderStatus.valueOf(orderStatus));
 
         return OrderResponse.from(savedOrder);
     }

@@ -27,6 +27,7 @@ import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.EmptyOrderTableException;
 import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.OrderStatusChangeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -163,11 +164,11 @@ class OrderServiceTest {
     void changeOrderStatus() {
         when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
 
-        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
+                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
         );
     }
 
@@ -176,7 +177,7 @@ class OrderServiceTest {
     void changeOrderStatusException() {
         when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -186,7 +187,8 @@ class OrderServiceTest {
         when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
         Long orderId = 계산완료_주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL.name()))
+                .isInstanceOf(OrderStatusChangeException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_STATUS_CHANGE);
     }
 }

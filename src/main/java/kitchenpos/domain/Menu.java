@@ -25,7 +25,7 @@ public class Menu {
     private MenuPrice price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id_v2", foreignKey = @ForeignKey(name = "fk_menu_menu_group_v2"), nullable = false)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private MenuGroup menuGroup;
 
     @Embedded

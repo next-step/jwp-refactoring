@@ -14,6 +14,10 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.CannotChangeEmptyException;
+import kitchenpos.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.InvalidNumberOfGuestsSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,7 +90,8 @@ class TableServiceTest {
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeEmptyException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED);
     }
 
     @DisplayName("주문 상태가 조리이면 주문 테이블의 빈 상태를 변경할 수 없다.")
@@ -97,7 +102,8 @@ class TableServiceTest {
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeEmptyException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
     }
 
     @DisplayName("주문 상태가 식사이면 주문 테이블의 빈 상태를 변경할 수 없다.")
@@ -109,7 +115,8 @@ class TableServiceTest {
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeEmptyException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
     }
 
     @DisplayName("주문 테이블의 빈 상태를 변경할 수 있다.")
@@ -126,12 +133,11 @@ class TableServiceTest {
     @DisplayName("방문한 손님 수가 0보다 작은경우 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsException() {
-        OrderTable orderTable = OrderTable.of(1L, -1, true);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
 
-        Long orderTableId = orderTable.getId();
-        int numberOfGuests = orderTable.getNumberOfGuests();
-        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, -1))
+                .isInstanceOf(InvalidNumberOfGuestsSize.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_NUMBER_OF_GUESTS_SIZE);
     }
 
     @DisplayName("등록되지 않은 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
@@ -155,7 +161,8 @@ class TableServiceTest {
         OrderTable orderTable = OrderTable.of(orderTableId, 2, 비어있는_주문_테이블.isEmpty());
         int numberOfGuests = orderTable.getNumberOfGuests();
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CannotChangeNumberOfGuestsException.class)
+                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_NUMBER_OF_GUESTS);
     }
 
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")

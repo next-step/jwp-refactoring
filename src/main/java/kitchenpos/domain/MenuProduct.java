@@ -20,11 +20,11 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id_v2", foreignKey = @ForeignKey(name = "fk_menu_product_menu_v2"), nullable = false)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id_v2", foreignKey = @ForeignKey(name = "fk_menu_product_product_v2"), nullable = false)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
     private Product product;
 
     @Column(nullable = false)

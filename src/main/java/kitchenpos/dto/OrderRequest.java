@@ -29,8 +29,8 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public OrderStatus getOrderStatus() {
-        return OrderStatus.valueOf(orderStatus);
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
     public List<OrderLineItemRequest> getOrderLineItems() {
