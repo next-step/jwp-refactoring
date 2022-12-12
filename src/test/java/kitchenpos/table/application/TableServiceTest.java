@@ -6,6 +6,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,12 +40,14 @@ class TableServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
-    public OrderTable 주문테이블_1번;
-    public OrderTable 주문테이블_2번;
+    private OrderTable 주문테이블_1번;
+    private OrderTableRequest 주문테이블_1번_요청;
+    private OrderTable 주문테이블_2번;
 
     @BeforeEach
     void set_up() {
-        주문테이블_1번 = OrderTableFixture.create(1L, null, 0, true);
+        주문테이블_1번 = OrderTableFixture.create(1L, null, 6, true);
+        주문테이블_1번_요청 = new OrderTableRequest(6, true);
         주문테이블_2번 = OrderTableFixture.create(2L, null, 0, true);
     }
 
@@ -51,13 +55,13 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        when(orderTableDao.save(주문테이블_1번)).thenReturn(주문테이블_1번);
+        when(orderTableDao.save(any())).thenReturn(주문테이블_1번);
 
         // when
-        OrderTable 테이블_등록_결과 = tableService.create(주문테이블_1번);
+        OrderTableResponse 테이블_등록_결과 = tableService.create(주문테이블_1번_요청);
 
         // then
-        assertThat(테이블_등록_결과).isEqualTo(주문테이블_1번);
+        assertThat(테이블_등록_결과.getNumberOfGuests()).isEqualTo(주문테이블_1번_요청.getNumberOfGuests());
     }
 
     @DisplayName("테이블 목록을 조회 할 수 있다.")
@@ -67,12 +71,15 @@ class TableServiceTest {
         when(orderTableDao.findAll()).thenReturn(Arrays.asList(주문테이블_1번, 주문테이블_2번));
 
         // when
-        List<OrderTable> 테이블_목록_조회 = tableService.list();
+        List<OrderTableResponse> 테이블_목록_조회 = tableService.list();
 
         // then
         assertAll(
                 () -> assertThat(테이블_목록_조회).hasSize(2),
-                () -> assertThat(테이블_목록_조회).containsExactly(주문테이블_1번, 주문테이블_2번)
+                () -> assertThat(테이블_목록_조회.get(0).getNumberOfGuests()).isEqualTo(주문테이블_1번.getNumberOfGuests()),
+                () -> assertThat(테이블_목록_조회.get(0).isEmpty()).isEqualTo(주문테이블_1번.isEmpty()),
+                () -> assertThat(테이블_목록_조회.get(1).getNumberOfGuests()).isEqualTo(주문테이블_2번.getNumberOfGuests()),
+                () -> assertThat(테이블_목록_조회.get(1).isEmpty()).isEqualTo(주문테이블_2번.isEmpty())
         );
     }
 
@@ -86,10 +93,10 @@ class TableServiceTest {
         when(orderTableDao.save(any())).thenReturn(주문테이블_변경);
 
         // when
-        주문테이블_변경 = tableService.changeEmpty(주문테이블_변경.getId(), 주문테이블_1번);
+        OrderTableResponse 주문테이블_변경_응답 = tableService.changeEmpty(주문테이블_변경.getId(), 주문테이블_1번_요청);
 
         // then
-        assertThat(주문테이블_변경.isEmpty()).isTrue();
+        assertThat(주문테이블_변경_응답.isEmpty()).isTrue();
 
     }
 
@@ -97,7 +104,7 @@ class TableServiceTest {
     @Test
     void update_error_not_found_table() {
         // when && then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -109,7 +116,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.ofNullable(주문테이블_1번));
 
         // when && then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,7 +131,7 @@ class TableServiceTest {
 
         // when && then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번);
+            tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번_요청);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -138,10 +145,10 @@ class TableServiceTest {
         when(orderTableDao.save(주문테이블_1번)).thenReturn(주문테이블_1번);
 
         // when
-        OrderTable 주문테이블_변경 = tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번);
+        OrderTableResponse 주문테이블_변경_응답 = tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청);
 
         // then
-        assertThat(주문테이블_변경.getNumberOfGuests()).isEqualTo(20);
+        assertThat(주문테이블_변경_응답.getNumberOfGuests()).isEqualTo(6);
     }
 
     @DisplayName("손님의 수가 0보다 작다면 변경할 수 없다.")
@@ -151,7 +158,7 @@ class TableServiceTest {
         주문테이블_1번.setNumberOfGuests(-1);
 
         // when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -159,7 +166,7 @@ class TableServiceTest {
     @Test
     void error_change_not_found_table() {
         // when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -170,7 +177,7 @@ class TableServiceTest {
         when(orderTableDao.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
 
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
