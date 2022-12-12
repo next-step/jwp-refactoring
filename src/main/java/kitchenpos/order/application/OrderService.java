@@ -44,7 +44,7 @@ public class OrderService {
     }
 
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAll();
         return orders.stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
@@ -52,7 +52,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = findOrderById(orderId);
+        Order order = findOrderById(orderId);
         order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(order);
     }

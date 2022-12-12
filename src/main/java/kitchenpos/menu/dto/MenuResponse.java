@@ -27,11 +27,15 @@ public class MenuResponse {
 
     public static MenuResponse from(Menu menu) {
         List<MenuProductResponse> menuProductResponses = menu.getMenuProducts()
-                .unmodifiableMenuProducts()
+                .findMenuProducts()
                 .stream()
                 .map(MenuProductResponse::from)
                 .collect(Collectors.toList());
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProductResponses);
+        return new MenuResponse(menu.getId(),
+                menu.getName(),
+                menu.getPrice(),
+                menu.getMenuGroupId(),
+                menuProductResponses);
     }
 
     public Long getId() {

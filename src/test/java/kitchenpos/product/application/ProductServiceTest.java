@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.common.domain.Name;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -71,7 +72,8 @@ public class ProductServiceTest {
         ProductRequest productRequest = generateProductRequest(감자튀김.getName().value(), null);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> productService.create(productRequest))
                 .withMessage(ErrorCode.가격은_비어있을_수_없음.getErrorMessage());
     }
 
@@ -83,7 +85,8 @@ public class ProductServiceTest {
         ProductRequest productRequest = generateProductRequest(감자튀김.getName().value(), BigDecimal.valueOf(price));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> productService.create(productRequest))
                 .withMessage(ErrorCode.가격은_0보다_작을_수_없음.getErrorMessage());
     }
 
@@ -96,12 +99,16 @@ public class ProductServiceTest {
 
         // when
         List<ProductResponse> findProducts = productService.list();
+        Name 감자튀김이름 = 감자튀김.getName();
+        Name 콜라이름 = 콜라.getName();
 
         // then
         assertAll(
                 () -> assertThat(findProducts).hasSize(products.size()),
-                () -> assertThat(findProducts.stream().map(ProductResponse::getName))
-                        .containsExactly(감자튀김.getName().value(), 콜라.getName().value())
+                () -> assertThat(findProducts.stream()
+                        .map(ProductResponse::getName))
+                        .containsExactly(감자튀김이름.value(),
+                                콜라이름.value())
         );
     }
 }

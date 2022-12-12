@@ -104,7 +104,12 @@ public class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(menuResponse.getId()).isNotNull(),
-                () -> assertThat(menuResponse.getMenuProductResponses().stream().map(MenuProductResponse::getProductId)).containsExactly(감자튀김.getId(), 콜라.getId(), 불고기버거.getId())
+                () -> assertThat(menuResponse.getMenuProductResponses()
+                        .stream()
+                        .map(MenuProductResponse::getProductId))
+                        .containsExactly(감자튀김.getId(),
+                                콜라.getId(),
+                                불고기버거.getId())
         );
     }
 
@@ -116,7 +121,8 @@ public class MenuServiceTest {
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), price, 햄버거세트.getId(), 불고기버거상품요청);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.create(menuRequest));
     }
 
     @DisplayName("가격이 0원 미만인 메뉴는 생성할 수 없다.")
@@ -127,7 +133,8 @@ public class MenuServiceTest {
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(price), 햄버거세트.getId(), 불고기버거상품요청);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴에 메뉴 상품이 존재하지 않으면 해당 메뉴를 생성할 수 없다.")
@@ -138,7 +145,8 @@ public class MenuServiceTest {
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(3000L), 햄버거세트.getId(), menuProductRequests);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.create(menuRequest))
                 .withMessage(ErrorCode.메뉴_상품은_비어있을_수_없음.getErrorMessage());
     }
 
@@ -153,7 +161,8 @@ public class MenuServiceTest {
         given(productRepository.findById(notExistsMenuProductId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.create(menuRequest))
                 .withMessage(ErrorCode.존재하지_않는_상품.getErrorMessage());
     }
 
@@ -167,7 +176,8 @@ public class MenuServiceTest {
         given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.create(menuRequest))
                 .withMessage(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
     }
 
@@ -184,7 +194,10 @@ public class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(findMenus).hasSize(menus.size()),
-                () -> assertThat(findMenus.stream().map(MenuResponse::getName)).containsExactly(불고기버거세트.getName().value(), 치킨버거세트.getName().value())
+                () -> assertThat(findMenus.stream()
+                        .map(MenuResponse::getName))
+                        .containsExactly(불고기버거세트.getName().value(),
+                                치킨버거세트.getName().value())
         );
     }
 }

@@ -54,7 +54,7 @@ public class MenuTest {
         // then
         assertAll(
                 () -> assertThat(불고기버거세트.getName().value()).isEqualTo(name),
-                () -> assertThat(불고기버거세트.getMenuProducts().unmodifiableMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품, 콜라상품)
+                () -> assertThat(불고기버거세트.getMenuProducts().findMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품, 콜라상품)
         );
     }
 

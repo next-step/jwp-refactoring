@@ -67,7 +67,8 @@ public class MenuGroupServiceTest {
         MenuGroupRequest menuGroupRequest = generateMenuGroupRequest(name);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuGroupService.create(menuGroupRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuGroupService.create(menuGroupRequest))
                 .withMessage(ErrorCode.이름은_비어_있을_수_없음.getErrorMessage());
     }
 
@@ -79,7 +80,8 @@ public class MenuGroupServiceTest {
         MenuGroupRequest menuGroupRequest = generateMenuGroupRequest(name);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuGroupService.create(menuGroupRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuGroupService.create(menuGroupRequest))
                 .withMessage(ErrorCode.이름은_비어_있을_수_없음.getErrorMessage());
     }
 
@@ -96,8 +98,10 @@ public class MenuGroupServiceTest {
         // then
         assertAll(
                 () -> assertThat(findMenuGroups).hasSize(menuGroups.size()),
-                () -> assertThat(findMenuGroups.stream().map(MenuGroupResponse::getName))
-                        .containsExactly(햄버거세트.getName().value(), 햄버거단품.getName().value())
+                () -> assertThat(findMenuGroups.stream()
+                        .map(MenuGroupResponse::getName))
+                        .containsExactly(햄버거세트.getName().value(),
+                                햄버거단품.getName().value())
         );
     }
 }

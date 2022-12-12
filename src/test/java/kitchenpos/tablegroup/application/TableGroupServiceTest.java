@@ -2,16 +2,16 @@ package kitchenpos.tablegroup.application;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
-import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
+import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static kitchenpos.tablegroup.domain.TableGroupTestFixture.generateTableGroup;
 import static kitchenpos.tablegroup.domain.TableGroupTestFixture.generateTableGroupRequest;
-import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,21 +23,20 @@ import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -121,7 +120,8 @@ public class TableGroupServiceTest {
         given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableGroupService.create(tableGroupRequest))
                 .withMessage(ErrorCode.주문_테이블은_2개_이상여야함.getErrorMessage());
     }
 
@@ -134,7 +134,8 @@ public class TableGroupServiceTest {
         given(orderTableRepository.findById(주문테이블B.getId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableGroupService.create(tableGroupRequest))
                 .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
     }
 
@@ -145,7 +146,8 @@ public class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = generateTableGroupRequest(emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableGroupService.create(tableGroupRequest))
                 .withMessage(ErrorCode.주문_테이블_집합은_비어있을_수_없음.getErrorMessage());
     }
 
@@ -160,7 +162,8 @@ public class TableGroupServiceTest {
         given(tableGroupRepository.save(any())).willReturn(단체A);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableGroupService.create(tableGroupRequest))
                 .withMessage(ErrorCode.단체_그룹_지정되어_있음.getErrorMessage());
     }
 
@@ -194,7 +197,8 @@ public class TableGroupServiceTest {
         given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체.getId()))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableGroupService.ungroup(단체.getId()))
                 .withMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
     }
 }

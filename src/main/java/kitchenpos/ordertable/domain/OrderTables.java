@@ -49,7 +49,7 @@ public class OrderTables {
         orderTables.forEach(OrderTable::ungroup);
     }
 
-    public List<OrderTable> unmodifiableOrderTables() {
+    public List<OrderTable> findOrderTables() {
         return Collections.unmodifiableList(orderTables);
     }
 }

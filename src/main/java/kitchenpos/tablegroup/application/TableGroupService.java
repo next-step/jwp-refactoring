@@ -33,11 +33,11 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         OrderTables orderTables = OrderTables.from(findAllOrderTablesById(tableGroupRequest.getOrderTables()));
-        List<OrderTableResponse> orderTableResponses = orderTables.unmodifiableOrderTables()
+        List<OrderTableResponse> orderTableResponses = orderTables.findOrderTables()
                 .stream()
                 .map(OrderTableResponse::from)
                 .collect(Collectors.toList());
-        final TableGroup tableGroup = tableGroupRepository.save(TableGroup.from());
+        TableGroup tableGroup = tableGroupRepository.save(TableGroup.from());
         orderTables.registerTableGroup(tableGroup.getId());
         return TableGroupResponse.from(tableGroup, orderTableResponses);
     }
@@ -46,7 +46,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         OrderTables orderTables = OrderTables.from(findAllOrderTableByTableGroupId(tableGroupId));
-        List<Order> orders = findAllOrderByOrderTableIds(orderTables.unmodifiableOrderTables());
+        List<Order> orders = findAllOrderByOrderTableIds(orderTables.findOrderTables());
         tableGroup.ungroup(orders);
         orderTables.ungroupOrderTables();
     }

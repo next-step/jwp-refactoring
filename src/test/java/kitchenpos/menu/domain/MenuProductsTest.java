@@ -40,8 +40,8 @@ public class MenuProductsTest {
 
         // then
         assertAll(
-                () -> assertThat(menuProducts.unmodifiableMenuProducts()).hasSize(2),
-                () -> assertThat(menuProducts.unmodifiableMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품)
+                () -> assertThat(menuProducts.findMenuProducts()).hasSize(2),
+                () -> assertThat(menuProducts.findMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품)
         );
     }
 

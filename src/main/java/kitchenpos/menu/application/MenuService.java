@@ -43,7 +43,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
+        List<Menu> menus = menuRepository.findAll();
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
@@ -51,7 +51,10 @@ public class MenuService {
 
     private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
-                .map(menuProductRequest -> menuProductRequest.toMenuProduct(findProductById(menuProductRequest.getProductId())))
+                .map(menuProductRequest -> {
+                    Long productId = menuProductRequest.getProductId();
+                    return menuProductRequest.toMenuProduct(findProductById(productId));
+                })
                 .collect(Collectors.toList());
     }
 

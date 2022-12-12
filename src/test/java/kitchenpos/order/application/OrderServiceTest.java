@@ -132,7 +132,8 @@ public class OrderServiceTest {
         OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> orderService.create(orderRequest))
                 .withMessage(ErrorCode.주문_항목은_비어있을_수_없음.getErrorMessage());
     }
 
@@ -144,7 +145,8 @@ public class OrderServiceTest {
         given(menuRepository.findById(불고기버거세트주문요청.getMenuId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> orderService.create(orderRequest))
                 .withMessage(ErrorCode.존재하지_않는_메뉴.getErrorMessage());
     }
 
@@ -161,7 +163,10 @@ public class OrderServiceTest {
         // then
         assertAll(
                 () -> assertThat(findOrders).hasSize(orders.size()),
-                () -> assertThat(findOrders.stream().map(OrderResponse::getId)).containsExactly(주문A.getId(), 주문B.getId())
+                () -> assertThat(findOrders.stream()
+                        .map(OrderResponse::getId))
+                        .containsExactly(주문A.getId(),
+                                주문B.getId())
         );
     }
 
@@ -189,7 +194,8 @@ public class OrderServiceTest {
         given(orderRepository.findById(notExistsOrderId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(notExistsOrderId, orderRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> orderService.changeOrderStatus(notExistsOrderId, orderRequest))
                 .withMessage(ErrorCode.존재하지_않는_주문.getErrorMessage());
     }
 
@@ -203,7 +209,8 @@ public class OrderServiceTest {
         given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrderRequest))
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> orderService.changeOrderStatus(order.getId(), changeOrderRequest))
                 .withMessage(ErrorCode.이미_완료된_주문.getErrorMessage());
     }
 }

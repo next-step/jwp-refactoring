@@ -114,7 +114,10 @@ public class TableServiceTest {
         // then
         assertAll(
                 () -> assertThat(findOrderTables).hasSize(orderTables.size()),
-                () -> assertThat(findOrderTables.stream().map(OrderTableResponse::getId)).containsExactly(주문테이블A.getId(), 주문테이블B.getId())
+                () -> assertThat(findOrderTables.stream()
+                        .map(OrderTableResponse::getId))
+                        .containsExactly(주문테이블A.getId(),
+                                주문테이블B.getId())
         );
     }
 

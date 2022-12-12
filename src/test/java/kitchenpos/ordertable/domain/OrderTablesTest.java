@@ -35,8 +35,8 @@ public class OrderTablesTest {
 
         // then
         assertAll(
-                () -> assertThat(orderTables.unmodifiableOrderTables()).hasSize(2),
-                () -> assertThat(orderTables.unmodifiableOrderTables()).containsExactly(주문테이블A, 주문테이블B)
+                () -> assertThat(orderTables.findOrderTables()).hasSize(2),
+                () -> assertThat(orderTables.findOrderTables()).containsExactly(주문테이블A, 주문테이블B)
         );
     }
 
@@ -50,7 +50,7 @@ public class OrderTablesTest {
         orderTables.ungroupOrderTables();
 
         // then
-        assertThat(orderTables.unmodifiableOrderTables().stream().map(OrderTable::findTableGroupId))
+        assertThat(orderTables.findOrderTables().stream().map(OrderTable::findTableGroupId))
                 .containsExactly(null, null);
     }
 
