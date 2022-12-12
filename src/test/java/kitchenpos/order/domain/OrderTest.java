@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.domain.Order.COMPLETION_CHANGE_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Order.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문")
 class OrderTest {
@@ -45,15 +45,33 @@ class OrderTest {
     @DisplayName("주문상태를 식사중으로 변경한다.")
     @Test
     void changeMeal_success() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
+        order.meal();
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
     @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
     @Test
     void changeMeal_fail_completion() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
+        order.complete();
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThatThrownBy(order::meal)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(COMPLETION_CHANGE_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("주문상태를 완료로 변경한다.")
     @Test
     void nameCompletion() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
+        order.complete();
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 }

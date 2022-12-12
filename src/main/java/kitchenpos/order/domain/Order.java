@@ -8,6 +8,7 @@ import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY
 
 public class Order {
     public static final String ORDER_TABLE_NULL_EXCEPTION_MESSAGE = "주문 테이블이 없습니다.";
+    public static final String COMPLETION_CHANGE_EXCEPTION_MESSAGE = "완료일 경우 변경할 수 없습니다.";
     private Long id;
     private Long orderTableId;
     private String orderStatus;
@@ -72,5 +73,16 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public void meal() {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
+            throw new IllegalArgumentException(COMPLETION_CHANGE_EXCEPTION_MESSAGE);
+        }
+        this.orderStatus = OrderStatus.MEAL.name();
+    }
+
+    public void complete() {
+        this.orderStatus = OrderStatus.COMPLETION.name();
     }
 }
