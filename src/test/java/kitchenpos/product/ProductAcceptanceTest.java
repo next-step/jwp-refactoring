@@ -1,7 +1,7 @@
 package kitchenpos.product;
 
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -28,22 +28,22 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> product() {
         return Stream.of(
                 dynamicTest("상품을 등록한다.", () -> {
-                    ResponseEntity<Product> response = 상품_생성_요청("강정치킨", BigDecimal.valueOf(15_000L));
+                    ResponseEntity<ProductResponse> response = 상품_생성_요청("강정치킨", BigDecimal.valueOf(15_000L));
 
                     상품_생성됨(response);
                 }),
                 dynamicTest("가격이 0미만인 상품을 등록한다.", () -> {
-                    ResponseEntity<Product> response = 상품_생성_요청("강정치킨", BigDecimal.valueOf(-1L));
+                    ResponseEntity<ProductResponse> response = 상품_생성_요청("강정치킨", BigDecimal.valueOf(-1L));
 
                     상품_생성_실패됨(response);
                 }),
                 dynamicTest("이름이 없는 상품을 등록한다.", () -> {
-                    ResponseEntity<Product> response = 상품_생성_요청(null, BigDecimal.valueOf(15_000L));
+                    ResponseEntity<ProductResponse> response = 상품_생성_요청(null, BigDecimal.valueOf(15_000L));
 
                     상품_생성_실패됨(response);
                 }),
                 dynamicTest("상품 목록을 조회한다.", () -> {
-                    ResponseEntity<List<Product>> response = 상품_목록_조회_요청();
+                    ResponseEntity<List<ProductResponse>> response = 상품_목록_조회_요청();
 
                     상품_목록_응답됨(response);
                     상품_목록_확인됨(response, "강정치킨");
@@ -51,39 +51,39 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static Product 상품_등록됨(String name, BigDecimal price) {
+    public static ProductResponse 상품_등록됨(String name, BigDecimal price) {
         return 상품_생성_요청(name, price).getBody();
     }
 
-    public static ResponseEntity<Product> 상품_생성_요청(String name, BigDecimal price) {
+    public static ResponseEntity<ProductResponse> 상품_생성_요청(String name, BigDecimal price) {
         Map<String, Object> request = new HashMap<>();
         request.put("name", name);
         request.put("price", price);
-        return restTemplate().postForEntity("/api/products", request, Product.class);
+        return restTemplate().postForEntity("/api/products", request, ProductResponse.class);
     }
 
-    public static ResponseEntity<List<Product>> 상품_목록_조회_요청() {
+    public static ResponseEntity<List<ProductResponse>> 상품_목록_조회_요청() {
         return restTemplate().exchange("/api/products", HttpMethod.GET, null,
-                                       new ParameterizedTypeReference<List<Product>>() {});
+                                       new ParameterizedTypeReference<List<ProductResponse>>() {});
     }
 
-    public static void 상품_생성됨(ResponseEntity<Product> response) {
+    public static void 상품_생성됨(ResponseEntity<ProductResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getHeaders().getLocation()).isNotNull();
     }
 
-    public static void 상품_생성_실패됨(ResponseEntity<Product> response) {
+    public static void 상품_생성_실패됨(ResponseEntity<ProductResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public static void 상품_목록_응답됨(ResponseEntity<List<Product>> response) {
+    public static void 상품_목록_응답됨(ResponseEntity<List<ProductResponse>> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    public static void 상품_목록_확인됨(ResponseEntity<List<Product>> response, String... names) {
+    public static void 상품_목록_확인됨(ResponseEntity<List<ProductResponse>> response, String... names) {
         List<String> productNames = response.getBody()
                                             .stream()
-                                            .map(Product::getName)
+                                            .map(ProductResponse::getName)
                                             .collect(Collectors.toList());
         assertThat(productNames).containsExactly(names);
     }
