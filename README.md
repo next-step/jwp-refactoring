@@ -131,11 +131,24 @@ completePayment() vs setOrderState()
 ## 4단계 : 멀티 모듈 적용
 ### 요구사항
 ```
-[ ] Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해본다.
+[X] Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해본다.
     * 컨텍스트 간의 독립된 모듈로 만들 수 있다.
     * 계층 간의 독립된 모듈로 만들 수 있다.
     * 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
 ```
 
-### 모듈 분류 기준 점검
-* 마이크로 서비스 아키텍처(MSA: MicroService Architecture)를 적용한다고 생각하고 3단계 미션에서 분리한 패키지 단위를 기반으로 모듈 분류 기준을 선정해보았습니다.
+### 모듈 분류
+* 공통 모듈
+  * `kitchenpos-common`: 도메인 모듈에서 공통적으로 사용되어야 하는 코드를 별도의 공통 모듈로 추출하였습니다.
+* 도메인 모듈
+  * `kitchenpos-menu-api`: 메뉴와 관련된 도메인 모듈입니다.
+  * `kitchenpos-order-api`: 주문과 관련된 도메인 모듈입니다. 
+    * 주문 테이블과 주문은 별도의 모듈로 구분하지 않고 같은 주문 모듈로 묶었습니다. \
+      비즈니스 상 연관도가 높고 내부에 `Validation Logic`으로 의존성 사이클 문제도 존재하지 않기 때문에 같은 모듈에 있는 것이 적절하다고 판단했습니다.
+    * 메뉴와 관련된 도메인 모듈을 포함하고 있습니다.
+* 애플리케이션 모듈
+  * `kithenpos-app`: 독립적으로 실행할 수 있도록 다른 모듈들을 포함하여 구성하였습니다.
+* 참고 링크
+  * [우아한 멀티 모듈 세미나 정리](https://hyeon9mak.github.io/woowahan-multi-module/)
+  * [멀티모듈 설계 이야기 with Spring, Gradle](https://techblog.woowahan.com/2637/)
+* 멀티 모듈 구현 작업에 대한 구조를 `kitchenpos-app/src/main/resources/static/multi-module.png` 경로의 이미지로 정리해보았습니다.
