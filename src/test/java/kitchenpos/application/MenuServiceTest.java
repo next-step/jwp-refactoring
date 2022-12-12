@@ -1,6 +1,14 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -15,15 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 관련 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -76,7 +75,6 @@ class MenuServiceTest {
         );
     }
 
-    @DisplayName("가격이 존재하지 않는 메뉴는 등록할 수 없다.")
     @Test
     void 가격이_존재하지_않는_메뉴는_등록할_수_없다() {
         Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", null, 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
@@ -93,9 +91,8 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 가격은 모든 메뉴 상품의 (가격 * 수량)의 합보다 작거나 같아야한다")
     @Test
-    void createWithPriceGoeMenuPrice() {
+    void 메뉴_가격은_모든_메뉴_상품의_가격_곱하기_수량의_합보다_작거나_같아야_한다() {
         Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(60_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
         assertThatThrownBy(() -> menuService.create(치킨_스파게티_더블세트_메뉴))
                 .isInstanceOf(IllegalArgumentException.class);
