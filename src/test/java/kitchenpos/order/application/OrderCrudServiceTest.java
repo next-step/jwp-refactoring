@@ -116,4 +116,10 @@ class OrderCrudServiceTest {
                 () -> assertThat(orderResponse.getOrderLineItmes()).isNotNull()
         );
     }
+
+    @DisplayName("주문을 조회한다.")
+    @Test
+    void list() {
+        assertThat(orderCrudService.list()).hasSize(1);
+    }
 }
