@@ -6,44 +6,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.application.MenuService;
-import kitchenpos.application.OrderService;
-import kitchenpos.application.ProductService;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class TableAcceptanceTest extends MockMvcAcceptanceTest {
-
-    @Autowired
-    TableGroupService tableGroupService;
-
-    @Autowired
-    ProductService productService;
-
-    @Autowired
-    MenuService menuService;
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
-    MenuGroupService menuGroupService;
 
     /**
      * given:
@@ -73,8 +47,7 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("테이블 상태 변경")
     void changeEmptyTest() throws Exception {
         // given
-        ResultActions 테이블_생성_요청_결과 = 테이블_생성_요청(2, false);
-        OrderTable 비어있지_않은_테이블 = getObjectByResponse(테이블_생성_요청_결과, OrderTable.class);
+        OrderTable 비어있지_않은_테이블 = 테이블_생성(2, false);
 
         // when
         ResultActions 테이블_상태_변경_결과 = 테이블_상태_변경_요청(비어있지_않은_테이블, true);
@@ -101,11 +74,9 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("단체 지정된 테이블은 상태를 변경할 수 없다.")
     void changeEmptyFailTest1() throws Exception {
         // given
-        ResultActions tableResponse1 = 테이블_생성_요청(0, true);
-        OrderTable 빈_테이블1 = getObjectByResponse(tableResponse1, OrderTable.class);
-        ResultActions tableResponse2 = 테이블_생성_요청(0, true);
-        OrderTable 빈_테이블2 = getObjectByResponse(tableResponse2, OrderTable.class);
-        tableGroupService.create(new TableGroup(Arrays.asList(빈_테이블1, 빈_테이블2)));
+        OrderTable 빈_테이블1 = 테이블_생성(0, true);
+        OrderTable 빈_테이블2 = 테이블_생성(0, true);
+        테이블_그룹_생성(빈_테이블1, 빈_테이블2);
 
         // when & then
         assertThatThrownBy(
@@ -128,26 +99,18 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("계산완료가 안 된 테이블은 비어있는 상태로 변경할 수 없다.")
     void changeEmptyFailTest2() throws Exception {
         // given
-        ResultActions 테이블_생성_요청_결과1 = 테이블_생성_요청(2, false);
-        OrderTable 비어있지_않은_테이블_1 = getObjectByResponse(테이블_생성_요청_결과1, OrderTable.class);
-        ResultActions 테이블_생성_요청_결과2 = 테이블_생성_요청(2, false);
-        OrderTable 비어있지_않은_테이블_2 = getObjectByResponse(테이블_생성_요청_결과2, OrderTable.class);
+        OrderTable 비어있지_않은_테이블_1 =테이블_생성(2, false);
+        OrderTable 비어있지_않은_테이블_2 = 테이블_생성(2, false);
 
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
-        MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
-        Menu menu1 = menuService.create(new Menu("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
-                new MenuProduct(product1.getId(), 1),
-                new MenuProduct(product2.getId(), 1)
-        )));
-        orderService.create(new Order(비어있지_않은_테이블_1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Arrays.asList(
-                new OrderLineItem(null, menu1.getId(), 1)
-        )));
-        orderService.create(new Order(비어있지_않은_테이블_2.getId(), OrderStatus.MEAL.name(), LocalDateTime.now()
-                , Arrays.asList(
-                new OrderLineItem(null, menu1.getId(), 1)
-        )));
+        Product 상품1 = 상품_등록("상품1", 1000);
+        Product 상품2 = 상품_등록("상품2", 2000);
+        MenuGroup 그룹1 = 메뉴_그룹_추가("그룹1");
+        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 그룹1, Arrays.asList(
+                new MenuProduct(상품1.getId(), 1),
+                new MenuProduct(상품2.getId(), 1)
+        ));
+        주문_생성(비어있지_않은_테이블_1, 메뉴1);
+        주문_생성(비어있지_않은_테이블_2, 메뉴1);
 
         // when & then
         assertThatThrownBy(
@@ -168,11 +131,10 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("테이블 인원 수 변경 테스트")
     void changeNumberOfGuestTest() throws Exception {
         // given
-        ResultActions 테이블_생성_요청 = 테이블_생성_요청(2, false);
-        OrderTable 빈_테이블 = getObjectByResponse(테이블_생성_요청, OrderTable.class);
+        OrderTable 비어있지_않은_테이블 = 테이블_생성(2, false);
 
         // when
-        ResultActions 테이블_인원_수_변경_결과 = 테이블_인원_수_변경(빈_테이블, 4);
+        ResultActions 테이블_인원_수_변경_결과 = 테이블_인원_수_변경(비어있지_않은_테이블, 4);
 
         // then
         테이블_인원_수_변경_결과
@@ -190,8 +152,7 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("비어있는 테이블의 인원 수를 변경할 수 없다.")
     void changeNumberOfGuestFailTest1() throws Exception {
         // given
-        ResultActions 테이블_생성_요청 = 테이블_생성_요청(0, true);
-        OrderTable 빈_테이블 = getObjectByResponse(테이블_생성_요청, OrderTable.class);
+        OrderTable 빈_테이블 = 테이블_생성(0, true);
 
         // when & then
         assertThatThrownBy(
@@ -208,12 +169,11 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("테이블의 인원 수를 음수로 변경할 수 없다.")
     void changeNumberOfGuestFailTest2() throws Exception {
         // given
-        ResultActions 테이블_생성_요청 = 테이블_생성_요청(2, false);
-        OrderTable 빈_테이블 = getObjectByResponse(테이블_생성_요청, OrderTable.class);
+        OrderTable 비어있지_않은_테이블 = 테이블_생성(2, false);
 
         // when & then
         assertThatThrownBy(
-                () -> 테이블_인원_수_변경(빈_테이블, -2)
+                () -> 테이블_인원_수_변경(비어있지_않은_테이블, -2)
         ).hasCause(new IllegalArgumentException());
     }
 
@@ -223,9 +183,5 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
 
     private ResultActions 테이블_상태_변경_요청(OrderTable 비어있지_않은_테이블, boolean empty) throws Exception {
         return mockPut("/api/tables/{orderTableId}/empty", 비어있지_않은_테이블.getId(), new OrderTable(empty));
-    }
-
-    private ResultActions 테이블_생성_요청(int person, boolean empty) throws Exception {
-        return mockPost("/api/tables", new OrderTable(person, empty));
     }
 }

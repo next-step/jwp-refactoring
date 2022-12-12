@@ -7,17 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class ProductAcceptanceTest extends MockMvcAcceptanceTest{
-
-    @Autowired
-    ProductService productService;
 
     /**
      * given: 상품 이름과 가격을 입력하고
@@ -48,7 +43,7 @@ public class ProductAcceptanceTest extends MockMvcAcceptanceTest{
      */
     @Test
     @DisplayName("상품 등록 시, 가격이 음수면 상품 등록에 실패한다.")
-    void createFailTest1() throws Exception {
+    void createFailTest1() {
         // given
         String name = "1번 상품";
         int price = -100;
@@ -66,7 +61,7 @@ public class ProductAcceptanceTest extends MockMvcAcceptanceTest{
      */
     @Test
     @DisplayName("상품 등록 시, 가격이 없으면 상품 등록에 실패한다.")
-    void createFailTest2() throws Exception {
+    void createFailTest2() {
         // given
         String name = "1번 상품";
 

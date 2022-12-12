@@ -5,29 +5,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
-
-    @Autowired
-    ProductService productService;
-
-    @Autowired
-    MenuGroupService menuGroupService;
 
     /**
      * Feature: 메뉴 신규 추가
@@ -44,9 +33,9 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
     @DisplayName("메뉴 등록")
     void createTest() throws Exception {
         // given
-        MenuGroup 메뉴그룹 = menuGroupService.create(new MenuGroup("메뉴 그룹 1"));
-        Product 상품1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product 상품2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        MenuGroup 메뉴그룹 = 메뉴_그룹_추가("메뉴 그룹 1");
+        Product 상품1 = 상품_등록("상품1", 1000);
+        Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
                 new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
@@ -72,9 +61,9 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
      */
     @Test
     @DisplayName("상품이 없으면 메뉴를 등록할 수 없습니다.")
-    void createFailTest1() {
+    void createFailTest1() throws Exception {
         // given
-        MenuGroup 메뉴그룹 = menuGroupService.create(new MenuGroup("메뉴 그룹 1"));
+        MenuGroup 메뉴그룹 = 메뉴_그룹_추가("메뉴 그룹 1");
 
         // when & then
         assertThatThrownBy(
@@ -93,10 +82,10 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
      */
     @Test
     @DisplayName("메뉴그룹이 지정 되어 있지 않으면 메뉴를 등록할 수 없습니다.")
-    void createFailTest2() {
+    void createFailTest2() throws Exception {
         // given
-        Product 상품1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product 상품2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product 상품1 = 상품_등록("상품1", 1000);
+        Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
                 new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
@@ -120,11 +109,11 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
      */
     @Test
     @DisplayName("가격이 음수로 되어있으면 메뉴를 등록할 수 없습니다.")
-    void createFailTest3() {
+    void createFailTest3() throws Exception {
         // given
-        MenuGroup 메뉴그룹 = menuGroupService.create(new MenuGroup("메뉴 그룹 1"));
-        Product 상품1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product 상품2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        MenuGroup 메뉴그룹 = 메뉴_그룹_추가("메뉴 그룹 1");
+        Product 상품1 = 상품_등록("상품1", 1000);
+        Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
                 new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
@@ -148,11 +137,11 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
      */
     @Test
     @DisplayName("메뉴 가격이 각 상품들의 수량*가격의 합보다 크면 메뉴를 등록할 수 없습니다.")
-    void createFailTest4() {
+    void createFailTest4() throws Exception {
         // given
-        MenuGroup 메뉴그룹 = menuGroupService.create(new MenuGroup("메뉴 그룹 1"));
-        Product 상품1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product 상품2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        MenuGroup 메뉴그룹 = 메뉴_그룹_추가("메뉴 그룹 1");
+        Product 상품1 = 상품_등록("상품1", 1000);
+        Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
                 new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
@@ -162,11 +151,6 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
         assertThatThrownBy(
                 () -> 메뉴_등록_요청("메뉴 1", 5001, 메뉴그룹, 구성상품들)
         ).hasCause(new IllegalArgumentException());
-    }
-
-    private ResultActions 메뉴_등록_요청(String menuName, Integer price, MenuGroup 메뉴그룹, List<MenuProduct> products) throws Exception {
-        Menu menu = new Menu(menuName, new BigDecimal(price), 메뉴그룹.getId(), products);
-        return mockPost("/api/menus", menu);
     }
 
     /**
@@ -181,9 +165,9 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
     @DisplayName("메뉴 전체 조회")
     void listTest() throws Exception {
         // given
-        MenuGroup 메뉴그룹 = menuGroupService.create(new MenuGroup("메뉴 그룹 1"));
-        Product 상품1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product 상품2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        MenuGroup 메뉴그룹 = 메뉴_그룹_추가("메뉴 그룹 1");
+        Product 상품1 = 상품_등록("상품1", 1000);
+        Product 상품2 = 상품_등록("상품2", 2000);
         메뉴_등록_요청("메뉴 1", 10000, 메뉴그룹, Arrays.asList(
                 new MenuProduct(상품1.getId(), 5), new MenuProduct(상품2.getId(), 5)
         ));
@@ -202,10 +186,6 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(".name", Matchers.hasItems("메뉴 1", "메뉴 2", "메뉴 3")))
                 .andDo(print());
-    }
-
-    private ResultActions 메뉴_전체_조회() throws Exception {
-        return mockGet("/api/menus");
     }
 
 }

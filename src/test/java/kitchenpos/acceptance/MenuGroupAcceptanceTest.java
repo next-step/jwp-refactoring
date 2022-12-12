@@ -4,11 +4,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class MenuGroupAcceptanceTest extends MockMvcAcceptanceTest {
@@ -53,15 +50,5 @@ public class MenuGroupAcceptanceTest extends MockMvcAcceptanceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(".id").isArray())
                 .andDo(print());
-
     }
-
-    private ResultActions 메뉴_그룹_전체_조회_요청() throws Exception {
-        return mockGet("/api/menu-groups");
-    }
-
-    private ResultActions 메뉴_그룹_추가_요청(String name) throws Exception {
-        return mockPost("/api/menu-groups", new MenuGroup(name));
-    }
-
 }

@@ -5,21 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.application.MenuService;
-import kitchenpos.application.OrderService;
-import kitchenpos.application.ProductService;
-import kitchenpos.application.TableService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
@@ -29,21 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
-    TableService tableService;
-
-    @Autowired
-    ProductService productService;
-
-    @Autowired
-    MenuService menuService;
-
-    @Autowired
-    MenuGroupService menuGroupService;
 
     /**
      * Feature: 테이블 단체 지정
@@ -60,10 +34,8 @@ public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("테이블 단체 지정 테스트")
     void createAndUnGroupTest() throws Exception {
         // given
-        ResultActions 테이블_생성_요청_결과_1 = 테이블_생성_요청(0, true);
-        OrderTable 테이블_1 = getObjectByResponse(테이블_생성_요청_결과_1, OrderTable.class);
-        ResultActions 테이블_생성_요청_결과_2 = 테이블_생성_요청(0, true);
-        OrderTable 테이블_2 = getObjectByResponse(테이블_생성_요청_결과_2, OrderTable.class);
+        OrderTable 테이블_1 = 테이블_생성(0, true);
+        OrderTable 테이블_2 = 테이블_생성(0, true);
 
         // when
         ResultActions 테이블_그룹_생성_결과 = 테이블_그룹_생성_요청(테이블_1, 테이블_2);
@@ -110,8 +82,7 @@ public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("존재하지 않는 테이블을 단체 지정을 시도하면, 단체 지정이 실패한다.")
     void createFailTest2() throws Exception {
         // given
-        ResultActions 테이블_생성_요청 = 테이블_생성_요청(0, true);
-        OrderTable 저장된_테이블 = getObjectByResponse(테이블_생성_요청, OrderTable.class);
+        OrderTable 저장된_테이블 = 테이블_생성(0, true);
         OrderTable 저장되지_않은_테이블 = new OrderTable(0, true);
 
         // when & then
@@ -129,10 +100,8 @@ public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("비어있지 않은 테이블은 단체로 지정할 수 없다.")
     void createFailTest3() throws Exception {
         // given
-        ResultActions 테이블_생성_요청_결과_1 = 테이블_생성_요청(2, true);
-        OrderTable 비어있지_않은_테이블 = getObjectByResponse(테이블_생성_요청_결과_1, OrderTable.class);
-        ResultActions 테이블_생성_요청_결과_2 = 테이블_생성_요청(0, false);
-        OrderTable 빈_테이블 = getObjectByResponse(테이블_생성_요청_결과_2, OrderTable.class);
+        OrderTable 비어있지_않은_테이블 = 테이블_생성(2, true);
+        OrderTable 빈_테이블 = 테이블_생성(0, false);
 
         // when & then
         assertThatThrownBy(
@@ -149,15 +118,12 @@ public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("이미 단체로 지정된 테이블은 새로 단체로 지정할 수 없다.")
     void createFailTest4() throws Exception {
         // given
-        ResultActions 테이블_생성_요청_결과_1 = 테이블_생성_요청(0, true);
-        OrderTable 테이블_1 = getObjectByResponse(테이블_생성_요청_결과_1, OrderTable.class);
-        ResultActions 테이블_생성_요청_결과_2 = 테이블_생성_요청(0, true);
-        OrderTable 테이블_2 = getObjectByResponse(테이블_생성_요청_결과_2, OrderTable.class);
+        OrderTable 테이블_1 = 테이블_생성(0, true);
+        OrderTable 테이블_2 = 테이블_생성(0, true);
         테이블_그룹_생성_요청(테이블_1, 테이블_2);
 
         // when & then
-        ResultActions 테이블_생성_요청_결과_3 = 테이블_생성_요청(0, true);
-        OrderTable 테이블_3 = getObjectByResponse(테이블_생성_요청_결과_3, OrderTable.class);
+        OrderTable 테이블_3 = 테이블_생성(0, true);
         assertThatThrownBy(
                 () -> 테이블_그룹_생성_요청(테이블_1, 테이블_3)
         ).hasCause(new IllegalArgumentException());
@@ -181,44 +147,23 @@ public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("단체 지정 된 테이블 중 계산완료 상태가 아닌 테이블이 있으면, 단체를 해제할 수 없다.")
     void unGroupFailTest() throws Exception {
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(2, true));
-        OrderTable orderTable2 = tableService.create(new OrderTable(2, true));
-        ResultActions 테이블_그룹_생성_결과 = 테이블_그룹_생성_요청(orderTable1, orderTable2);
-        TableGroup tableGroup = getObjectByResponse(테이블_그룹_생성_결과, TableGroup.class);
+        OrderTable 테이블_1 = 테이블_생성(2, true);
+        OrderTable 테이블_2 = 테이블_생성(2, true);
+        TableGroup tableGroup = 테이블_그룹_생성(테이블_1, 테이블_2);
 
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
-        MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
-        Menu menu1 = menuService.create(new Menu("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
+        Product product1 = 상품_등록("상품1", 1000);
+        Product product2 = 상품_등록("상품2", 2000);
+        MenuGroup group1 = 메뉴_그룹_추가("그룹1");
+        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, group1, Arrays.asList(
                 new MenuProduct(product1.getId(), 1),
                 new MenuProduct(product2.getId(), 1)
-        )));
+        ));
 
         // when & then
-        orderService.create(new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        주문_생성(테이블_1, 메뉴1);
         assertThatThrownBy(
                 () -> 테이블_그룹_제거_요청(tableGroup.getId())
         ).hasCause(new IllegalArgumentException());
 
-        // when & then
-        orderService.create(new Order(orderTable1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
-        assertThatThrownBy(
-                () -> 테이블_그룹_제거_요청(tableGroup.getId())
-        ).hasCause(new IllegalArgumentException());
-
-    }
-
-    private ResultActions 테이블_그룹_제거_요청(Long id) throws Exception {
-        return mockDelete("/api/table-groups/{tableGroupId}", id);
-    }
-
-    private ResultActions 테이블_그룹_생성_요청(OrderTable... tables) throws Exception {
-        return mockPost("/api/table-groups", new TableGroup(Arrays.asList(tables)));
-    }
-
-    private ResultActions 테이블_생성_요청(int person, boolean empty) throws Exception {
-        return mockPost("/api/tables", new OrderTable(person, empty));
     }
 }
