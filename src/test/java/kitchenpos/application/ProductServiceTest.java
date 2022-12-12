@@ -14,10 +14,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,12 +30,8 @@ class ProductServiceTest {
     @Mock
     ProductDao productDao;
 
+    @InjectMocks
     ProductService productService;
-
-    @BeforeEach
-    void setUp() {
-        productService = new ProductService(productDao);
-    }
 
     @Test
     @DisplayName("상품 등록")

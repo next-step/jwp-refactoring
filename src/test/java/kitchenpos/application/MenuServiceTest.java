@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -34,11 +35,16 @@ import kitchenpos.domain.Product;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
-	@Mock MenuDao menuDao;
-	@Mock MenuGroupDao menuGroupDao;
-	@Mock MenuProductDao menuProductDao;
-	@Mock ProductDao productDao;
+	@Mock
+	MenuDao menuDao;
+	@Mock
+	MenuGroupDao menuGroupDao;
+	@Mock
+	MenuProductDao menuProductDao;
+	@Mock
+	ProductDao productDao;
 
+	@InjectMocks
 	MenuService menuService;
 
 	private Menu menu;
@@ -47,8 +53,6 @@ class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-
 		products = createProducts(1000, 2000, 3000);
 		menuGroup = createMenuGroup();
 		menu = createMenu(products, menuGroup);

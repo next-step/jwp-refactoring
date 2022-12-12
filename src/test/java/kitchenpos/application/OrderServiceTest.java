@@ -15,9 +15,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -33,19 +33,18 @@ import kitchenpos.domain.OrderTable;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-	@Mock MenuDao menuDao;
-	@Mock OrderDao orderDao;
-	@Mock OrderLineItemDao orderLineItemDao;
-	@Mock OrderTableDao orderTableDao;
+	@Mock
+	MenuDao menuDao;
+	@Mock
+	OrderDao orderDao;
+	@Mock
+	OrderLineItemDao orderLineItemDao;
+	@Mock
+	OrderTableDao orderTableDao;
+	@InjectMocks
 	OrderService orderService;
 
 	static final List<Long> menus = Lists.newArrayList(1L, 2L, 3L);
-
-
-	@BeforeEach
-	void setUp() {
-		orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
-	}
 
 	@Test
 	void testCreateOrder() {
