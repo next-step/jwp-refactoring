@@ -2,7 +2,8 @@ package kitchenpos.order.domain;
 
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.ordertable.domain.OrderTables;
 
 public class TableGroupTestFixture {
