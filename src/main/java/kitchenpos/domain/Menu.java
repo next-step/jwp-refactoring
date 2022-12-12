@@ -29,13 +29,13 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void validateIsPriceNull(){
+    public void validatePriceNull(){
         if(Objects.isNull(price)){
             throw new IllegalArgumentException();
         }
     }
 
-    public void validateIsPriceLessThanZero(){
+    public void validatePriceLessThanZero(){
         if (this.price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }

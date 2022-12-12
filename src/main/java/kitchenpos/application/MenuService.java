@@ -35,8 +35,8 @@ public class MenuService {
 
     @Transactional
     public Menu create(final Menu menu) {
-        menu.validateIsPriceNull();
-        menu.validateIsPriceLessThanZero();
+        menu.validatePriceNull();
+        menu.validatePriceLessThanZero();
         existsMenuGroupById(menu.getMenuGroupId());
         validateIsPriceGreaterThanSum(menu.getPrice(), menu.getMenuProducts());
 
