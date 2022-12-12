@@ -3,8 +3,12 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,18 +22,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단체 지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
-    private OrderTable 주문테이블_A;
-    private OrderTable 주문테이블_B;
-    private TableGroup 우테캠_PRO_단체;
+    private OrderTableResponse 주문테이블_A;
+    private OrderTableResponse 주문테이블_B;
+    private TableGroupRequest 우테캠_PRO_단체;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, null, 4, true))
-                .as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, null, 4, true))
-                .as(OrderTable.class);
-        우테캠_PRO_단체 = new TableGroup(1L, null, Arrays.asList(주문테이블_A, 주문테이블_B));
+        주문테이블_A = 주문테이블_생성_요청(OrderTableRequest.of(4, true))
+                .as(OrderTableResponse.class);
+        주문테이블_B = 주문테이블_생성_요청(OrderTableRequest.of(4, true))
+                .as(OrderTableResponse.class);
+        우테캠_PRO_단체 = TableGroupRequest.of(Arrays.asList(주문테이블_A.getId(), 주문테이블_B.getId()));
     }
 
     @DisplayName("주문 테이블을 단체 지정한다.")
@@ -46,20 +50,20 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroup() {
         // given
-        우테캠_PRO_단체 = 단체지정_생성_요청(우테캠_PRO_단체).as(TableGroup.class);
+        TableGroupResponse result = 단체지정_생성_요청(우테캠_PRO_단체).as(TableGroupResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 단체지정_해제_요청(우테캠_PRO_단체.getId());
+        ExtractableResponse<Response> response = 단체지정_해제_요청(result.getId());
 
         // then
         단체지정_해제됨(response);
     }
 
-    private ExtractableResponse<Response> 단체지정_생성_요청(TableGroup tableGroup) {
+    private ExtractableResponse<Response> 단체지정_생성_요청(TableGroupRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(request)
                 .when().post("/api/table-groups")
                 .then().log().all()
                 .extract();
