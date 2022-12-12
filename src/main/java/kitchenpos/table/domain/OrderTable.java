@@ -21,6 +21,11 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(Long tableGroupId, boolean empty) {
+        this.tableGroupId = tableGroupId;
+        this.empty = empty;
+    }
+
     public Long getId() {
         return id;
     }
