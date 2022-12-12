@@ -69,7 +69,7 @@ public class TableGroupServiceTest {
         );
     }
 
-    @DisplayName("단체 지정 시 등록된 주문 테이블이 아니면 예외가 발생한다.")
+    @DisplayName("단체 지정 시 주문테이블이 비어있으면 예외가 발생한다.")
     @Test
     void createTableGroupEmptyOrderTableException() {
         // given
@@ -91,11 +91,11 @@ public class TableGroupServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("단체 지정 시 빈 주문 테이블이 존재하는 경우 예외가 발생한다.")
+    @DisplayName("단체 지정 시 비어있지 않은 주문 테이블이 존재하는 경우 예외가 발생한다.")
     @Test
     void notExistOrderTableException() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 4, true);
+        OrderTable orderTable = new OrderTable(1L, null, 4, false);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable, 주문테이블B));
 
         when(orderTableDao.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
