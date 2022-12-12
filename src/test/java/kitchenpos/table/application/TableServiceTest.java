@@ -26,6 +26,7 @@ import java.util.List;
 import static kitchenpos.table.application.TableService.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("테이블 서비스")
 @SpringBootTest
@@ -52,6 +53,17 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         tableService = new TableService(orderDao, orderTableDao);
+    }
+
+    @DisplayName("주문 테이블을 생성한다.")
+    @Test
+    void create() {
+        OrderTable orderTable = tableService.create(new OrderTable());
+        assertAll(
+                () -> assertThat(orderTable.getTableGroupId()).isNull(),
+                () -> assertThat(orderTable.getNumberOfGuests()).isZero(),
+                () -> assertThat(orderTable.isEmpty()).isFalse()
+        );
     }
 
     @DisplayName("손님수를 변경한다. / 0명보다 작을 수 없다.")

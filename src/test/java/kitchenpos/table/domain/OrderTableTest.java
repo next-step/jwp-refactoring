@@ -16,6 +16,7 @@ class OrderTableTest {
     void create() {
 
         OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(false);
 
         assertAll(
                 () -> assertThat(orderTable.getTableGroupId()).isNull(),
