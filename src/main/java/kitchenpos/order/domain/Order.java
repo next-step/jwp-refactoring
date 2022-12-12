@@ -1,6 +1,9 @@
 package kitchenpos.order.domain;
 
+import org.springframework.util.CollectionUtils;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -68,5 +71,13 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        if(CollectionUtils.isEmpty(this.orderLineItems)){
+            this.orderLineItems = new ArrayList<>();
+        }
+        this.orderLineItems.add(orderLineItem);
+        orderLineItem.setOrder(this);
     }
 }

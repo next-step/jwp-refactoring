@@ -1,9 +1,9 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.applicaiton.OrderService;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,7 @@ public class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @InjectMocks
     private OrderService orderService;
     private OrderLineItem orderLineItem;
@@ -40,21 +41,19 @@ public class OrderServiceTest {
 
     private Long orderId = 1L;
     private Long menuId = 1L;
+
+    private Long tableGroupId = 1L;
     private Long orderTableId = 1L;
     private int numberOfGuests = 4;
     private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
-        tableGroup = TableGroup.of(1L, LocalDateTime.now());
-        orderLineItem = getOrderLineItem(orderId, menuId);
-        order = getOrder(orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItem);
+        tableGroup = TableGroup.of(tableGroupId, LocalDateTime.now());
+        order = getOrder(orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now());
+        orderLineItem = OrderLineItem.of(order, Menu.of(menuId, "menu", BigDecimal.valueOf(1000)));
+        order.addOrderLineItem(orderLineItem);
     }
-
-    private OrderLineItem getOrderLineItem(long orderId, long menuId) {
-        return OrderLineItem.of(orderId, menuId);
-    }
-
     @Test
     @DisplayName("주문 시 주문 항목이 비어있으면 Exception")
     public void createEmptyException() {
@@ -108,7 +107,7 @@ public class OrderServiceTest {
         given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
+        given(orderLineItemRepository.save(orderLineItem)).willReturn(orderLineItem);
 
         Order createdOrder = orderService.create(order);
         assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -154,6 +153,10 @@ public class OrderServiceTest {
 
         assertThat(orderService.changeOrderStatus(order.getId(), changedOrder).getOrderStatus()).isEqualTo(
                 changedOrder.getOrderStatus());
+    }
+
+    private Order getOrder(long orderTableId, String status, LocalDateTime orderedTime) {
+        return Order.of(orderTableId, status, orderedTime, null);
     }
 
     private Order getOrder(long orderTableId, String status, LocalDateTime orderedTime, OrderLineItem orderLineItem) {
