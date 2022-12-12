@@ -12,6 +12,7 @@ import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -25,8 +26,7 @@ import java.util.List;
 import static kitchenpos.menu.application.MenuService.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("MenuService")
 @SpringBootTest
@@ -115,9 +115,14 @@ class MenuServiceTest {
         assertAll(
                 () -> assertThat(response.getId()).isNotNull(),
                 () -> assertThat(response.getName()).isEqualTo(name),
-                () -> assertTrue(response.getPrice().compareTo(price) == 0),
+                () -> assertEquals(0, response.getPrice().compareTo(price)),
                 () -> assertThat(response.getMenuProducts()).hasSize(1)
         );
+    }
 
+    @DisplayName("메뉴 목록을 조회한다.")
+    @Test
+    void list() {
+        assertThat(menuService.list()).hasSize(10);
     }
 }
