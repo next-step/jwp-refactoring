@@ -39,7 +39,7 @@ class MenuRestControllerTest {
     @Test
     void menu1() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1));
-        Menu menu = new Menu("치킨세트", new BigDecimal(20_000), 1L, menuProducts);
+        Menu menu = new Menu("치킨세트", BigDecimal.valueOf(20_000), 1L, menuProducts);
 
         MvcResult result = mockMvc.perform(post("/api/menus")
             .contentType(APPLICATION_JSON)

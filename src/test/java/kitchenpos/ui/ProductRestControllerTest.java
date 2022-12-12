@@ -35,7 +35,7 @@ class ProductRestControllerTest {
     @DisplayName("상품을 등록한다")
     @Test
     void products1() throws Exception {
-        Product product = new Product("강정치킨", new BigDecimal(17_000));
+        Product product = new Product("강정치킨", BigDecimal.valueOf(17_000));
 
         MvcResult result = mockMvc.perform(post("/api/products")
             .contentType(APPLICATION_JSON)
