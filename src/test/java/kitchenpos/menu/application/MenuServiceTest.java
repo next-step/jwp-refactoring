@@ -1,11 +1,10 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +30,7 @@ class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -63,7 +62,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 그룹 아이디가 존재하지 않으면 exception이 발생함")
     void throwExceptionWhenMenuGroupIdNotExist() {
-        given(menuGroupDao.existsById(anyLong())).willReturn(false);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(false);
 
         Menu menu = getMenu(10000, getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
@@ -75,7 +74,7 @@ class MenuServiceTest {
     void throwExceptionWhenIdOfProductContainedByMenuGroupNotExist() {
         Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
-        given(menuGroupDao.existsById(menuId)).willReturn(true);
+        given(menuGroupRepository.existsById(menuId)).willReturn(true);
         given(productDao.findById(product1Id)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -88,7 +87,7 @@ class MenuServiceTest {
         Product 상품2 = Product.of(product2Id, "상품2", BigDecimal.valueOf(1000L));
         Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
-        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
+        given(menuGroupRepository.existsById(menuGroupId)).willReturn(true);
         given(productDao.findById(product1Id)).willReturn(Optional.of(상품1));
         given(productDao.findById(product2Id)).willReturn(Optional.of(상품2));
 
