@@ -6,7 +6,7 @@ import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.persistence.ProductDao;
+import kitchenpos.product.persistence.ProductRepository;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productDao;
     public static FixtureMonkey fixtureMonkey;
     public static FixtureMonkey builderFixtureMonkey;
 

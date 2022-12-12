@@ -1,15 +1,20 @@
 package kitchenpos.product.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private String name;
+    @Embedded
     private Money money;
 
-    public Product() {
-
-    }
+    public Product() { }
 
     private Product(ProductBuilder builder) {
         this.id = builder.id;

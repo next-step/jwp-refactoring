@@ -11,7 +11,7 @@ import kitchenpos.menu.persistence.MenuProductRepository;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.persistence.ProductDao;
+import kitchenpos.product.persistence.ProductRepository;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +45,7 @@ public class MenuServiceTest {
     @Mock
     private MenuProductRepository menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productDao;
 
     public static FixtureMonkey fixtureMonkey;
 

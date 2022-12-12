@@ -2,7 +2,7 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.persistence.ProductDao;
+import kitchenpos.product.persistence.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productDao;
 
-    public ProductService(final ProductDao productDao) {
+    public ProductService(final ProductRepository productDao) {
         this.productDao = productDao;
     }
 

@@ -1,10 +1,19 @@
 package kitchenpos.product.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Embeddable
 public class Money {
+
+    @Column(nullable = false)
     private BigDecimal amount;
+
+    public Money(){
+
+    }
 
     private Money(BigDecimal amount) {
         this.amount = amount;

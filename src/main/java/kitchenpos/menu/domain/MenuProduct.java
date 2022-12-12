@@ -10,6 +10,7 @@ public class MenuProduct {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Long productId;
     private long quantity;
 
