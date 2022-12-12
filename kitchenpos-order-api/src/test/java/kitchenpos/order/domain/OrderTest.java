@@ -1,13 +1,12 @@
 package kitchenpos.order.domain;
 
-/*import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;*/
+import kitchenpos.menu.domain.Product;
 import kitchenpos.order.exception.OrderExceptionCode;
 import kitchenpos.tablegroup.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,11 +19,10 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Disabled
 @DisplayName("주문 클래스 테스트")
 class OrderTest {
 
-    /*private MenuGroup 양식;
+    private MenuGroup 양식;
     private Menu 양식_세트;
     private Product 스파게티;
     private Product 에이드;
@@ -88,5 +86,5 @@ class OrderTest {
             주문.changeOrderStatus(OrderStatus.MEAL);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderExceptionCode.CANNOT_CHANGE_COMPLETION_ORDER.getMessage());
-    }*/
+    }
 }

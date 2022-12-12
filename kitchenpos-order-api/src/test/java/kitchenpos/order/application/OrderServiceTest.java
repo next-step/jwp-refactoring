@@ -2,8 +2,8 @@ package kitchenpos.order.application;
 
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.EntityNotFoundExceptionCode;
-/*import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;*/
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -14,7 +14,6 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderExceptionCode;
 import kitchenpos.tablegroup.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,11 +36,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 
-@Disabled
 @DisplayName("OrderService 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    /*@Mock
+    @Mock
     private OrderRepository orderRepository;
 
     @Mock
@@ -143,5 +141,5 @@ class OrderServiceTest {
         orderService.changeOrderStatus(주문.getId(), OrderStatus.COMPLETION);
 
         assertEquals(OrderStatus.COMPLETION, 주문.getOrderStatus());
-    }*/
+    }
 }

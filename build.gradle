@@ -45,6 +45,7 @@ project(':kitchenpos-menu-api') {
 project(':kitchenpos-order-api') {
     dependencies {
         compile project(':kitchenpos-common')
+        compile project(':kitchenpos-menu-api')
     }
 }
 

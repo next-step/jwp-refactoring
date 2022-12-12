@@ -1,8 +1,8 @@
 package kitchenpos.order.domain;
 
-/*import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.Product;*/
+import kitchenpos.menu.domain.Product;
 import kitchenpos.order.exception.OrderLineItemExceptionCode;
 import kitchenpos.tablegroup.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("주문 상품 클래스 테스트")
 class OrderLineItemTest {
 
-    /*private MenuGroup 양식;
+    private MenuGroup 양식;
     private Menu 양식_세트;
     private Product 스파게티;
     private Product 에이드;
@@ -43,5 +43,5 @@ class OrderLineItemTest {
             new OrderLineItem(주문, 양식_세트.getId(), quantity);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderLineItemExceptionCode.INVALID_QUANTITY.getMessage());
-    }*/
+    }
 }

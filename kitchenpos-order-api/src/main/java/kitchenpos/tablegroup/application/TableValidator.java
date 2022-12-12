@@ -2,8 +2,8 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.EntityNotFoundExceptionCode;
-//import kitchenpos.menu.domain.Menu;
-//import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
@@ -19,13 +19,13 @@ import java.util.List;
 public class TableValidator implements OrderValidator {
     private static final int MINIMUM_ORDER_MENU_SIZE = 1;
 
-    //private final MenuRepository menuRepository;
+    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableValidator(/*MenuRepository menuRepository,*/ OrderRepository orderRepository,
+    public TableValidator(MenuRepository menuRepository, OrderRepository orderRepository,
             OrderTableRepository orderTableRepository) {
-        //this.menuRepository = menuRepository;
+        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -33,15 +33,15 @@ public class TableValidator implements OrderValidator {
     @Override
     public void validateToCreateOrder(Long orderTableId, List<Long> menuIds) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-        //List<Menu> menus = findAllMenuById(menuIds);
+        List<Menu> menus = findAllMenuById(menuIds);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException(OrderExceptionCode.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
         }
 
-        /*if (menus.size() < MINIMUM_ORDER_MENU_SIZE) {
+        if (menus.size() < MINIMUM_ORDER_MENU_SIZE) {
             throw new IllegalArgumentException(OrderExceptionCode.MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
-        }*/
+        }
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
@@ -49,14 +49,14 @@ public class TableValidator implements OrderValidator {
                 .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID));
     }
 
-    /*private List<Menu> findAllMenuById(List<Long> menuIds) {
+    private List<Menu> findAllMenuById(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
         if(menuIds.size() != menus.size()) {
             throw new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID);
         }
 
         return menus;
-    }*/
+    }
 
     @Override
     public void validateToChangeEmpty(OrderTable orderTable) {

@@ -2,9 +2,9 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.EntityNotFoundExceptionCode;
-/*import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuRepository;*/
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -14,7 +14,6 @@ import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.exception.OrderTableExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,11 +32,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
-@Disabled
 @DisplayName("주문과 주문 테이블 간의 validation 클래스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableValidatorTest {
-    /*private static final Long MENU_ID1 = 1L;
+    private static final Long MENU_ID1 = 1L;
     private static final Long MENU_ID2 = 2L;
     private static final Long EMPTY_ORDER_TABLE_ID = 2L;
 
@@ -144,5 +142,5 @@ class TableValidatorTest {
             tableValidator.validateToUngroup(Arrays.asList(주문테이블.getId()));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderExceptionCode.CANNOT_BE_CHANGED.getMessage());
-    }*/
+    }
 }
