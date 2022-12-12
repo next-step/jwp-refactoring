@@ -110,7 +110,7 @@ public class OrderServiceTest {
     void createOrder() {
         // given
         OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
-        Order 주문 = Order.of(주문테이블A, OrderLineItems.from(singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴))));
+        Order 주문 = Order.of(주문테이블A.getId(), OrderLineItems.from(singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴))));
         given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
         given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(주문테이블A));
         given(orderRepository.save(주문)).willReturn(주문);

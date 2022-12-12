@@ -11,7 +11,6 @@ import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -64,10 +63,11 @@ public class OrderTest {
         Order order = generateOrder(주문테이블,  OrderLineItems.from(Arrays.asList(치킨버거단품_주문_항목, 불고기버거단품_주문_항목)));
 
         // then
-        assertAll(
-                () -> assertThat(order.getOrderTable()).isEqualTo(주문테이블),
-                () -> assertThat(order.getOrderLineItems().unmodifiableOrderLineItems().stream().map(OrderLineItem::getOrderMenu)).containsExactly(치킨버거단품주문메뉴, 불고기버거단품주문메뉴)
-        );
+        assertThat(order.getOrderLineItems()
+                .unmodifiableOrderLineItems()
+                .stream()
+                .map(OrderLineItem::getOrderMenu))
+                .containsExactly(치킨버거단품주문메뉴, 불고기버거단품주문메뉴);
     }
 
     @DisplayName("주문 테이블이 비어있으면 주문 생성 시 오류가 발생한다.")

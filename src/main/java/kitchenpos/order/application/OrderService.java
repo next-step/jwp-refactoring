@@ -40,7 +40,8 @@ public class OrderService {
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findAllOrderLineItemByMenuId(orderLineItemRequests);
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        Order order = Order.of(orderTable, OrderLineItems.from(orderLineItems));
+        validateOrderTable(orderTable);
+        Order order = Order.of(orderTable.getId(), OrderLineItems.from(orderLineItems));
         return OrderResponse.from(orderRepository.save(order));
     }
 
@@ -56,6 +57,12 @@ public class OrderService {
         final Order order = findOrderById(orderId);
         order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(order);
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if(orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ErrorCode.주문_테이블은_비어있으면_안됨.getErrorMessage());
+        }
     }
 
     private OrderTable findOrderTableById(Long id) {
