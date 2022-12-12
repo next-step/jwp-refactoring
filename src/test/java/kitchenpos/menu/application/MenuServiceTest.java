@@ -5,7 +5,7 @@ import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.persistence.MenuDao;
-import kitchenpos.menu.persistence.MenuGroupDao;
+import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuProductDao;
 import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
@@ -38,7 +38,7 @@ public class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupDao;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock

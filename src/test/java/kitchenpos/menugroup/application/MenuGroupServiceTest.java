@@ -5,7 +5,7 @@ import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.persistence.MenuGroupDao;
+import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupDao;
 
     @DisplayName("메뉴그룹 추가할 경우 추가된 메뉴그룹정보를 반환")
     @Test
