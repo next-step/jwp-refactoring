@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface MenuProductRepository extends JpaRepository<MenuProduct, Long> {
 
-    @Query(value = "SELECT mp FROM MenuProduct mp WHERE mp.menuId =:menuId")
+    @Query(value = "SELECT mp FROM MenuProduct mp WHERE mp.menu.id =:menuId")
     List<MenuProduct> findAllByMenuId(@Param("menuId") Long menuId);
 }

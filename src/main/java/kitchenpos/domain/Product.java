@@ -14,7 +14,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-//    private BigDecimal price;
 
     @Embedded
     private ProductPrice price;
@@ -22,10 +21,18 @@ public class Product {
     public Product() {
     }
 
+    public Product(Long id) {
+        this.id = id;
+    }
+
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = new ProductPrice(price);
+    }
+
+    public BigDecimal multiply(long quantity) {
+        return price.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getId() {

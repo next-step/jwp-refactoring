@@ -1,0 +1,38 @@
+package kitchenpos.domain;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
+@Embeddable
+public class MenuProducts {
+
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
+
+    public MenuProducts() {
+    }
+
+    public MenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
+    public BigDecimal validateProductsPrice() {
+        return menuProducts.stream()
+                .map(menuProduct -> menuProduct.getProduct()
+                        .multiply(menuProduct.getQuantity())
+                )
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
+
+    public void setMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+}

@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -22,17 +22,19 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     ProductRequest 후라이드치킨_상품 = new ProductRequest(1L, "후라이드치킨", new BigDecimal(16000.00));
     ProductRequest 양념치킨_상품 = new ProductRequest(2L, "양념치킨", new BigDecimal(16000.00));
-    MenuProduct 후라이드치킨_메뉴상품 = new MenuProduct(1L, 1L, 1L, 1);
-    MenuProduct 양념치킨_메뉴상품 = new MenuProduct(2L, 1L, 2L, 1);
+    MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
+    MenuProductRequest 양념치킨_메뉴상품 = new MenuProductRequest(2L, 1L, 2L, 1);
     MenuGroup 후라이드치킨_메뉴그룹 = new MenuGroup(1L, "후라이드치킨");
     MenuGroup 양념치킨_메뉴그룹 = new MenuGroup(2L, "양념치킨");
     MenuGroup 두마리치킨_메뉴그룹 = new MenuGroup(1L, "두마리치킨");
-    Menu 후라이드치킨_메뉴 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(후라이드치킨_메뉴상품));
-    Menu 두마리치킨_메뉴 = new Menu(1L, "두마리치킨", new BigDecimal(40000.00), 1L, Arrays.asList(후라이드치킨_메뉴상품, 양념치킨_메뉴상품));
+    MenuRequest 후라이드치킨_메뉴 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
+            Collections.singletonList(후라이드치킨_메뉴상품));
+    MenuRequest 두마리치킨_메뉴 = new MenuRequest(1L, "두마리치킨", new BigDecimal(40000.00), 1L,
+            Arrays.asList(후라이드치킨_메뉴상품, 양념치킨_메뉴상품));
 
     @Test
     void 메뉴등록시_가격이_0원_미만이면_오류발생() throws Exception {
-        Menu 가격이_0원_미만인_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L, null);
+        MenuRequest 가격이_0원_미만인_메뉴 = new MenuRequest(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L, null);
 
         ResultActions resultActions = 메뉴_등록(가격이_0원_미만인_메뉴);
 
@@ -41,7 +43,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 메뉴등록시_가격이_null_이면_오류발생() throws Exception {
-        Menu 잘못된_가격이_측정된_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", null, 1L, null);
+        MenuRequest 잘못된_가격이_측정된_메뉴 = new MenuRequest(1L, "잘못된_가격이_측정된_메뉴", null, 1L, null);
 
         ResultActions resultActions = 메뉴_등록(잘못된_가격이_측정된_메뉴);
 
@@ -61,7 +63,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_메뉴그룹만_지정할_수_있다() throws Exception {
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, null);
+        MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, null);
 
         ResultActions resultActions = 메뉴_등록(후라이드치킨);
 
@@ -70,8 +72,9 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_상품만_지정할_수_있다() throws Exception {
-        MenuProduct menuProduct = new MenuProduct(1L, 2L, 1L, 1l);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(menuProduct));
+        MenuProductRequest menuProduct = new MenuProductRequest(1L, 2L, 1L, 1l);
+        MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
+                Collections.singletonList(menuProduct));
 
         ResultActions resultActions = 메뉴_등록(후라이드치킨);
 
@@ -105,22 +108,22 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private void 메뉴_목록조회_성공(ResultActions resultActions, Menu menu) throws Exception {
-        MenuProduct menuProducts = menu.getMenuProducts().get(0);
+    private void 메뉴_목록조회_성공(ResultActions resultActions, MenuRequest menu) throws Exception {
+        MenuProductRequest menuProducts = menu.getMenuProductRequests().get(0);
 
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(menu.getId()))
                 .andExpect(jsonPath("$.[0].name").value(menu.getName()))
                 .andExpect(jsonPath("$.[0].price").value(menu.getPrice().floatValue()))
                 .andExpect(jsonPath("$.[0].menuGroupId").value(menu.getMenuGroupId()))
-                .andExpect(jsonPath("$.[0].menuProducts[0].seq").value(menuProducts.getSeq()))
-                .andExpect(jsonPath("$.[0].menuProducts[0].menuId").value(menuProducts.getMenuId()))
-                .andExpect(jsonPath("$.[0].menuProducts[0].productId").value(menuProducts.getProductId()))
-                .andExpect(jsonPath("$.[0].menuProducts[0].quantity").value(menuProducts.getQuantity()))
+                .andExpect(jsonPath("$.[0].menuProductResponses[0].seq").value(menuProducts.getSeq()))
+                .andExpect(jsonPath("$.[0].menuProductResponses[0].menuId").value(menuProducts.getMenuId()))
+                .andExpect(jsonPath("$.[0].menuProductResponses[0].productId").value(menuProducts.getProductId()))
+                .andExpect(jsonPath("$.[0].menuProductResponses[0].quantity").value(menuProducts.getQuantity()))
         ;
     }
 
-    private ResultActions 메뉴_등록(Menu menu) throws Exception {
+    private ResultActions 메뉴_등록(MenuRequest menu) throws Exception {
         return mvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menu))
@@ -128,16 +131,16 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private void 메뉴_등록_성공(ResultActions resultActions, Menu menu) throws Exception {
-        MenuProduct menuProduct = menu.getMenuProducts().get(0);
+    private void 메뉴_등록_성공(ResultActions resultActions, MenuRequest menu) throws Exception {
+        MenuProductRequest menuProduct = menu.getMenuProductRequests().get(0);
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(menu.getId()))
                 .andExpect(jsonPath("name").value(menu.getName()))
                 .andExpect(jsonPath("price").value(menu.getPrice().floatValue()))
-                .andExpect(jsonPath("$.menuProducts[0].seq").value(menuProduct.getSeq()))
-                .andExpect(jsonPath("$.menuProducts[0].menuId").value(menuProduct.getMenuId()))
-                .andExpect(jsonPath("$.menuProducts[0].productId").value(menuProduct.getProductId()))
-                .andExpect(jsonPath("$.menuProducts[0].quantity").value(menuProduct.getQuantity()))
+                .andExpect(jsonPath("$.menuProductResponses[0].seq").value(menuProduct.getSeq()))
+                .andExpect(jsonPath("$.menuProductResponses[0].menuId").value(menuProduct.getMenuId()))
+                .andExpect(jsonPath("$.menuProductResponses[0].productId").value(menuProduct.getProductId()))
+                .andExpect(jsonPath("$.menuProductResponses[0].quantity").value(menuProduct.getQuantity()))
         ;
     }
 
