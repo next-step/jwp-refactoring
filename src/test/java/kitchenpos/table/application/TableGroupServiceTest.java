@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("TableGroupService")
 @SpringBootTest
@@ -51,53 +52,96 @@ class TableGroupServiceTest {
     private MenuGroupDao menuGroupDao;
 
     private TableGroup tableGroup;
+    private TableGroup tableGroup1;
+    private TableGroup unGroup;
     private Order order;
+    private List<OrderTable> orderTables1HasTableGroup = new ArrayList<>();
+    private List<OrderTable> upGroupOrderTables = new ArrayList<>();
+    private List<OrderTable> create = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
-
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        OrderTable orderTable = orderTableDao.save(new OrderTable());
+        TableGroup tableGroup2 = tableGroupDao.save(new TableGroup());
+        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
+        orderTable1.setTableGroupId(tableGroup2.getId());
+        orderTable1.empty();
+        orderTable1.setTableGroupId(null);
+        OrderTable create1 = orderTableDao.save(new OrderTable());
+        create1.setTableGroupId(tableGroup2.getId());
+        create1.empty();
+        create1.setTableGroupId(null);
+        orderTableDao.save(create1);
+        orderTable1.setTableGroupId(tableGroup2.getId());
+        orderTable1.empty();
+        orderTable1.setTableGroupId(null);
+        orderTableDao.save(orderTable1);
+        OrderTable create2 = orderTableDao.save(new OrderTable());
+        create2.setTableGroupId(tableGroup2.getId());
+        create2.empty();
+        create2.setTableGroupId(null);
+        orderTableDao.save(create2);
+        orderTable1.setTableGroupId(tableGroup2.getId());
+        orderTable1.empty();
+        orderTable1.setTableGroupId(null);
+        orderTableDao.save(orderTable1);
+        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
+        orderTable2.setTableGroupId(tableGroup2.getId());
+        orderTable2.empty();
+        orderTable2.setTableGroupId(null);
+        orderTableDao.save(orderTable2);
         Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
 
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(orderTable);
-        orderTables.add(orderTable);
-        tableGroup = tableGroupDao.save(new TableGroup(orderTables));
-        orderTable.setTableGroupId(tableGroup.getId());
-        orderTableDao.save(orderTable);
+        tableGroup = tableGroupDao.save(new TableGroup());
+        tableGroup.setOrderTables(orderTables1HasTableGroup);
+        unGroup = tableGroupDao.save(new TableGroup());
+        unGroup.setOrderTables(upGroupOrderTables);
+        unGroup.setOrderTables(orderTables1HasTableGroup);
+        orderTable1.setTableGroupId(unGroup.getId());
+        orderTable1 = orderTableDao.save(orderTable1);
+        orderTable2.setTableGroupId(unGroup.getId());
+        orderTable2 = orderTableDao.save(orderTable2);
+        orderTables1HasTableGroup.add(orderTable1);
+        upGroupOrderTables.add(orderTable1);
+        upGroupOrderTables.add(orderTable2);
+        create.add(create1);
+        create.add(create2);
+        tableGroup1 = tableGroupDao.save(new TableGroup());
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
+        order = orderDao.save(new Order(orderTable1.getId(), orderLineItems));
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
+        tableGroup1.setOrderTables(create);
+        TableGroup saveTableGroup = tableGroupService.create(tableGroup1);
+        assertThat(saveTableGroup.getCreatedDate()).isNotNull();
     }
 
     @DisplayName("테이블 그룹을 생성한다. / 주문 테이블의 갯수가 2보다 작을 수 없다.")
     @Test
     void create_fail_minimumSize() {
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("테이블 그룹을 생성한다. / 주문 테이블이 비어있을 수 없다.")
     @Test
     void create_fail_orderTableEmpty() {
-    }
-
-    @DisplayName("테이블 그룹을 조회한다.")
-    @Test
-    void list() {
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void unGroup_success() {
 
-        for (OrderTable orderTable : tableGroup.getOrderTables()) {
+        for (OrderTable orderTable : unGroup.getOrderTables()) {
             OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
             assertThat(find.getTableGroupId()).isNotNull();
         }
@@ -106,9 +150,9 @@ class TableGroupServiceTest {
         orderDao.save(order);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 
-        tableGroupService.ungroup(tableGroup.getId());
+        tableGroupService.ungroup(unGroup.getId());
 
-        for (OrderTable orderTable : tableGroup.getOrderTables()) {
+        for (OrderTable orderTable : unGroup.getOrderTables()) {
             OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
             assertThat(find.getTableGroupId()).isNull();
         }
@@ -118,7 +162,7 @@ class TableGroupServiceTest {
     @Test
     void unGroup_fail_cooking() {
 
-        for (OrderTable orderTable : tableGroup.getOrderTables()) {
+        for (OrderTable orderTable : unGroup.getOrderTables()) {
             OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
             assertThat(find.getTableGroupId()).isNotNull();
         }
@@ -126,7 +170,7 @@ class TableGroupServiceTest {
         Order order1 = orderDao.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+        assertThatThrownBy(() -> tableGroupService.ungroup(unGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }
@@ -135,7 +179,7 @@ class TableGroupServiceTest {
     @Test
     void unGroup_fail_meal() {
 
-        for (OrderTable orderTable : tableGroup.getOrderTables()) {
+        for (OrderTable orderTable : unGroup.getOrderTables()) {
             OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
             assertThat(find.getTableGroupId()).isNotNull();
         }
@@ -145,7 +189,7 @@ class TableGroupServiceTest {
 
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
 
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+        assertThatThrownBy(() -> tableGroupService.ungroup(unGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }

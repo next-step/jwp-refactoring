@@ -14,6 +14,10 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables = new ArrayList<>();
 
+    public TableGroup() {
+        this.createdDate = LocalDateTime.now();
+    }
+
     public TableGroup(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables)) {
             throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);

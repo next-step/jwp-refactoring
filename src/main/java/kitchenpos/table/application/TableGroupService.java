@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
+
 @Service
 public class TableGroupService {
     public static final String ORDER_STATUS_EXCEPTION_MESSAGE = "주문상태가 완료일 경우에만 해제가능합니다.";
@@ -33,8 +36,12 @@ public class TableGroupService {
     public TableGroup create(final TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+        if (CollectionUtils.isEmpty(orderTables)) {
+            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+        }
+
+        if (orderTables.size() < 2) {
+            throw new IllegalArgumentException(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
         }
 
         final List<Long> orderTableIds = orderTables.stream()
