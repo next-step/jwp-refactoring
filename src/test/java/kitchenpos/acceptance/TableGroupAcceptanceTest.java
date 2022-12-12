@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

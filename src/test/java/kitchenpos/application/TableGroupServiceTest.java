@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.OrderTableTest.주문_테이블_생성;
+import static kitchenpos.table.domain.OrderTableTest.주문_테이블_생성;
 import static kitchenpos.domain.TableGroupTest.단체_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

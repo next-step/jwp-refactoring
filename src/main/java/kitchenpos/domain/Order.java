@@ -2,20 +2,46 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import kitchenpos.table.domain.OrderTable;
 
+@Entity
+@Table(name = "ORDERS")
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", nullable = false)
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     private LocalDateTime orderedTime;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems;
+
 
     public Order() {}
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -25,23 +51,23 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -49,7 +75,7 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
+    public void setOrderedTime(LocalDateTime orderedTime) {
         this.orderedTime = orderedTime;
     }
 
@@ -57,15 +83,20 @@ public class Order {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
+
+    public Long getOrderTableId() {
+        return orderTable.getId();
+    }
+
 
     public static class Builder {
 
         private Long id;
-        private Long orderTableId;
-        private String orderStatus;
+        private OrderTable orderTable;
+        private OrderStatus orderStatus;
         private LocalDateTime orderedTime;
         private List<OrderLineItem> orderLineItems;
 
@@ -74,12 +105,12 @@ public class Order {
             return this;
         }
 
-        public Builder orderTableId(Long orderTableId) {
-            this.orderTableId = orderTableId;
+        public Builder orderTable(OrderTable orderTable) {
+            this.orderTable = orderTable;
             return this;
         }
 
-        public Builder orderStatus(String orderStatus) {
+        public Builder orderStatus(OrderStatus orderStatus) {
             this.orderStatus = orderStatus;
             return this;
         }
@@ -95,7 +126,7 @@ public class Order {
         }
 
         public Order build() {
-            return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+            return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
         }
     }
 

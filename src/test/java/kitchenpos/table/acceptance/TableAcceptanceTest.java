@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,8 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,15 +19,15 @@ import org.springframework.http.MediaType;
 @DisplayName("주문 테이블 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 주문_테이블_1;
-    private OrderTable 주문_테이블_2;
+    private OrderTableResponse 주문_테이블_1;
+    private OrderTableResponse 주문_테이블_2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        주문_테이블_1 = 주문_테이블_등록되어_있음(2, true).as(OrderTable.class);
-        주문_테이블_2 = 주문_테이블_등록되어_있음(4, false).as(OrderTable.class);
+        주문_테이블_1 = 주문_테이블_등록되어_있음(2, true).as(OrderTableResponse.class);
+        주문_테이블_2 = 주문_테이블_등록되어_있음(4, false).as(OrderTableResponse.class);
     }
 
     @Test
