@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
@@ -131,8 +133,10 @@ public class MenuServiceTest {
     @Test
     void notExistProductException() {
         // given
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(), new ArrayList<>());
+        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(),
+            Collections.singletonList(하와이안피자상품));
         when(menuGroupDao.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
+        when(productDao.findById(하와이안피자상품.getProductId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> menuService.create(하와이안피자세트))
