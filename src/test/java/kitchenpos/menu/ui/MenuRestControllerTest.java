@@ -5,6 +5,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,7 @@ public class MenuRestControllerTest extends ControllerTest {
                 .menuProducts(Collections.EMPTY_LIST)
                 .price(BigDecimal.valueOf(15000))
                 .build());
-        doReturn(menu).when(menuService).create(any(Menu.class));
+        doReturn(menu).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
                 .content(mapper.writeValueAsString(Menu.builder().build()))
@@ -59,7 +60,7 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 메뉴생성 실패응답")
     @Test
     public void throwsExceptionWhenMenuCreate() throws Exception {
-        doThrow(new IllegalArgumentException()).when(menuService).create(any(Menu.class));
+        doThrow(new IllegalArgumentException()).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
                 .content(mapper.writeValueAsString(Menu.builder().build()))
