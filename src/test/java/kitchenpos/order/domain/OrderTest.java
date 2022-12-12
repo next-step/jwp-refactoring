@@ -41,4 +41,19 @@ class OrderTest {
         orderLineItems.add(new OrderLineItem(1L, 1L, 1));
         assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems));
     }
+
+    @DisplayName("주문상태를 식사중으로 변경한다.")
+    @Test
+    void changeMeal_success() {
+    }
+
+    @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
+    @Test
+    void changeMeal_fail_completion() {
+    }
+
+    @DisplayName("주문상태를 완료로 변경한다.")
+    @Test
+    void nameCompletion() {
+    }
 }
