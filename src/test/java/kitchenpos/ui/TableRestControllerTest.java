@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 class TableRestControllerTest extends BaseTest {
-    private final Long 인원_변경_테스트_좌석_ID = 9L;
     private final OrderTable 좌석 = new OrderTable(1L, 1L, 4, false);
     private final OrderTable 공석_변경_좌석 = new OrderTable(1L, 1L, 4, false);
     private final OrderTable 인원_변경_좌석 = new OrderTable(1L, 1L, 0, false);
@@ -44,9 +43,11 @@ class TableRestControllerTest extends BaseTest {
 
     @Test
     void 인원_변경() throws Exception {
-        String content = objectMapper.writeValueAsString(인원_변경_좌석);
+        String content = objectMapper.writeValueAsString(좌석);
+        생성_요청(content);
 
-        인원_변경_요청(인원_변경_테스트_좌석_ID, content);
+        content = objectMapper.writeValueAsString(인원_변경_좌석);
+        인원_변경_요청(좌석.getId(), content);
     }
 
     private Long 생성_요청(String content) throws Exception {
