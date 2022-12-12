@@ -6,6 +6,7 @@ import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
+import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrderRequest;
@@ -26,6 +27,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
@@ -69,6 +71,8 @@ public class OrderServiceTest {
     private MenuProduct 콜라상품;
     private Menu 불고기버거세트;
     private Menu 치킨버거세트;
+    private OrderMenu 불고기버거세트주문메뉴;
+    private OrderMenu 치킨버거세트주문메뉴;
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
     private OrderLineItemRequest 불고기버거세트주문요청;
@@ -91,12 +95,14 @@ public class OrderServiceTest {
                 Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품));
         치킨버거세트 = generateMenu(2L, "치킨버거세트", BigDecimal.valueOf(9000L), 햄버거세트,
                 Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
+        불고기버거세트주문메뉴 = generateOrderMenu(불고기버거세트);
+        치킨버거세트주문메뉴 = generateOrderMenu(치킨버거세트);
         주문테이블A = generateOrderTable(1L, null, 5, false);
         주문테이블B = generateOrderTable(2L, null, 7, false);
         불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거세트.getId(), 2);
         치킨버거세트주문요청 = generateOrderLineItemRequest(치킨버거세트.getId(), 1);
-        주문A = generateOrder(주문테이블A, Arrays.asList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트), 치킨버거세트주문요청.toOrderLineItem(치킨버거세트)));
-        주문B = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트)));
+        주문A = generateOrder(주문테이블A, Arrays.asList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴), 치킨버거세트주문요청.toOrderLineItem(치킨버거세트주문메뉴)));
+        주문B = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴)));
     }
 
     @DisplayName("주문을 생성한다.")
@@ -104,7 +110,7 @@ public class OrderServiceTest {
     void createOrder() {
         // given
         OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
-        Order 주문 = Order.of(주문테이블A, OrderLineItems.from(singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트))));
+        Order 주문 = Order.of(주문테이블A, OrderLineItems.from(singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴))));
         given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
         given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(주문테이블A));
         given(orderRepository.save(주문)).willReturn(주문);
@@ -220,7 +226,7 @@ public class OrderServiceTest {
     @Test
     void changeOrderStatusThrowErrorWhenOrderStatusAlreadyComplete() {
         // given
-        Order order = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트)));
+        Order order = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴)));
         order.changeOrderStatus(OrderStatus.COMPLETION);
         OrderRequest changeOrderRequest = generateOrderRequest(주문테이블B.getId(), OrderStatus.MEAL, singletonList(불고기버거세트주문요청));
         given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));

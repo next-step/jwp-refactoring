@@ -6,6 +6,7 @@ import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
+import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroup;
@@ -25,6 +26,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
@@ -63,6 +65,7 @@ public class TableGroupServiceTest {
     private MenuProduct 불고기버거상품;
     private MenuGroup 햄버거단품;
     private Menu 불고기버거단품;
+    private OrderMenu 불고기버거단품주문상품;
     private OrderLineItemRequest 불고기버거세트주문요청;
     private Order 주문;
     private OrderTable 주문테이블A;
@@ -77,12 +80,13 @@ public class TableGroupServiceTest {
         불고기버거상품 = generateMenuProduct(불고기버거, 1L);
         햄버거단품 = generateMenuGroup("햄버거단품");
         불고기버거단품 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(불고기버거상품));
+        불고기버거단품주문상품 = generateOrderMenu(불고기버거단품);
         불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거단품.getId(), 2);
         주문테이블A = generateOrderTable(1L, null, 5, true);
         주문테이블B = generateOrderTable(2L, null, 4, false);
         주문테이블C = generateOrderTable(3L, null, 5, true);
         주문테이블D = generateOrderTable(4L, null, 4, true);
-        주문 = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거단품)));
+        주문 = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거단품주문상품)));
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 설정한다.")

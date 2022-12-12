@@ -1,22 +1,17 @@
 package kitchenpos.order.domain;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
-import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItem;
 import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
-import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroup;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -32,7 +27,6 @@ public class OrderTableTest {
     private MenuProduct 치킨버거상품;
     private MenuGroup 햄버거단품;
     private Menu 치킨버거단품;
-    private OrderLineItem 치킨버거단품_주문_항목;
 
     @BeforeEach
     void setUp() {
@@ -40,7 +34,6 @@ public class OrderTableTest {
         치킨버거상품 = generateMenuProduct(치킨버거, 1L);
         햄버거단품 = generateMenuGroup(1L, "햄버거단품");
         치킨버거단품 = generateMenu(2L, "치킨버거단품", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(치킨버거상품));
-        치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품, 2);
     }
 
     @DisplayName("주문 테이블의 그룹 상태를 해제한다.")

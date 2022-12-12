@@ -5,6 +5,7 @@ import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItem;
+import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,6 +27,7 @@ public class OrderLineItemTest {
     private MenuProduct 치킨버거상품;
     private MenuGroup 햄버거단품;
     private Menu 치킨버거단품;
+    private OrderMenu 치킨버거단품주문메뉴;
 
     @BeforeEach
     void setUp() {
@@ -33,17 +35,18 @@ public class OrderLineItemTest {
         치킨버거상품 = generateMenuProduct(치킨버거, 1L);
         햄버거단품 = generateMenuGroup(1L, "햄버거단품");
         치킨버거단품 = generateMenu(2L, "치킨버거단품", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(치킨버거상품));
+        치킨버거단품주문메뉴 = generateOrderMenu(치킨버거단품);
     }
 
     @DisplayName("주문 항목을 생성한다.")
     @Test
     void createOrderLineItem() {
         // when
-        OrderLineItem 치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품, 2);
+        OrderLineItem 치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품주문메뉴, 2);
 
         // then
         assertAll(
-                () -> assertThat(치킨버거단품_주문_항목.getMenu()).isEqualTo(치킨버거단품),
+                () -> assertThat(치킨버거단품_주문_항목.getOrderMenu()).isEqualTo(치킨버거단품주문메뉴),
                 () -> assertThat(치킨버거단품_주문_항목.getQuantity()).isEqualTo(Quantity.from(2))
         );
     }

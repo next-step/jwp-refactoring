@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
@@ -64,7 +65,10 @@ public class OrderService {
 
     private List<OrderLineItem> findAllOrderLineItemByMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
-                .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(findMenuById(orderLineItemRequest.getMenuId())))
+                .map(orderLineItemRequest -> {
+                    Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+                    return orderLineItemRequest.toOrderLineItem(OrderMenu.from(menu));
+                })
                 .collect(Collectors.toList());
     }
 
