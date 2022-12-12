@@ -9,6 +9,10 @@ public class ProductCreateRequest {
     private String name;
     private BigDecimal price;
 
+    public ProductCreateRequest(BigDecimal price) {
+        this.price = price;
+    }
+
     public Product toProduct() {
         return new Product(this.name, this.price);
     }

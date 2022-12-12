@@ -7,6 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+
+import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.Price.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,7 +37,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성 / 가격을 필수로 갖는다.")
     @Test
     void create_fail_priceNull() {
-        assertThatThrownBy(() -> productService.create(new ProductCreateRequest()))
+        assertThatThrownBy(() -> productService.create(new ProductCreateRequest(null)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -42,9 +45,9 @@ class ProductServiceTest {
     @DisplayName("상품 생성 / 가격은 0원보다 작을 수 없다.")
     @Test
     void create_fail_minimumPrice() {
-//        assertThatThrownBy(() -> productService.create(new ProductCreateRequest()))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
+        assertThatThrownBy(() -> productService.create(new ProductCreateRequest(BigDecimal.valueOf(-1))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("상품 생성 / 이름을 필수로 갖는다.")
