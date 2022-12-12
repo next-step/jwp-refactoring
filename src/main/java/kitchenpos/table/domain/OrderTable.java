@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 public class OrderTable {
+    public static final String TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE = "테이블 그룹이 존재하지 않습니다.";
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
@@ -50,6 +51,9 @@ public class OrderTable {
     }
 
     public void empty() {
+        if (this.tableGroupId == null) {
+            throw new IllegalArgumentException(TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE);
+        }
         this.empty = true;
     }
 }
