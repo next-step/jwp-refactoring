@@ -1,11 +1,12 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceTestUtils.*;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTestUtils.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
+import kitchenpos.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

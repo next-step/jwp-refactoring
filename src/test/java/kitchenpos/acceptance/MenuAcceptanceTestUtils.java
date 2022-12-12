@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceTestUtils.메뉴_그룹_등록되어_있음;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTestUtils.메뉴_그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTestUtils.상품_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 

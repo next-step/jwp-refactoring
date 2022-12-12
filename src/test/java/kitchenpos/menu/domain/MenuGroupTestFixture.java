@@ -1,6 +1,4 @@
-package kitchenpos.domain;
-
-import kitchenpos.menu.domain.MenuGroup;
+package kitchenpos.menu.domain;
 
 public class MenuGroupTestFixture {
     public static MenuGroup menuGroup(Long id, String name) {
