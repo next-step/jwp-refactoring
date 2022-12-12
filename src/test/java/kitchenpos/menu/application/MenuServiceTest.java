@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.ServiceTest;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
@@ -26,11 +27,12 @@ import java.util.List;
 import static kitchenpos.menu.application.MenuService.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("MenuService")
 @SpringBootTest
-class MenuServiceTest {
+class MenuServiceTest extends ServiceTest {
 
     @Autowired
     private MenuService menuService;
@@ -123,6 +125,6 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() {
-        assertThat(menuService.list()).hasSize(10);
+        assertThat(menuService.list()).hasSize(1);
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.ServiceTest;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductCreateRequest;
@@ -7,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 
@@ -19,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("상품 서비스")
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTest extends ServiceTest {
 
 
     @Autowired
@@ -63,6 +62,8 @@ class ProductServiceTest {
     @DisplayName("상품 목록 조회")
     @Test
     void list() {
-        assertThat(productService.list()).hasSize(6);
+        Product product = productService.create(new ProductCreateRequest("상품A", BigDecimal.ONE));
+        assertThat(productService.list()).hasSize(1);
     }
 }
+

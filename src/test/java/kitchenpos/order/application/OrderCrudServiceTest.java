@@ -1,6 +1,10 @@
 package kitchenpos.order.application;
 
+import kitchenpos.ServiceTest;
 import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
@@ -15,19 +19,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.order.application.OrderCrudService.*;
+import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("OrderCrudService")
-@SpringBootTest
-class OrderCrudServiceTest {
+class OrderCrudServiceTest extends ServiceTest {
 
     @Autowired
     private OrderCrudService orderCrudService;
@@ -47,10 +51,17 @@ class OrderCrudServiceTest {
     @Autowired
     private TableGroupDao tableGroupDao;
 
+    @Autowired
+    private MenuGroupDao menuGroupDao;
+
     private Long orderTableId;
+    private Menu menu;
 
     @BeforeEach
     void setUp() {
+
+        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("A"));
+        menu = menuDao.save(new Menu("A", BigDecimal.valueOf(2), menuGroup.getId()));
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable());
@@ -91,20 +102,19 @@ class OrderCrudServiceTest {
     @Test
     void create_fail_orderTableEmpty() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 2L, 3));
+        orderLineItems.add(new OrderLineItem(1L, menu.getId(), 3));
 
         OrderCreateRequest request = new OrderCreateRequest(1L, orderLineItems);
 
         assertThatThrownBy(() -> orderCrudService.create(request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 2L, 3));
+        orderLineItems.add(new OrderLineItem(1L, menu.getId(), 3));
 
         OrderResponse orderResponse = orderCrudService.create(new OrderCreateRequest(orderTableId, orderLineItems));
 
@@ -120,6 +130,9 @@ class OrderCrudServiceTest {
     @DisplayName("주문을 조회한다.")
     @Test
     void list() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(1L, menu.getId(), 3));
+        orderCrudService.create(new OrderCreateRequest(orderTableId, orderLineItems));
         assertThat(orderCrudService.list()).hasSize(1);
     }
 }

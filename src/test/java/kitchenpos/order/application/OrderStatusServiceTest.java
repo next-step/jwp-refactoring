@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.ServiceTest;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.Menu;
@@ -30,8 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 상태 서비스")
-@SpringBootTest
-class OrderStatusServiceTest {
+class OrderStatusServiceTest extends ServiceTest {
 
     @Autowired
     private OrderDao orderDao;

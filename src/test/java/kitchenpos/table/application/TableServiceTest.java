@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.ServiceTest;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.Menu;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,8 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("테이블 서비스")
-@SpringBootTest
-class TableServiceTest {
+class TableServiceTest extends ServiceTest {
 
     @Autowired
     private OrderDao orderDao;
@@ -50,8 +49,11 @@ class TableServiceTest {
     @Autowired
     private TableGroupDao tableGroupDao;
 
+    private Long orderTableId;
+
     @BeforeEach
     void setUp() {
+        orderTableId = orderTableDao.save(new OrderTable()).getId();
         tableService = new TableService(orderDao, orderTableDao);
     }
 
@@ -69,23 +71,21 @@ class TableServiceTest {
     @DisplayName("손님수를 변경한다.")
     @Test
     void changeNumberOfGuests_success() {
-        OrderTable orderTable = orderTableDao.findById(1L).get();
+        OrderTable orderTable = orderTableDao.findById(orderTableId).get();
         assertThat(orderTable.getNumberOfGuests()).isNotEqualTo(1);
         orderTable.setEmpty(false);
         orderTableDao.save(orderTable);
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(1);
-        assertThat(tableService.changeNumberOfGuests(1L, changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(1);
+        assertThat(tableService.changeNumberOfGuests(orderTableId, changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(1);
     }
 
     @DisplayName("손님수를 변경한다. / 0명보다 작을 수 없다.")
     @Test
     void changeNumberOfGuests_fail_minimum() {
 
-        Long orderTableId = 1L;
-
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(-1);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeNumberOfGuestsRequest))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, changeNumberOfGuestsRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
     }
@@ -102,14 +102,16 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuest_fail_notEmptyTable() {
 
-        final OrderTable savedOrderTable = orderTableDao.findById(1L)
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+
+        savedOrderTable.setEmpty(true);
+        orderTableDao.save(savedOrderTable);
 
         assertThat(savedOrderTable.isEmpty()).isTrue();
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new ChangeNumberOfGuestsRequest(1)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new ChangeNumberOfGuestsRequest(1)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("공석 상태로 변경한다.")
@@ -129,7 +131,7 @@ class TableServiceTest {
 
         TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
 
-        final OrderTable savedOrderTable = orderTableDao.findById(1L)
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.setTableGroupId(tableGroup.getId());
 
@@ -157,13 +159,13 @@ class TableServiceTest {
         orderTables.add(orderTable2);
         TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
 
-        final OrderTable savedOrderTable = orderTableDao.findById(1L)
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.setTableGroupId(tableGroup.getId());
 
         orderTableDao.save(savedOrderTable);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -211,6 +213,6 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 조회한다.")
     @Test
     void list() {
-        assertThat(tableService.list()).hasSize(8);
+        assertThat(tableService.list()).hasSize(1);
     }
 }

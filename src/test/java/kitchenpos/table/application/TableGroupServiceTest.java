@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.ServiceTest;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.Menu;
@@ -30,8 +31,7 @@ import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("TableGroupService")
-@SpringBootTest
-class TableGroupServiceTest {
+class TableGroupServiceTest extends ServiceTest {
 
     @Autowired
     private TableGroupService tableGroupService;
