@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.menugroup.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_목록_조회_요청;
-import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_목록_조회_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.acceptance.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
