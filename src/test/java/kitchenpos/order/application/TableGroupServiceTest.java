@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.applicaiton.TableGroupService;
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -112,7 +111,7 @@ public class TableGroupServiceTest {
         List<Long> orderTableIds = getOrderTableIds(tableGroup);
 
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(tableGroup.getOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(
                 IllegalArgumentException.class);
@@ -126,7 +125,7 @@ public class TableGroupServiceTest {
         List<Long> orderTableIds = getOrderTableIds(tableGroup);
 
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(tableGroup.getOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                 Arrays.asList(OrderStatus.COOKING.name(),OrderStatus.MEAL.name()))).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());

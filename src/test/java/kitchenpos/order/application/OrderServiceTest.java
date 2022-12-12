@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.applicaiton.OrderService;
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +28,7 @@ public class OrderServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -44,21 +43,26 @@ public class OrderServiceTest {
 
     private Long tableGroupId = 1L;
     private Long orderTableId = 1L;
+    private Long emptyOrderTableId = 1L;
     private int numberOfGuests = 4;
     private TableGroup tableGroup;
+    private OrderTable orderTable;
+
+    private OrderTable emptyOrderTable;
 
     @BeforeEach
     void setUp() {
         tableGroup = TableGroup.of(tableGroupId, LocalDateTime.now());
-        order = getOrder(orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now());
+        emptyOrderTable = OrderTable.of(emptyOrderTableId,null, numberOfGuests, true);
+        orderTable = OrderTable.of(orderTableId,null, numberOfGuests, false);
+        order = getOrder(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now());
         orderLineItem = OrderLineItem.of(order, Menu.of(menuId, "menu", BigDecimal.valueOf(1000)));
         order.addOrderLineItem(orderLineItem);
     }
     @Test
     @DisplayName("주문 시 주문 항목이 비어있으면 Exception")
     public void createEmptyException() {
-        Long emptyOrderTableId = 2L;
-        Order emptyOrder = getEmptyOrder(emptyOrderTableId, OrderStatus.COOKING.name(), LocalDateTime.now());
+        Order emptyOrder = getEmptyOrder(emptyOrderTable, OrderStatus.COOKING.name(), LocalDateTime.now());
 
         assertThatThrownBy(() -> orderService.create(emptyOrder)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -106,7 +110,7 @@ public class OrderServiceTest {
         final int menuCountById = 1;
         given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(order);
+        given(orderRepository.save(order)).willReturn(order);
         given(orderLineItemRepository.save(orderLineItem)).willReturn(orderLineItem);
 
         Order createdOrder = orderService.create(order);
@@ -116,7 +120,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 조회")
     public void list() {
-        given(orderDao.findAll()).willReturn(Arrays.asList(order));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(order));
 
         assertThat(orderService.list()).contains(order);
     }
@@ -124,9 +128,9 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 변경 시 존재하지 않는 주문이면 Exception")
     public void changeOrderStatusNotExistsException() {
-        Order changedOrder = getOrder(orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
+        Order changedOrder = getOrder(orderTable, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
 
-        given(orderDao.findById(any())).willReturn(Optional.empty());
+        given(orderRepository.findById(any())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, changedOrder)).isInstanceOf(
                 IllegalArgumentException.class);
@@ -135,10 +139,10 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 변경 시 완료상태일 경우 Exception")
     public void changeOrderStatusCompletionException() {
-        Order completedOrder = getOrder(orderTableId, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItem);
-        Order changedOrder = getOrder(orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
+        Order completedOrder = getOrder(orderTable, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItem);
+        Order changedOrder = getOrder(orderTable, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
 
-        given(orderDao.findById(completedOrder.getId())).willReturn(Optional.of(completedOrder));
+        given(orderRepository.findById(completedOrder.getId())).willReturn(Optional.of(completedOrder));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(completedOrder.getId(), changedOrder)).isInstanceOf(
                 IllegalArgumentException.class);
@@ -147,23 +151,23 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 변경")
     public void changeOrderStatus() {
-        Order changedOrder = getOrder(orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
+        Order changedOrder = getOrder(orderTable, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItem);
 
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
 
         assertThat(orderService.changeOrderStatus(order.getId(), changedOrder).getOrderStatus()).isEqualTo(
                 changedOrder.getOrderStatus());
     }
 
-    private Order getOrder(long orderTableId, String status, LocalDateTime orderedTime) {
-        return Order.of(orderTableId, status, orderedTime, null);
+    private Order getOrder(OrderTable orderTable, String status, LocalDateTime orderedTime) {
+        return Order.of(orderTable, status, orderedTime, null);
     }
 
-    private Order getOrder(long orderTableId, String status, LocalDateTime orderedTime, OrderLineItem orderLineItem) {
-        return Order.of(orderTableId, status, orderedTime, Arrays.asList(orderLineItem));
+    private Order getOrder(OrderTable orderTable, String status, LocalDateTime orderedTime, OrderLineItem orderLineItem) {
+        return Order.of(orderTable, status, orderedTime, Arrays.asList(orderLineItem));
     }
 
-    private Order getEmptyOrder(long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        return Order.of(orderTableId, orderStatus, orderedTime);
+    private Order getEmptyOrder(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+        return Order.of(orderTable, orderStatus, orderedTime);
     }
 }

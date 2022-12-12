@@ -1,6 +1,6 @@
 package kitchenpos.order.applicaiton;
 
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
@@ -13,12 +13,12 @@ import java.util.Objects;
 
 @Service
 public class OrderTableService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final OrderDao orderDao,
+    public OrderTableService(final OrderRepository orderRepository,
                              final OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -42,7 +42,7 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }

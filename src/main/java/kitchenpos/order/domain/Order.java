@@ -2,35 +2,44 @@ package kitchenpos.order.domain;
 
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long id;
-    private Long orderTableId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
-    private Order(Long id, long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTableId, orderStatus, orderedTime, orderLineItems);
+    public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
-    public static Order of(long id, long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        return new Order(id, orderTableId, orderStatus, orderedTime, null);
+    public static Order of(long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(id, orderTable, orderStatus, orderedTime, null);
     }
 
-    public static Order of(long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        return new Order(null, orderTableId, orderStatus, orderedTime, null);
+    public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(null, orderTable, orderStatus, orderedTime, null);
     }
 
     public Long getId() {
@@ -42,11 +51,11 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return orderTable.getId();
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(final OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
     public String getOrderStatus() {
