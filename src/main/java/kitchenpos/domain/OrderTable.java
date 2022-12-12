@@ -50,12 +50,6 @@ public class OrderTable {
         return empty;
     }
 
-    public void validateEmpty() {
-        if (empty) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }

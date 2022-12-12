@@ -3,7 +3,6 @@ package kitchenpos.application;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
@@ -39,7 +38,7 @@ public class OrderService {
         validateOrderLineItems(order);
 
         final OrderTable orderTable = tableService.findById(order.getOrderTableId());
-        orderTable.validateEmpty();
+        validateEmptyTrue(orderTable);
 
         order.setOrderTableId(orderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
@@ -96,5 +95,11 @@ public class OrderService {
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
         return savedOrderLineItems;
+    }
+
+    private void validateEmptyTrue(OrderTable orderTable){
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 }
