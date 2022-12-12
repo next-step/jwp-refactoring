@@ -207,4 +207,10 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
+
+    @DisplayName("주문 테이블을 조회한다.")
+    @Test
+    void list() {
+        assertThat(tableService.list()).hasSize(8);
+    }
 }
