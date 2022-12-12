@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItem;

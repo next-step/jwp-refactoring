@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProductRequest;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;

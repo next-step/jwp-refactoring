@@ -1,18 +1,18 @@
 package kitchenpos.order.acceptance;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록되어_있음;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroupRequest;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProductRequest;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenuRequest;
 import static kitchenpos.order.acceptance.OrderRestAssured.주문_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderRestAssured.주문_목록_조회_요청;
 import static kitchenpos.order.acceptance.OrderRestAssured.주문_상태_변경_요청;
 import static kitchenpos.order.acceptance.OrderRestAssured.주문_생성_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTableRequest;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTableRequest;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrderRequest;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.product.domain.ProductTestFixture.generateProductRequest;

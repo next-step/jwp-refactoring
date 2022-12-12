@@ -1,9 +1,9 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menugroup.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴_그룹_목록_조회_요청;
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroupRequest;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_목록_조회_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;

@@ -1,12 +1,11 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menugroup.domain;
 
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
-import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

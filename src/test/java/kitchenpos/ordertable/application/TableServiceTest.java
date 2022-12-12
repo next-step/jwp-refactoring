@@ -1,15 +1,15 @@
-package kitchenpos.order.application;
+package kitchenpos.ordertable.application;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTableRequest;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTableRequest;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
-import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroup;
+import static kitchenpos.tablegroup.domain.TableGroupTestFixture.generateTableGroup;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;

@@ -1,7 +1,7 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menugroup.acceptance;
 
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroupRequest;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

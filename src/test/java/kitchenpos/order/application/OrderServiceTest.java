@@ -2,12 +2,12 @@ package kitchenpos.order.application;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrderRequest;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;

@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

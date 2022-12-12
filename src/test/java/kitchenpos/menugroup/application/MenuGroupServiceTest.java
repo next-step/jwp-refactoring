@@ -1,7 +1,7 @@
-package kitchenpos.menu.application;
+package kitchenpos.menugroup.application;
 
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroupRequest;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -10,7 +10,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;

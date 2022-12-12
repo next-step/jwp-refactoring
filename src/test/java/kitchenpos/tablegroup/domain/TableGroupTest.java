@@ -1,7 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.tablegroup.domain;
 
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
-import static kitchenpos.order.domain.TableGroupTestFixture.generateTableGroup;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
+import static kitchenpos.tablegroup.domain.TableGroupTestFixture.generateTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Arrays;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

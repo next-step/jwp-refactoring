@@ -1,11 +1,11 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.ordertable.acceptance;
 
-import static kitchenpos.order.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
-import static kitchenpos.order.acceptance.TableRestAssured.주문_테이블_목록_조회_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문_테이블_방문_손님_수_변경_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문_테이블_비어있는지_여부_변경_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문_테이블_생성_요청;
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTableRequest;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_목록_조회_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_방문_손님_수_변경_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_비어있는지_여부_변경_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_생성_요청;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
