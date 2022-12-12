@@ -38,6 +38,18 @@ public class Price {
         }
     }
 
+    public Price multiply(Quantity quantity) {
+        return new Price(price.multiply(BigDecimal.valueOf(quantity.value())));
+    }
+
+    public Price add(Price addPrice) {
+        return new Price(this.price.add(addPrice.price));
+    }
+
+    public boolean isBiggerThan(Price totalPrice) {
+        return price.compareTo(totalPrice.price) > ZERO;
+    }
+
     public BigDecimal value() {
         return price;
     }

@@ -1,8 +1,8 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
-import static kitchenpos.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
-import static kitchenpos.acceptance.MenuRestAssured.메뉴_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
+import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
+import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,9 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.acceptance.AcceptanceTest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductRequest;
@@ -32,23 +36,31 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 콜라;
     private ProductResponse 피클;
     private MenuGroupResponse 피자;
-    private Menu 하와이안피자세트;
-    private MenuProduct 하와이안피자상품;
-    private MenuProduct 콜라상품;
-    private MenuProduct 피클상품;
+    private MenuRequest 하와이안피자세트;
+    private MenuProductRequest 하와이안피자상품;
+    private MenuProductRequest 콜라상품;
+    private MenuProductRequest 피클상품;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
+
         하와이안피자 = 상품_생성_요청(ProductRequest.of("하와이안피자", BigDecimal.valueOf(15_000))).as(ProductResponse.class);
         콜라 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
         피클 = 상품_생성_요청(ProductRequest.of( "피클", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
+
         피자 = 메뉴_그룹_생성_요청(MenuGroupRequest.from("피자")).as(MenuGroupResponse.class);
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(), new ArrayList<>());
-        하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트.getId(), 하와이안피자.getId(), 1L);
-        콜라상품 = new MenuProduct(2L, 하와이안피자세트.getId(), 콜라.getId(), 1L);
-        피클상품 = new MenuProduct(3L, 하와이안피자세트.getId(), 피클.getId(), 1L);
-        하와이안피자세트.setMenuProducts(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
+
+        하와이안피자상품 = MenuProductRequest.of(하와이안피자.getId(), 1L);
+        콜라상품 = MenuProductRequest.of(콜라.getId(), 1L);
+        피클상품 = MenuProductRequest.of(피클.getId(), 1L);
+
+        하와이안피자세트 = MenuRequest.of(
+            "불고기정식",
+            BigDecimal.valueOf(18_000L),
+            피자.getId(),
+            Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)
+        );
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -65,14 +77,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllMenu() {
         // given
-        하와이안피자세트 = 메뉴_생성_요청(하와이안피자세트).as(Menu.class);
+        MenuResponse menuResponse = 메뉴_생성_요청(하와이안피자세트).as(MenuResponse.class);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
         // then
         메뉴_목록_응답됨(response);
-        메뉴_목록_확인됨(response, Arrays.asList(하와이안피자세트.getId()));
+        메뉴_목록_확인됨(response, Arrays.asList(menuResponse.getId()));
     }
 
     private void 메뉴_생성됨(ExtractableResponse<Response> response) {
@@ -84,9 +96,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_목록_확인됨(ExtractableResponse<Response> response, List<Long> menuIds) {
-        List<Long> resultIds = response.jsonPath().getList(".", Menu.class)
+        List<Long> resultIds = response.jsonPath().getList(".", MenuResponse.class)
             .stream()
-            .map(Menu::getId)
+            .map(MenuResponse::getId)
             .collect(Collectors.toList());
 
         assertThat(resultIds).containsAll(menuIds);

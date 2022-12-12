@@ -13,13 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -38,7 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -69,12 +70,16 @@ public class OrderServiceTest {
         하와이안피자 = new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000));
         콜라 = new Product(2L, "콜라", BigDecimal.valueOf(2_000));
         피클 = new Product(3L, "피클", BigDecimal.valueOf(1_000));
+
         피자 = new MenuGroup(1L, "피자");
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(), new ArrayList<>());
-        하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트.getId(), 하와이안피자.getId(), 1L);
-        콜라상품 = new MenuProduct(2L, 하와이안피자세트.getId(), 콜라.getId(), 1L);
-        피클상품 = new MenuProduct(3L, 하와이안피자세트.getId(), 피클.getId(), 1L);
-        하와이안피자세트.setMenuProducts(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
+
+        하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트, 하와이안피자, 1L);
+        콜라상품 = new MenuProduct(2L, 하와이안피자세트, 콜라, 1L);
+        피클상품 = new MenuProduct(3L, 하와이안피자세트, 피클, 1L);
+
+        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자,
+            MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
+
         주문테이블 = new OrderTable(1L, null, 0, false);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         하와이안피자세트주문 = new OrderLineItem(1L, 주문.getId(), 하와이안피자세트.getId(), 1);
@@ -89,7 +94,7 @@ public class OrderServiceTest {
             .stream()
             .map(OrderLineItem::getMenuId)
             .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
+        // when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderDao.save(주문)).thenReturn(주문);
         when(orderLineItemDao.save(하와이안피자세트주문)).thenReturn(하와이안피자세트주문);
@@ -112,7 +117,7 @@ public class OrderServiceTest {
             .stream()
             .map(OrderLineItem::getMenuId)
             .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
+        // when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
 
         // when & then
@@ -124,7 +129,7 @@ public class OrderServiceTest {
     @Test
     void createOrderNotExistOrderLineItemException() {
         // given
-        when(menuDao.countByIdIn(anyList())).thenReturn(10L);
+        // when(menuDao.countByIdIn(anyList())).thenReturn(10L);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문))

@@ -1,7 +1,7 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
-import static kitchenpos.acceptance.MenuRestAssured.메뉴_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
+import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_목록_조회_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_상태_수정_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_생성_요청;
@@ -16,13 +16,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductRequest;
@@ -39,10 +42,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 콜라;
     private ProductResponse 피클;
     private MenuGroupResponse 피자;
-    private Menu 하와이안피자세트;
-    private MenuProduct 하와이안피자상품;
-    private MenuProduct 콜라상품;
-    private MenuProduct 피클상품;
+    private MenuResponse 하와이안피자세트;
+    private MenuProductRequest 하와이안피자상품;
+    private MenuProductRequest 콜라상품;
+    private MenuProductRequest 피클상품;
     private OrderTable 주문테이블;
     private Order 주문;
     private OrderLineItem 하와이안피자세트주문;
@@ -50,15 +53,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
         하와이안피자 = 상품_생성_요청(ProductRequest.of("하와이안피자", BigDecimal.valueOf(15_000))).as(ProductResponse.class);
         콜라 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
         피클 = 상품_생성_요청(ProductRequest.of("피클", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
+
         피자 = 메뉴_그룹_생성_요청(MenuGroupRequest.from("피자")).as(MenuGroupResponse.class);
-        하와이안피자상품 = new MenuProduct(1L, null, 하와이안피자.getId(), 1L);
-        콜라상품 = new MenuProduct(2L, null, 콜라.getId(), 1L);
-        피클상품 = new MenuProduct(3L, null, 피클.getId(), 1L);
-        하와이안피자세트 = 메뉴_생성_요청(new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(),
-            Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))).as(Menu.class);
+
+        하와이안피자상품 = MenuProductRequest.of(하와이안피자.getId(), 1L);
+        콜라상품 = MenuProductRequest.of(콜라.getId(), 1L);
+        피클상품 = MenuProductRequest.of(피클.getId(), 1L);
+
+        하와이안피자세트 = 메뉴_생성_요청(MenuRequest.of("하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(),
+            Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))).as(MenuResponse.class);
+
         주문테이블 = 주문_테이블_생성_요청(new OrderTable(null, null, 0, false)).as(OrderTable.class);
         하와이안피자세트주문 = new OrderLineItem(null, null, 하와이안피자세트.getId(), 1);
         주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(하와이안피자세트주문));
