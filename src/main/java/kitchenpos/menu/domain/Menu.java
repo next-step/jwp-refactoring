@@ -10,10 +10,12 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
@@ -25,8 +27,8 @@ public class Menu {
     public Menu(long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        validatePrice(price);
-        this.price = price;
+
+        this.price = Price.of(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.of(this, menuProducts);
 
@@ -56,22 +58,12 @@ public class Menu {
         return menuGroup.getId();
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
-    }
-
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts.setMenuProducts(menuProducts);
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public void checkPriceValid() {
-        if (price.compareTo(this.menuProducts.getSum()) > 0) {
+        if (!this.price.isLessOrEqualTo(this.menuProducts.getSum())) {
             throw new IllegalArgumentException();
         }
     }

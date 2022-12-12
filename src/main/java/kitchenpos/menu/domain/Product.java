@@ -11,13 +11,13 @@ public class Product {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     private Product(long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     public static Product of(long id, String name, BigDecimal price) {
@@ -26,10 +26,6 @@ public class Product {
 
     public Long getId() {
         return id;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
     }
 
     @Override
@@ -43,5 +39,9 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price);
+    }
+
+    public BigDecimal calculate(long quantity) {
+        return this.price.multiply(BigDecimal.valueOf(quantity)).getValue();
     }
 }
