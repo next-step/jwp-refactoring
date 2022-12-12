@@ -63,7 +63,7 @@ class ProductServiceTest {
     @Test
     void createWithException1() {
         // given
-        ProductRequest product = createProduct(3L, "짜장면", BigDecimal.valueOf(-1000));
+        ProductRequest product = createProduct( "짜장면", BigDecimal.valueOf(-1000));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));

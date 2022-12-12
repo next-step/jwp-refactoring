@@ -16,11 +16,11 @@ public class OrderTableTestFixture {
     }
 
     public static OrderTableRequest 주문테이블2_요청() {
-        return createOrderTable(2L, null, 20, false);
+        return createOrderTable(null, null, 20, false);
     }
 
     public static OrderTableRequest 주문테이블1_요청() {
-        return createOrderTable(1L, null, 10, false);
+        return createOrderTable(null, null, 10, false);
     }
 
     public static OrderTable 그룹_있는_주문테이블_생성(OrderTableRequest request) {

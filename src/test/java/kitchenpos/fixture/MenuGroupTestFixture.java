@@ -14,10 +14,10 @@ public class MenuGroupTestFixture {
     }
 
     public static MenuGroupRequest 중국집_1인_메뉴_세트_요청() {
-        return createMenuGroup(1L, "중국집_1인_메뉴_세트");
+        return createMenuGroup(null, "중국집_1인_메뉴_세트");
     }
 
-    public static MenuGroup 중국집_1인_메뉴_세트(final MenuGroupRequest 중국집_1인_메뉴_세트_요청) {
-        return MenuGroup.of(중국집_1인_메뉴_세트_요청.getId(), 중국집_1인_메뉴_세트_요청.getName());
+    public static MenuGroup 중국집_1인_메뉴_세트(final MenuGroupRequest menuGroupRequest) {
+        return MenuGroup.of(menuGroupRequest.getId(), menuGroupRequest.getName());
     }
 }

@@ -73,9 +73,9 @@ class MenuServiceTest {
         짬뽕메뉴상품 = 짬뽕메뉴상품();
         탕수육메뉴상품 = 탕수육메뉴상품();
         단무지메뉴상품 = 단무지메뉴상품();
-        짜장면_탕수육_1인_메뉴_세트_요청 = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
+        짜장면_탕수육_1인_메뉴_세트_요청 = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
-        짬뽕_탕수육_1인_메뉴_세트_요청 = createMenu(2L, "짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
+        짬뽕_탕수육_1인_메뉴_세트_요청 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
         짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청);
@@ -93,7 +93,7 @@ class MenuServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(saveMenu.getId()).isNotNull(),
+                () -> assertThat(saveMenu).isNotNull(),
                 () -> assertThat(saveMenu.getMenuProducts())
                         .containsExactly(MenuProductResponse.from(짜장면메뉴상품), MenuProductResponse.from(탕수육메뉴상품), MenuProductResponse.from(단무지메뉴상품))
         );
@@ -103,7 +103,7 @@ class MenuServiceTest {
     @Test
     void createWithException() {
         // given
-        MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(-1000L),
+        MenuRequest menu = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(-1000L),
                 짜장면_탕수육_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
 
         // when & then
@@ -114,7 +114,7 @@ class MenuServiceTest {
     @Test
     void createWithException2() {
         // given
-        MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 10L,
+        MenuRequest menu = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 10L,
                 Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
 
         // when & then
@@ -125,7 +125,7 @@ class MenuServiceTest {
     @Test
     void createWithException3() {
         // given
-        MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(),
+        MenuRequest menu = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(),
                 singletonList(짜장면메뉴상품));
 
         // when & then
@@ -136,7 +136,7 @@ class MenuServiceTest {
     @Test
     void createWithException4() {
         // given
-        MenuRequest menu = createMenu(1L, "짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(),
+        MenuRequest menu = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(),
                 Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
 
         // when & then

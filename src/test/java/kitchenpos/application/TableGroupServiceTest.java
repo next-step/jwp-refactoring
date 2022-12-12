@@ -51,8 +51,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, true));
-        주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(2L, null, 20, true));
+        주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(null, null, 10, true));
+        주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(null, null, 20, true));
         단체1_요청 = createTableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2));
         단체1 = TableGroup.of(단체1_요청.getId(), 단체1_요청.getOrderTables(), 단체1_요청.getOrderTables());
     }

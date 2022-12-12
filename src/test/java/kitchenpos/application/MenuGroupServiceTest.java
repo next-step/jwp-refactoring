@@ -51,7 +51,7 @@ class MenuGroupServiceTest {
         MenuGroupResponse saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트_요청);
 
         // then
-        assertThat(saveMenuGroup.getId()).isNotNull();
+        assertThat(saveMenuGroup).isNotNull();
     }
 
     @DisplayName("메뉴 그룹 전체 목록을 조회한다.")

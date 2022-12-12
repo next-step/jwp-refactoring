@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TableGroupTestFixture {
+
     public static TableGroupRequest createTableGroupRequest(List<OrderTable> orderTables) {
         return TableGroupRequest.of(null, null, orderTables);
     }
