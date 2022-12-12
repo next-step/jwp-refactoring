@@ -5,15 +5,17 @@ import kitchenpos.domain.MenuProduct;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuResponse {
     private final Long id;
     private final String name;
     private final BigDecimal price;
     private final Long menuGroupId;
-    private final List<MenuProduct> menuProducts;
+    private final List<MenuProductResponse> menuProducts;
 
-    public MenuResponse(final Long id, final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
+    public MenuResponse(final Long id, final String name, final BigDecimal price,
+                        final Long menuGroupId, final List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -22,7 +24,14 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(final Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), menu.getMenuProducts());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
+                menu.getMenuGroup().getId(), mapToMenuResponse(menu.getMenuProducts()));
+    }
+
+    private static List<MenuProductResponse> mapToMenuResponse(final List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+                .map(MenuProductResponse::from)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -41,7 +50,7 @@ public class MenuResponse {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
     }
 }

@@ -4,6 +4,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.repository.MenuGroupRepository;
@@ -93,7 +94,8 @@ class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(saveMenu.getId()).isNotNull(),
-                () -> assertThat(saveMenu.getMenuProducts()).containsExactly(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품)
+                () -> assertThat(saveMenu.getMenuProducts())
+                        .containsExactly(MenuProductResponse.from(짜장면메뉴상품), MenuProductResponse.from(탕수육메뉴상품), MenuProductResponse.from(단무지메뉴상품))
         );
     }
 

@@ -31,26 +31,35 @@ public class Menu {
     }
 
     public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        validateMenu(price, menuGroup, menuProducts);
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
+    }
+
+    private static void validateMenu(final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
+        validatePrice(price, menuProducts);
+        validateMenuGroup(menuGroup);
+    }
+
+    private static void validateMenuGroup(final MenuGroup menuGroup) {
+        if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException();
         }
+    }
 
-        if (Objects.isNull(menuGroup)) {
+    private static void validatePrice(final BigDecimal price, final List<MenuProduct> menuProducts) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(menuProduct.getSumOfPrice());
         }
 
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
-
-        return new Menu(id, name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {

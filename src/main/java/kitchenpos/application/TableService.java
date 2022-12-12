@@ -27,10 +27,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        validateTableGroupId(request.getTableGroupId());
-
-        TableGroup tableGroup = tableGroupRepository.findById(request.getTableGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("테이블 그룹을 찾을 수 없습니다."));
+        TableGroup tableGroup = findTableGroupById(request.getTableGroupId());
 
         OrderTable orderTable =
                 OrderTable.of(request.getId(), tableGroup, request.getNumberOfGuests(), request.isEmpty());
@@ -38,10 +35,13 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
-    private void validateTableGroupId(final Long tableGroupId) {
-        if (Objects.isNull(tableGroupId)) {
-            throw new IllegalArgumentException("요청한 테이블그룹 아이디가 존재하지 않습니다.");
+    private TableGroup findTableGroupById(final Long tableGroupId) {
+        if(Objects.isNull(tableGroupId)) {
+            return null;
         }
+
+        return tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("테이블 그룹을 찾을 수 없습니다."));
     }
 
     public List<OrderTableResponse> list() {
