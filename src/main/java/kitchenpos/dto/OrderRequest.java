@@ -46,7 +46,7 @@ public class OrderRequest {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final String orderStatus) {
         this.orderStatus = orderStatus;
     }
 

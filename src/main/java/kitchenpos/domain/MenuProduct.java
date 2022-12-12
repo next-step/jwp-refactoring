@@ -25,23 +25,10 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    // TODO: 제거
-//    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-//        return new MenuProduct(seq, null, null, quantity);
-//    }
-
     public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
         return new MenuProduct(seq, menu, product, quantity);
     }
-
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
+    
     public Menu getMenu() {
         return menu;
     }
@@ -52,13 +39,5 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
-    public void changeMenu(final Menu menuId) {
-
     }
 }

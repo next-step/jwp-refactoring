@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableResponse;
@@ -43,8 +44,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuProduct 짬뽕메뉴상품;
     private MenuProduct 단무지메뉴상품;
     private MenuProduct 탕수육메뉴상품;
-    private Menu 짜장면_탕수육_1인_메뉴_세트;
-    private Menu 짬뽕_탕수육_1인_메뉴_세트;
+    private MenuResponse 짜장면_탕수육_1인_메뉴_세트;
+    private MenuResponse 짬뽕_탕수육_1인_메뉴_세트;
     private OrderTableResponse 주문테이블1;
     private OrderTableResponse 주문테이블2;
     private OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문;
@@ -64,8 +65,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         탕수육메뉴상품 = 탕수육메뉴상품();
         짬뽕메뉴상품 = 짬뽕메뉴상품();
         단무지메뉴상품 = 단무지메뉴상품();
-        짜장면_탕수육_1인_메뉴_세트 = 등록된_메뉴(createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품))).as(Menu.class);
-        짬뽕_탕수육_1인_메뉴_세트 = 등록된_메뉴(createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품))).as(Menu.class);
+        짜장면_탕수육_1인_메뉴_세트 = 등록된_메뉴(createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품))).as(MenuResponse.class);
+        짬뽕_탕수육_1인_메뉴_세트 = 등록된_메뉴(createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품))).as(MenuResponse.class);
         주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, false)).as(OrderTableResponse.class);
         주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, false)).as(OrderTableResponse.class);
         짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(1L, null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
@@ -108,7 +109,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 OrderTable.of(1L, null, 10, false),
                 Collections.singletonList(짜장면_탕수육_1인_메뉴_세트주문)
         );
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.changeOrderStatus(OrderStatus.COMPLETION.name());
 
         // when
         ExtractableResponse<Response> response = 주문_상태_변경_요청(orderResponse.getId(), order);

@@ -24,7 +24,7 @@ public class Order {
 
     public Order(final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
-        this.orderTable.setOrder(this);
+        this.orderTable.createOrder(this);
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
@@ -49,10 +49,6 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderTable getOrderTable() {
         return orderTable;
     }
@@ -61,7 +57,7 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final String orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
             throw new IllegalArgumentException();
         }
@@ -72,15 +68,7 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }

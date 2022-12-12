@@ -88,7 +88,7 @@ public class OrderTable {
         return orders;
     }
 
-    public void setOrder(final Order order) {
+    public void createOrder(final Order order) {
         this.orders.add(order);
     }
 }
