@@ -81,9 +81,6 @@ public class OrderTable {
     }
 
     public void chnageEmpty(final boolean empty) {
-        if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException();
-        }
         this.empty = empty;
     }
 }

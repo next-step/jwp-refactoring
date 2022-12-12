@@ -1,7 +1,8 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.persistence.MenuDao;
-import kitchenpos.menu.persistence.MenuProductDao;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.persistence.MenuRepository;
+import kitchenpos.menu.persistence.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.persistence.ProductDao;
@@ -14,18 +15,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuDao;
     private final MenuGroupRepository menuGroupDao;
-    private final MenuProductDao menuProductDao;
+    private final MenuProductRepository menuProductDao;
     private final ProductDao productDao;
 
     public MenuService(
-            final MenuDao menuDao,
+            final MenuRepository menuDao,
             final MenuGroupRepository menuGroupDao,
-            final MenuProductDao menuProductDao,
+            final MenuProductRepository menuProductDao,
             final ProductDao productDao
     ) {
         this.menuDao = menuDao;
@@ -35,7 +37,7 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
+    public MenuResponse create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -61,24 +63,22 @@ public class MenuService {
 
         final Menu savedMenu = menuDao.save(menu);
 
-        final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
+            menuProduct.setMenu(savedMenu);
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);
 
-        return savedMenu;
+        return MenuResponse.of(savedMenu);
     }
 
-    public List<Menu> list() {
+    public List<MenuResponse> list() {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
         }
-
-        return menus;
+        return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
     }
 }

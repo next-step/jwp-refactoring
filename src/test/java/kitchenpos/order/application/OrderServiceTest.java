@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
-import kitchenpos.menu.persistence.MenuDao;
+import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -36,7 +36,7 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuDao;
     @Mock
     private OrderDao orderDao;
     @Mock

@@ -133,7 +133,9 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 테이블그룹 반환")
     @Test
     public void returnTableGroup() {
-        List<OrderTable> orderTables = fixtureMonkey
+        List<OrderTable> orderTables = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(OrderTable.class)
                 .set("empty", true)
                 .setNull("tableGroupId")

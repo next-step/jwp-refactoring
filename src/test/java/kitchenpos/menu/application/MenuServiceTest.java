@@ -4,9 +4,10 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.persistence.MenuDao;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.persistence.MenuGroupRepository;
-import kitchenpos.menu.persistence.MenuProductDao;
+import kitchenpos.menu.persistence.MenuProductRepository;
+import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.persistence.ProductDao;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -36,11 +38,11 @@ public class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuDao;
     @Mock
     private MenuGroupRepository menuGroupDao;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductDao;
     @Mock
     private ProductDao productDao;
 
@@ -63,8 +65,9 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 0보다 작은경우 예외발생")
     @Test
     public void throwsExceptionWhenNegativePrice() {
-        Menu menu = Menu.builder().build();;
-        menu.setPrice(BigDecimal.valueOf(Arbitraries.integers().lessOrEqual(-1).sample()));
+        Menu menu = Menu.builder()
+                .price(BigDecimal.valueOf(Arbitraries.integers().lessOrEqual(-1).sample()))
+                .build();
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -86,16 +89,16 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 구성하는 상품이 없는경우 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsProduct() {
-        List<MenuProduct> mockProducts = fixtureMonkey.giveMeBuilder(MenuProduct.class)
-                .set("productId", Arbitraries.longs().between(1, 1000))
-                .sampleList(5);
-        Menu menu = fixtureMonkey
-                .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("price", BigDecimal.valueOf(15000))
-                .set("menuGroupId", Arbitraries.longs().between(1, 50))
-                .set("menuProducts", mockProducts)
-                .sample();
+        List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder()
+                .productId(Arbitraries.longs().between(1, 1000).sample())
+                .menu(Menu.builder().build())
+                .build(), 5);
+        Menu menu = Menu.builder()
+                        .id(Arbitraries.longs().between(1, 100).sample())
+                        .price(BigDecimal.valueOf(15000))
+                        .menuGroupId(Arbitraries.longs().between(1, 50).sample())
+                        .menuProducts(menuProducts)
+                        .build();
         doReturn(true).when(menuGroupDao).existsById(menu.getMenuGroupId());
         doReturn(Optional.empty()).when(productDao).findById(anyLong());
 
@@ -110,17 +113,18 @@ public class MenuServiceTest {
                 .giveMeBuilder(Product.class)
                 .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sample();
-        List<MenuProduct> menuProduct = fixtureMonkey.giveMeBuilder(MenuProduct.class)
-                .set("quantity", Arbitraries.integers().between(1, 5))
-                .set("productId", 13l)
-                .sampleList(5);
-        Menu menu = fixtureMonkey
-                .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("price", BigDecimal.valueOf(200000))
-                .set("menuGroupId", Arbitraries.longs().between(1, 50))
-                .set("menuProducts", menuProduct)
-                .sample();
+        List<MenuProduct> menuProduct = getMenuProducts(MenuProduct.builder()
+                .seq(Arbitraries.longs().between(1, 10).sample())
+                .productId(Arbitraries.longs().between(1, 20).sample())
+                .quantity(Arbitraries.longs().between(1, 20).sample())
+                .menu(Menu.builder().build())
+                .build(), 5);
+        Menu menu = Menu.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .price(BigDecimal.valueOf(200000))
+                .menuGroupId(Arbitraries.longs().between(1, 50).sample())
+                .menuProducts(menuProduct)
+                .build();
         doReturn(true)
                 .when(menuGroupDao)
                 .existsById(menu.getMenuGroupId());
@@ -135,32 +139,31 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        Product product = fixtureMonkey
-                .giveMeBuilder(Product.class)
-                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
-                .sample();
-        MenuProduct menuProduct = fixtureMonkey.giveMeBuilder(MenuProduct.class)
-                .set("menuId", Arbitraries.longs().between(1, 5))
-                .set("quantity", Arbitraries.integers().between(1, 5))
-                .set("productId", 13l)
-                .sample();
-        List<MenuProduct> menuProducts = fixtureMonkey.giveMeBuilder(MenuProduct.class)
-                .set("quantity", Arbitraries.integers().between(1, 5))
-                .set("productId", 13l)
-                .sampleList(5);
-        Menu savedMenu = fixtureMonkey.giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 5))
-                .set("price", BigDecimal.valueOf(0l))
-                .set("menuGroupId", 15l)
-                .set("menuProducts", menuProducts)
-                .sample();
-        Menu menu = fixtureMonkey
-                .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("price", BigDecimal.valueOf(0))
-                .set("menuGroupId", Arbitraries.longs().between(1, 50))
-                .set("menuProducts", menuProducts)
-                .sample();
+        Product product = Product.builder()
+                .money(Money.of(2000l))
+                .build();
+        MenuProduct menuProduct =
+                MenuProduct.builder()
+                        .menu(Menu.builder().build())
+                        .quantity(5l)
+                        .productId(13l)
+                        .build();
+        List<MenuProduct> menuProducts =
+                getMenuProducts(menuProduct, 5);
+        Menu savedMenu = Menu.builder()
+                .id(15l)
+                .name("Pasta")
+                .price(BigDecimal.valueOf(0))
+                .menuGroupId(50l)
+                .menuProducts(menuProducts)
+                .build();
+        Menu menu = Menu.builder()
+                .id(15l)
+                .name("Pasta")
+                .price(BigDecimal.valueOf(0))
+                .menuGroupId(50l)
+                .menuProducts(menuProducts)
+                .build();
         doReturn(true)
                 .when(menuGroupDao)
                 .existsById(menu.getMenuGroupId());
@@ -174,27 +177,24 @@ public class MenuServiceTest {
                 .when(menuProductDao)
                 .save(any(MenuProduct.class));
 
-        Menu returnedMenu = menuService.create(menu);
+        MenuResponse returnedMenu = menuService.create(menu);
 
         assertAll(
-                () -> assertThat(returnedMenu.getId()).isBetween(1l, 5l),
-                () -> assertThat(returnedMenu.getMenuGroupId()).isEqualTo(15l),
-                () -> assertThat(returnedMenu.getMenuProducts().stream().map(MenuProduct::getMenuId).collect(Collectors.toList()))
-                        .allMatch(menuId -> menuId >= 1 && menuId <= 5),
-                () -> assertThat(returnedMenu.getPrice()).isEqualTo(BigDecimal.valueOf(0)));
+                () -> assertThat(returnedMenu.getName()).isEqualTo("Pasta"));
     }
 
     @DisplayName("메뉴목록을 조회하는경우 메뉴목록을 반환")
     @Test
     public void returnMenus() {
-        List<Menu> menus = fixtureMonkey
-                .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 1000l))
-                .setNull("menuProducts")
-                .sampleList(5);
-        List<MenuProduct> menuProducts = fixtureMonkey
-                .giveMeBuilder(MenuProduct.class)
-                .sampleList(5);
+        List<Menu> menus = getMenus(Menu.builder()
+                .id(Arbitraries.longs().between(1, 1000l).sample())
+                .build(), 5);
+        List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder()
+                .seq(14l)
+                .quantity(15l)
+                .productId(14l)
+                .menu(Menu.builder().id(13l).build())
+                .build(), 5);
         doReturn(menus)
                 .when(menuDao)
                 .findAll();
@@ -202,12 +202,32 @@ public class MenuServiceTest {
                 .when(menuProductDao)
                 .findAllByMenuId(anyLong());
 
-        List<Menu> returnedMenus = menuService.list();
+        List<MenuResponse> returnedMenus = menuService.list();
+        assertThat(returnedMenus.stream().map(MenuResponse::getId).collect(Collectors.toList()))
+                .containsAll(menus.stream().map(menu -> menu.getId()).collect(Collectors.toList()));
+    }
 
-        List<MenuProduct> returnedMenuProducts = returnedMenus.stream()
-                .flatMap(menu -> menu.getMenuProducts().stream())
+    private List<Menu> getMenus(Menu menu, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> Menu.builder()
+                        .id(menu.getId())
+                        .name(menu.getName())
+                        .price(menu.getPrice())
+                        .menuProducts(menu.getMenuProducts())
+                        .menuGroupId(menu.getMenuGroupId())
+                        .build())
                 .collect(Collectors.toList());
-        assertThat(returnedMenuProducts).containsAll(menuProducts);
+    }
+
+    private List<MenuProduct> getMenuProducts(MenuProduct menuProduct, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> MenuProduct.builder()
+                        .seq(menuProduct.getSeq())
+                        .productId(menuProduct.getProductId())
+                        .menu(menuProduct.getMenu())
+                        .quantity(menuProduct.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

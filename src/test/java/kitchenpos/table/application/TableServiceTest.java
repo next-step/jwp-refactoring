@@ -84,13 +84,17 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
+        List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
+                .set("orderStatus",OrderStatus.COOKING.name())
+                .sampleList(5);
         OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .set("tableGroupId", 13l).sample();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableDao)
                 .findById(orderTable.getId());
-
+        doReturn(orders).when(orderDao)
+                .findAllByOrderTableId(orderTable.getId());
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
 
