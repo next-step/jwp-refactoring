@@ -40,7 +40,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
         List<Product> menuProducts = productRepository.findAllById(menuRequest.getMenuProductIds());
-        final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
+        Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);
     }
 
