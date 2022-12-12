@@ -13,10 +13,6 @@ import org.springframework.test.web.servlet.ResultActions;
 
 public class MenuGroupAcceptanceTest extends MockMvcAcceptanceTest {
 
-    @Autowired
-    private MenuGroupService menuGroupService;
-
-
     /**
      * given: 메뉴 그룹 정보를 입력하고
      * when: 메뉴 그룹 추가를 요청하면
