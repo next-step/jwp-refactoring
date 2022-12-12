@@ -56,4 +56,25 @@ class OrderTableTest {
         orderTable.unGroup();
         assertThat(orderTable.getTableGroupId()).isNull();
     }
+
+    @DisplayName("손님수를 변경한다.")
+    @Test
+    void changeNumberOfGuests_success() {
+    }
+
+    @DisplayName("손님수를 변경한다 / 0명보다 작을 수 없다.")
+    @Test
+    void changeNumberOfGuests_fail_minimumNumber() {
+
+    }
+
+    @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
+    @Test
+    void changeNumberOfGuests_fail_orderTable() {
+    }
+
+    @DisplayName("테이블이 공석 상태면 손님수를 변경할 수 없다.")
+    @Test
+    void changeNumberOfGuests_fail_empty() {
+    }
 }
