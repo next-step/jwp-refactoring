@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,18 +12,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -29,23 +35,26 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        뼈치킨 = MenuGroup.of(1L, "뼈치킨");
-        순살치킨 = MenuGroup.of(2L, "순살치킨");
+        뼈치킨 = new MenuGroup("뼈치킨");
+        순살치킨 = new MenuGroup("순살치킨");
+
+        ReflectionTestUtils.setField(뼈치킨, "id", 1L);
+        ReflectionTestUtils.setField(순살치킨, "id", 2L);
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void 메뉴그룹_생성() {
         // given
-        when(menuGroupDao.save(뼈치킨)).thenReturn(뼈치킨);
+        when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(뼈치킨);
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(뼈치킨);
+        MenuGroupResponse response = menuGroupService.create(new MenuGroupRequest("뼈치킨"));
 
         // then
         assertAll(
-                () -> assertThat(savedMenuGroup.getId()).isNotNull(),
-                () -> assertThat(savedMenuGroup.getName()).isEqualTo(뼈치킨.getName())
+                () -> assertThat(response.getId()).isEqualTo(뼈치킨.getId()),
+                () -> assertThat(response.getName()).isEqualTo(뼈치킨.getName())
         );
     }
 
@@ -54,15 +63,16 @@ class MenuGroupServiceTest {
     void 메뉴그룹_목록_조회() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(뼈치킨, 순살치킨);
-        when(menuGroupDao.findAll()).thenReturn(menuGroups);
+        when(menuGroupRepository.findAll()).thenReturn(menuGroups);
 
         // when
-        List<MenuGroup> selectMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> selectMenuGroups = menuGroupService.list();
 
         // then
         assertAll(
                 () -> assertThat(selectMenuGroups).hasSize(menuGroups.size()),
-                () -> assertThat(selectMenuGroups).containsExactly(뼈치킨, 순살치킨)
+                () -> assertThat(selectMenuGroups.stream().map(MenuGroupResponse::getName)
+                        .collect(Collectors.toList())).containsExactly(뼈치킨.getName(), 순살치킨.getName())
         );
     }
 }
