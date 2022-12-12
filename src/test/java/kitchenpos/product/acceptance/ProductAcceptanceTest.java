@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.acceptance.AcceptanceTest;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,9 +67,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 상품_목록_확인됨(ExtractableResponse<Response> response, List<Long> productIds) {
-        List<Long> resultIds = response.jsonPath().getList(".", Product.class)
+        List<Long> resultIds = response.jsonPath().getList(".", ProductResponse.class)
             .stream()
-            .map(Product::getId)
+            .map(ProductResponse::getId)
             .collect(Collectors.toList());
 
         assertThat(resultIds).containsAll(productIds);

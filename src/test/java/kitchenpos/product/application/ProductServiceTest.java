@@ -75,10 +75,13 @@ public class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when
-        List<Product> result = productService.list();
+        List<ProductResponse> result = productService.list();
 
         // then
-        assertThat(result).hasSize(1)
-            .containsExactly(product);
+        assertAll(
+            () -> assertThat(result).hasSize(1),
+            () -> assertThat(result.stream().map(ProductResponse::getName))
+                .containsExactly(product.getName().value())
+        );
     }
 }

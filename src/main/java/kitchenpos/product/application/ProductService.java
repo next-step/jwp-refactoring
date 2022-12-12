@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import java.util.stream.Collectors;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -24,7 +25,10 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        return productRepository.findAll()
+            .stream()
+            .map(ProductResponse::from)
+            .collect(Collectors.toList());
     }
 }
