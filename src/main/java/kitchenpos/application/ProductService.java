@@ -19,12 +19,7 @@ public class ProductService {
 
     @Transactional
     public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
+        product.validatePrice();
         return productDao.save(product);
     }
 
