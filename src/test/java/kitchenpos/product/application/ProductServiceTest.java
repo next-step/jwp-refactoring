@@ -63,6 +63,6 @@ class ProductServiceTest {
     @DisplayName("상품 목록 조회")
     @Test
     void list() {
-
+        assertThat(productService.list()).hasSize(6);
     }
 }
