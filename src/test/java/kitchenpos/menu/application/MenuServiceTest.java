@@ -1,13 +1,12 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuExceptionCode;
-import kitchenpos.menu.exception.MenuGroupExceptionCode;
-import kitchenpos.menu.exception.ProductExceptionCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,7 +83,7 @@ class MenuServiceTest {
         assertThatThrownBy(() -> {
             menuService.create(request);
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(MenuGroupExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test
@@ -92,13 +91,13 @@ class MenuServiceTest {
         MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(50000), 양식.getId(), menuProducts);
 
         given(menuGroupRepository.findById(양식.getId())).willReturn(Optional.of(양식));
-        given(productRepository.findAllById(request.findAllProductIds()))
+        given(productRepository.findAllById(request.toProductIds()))
                 .willReturn(Arrays.asList(스테이크));
 
         assertThatThrownBy(() -> {
             menuService.create(request);
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(ProductExceptionCode.NOT_FOUND_BY_ID.getMessage());
+                .hasMessage(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
 
     @Test
@@ -106,7 +105,7 @@ class MenuServiceTest {
         MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(55000), 양식.getId(), menuProducts);
 
         given(menuGroupRepository.findById(양식.getId())).willReturn(Optional.of(양식));
-        given(productRepository.findAllById(request.findAllProductIds()))
+        given(productRepository.findAllById(request.toProductIds()))
                 .willReturn(Arrays.asList(스테이크, 스파게티, 에이드));
 
         assertThatThrownBy(() -> {
@@ -120,7 +119,7 @@ class MenuServiceTest {
         MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(50000), 양식.getId(), menuProducts);
 
         given(menuGroupRepository.findById(양식.getId())).willReturn(Optional.of(양식));
-        given(productRepository.findAllById(request.findAllProductIds()))
+        given(productRepository.findAllById(request.toProductIds()))
                 .willReturn(Arrays.asList(스테이크, 스파게티, 에이드));
         given(menuRepository.save(any(Menu.class))).willReturn(양식_세트);
 

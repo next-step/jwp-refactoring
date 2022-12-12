@@ -7,10 +7,10 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.tablegroup.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,9 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,19 +52,22 @@ class OrderRestControllerTest extends ControllerTest {
         super.setUp();
 
         주문테이블 = new OrderTable(2, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
+
+        ReflectionTestUtils.setField(주문테이블, "id", 1L);
+
+        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
         양식_세트1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);
         양식_세트2 = new Menu("양식 세트2", new BigDecimal(50000), 양식);
 
-        ReflectionTestUtils.setField(주문테이블, "id", 1L);
         ReflectionTestUtils.setField(주문, "id", 1L);
         ReflectionTestUtils.setField(양식, "id", 1L);
         ReflectionTestUtils.setField(양식_세트1, "id", 1L);
         ReflectionTestUtils.setField(양식_세트2, "id", 2L);
 
-        주문_메뉴_목록 = Arrays.asList(new OrderLineItem(주문, 양식_세트1, 1L), new OrderLineItem(주문, 양식_세트2, 1L));
+        주문_메뉴_목록 = Arrays.asList(new OrderLineItem(주문, 양식_세트1.getId(), 1L),
+                new OrderLineItem(주문, 양식_세트2.getId(), 1L));
         주문.order(주문_메뉴_목록);
     }
 

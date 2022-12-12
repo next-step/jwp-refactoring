@@ -24,7 +24,7 @@ public class MenuProductRequest {
 
     private Product findProductByProductId(List<Product> products) {
         return products.stream()
-                .filter(product -> product.getId().equals(productId))
+                .filter(product -> product.equalsId(productId))
                 .findFirst().get();
     }
 

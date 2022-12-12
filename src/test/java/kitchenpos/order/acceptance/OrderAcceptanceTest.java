@@ -10,7 +10,8 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.tablegroup.acceptance.TableAcceptance;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -125,7 +126,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void list() {
         // given
         OrderAcceptance.create_order(비어있지_않은_주문테이블.getId(),
-            Arrays.asList(new OrderLineItemRequest(양식_세트.getId(), 1L)));
+                Arrays.asList(new OrderLineItemRequest(양식_세트.getId(), 1L)));
 
         // when
         ExtractableResponse<Response> response = OrderAcceptance.list();
@@ -161,8 +162,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void changeOrderStatusWithCompletionOrder() {
         // given
         OrderResponse response = OrderAcceptance.create_order(비어있지_않은_주문테이블.getId(),
-                Arrays.asList(new OrderLineItemRequest(양식_세트.getId(), 1L)))
-                    .as(OrderResponse.class);
+                        Arrays.asList(new OrderLineItemRequest(양식_세트.getId(), 1L)))
+                .as(OrderResponse.class);
         response = OrderAcceptance.changeOrderStatus(response.getId(), OrderStatus.COMPLETION)
                 .as(OrderResponse.class);
 

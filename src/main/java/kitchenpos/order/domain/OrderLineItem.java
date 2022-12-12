@@ -1,9 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.exception.OrderLineItemExceptionCode;
-import kitchenpos.utils.NumberUtil;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -16,33 +12,17 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    private Long menuId;
 
-    private long quantity;
+    @Embedded
+    private OrderLineItemQuantity quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        validate(order, menu, quantity);
-
+    public OrderLineItem(Order order, Long menuId, long quantity) {
         updateOrder(order);
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    private void validate(Order order, Menu menu, long quantity) {
-        if (Objects.isNull(order)) {
-            throw new IllegalArgumentException(OrderLineItemExceptionCode.REQUIRED_ORDER.getMessage());
-        }
-
-        if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(OrderLineItemExceptionCode.REQUIRED_MENU.getMessage());
-        }
-
-        if (NumberUtil.isNotPositiveNumber(quantity)) {
-            throw new IllegalArgumentException(OrderLineItemExceptionCode.INVALID_QUANTITY.getMessage());
-        }
+        this.menuId = menuId;
+        this.quantity = new OrderLineItemQuantity(quantity);
     }
 
     void updateOrder(Order order) {
@@ -60,12 +40,12 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 
     @Override
@@ -79,11 +59,11 @@ public class OrderLineItem {
         }
 
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
+        return Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, menu);
+        return Objects.hash(order, menuId);
     }
 }

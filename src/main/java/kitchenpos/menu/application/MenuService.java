@@ -1,11 +1,10 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionCode;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.exception.MenuGroupExceptionCode;
-import kitchenpos.menu.exception.ProductExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +26,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(MenuRequest request) {
         MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
-        List<Product> products = findAllProductByIds(request.findAllProductIds());
+        List<Product> products = findAllProductByIds(request.toProductIds());
         Menu menu = request.toMenu(menuGroup, products);
 
         return MenuResponse.of(menuRepository.save(menu));
@@ -35,13 +34,13 @@ public class MenuService {
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new EntityNotFoundException(MenuGroupExceptionCode.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID));
     }
 
     private List<Product> findAllProductByIds(List<Long> productIds) {
         List<Product> products = productRepository.findAllById(productIds);
         if (productIds.size() != products.size()) {
-            throw new EntityNotFoundException(ProductExceptionCode.NOT_FOUND_BY_ID.getMessage());
+            throw new EntityNotFoundException(EntityNotFoundExceptionCode.NOT_FOUND_BY_ID);
         }
 
         return products;
