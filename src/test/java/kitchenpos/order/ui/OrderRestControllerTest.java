@@ -79,9 +79,7 @@ public class OrderRestControllerTest extends ControllerTest {
     @DisplayName("주문목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnOrders() throws Exception {
-        List<Order> orders = getOrders(Order.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .build(), 5);
+        List<OrderResponse> orders = Arrays.asList(new OrderResponse(),new OrderResponse());
         doReturn(orders).when(orderService).list();
 
         webMvc.perform(get("/api/orders"))
@@ -96,24 +94,6 @@ public class OrderRestControllerTest extends ControllerTest {
                         .orderTable(order.getOrderTable())
                         .orderStatus(order.getOrderStatus())
                         .orderLineItems(order.getOrderLineItems())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    private Order getOrder() {
-        return Order.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .orderLineItems(getOrderLineItems())
-                .orderStatus(OrderStatus.COOKING.name())
-                .orderTable(OrderTable.builder().id(13l).build())
-                .build();
-    }
-
-    private List<OrderLineItem> getOrderLineItems() {
-        return IntStream.rangeClosed(1, 20)
-                .mapToObj(value -> OrderLineItem.builder()
-                        .seq(Arbitraries.longs().between(1, 20).sample())
-                        .order(Order.builder().id(14l).orderTable(OrderTable.builder().build()).build())
                         .build())
                 .collect(Collectors.toList());
     }
