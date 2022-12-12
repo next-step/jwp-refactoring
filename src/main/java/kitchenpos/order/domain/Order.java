@@ -1,11 +1,9 @@
 package kitchenpos.order.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -20,14 +18,15 @@ public class Order {
     private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     private Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -54,10 +53,6 @@ public class Order {
         return orderTable.getId();
     }
 
-    public void setOrderTable(final OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
     }
@@ -66,27 +61,46 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
-        if(CollectionUtils.isEmpty(this.orderLineItems)){
-            this.orderLineItems = new ArrayList<>();
-        }
-        this.orderLineItems.add(orderLineItem);
+        this.orderLineItems.addItem(orderLineItem);
         orderLineItem.setOrder(this);
+    }
+
+    public void checkOrderLineItemNotEmpty() {
+        this.orderLineItems.checkNotEmpty();
+    }
+
+    public List<Long> getMenuIds() {
+        return this.orderLineItems.getMenuIds();
+    }
+
+    public void checkItemCountValid(int menuCount) {
+        if(this.orderLineItems.count() != menuCount){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void prepareNewOrder(OrderTable orderTable) {
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderedTime = LocalDateTime.now();
+    }
+
+    public void throwIfCompleted() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), getOrderStatus())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return this.orderedTime;
     }
 }

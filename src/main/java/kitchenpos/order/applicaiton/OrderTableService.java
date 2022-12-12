@@ -29,6 +29,11 @@ public class OrderTableService {
         return orderTableRepository.save(orderTable);
     }
 
+    public OrderTable findOrderTable(Long orderTableId){
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
     }

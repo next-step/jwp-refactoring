@@ -1,83 +1,46 @@
 package kitchenpos.order.applicaiton;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderTableService orderTableService;
 
     public OrderService(
             MenuRepository menuRepository, final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
-            OrderTableRepository orderTableRepository) {
+            OrderTableService orderTableService) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderTableService = orderTableService;
     }
 
     @Transactional
     public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
+        order.checkOrderLineItemNotEmpty();
+        order.checkItemCountValid(menuRepository.countByIdIn(order.getMenuIds()));
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
+        final OrderTable orderTable = orderTableService.findOrderTable(order.getOrderTableId());
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTable(orderTable);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderRepository.save(order);
-
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
+        order.prepareNewOrder(orderTable);
+        return orderRepository.save(order);
     }
 
     public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrder(order));
-        }
-
-        return orders;
+        return orderRepository.findAll();
     }
 
     @Transactional
@@ -85,17 +48,8 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
-        orderRepository.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrder(savedOrder));
-
+        savedOrder.throwIfCompleted();
+        savedOrder.changeOrderStatus(order.getOrderStatus());
         return savedOrder;
     }
 }

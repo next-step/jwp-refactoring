@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.applicaiton.OrderService;
+import kitchenpos.order.applicaiton.OrderTableService;
 import kitchenpos.order.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,7 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderTableService orderTableService;
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
     @InjectMocks
@@ -82,7 +83,7 @@ public class OrderServiceTest {
     public void createTableNotExistsException() {
         final int menuCountById = 1;
         given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.empty());
+        given(orderTableService.findOrderTable(order.getOrderTableId())).willThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -93,7 +94,7 @@ public class OrderServiceTest {
         OrderTable orderTable = getOrderTable(orderTableId, tableGroup, numberOfGuests, true);
         final int menuCountById = 1;
         given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableService.findOrderTable(order.getOrderTableId())).willReturn(emptyOrderTable);
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -105,13 +106,10 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 생성")
     public void create() {
-        OrderTable orderTable = getOrderTable(orderTableId, null, numberOfGuests, false);
-
         final int menuCountById = 1;
         given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableService.findOrderTable(order.getOrderTableId())).willReturn(orderTable);
         given(orderRepository.save(order)).willReturn(order);
-        given(orderLineItemRepository.save(orderLineItem)).willReturn(orderLineItem);
 
         Order createdOrder = orderService.create(order);
         assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
