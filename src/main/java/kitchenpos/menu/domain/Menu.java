@@ -1,52 +1,73 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.price.domain.Amount;
+import kitchenpos.price.domain.Price;
+import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+
+import static java.util.Objects.requireNonNull;
+
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private Price price;
+    @Column(nullable = false)
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = requireNonNull(name, "menuGroupId");
+        this.price = new Price(price);
+        this.menuGroupId = requireNonNull(menuGroupId, "menuGroupId");
+    }
+
+    protected Menu() {
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        validateAmount(menuProducts);
+        this.menuProducts.addAll(this, menuProducts);
+    }
+
+    private void validateAmount(List<MenuProduct> menuProducts) {
+        Amount amount = calculateAmount(menuProducts);
+        if (price.toAmount().isGatherThan(amount)) {
+            throw new IllegalArgumentException("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
+        }
+    }
+
+    private Amount calculateAmount(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+                .map(MenuProduct::calculateAmount)
+                .reduce(Amount.ZERO, Amount::add);
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        return menuProducts.get();
     }
 }
