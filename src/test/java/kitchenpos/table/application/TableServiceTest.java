@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -96,12 +97,16 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
+        List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
+                .set("orderStatus",OrderStatus.COOKING.name())
+                .sampleList(5);
         OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .setNull("tableGroupId")
                 .sample();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
-        doReturn(true).when(orderDao).existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
+        doReturn(orders).when(orderDao)
+                .findAllByOrderTableId(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
@@ -109,6 +114,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")
     @Test
     public void returnOrderTableWithEmpty() {
+        List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
+                .set("orderStatus",OrderStatus.COMPLETION.name())
+                .sampleList(5);
         OrderTable orderTable = fixtureMonkey
                 .giveMeBuilder(OrderTable.class)
                 .setNull("tableGroupId")
@@ -120,9 +128,7 @@ public class TableServiceTest {
                 .set("empty", true)
                 .sample();
         doReturn(Optional.ofNullable(savedTable)).when(orderTableDao).findById(orderTable.getId());
-        doReturn(false).when(orderDao).existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
         doReturn(savedTable).when(orderTableDao).save(savedTable);
-
         assertThat(tableService.changeEmpty(orderTable.getId(), orderTable).isEmpty()).isFalse();
     }
 
