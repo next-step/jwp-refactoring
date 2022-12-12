@@ -4,7 +4,6 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +29,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("주문 테이블 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderTableServiceTest {
-
-    @Mock
-    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;

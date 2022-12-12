@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,19 +15,13 @@ import java.util.List;
 
 import static kitchenpos.acceptance.MenuAcceptanceStep.*;
 import static kitchenpos.acceptance.MenuGroupAcceptanceStep.등록된_메뉴_그룹;
-import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
 import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuTestFixture.createMenu;
-import static kitchenpos.fixture.ProductTestFixture.createProduct;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private ProductResponse 짜장면;
-    private ProductResponse 짬뽕;
-    private ProductResponse 탕수육;
-    private ProductResponse 단무지;
     private MenuGroup 중국집_1인_메뉴_세트;
     private MenuProduct 짜장면메뉴상품;
     private MenuProduct 짬뽕메뉴상품;
@@ -41,10 +34,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         중국집_1인_메뉴_세트 = 등록된_메뉴_그룹(createMenuGroup("중국집_1인_메뉴_세트")).as(MenuGroup.class);
-        짜장면 = 등록된_상품(createProduct("짜장면", BigDecimal.valueOf(8000L))).as(ProductResponse.class);
-        짬뽕 = 등록된_상품(createProduct("짬뽕", BigDecimal.valueOf(9000L))).as(ProductResponse.class);
-        탕수육 = 등록된_상품(createProduct("탕수육", BigDecimal.valueOf(12000L))).as(ProductResponse.class);
-        단무지 = 등록된_상품(createProduct("단무지", BigDecimal.valueOf(0L))).as(ProductResponse.class);
         짜장면메뉴상품 = 짜장면메뉴상품();
         탕수육메뉴상품 = 탕수육메뉴상품();
         짬뽕메뉴상품 = 짬뽕메뉴상품();

@@ -3,7 +3,6 @@ package kitchenpos.application;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
@@ -28,7 +27,6 @@ import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세�
 import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuTestFixture.createMenu;
 import static kitchenpos.fixture.MenuTestFixture.메뉴_세트_생성;
-import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,10 +46,6 @@ class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
 
-    private Product 짜장면;
-    private Product 짬뽕;
-    private Product 탕수육;
-    private Product 단무지;
     private MenuGroup 중국집_1인_메뉴_세트;
     private MenuProduct 짜장면메뉴상품;
     private MenuProduct 짬뽕메뉴상품;
@@ -60,15 +54,10 @@ class MenuServiceTest {
     private MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청;
     private MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청;
     private Menu 짜장면_탕수육_1인_메뉴_세트;
-    private Menu 짬뽕_탕수육_1인_메뉴_세트;
 
     @BeforeEach
     public void setUp() {
         중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청());
-        짜장면 = 상품생성(짜장면_요청());
-        탕수육 = 상품생성(탕수육_요청());
-        짬뽕 = 상품생성(짬뽕_요청());
-        단무지 = 상품생성(단무지_요청());
         짜장면메뉴상품 = 짜장면메뉴상품();
         짬뽕메뉴상품 = 짬뽕메뉴상품();
         탕수육메뉴상품 = 탕수육메뉴상품();
@@ -78,7 +67,6 @@ class MenuServiceTest {
         짬뽕_탕수육_1인_메뉴_세트_요청 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
-        짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청);
     }
 
     @DisplayName("메뉴 생성 작업을 성공한다.")
