@@ -77,7 +77,7 @@ public class OrderTableServiceTest {
         OrderTable orderTable = OrderTable.of(1L, null, 4, false);
 
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), orderTable))
@@ -90,20 +90,17 @@ public class OrderTableServiceTest {
         OrderTable emptyOrderTable = OrderTable.of(1L, null, 4, true);
 
         given(orderTableRepository.findById(emptyOrderTable.getId())).willReturn(Optional.of(emptyOrderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(emptyOrderTable.getId(),
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(emptyOrderTable,
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-        given(orderTableRepository.save(emptyOrderTable)).willReturn(emptyOrderTable);
 
         assertThat(orderTableService.changeEmpty(orderTable.getId(), emptyOrderTable).isEmpty()).isEqualTo(
                 emptyOrderTable.isEmpty());
     }
 
     @Test
-    @DisplayName("고객 수 변경 시 0 미만이면 Exception")
+    @DisplayName("고객 수는 0 미만이면 Exception")
     public void throwExceptionNumberOfGuestsIsNotPositive() {
-        OrderTable orderTable = OrderTable.of(1L, null, -1, true);
-
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
+        assertThatThrownBy(() -> OrderTable.of(1L, null, -1, true)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -128,7 +125,6 @@ public class OrderTableServiceTest {
     @DisplayName("고객 수 변경")
     public void changeNumberOfGuests() {
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         assertThat(orderTableService.changeNumberOfGuests(1L, orderTable).getNumberOfGuests())
                 .isEqualTo(orderTable.getNumberOfGuests());

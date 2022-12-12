@@ -16,11 +16,16 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    protected OrderTable() {
+    }
+
+    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+
+        checkValidNumberOfGuests(numberOfGuests);
     }
 
     public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -47,7 +52,8 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        checkValidNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -57,5 +63,17 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public void throwIfTableGroupExist() {
+        if (Objects.nonNull(getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkValidNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }
