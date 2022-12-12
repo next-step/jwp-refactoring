@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
+
 public class OrderTable {
     public static final String TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE = "테이블 그룹이 존재하지 않습니다.";
     public static final String NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "0명보다 작을 수 없다.";
@@ -73,7 +75,7 @@ public class OrderTable {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException(NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
         }
-        if (this.tableGroupId == null) {
+        if (Objects.isNull(tableGroupId)) {
             throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
         }
         if (isEmpty()) {

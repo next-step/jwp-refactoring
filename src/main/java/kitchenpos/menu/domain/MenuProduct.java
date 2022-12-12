@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import java.util.Objects;
+
 public class MenuProduct {
     public static final String MENU_NULL_EXCEPTION_MESSAGE = "메뉴는 필수입니다.";
     public static final String PRODUCT_NULL_EXCEPTION_MESSAGE = "메뉴는 필수입니다.";
@@ -18,13 +20,13 @@ public class MenuProduct {
     }
 
     private static void validate(Long menuId, Long productId, Long quantity) {
-        if (menuId == null) {
+        if (Objects.isNull(menuId)) {
             throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
         }
-        if (productId == null) {
+        if (Objects.isNull(productId)) {
             throw new IllegalArgumentException(PRODUCT_NULL_EXCEPTION_MESSAGE);
         }
-        if (quantity == null) {
+        if (Objects.isNull(quantity)) {
             throw new IllegalArgumentException(QUANTITY_NULL_EXCEPTION_MESSAGE);
         }
     }

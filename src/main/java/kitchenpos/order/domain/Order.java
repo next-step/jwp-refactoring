@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
 
@@ -19,7 +20,7 @@ public class Order {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
         }
-        if (orderTableId == null) {
+        if (Objects.isNull(orderTableId)) {
             throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
         }
         this.orderTableId = orderTableId;
