@@ -9,6 +9,7 @@ import java.util.Objects;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menu_id")
     private Long id;
 
     @Column(nullable = false)
@@ -18,7 +19,7 @@ public class Menu {
     private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
     @Embedded
@@ -27,11 +28,9 @@ public class Menu {
     public Menu(long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.of(this, menuProducts);
-
     }
 
     public static Menu of(long id, String name, BigDecimal price) {

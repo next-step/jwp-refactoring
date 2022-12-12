@@ -10,11 +10,11 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
     private long quantity;
 

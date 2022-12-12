@@ -29,17 +29,15 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품의 가격이 null이면 exception이 발생함")
     void throwExceptionWhenProductPriceIsNull() {
-        Product product = Product.of(1L, "상품", null);
-
-        assertThatThrownBy(() -> service.create(product)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Product.of(1L, "상품", null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("상품의 가격이 음수이면 exception이 발생함")
     void throwExceptionWhenProductPriceIsNegative() {
-        Product product = Product.of(1L, "상품", BigDecimal.valueOf(-1));
-
-        assertThatThrownBy(() -> service.create(product)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Product.of(1L, "상품", BigDecimal.valueOf(-1)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

@@ -6,6 +6,7 @@ import javax.persistence.*;
 public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menu_group_id")
     private Long id;
     @Column(nullable = false, unique = true)
     private String name;
