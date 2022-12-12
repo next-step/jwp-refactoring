@@ -47,4 +47,13 @@ class OrderTableTest {
         orderTable.empty();
         assertThat(orderTable.isEmpty()).isTrue();
     }
+
+    @DisplayName("테이블 그룹을 해제한다.")
+    @Test
+    void ungroup() {
+        OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
+        assertThat(orderTable.getTableGroupId()).isNotNull();
+        orderTable.unGroup();
+        assertThat(orderTable.getTableGroupId()).isNull();
+    }
 }

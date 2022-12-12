@@ -56,4 +56,8 @@ public class OrderTable {
         }
         this.empty = true;
     }
+
+    public void unGroup() {
+        this.tableGroupId = null;
+    }
 }
