@@ -149,6 +149,7 @@ completePayment() vs setOrderState()
 * 애플리케이션 모듈
   * `kithenpos-app`: 독립적으로 실행할 수 있도록 다른 모듈들을 포함하여 구성하였습니다.
 * 참고 링크
+  * [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
   * [우아한 멀티 모듈 세미나 정리](https://hyeon9mak.github.io/woowahan-multi-module/)
   * [멀티모듈 설계 이야기 with Spring, Gradle](https://techblog.woowahan.com/2637/)
 * 멀티 모듈 구현 작업에 대한 구조를 `kitchenpos-app/src/main/resources/static/multi-module.png` 경로의 이미지로 정리해보았습니다.
