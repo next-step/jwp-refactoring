@@ -10,7 +10,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -51,14 +49,13 @@ public class OrderRestControllerTest extends ControllerTest {
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
 
         doReturn(OrderResponse.of(Order.builder().id(14l)
-                        .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().id(35l).build()).build()))
-                        .orderTable(OrderTable.builder().build())
+                .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().id(35l).build()).build()))
+                .orderTable(OrderTable.builder().build())
                 .build())).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
-                .content(mapper.writeValueAsString(orderRequest))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(14)))
+                        .content(mapper.writeValueAsString(orderRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 
@@ -71,15 +68,15 @@ public class OrderRestControllerTest extends ControllerTest {
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
         doThrow(new IllegalArgumentException()).when(orderService).create(any(OrderRequest.class));
         webMvc.perform(post("/api/orders")
-                .content(mapper.writeValueAsString(orderRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(orderRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("주문목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnOrders() throws Exception {
-        List<OrderResponse> orders = Arrays.asList(new OrderResponse(),new OrderResponse());
+        List<OrderResponse> orders = Arrays.asList(new OrderResponse(), new OrderResponse());
         doReturn(orders).when(orderService).list();
 
         webMvc.perform(get("/api/orders"))

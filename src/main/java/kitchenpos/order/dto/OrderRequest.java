@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -36,12 +37,13 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
     }
 
+
     public Long getOrderTableId() {
         return orderTableId;
     }
 
     public List<Long> getMenuIds() {
-        return orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
+        return orderLineItems == null ? Collections.EMPTY_LIST : orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
     }
 
     public Order toOrder(OrderTable orderTable, String orderStatus, List<Menu> menus) {
