@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -62,7 +63,7 @@ public class OrderServiceTest {
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
         doReturn(Optional.ofNullable(OrderTable.builder().build()))
                 .when(orderTableRepository).findById(orderRequest.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().build(),Menu.builder().build()))
+        doReturn(Arrays.asList(Menu.builder().build(), Menu.builder().build()))
                 .when(menuRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -135,14 +136,12 @@ public class OrderServiceTest {
         assertThat(findOrders).hasSize(30);
     }
 
-    /*
     @DisplayName("주문상태를 수정할 경우 등록된 주문이 아니면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsOrder() {
-        Long orderId = Arbitraries.longs().between(1, 1000).sample();
-        doReturn(Optional.empty()).when(orderDao).findById(orderId);
+        doReturn(Optional.empty()).when(orderRepository).findById(anyLong());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, Order.builder().build()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1l, OrderStatus.COOKING.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -151,36 +150,31 @@ public class OrderServiceTest {
     public void throwsExceptionWhenCompleteOrder() {
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
+                .orderTable(OrderTable.builder().build())
                 .orderStatus(OrderStatus.COMPLETION.name())
                 .build();
-        doReturn(Optional.ofNullable(order)).when(orderDao).findById(order.getId());
+        doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), Order.builder().build()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문상태를 수정할 경우 수정된 주문반환")
     @Test
     public void returnOrderWithChangedStatus() {
-        Long orderId = Arbitraries.longs().between(1, 1000).sample();
-        Order findOrder = Order.builder()
-                .id(Arbitraries.longs().between(1, 1000).sample())
-                .orderStatus(OrderStatus.COOKING.name())
-                .build();
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
-                .orderStatus(OrderStatus.COMPLETION.name())
+                .orderTable(OrderTable.builder().build())
+                .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
+                .orderStatus(OrderStatus.COOKING.name())
                 .build();
-        List<OrderLineItem> orderLineItems = getOrderLineItems();
-        doReturn(Optional.ofNullable(findOrder)).when(orderDao).findById(orderId);
-        doReturn(orderLineItems).when(orderLineItemDao).findAllByOrder(any(Order.class));
+        doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
+        doReturn(order).when(orderRepository).save(any(Order.class));
 
-        Order savedOrder = orderService.changeOrderStatus(orderId, order);
+        OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION.name());
 
-        assertAll(
-                () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name()),
-                () -> assertThat(savedOrder.getOrderLineItems()).containsAll(orderLineItems));
-    }*/
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+    }
 
     private List<Order> getOrders(Order order, int size) {
         return IntStream.rangeClosed(1, size)

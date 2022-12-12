@@ -93,6 +93,13 @@ public class Order {
         return new OrderBuilder();
     }
 
+    public void changeOrderStatus(String orderStatus) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
+            throw new IllegalArgumentException();
+        }
+        this.orderStatus = orderStatus;
+    }
+
     public static class OrderBuilder {
         private Long id;
         private OrderTable orderTable;

@@ -65,16 +65,10 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
+    public OrderResponse changeOrderStatus(final Long orderId, final String status) {
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-        orderRepository.save(savedOrder);
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrder(savedOrder));
-        return savedOrder;
+        order.changeOrderStatus(status);
+        return OrderResponse.of(orderRepository.save(order));
     }
 }
