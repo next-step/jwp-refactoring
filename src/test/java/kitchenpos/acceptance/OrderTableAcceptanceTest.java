@@ -2,7 +2,6 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.*;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
-import static kitchenpos.fixture.OrderTableTestFixture.주문테이블_생성;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {

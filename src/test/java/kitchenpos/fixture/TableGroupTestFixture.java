@@ -8,9 +8,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.OrderTableTestFixture.주문테이블1_요청;
-import static kitchenpos.fixture.OrderTableTestFixture.주문테이블_생성;
-
 public class TableGroupTestFixture {
 
     public static TableGroupRequest createTableGroup(Long id, LocalDateTime createTime, List<OrderTable> orderTables) {

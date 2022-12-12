@@ -28,7 +28,7 @@ class OrderTest {
         List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
 
         // when
-        Order order = Order.of(expectedId, OrderTable.of(1L, null, 10, true), expectedOrderLineItems);
+        Order order = Order.of(expectedId, OrderTable.of(1L, null, 10, false), expectedOrderLineItems);
 
         // then
         assertAll(

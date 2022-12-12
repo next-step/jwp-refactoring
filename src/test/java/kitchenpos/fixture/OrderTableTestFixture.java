@@ -23,7 +23,11 @@ public class OrderTableTestFixture {
         return createOrderTable(1L, null, 10, false);
     }
 
-    public static OrderTable 주문테이블_생성(OrderTableRequest request) {
+    public static OrderTable 그룹_있는_주문테이블_생성(OrderTableRequest request) {
         return OrderTable.of(request.getId(), createTableGroup(), request.getNumberOfGuests(), request.isEmpty());
+    }
+
+    public static OrderTable 그룹_없는_주문테이블_생성(OrderTableRequest request) {
+        return OrderTable.of(request.getId(), null, request.getNumberOfGuests(), request.isEmpty());
     }
 }

@@ -46,8 +46,8 @@ class OrderTableServiceTest {
     void setUp() {
         주문테이블1_요청 = 주문테이블1_요청();
         주문테이블2_요청 = 주문테이블1_요청();
-        주문테이블1 = 주문테이블_생성(주문테이블1_요청);
-        주문테이블2 = 주문테이블_생성(주문테이블2_요청);
+        주문테이블1 = 그룹_없는_주문테이블_생성(주문테이블1_요청);
+        주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블2_요청);
     }
 
     @DisplayName("주문 테이블 생성 작업을 성공한다.")
@@ -100,7 +100,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmptyWithException1() {
         // given
-        OrderTable orderTable = 주문테이블_생성(createOrderTable(1L, 1L, 10, true));
+        OrderTable orderTable = 그룹_있는_주문테이블_생성(createOrderTable(1L, 1L, 10, true));
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
@@ -138,7 +138,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException1() {
         // given
-        OrderTable orderTable = 주문테이블_생성(createOrderTable(3L, null, -1, false));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(3L, null, -1, false));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -150,7 +150,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException2() {
         // given
-        OrderTable orderTable = 주문테이블_생성(createOrderTable(3L, 1L, 10, true));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(3L, 1L, 10, true));
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
