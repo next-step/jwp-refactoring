@@ -27,17 +27,21 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        TableGroup tableGroup = null;
+        validateTableGroupId(request.getTableGroupId());
 
-        if (Objects.nonNull(request.getTableGroupId())) {
-            tableGroup = tableGroupRepository.findById(request.getTableGroupId())
-                    .orElseThrow(() -> new IllegalArgumentException("테이블 그룹을 찾을 수 없습니다."));
-        }
+        TableGroup tableGroup = tableGroupRepository.findById(request.getTableGroupId())
+                .orElseThrow(() -> new IllegalArgumentException("테이블 그룹을 찾을 수 없습니다."));
 
         OrderTable orderTable =
                 OrderTable.of(request.getId(), tableGroup, request.getNumberOfGuests(), request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
+    }
+
+    private void validateTableGroupId(final Long tableGroupId) {
+        if (Objects.isNull(tableGroupId)) {
+            throw new IllegalArgumentException("요청한 테이블그룹 아이디가 존재하지 않습니다.");
+        }
     }
 
     public List<OrderTableResponse> list() {
@@ -58,20 +62,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }

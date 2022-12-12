@@ -47,7 +47,15 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -60,7 +68,7 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
 
-        if(isNotCompletedOrders()) {
+        if (isNotCompletedOrders()) {
             throw new IllegalArgumentException();
         }
 

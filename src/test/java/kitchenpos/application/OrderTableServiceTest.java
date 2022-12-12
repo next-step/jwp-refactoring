@@ -126,7 +126,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsInTable() {
         // given
-        주문테이블1.setNumberOfGuests(10);
+        주문테이블1.changeNumberOfGuests(10);
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderTableRepository.save(주문테이블1)).thenReturn(주문테이블1);
 
