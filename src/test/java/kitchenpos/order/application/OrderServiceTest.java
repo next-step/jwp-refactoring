@@ -1,16 +1,15 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.fixture.OrderFixture;
+import kitchenpos.fixture.OrderLineItemFixture;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.fixture.OrderFixture;
-import kitchenpos.fixture.OrderLineItemFixture;
-import kitchenpos.order.application.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -69,7 +68,7 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn((long) 주문.getOrderLineItems().size());
+        when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable()));
         when(orderDao.save(any())).thenReturn(주문);
 
@@ -95,7 +94,7 @@ class OrderServiceTest {
     @Test
     void create_error_duplicated_order_item() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn(100L);
+        when(menuRepository.countByIdIn(any())).thenReturn(100);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -106,7 +105,7 @@ class OrderServiceTest {
     @Test
     void create_error_order_table_empty() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn((long) 주문.getOrderLineItems().size());
+        when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         // when && then
@@ -120,7 +119,7 @@ class OrderServiceTest {
         // given
         OrderTable 주문_테이블 = new OrderTable();
         주문_테이블.setEmpty(true);
-        when(menuDao.countByIdIn(any())).thenReturn((long) 주문.getOrderLineItems().size());
+        when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
 
         // when && then

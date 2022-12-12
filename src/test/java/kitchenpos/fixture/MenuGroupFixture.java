@@ -7,4 +7,5 @@ public class MenuGroupFixture {
     public static MenuGroup create(String name) {
         return new MenuGroup(name);
     }
+
 }
