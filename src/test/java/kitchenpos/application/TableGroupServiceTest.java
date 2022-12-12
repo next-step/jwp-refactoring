@@ -21,7 +21,7 @@ import java.util.Arrays;
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
 import static kitchenpos.fixture.OrderTableTestFixture.그룹_없는_주문테이블_생성;
-import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
+import static kitchenpos.fixture.TableGroupTestFixture.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -53,7 +53,7 @@ class TableGroupServiceTest {
     void setUp() {
         주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, true));
         주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(2L, null, 20, true));
-        단체1_요청 = createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
+        단체1_요청 = createTableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2));
         단체1 = TableGroup.of(단체1_요청.getId(), 단체1_요청.getOrderTables(), 단체1_요청.getOrderTables());
     }
 
@@ -80,7 +80,7 @@ class TableGroupServiceTest {
     @Test
     void createWithException1() {
         // given
-        TableGroupRequest tableGroupRequest = createTableGroup(3L, null, singletonList(주문테이블1));
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(singletonList(주문테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -91,7 +91,7 @@ class TableGroupServiceTest {
     void createWithException2() {
         // given
         OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(null, 10, false));
-        TableGroupRequest tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블1));
+        TableGroupRequest tableGroup = createTableGroupRequest(Arrays.asList(orderTable, 주문테이블1));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));
 
@@ -104,7 +104,7 @@ class TableGroupServiceTest {
     void createWithException3() {
         // given
         OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(3L, 10, true));
-        TableGroupRequest tableGroup = createTableGroup(3L, null, Arrays.asList(orderTable, 주문테이블1));
+        TableGroupRequest tableGroup = createTableGroupRequest(Arrays.asList(orderTable, 주문테이블1));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));
 
