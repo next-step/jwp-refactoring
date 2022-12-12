@@ -17,7 +17,7 @@ public class TableService {
     public static final String CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "변경하는 손님수는 0명보다 작을 수 없습니다.";
     public static final int CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER = 0;
     public static final String TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "테이블이 공석 상태면 손님수를 변경할 수 없다.";
-    public static final String TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "테이블 그룹이 없습니다.";
+    public static final String TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "테이블 그룹이 있습니다.";
     public static final String ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE = "완료 상태만 변경 가능합니다";
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
