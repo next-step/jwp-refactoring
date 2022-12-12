@@ -1,10 +1,10 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProductRequest;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenuRequest;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -18,17 +18,17 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,10 +47,10 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private ProductRepository productRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
@@ -93,11 +93,10 @@ public class MenuServiceTest {
     void createMenu() {
         // given
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), 불고기버거세트.getPrice(), 햄버거세트.getId(), 불고기버거상품요청);
-        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(햄버거세트));
         given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
         given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
-        given(menuRepository.save(menuRequest.toMenu(햄버거세트, MenuProducts.from(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품))))).willReturn(불고기버거세트);
+        given(menuRepository.save(menuRequest.toMenu(MenuProducts.from(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품))))).willReturn(불고기버거세트);
 
         // when
         MenuResponse menuResponse = menuService.create(menuRequest);
@@ -131,26 +130,12 @@ public class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
-    @DisplayName("존재하는 메뉴 그룹에 속하지 않는 메뉴는 생성할 수 없다.")
-    @Test
-    void createMenuThrowErrorWhenMenuGroupIsNotExists() {
-        // given
-        Long notExistsMenuGroupId = 10L;
-        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(8500L), notExistsMenuGroupId, 불고기버거상품요청);
-        given(menuGroupRepository.findById(notExistsMenuGroupId)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage(ErrorCode.존재하지_않는_메뉴_그룹.getErrorMessage());
-    }
-
     @DisplayName("메뉴에 메뉴 상품이 존재하지 않으면 해당 메뉴를 생성할 수 없다.")
     @Test
     void createMenuThrowErrorWhenMenuProductIsEmpty() {
         // given
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(3000L), 햄버거세트.getId(), menuProductRequests);
-        given(menuGroupRepository.findById(햄버거세트.getId())).willReturn(Optional.of(햄버거세트));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest))
@@ -165,7 +150,6 @@ public class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(generateMenuProductRequest(notExistsMenuProductId, 1L));
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(3000L), 햄버거세트.getId(), menuProductRequests);
-        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(햄버거세트));
         given(productRepository.findById(notExistsMenuProductId)).willReturn(Optional.empty());
 
         // when & then
@@ -178,7 +162,6 @@ public class MenuServiceTest {
     void createMenuThrowErrorWhenMenuPriceIsBiggerThanMenuProductsPriceSum() {
         // given
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(9500L), 햄버거세트.getId(), 불고기버거상품요청);
-        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(햄버거세트));
         given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
         given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));

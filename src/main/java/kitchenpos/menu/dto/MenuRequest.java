@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProducts;
 
 public class MenuRequest {
@@ -23,8 +22,8 @@ public class MenuRequest {
         this.menuProductRequests = new ArrayList<>(menuProductRequests);
     }
 
-    public Menu toMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-        return Menu.of(name, price, menuGroup.getId(), menuProducts);
+    public Menu toMenu(MenuProducts menuProducts) {
+        return Menu.of(name, price, menuGroupId, menuProducts);
     }
 
     public String getName() {
