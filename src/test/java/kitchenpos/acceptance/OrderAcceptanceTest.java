@@ -24,7 +24,7 @@ import static kitchenpos.acceptance.OrderTableAcceptanceStep.등록된_주문_�
 import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
 import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
-import static kitchenpos.fixture.MenuTestFixture.*;
+import static kitchenpos.fixture.MenuTestFixture.createMenu;
 import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
 import static kitchenpos.fixture.OrderTestFixture.createOrder;

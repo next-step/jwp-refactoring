@@ -19,7 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.fixture.OrderTableTestFixture.*;
+import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.그룹_없는_주문테이블_생성;
 import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;

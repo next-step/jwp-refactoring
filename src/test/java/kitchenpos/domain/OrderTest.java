@@ -9,7 +9,7 @@ import java.util.List;
 import static kitchenpos.fixture.MenuTestFixture.*;
 import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTest {
 
