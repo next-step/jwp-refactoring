@@ -1,8 +1,7 @@
 package kitchenpos.product.application;
 
-import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,14 +55,14 @@ public class ProductServiceTest {
     @DisplayName("상품등록 가격 데이터가 없을 경우 오류 테스트")
     @Test
     void createProductPriceNullExceptionTest() {
-        assertThatThrownBy(() -> productService.create(new Product(3L, "멸추김밥", null)))
+        assertThatThrownBy(() -> productService.create(new Product(참치김밥.getId(), 참치김밥.getName(), null)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품등록 가격 데이터가 0보다 작은 경우 오류 테스트")
     @Test
     void createProductPriceUnderZeroExceptionTest(Long input) {
-        assertThatThrownBy(() -> productService.create(new Product(4L, "멸추김밥", new BigDecimal(-1))))
+        assertThatThrownBy(() -> productService.create(new Product(참치김밥.getId(), 참치김밥.getName(), new BigDecimal(-1))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

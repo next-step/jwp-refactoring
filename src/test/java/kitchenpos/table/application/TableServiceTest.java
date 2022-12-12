@@ -91,7 +91,8 @@ public class TableServiceTest {
     void changeNumberOfGuestsTest() {
         //given
         int changeGuestNumber = 2;
-        when(orderTableDao.findById(주문테이블.getId())).thenReturn(Optional.ofNullable(주문테이블));
+        when(orderTableDao.findById(주문테이블.getId()))
+                .thenReturn(Optional.ofNullable(주문테이블));
         when(orderTableDao.save(주문테이블)).thenReturn(주문테이블);
         OrderTable 변경주문테이블 =
                 new OrderTable(주문테이블.getId(), 주문테이블.getTableGroupId(), changeGuestNumber, false);
@@ -106,8 +107,11 @@ public class TableServiceTest {
     @DisplayName("게스트숫자 0보다 작은 값으로 변경 오류 테스트")
     @Test
     void changeNumberOfGuestsUnderZeroExceptionTest() {
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L,
-                new OrderTable(3L, 1L, -1, false)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(),
+                new OrderTable(주문테이블.getId(),
+                        주문테이블.getTableGroupId(),
+                        -1,
+                        주문테이블.isEmpty())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -116,8 +120,8 @@ public class TableServiceTest {
     void changeNumberOfGuestNotExistTableIdExceptionTest() {
         when(orderTableDao.findById(4L)).thenReturn(Optional.ofNullable(null));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(4L,
-                new OrderTable(4L, 1L, 3, false)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(),
+                new OrderTable(주문테이블.getId(), 주문테이블.getTableGroupId(), 3, 주문테이블.isEmpty())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

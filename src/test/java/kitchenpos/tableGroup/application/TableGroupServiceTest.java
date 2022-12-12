@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
 
+    private static final List<String> NOT_COMPLETED_STATUSES = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+
     @Mock
     private OrderDao orderDao;
 
@@ -46,8 +48,7 @@ public class TableGroupServiceTest {
         final OrderTable 주문테이블2 = new OrderTable(2L, null, 4, true);
         final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
 
-        when(orderTableDao.findAllByIdIn(테이블그룹.getOrderTables().stream()
-                .map(OrderTable::getId).collect(Collectors.toList())))
+        when(orderTableDao.findAllByIdIn(orderTablesToIds(테이블그룹.getOrderTables())))
                 .thenReturn(테이블그룹.getOrderTables());
         when(tableGroupDao.save(테이블그룹)).thenReturn(테이블그룹);
         for (final OrderTable savedOrderTable : 테이블그룹.getOrderTables()) {
@@ -59,9 +60,9 @@ public class TableGroupServiceTest {
 
         //then
         assertThat(result).isEqualTo(테이블그룹);
-        assertThat(result.getOrderTables().stream().map(OrderTable::getTableGroupId).collect(Collectors.toList()))
+        assertThat(orderTablesToIds(result.getOrderTables()))
                 .allMatch(테이블그룹.getId()::equals);
-        assertThat(result.getOrderTables().stream().map(OrderTable::isEmpty).collect(Collectors.toList()))
+        assertThat(orderTablesToEmpty(result.getOrderTables()))
                 .allMatch(empty -> !empty);
     }
 
@@ -97,8 +98,8 @@ public class TableGroupServiceTest {
         final OrderTable 주문테이블1 = new OrderTable(1L, null, 4, true);
         final OrderTable 주문테이블2 = new OrderTable(2L, null, 4, true);
         final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
-        when(orderTableDao.findAllByIdIn(
-                테이블그룹.getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList())))
+
+        when(orderTableDao.findAllByIdIn(orderTablesToIds(테이블그룹.getOrderTables())))
                 .thenReturn(Arrays.asList(주문테이블1));
 
         //when
@@ -115,8 +116,7 @@ public class TableGroupServiceTest {
         final OrderTable 주문테이블2 = new OrderTable(2L, null, 4, false);
         final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
 
-        when(orderTableDao.findAllByIdIn(테이블그룹.getOrderTables().stream()
-                .map(OrderTable::getId).collect(Collectors.toList())))
+        when(orderTableDao.findAllByIdIn(orderTablesToIds(테이블그룹.getOrderTables())))
                 .thenReturn(테이블그룹.getOrderTables());
 
         //when
@@ -133,8 +133,7 @@ public class TableGroupServiceTest {
         final OrderTable 주문테이블2 = new OrderTable(2L, 1L, 4, true);
         final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
 
-        when(orderTableDao.findAllByIdIn(테이블그룹.getOrderTables().stream()
-                .map(OrderTable::getId).collect(Collectors.toList())))
+        when(orderTableDao.findAllByIdIn(orderTablesToIds(테이블그룹.getOrderTables())))
                 .thenReturn(테이블그룹.getOrderTables());
 
         //when
@@ -152,9 +151,7 @@ public class TableGroupServiceTest {
                 new OrderTable(2L, tableGroupId, 4, false));
 
         when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesToIds(orderTables), NOT_COMPLETED_STATUSES))
                 .thenReturn(false);
         for (final OrderTable orderTable : orderTables) {
             when(orderTableDao.save(orderTable)).thenReturn(orderTable);
@@ -177,10 +174,9 @@ public class TableGroupServiceTest {
                 new OrderTable(1L, tableGroupId, 4, false),
                 new OrderTable(2L, tableGroupId, 4, false));
 
-        when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderTableDao.findAllByTableGroupId(tableGroupId))
+                .thenReturn(orderTables);
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesToIds(orderTables), NOT_COMPLETED_STATUSES))
                 .thenReturn(true);
 
         //when
@@ -188,4 +184,15 @@ public class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    private List<Long> orderTablesToIds(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Boolean> orderTablesToEmpty(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTable::isEmpty)
+                .collect(Collectors.toList());
+    }
 }

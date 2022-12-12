@@ -8,7 +8,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -103,27 +103,20 @@ public class MenuServiceTest {
     @DisplayName("메뉴등록 가격정보 없을 경우 오류 테스트")
     @Test
     void createMenuPriceNullExceptionTest() {
-        //given
-        MenuProduct 라볶이돈까스세트라볶이 = new MenuProduct(7L, 3L, 3L, 1);
-        MenuProduct 라볶이돈까스세트돈까스 = new MenuProduct(8L, 3L, 4L, 1);
-
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(new Menu(3L, "라볶이돈까스세트", null, 1L,
-                Arrays.asList(라볶이돈까스세트라볶이, 라볶이돈까스세트돈까스))));
+        assertThatThrownBy(() -> menuService.create(new Menu(라볶이세트.getId(), 라볶이세트.getName(), null, 라볶이세트.getMenuGroupId(),
+                라볶이세트.getMenuProducts())))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴등록 가격정보 0보다작은 경우 오류 테스트")
     @Test
     void createMenuPriceUnderZeroExceptionTest() {
-        //given
-        MenuProduct 쫄면돈까스세트쫄면 = new MenuProduct(9L, 4L, 5L, 1);
-        MenuProduct 쫄면돈까스세트돈까스 = new MenuProduct(10L, 4L, 4L, 1);
-
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(new Menu(4L, "쫄면돈까스세트", new BigDecimal(-1), 1L,
-                Arrays.asList(쫄면돈까스세트쫄면, 쫄면돈까스세트돈까스))))
+        assertThatThrownBy(() -> menuService.create(new Menu(라볶이세트.getId(), 라볶이세트.getName(), new BigDecimal(-1), 라볶이세트.getMenuGroupId(),
+                라볶이세트.getMenuProducts())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
