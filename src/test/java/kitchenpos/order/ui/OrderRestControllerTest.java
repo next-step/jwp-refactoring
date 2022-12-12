@@ -6,6 +6,8 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +40,7 @@ public class OrderRestControllerTest extends ControllerTest {
     @Test
     public void returnOrder() throws Exception {
         Order order = getOrder();
-        doReturn(order).when(orderService).create(any(Order.class));
+        doReturn(order).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
                 .content(mapper.writeValueAsString(Menu.builder().build()))
@@ -50,7 +52,7 @@ public class OrderRestControllerTest extends ControllerTest {
     @DisplayName("주문생성을 요청하면 주문생성 실패응답")
     @Test
     public void throwsExceptionWhenOrderCreate() throws Exception {
-        doThrow(new IllegalArgumentException()).when(orderService).create(any(Order.class));
+        doThrow(new IllegalArgumentException()).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
                 .content(mapper.writeValueAsString(Order.builder().build()))
