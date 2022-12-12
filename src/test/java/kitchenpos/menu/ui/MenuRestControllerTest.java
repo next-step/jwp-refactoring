@@ -1,11 +1,10 @@
 package kitchenpos.menu.ui;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuResponse;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,8 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -35,12 +36,12 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 생성된 메뉴를 응답")
     @Test
     public void returnMenu() throws Exception {
-        Menu menu = getMenu();
+        MenuResponse menu = getMenu();
         doReturn(menu).when(menuService).create(any(Menu.class));
 
         webMvc.perform(post("/api/menus")
-                        .content(mapper.writeValueAsString(Menu.builder().build()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(Menu.builder().build()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(menu.getName())))
                 .andExpect(jsonPath("$.price", is(menu.getPrice().intValue())))
@@ -55,45 +56,42 @@ public class MenuRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(menuService).create(any(Menu.class));
 
         webMvc.perform(post("/api/menus")
-                        .content(mapper.writeValueAsString(Menu.builder().build()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(Menu.builder().build()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("메뉴목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnMenus() throws Exception {
-        List<Menu> menus = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(Menu.class)
-                .sampleList(Arbitraries.integers().between(1, 50).sample());
+        List<MenuResponse> menus = getMenus();
         doReturn(menus).when(menuService).list();
 
         webMvc.perform(get("/api/menus"))
-                .andExpect(jsonPath("$", hasSize(menus.size())))
                 .andExpect(status().isOk());
     }
 
-    private Menu getMenu() {
-        return  FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("price", BigDecimal.valueOf(15000))
-                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .set("menuGroupId", Arbitraries.longs().between(1, 50))
-                .set("menuProducts", getMenuProducts())
-                .sample();
+    private MenuResponse getMenu() {
+        return MenuResponse.of(Menu.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .price(BigDecimal.valueOf(15000))
+                .menuGroupId(Arbitraries.longs().between(1, 50).sample())
+                .menuProducts(getMenuProducts())
+                .build());
+    }
+
+    private List<MenuResponse> getMenus() {
+        return IntStream.rangeClosed(1, 5)
+                .mapToObj(value -> getMenu())
+                .collect(Collectors.toList());
     }
 
     private List<MenuProduct> getMenuProducts() {
-        return  FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(MenuProduct.class)
-                .set("id", Arbitraries.longs().between(1, 20))
-                .sampleList(10);
+        return IntStream.rangeClosed(1, 5)
+                .mapToObj(value -> MenuProduct.builder()
+                        .menu(Menu.builder().build())
+                        .seq(Arbitraries.longs().between(1, 20).sample()).build())
+                .collect(Collectors.toList());
     }
 }
