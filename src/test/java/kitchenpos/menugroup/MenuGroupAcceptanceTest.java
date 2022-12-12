@@ -1,7 +1,7 @@
 package kitchenpos.menugroup;
 
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -27,17 +27,17 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> menuGroup() {
         return Stream.of(
                 dynamicTest("메뉴 그룹을 등록한다.", () -> {
-                    ResponseEntity<MenuGroup> response = 메뉴_그룹_생성_요청("신메뉴");
+                    ResponseEntity<MenuGroupResponse> response = 메뉴_그룹_생성_요청("신메뉴");
 
                     메뉴_그룹_생성됨(response);
                 }),
                 dynamicTest("이름이 없는 메뉴 그룹을 등록한다.", () -> {
-                    ResponseEntity<MenuGroup> response = 메뉴_그룹_생성_요청(null);
+                    ResponseEntity<MenuGroupResponse> response = 메뉴_그룹_생성_요청(null);
 
                     메뉴_그룹_생성_실패됨(response);
                 }),
                 dynamicTest("메뉴 그룹 목록을 조회한다.", () -> {
-                    ResponseEntity<List<MenuGroup>> response = 메뉴_그룹_목록_조회_요청();
+                    ResponseEntity<List<MenuGroupResponse>> response = 메뉴_그룹_목록_조회_요청();
 
                     메뉴_그룹_목록_응답됨(response);
                     메뉴_그룹_목록_확인됨(response, "신메뉴");
@@ -45,38 +45,38 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static MenuGroup 메뉴_그룹_등록됨(String name) {
+    public static MenuGroupResponse 메뉴_그룹_등록됨(String name) {
         return 메뉴_그룹_생성_요청(name).getBody();
     }
 
-    public static ResponseEntity<MenuGroup> 메뉴_그룹_생성_요청(String name) {
+    public static ResponseEntity<MenuGroupResponse> 메뉴_그룹_생성_요청(String name) {
         Map<String, Object> request = new HashMap<>();
         request.put("name", name);
-        return restTemplate().postForEntity("/api/menu-groups", request, MenuGroup.class);
+        return restTemplate().postForEntity("/api/menu-groups", request, MenuGroupResponse.class);
     }
 
-    public static ResponseEntity<List<MenuGroup>> 메뉴_그룹_목록_조회_요청() {
+    public static ResponseEntity<List<MenuGroupResponse>> 메뉴_그룹_목록_조회_요청() {
         return restTemplate().exchange("/api/menu-groups", HttpMethod.GET, null,
-                                       new ParameterizedTypeReference<List<MenuGroup>>() {});
+                                       new ParameterizedTypeReference<List<MenuGroupResponse>>() {});
     }
 
-    public static void 메뉴_그룹_생성됨(ResponseEntity<MenuGroup> response) {
+    public static void 메뉴_그룹_생성됨(ResponseEntity<MenuGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getHeaders().getLocation()).isNotNull();
     }
 
-    public static void 메뉴_그룹_생성_실패됨(ResponseEntity<MenuGroup> response) {
+    public static void 메뉴_그룹_생성_실패됨(ResponseEntity<MenuGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public static void 메뉴_그룹_목록_응답됨(ResponseEntity<List<MenuGroup>> response) {
+    public static void 메뉴_그룹_목록_응답됨(ResponseEntity<List<MenuGroupResponse>> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    public static void 메뉴_그룹_목록_확인됨(ResponseEntity<List<MenuGroup>> response, String... names) {
+    public static void 메뉴_그룹_목록_확인됨(ResponseEntity<List<MenuGroupResponse>> response, String... names) {
         List<String> productNames = response.getBody()
                                             .stream()
-                                            .map(MenuGroup::getName)
+                                            .map(MenuGroupResponse::getName)
                                             .collect(Collectors.toList());
         assertThat(productNames).containsExactly(names);
     }
