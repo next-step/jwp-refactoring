@@ -36,7 +36,7 @@ class TableGroupServiceTest {
     void setUp() {
         주문_좌석_1 = new OrderTable(1L, null, 1, true);
         주문_좌석_2 = new OrderTable(2L, null, 2, true);
-        좌석_그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_좌석_1, 주문_좌석_2));
+        좌석_그룹 = new TableGroup(LocalDateTime.now(), Arrays.asList(주문_좌석_1, 주문_좌석_2));
     }
 
     @Test

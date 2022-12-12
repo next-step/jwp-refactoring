@@ -1,41 +1,48 @@
 package kitchenpos.ui;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 class MenuGroupRestControllerTest extends BaseTest {
     @Test
-    void 생성() throws Exception {
-        String content = objectMapper.writeValueAsString(new MenuGroup("한마리메뉴"));
+    void 생성() {
+        MenuGroup menuGroup = new MenuGroup(1L, "한마리메뉴");
 
-        생성_요청(content);
+        ResponseEntity<MenuGroup> response = 메뉴_그룹_생성_요청(menuGroup);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().getName()).isEqualTo("한마리메뉴");
     }
 
     @Test
-    void 조회() throws Exception {
-        조회_요청();
+    void 조회() {
+        MenuGroup menuGroup = new MenuGroup(1L, "한마리메뉴");
+        메뉴_그룹_생성_요청(menuGroup);
+        menuGroup = new MenuGroup(2L, "두마리메뉴");
+        메뉴_그룹_생성_요청(menuGroup);
+
+        ResponseEntity<List<MenuGroup>> response = 메뉴_그룹_조회_요청();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().size()).isEqualTo(2);
     }
 
-    private void 생성_요청(String content) throws Exception {
-        mockMvc.perform(post("/api/menu-groups")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
+    public static ResponseEntity<MenuGroup> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+        return testRestTemplate.postForEntity(basePath + "/api/menu-groups", menuGroup, MenuGroup.class);
     }
 
-    private void 조회_요청() throws Exception {
-        mockMvc.perform(get("/api/menu-groups"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
+    private ResponseEntity<List<MenuGroup>> 메뉴_그룹_조회_요청() {
+        return testRestTemplate.exchange(
+                basePath + "/api/menu-groups",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<MenuGroup>>() {});
     }
 }
