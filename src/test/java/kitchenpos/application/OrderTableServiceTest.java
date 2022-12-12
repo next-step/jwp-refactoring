@@ -17,17 +17,16 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class TableServiceTest {
+public class OrderTableServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
     private OrderTableDao orderTableDao;
     @InjectMocks
-    private TableService tableService;
+    private OrderTableService orderTableService;
     private OrderTable orderTable;
 
     @BeforeEach
@@ -40,7 +39,7 @@ public class TableServiceTest {
     public void createOrderTable() {
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
-        OrderTable createdOrderTable = tableService.create(orderTable);
+        OrderTable createdOrderTable = orderTableService.create(orderTable);
 
         assertThat(createdOrderTable.getId()).isEqualTo(orderTable.getId());
     }
@@ -50,7 +49,7 @@ public class TableServiceTest {
     public void queryOrderTable() {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable));
 
-        assertThat(tableService.list()).contains(orderTable);
+        assertThat(orderTableService.list()).contains(orderTable);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class TableServiceTest {
     public void throwExceptionWhenOrderTableIsNotExist() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(1L, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -67,7 +66,7 @@ public class TableServiceTest {
     public void throwExceptionWhenOrderTableToBeEmptyWasAlreadyGrouped() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -80,7 +79,7 @@ public class TableServiceTest {
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,7 +93,7 @@ public class TableServiceTest {
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
         given(orderTableDao.save(emptyOrderTable)).willReturn(emptyOrderTable);
 
-        assertThat(tableService.changeEmpty(orderTable.getId(), emptyOrderTable).isEmpty()).isEqualTo(
+        assertThat(orderTableService.changeEmpty(orderTable.getId(), emptyOrderTable).isEmpty()).isEqualTo(
                 emptyOrderTable.isEmpty());
     }
 
@@ -103,7 +102,7 @@ public class TableServiceTest {
     public void throwExceptionNumberOfGuestsIsNotPositive() {
         OrderTable orderTable = OrderTable.of(1L, null, -1, true);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -111,7 +110,7 @@ public class TableServiceTest {
     @DisplayName("고객 수 변경 시 존재하지 않는 주문 테이블이면 Exception")
     public void throwExceptionWhenTryToChangeNumberOfGuestsOrderTableIsNotExist() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -120,7 +119,7 @@ public class TableServiceTest {
     public void throwExceptionWhenTryToChangeNumberOfGuestsOrderTableIsEmpty() {
         OrderTable emptyOrderTable = OrderTable.of(1L, null, 4, true);
         given(orderTableDao.findById(emptyOrderTable.getId())).willReturn(Optional.of(emptyOrderTable));
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, emptyOrderTable)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, emptyOrderTable)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -130,7 +129,7 @@ public class TableServiceTest {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
-        assertThat(tableService.changeNumberOfGuests(1L, orderTable).getNumberOfGuests())
+        assertThat(orderTableService.changeNumberOfGuests(1L, orderTable).getNumberOfGuests())
                 .isEqualTo(orderTable.getNumberOfGuests());
     }
 }
