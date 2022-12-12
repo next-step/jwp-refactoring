@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -11,17 +12,19 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
-    public Menu(){}
+    public Menu() {
+    }
 
     private Menu(MenuBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.price = builder.price;
-        this.menuGroupId = builder.menuGroupId;
+        this.menuGroup = builder.menuGroup;
         this.menuProducts = builder.menuProducts;
     }
 
@@ -29,11 +32,18 @@ public class Menu {
         return new MenuBuilder();
     }
 
+    public Long getMenuGroupId() {
+        if(Objects.isNull(menuGroup)){
+            return null;
+        }
+        return menuGroup.getId();
+    }
+
     public static class MenuBuilder {
         private Long id;
         private String name;
         private BigDecimal price;
-        private Long menuGroupId;
+        private MenuGroup menuGroup;
         private List<MenuProduct> menuProducts;
 
         public MenuBuilder id(Long id) {
@@ -51,8 +61,8 @@ public class Menu {
             return this;
         }
 
-        public MenuBuilder menuGroupId(Long menuGroupId) {
-            this.menuGroupId = menuGroupId;
+        public MenuBuilder menuGroup(MenuGroup menuGroup) {
+            this.menuGroup = menuGroup;
             return this;
         }
 
@@ -90,12 +100,12 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup(){
+        return menuGroup;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public void setMenuGroup(final MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -104,16 +114,5 @@ public class Menu {
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", menuGroupId=" + menuGroupId +
-                ", menuProducts=" + menuProducts +
-                '}';
     }
 }

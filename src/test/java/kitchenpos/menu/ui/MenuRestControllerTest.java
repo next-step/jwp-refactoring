@@ -3,6 +3,7 @@ package kitchenpos.menu.ui;
 import kitchenpos.ControllerTest;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuResponse;
 import net.jqwik.api.Arbitraries;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,7 +38,13 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 생성된 메뉴를 응답")
     @Test
     public void returnMenu() throws Exception {
-        MenuResponse menu = getMenu();
+        MenuResponse menu =  MenuResponse.of(Menu.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .menuGroup(MenuGroup.builder().build())
+                .menuProducts(Collections.EMPTY_LIST)
+                .price(BigDecimal.valueOf(15000))
+                .build());
         doReturn(menu).when(menuService).create(any(Menu.class));
 
         webMvc.perform(post("/api/menus")
@@ -45,8 +53,6 @@ public class MenuRestControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(menu.getName())))
                 .andExpect(jsonPath("$.price", is(menu.getPrice().intValue())))
-                .andExpect(jsonPath("$.menuGroupId", is(menu.getMenuGroupId().intValue())))
-                .andExpect(jsonPath("$.menuProducts", hasSize(menu.getMenuProducts().size())))
                 .andExpect(status().isCreated());
     }
 
@@ -76,7 +82,7 @@ public class MenuRestControllerTest extends ControllerTest {
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
                 .price(BigDecimal.valueOf(15000))
-                .menuGroupId(Arbitraries.longs().between(1, 50).sample())
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
                 .menuProducts(getMenuProducts())
                 .build());
     }

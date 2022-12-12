@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.persistence.MenuGroupRepository;
@@ -78,9 +79,9 @@ public class MenuServiceTest {
     public void throwsExceptionWhenNoneExistsMeneGroup() {
         Menu menu = Menu.builder()
                 .price(BigDecimal.valueOf(15000))
-                .menuGroupId(Arbitraries.longs().sample())
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
                 .build();
-        doReturn(false).when(menuGroupDao).existsById(menu.getMenuGroupId());
+        doReturn(false).when(menuGroupDao).existsById(anyLong());
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -96,10 +97,11 @@ public class MenuServiceTest {
         Menu menu = Menu.builder()
                         .id(Arbitraries.longs().between(1, 100).sample())
                         .price(BigDecimal.valueOf(15000))
-                        .menuGroupId(Arbitraries.longs().between(1, 50).sample())
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
                         .menuProducts(menuProducts)
                         .build();
-        doReturn(true).when(menuGroupDao).existsById(menu.getMenuGroupId());
+        doReturn(true).when(menuGroupDao)
+                .existsById(anyLong());
         doReturn(Optional.empty()).when(productDao).findById(anyLong());
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -122,12 +124,12 @@ public class MenuServiceTest {
         Menu menu = Menu.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .price(BigDecimal.valueOf(200000))
-                .menuGroupId(Arbitraries.longs().between(1, 50).sample())
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
                 .menuProducts(menuProduct)
                 .build();
         doReturn(true)
                 .when(menuGroupDao)
-                .existsById(menu.getMenuGroupId());
+                .existsById(anyLong());
         doReturn(Optional.ofNullable(product))
                 .when(productDao)
                 .findById(anyLong());
@@ -154,19 +156,19 @@ public class MenuServiceTest {
                 .id(15l)
                 .name("Pasta")
                 .price(BigDecimal.valueOf(0))
-                .menuGroupId(50l)
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
                 .menuProducts(menuProducts)
                 .build();
         Menu menu = Menu.builder()
                 .id(15l)
                 .name("Pasta")
                 .price(BigDecimal.valueOf(0))
-                .menuGroupId(50l)
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
                 .menuProducts(menuProducts)
                 .build();
         doReturn(true)
                 .when(menuGroupDao)
-                .existsById(menu.getMenuGroupId());
+                .existsById(anyLong());
         doReturn(Optional.ofNullable(product))
                 .when(productDao)
                 .findById(anyLong());
@@ -188,6 +190,7 @@ public class MenuServiceTest {
     public void returnMenus() {
         List<Menu> menus = getMenus(Menu.builder()
                 .id(Arbitraries.longs().between(1, 1000l).sample())
+                .menuGroup(MenuGroup.builder().build())
                 .build(), 5);
         List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder()
                 .seq(14l)
@@ -200,7 +203,7 @@ public class MenuServiceTest {
                 .findAll();
         doReturn(menuProducts)
                 .when(menuProductDao)
-                .findAllByMenuId(anyLong());
+                .findAllByMenu(any(Menu.class));
 
         List<MenuResponse> returnedMenus = menuService.list();
         assertThat(returnedMenus.stream().map(MenuResponse::getId).collect(Collectors.toList()))
@@ -214,7 +217,7 @@ public class MenuServiceTest {
                         .name(menu.getName())
                         .price(menu.getPrice())
                         .menuProducts(menu.getMenuProducts())
-                        .menuGroupId(menu.getMenuGroupId())
+                        .menuGroup(menu.getMenuGroup())
                         .build())
                 .collect(Collectors.toList());
     }
