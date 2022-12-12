@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableTest {
 

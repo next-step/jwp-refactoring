@@ -95,7 +95,6 @@ class TableServiceTest {
         OrderTable 저장된_주문_테이블 = 주문_테이블_생성(1L, null, 0, true);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(저장된_주문_테이블));
         when(orderRepository.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).thenReturn(false);
-//        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(저장된_주문_테이블);
 
         OrderTableRequest 주문_테이블_생성_요청_객체 = 주문_테이블_생성_요청_객체_생성(0, false);
 

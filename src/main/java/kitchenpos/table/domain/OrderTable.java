@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 @Table(name = "ORDER_TABLE")
@@ -64,6 +64,10 @@ public class OrderTable {
         }
     }
 
+    public void unTableGroup(){
+        this.tableGroup = null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -96,7 +100,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getTableGroupId() {
+    public Long tableGroupId() {
         if (Objects.isNull(tableGroup)) {
             return null;
         }
