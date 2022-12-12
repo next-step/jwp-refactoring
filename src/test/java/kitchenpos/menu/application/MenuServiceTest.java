@@ -1,11 +1,8 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +21,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
@@ -41,6 +37,13 @@ class MenuServiceTest {
     private Long product2Id = 101L;
     private Long menuId = 1L;
     private Long menuGroupId = 1L;
+
+    private MenuGroup menuGroup;
+
+    @BeforeEach
+    void setUp() {
+        menuGroup = MenuGroup.of(1L,"test menu group");
+    }
 
     @Test
     @DisplayName("메뉴 가격이 null이면 exception이 발생함")
@@ -99,7 +102,7 @@ class MenuServiceTest {
         Menu menu = getMenu(8000);
         List<MenuProduct> menuProducts = getTwoMenuProducts(menuId,product1Id,3, product2Id, 5);
 
-        given(menuDao.findAll()).willReturn(Arrays.asList(menu));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(menu));
         given(menuProductDao.findAllByMenuId(menuId)).willReturn(menuProducts);
 
         List<Menu> list = service.list();
@@ -113,7 +116,7 @@ class MenuServiceTest {
     }
 
     private Menu getMenu(int price, List<MenuProduct> menuProducts) {
-        return Menu.of(menuId, "메뉴", BigDecimal.valueOf(price), menuGroupId, menuProducts);
+        return Menu.of(menuId, "메뉴", BigDecimal.valueOf(price), menuGroup, menuProducts);
     }
 
     private List<MenuProduct> getTwoMenuProducts(Long menuId, Long product1Id, long product1Quantity, Long product2Id, long product2Quantity) {

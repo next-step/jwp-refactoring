@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.applicaiton.OrderService;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
@@ -30,7 +30,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -72,8 +72,8 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 시 주문 항목이 메뉴에 존재하지 않으면 Exception")
     public void createOrderLineItemsNotExistsException() {
-        final Long menuCountById = 2L;
-        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
+        final int menuCountById = 2;
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -81,8 +81,8 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 테이블이 존재하지 않을 경우 Exception")
     public void createTableNotExistsException() {
-        final Long menuCountById = 1L;
-        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
+        final int menuCountById = 1;
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -92,8 +92,8 @@ public class OrderServiceTest {
     @DisplayName("주문 테이블이 비어있을 경우 Exception")
     public void createEmptyTableException() {
         OrderTable orderTable = getOrderTable(orderTableId, tableGroupId, numberOfGuests, true);
-        final Long menuCountById = 1L;
-        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
+        final int menuCountById = 1;
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -108,8 +108,8 @@ public class OrderServiceTest {
     public void create() {
         OrderTable orderTable = getOrderTable(orderTableId, tableGroupId, numberOfGuests, false);
 
-        final Long menuCountById = 1L;
-        given(menuDao.countByIdIn(any(List.class))).willReturn(menuCountById);
+        final int menuCountById = 1;
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(menuCountById);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);

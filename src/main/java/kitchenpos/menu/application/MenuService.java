@@ -1,11 +1,7 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +12,14 @@ import java.util.Objects;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductDao menuProductDao;
     private final ProductService productService;
 
-    public MenuService(
-            final MenuDao menuDao, final MenuGroupRepository menuGroupRepository,
+    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository,
             final MenuProductDao menuProductDao, final ProductService productService) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.menuProductDao = menuProductDao;
         this.productService = productService;
@@ -54,7 +49,7 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final Menu savedMenu = menuDao.save(menu);
+        final Menu savedMenu = menuRepository.save(menu);
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
@@ -68,7 +63,7 @@ public class MenuService {
     }
 
     public List<Menu> list() {
-        final List<Menu> menus = menuDao.findAll();
+        final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
