@@ -12,12 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,13 +37,13 @@ public class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -74,10 +75,10 @@ public class MenuServiceTest {
     @Test
     void createMenu() {
         // given
-        when(menuGroupDao.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(하와이안피자상품.getProductId())).thenReturn(Optional.of(하와이안피자));
-        when(productDao.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
-        when(productDao.findById(피클상품.getProductId())).thenReturn(Optional.of(피클));
+        when(menuGroupRepository.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(하와이안피자상품.getProductId())).thenReturn(Optional.of(하와이안피자));
+        when(productRepository.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
+        when(productRepository.findById(피클상품.getProductId())).thenReturn(Optional.of(피클));
         when(menuDao.save(하와이안피자세트)).thenReturn(하와이안피자세트);
         when(menuProductDao.save(하와이안피자상품)).thenReturn(하와이안피자상품);
         when(menuProductDao.save(콜라상품)).thenReturn(콜라상품);
@@ -133,8 +134,8 @@ public class MenuServiceTest {
         // given
         하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(),
             Collections.singletonList(하와이안피자상품));
-        when(menuGroupDao.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(하와이안피자상품.getProductId())).thenReturn(Optional.empty());
+        when(menuGroupRepository.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(하와이안피자상품.getProductId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> menuService.create(하와이안피자세트))
@@ -146,10 +147,10 @@ public class MenuServiceTest {
     void menuPriceBiggerAllProductPriceException() {
         // given
         하와이안피자세트.setPrice(BigDecimal.valueOf(20_000));
-        when(menuGroupDao.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(하와이안피자상품.getProductId())).thenReturn(Optional.of(하와이안피자));
-        when(productDao.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
-        when(productDao.findById(피클상품.getProductId())).thenReturn(Optional.of(피클));
+        when(menuGroupRepository.existsById(하와이안피자세트.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(하와이안피자상품.getProductId())).thenReturn(Optional.of(하와이안피자));
+        when(productRepository.findById(콜라상품.getProductId())).thenReturn(Optional.of(콜라));
+        when(productRepository.findById(피클상품.getProductId())).thenReturn(Optional.of(피클));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(하와이안피자세트))

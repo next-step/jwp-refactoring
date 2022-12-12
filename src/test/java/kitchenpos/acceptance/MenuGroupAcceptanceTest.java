@@ -9,7 +9,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,21 +20,23 @@ import org.springframework.http.HttpStatus;
 @DisplayName("메뉴 그룹 관련 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 피자;
-    private MenuGroup 중식;
+    private MenuGroupRequest 요청_피자;
+    private MenuGroupRequest 요청_중식;
+    private MenuGroupResponse 응답_피자;
+    private MenuGroupResponse 응답_중식;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        피자 = new MenuGroup(1L, "피자");
-        중식 = new MenuGroup(2L, "양식");
+        요청_피자 = MenuGroupRequest.from("피자");
+        요청_중식 = MenuGroupRequest.from("양식");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void createMenuGroup() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(피자);
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(요청_피자);
 
         // then
         메뉴_그룹_생성됨(response);
@@ -43,15 +46,15 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllMenuGroup() {
         // given
-        피자 = 메뉴_그룹_생성_요청(피자).as(MenuGroup.class);
-        중식 = 메뉴_그룹_생성_요청(중식).as(MenuGroup.class);
+        응답_피자 = 메뉴_그룹_생성_요청(요청_피자).as(MenuGroupResponse.class);
+        응답_중식 = 메뉴_그룹_생성_요청(요청_중식).as(MenuGroupResponse.class);
 
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
 
         // then
         메뉴_그룹_목록_응답됨(response);
-        메뉴_그룹_목록_확인됨(response, Arrays.asList(피자.getId(), 중식.getId()));
+        메뉴_그룹_목록_확인됨(response, Arrays.asList(응답_피자.getId(), 응답_중식.getId()));
     }
 
     private void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {

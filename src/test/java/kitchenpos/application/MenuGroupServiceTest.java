@@ -6,8 +6,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -29,16 +32,17 @@ public class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        MenuGroup menuGroup = new MenuGroup(1L, "피자");
-        when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
+        MenuGroup menuGroup = new MenuGroup("피자");
+        when(menuGroupRepository.save(menuGroup)).thenReturn(menuGroup);
+        MenuGroupRequest menuGroupRequest = MenuGroupRequest.from(menuGroup.getName().value());
 
         // when
-        MenuGroup result = menuGroupService.create(menuGroup);
+        MenuGroupResponse result = menuGroupService.create(menuGroupRequest);
 
         // then
         assertAll(
             () -> assertThat(result.getId()).isEqualTo(menuGroup.getId()),
-            () -> assertThat(result.getName()).isEqualTo(menuGroup.getName())
+            () -> assertThat(result.getName()).isEqualTo(menuGroup.getName().value())
         );
     }
 
@@ -46,14 +50,17 @@ public class MenuGroupServiceTest {
     @Test
     void findAllMenuGroup() {
         // given
-        MenuGroup menuGroup = new MenuGroup(1L, "피자");
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup));
+        MenuGroup menuGroup = new MenuGroup("피자");
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup));
 
         // when
-        List<MenuGroup> results = menuGroupService.list();
+        List<MenuGroupResponse> result = menuGroupService.list();
 
         // then
-        assertThat(results).hasSize(1)
-            .containsExactly(menuGroup);
+        assertAll(
+            () -> assertThat(result).hasSize(1),
+            () -> assertThat(result.stream().map(MenuGroupResponse::getName))
+                .containsExactly(menuGroup.getName().value())
+        );
     }
 }
