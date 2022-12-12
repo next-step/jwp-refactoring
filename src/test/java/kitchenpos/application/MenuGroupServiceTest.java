@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ class MenuGroupServiceTest {
 	MenuGroupService menuGroupService;
 
 	@Test
+	@DisplayName("메뉴 그룹 생성")
 	void testCreateMenuGroup() {
 		MenuGroup menuGroup = new MenuGroup();
 		menuGroup.setName("메뉴그룹1");
@@ -32,6 +34,7 @@ class MenuGroupServiceTest {
 	}
 
 	@Test
+	@DisplayName("메뉴 목록 조회")
 	void testMenuLst() {
 		menuGroupService.list();
 

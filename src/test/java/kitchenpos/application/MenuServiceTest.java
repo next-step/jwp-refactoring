@@ -59,7 +59,7 @@ class MenuServiceTest {
 	}
 
 	@Test
-	@DisplayName("메뉴 등록")
+	@DisplayName("메뉴 생성")
 	void testCreateMenu() {
 		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
 		products.forEach(

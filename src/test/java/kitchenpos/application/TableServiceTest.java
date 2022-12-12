@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,7 @@ class TableServiceTest {
 	TableService tableService;
 
 	@Test
+	@DisplayName("주문 테이블 생성")
 	void testCreateTable() {
 		OrderTable orderTable = createOrderTable();
 		when(orderTableDao.save(orderTable)).thenAnswer(returnsFirstArg());
@@ -48,6 +50,7 @@ class TableServiceTest {
 	}
 
 	@Test
+	@DisplayName("주문 테이블 목록 조회")
 	void testListOrderTable() {
 		List<OrderTable> orderTables = createOrderTables();
 		when(orderTableDao.findAll()).thenReturn(orderTables);
@@ -59,6 +62,7 @@ class TableServiceTest {
 	}
 
 	@Test
+	@DisplayName("빈 테이블로 변경")
 	void changeEmpty() {
 		OrderTable orderTable = createOrderTable();
 		orderTable.setEmpty(true);
@@ -76,6 +80,7 @@ class TableServiceTest {
 	}
 
 	@Test
+	@DisplayName("주문 테이블의 손님 수 변경")
 	void testChangeNumberOfGuests() {
 		OrderTable orderTable = createOrderTable();
 		int expectedNumberOfGuests = orderTable.getNumberOfGuests() + 1;
@@ -91,6 +96,7 @@ class TableServiceTest {
 	}
 
 	@Test
+	@DisplayName("주문 테이블의 손님 수를 0 미만으로 변경")
 	void testChangeNumberOfGuestsBelowThanZero() {
 		OrderTable orderTable = createOrderTable();
 		int invalidNumberOfGuests = -1;
@@ -101,6 +107,7 @@ class TableServiceTest {
 	}
 
 	@Test
+	@DisplayName("주문 테이블의 손님 수 변경시 주문 테이블이 존재하지 않음")
 	void testChangeNumberOfGuestsWithNotExistsTableId() {
 		OrderTable orderTable = createOrderTable();
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
@@ -110,6 +117,7 @@ class TableServiceTest {
 	}
 
 	@Test
+	@DisplayName("주문 테이블의 손님 수 변경시 주문이 완료되지 않음")
 	void testChangeEmptyWhenOrderStatusNotCompletion() {
 		OrderTable orderTable = createOrderTable();
 		orderTable.setEmpty(true);
