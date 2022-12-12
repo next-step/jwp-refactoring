@@ -15,6 +15,7 @@ import java.util.Arrays;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,14 +27,12 @@ public class OrderTableTest {
     private Product 치킨버거;
     private MenuProduct 치킨버거상품;
     private MenuGroup 햄버거단품;
-    private Menu 치킨버거단품;
 
     @BeforeEach
     void setUp() {
         치킨버거 = generateProduct(2L, "치킨버거", BigDecimal.valueOf(4000L));
         치킨버거상품 = generateMenuProduct(치킨버거, 1L);
         햄버거단품 = generateMenuGroup(1L, "햄버거단품");
-        치킨버거단품 = generateMenu(2L, "치킨버거단품", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(치킨버거상품));
     }
 
     @DisplayName("주문 테이블의 그룹 상태를 해제한다.")
@@ -42,14 +41,14 @@ public class OrderTableTest {
         // given
         OrderTable 주문테이블A = generateOrderTable(4, true);
         OrderTable 주문테이블B = generateOrderTable(5, true);
-        generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
+        generateTableGroup(2L, Arrays.asList(주문테이블A, 주문테이블B));
 
         // when
         주문테이블B.ungroup();
 
         // then
         assertAll(
-                () -> assertThat(주문테이블B.getTableGroup()).isNull(),
+                () -> assertThat(주문테이블B.findTableGroupId()).isNull(),
                 () -> assertThat(주문테이블A.hasTableGroup()).isTrue(),
                 () -> assertThat(주문테이블B.hasTableGroup()).isFalse()
         );

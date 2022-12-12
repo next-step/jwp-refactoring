@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import java.util.List;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTestFixture {
 

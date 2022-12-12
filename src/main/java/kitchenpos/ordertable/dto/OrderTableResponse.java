@@ -1,8 +1,8 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordertable.dto;
 
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.domain.NumberOfGuests;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTableResponse {
 

@@ -13,7 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.common.acceptance.AcceptanceTest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;

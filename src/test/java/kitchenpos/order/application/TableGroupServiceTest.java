@@ -29,8 +29,8 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -82,10 +82,10 @@ public class TableGroupServiceTest {
         불고기버거단품 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(불고기버거상품));
         불고기버거단품주문상품 = generateOrderMenu(불고기버거단품);
         불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거단품.getId(), 2);
-        주문테이블A = generateOrderTable(1L, null, 5, true);
-        주문테이블B = generateOrderTable(2L, null, 4, false);
-        주문테이블C = generateOrderTable(3L, null, 5, true);
-        주문테이블D = generateOrderTable(4L, null, 4, true);
+        주문테이블A = generateOrderTable(1L, 5, true);
+        주문테이블B = generateOrderTable(2L, 4, false);
+        주문테이블C = generateOrderTable(3L, 5, true);
+        주문테이블D = generateOrderTable(4L, 4, true);
         주문 = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거단품주문상품)));
     }
 
@@ -104,8 +104,8 @@ public class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(주문테이블C.getTableGroup().getId()).isEqualTo(saveTableGroup.getId()),
-                () -> assertThat(주문테이블D.getTableGroup().getId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블C.findTableGroupId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블D.findTableGroupId()).isEqualTo(saveTableGroup.getId()),
                 () -> assertThat(주문테이블C.isEmpty()).isFalse(),
                 () -> assertThat(주문테이블D.isEmpty()).isFalse(),
                 () -> assertThat(saveTableGroup.getCreatedDate()).isNotNull()
@@ -152,23 +152,25 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupThrowErrorWhenOrderTableInOtherTableGroup() {
         // given
-        generateTableGroup(1L, Arrays.asList(주문테이블C, 주문테이블D));
+        TableGroup 단체A = generateTableGroup(1L, Arrays.asList(주문테이블C, 주문테이블D));
         TableGroupRequest tableGroupRequest = generateTableGroupRequest(Arrays.asList(주문테이블B.getId(), 주문테이블C.getId()));
         given(orderTableRepository.findById(주문테이블B.getId())).willReturn(Optional.of(주문테이블B));
         given(orderTableRepository.findById(주문테이블C.getId())).willReturn(Optional.of(주문테이블C));
+        given(tableGroupRepository.save(any())).willReturn(단체A);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .withMessage(ErrorCode.주문_테이블에_이미_단체_그룹_지정됨.getErrorMessage());
+                .withMessage(ErrorCode.단체_그룹_지정되어_있음.getErrorMessage());
     }
 
     @DisplayName("단체 지정을 해제한다.")
     @Test
     void ungroup() {
         // given
-        TableGroup 단체 = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
+        TableGroup 단체 = generateTableGroup(2L, Arrays.asList(주문테이블A, 주문테이블B));
         주문.changeOrderStatus(OrderStatus.COMPLETION);
         given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
+        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
         given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문));
 
         // when
@@ -176,8 +178,8 @@ public class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(주문테이블A.getTableGroup()).isNull(),
-                () -> assertThat(주문테이블B.getTableGroup()).isNull()
+                () -> assertThat(주문테이블A.findTableGroupId()).isNull(),
+                () -> assertThat(주문테이블B.findTableGroupId()).isNull()
         );
     }
 
@@ -185,11 +187,13 @@ public class TableGroupServiceTest {
     @Test
     void upGroupThrowErrorWhenOrderTableStatusIsCookingOrMeal() {
         // given
-        TableGroup 단체 = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
+        TableGroup 단체 = generateTableGroup(1L, Arrays.asList(주문테이블A, 주문테이블B));
         given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
+        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
         given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체.getId()));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체.getId()))
+                .withMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
     }
 }

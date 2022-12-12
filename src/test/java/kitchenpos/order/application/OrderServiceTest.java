@@ -30,8 +30,8 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -97,8 +97,8 @@ public class OrderServiceTest {
                 Arrays.asList(감자튀김상품, 콜라상품, 치킨버거상품));
         불고기버거세트주문메뉴 = generateOrderMenu(불고기버거세트);
         치킨버거세트주문메뉴 = generateOrderMenu(치킨버거세트);
-        주문테이블A = generateOrderTable(1L, null, 5, false);
-        주문테이블B = generateOrderTable(2L, null, 7, false);
+        주문테이블A = generateOrderTable(1L, 5, false);
+        주문테이블B = generateOrderTable(2L, 7, false);
         불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거세트.getId(), 2);
         치킨버거세트주문요청 = generateOrderLineItemRequest(치킨버거세트.getId(), 1);
         주문A = generateOrder(주문테이블A, Arrays.asList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴), 치킨버거세트주문요청.toOrderLineItem(치킨버거세트주문메뉴)));
@@ -167,7 +167,7 @@ public class OrderServiceTest {
     @Test
     void createOrderThrowErrorWhenOrderTableIsEmpty() {
         // given
-        OrderTable orderTable = generateOrderTable(4L, null, 6, true);
+        OrderTable orderTable = generateOrderTable(4L, 6, true);
         OrderRequest orderRequest = generateOrderRequest(orderTable.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
         given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
         given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(orderTable));

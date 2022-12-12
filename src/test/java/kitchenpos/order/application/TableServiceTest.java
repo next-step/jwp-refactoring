@@ -28,12 +28,13 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -76,8 +77,8 @@ public class TableServiceTest {
         불고기버거단품 = generateMenu(1L, "불고기버거세트", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(불고기버거상품));
         불고기버거단품주문상품 = generateOrderMenu(불고기버거단품);
         불고기버거세트주문요청 = generateOrderLineItemRequest(불고기버거단품.getId(), 2);
-        주문테이블A = generateOrderTable(1L, null, 5, false);
-        주문테이블B = generateOrderTable(2L, null, 4, false);
+        주문테이블A = generateOrderTable(1L, 5, false);
+        주문테이블B = generateOrderTable(2L, 4, false);
         주문 = generateOrder(주문테이블B, singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거단품주문상품)));
     }
 
@@ -152,8 +153,9 @@ public class TableServiceTest {
     @Test
     void changeTableEmptyThrowErrorWhenTableGroupIdIsNotNull() {
         // given
-        TableGroup tableGroup = generateTableGroup(Arrays.asList(주문테이블A, 주문테이블B));
-        OrderTable orderTable = generateOrderTable(5L, tableGroup, 4, false);
+        TableGroup tableGroup = generateTableGroup(1L, Arrays.asList(주문테이블A, 주문테이블B));
+        OrderTable orderTable = generateOrderTable(5L, 4, false);
+        orderTable.registerTableGroup(tableGroup.getId());
         OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(4, true);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
@@ -209,7 +211,7 @@ public class TableServiceTest {
     void changeNumberOfGuestInTableThrowErrorWhenTableIsNotExists() {
         // given
         OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(1, false);
-        OrderTable orderTable = generateOrderTable(5L, null, 4, false);
+        OrderTable orderTable = generateOrderTable(5L, 4, false);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.empty());
 
         // when & then
@@ -222,7 +224,7 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuestInTableThrowErrorWhenTableIsEmpty() {
         // given
-        OrderTable orderTable = generateOrderTable(5L, null, 4, true);
+        OrderTable orderTable = generateOrderTable(5L, 4, true);
         OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(1, true);
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 

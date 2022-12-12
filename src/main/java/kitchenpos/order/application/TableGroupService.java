@@ -5,13 +5,14 @@ import java.util.stream.Collectors;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,17 +32,23 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = findAllOrderTablesById(tableGroupRequest.getOrderTables());
-        final TableGroup tableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
-        return TableGroupResponse.from(tableGroup);
+        OrderTables orderTables = OrderTables.from(findAllOrderTablesById(tableGroupRequest.getOrderTables()));
+        List<OrderTableResponse> orderTableResponses = orderTables.unmodifiableOrderTables()
+                .stream()
+                .map(OrderTableResponse::from)
+                .collect(Collectors.toList());
+        final TableGroup tableGroup = tableGroupRepository.save(TableGroup.from());
+        orderTables.registerTableGroup(tableGroup.getId());
+        return TableGroupResponse.from(tableGroup, orderTableResponses);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        OrderTables orderTables = tableGroup.getOrderTables();
-        List<Order> orders = findAllOrderByOrderTableIds(orderTables);
+        OrderTables orderTables = OrderTables.from(findAllOrderTableByTableGroupId(tableGroupId));
+        List<Order> orders = findAllOrderByOrderTableIds(orderTables.unmodifiableOrderTables());
         tableGroup.ungroup(orders);
+        orderTables.ungroupOrderTables();
     }
 
     private List<OrderTable> findAllOrderTablesById(List<Long> ids) {
@@ -60,11 +67,14 @@ public class TableGroupService {
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_단체_그룹.getErrorMessage()));
     }
 
-    private List<Order> findAllOrderByOrderTableIds(OrderTables orderTables) {
-        List<Long> orderTableIds = orderTables.unmodifiableOrderTables()
-                .stream()
+    private List<Order> findAllOrderByOrderTableIds(List<OrderTable> orderTables) {
+        List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
         return orderRepository.findAllByOrderTableIdIn(orderTableIds);
+    }
+
+    private List<OrderTable> findAllOrderTableByTableGroupId(Long id) {
+        return orderTableRepository.findAllByTableGroupId(id);
     }
 }

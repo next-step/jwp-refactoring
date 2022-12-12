@@ -1,15 +1,12 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 
 public class OrderTableTestFixture {
 
-    public static OrderTable generateOrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return OrderTable.of(id, tableGroup, numberOfGuests, empty);
-    }
-
-    public static OrderTable generateOrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return OrderTable.of(null, tableGroup, numberOfGuests, empty);
+    public static OrderTable generateOrderTable(Long id, int numberOfGuests, boolean empty) {
+        return OrderTable.of(id, numberOfGuests, empty);
     }
 
     public static OrderTable generateOrderTable(int numberOfGuests, boolean empty) {

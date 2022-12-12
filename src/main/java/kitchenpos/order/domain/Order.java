@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.ordertable.domain.OrderTable;
 
 @Table(name = "ORDERS")
 @Entity

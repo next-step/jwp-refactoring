@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,13 +41,8 @@ public class OrderTables {
         }
     }
 
-    public boolean anyHasGroupId() {
-        return orderTables.stream()
-                .anyMatch(OrderTable::hasTableGroup);
-    }
-
-    public void updateTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
+    public void registerTableGroup(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.registerTableGroup(tableGroupId));
     }
 
     public void ungroupOrderTables() {
