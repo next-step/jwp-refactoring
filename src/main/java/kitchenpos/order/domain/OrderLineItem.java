@@ -1,40 +1,49 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.price.domain.Quantity;
+
+import javax.persistence.*;
+
+import static java.util.Objects.requireNonNull;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+    @ManyToOne
+    @JoinColumn(foreignKey =@ForeignKey(name = "fk_order_line_item_to_order"))
+    private Order order;
+    @Column(nullable = false)
     private Long menuId;
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
+
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = requireNonNull(menuId, "menuId");
+        this.quantity = new Quantity(quantity);
+    }
+
+    protected OrderLineItem() {
+    }
+
+    public void bindTo(Order order) {
+        this.order = order;
+    }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public Order getOrder() {
+        return order;
     }
 
     public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }
