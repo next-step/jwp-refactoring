@@ -5,7 +5,7 @@ import static kitchenpos.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_목록_조회_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_상태_수정_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_생성_요청;
-import static kitchenpos.acceptance.ProductRestAssured.상품_생성_요청;
+import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
 import static kitchenpos.acceptance.TableRestAssured.주문_테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +23,9 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,9 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 관련 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private Product 하와이안피자;
-    private Product 콜라;
-    private Product 피클;
+    private ProductResponse 하와이안피자;
+    private ProductResponse 콜라;
+    private ProductResponse 피클;
     private MenuGroup 피자;
     private Menu 하와이안피자세트;
     private MenuProduct 하와이안피자상품;
@@ -48,9 +49,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        하와이안피자 = 상품_생성_요청(new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000))).as(Product.class);
-        콜라 = 상품_생성_요청(new Product(2L, "콜라", BigDecimal.valueOf(2_000))).as(Product.class);
-        피클 = 상품_생성_요청(new Product(3L, "피클", BigDecimal.valueOf(1_000))).as(Product.class);
+        하와이안피자 = 상품_생성_요청(ProductRequest.of("하와이안피자", BigDecimal.valueOf(15_000))).as(ProductResponse.class);
+        콜라 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
+        피클 = 상품_생성_요청(ProductRequest.of("피클", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
         피자 = 메뉴_그룹_생성_요청(new MenuGroup(1L, "피자")).as(MenuGroup.class);
         하와이안피자상품 = new MenuProduct(1L, null, 하와이안피자.getId(), 1L);
         콜라상품 = new MenuProduct(2L, null, 콜라.getId(), 1L);

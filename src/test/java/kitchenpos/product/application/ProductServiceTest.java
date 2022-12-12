@@ -1,15 +1,17 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -33,28 +35,26 @@ public class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        Product product = new Product(1L, "잔치국수", BigDecimal.valueOf(3_000));
-        when(productDao.save(product)).thenReturn(product);
+        Product product = new Product("잔치국수", BigDecimal.valueOf(3_000));
+        when(productRepository.save(product)).thenReturn(product);
+        ProductRequest productRequest = ProductRequest.of(product.getName().value(), product.getPrice().value());
 
         // when
-        Product result = productService.create(product);
+        ProductResponse result = productService.create(productRequest);
 
         // then
         assertAll(
             () -> assertThat(result.getId()).isEqualTo(product.getId()),
-            () -> assertThat(result.getName()).isEqualTo(product.getName()),
-            () -> assertThat(result.getPrice()).isEqualTo(product.getPrice())
+            () -> assertThat(result.getName()).isEqualTo(product.getName().value()),
+            () -> assertThat(result.getPrice()).isEqualTo(product.getPrice().value())
         );
     }
 
     @DisplayName("상품의 가격이 null이면 예외가 발생한다.")
     @Test
     void createProductNullPriceException() {
-        // given
-        Product product = new Product(1L, "잔치국수", null);
-
         // when & then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(ProductRequest.of("잔치국수", null)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -62,11 +62,8 @@ public class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(ints = { -1, -1000, -10000 })
     void crateProductUnderZeroPriceException(int price) {
-        // given
-        Product product = new Product(1L, "잔치국수", BigDecimal.valueOf(price));
-
         // when & then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(ProductRequest.of("잔치국수", BigDecimal.valueOf(price))))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -74,8 +71,8 @@ public class ProductServiceTest {
     @Test
     void findAllProducts() {
         // given
-        Product product = new Product(1L, "잔치국수", BigDecimal.valueOf(3_000));
-        when(productDao.findAll()).thenReturn(Arrays.asList(product));
+        Product product = new Product("잔치국수", BigDecimal.valueOf(3_000));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when
         List<Product> result = productService.list();
