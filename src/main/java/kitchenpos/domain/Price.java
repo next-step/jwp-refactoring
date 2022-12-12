@@ -8,6 +8,9 @@ import kitchenpos.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Price {
+    private static final String ERROR_MESSAGE_PRICE_IS_NOT_NULL = "가격은 필수입니다.";
+    private static final String ERROR_MESSAGE_PRICE_NON_NEGATIVE = "가격은 0원 이상이어야 합니다.";
+    
     @Column(name = "price", nullable = false, precision = 19, scale = 2)
     private BigDecimal value;
 
@@ -25,13 +28,13 @@ public class Price {
 
     private void validateNull(BigDecimal value) {
         if (value == null) {
-            throw new InvalidParameterException("가격은 필수입니다.");
+            throw new InvalidParameterException(ERROR_MESSAGE_PRICE_IS_NOT_NULL);
         }
     }
 
     private void validateNonNegative(BigDecimal value) {
         if (value.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidParameterException("가격은 0원 이상이어야 합니다.");
+            throw new InvalidParameterException(ERROR_MESSAGE_PRICE_NON_NEGATIVE);
         }
     }
 
