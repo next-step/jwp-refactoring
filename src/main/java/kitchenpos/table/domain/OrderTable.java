@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 public class OrderTable {
     public static final String TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE = "테이블 그룹이 존재하지 않습니다.";
+    public static final String NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "0명보다 작을 수 없다.";
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
@@ -59,5 +60,11 @@ public class OrderTable {
 
     public void unGroup() {
         this.tableGroupId = null;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException(NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
+        }
     }
 }
