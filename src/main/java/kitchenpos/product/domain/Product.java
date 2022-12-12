@@ -12,14 +12,14 @@ public class Product {
     @Column
     private String name;
     @Embedded
-    private Money money;
+    private ProductPrice price;
 
     public Product() { }
 
     private Product(ProductBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.money = builder.money;
+        this.price = builder.price;
     }
 
     public static ProductBuilder builder() {
@@ -29,7 +29,7 @@ public class Product {
     public static class ProductBuilder {
         private Long id;
         private String name;
-        private Money money;
+        private ProductPrice price;
 
         public ProductBuilder id(Long id) {
             this.id = id;
@@ -41,8 +41,8 @@ public class Product {
             return this;
         }
 
-        public ProductBuilder money(Money money) {
-            this.money = money;
+        public ProductBuilder price(ProductPrice price) {
+            this.price = price;
             return this;
         }
 
@@ -68,7 +68,7 @@ public class Product {
     }
 
     public BigDecimal getPrice(){
-        return money.value();
+        return price.value();
     }
 
 

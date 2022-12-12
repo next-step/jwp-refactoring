@@ -2,7 +2,7 @@ package kitchenpos.product.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
-import kitchenpos.product.domain.Money;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -69,7 +69,7 @@ public class ProductServiceTest {
         ProductRequest productRequest = new ProductRequest("product", 1500l);
 
         Product mockProduct = Product.builder()
-                .money(Money.of(1500l))
+                .price(ProductPrice.of(1500l))
                 .id(id)
                 .build();
         doReturn(mockProduct).when(productDao).save(any(Product.class));
@@ -85,13 +85,13 @@ public class ProductServiceTest {
         List<Product> mockProducts = builderFixtureMonkey
                 .giveMeBuilder(Product.class)
                 .set("id", Arbitraries.longs().between(1, 5))
-                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
+                .set("price", ProductPrice.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sampleList(5);
         doReturn(mockProducts).when(productDao).findAll();
 
         List<ProductResponse> products = productService.list();
 
-        List<BigDecimal> productPrice = products.stream().map(ProductResponse::getMoney).collect(Collectors.toList());
+        List<BigDecimal> productPrice = products.stream().map(ProductResponse::getPrice).collect(Collectors.toList());
         List<Long> productIds = products.stream().map(ProductResponse::getId).collect(Collectors.toList());
         assertAll(
                 () -> assertThat(productPrice).allMatch(bigDecimal -> bigDecimal.intValue() >= 1000),

@@ -4,8 +4,8 @@ import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Money;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import net.jqwik.api.Arbitraries;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -39,15 +38,14 @@ public class ProductRestControllerTest extends ControllerTest {
     @Test
     public void returnProduct() throws Exception {
         ProductResponse product = getProduct();
-        System.out.println("money value="+product.getMoney().intValue());
         doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(new ProductRequest()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new ProductRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(product.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(product.getName())))
-                .andExpect(jsonPath("$.money", is(product.getMoney().intValue())))
+                .andExpect(jsonPath("$.price", is(product.getPrice().intValue())))
                 .andExpect(status().isCreated());
     }
 
@@ -57,8 +55,8 @@ public class ProductRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(new ProductRequest()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new ProductRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -70,7 +68,7 @@ public class ProductRestControllerTest extends ControllerTest {
                 .build()
                 .giveMeBuilder(Product.class)
                 .set("id", Arbitraries.longs().between(1, 5))
-                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
+                .set("price", ProductPrice.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
         doReturn(products).when(productService).list();
 
@@ -80,12 +78,11 @@ public class ProductRestControllerTest extends ControllerTest {
     }
 
     private ProductResponse getProduct() {
-        return FixtureMonkey.create()
-                .giveMeBuilder(ProductResponse.class)
-                .set("id", Arbitraries.longs().between(1, 100).sample())
-                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .set("money", BigDecimal.valueOf(20000))
-                .sample();
+        return ProductResponse.of(Product.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .price(ProductPrice.of(20000l))
+                .build());
     }
 }
 

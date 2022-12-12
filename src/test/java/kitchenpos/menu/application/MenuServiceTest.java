@@ -9,7 +9,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuProductRepository;
 import kitchenpos.menu.persistence.MenuRepository;
-import kitchenpos.product.domain.Money;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.persistence.ProductRepository;
 import net.jqwik.api.Arbitraries;
@@ -113,7 +113,7 @@ public class MenuServiceTest {
     public void throwsExceptionWhenMenuPriceGreater() {
         Product product = fixtureMonkey
                 .giveMeBuilder(Product.class)
-                .set("money", Money.of(Arbitraries.longs().between(1000, 1500).sample()))
+                .set("price", ProductPrice.of(Arbitraries.longs().between(1000, 1500).sample()))
                 .sample();
         List<MenuProduct> menuProduct = getMenuProducts(MenuProduct.builder()
                 .seq(Arbitraries.longs().between(1, 10).sample())
@@ -141,7 +141,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        Product product = Product.builder().money(Money.of(2000l)).build();
+        Product product = Product.builder().price(ProductPrice.of(2000l)).build();
         MenuProduct menuProduct = MenuProduct.builder()
                 .menu(Menu.builder().build())
                 .quantity(5l)

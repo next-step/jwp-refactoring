@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 public class ProductResponse {
     private Long id;
     private String name;
-    private BigDecimal money;
+    private BigDecimal price;
 
     public ProductResponse(){}
 
-    private ProductResponse(Long id,String name,BigDecimal money){
+    private ProductResponse(Long id,String name,BigDecimal price){
         this.id = id;
         this.name = name;
-        this.money = money;
+        this.price = price;
     }
 
     public static ProductResponse of(Product product){
@@ -29,8 +29,8 @@ public class ProductResponse {
         return name;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getPrice() {
+        return price;
     }
 
     public void setId(Long id) {
@@ -41,7 +41,7 @@ public class ProductResponse {
         this.name = name;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setMoney(BigDecimal price) {
+        this.price = price;
     }
 }

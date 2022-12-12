@@ -11,14 +11,14 @@ public class MoneyTest {
     @DisplayName("입력하는 돈이 없으면 예외발생")
     @Test
     public void throwsExceptionWhenNullAmount(){
-        assertThatThrownBy(() -> Money.of(null))
+        assertThatThrownBy(() -> ProductPrice.of(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("입력하는 돈이 0보다작으면 예외발생")
     @Test
     public void throwsExceptionWhenNetativeAmount(){
-        assertThatThrownBy(() -> Money.of(-1000l))
+        assertThatThrownBy(() -> ProductPrice.of(-1000l))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

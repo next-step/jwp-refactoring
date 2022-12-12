@@ -6,22 +6,22 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
-public class Money {
+public class ProductPrice {
 
     @Column(nullable = false)
     private BigDecimal amount;
 
-    public Money(){
+    public ProductPrice(){
 
     }
 
-    private Money(BigDecimal amount) {
+    private ProductPrice(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public static Money of(Long amount) {
+    public static ProductPrice of(Long amount) {
         validateMoney(amount);
-        return new Money(BigDecimal.valueOf(amount));
+        return new ProductPrice(BigDecimal.valueOf(amount));
     }
 
     private static void validateMoney(Long amount) {
