@@ -2,14 +2,14 @@ package kitchenpos.order.application;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItemRequest;
 import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
-import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrderRequest;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -22,19 +22,19 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +55,7 @@ public class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -112,7 +112,6 @@ public class OrderServiceTest {
         OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
         Order 주문 = Order.of(주문테이블A.getId(), OrderLineItems.from(singletonList(불고기버거세트주문요청.toOrderLineItem(불고기버거세트주문메뉴))));
         given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
-        given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(주문테이블A));
         given(orderRepository.save(주문)).willReturn(주문);
 
         // when
@@ -131,7 +130,6 @@ public class OrderServiceTest {
     void createOrderThrowErrorWhenOrderLineItemIsEmpty() {
         // given
         OrderRequest orderRequest = generateOrderRequest(주문테이블A.getId(), OrderStatus.COOKING, emptyList());
-        given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
@@ -148,33 +146,6 @@ public class OrderServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
                 .withMessage(ErrorCode.존재하지_않는_메뉴.getErrorMessage());
-    }
-
-    @DisplayName("등록되어 있지않은 주문 테이블을 가진 주문은 생성될 수 없다.")
-    @Test
-    void createOrderThrowErrorWhenOrderTableIsNotExists() {
-        // given
-        OrderRequest orderRequest = generateOrderRequest(10L, OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
-        given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
-        given(orderTableRepository.findById(10L)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
-                .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
-    }
-
-    @DisplayName("주문 테이블이 비어있을 경우 주문은 생성될 수 없다.")
-    @Test
-    void createOrderThrowErrorWhenOrderTableIsEmpty() {
-        // given
-        OrderTable orderTable = generateOrderTable(4L, 6, true);
-        OrderRequest orderRequest = generateOrderRequest(orderTable.getId(), OrderStatus.COOKING, singletonList(불고기버거세트주문요청));
-        given(menuRepository.findById(불고기버거세트.getId())).willReturn(Optional.of(불고기버거세트));
-        given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(orderTable));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest))
-                .withMessage(ErrorCode.주문_테이블은_비어있으면_안됨.getErrorMessage());
     }
 
     @DisplayName("주문 전체 목록을 조회한다.")
