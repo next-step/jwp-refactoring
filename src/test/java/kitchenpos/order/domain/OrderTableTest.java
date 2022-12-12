@@ -105,29 +105,16 @@ public class OrderTableTest {
         assertThat(tableGroupId).isNull();
     }
 
-    @DisplayName("완료되지 않은 주문이 없을 경우 주문 테이블의 상태를 바꿀 수 있다.")
+    @DisplayName("주문 테이블의 상태를 바꿀 수 있다.")
     @Test
     void changeEmptyOrderTable() {
         // given
         OrderTable 주문테이블A = generateOrderTable(4, true);
 
         // when
-        주문테이블A.changeEmpty(false, emptyList());
+        주문테이블A.changeEmpty(false);
 
         // then
         assertThat(주문테이블A.isEmpty()).isFalse();
-    }
-
-    @DisplayName("완료되지 않은 주문이 있으면 주문 테이블의 상태를 바꿀 수 없다.")
-    @Test
-    void changeEmptyOrderTableThrowErrorWhenOrderIsNotCompletion() {
-        // given
-        OrderTable 주문테이블A = generateOrderTable(4, false);
-        Order notCompletionOrder = generateOrder(주문테이블A,  OrderLineItems.from(singletonList(치킨버거단품_주문_항목)));
-
-        // when & then
-        assertThatThrownBy(() -> 주문테이블A.changeEmpty(true, singletonList(notCompletionOrder)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
     }
 }
