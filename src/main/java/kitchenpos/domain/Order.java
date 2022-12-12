@@ -2,6 +2,9 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.springframework.util.CollectionUtils;
 
 public class Order {
     private Long id;
@@ -25,6 +28,12 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+    }
+
+    public void validateNullOrderLineItems() {
+        if(CollectionUtils.isEmpty(orderLineItems)){
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -65,5 +74,21 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public int getOrderLineItemsSize(){
+        return orderLineItems.size();
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public void isCompletionOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
     }
 }

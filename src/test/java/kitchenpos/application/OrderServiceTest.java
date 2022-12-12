@@ -17,7 +17,6 @@ import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -35,7 +34,7 @@ class OrderServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private TableService tableService;
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
@@ -60,7 +59,7 @@ class OrderServiceTest {
     @Test
     void 생성() {
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(좌석));
+        given(tableService.findById(anyLong())).willReturn(좌석);
         given(orderDao.save(any())).willReturn(주문);
         given(orderLineItemDao.save(any())).willReturn(주문_항목);
 
@@ -90,20 +89,10 @@ class OrderServiceTest {
     }
 
     @Test
-    void 좌석이_등록되어_있지_않은_경우() {
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
-
-        assertThatThrownBy(
-                () -> orderService.create(주문)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 좌석이_공석인_경우() {
         좌석 = new OrderTable(1L, null, 1, true);
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(좌석));
+        given(tableService.findById(anyLong())).willReturn(좌석);
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
