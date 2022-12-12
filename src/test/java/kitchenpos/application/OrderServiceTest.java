@@ -98,8 +98,8 @@ class OrderServiceTest {
         짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(2L, null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
         주문1_요청 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
         주문2_요청 = createOrder(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        주문1 = Order.of(주문1_요청.getId(), 주문1_요청.getOrderTableId(), 주문1_요청.getOrderStatus(), 주문1_요청.getOrderLineItems());
-        주문2 = Order.of(주문2_요청.getId(), 주문2_요청.getOrderTableId(), 주문2_요청.getOrderStatus(), 주문2_요청.getOrderLineItems());
+        주문1 = Order.of(주문1_요청.getId(), 주문테이블1, 주문1_요청.getOrderLineItems());
+        주문2 = Order.of(주문2_요청.getId(), 주문테이블2, 주문2_요청.getOrderLineItems());
     }
 
     @DisplayName("주문 생성 작업을 성공한다.")
@@ -111,7 +111,7 @@ class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문1.getOrderTableId())).thenReturn(Optional.of(주문테이블1));
+        when(orderTableDao.findById(주문1.getOrderTable().getId())).thenReturn(Optional.of(주문테이블1));
         when(orderDao.save(any())).thenReturn(주문1);
         when(orderLineItemDao.save(짜장면_탕수육_1인_메뉴_세트주문)).thenReturn(짜장면_탕수육_1인_메뉴_세트주문);
         when(orderLineItemDao.save(짬뽕_탕수육_1인_메뉴_세트주문)).thenReturn(짬뽕_탕수육_1인_메뉴_세트주문);
@@ -122,8 +122,8 @@ class OrderServiceTest {
         // then
         assertAll(
                 () -> assertThat(order.getOrderedTime()).isNotNull(),
-                () -> assertThat(order.getId()).isEqualTo(짜장면_탕수육_1인_메뉴_세트주문.getOrderId()),
-                () -> assertThat(order.getId()).isEqualTo(짬뽕_탕수육_1인_메뉴_세트주문.getOrderId())
+                () -> assertThat(order.getId()).isEqualTo(짜장면_탕수육_1인_메뉴_세트주문.getOrder().getId()),
+                () -> assertThat(order.getId()).isEqualTo(짬뽕_탕수육_1인_메뉴_세트주문.getOrder().getId())
         );
     }
 
@@ -156,7 +156,7 @@ class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문1.getOrderTableId())).thenReturn(Optional.empty());
+        when(orderTableDao.findById(주문1.getOrderTable().getId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
@@ -202,7 +202,7 @@ class OrderServiceTest {
     void changeOrderWithException1() {
         // given
         OrderRequest 미등록_주문_요청 = createOrder(10L, null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        Order 미등록_주문 = Order.of(미등록_주문_요청.getId(), 미등록_주문_요청.getOrderTableId(), 미등록_주문_요청.getOrderStatus(), 미등록_주문_요청.getOrderLineItems());
+        Order 미등록_주문 = Order.of(미등록_주문_요청.getId(), OrderTable.of(10L, null, 10, true), 미등록_주문_요청.getOrderLineItems());
         when(orderDao.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then

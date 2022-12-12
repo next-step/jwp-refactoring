@@ -4,7 +4,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,17 +21,22 @@ import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
 @DisplayName("단체 지정 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private TableGroup 단체1;
+    private OrderTableResponse 주문테이블1;
+    private OrderTableResponse 주문테이블2;
+    private TableGroupRequest 단체1;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, true)).as(OrderTable.class);
-        주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, true)).as(OrderTable.class);
-        TableGroupRequest tableGroupRequest = createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
-        단체1 = TableGroup.of(tableGroupRequest.getId(), tableGroupRequest.getCreatedDate(), tableGroupRequest.getOrderTables());
+        주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, true)).as(OrderTableResponse.class);
+        주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, true)).as(OrderTableResponse.class);
+//        TableGroupRequest tableGroupRequest =
+        단체1 = createTableGroup(
+                Arrays.asList(
+                        OrderTable.of(주문테이블1.getId(), null, 10, true),
+                        OrderTable.of(주문테이블2.getId(), null, 10, true)
+                )
+        );
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 지정한다.")
@@ -46,7 +53,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroup() {
         // given
-        TableGroup tableGroup = 지정된_단체(단체1).as(TableGroup.class);
+        TableGroupResponse tableGroup = 지정된_단체(단체1).as(TableGroupResponse.class);
 
         // when
         ExtractableResponse<Response> response = 단체_해제_요청(tableGroup.getId());

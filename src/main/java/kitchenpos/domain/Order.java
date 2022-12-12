@@ -2,61 +2,47 @@ package kitchenpos.domain;
 
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
+@Entity(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
+    @ManyToOne
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {
-    }
-
-    private Order(Long id, Long orderTableId, String orderStatus,
-                  List<OrderLineItem> orderLineItems) {
+    public Order(final Long id, final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                           List<OrderLineItem> orderLineItems, Function<List<Long>, Long> countByIdIn,
-                           Function<Long, Optional<OrderTable>> findById) {
+    public Order() {
+    }
 
+    public static Order of(final Long id, final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != countByIdIn.apply(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = findById.apply(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        return new Order(id, orderTable.getId(), OrderStatus.COOKING.name(), orderLineItems);
-    }
-
-    public static Order of(final Long id, final Long orderTableId, final String orderStatus, final List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderStatus, orderLineItems);
+        return new Order(id, orderTable, OrderStatus.COOKING.name(), orderLineItems);
     }
 
     public Long getId() {
@@ -67,12 +53,8 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public String getOrderStatus() {

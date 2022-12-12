@@ -81,13 +81,13 @@
   - [X] OrderTable
   - [X] Product
   - [X] TableGroup
-- [ ] JPA로 Migration
+- [X] JPA로 Migration
   - [X] Menu
   - [X] MenuGroup
-  - [ ] MenuProduct
-  - [ ] Order
-  - [ ] OrderLineItem
-  - [ ] OrderStatus
-  - [ ] OrderTable
+  - [X] MenuProduct
+  - [X] Order
+  - [X] OrderLineItem
+  - [X] OrderStatus
+  - [X] OrderTable
   - [X] Product
-  - [ ] TableGroup
+  - [X] TableGroup

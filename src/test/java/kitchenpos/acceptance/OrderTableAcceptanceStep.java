@@ -39,7 +39,7 @@ public class OrderTableAcceptanceStep {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_빈좌석_상태_변경_요청(Long orderTableId, OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_빈좌석_상태_변경_요청(Long orderTableId, OrderTableRequest orderTable) {
         return RestAssured
                 .given().log().all()
                 .body(orderTable)
@@ -49,7 +49,7 @@ public class OrderTableAcceptanceStep {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_방문고객_인원_변경_요청(Long orderTableId, OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_방문고객_인원_변경_요청(Long orderTableId, OrderTableRequest orderTable) {
         return RestAssured
                 .given().log().all()
                 .body(orderTable)

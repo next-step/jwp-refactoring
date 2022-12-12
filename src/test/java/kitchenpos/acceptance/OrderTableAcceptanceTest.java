@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,13 +58,12 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTable.class);
+        OrderTableResponse orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTableResponse.class);
         boolean isEmpty = orderTable.isEmpty();
-        OrderTable changeOrderTable = 주문테이블_생성(createOrderTable(null, orderTable.getNumberOfGuests(), !isEmpty));
+        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), !orderTable.isEmpty());
 
         // when
-        ExtractableResponse<Response> response = 주문_테이블_빈좌석_상태_변경_요청(orderTable.getId(),
-                changeOrderTable);
+        ExtractableResponse<Response> response = 주문_테이블_빈좌석_상태_변경_요청(orderTable.getId(), changeOrderTable);
 
         // then
         주문_테이블_빈좌석_여부_변경됨(response, !isEmpty);
@@ -73,9 +73,9 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTable.class);
+        OrderTableResponse orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTableResponse.class);
         int numberOfGuests = 10;
-        OrderTable changeOrderTable = 주문테이블_생성(createOrderTable(null, numberOfGuests, orderTable.isEmpty()));
+        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), orderTable.getTableGroupId(), numberOfGuests, orderTable.isEmpty());
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_방문고객_인원_변경_요청(orderTable.getId(), changeOrderTable);

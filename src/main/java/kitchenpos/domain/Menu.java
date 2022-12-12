@@ -12,7 +12,7 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu")

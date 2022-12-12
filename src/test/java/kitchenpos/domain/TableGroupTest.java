@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
@@ -18,7 +17,7 @@ class TableGroupTest {
         long expectedId = 1L;
         OrderTable 주문테이블1 = 주문테이블_생성(createOrderTable(1L, null, 10, true));
         OrderTable 주문테이블2 = 주문테이블_생성(createOrderTable(2L, null, 20, true));
-        TableGroup 단체1 = TableGroup.of(expectedId, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroup 단체1 = TableGroup.of(expectedId, Arrays.asList(주문테이블1, 주문테이블2), Arrays.asList(주문테이블1, 주문테이블2));
 
         // then
         assertAll(

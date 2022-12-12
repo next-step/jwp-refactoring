@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import org.junit.jupiter.api.Test;
 
+import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -17,13 +18,13 @@ class OrderTableTest {
 
         // when
         OrderTable orderTable =
-                OrderTable.of(expectedId, expectedTableGroupId, expectedNumberOfGuests, expectedIsEmpty);
+                OrderTable.of(expectedId, createTableGroup(), expectedNumberOfGuests, expectedIsEmpty);
 
         // then
         assertAll(
                 () -> assertThat(orderTable).isNotNull(),
                 () -> assertThat(orderTable.getId()).isEqualTo(expectedId),
-                () -> assertThat(orderTable.getTableGroupId()).isEqualTo(expectedTableGroupId),
+                () -> assertThat(orderTable.getTableGroup().getId()).isEqualTo(expectedTableGroupId),
                 () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(expectedNumberOfGuests),
                 () -> assertThat(orderTable.isEmpty()).isEqualTo(expectedIsEmpty)
         );

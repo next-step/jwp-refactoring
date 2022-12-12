@@ -54,7 +54,7 @@ class TableGroupServiceTest {
         주문테이블1 = 주문테이블_생성(createOrderTable(1L, null, 10, true));
         주문테이블2 = 주문테이블_생성(createOrderTable(2L, null, 20, true));
         단체1_요청 = createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
-        단체1 = TableGroup.of(단체1_요청.getId(), 단체1_요청.getCreatedDate(), 단체1_요청.getOrderTables());
+        단체1 = TableGroup.of(단체1_요청.getId(), 단체1_요청.getOrderTables(), 단체1_요청.getOrderTables());
     }
 
     @DisplayName("주문 테이블들의 단체 지정을 성공한다.")
@@ -71,8 +71,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(주문테이블1.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
-                () -> assertThat(주문테이블2.getTableGroupId()).isEqualTo(saveTableGroup.getId())
+                () -> assertThat(주문테이블1.getTableGroup().getId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블2.getTableGroup().getId()).isEqualTo(saveTableGroup.getId())
         );
     }
 
@@ -127,8 +127,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(주문테이블1.getTableGroupId()).isNull(),
-                () -> assertThat(주문테이블2.getTableGroupId()).isNull()
+                () -> assertThat(주문테이블1.getTableGroup()).isNull(),
+                () -> assertThat(주문테이블2.getTableGroup()).isNull()
         );
     }
 

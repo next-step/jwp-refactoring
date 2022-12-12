@@ -86,7 +86,7 @@ public class JdbcTemplateOrderTableDao implements OrderTableDao {
         final String sql = "UPDATE order_table SET table_group_id = (:tableGroupId)," +
                 " number_of_guests = (:numberOfGuests), empty = (:empty) WHERE id = (:id)";
         final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("tableGroupId", entity.getTableGroupId())
+//                .addValue("tableGroupId", entity.getTableGroupId())
                 .addValue("numberOfGuests", entity.getNumberOfGuests())
                 .addValue("empty", entity.isEmpty())
                 .addValue("id", entity.getId());
@@ -94,11 +94,12 @@ public class JdbcTemplateOrderTableDao implements OrderTableDao {
     }
 
     private OrderTable toEntity(final ResultSet resultSet) throws SQLException {
-        return OrderTable.of(
-                resultSet.getLong(KEY_COLUMN_NAME),
-                resultSet.getObject("table_group_id", Long.class),
-                resultSet.getInt("number_of_guests"),
-                resultSet.getBoolean("empty")
-        );
+        return null;
+//        return OrderTable.of(
+//                resultSet.getLong(KEY_COLUMN_NAME),
+//                resultSet.getObject("table_group_id", Long.class),
+//                resultSet.getInt("number_of_guests"),
+//                resultSet.getBoolean("empty")
+//        );
     }
 }

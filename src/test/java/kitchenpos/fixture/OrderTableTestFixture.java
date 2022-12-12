@@ -3,6 +3,8 @@ package kitchenpos.fixture;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 
+import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
+
 public class OrderTableTestFixture {
 
     public static OrderTableRequest createOrderTable(Long id, Long getTableGroupId, int numberOfGuests, boolean empty) {
@@ -22,6 +24,6 @@ public class OrderTableTestFixture {
     }
 
     public static OrderTable 주문테이블_생성(OrderTableRequest request) {
-        return OrderTable.of(request.getId(), request.getTableGroupId(), request.getNumberOfGuests(), request.isEmpty());
+        return OrderTable.of(request.getId(), createTableGroup(), request.getNumberOfGuests(), request.isEmpty());
     }
 }

@@ -4,6 +4,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.acceptance.MenuAcceptanceStep.등록된_메뉴;
@@ -42,8 +45,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuProduct 탕수육메뉴상품;
     private Menu 짜장면_탕수육_1인_메뉴_세트;
     private Menu 짬뽕_탕수육_1인_메뉴_세트;
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
+    private OrderTableResponse 주문테이블1;
+    private OrderTableResponse 주문테이블2;
     private OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문;
     private OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문;
     private OrderRequest 주문1;
@@ -63,8 +66,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         단무지메뉴상품 = 단무지메뉴상품();
         짜장면_탕수육_1인_메뉴_세트 = 등록된_메뉴(createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품))).as(Menu.class);
         짬뽕_탕수육_1인_메뉴_세트 = 등록된_메뉴(createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품))).as(Menu.class);
-        주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, false)).as(OrderTable.class);
-        주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, false)).as(OrderTable.class);
+        주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, false)).as(OrderTableResponse.class);
+        주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, false)).as(OrderTableResponse.class);
         짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(1L, null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
         짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(2L, null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
         주문1 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
@@ -100,8 +103,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order order = 등록된_주문(주문1).as(Order.class);
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        OrderResponse orderResponse = 등록된_주문(주문1).as(OrderResponse.class);
+        Order order = Order.of(
+                orderResponse.getId(),
+                OrderTable.of(1L, null, 10, false),
+                Collections.singletonList(짜장면_탕수육_1인_메뉴_세트주문)
+        );
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
 
         // when
         ExtractableResponse<Response> response = 주문_상태_변경_요청(order.getId(), order);

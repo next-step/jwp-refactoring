@@ -72,12 +72,12 @@ class OrderTableServiceTest {
         when(orderTableDao.findAll()).thenReturn(expected);
 
         // when
-        List<OrderTable> actual = tableService.list();
+        List<OrderTableResponse> actual = tableService.list();
 
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(expected.size()),
-                () -> assertThat(actual).containsExactly(주문테이블1, 주문테이블2)
+                () -> assertThat(actual).containsExactly(OrderTableResponse.from(주문테이블1), OrderTableResponse.from(주문테이블2))
         );
     }
 
@@ -85,7 +85,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        주문테이블1.setEmpty(true, (id, orderStatuses) -> false);
+        주문테이블1.setEmpty(true);
         when(orderTableDao.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
