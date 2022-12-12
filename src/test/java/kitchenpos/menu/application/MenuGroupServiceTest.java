@@ -4,6 +4,7 @@ import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,11 @@ class MenuGroupServiceTest {
     void create(String name) {
         assertThat(menuGroupService.create(new MenuGroupCreateRequest(name)).getName())
                 .isEqualTo(name);
+    }
+
+    @DisplayName("메뉴 그룹 목록을 조회한다.")
+    @Test
+    void name() {
+        assertThat(menuGroupService.list()).hasSize(4);
     }
 }
