@@ -85,7 +85,7 @@ public class TableGroupServiceTest {
                 .sample();
         doReturn(orderTables.subList(0, 2))
                 .when(orderTableDao)
-                .findAllByIdIn(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
+                .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -104,7 +104,7 @@ public class TableGroupServiceTest {
                 .sample();
         doReturn(orderTables)
                 .when(orderTableDao)
-                .findAllByIdIn(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
+                .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -124,7 +124,7 @@ public class TableGroupServiceTest {
                 .sample();
         doReturn(orderTables)
                 .when(orderTableDao)
-                .findAllByIdIn(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
+                .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -146,7 +146,7 @@ public class TableGroupServiceTest {
                 .sample();
         doReturn(orderTables)
                 .when(orderTableDao)
-                .findAllByIdIn(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
+                .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
         doReturn(tableGroup)
                 .when(tableGroupDao)
                 .save(tableGroup);
@@ -180,7 +180,7 @@ public class TableGroupServiceTest {
                 .sample();
         doReturn(orderTables)
                 .when(orderTableDao)
-                .findAllByTableGroupId(tableGroup.getId());
+                .findAllByTableGroup(tableGroup);
         doReturn(true)
                 .when(orderDao)
                 .existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));

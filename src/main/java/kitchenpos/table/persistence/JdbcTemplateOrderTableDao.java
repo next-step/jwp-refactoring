@@ -17,9 +17,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/*
 @Repository
-public class JdbcTemplateOrderTableDao implements OrderTableDao {
-    private static final String TABLE_NAME = "order_table";
+*/
+public class JdbcTemplateOrderTableDao /*implements OrderTableDao*/ {
+/*    private static final String TABLE_NAME = "order_table";
     private static final String KEY_COLUMN_NAME = "id";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -101,5 +103,5 @@ public class JdbcTemplateOrderTableDao implements OrderTableDao {
                 .numberOfGuests(resultSet.getInt("number_of_guests"))
                 .empty(resultSet.getBoolean("empty"))
                 .build();
-    }
+    }*/
 }

@@ -4,7 +4,6 @@ import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableRequest {
     private Long id;
-    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
@@ -13,7 +12,6 @@ public class OrderTableRequest {
     public OrderTable toOrderTable() {
         return OrderTable.builder()
                 .id(id)
-                .tableGroupId(tableGroupId)
                 .numberOfGuests(numberOfGuests)
                 .empty(empty)
                 .build();
@@ -25,14 +23,6 @@ public class OrderTableRequest {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
