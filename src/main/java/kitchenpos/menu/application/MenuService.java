@@ -74,11 +74,9 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenu(menu));
-        }
-        return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
+        return menuRepository.findAll()
+                .stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 }

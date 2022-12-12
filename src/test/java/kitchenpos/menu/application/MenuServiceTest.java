@@ -186,22 +186,15 @@ public class MenuServiceTest {
     public void returnMenus() {
         List<Menu> menus = getMenus(Menu.builder()
                 .id(Arbitraries.longs().between(1, 1000l).sample())
+                .menuProducts(getMenuProducts(MenuProduct.builder().menu(Menu.builder().build()).build(), 3))
                 .menuGroup(MenuGroup.builder().build())
-                .build(), 5);
-        List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder()
-                .seq(14l)
-                .quantity(15l)
-                .product(Product.builder().build())
-                .menu(Menu.builder().id(13l).build())
                 .build(), 5);
         doReturn(menus)
                 .when(menuDao)
                 .findAll();
-        doReturn(menuProducts)
-                .when(menuProductDao)
-                .findAllByMenu(any(Menu.class));
 
         List<MenuResponse> returnedMenus = menuService.list();
+
         assertThat(returnedMenus.stream().map(MenuResponse::getId).collect(Collectors.toList()))
                 .containsAll(menus.stream().map(menu -> menu.getId()).collect(Collectors.toList()));
     }
