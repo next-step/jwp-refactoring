@@ -73,6 +73,26 @@ class TableGroupServiceTest {
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
     }
 
+    @DisplayName("테이블 그룹을 생성한다.")
+    @Test
+    void create() {
+    }
+
+    @DisplayName("테이블 그룹을 생성한다. / 주문 테이블의 갯수가 2보다 작을 수 없다.")
+    @Test
+    void create_fail_minimumSize() {
+    }
+
+    @DisplayName("테이블 그룹을 생성한다. / 주문 테이블이 비어있을 수 없다.")
+    @Test
+    void create_fail_orderTableEmpty() {
+    }
+
+    @DisplayName("테이블 그룹을 조회한다.")
+    @Test
+    void list() {
+    }
+
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void unGroup_success() {
