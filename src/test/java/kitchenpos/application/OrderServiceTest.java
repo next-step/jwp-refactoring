@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,22 +46,29 @@ class OrderServiceTest {
 	@InjectMocks
 	OrderService orderService;
 
+	@Captor
+	ArgumentCaptor<Order> orderArgumentCaptor;
+
 	static final List<Long> menus = Lists.newArrayList(1L, 2L, 3L);
 
 	@Test
 	void testCreateOrder() {
+		// given
 		OrderTable orderTable = createOrderTable();
 		Order order = createOrder(orderTable);
 		when(menuDao.countByIdIn(anyList())).thenReturn((long) menus.size());
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
 		when(orderDao.save(order)).thenAnswer(returnsFirstArg());
 
+		// when
 		order = orderService.create(order);
 
+		// then
 		verify(orderLineItemDao, times(order.getOrderLineItems().size())).save(any());
 		verify(orderDao, times(1)).save(order);
-		assertThat(order)
-			.extracting(Order::getOrderStatus).isEqualTo(OrderStatus.COOKING.name());
+		verify(orderDao).save(orderArgumentCaptor.capture());
+		Order savedOrder = orderArgumentCaptor.getValue();
+		assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 	}
 
 	@Test
