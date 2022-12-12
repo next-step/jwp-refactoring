@@ -101,6 +101,40 @@ class TableServiceTest {
                 .hasMessageContaining(TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
     }
 
+    @DisplayName("공석 상태로 변경한다.")
+    @Test
+    void empty_success() {
+
+        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
+        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+
+        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
+        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
+        List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.add(orderTable1);
+        orderTables.add(orderTable2);
+
+        OrderTable orderTable = orderTableDao.save(new OrderTable());
+
+        TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
+
+        final OrderTable savedOrderTable = orderTableDao.findById(1L)
+                .orElseThrow(IllegalArgumentException::new);
+        savedOrderTable.setTableGroupId(tableGroup.getId());
+
+
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
+        Order order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
+
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
+
+        orderTableDao.save(savedOrderTable);
+        orderDao.save(order);
+
+        assertThat(tableService.changeEmpty(orderTable.getId()).isEmpty()).isTrue();
+    }
+
     @DisplayName("공석 상태로 변경한다. / 테이블 그룹이 있을 수 없다.")
     @Test
     void changeEmpty_fail_notTableGroup() {

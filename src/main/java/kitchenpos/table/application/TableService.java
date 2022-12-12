@@ -52,7 +52,7 @@ public class TableService {
             throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
         }
 
-        savedOrderTable.empty();
+        savedOrderTable.setEmpty(true);
 
         return orderTableDao.save(savedOrderTable);
     }
