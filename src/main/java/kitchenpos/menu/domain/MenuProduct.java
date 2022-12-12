@@ -2,29 +2,33 @@ package kitchenpos.menu.domain;
 
 public class MenuProduct {
     public static final String MENU_NULL_EXCEPTION_MESSAGE = "메뉴는 필수입니다.";
+    public static final String PRODUCT_NULL_EXCEPTION_MESSAGE = "메뉴는 필수입니다.";
     private Long seq;
     private Long menuId;
     private Long productId;
     private long quantity;
 
     public MenuProduct(Long id, Long menuId, Long productId) {
-        validate(menuId);
+        validate(menuId, productId);
         this.seq = id;
         this.menuId = menuId;
         this.productId = productId;
     }
 
     public MenuProduct(long seq, Long menuId, long productId, long quantity) {
-        validate(menuId);
+        validate(menuId, productId);
         this.seq = seq;
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    private static void validate(Long menuId) {
+    private static void validate(Long menuId, Long productId) {
         if (menuId == null) {
             throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
+        }
+        if (productId == null) {
+            throw new IllegalArgumentException(PRODUCT_NULL_EXCEPTION_MESSAGE);
         }
     }
 
