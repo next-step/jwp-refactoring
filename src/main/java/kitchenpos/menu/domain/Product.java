@@ -21,7 +21,7 @@ public class Product {
     }
 
     public static Product of(long id, String name, BigDecimal price) {
-        return new Product(id,name,price);
+        return new Product(id, name, price);
     }
 
     public Long getId() {

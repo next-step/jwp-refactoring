@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +25,7 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
     private ProductService productService;
 
@@ -40,9 +39,15 @@ class MenuServiceTest {
 
     private MenuGroup menuGroup;
 
+    private Product product1;
+    private Product product2;
+    private Menu menu;
+
     @BeforeEach
     void setUp() {
-        menuGroup = MenuGroup.of(1L,"test menu group");
+        menuGroup = MenuGroup.of(1L, "test menu group");
+        product1 = Product.of(product1Id, "상품1", BigDecimal.valueOf(1000));
+        product2 = Product.of(product2Id, "상품2", BigDecimal.valueOf(1000));
     }
 
     @Test
@@ -66,7 +71,7 @@ class MenuServiceTest {
     void throwExceptionWhenMenuGroupIdNotExist() {
         given(menuGroupRepository.existsById(anyLong())).willReturn(false);
 
-        Menu menu = getMenu(10000, getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
+        Menu menu = getMenuWithTwoMenuProduct(10000, 3, 5);
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -74,7 +79,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 그룹이 가진 상품의 아이디가 존재하지 않으면 exception이 발생함")
     void throwExceptionWhenIdOfProductContainedByMenuGroupNotExist() {
-        Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
+        Menu menu = getMenuWithTwoMenuProduct(10000, 3, 5);
 
         given(menuGroupRepository.existsById(menuId)).willReturn(true);
         given(productService.findById(product1Id)).willThrow(IllegalArgumentException.class);
@@ -85,25 +90,24 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격은 각 상품의 합보다 클 수 없다")
     void menuPriceCanNotBeBiggerThanSumOfProductPriceMultipliedByQuantity() {
-        Product 상품1 = Product.of(product1Id, "상품1", BigDecimal.valueOf(1000L));
-        Product 상품2 = Product.of(product2Id, "상품2", BigDecimal.valueOf(1000L));
-        Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
+        Menu menu = getMenuWithTwoMenuProduct(10000, 3, 5);
 
         given(menuGroupRepository.existsById(menuGroupId)).willReturn(true);
-        given(productService.findById(product1Id)).willReturn(상품1);
-        given(productService.findById(product2Id)).willReturn(상품2);
+        given(productService.findById(product1Id)).willReturn(product1);
+        given(productService.findById(product2Id)).willReturn(product2);
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
+
 
     @Test
     @DisplayName("메뉴를 조회하고, 메뉴 상품을 가지고 있다")
     void menuHasMenuProducts() {
         Menu menu = getMenu(8000);
-        List<MenuProduct> menuProducts = getTwoMenuProducts(menuId,product1Id,3, product2Id, 5);
+        List<MenuProduct> menuProducts = getTwoMenuProducts(menu, 3, 5);
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu));
-        given(menuProductDao.findAllByMenuId(menuId)).willReturn(menuProducts);
+        given(menuProductRepository.findAllByMenu(menu)).willReturn(menuProducts);
 
         List<Menu> list = service.list();
 
@@ -111,18 +115,21 @@ class MenuServiceTest {
         assertThat(list).isEqualTo(Arrays.asList(menu));
     }
 
+    private Menu getMenuWithTwoMenuProduct(int menuPrice, int product1Quantity, int product2Quantity) {
+        Menu menu = getMenu(menuPrice);
+        List<MenuProduct> twoMenuProducts = getTwoMenuProducts(menu, product1Quantity, product2Quantity);
+        menu.setMenuProducts(twoMenuProducts);
+        return menu;
+    }
+
     private Menu getMenu(Integer price) {
-        return Menu.of(menuId, "메뉴", price == null ? null : BigDecimal.valueOf(price));
+        return Menu.of(menuId, "메뉴", price == null ? null : BigDecimal.valueOf(price), menuGroup);
     }
 
-    private Menu getMenu(int price, List<MenuProduct> menuProducts) {
-        return Menu.of(menuId, "메뉴", BigDecimal.valueOf(price), menuGroup, menuProducts);
-    }
-
-    private List<MenuProduct> getTwoMenuProducts(Long menuId, Long product1Id, long product1Quantity, Long product2Id, long product2Quantity) {
+    private List<MenuProduct> getTwoMenuProducts(Menu menu, long product1Quantity, long product2Quantity) {
         return Arrays.asList(
-                MenuProduct.of(menuId, product1Id, product1Quantity),
-                MenuProduct.of(menuId, product2Id, product2Quantity)
+                MenuProduct.of(menu, product1, product1Quantity),
+                MenuProduct.of(menu, product2, product2Quantity)
         );
     }
 }
