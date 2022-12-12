@@ -4,7 +4,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.UnsupportedEncodingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,5 +56,21 @@ public class MockMvcAcceptanceTest {
                         .characterEncoding("UTF-8")
                         .content(content)
         );
+    }
+
+    ResultActions mockPut(String url, Long targetId, Object body) throws Exception{
+        String content = objectMapper.writeValueAsString(body);
+        return mockMvc.perform(put(url, targetId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+                .content(content)
+        );
+    }
+
+    <T> T getObjectByResponse(ResultActions resultActions, Class<T> clazz)
+            throws JsonProcessingException, UnsupportedEncodingException {
+        String responseContent = resultActions.andReturn().getResponse().getContentAsString();
+        return objectMapper.readValue(responseContent, clazz);
     }
 }
