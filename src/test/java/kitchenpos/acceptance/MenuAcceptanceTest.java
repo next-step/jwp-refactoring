@@ -2,7 +2,7 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuAcceptanceTestUtils.*;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTestUtils.메뉴_그룹_등록되어_있음;
-import static kitchenpos.acceptance.ProductAcceptanceTestUtils.상품_등록되어_있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceTestUtils.상품_등록되어_있음;
 import static kitchenpos.domain.MenuProductTestFixture.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 

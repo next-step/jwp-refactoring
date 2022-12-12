@@ -1,12 +1,13 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
-import static kitchenpos.acceptance.ProductAcceptanceTestUtils.*;
+import static kitchenpos.product.acceptance.ProductAcceptanceTestUtils.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
+import kitchenpos.acceptance.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

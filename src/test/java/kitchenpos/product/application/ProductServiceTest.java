@@ -1,6 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import static kitchenpos.domain.ProductTestFixture.product;
+import static kitchenpos.product.domain.ProductTestFixture.product;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
