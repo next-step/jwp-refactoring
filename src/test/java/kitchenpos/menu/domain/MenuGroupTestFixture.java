@@ -1,8 +1,8 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Name;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 public class MenuGroupTestFixture {
 

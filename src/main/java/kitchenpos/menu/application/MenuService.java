@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
@@ -38,6 +38,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        validateMenuGroup(menuGroup);
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(menuRequest.getMenuProductRequests()));
         Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.from(menu);
@@ -48,6 +49,12 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private void validateMenuGroup(MenuGroup menuGroup) {
+        if(menuGroup == null) {
+            throw new IllegalArgumentException(ErrorCode.메뉴_그룹은_비어있을_수_없음.getErrorMessage());
+        }
     }
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {

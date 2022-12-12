@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;

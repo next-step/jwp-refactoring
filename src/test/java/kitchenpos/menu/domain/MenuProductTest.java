@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

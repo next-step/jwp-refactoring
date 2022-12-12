@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;

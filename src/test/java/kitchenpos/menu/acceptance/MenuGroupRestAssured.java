@@ -6,7 +6,7 @@ import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroupReque
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupRestAssured {
