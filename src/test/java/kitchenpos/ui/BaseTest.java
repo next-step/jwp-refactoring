@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 class BaseTest {
     @Autowired
     protected WebApplicationContext webApplicationContext;
-    protected MockMvc mockMvc;
+    protected static MockMvc mockMvc;
     @Autowired
     protected ObjectMapper objectMapper;
 

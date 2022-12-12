@@ -14,28 +14,33 @@ import java.util.regex.Pattern;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 class OrderRestControllerTest extends BaseTest {
-    private final Long 주문_좌석_ID = 9L;
+    private final OrderTable 좌석 = new OrderTable(1L, 1L, 4, false);
     private final List<OrderLineItem> orderLineItems =
             Arrays.asList(new OrderLineItem(1L, 1L, 1L, 1));
 
     @Test
     void 생성() throws Exception {
-        String content = objectMapper.writeValueAsString(
-                new Order(주문_좌석_ID, null, LocalDateTime.now(), orderLineItems));
+        String content = objectMapper.writeValueAsString(좌석);
+        TableRestControllerTest.생성_요청(content);
 
+        content = objectMapper.writeValueAsString(
+                new Order(좌석.getId(), null, LocalDateTime.now(), orderLineItems));
         생성_요청(content);
     }
 
     @Test
     void 조회() throws Exception {
-        String content = objectMapper.writeValueAsString(
-                new Order(주문_좌석_ID, null, LocalDateTime.now(), orderLineItems));
+        String content = objectMapper.writeValueAsString(좌석);
+        TableRestControllerTest.생성_요청(content);
 
+        content = objectMapper.writeValueAsString(
+                new Order(좌석.getId(), null, LocalDateTime.now(), orderLineItems));
         생성_요청(content);
 
         조회_요청();
@@ -43,9 +48,11 @@ class OrderRestControllerTest extends BaseTest {
 
     @Test
     void 주문_상태_변경() throws Exception {
-        String content = objectMapper.writeValueAsString(
-                new Order(주문_좌석_ID, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItems));
+        String content = objectMapper.writeValueAsString(좌석);
+        TableRestControllerTest.생성_요청(content);
 
+        content = objectMapper.writeValueAsString(
+                new Order(좌석.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItems));
         Long id = 생성_요청(content);
 
         상태_변경_요청(id, content);

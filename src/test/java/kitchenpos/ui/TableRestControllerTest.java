@@ -50,7 +50,7 @@ class TableRestControllerTest extends BaseTest {
         인원_변경_요청(좌석.getId(), content);
     }
 
-    private Long 생성_요청(String content) throws Exception {
+    public static Long 생성_요청(String content) throws Exception {
         MvcResult response = mockMvc.perform(post("/api/tables")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +61,7 @@ class TableRestControllerTest extends BaseTest {
         return ID_반환(response);
     }
 
-    private Long ID_반환(MvcResult response){
+    private static Long ID_반환(MvcResult response){
         String location = response.getResponse().getHeader("Location");
         Pattern pattern = Pattern.compile("(\\d+)$");
         Matcher matcher = pattern.matcher(location);
