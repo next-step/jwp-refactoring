@@ -1,7 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,20 +18,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -40,23 +40,24 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
-        when(menuGroupDao.save(any())).thenReturn(group1);
+        when(menuGroupRepository.save(any())).thenReturn(group1);
 
-        MenuGroup result = menuGroupService.create(group1);
+        MenuGroupResponse result = menuGroupService.create(group1);
 
-        assertThat(result).isEqualTo(group1);
+        assertThat(result.getName()).isEqualTo("group1");
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(group1, group2));
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(group1, group2));
 
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         assertAll(
                 () -> assertThat(list).hasSize(2),
-                () -> assertThat(list).containsExactly(group1, group2)
+                () -> assertThat(list.get(0).getName()).isEqualTo("group1"),
+                () -> assertThat(list.get(1).getName()).isEqualTo("group2")
         );
     }
 }

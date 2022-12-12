@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,16 +22,16 @@ import org.springframework.http.HttpStatus;
 @DisplayName("상품 관련 인수 테스트")
 class ProductAcceptanceTest extends AcceptanceTest {
 
-    private Product 버팔로윙;
-    private Product 치킨텐더;
+    private ProductRequest 버팔로윙;
+    private ProductRequest 치킨텐더;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        버팔로윙 = Product.of(1L, "버팔로윙", BigDecimal.valueOf(6_500));
-        치킨텐더 = Product.of(2L, "치킨텐더", BigDecimal.valueOf(5_900));
+        버팔로윙 = ProductRequest.of("버팔로윙", BigDecimal.valueOf(6_500));
+        치킨텐더 = ProductRequest.of("치킨텐더", BigDecimal.valueOf(5_900));
     }
 
     /**
@@ -52,7 +53,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("가격이 없는 상품은 생성할 수 없다.")
     @Test
     void createFail() {
-        Product 가격없는_상품 = Product.of(1L, "가격없는_상품", null);
+        ProductRequest 가격없는_상품 = ProductRequest.of("가격없는_상품", null);
 
         ExtractableResponse<Response> response = 상품_생성_요청(가격없는_상품);
 
@@ -66,7 +67,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("가격이 음수인 상품은 생성할 수 없다.")
     @Test
     void createFail2() {
-        Product 가격이_음수인_상품 = Product.of(1L, "가격이_음수인_상품", BigDecimal.valueOf(-1));
+        ProductRequest 가격이_음수인_상품 = ProductRequest.of("가격이_음수인_상품", BigDecimal.valueOf(-1));
 
         ExtractableResponse<Response> response = 상품_생성_요청(가격이_음수인_상품);
 
@@ -105,9 +106,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_목록에_등록된_상품이_포함됨(ExtractableResponse<Response> listResponse,
                                     List<ExtractableResponse<Response>> createResponses) {
-        List<Product> products = listResponse.jsonPath().getList(".", Product.class);
-        List<Product> createdProducts = createResponses.stream()
-                .map(it -> it.as(Product.class))
+        List<ProductResponse> products = listResponse.jsonPath().getList(".", ProductResponse.class);
+        List<ProductResponse> createdProducts = createResponses.stream()
+                .map(it -> it.as(ProductResponse.class))
                 .collect(Collectors.toList());
 
         assertAll(

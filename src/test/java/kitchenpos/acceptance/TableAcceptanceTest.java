@@ -19,15 +19,20 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,21 +41,21 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 테이블 관련 인수 테스트")
 class TableAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 비어있지않은_주문_테이블1;
-    private OrderTable 비어있지않은_주문_테이블2;
-    private OrderTable 비어있는_주문_테이블1;
-    private OrderTable 비어있는_주문_테이블2;
+    private OrderTableRequest 비어있지않은_주문_테이블1;
+    private OrderTableRequest 비어있지않은_주문_테이블2;
+    private OrderTableRequest 비어있는_주문_테이블1;
+    private OrderTableRequest 비어있는_주문_테이블2;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        비어있지않은_주문_테이블1 = OrderTable.of(null, 2, false);
-        비어있지않은_주문_테이블2 = OrderTable.of(null, 3, false);
+        비어있지않은_주문_테이블1 = OrderTableRequest.of(2, false);
+        비어있지않은_주문_테이블2 = OrderTableRequest.of(3, false);
 
-        비어있는_주문_테이블1 = OrderTable.of(null, 2, true);
-        비어있는_주문_테이블2 = OrderTable.of(null, 2, true);
+        비어있는_주문_테이블1 = OrderTableRequest.of(2, true);
+        비어있는_주문_테이블2 = OrderTableRequest.of(2, true);
 
     }
 
@@ -91,7 +96,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되지 않은 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyFail() {
-        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(1L, OrderTable.of(1L, 3, false));
+        OrderTableRequest request = OrderTableRequest.of(3, false);
+        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(1L, request);
 
         빈_상태_변경_요청_실패됨(response);
     }
@@ -105,15 +111,19 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정된 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyFail2() {
-        OrderTable 등록된_빈_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTable.class);
-        OrderTable 등록된_빈_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTable.class);
+        OrderTableResponse 등록된_빈_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
+        OrderTableResponse 등록된_빈_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(등록된_빈_주문_테이블1, 등록된_빈_주문_테이블2);
-        단체_지정_등록되어_있음(TableGroup.of(1L, 주문_테이블_목록));
+        List<OrderTableResponse> 주문_테이블_목록 = Arrays.asList(등록된_빈_주문_테이블1, 등록된_빈_주문_테이블2);
+        단체_지정_등록되어_있음(
+                TableGroupRequest.from(주문_테이블_목록.stream()
+                        .map(OrderTableResponse::getId)
+                        .collect(Collectors.toList()))
+        );
 
-        OrderTable 변경할_주문_테이블 =
-                OrderTable.of(등록된_빈_주문_테이블1.getId(), 등록된_빈_주문_테이블1.getNumberOfGuests(), !등록된_빈_주문_테이블1.isEmpty());
-        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(변경할_주문_테이블.getId(), 변경할_주문_테이블);
+        OrderTableRequest 변경할_주문_테이블 =
+                OrderTableRequest.of(등록된_빈_주문_테이블1.getNumberOfGuests(), !등록된_빈_주문_테이블1.isEmpty());
+        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(등록된_빈_주문_테이블1.getId(), 변경할_주문_테이블);
 
         빈_상태_변경_요청_실패됨(response);
     }
@@ -131,30 +141,29 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyFail3() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroup.of(1L, "두마리메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        Product 후라이드 = 상품_등록되어_있음(
-                Product.of(1L, "후라이드", BigDecimal.valueOf(16_000))
-        ).as(Product.class);
+        ProductResponse 후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
+                .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
-        List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, 1L, 후라이드.getId(), 2));
-        Menu 후라이드치킨 = 메뉴_등록되어_있음(
-                Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
-        ).as(Menu.class);
+        List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
+        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
+                MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
+        ).as(MenuResponse.class);
 
         // And 주문 테이블 등록되어 있음
-        OrderTable 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
         // And 주문(조리) 등록되어 있음
-        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        주문_등록되어_있음(Order.of(등록된_주문_테이블.getId(), 주문항목)).as(Order.class);
+        List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목));
 
         // When 주문 테이블 빈 상태 변경 요청
-        OrderTable 변경할_주문_테이블 =
-                OrderTable.of(등록된_주문_테이블.getId(), 등록된_주문_테이블.getNumberOfGuests(), !등록된_주문_테이블.isEmpty());
-        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(변경할_주문_테이블.getId(), 변경할_주문_테이블);
+        OrderTableRequest 변경할_주문_테이블 =
+                OrderTableRequest.of(등록된_주문_테이블.getNumberOfGuests(), !등록된_주문_테이블.isEmpty());
+        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(등록된_주문_테이블.getId(), 변경할_주문_테이블);
 
         // Then 빈 상태 변경 요청 실패됨
         빈_상태_변경_요청_실패됨(response);
@@ -174,35 +183,32 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyFail4() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroup 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroup.of(1L, "두마리메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        Product 후라이드 = 상품_등록되어_있음(
-                Product.of(1L, "후라이드", BigDecimal.valueOf(16_000))
-        ).as(Product.class);
+        ProductResponse 후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
+                .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
-        List<MenuProduct> 메뉴상품목록 = Arrays.asList(MenuProduct.of(1L, 1L, 후라이드.getId(), 2));
-        Menu 후라이드치킨 = 메뉴_등록되어_있음(
-                Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
-        ).as(Menu.class);
+        List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
+        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
+                MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
+        ).as(MenuResponse.class);
 
         // And 주문 테이블 등록되어 있음
-        OrderTable 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 등록된_주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
         // And 주문 등록되어 있음
-        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = 주문_등록되어_있음(Order.of(등록된_주문_테이블.getId(), 주문항목)).as(Order.class);
+        List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderResponse 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(OrderResponse.class);
 
         // And 주문 상태(식사) 변경되어 있음
-        Order 식사상태_주문 = Order.of(주문.getId(), 주문.getOrderTableId(), 주문.getOrderLineItems());
-        식사상태_주문.setOrderStatus(OrderStatus.MEAL.name());
-        OrderRestAssured.주문_상태_변경_요청(식사상태_주문.getId(), 식사상태_주문);
+        OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
 
         // When 주문 테이블 빈 상태 변경 요청
-        OrderTable 변경할_주문_테이블 =
-                OrderTable.of(등록된_주문_테이블.getId(), 등록된_주문_테이블.getNumberOfGuests(), !등록된_주문_테이블.isEmpty());
-        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(변경할_주문_테이블.getId(), 변경할_주문_테이블);
+        OrderTableRequest 변경할_주문_테이블 =
+                OrderTableRequest.of(등록된_주문_테이블.getNumberOfGuests(), !등록된_주문_테이블.isEmpty());
+        ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(등록된_주문_테이블.getId(), 변경할_주문_테이블);
 
         // Then 빈 상태 변경 요청 실패됨
         빈_상태_변경_요청_실패됨(response);
@@ -216,9 +222,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블의 빈 상태를 변경할 수 있다.")
     @Test
     void changeEmpty() {
-        OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
-        OrderTable 변경할_주문_테이블 = OrderTable.of(주문_테이블.getId(), 주문_테이블.getNumberOfGuests(), !주문_테이블.isEmpty());
+        OrderTableRequest 변경할_주문_테이블 = OrderTableRequest.of(주문_테이블.getNumberOfGuests(), !주문_테이블.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(주문_테이블.getId(), 변경할_주문_테이블);
 
         빈_상태_변경됨(response, 변경할_주문_테이블.isEmpty());
@@ -231,7 +237,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("방문한 손님 수가 0보다 작은경우 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsFail() {
-        OrderTable 방문한_손님_수가_0보다_작은_주문_테이블 = OrderTable.of(1L, -1, false);
+        OrderTableRequest 방문한_손님_수가_0보다_작은_주문_테이블 = OrderTableRequest.of(-1, false);
         ExtractableResponse<Response> response =
                 주문_테이블_방문한_손님_수_변경_요청(1L, 방문한_손님_수가_0보다_작은_주문_테이블);
 
@@ -245,7 +251,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되지 않은 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsFail2() {
-        OrderTable 등록되지_않은_주문_테이블 = OrderTable.of(1L, 10, false);
+        OrderTableRequest 등록되지_않은_주문_테이블 = OrderTableRequest.of(10, false);
         ExtractableResponse<Response> response = 주문_테이블_방문한_손님_수_변경_요청(1L, 등록되지_않은_주문_테이블);
 
         방문한_손님_수_변경_실패됨(response);
@@ -259,10 +265,10 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록된 주문 테이블이 빈 상태이면 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsFail3() {
-        OrderTable 빈_상태_주문_테이블 =
-                주문_테이블_등록되어_있음(OrderTable.of(null, 0, true)).as(OrderTable.class);
+        OrderTableResponse 빈_상태_주문_테이블 =
+                주문_테이블_등록되어_있음(OrderTableRequest.of(0, true)).as(OrderTableResponse.class);
 
-        OrderTable 방문한_손님_수_변경한_주문_테이블 = OrderTable.of(빈_상태_주문_테이블.getId(), 10, false);
+        OrderTableRequest 방문한_손님_수_변경한_주문_테이블 = OrderTableRequest.of(10, false);
         ExtractableResponse<Response> response =
                 주문_테이블_방문한_손님_수_변경_요청(빈_상태_주문_테이블.getId(), 방문한_손님_수_변경한_주문_테이블);
 
@@ -277,9 +283,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTable.class);
+        OrderTableResponse 주문_테이블 = 주문_테이블_등록되어_있음(비어있지않은_주문_테이블1).as(OrderTableResponse.class);
 
-        OrderTable 방문한_손님_수_변경_주문_테이블 = OrderTable.of(주문_테이블.getId(), 10, 주문_테이블.isEmpty());
+        OrderTableRequest 방문한_손님_수_변경_주문_테이블 = OrderTableRequest.of(10, 주문_테이블.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_방문한_손님_수_변경_요청(주문_테이블.getId(), 방문한_손님_수_변경_주문_테이블);
 
         방문한_손님_수_변경됨(response, 방문한_손님_수_변경_주문_테이블.getNumberOfGuests());
@@ -295,9 +301,9 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private void 주문_테이블_목록에_등록된_주문_테이블_포함됨(ExtractableResponse<Response> listResponse,
                                            List<ExtractableResponse<Response>> createResponses) {
-        List<OrderTable> orderTables = listResponse.jsonPath().getList(".", OrderTable.class);
-        List<OrderTable> createdOrderTables = createResponses.stream()
-                .map(it -> it.as(OrderTable.class))
+        List<OrderTableResponse> orderTables = listResponse.jsonPath().getList(".", OrderTableResponse.class);
+        List<OrderTableResponse> createdOrderTables = createResponses.stream()
+                .map(it -> it.as(OrderTableResponse.class))
                 .collect(Collectors.toList());
 
         assertAll(
@@ -313,7 +319,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     private void 빈_상태_변경됨(ExtractableResponse<Response> response, boolean empty) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(empty)
+                () -> assertThat(response.as(OrderTableResponse.class).isEmpty()).isEqualTo(empty)
         );
     }
 
@@ -324,7 +330,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     private void 방문한_손님_수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(numberOfGuests)
+                () -> assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(numberOfGuests)
         );
     }
 }

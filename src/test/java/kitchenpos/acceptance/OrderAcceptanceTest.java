@@ -17,14 +17,19 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,11 +38,11 @@ import org.springframework.http.HttpStatus;
 @DisplayName("주문 관련 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 두마리메뉴;
-    private Product 후라이드;
-    private Menu 후라이드치킨;
-    private OrderTable 주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
+    private MenuGroupResponse 두마리메뉴;
+    private ProductResponse 후라이드;
+    private MenuResponse 후라이드치킨;
+    private OrderTableResponse 주문_테이블;
+    private OrderTableResponse 비어있는_주문_테이블;
 
     /**
      * Given 메뉴 그룹 등록되어 있음
@@ -51,16 +56,16 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroup.of(1L, "두마리메뉴")).as(MenuGroup.class);
+        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
-        후라이드 = 상품_등록되어_있음(Product.of(1L, "후라이드", BigDecimal.valueOf(16_000))).as(Product.class);
+        후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000))).as(ProductResponse.class);
 
-        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(1L, null, 후라이드.getId(), 2));
-        후라이드치킨 = 메뉴_등록되어_있음(Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록))
-                .as(Menu.class);
+        List<MenuProductRequest> 메뉴상품_목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
+        후라이드치킨 = 메뉴_등록되어_있음(MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록))
+                .as(MenuResponse.class);
 
-        주문_테이블 = 주문_테이블_등록되어_있음(OrderTable.of(null, 2, false)).as(OrderTable.class);
-        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTable.of(null, 2, true)).as(OrderTable.class);
+        주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false)).as(OrderTableResponse.class);
+        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, true)).as(OrderTableResponse.class);
 
     }
 
@@ -71,8 +76,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -86,7 +91,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 항목이 비어있으면 주문을 생성할 수 없다.")
     @Test
     void createFail() {
-        Order 주문 = Order.of(주문_테이블.getId(), Collections.emptyList());
+        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), Collections.emptyList());
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -100,8 +105,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문을 생성할 수 없다.")
     @Test
     void createFail2() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(0L, 2));
-        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(0L, 2));
+        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -115,8 +120,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성할 수 없다.")
     @Test
     void createFail3() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = Order.of(0L, 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderRequest 주문 = OrderRequest.of(0L, 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -130,8 +135,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성할 수 없다.")
     @Test
     void createFail4() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = Order.of(비어있는_주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderRequest 주문 = OrderRequest.of(비어있는_주문_테이블.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
@@ -146,10 +151,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void list() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
 
-        Order 등록된_주문 = 주문_등록되어_있음(주문).as(Order.class);
+        OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
 
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
@@ -164,14 +169,15 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 주문 = Order.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
 
-        Order 등록된_주문 = 주문_등록되어_있음(주문).as(Order.class);
-        등록된_주문.setOrderStatus(OrderStatus.MEAL.name());
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), 등록된_주문);
+        OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
 
-        주문_상태_변경됨(response, 등록된_주문);
+        String orderStatus = OrderStatus.MEAL.name();
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(orderStatus));
+
+        주문_상태_변경됨(response, orderStatus);
     }
 
     /**
@@ -181,11 +187,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문이 없으면 주문의 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusFail() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 등록되지_않은_주문 = Order.of(0L, 주문_테이블.getId(), 주문_항목);
-        등록되지_않은_주문.setOrderStatus(OrderStatus.MEAL.name());
+        OrderRequest 등록되지_않은_주문 = OrderRequest.from(OrderStatus.MEAL.name());
 
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(등록되지_않은_주문.getId(), 등록되지_않은_주문);
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(0L, 등록되지_않은_주문);
 
         주문_상태_변경_실패함(response);
     }
@@ -199,14 +203,14 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태가 계산 완료이면 주문의 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusFail2() {
-        List<OrderLineItem> 주문_항목 = Arrays.asList(OrderLineItem.of(후라이드치킨.getId(), 2));
-        Order 등록된_주문 = 주문_등록되어_있음(Order.of(주문_테이블.getId(), 주문_항목)).as(Order.class);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
+        OrderResponse 등록된_주문 = 주문_등록되어_있음(OrderRequest.of(주문_테이블.getId(), 주문_항목)).as(OrderResponse.class);
 
-        등록된_주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), 등록된_주문).as(Order.class);
+        OrderResponse 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(OrderStatus.COMPLETION.name()))
+                .as(OrderResponse.class);
 
-        계산완료된_주문.setOrderStatus(OrderStatus.MEAL.name());
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(계산완료된_주문.getId(), 계산완료된_주문);
+        ExtractableResponse<Response> response =
+                주문_상태_변경_요청(계산완료된_주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
 
         주문_상태_변경_실패함(response);
     }
@@ -219,8 +223,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private void 주문_목록_조회됨(ExtractableResponse<Response> response, Order order) {
-        List<Order> orders = response.jsonPath().getList(".", Order.class);
+    private void 주문_목록_조회됨(ExtractableResponse<Response> response, OrderResponse order) {
+        List<OrderResponse> orders = response.jsonPath().getList(".", OrderResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -231,11 +235,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 주문_상태_변경됨(ExtractableResponse<Response> response, Order order) {
+    private void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(order.getOrderStatus())
+                () -> assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(orderStatus)
         );
     }
 

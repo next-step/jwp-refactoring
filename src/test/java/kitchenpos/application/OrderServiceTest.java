@@ -3,7 +3,6 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -11,16 +10,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Product;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.EmptyOrderTableException;
+import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.exception.OrderStatusChangeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,16 +42,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -55,109 +59,112 @@ class OrderServiceTest {
     private Order 주문;
     private Order 계산완료_주문;
     private OrderLineItem 주문항목;
+    private OrderRequest 주문요청;
+    private OrderRequest 주문항목_없는_주문요청;
+    private OrderRequest 메뉴등록_안된_주문요청;
+    private OrderRequest 주문테이블_없는_주문요청;
+    private OrderRequest 비어있는_주문_테이블_주문요청;
 
     @BeforeEach
     void setUp() {
+        MenuGroup 두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
+        Product 후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
 
-        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(1L, 1L, 1L, 2));
-        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 1L, 메뉴상품_목록);
+        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(후라이드, 2));
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴, 메뉴상품_목록);
 
         주문_테이블 = OrderTable.of(1L, 3, false);
         비어있는_주문_테이블 = OrderTable.of(2L, 2, true);
 
-        주문항목 = OrderLineItem.of(1L, null, 후라이드치킨.getId(), 2);
+        주문항목 = OrderLineItem.of(1L, 후라이드치킨.getId(), 2);
         List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
-        주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
+        주문 = Order.of(1L, 주문_테이블, 주문항목_목록);
 
-        계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
-        계산완료_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        계산완료_주문 = Order.of(2L, 주문_테이블, 주문항목_목록);
+        계산완료_주문.changeOrderStatus(OrderStatus.COMPLETION);
+
+        주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
+        주문항목_없는_주문요청 = OrderRequest.of(주문_테이블.getId(), Collections.emptyList());
+        메뉴등록_안된_주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(2L, 1)));
+        주문테이블_없는_주문요청 = OrderRequest.of(null, Arrays.asList(OrderLineItemRequest.of(1L, 2)));
+        비어있는_주문_테이블_주문요청 = OrderRequest.of(비어있는_주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.save(any())).thenReturn(주문항목);
+        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderRepository.save(any())).thenReturn(주문);
 
-        Order result = orderService.create(주문);
+        OrderResponse result = orderService.create(주문요청);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
                 () -> assertThat(result.getOrderLineItems()).hasSize(1),
-                () -> assertThat(result.getOrderLineItems()).containsExactly(주문항목)
+                () -> assertThat(result.getOrderLineItems())
+                        .containsExactly(OrderLineItemResponse.from(주문항목))
         );
     }
 
     @DisplayName("주문 항목이 비어있으면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        Order order = Order.of(1L, Collections.emptyList());
-
-        Assertions.assertThatThrownBy(() -> orderService.create(order))
+        Assertions.assertThatThrownBy(() -> orderService.create(주문항목_없는_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException2() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+        when(menuRepository.findById(any())).thenReturn(Optional.empty());
 
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-                OrderLineItem.of(1L, 2),
-                OrderLineItem.of(2L, 1));
-        Order order = Order.of(1L, orderLineItems);
-
-        Assertions.assertThatThrownBy(() -> orderService.create(order))
+        Assertions.assertThatThrownBy(() -> orderService.create(메뉴등록_안된_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.create(주문))
+        Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
+        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
 
-        Assertions.assertThatThrownBy(() -> orderService.create(주문))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> orderService.create(비어있는_주문_테이블_주문요청))
+                .isInstanceOf(EmptyOrderTableException.class)
+                .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_TABLE);
     }
 
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void list() {
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
 
-        List<Order> results = orderService.list();
+        List<OrderResponse> results = orderService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(1),
-                () -> assertThat(results.get(0)).isEqualTo(주문),
-                () -> assertThat(results.get(0).getOrderLineItems()).containsExactly(주문항목)
+                () -> assertThat(results.get(0)).isEqualTo(OrderResponse.from(주문)),
+                () -> assertThat(results.get(0).getOrderLineItems())
+                        .containsExactly(OrderLineItemResponse.from(주문항목))
         );
     }
 
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(주문));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
 
-        Order 상태변경_주문 = Order.of(주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
-        Order result = orderService.changeOrderStatus(주문.getId(), 상태변경_주문);
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
@@ -168,22 +175,20 @@ class OrderServiceTest {
     @DisplayName("주문이 없으면 주문의 상태 변경 시 예외가 발생한다.")
     @Test
     void changeOrderStatusException() {
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
-        Long orderId = 주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 주문))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 상태가 계산 완료이면 주문의 상태 변경 시 예외가 발생한다.")
     @Test
     void changeOrderStatusException2() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(계산완료_주문));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
-        Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
-        Long orderId = 상태변경_주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 상태변경_주문))
-                .isInstanceOf(IllegalArgumentException.class);
+        Long orderId = 계산완료_주문.getId();
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL.name()))
+                .isInstanceOf(OrderStatusChangeException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_STATUS_CHANGE);
     }
 }
