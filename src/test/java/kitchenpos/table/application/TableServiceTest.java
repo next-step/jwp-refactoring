@@ -3,12 +3,13 @@ package kitchenpos.table.application;
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.persistence.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,7 +37,7 @@ public class TableServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableDao;
     public static FixtureMonkey fixtureMonkey;
 
     @BeforeAll
@@ -48,10 +50,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
     public void returnOderTable() {
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("tableGroupId",443l)
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .tableGroup(TableGroup.builder().id(443l).build())
+                .build();
         doReturn(orderTable).when(orderTableDao).save(any(OrderTable.class));
 
         assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(443l);
@@ -60,10 +61,12 @@ public class TableServiceTest {
     @DisplayName("주문테이블목록을 조회할경우 주문테이블목록 반환")
     @Test
     public void returnOderTables() {
-        List<OrderTable> orderTables = fixtureMonkey
-                .giveMeBuilder(OrderTable.class).set("id", 13l)
-                .set("empty", true)
-                .sampleList(100);
+        List<OrderTable> orderTables = getOrderTables(OrderTable
+                .builder()
+                .id(13l)
+                .tableGroup(TableGroup.builder().id(443l).build())
+                .empty(true)
+                .build(), 100);
         doReturn(orderTables).when(orderTableDao).findAll();
 
         List<OrderTableResponse> returnedTables = tableService.list();
@@ -73,9 +76,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .sample();
+        OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
@@ -85,11 +86,11 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
         List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
-                .set("orderStatus",OrderStatus.COOKING.name())
+                .set("orderStatus", OrderStatus.COOKING.name())
                 .sampleList(5);
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("tableGroupId", 13l).sample();
+        OrderTable orderTable = OrderTable.builder()
+                .tableGroup(TableGroup.builder().id(13l).build())
+                .build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableDao)
                 .findById(orderTable.getId());
@@ -102,12 +103,9 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
         List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
-                .set("orderStatus",OrderStatus.COOKING.name())
+                .set("orderStatus", OrderStatus.COOKING.name())
                 .sampleList(5);
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .setNull("tableGroupId")
-                .sample();
+        OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(orders).when(orderDao)
                 .findAllByOrderTableId(orderTable.getId());
@@ -118,19 +116,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")
     @Test
     public void returnOrderTableWithEmpty() {
-        List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
-                .set("orderStatus",OrderStatus.COMPLETION.name())
-                .sampleList(5);
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .setNull("tableGroupId")
-                .set("empty", false)
-                .sample();
-        OrderTable savedTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .setNull("tableGroupId")
-                .set("empty", true)
-                .sample();
+        OrderTable orderTable = OrderTable.builder().build();
+        OrderTable savedTable = OrderTable.builder().empty(true).build();
+
         doReturn(Optional.ofNullable(savedTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(savedTable).when(orderTableDao).save(savedTable);
         assertThat(tableService.changeEmpty(orderTable.getId(), orderTable).isEmpty()).isFalse();
@@ -139,10 +127,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 손님수가 0보다 작으면 예외발생")
     @Test
     public void throwsExceptionWhenGuestNumberIsNegative() {
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("numberOfGuests", Arbitraries.integers().lessOrEqual(-1))
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .numberOfGuests(Arbitraries.integers().lessOrEqual(-1).sample())
+                .build();
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -151,10 +138,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("numberOfGuests", Arbitraries.integers().greaterOrEqual(0))
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .numberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample())
+                .build();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
@@ -164,11 +150,10 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 테이블이 공석이면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyTable() {
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("numberOfGuests", Arbitraries.integers().greaterOrEqual(0))
-                .set("empty", true)
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .numberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample())
+                .empty(true)
+                .build();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
@@ -178,18 +163,22 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 수정된 테이블을 반환")
     @Test
     public void returnOrderTableWithGuest() {
-        OrderTable orderTable = fixtureMonkey.giveMeBuilder(OrderTable.class)
-                .set("numberOfGuests", 15)
-                .set("empty", false)
-                .sample();
-        OrderTable findTable = fixtureMonkey.giveMeBuilder(OrderTable.class)
-                .set("numberOfGuests", 5)
-                .set("empty", false)
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .numberOfGuests(15)
+                .build();
+        OrderTable findTable = OrderTable.builder()
+                .numberOfGuests(5)
+                .build();
         doReturn(Optional.ofNullable(findTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(findTable).when(orderTableDao).save(findTable);
 
         assertThat(tableService.changeNumberOfGuests(orderTable.getId(), orderTable).getNumberOfGuests()).isEqualTo(15);
 
+    }
+
+    private List<OrderTable> getOrderTables(OrderTable orderTable, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> orderTable)
+                .collect(Collectors.toList());
     }
 }

@@ -9,7 +9,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.order.persistence.OrderLineItemDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.persistence.OrderTableDao;
+import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ public class OrderServiceTest {
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableDao;
     public static FixtureMonkey fixtureMonkey;
 
     @BeforeAll
@@ -119,10 +119,9 @@ public class OrderServiceTest {
                 .giveMeBuilder(Order.class)
                 .set("orderLineItems", orderLineItems)
                 .sample();
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("empty", true)
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .empty(true)
+                .build();
         doReturn((long) menuIds.size())
                 .when(menuDao).countByIdIn(menuIds);
         doReturn(Optional.ofNullable(orderTable))
@@ -150,10 +149,9 @@ public class OrderServiceTest {
                 .set("id", 150l)
                 .set("orderLineItems", orderLineItems)
                 .sample();
-        OrderTable orderTable = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("empty", false)
-                .sample();
+        OrderTable orderTable = OrderTable.builder()
+                .empty(false)
+                .build();
         doReturn((long) menuIds.size())
                 .when(menuDao).countByIdIn(menuIds);
         doReturn(Optional.ofNullable(orderTable))

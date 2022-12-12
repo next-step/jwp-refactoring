@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrderTableDao extends JpaRepository<OrderTable, Long> {
+public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
     List<OrderTable> findAllByTableGroup(TableGroup tableGroup);
 /*    OrderTable save(OrderTable entity);
 

@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.persistence.OrderDao;
-import kitchenpos.table.persistence.OrderTableDao;
+import kitchenpos.table.persistence.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.persistence.TableGroupDao;
+import kitchenpos.table.persistence.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final OrderTableRepository orderTableDao;
+    private final TableGroupRepository tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableDao, final TableGroupRepository tableGroupDao) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
@@ -68,7 +68,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupDao.findById(tableGroupId).orElseThrow(IllegalAccessError::new);
+        TableGroup tableGroup = tableGroupDao.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
         final List<OrderTable> orderTables = orderTableDao.findAllByTableGroup(tableGroup);
 
         final List<Long> orderTableIds = orderTables.stream()

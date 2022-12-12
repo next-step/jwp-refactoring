@@ -1,16 +1,13 @@
 package kitchenpos.tablegroup.application;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.persistence.OrderTableDao;
-import kitchenpos.table.persistence.TableGroupDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.persistence.OrderTableRepository;
+import kitchenpos.table.persistence.TableGroupRepository;
 import net.jqwik.api.Arbitraries;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,16 +15,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,25 +33,16 @@ public class TableGroupServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableDao;
     @Mock
-    private TableGroupDao tableGroupDao;
-    public static FixtureMonkey fixtureMonkey;
-
-    @BeforeAll
-    public static void setup() {
-        fixtureMonkey = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build();
-    }
+    private TableGroupRepository tableGroupDao;
 
     @DisplayName("테이블그룹을 추가할 경우 소속된 테이블이 없으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneTable() {
-        TableGroup tableGroup = fixtureMonkey
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", Collections.EMPTY_LIST)
-                .sample();
+        TableGroup tableGroup = TableGroup.builder()
+                .orderTables(Collections.EMPTY_LIST)
+                .build();
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -64,10 +51,9 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 소속된 테이블이 2개미만이면 예외발생")
     @Test
     public void throwsExceptionWhenLessThen2Table() {
-        TableGroup tableGroup = fixtureMonkey
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", Arrays.asList(OrderTable.builder().build()))
-                .sample();
+        TableGroup tableGroup = TableGroup.builder()
+                .orderTables(Arrays.asList(OrderTable.builder().build()))
+                .build();
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -76,13 +62,10 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 등록안된 테이블이 있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
-        List<OrderTable> orderTables = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .sampleList(3);
-        TableGroup tableGroup = FixtureMonkey.create()
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", orderTables)
-                .sample();
+        List<OrderTable> orderTables = getOrderTables(OrderTable.builder().build(),3);
+        TableGroup tableGroup = TableGroup.builder()
+                .orderTables(orderTables)
+                .build();
         doReturn(orderTables.subList(0, 2))
                 .when(orderTableDao)
                 .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
@@ -94,14 +77,8 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 소속된 테이블이 공석이 아닌경우 예외발생")
     @Test
     public void throwsExceptionWhenNoneEmptyTable() {
-        List<OrderTable> orderTables = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("empty", false)
-                .sampleList(3);
-        TableGroup tableGroup = fixtureMonkey
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", orderTables)
-                .sample();
+        List<OrderTable> orderTables = getOrderTables(OrderTable.builder().build(),3);
+        TableGroup tableGroup = TableGroup.builder().orderTables(orderTables).build();
         doReturn(orderTables)
                 .when(orderTableDao)
                 .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
@@ -113,15 +90,10 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 소속된 테이블에 이미 등록된 그룹이 있으면 예외발생")
     @Test
     public void throwsExceptionWhenAlreadyHasGroup() {
-        List<OrderTable> orderTables = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("empty", false)
-                .set("tableGroupId", Arbitraries.longs().greaterOrEqual(1))
-                .sampleList(3);
-        TableGroup tableGroup = fixtureMonkey
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", orderTables)
-                .sample();
+        List<OrderTable> orderTables = getOrderTables(OrderTable.builder()
+                .tableGroup(TableGroup.builder().id(Arbitraries.longs().greaterOrEqual(1).sample()).build())
+                .build(),3);
+        TableGroup tableGroup = TableGroup.builder().orderTables(orderTables).build();
         doReturn(orderTables)
                 .when(orderTableDao)
                 .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
@@ -133,17 +105,11 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 테이블그룹 반환")
     @Test
     public void returnTableGroup() {
-        List<OrderTable> orderTables = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(OrderTable.class)
-                .set("empty", true)
-                .setNull("tableGroupId")
-                .sampleList(3);
-        TableGroup tableGroup = fixtureMonkey
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", orderTables)
-                .sample();
+        List<OrderTable> orderTables = getOrderTables(OrderTable
+                .builder()
+                .tableGroup(TableGroup.builder().build())
+                .empty(true).build(),3);
+        TableGroup tableGroup = TableGroup.builder().orderTables(orderTables).build();
         doReturn(orderTables)
                 .when(orderTableDao)
                 .findAllById(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
@@ -168,16 +134,18 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 해제할경우 테이블이 조리중이거나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
-        List<OrderTable> orderTables = fixtureMonkey
-                .giveMeBuilder(OrderTable.class)
-                .set("empty", true)
-                .setNull("tableGroupId")
-                .sampleList(3);
+        List<OrderTable> orderTables = getOrderTables(OrderTable
+                .builder()
+                .id(Arbitraries.longs().between(1,100).sample())
+                .tableGroup(TableGroup.builder().build())
+                .empty(true).build(),3);
         List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
-        TableGroup tableGroup = fixtureMonkey
-                .giveMeBuilder(TableGroup.class)
-                .set("orderTables", orderTables)
-                .sample();
+        TableGroup tableGroup = TableGroup.builder()
+                .id(13l)
+                .orderTables(orderTables).build();
+        doReturn(Optional.ofNullable(tableGroup))
+                .when(tableGroupDao)
+                .findById(anyLong());
         doReturn(orderTables)
                 .when(orderTableDao)
                 .findAllByTableGroup(tableGroup);
@@ -187,6 +155,12 @@ public class TableGroupServiceTest {
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private List<OrderTable> getOrderTables(OrderTable orderTable, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> orderTable)
+                .collect(Collectors.toList());
     }
 }
 

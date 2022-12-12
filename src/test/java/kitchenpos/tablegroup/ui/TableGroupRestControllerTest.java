@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.ui;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
@@ -14,10 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -40,10 +38,9 @@ public class TableGroupRestControllerTest extends ControllerTest {
         doReturn(tableGroup).when(tableGroupService).create(any(TableGroup.class));
 
         webMvc.perform(post("/api/table-groups")
-                        .content(mapper.writeValueAsString(new TableGroup()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new TableGroup()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(tableGroup.getId().intValue())))
-                .andExpect(jsonPath("$.orderTables", hasSize(tableGroup.getOrderTables().size())))
                 .andExpect(status().isCreated());
     }
 
@@ -53,8 +50,8 @@ public class TableGroupRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(tableGroupService).create(any(TableGroup.class));
 
         webMvc.perform(post("/api/table-groups")
-                        .content(mapper.writeValueAsString(new TableGroup()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new TableGroup()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -76,23 +73,18 @@ public class TableGroupRestControllerTest extends ControllerTest {
     }
 
     private TableGroup getTableGroup() {
-        return FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(TableGroup.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("createdDate", LocalDateTime.now())
-                .set("orderTables", getTables())
-                .set("empty", true)
-                .sample();
+        return TableGroup.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .orderTables(getTables())
+                .build();
     }
 
     private List<OrderTable> getTables() {
-        return FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(OrderTable.class)
-                .sampleList(Arbitraries.integers().between(1, 3).sample());
+        return IntStream.rangeClosed(1, 3)
+                .mapToObj(value -> OrderTable.builder()
+                        .tableGroup(TableGroup.builder().build())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
 

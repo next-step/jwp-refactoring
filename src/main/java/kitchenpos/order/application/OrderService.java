@@ -6,7 +6,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.persistence.OrderDao;
 import kitchenpos.order.persistence.OrderLineItemDao;
-import kitchenpos.table.persistence.OrderTableDao;
+import kitchenpos.table.persistence.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +23,13 @@ public class OrderService {
     private final MenuRepository menuDao;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableDao;
 
     public OrderService(
             final MenuRepository menuDao,
             final OrderDao orderDao,
             final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+            final OrderTableRepository orderTableDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
