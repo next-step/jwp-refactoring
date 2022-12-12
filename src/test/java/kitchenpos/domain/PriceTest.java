@@ -34,10 +34,10 @@ class PriceTest {
     }
 
     @ParameterizedTest(name = "[{index}] 가격은 0원 이상이어야 한다.")
-    @ValueSource(longs = {-1, Long.MAX_VALUE})
-    void createPriceByNegative() {
+    @ValueSource(longs = {-1, Long.MIN_VALUE})
+    void createPriceByNegative(long value) {
         // when & then
-        assertThatThrownBy(() -> Price.from(BigDecimal.valueOf(-1)))
+        assertThatThrownBy(() -> Price.from(BigDecimal.valueOf(value)))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("가격은 0원 이상이어야 합니다.");
     }
@@ -54,5 +54,18 @@ class PriceTest {
 
         // then
         assertThat(actual).isEqualTo(Price.from(BigDecimal.valueOf(11)));
+    }
+
+    @Test
+    @DisplayName("가격을 곱한다")
+    void multiplyPrice() {
+        // given
+        Price one = Price.from(BigDecimal.valueOf(2));
+
+        // when
+        Price actual = one.multiply(BigDecimal.valueOf(10));
+
+        // then
+        assertThat(actual).isEqualTo(Price.from(BigDecimal.valueOf(20)));
     }
 }

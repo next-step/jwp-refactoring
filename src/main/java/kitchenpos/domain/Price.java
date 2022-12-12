@@ -10,7 +10,7 @@ import kitchenpos.common.exception.InvalidParameterException;
 public class Price {
     private static final String ERROR_MESSAGE_PRICE_IS_NOT_NULL = "가격은 필수입니다.";
     private static final String ERROR_MESSAGE_PRICE_NON_NEGATIVE = "가격은 0원 이상이어야 합니다.";
-    
+
     @Column(name = "price", nullable = false, precision = 19, scale = 2)
     private BigDecimal value;
 
@@ -44,6 +44,10 @@ public class Price {
 
     public Price sum(Price price) {
         return Price.from(value.add(price.value));
+    }
+
+    public Price multiply(BigDecimal value) {
+        return Price.from(this.value.multiply(value));
     }
 
     public BigDecimal value() {
