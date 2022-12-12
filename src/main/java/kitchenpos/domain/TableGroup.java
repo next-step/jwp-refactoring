@@ -29,13 +29,25 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public static TableGroup of(Long id, List<OrderTable> orderTables, List<OrderTable> savedOrderTables) {
+    public static TableGroup of(Long id, List<OrderTable> requestOrderTables, List<OrderTable> savedOrderTables) {
+        validateOrderTables(requestOrderTables, savedOrderTables);
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        return new TableGroup(id, LocalDateTime.now(), savedOrderTables);
+    }
+
+    private static void validateOrderTables(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
+        validateOrderTable(requestOrderTables, savedOrderTables);
+        validateIsCreatableTableGroup(requestOrderTables, savedOrderTables);
+    }
+
+    private static void validateOrderTable(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
+        if(requestOrderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
+    }
 
-        if (orderTables.size() != savedOrderTables.size()) {
+    private static void validateIsCreatableTableGroup(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
+        if (CollectionUtils.isEmpty(requestOrderTables) || requestOrderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
 
@@ -44,8 +56,6 @@ public class TableGroup {
                 throw new IllegalArgumentException();
             }
         }
-
-        return new TableGroup(id, LocalDateTime.now(), savedOrderTables);
     }
 
     public Long getId() {

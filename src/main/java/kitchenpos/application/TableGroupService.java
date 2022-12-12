@@ -33,23 +33,34 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-
-        List<Order> orders = orderRepository.findAllByOrderStatusInAndOrderTableIdIn(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()),
-                request.getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList()));
-
-        if (!orders.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> orderTableIds = request.getOrderTables().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        List<OrderTable> orderTables = findOrderTables(request.getOrderTables());
 
         TableGroup tableGroup = TableGroup.of(request.getId(), request.getOrderTables(), orderTables);
 
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
+    }
+
+    private List<OrderTable> findOrderTables(final List<OrderTable> orderTables) {
+        List<Long> orderTableIds = mapToOrderTableIds(orderTables);
+
+        validateOrderTableIds(orderTableIds);
+
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    private void validateOrderTableIds(final List<Long> orderTableIds) {
+        List<Order> orders =
+                orderRepository.findAllByOrderStatusInAndOrderTableIdIn(OrderStatus.onGoingOrderStatus(), orderTableIds);
+
+        if (!orders.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private List<Long> mapToOrderTableIds(final List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     @Transactional

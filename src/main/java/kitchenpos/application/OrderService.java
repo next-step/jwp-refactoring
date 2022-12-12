@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,23 +33,37 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest order) {
-        OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
+    public OrderResponse create(final OrderRequest request) {
+        validateOrderLineItems(request.getOrderLineItems());
+
+        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문테이블을 찾을 수가 없습니다."));
 
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        Long count = menuRepository.countByIdIn(menuIds);
-        if (orderLineItems.size() != count) {
-            throw new IllegalArgumentException();
-        }
-
-        Order savedOrder = orderRepository.save(Order.of(orderTable, order.getOrderLineItems()));
+        Order savedOrder = orderRepository.save(Order.of(orderTable, request.getOrderLineItems()));
 
         return OrderResponse.from(savedOrder);
+    }
+
+    private void validateOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        if(Objects.isNull(orderLineItems)) {
+            throw new IllegalArgumentException("요청정보에 orderLineItems가 존재하지 않습니다.");
+        }
+
+        final List<Long> menuIds = mapToMenuIds(orderLineItems);
+
+        if (orderLineItems.size() != countByIdIn(menuIds)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private Long countByIdIn(final List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
+
+    private List<Long> mapToMenuIds(final List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 
     public List<OrderResponse> list() {

@@ -112,8 +112,6 @@ class OrderServiceTest {
     @DisplayName("주문을 생성할 때, 주문 항목 내에 등록되지 않은 메뉴가 있다면 IllegalArgumentException을 반환한다.")
     @Test
     void createWithException2() {
-        // given
-//        when(menuRepository.countByIdIn(any())).thenReturn(0L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
@@ -122,13 +120,6 @@ class OrderServiceTest {
     @DisplayName("주문을 생성할 때, 주문 테이블이 등록되어 있지 않으면 IllegalArgumentException을 반환한다.")
     @Test
     void createWithException3() {
-        // given
-        List<Long> menuIds = 주문1.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-//        when(menuRepository.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableRepository.findById(주문1.getOrderTable().getId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
