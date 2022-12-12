@@ -91,15 +91,15 @@ public class MenuServiceTest {
     @Test
     public void throwsExceptionWhenNoneExistsProduct() {
         List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder()
-                .productId(Arbitraries.longs().between(1, 1000).sample())
+                .product(Product.builder().id(Arbitraries.longs().between(1, 100).sample()).build())
                 .menu(Menu.builder().build())
                 .build(), 5);
         Menu menu = Menu.builder()
-                        .id(Arbitraries.longs().between(1, 100).sample())
-                        .price(BigDecimal.valueOf(15000))
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .price(BigDecimal.valueOf(15000))
                 .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
-                        .menuProducts(menuProducts)
-                        .build();
+                .menuProducts(menuProducts)
+                .build();
         doReturn(true).when(menuGroupDao)
                 .existsById(anyLong());
         doReturn(Optional.empty()).when(productDao).findById(anyLong());
@@ -117,7 +117,7 @@ public class MenuServiceTest {
                 .sample();
         List<MenuProduct> menuProduct = getMenuProducts(MenuProduct.builder()
                 .seq(Arbitraries.longs().between(1, 10).sample())
-                .productId(Arbitraries.longs().between(1, 20).sample())
+                .product(Product.builder().id(Arbitraries.longs().between(1, 100).sample()).build())
                 .quantity(Arbitraries.longs().between(1, 20).sample())
                 .menu(Menu.builder().build())
                 .build(), 5);
@@ -141,17 +141,13 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        Product product = Product.builder()
-                .money(Money.of(2000l))
+        Product product = Product.builder().money(Money.of(2000l)).build();
+        MenuProduct menuProduct = MenuProduct.builder()
+                .menu(Menu.builder().build())
+                .quantity(5l)
+                .product(Product.builder().id(Arbitraries.longs().between(1, 100).sample()).build())
                 .build();
-        MenuProduct menuProduct =
-                MenuProduct.builder()
-                        .menu(Menu.builder().build())
-                        .quantity(5l)
-                        .productId(13l)
-                        .build();
-        List<MenuProduct> menuProducts =
-                getMenuProducts(menuProduct, 5);
+        List<MenuProduct> menuProducts = getMenuProducts(menuProduct, 5);
         Menu savedMenu = Menu.builder()
                 .id(15l)
                 .name("Pasta")
@@ -195,7 +191,7 @@ public class MenuServiceTest {
         List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder()
                 .seq(14l)
                 .quantity(15l)
-                .productId(14l)
+                .product(Product.builder().build())
                 .menu(Menu.builder().id(13l).build())
                 .build(), 5);
         doReturn(menus)
@@ -226,7 +222,7 @@ public class MenuServiceTest {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value -> MenuProduct.builder()
                         .seq(menuProduct.getSeq())
-                        .productId(menuProduct.getProductId())
+                        .product(menuProduct.getProduct())
                         .menu(menuProduct.getMenu())
                         .quantity(menuProduct.getQuantity())
                         .build())
