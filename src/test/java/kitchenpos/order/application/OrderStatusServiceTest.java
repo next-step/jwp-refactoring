@@ -5,7 +5,6 @@ import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -59,23 +57,33 @@ class OrderStatusServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
+
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
-        List<MenuProduct> menuProducts = new ArrayList<>();
+        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+
         OrderTable orderTable1 = orderTableDao.save(new OrderTable());
         OrderTable orderTable2 = orderTableDao.save(new OrderTable());
-        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(orderTable1);
         orderTables.add(orderTable2);
+
         TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
+
         orderTable1.setTableGroupId(tableGroup.getId());
         orderTable2.setTableGroupId(tableGroup.getId());
         orderTableDao.save(orderTable1);
         orderTableDao.save(orderTable2);
+
+        createOrder(orderTable1, menu);
+
+        orderStatusService = new OrderStatusService(orderDao, orderLineItemDao);
+    }
+
+    private void createOrder(OrderTable orderTable1, Menu menu) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
         order = orderDao.save(new Order(orderTable1.getId(), orderLineItems));
-        orderStatusService = new OrderStatusService(orderDao, orderLineItemDao);
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -97,9 +105,7 @@ class OrderStatusServiceTest extends ServiceTest {
         assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
                 .isEqualTo(OrderStatus.COMPLETION.name());
 
-        Order order1 = orderDao.findById(order.getId()).get();
-
-        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        주문완료_검증됨();
 
         assertThatThrownBy(() -> orderStatusService.changeOrderStatus(order.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -110,7 +116,11 @@ class OrderStatusServiceTest extends ServiceTest {
     @Test
     void name() {
         orderStatusService.changeOrderStatus(order.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION));
-        Order order1 = orderDao.findById(order.getId()).get();
-        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        주문완료_검증됨();
+    }
+
+    private void 주문완료_검증됨() {
+        Order findOrder = orderDao.findById(order.getId()).get();
+        assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 }
