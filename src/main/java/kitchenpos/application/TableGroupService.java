@@ -1,8 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -25,17 +22,10 @@ public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao,
-                             final TableGroupDao tableGroupDao, final OrderRepository orderRepository,
+    public TableGroupService(final OrderRepository orderRepository,
                              final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
@@ -47,7 +37,7 @@ public class TableGroupService {
         List<Order> orders = orderRepository.findAllByOrderStatusInAndOrderTableIdIn(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()),
                 request.getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList()));
 
-        if(!orders.isEmpty()) {
+        if (!orders.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
