@@ -123,7 +123,7 @@ PUT /api/orders/{orderId}/order-status
 - 자바 코드 컨벤션 지키기
 ### 피드백
 - [ ] Menu - price 포장하기
-- [ ] application 테스트 도메인 패키지 하위로 옮기기
+- [x] application 테스트 도메인 패키지 하위로 옮기기
 
 ## Step3 의존성 리팩터링
 - 메뉴의 정보가 변경돼도 주문 항목이 변경되지 않게 구현
