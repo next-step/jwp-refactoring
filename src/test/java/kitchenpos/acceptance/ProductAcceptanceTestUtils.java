@@ -7,7 +7,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -24,22 +25,18 @@ class ProductAcceptanceTestUtils {
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(product)
+                .body(new ProductRequest(name, price))
                 .when().post(PRODUCT_PATH)
                 .then().log().all()
                 .extract();
     }
 
-    public static Product 상품_등록되어_있음(String name, BigDecimal price) {
+    public static ProductResponse 상품_등록되어_있음(String name, BigDecimal price) {
         ExtractableResponse<Response> response = 상품_생성_요청(name, price);
         상품_생성됨(response);
-        return response.as(Product.class);
+        return response.as(ProductResponse.class);
     }
 
     public static void 상품_생성됨(ExtractableResponse<Response> response) {

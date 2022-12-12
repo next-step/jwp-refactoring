@@ -15,9 +15,9 @@ import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ class MenuServiceTest {
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -78,7 +78,7 @@ class MenuServiceTest {
         MenuProduct 탕수육_소_1그릇 = menuProduct(2L, null, 5L, 1);
         Menu 탕수육소1 = menu(1L, "탕수육소1", 2L, BigDecimal.valueOf(18000), Collections.singletonList(탕수육_소_1그릇));
         given(menuGroupDao.existsById(2L)).willReturn(true);
-        given(productDao.findById(5L)).willReturn(Optional.empty());
+        given(productRepository.findById(5L)).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(탕수육소1));
@@ -102,8 +102,8 @@ class MenuServiceTest {
         MenuProduct 짬뽕_2그릇 = menuProduct(2L, null, 2L, 2);
         Menu 짜장1_짬뽕2 = menu(1L, "짜장1_짬뽕2", 1L, BigDecimal.valueOf(23000), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇));
         given(menuGroupDao.existsById(1L)).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(짜장면));
-        given(productDao.findById(2L)).willReturn(Optional.of(짬뽕));
+        given(productRepository.findById(1L)).willReturn(Optional.of(짜장면));
+        given(productRepository.findById(2L)).willReturn(Optional.of(짬뽕));
         given(menuProductDao.save(짜장면_1그릇)).willReturn(짜장면_1그릇);
         given(menuProductDao.save(짬뽕_2그릇)).willReturn(짬뽕_2그릇);
         given(menuDao.save(짜장1_짬뽕2)).willReturn(짜장1_짬뽕2);

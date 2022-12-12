@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.stream.Stream;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -22,8 +22,8 @@ import org.junit.jupiter.api.TestFactory;
 
 @DisplayName("메뉴 인수 테스트")
 class MenuAcceptanceTest extends AcceptanceTest {
-    private Product 짜장면;
-    private Product 짬뽕;
+    private ProductResponse 짜장면;
+    private ProductResponse 짬뽕;
     private MenuGroup 면류;
     private MenuProduct 짜장면_1그릇;
 
