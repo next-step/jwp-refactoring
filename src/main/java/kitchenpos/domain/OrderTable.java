@@ -1,6 +1,10 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +15,9 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
+    @JsonIgnore
+    @OneToMany(mappedBy = "orderTable")
+    private final List<Order> orders = new ArrayList<>();
     private int numberOfGuests;
     private boolean empty;
 
@@ -52,7 +59,21 @@ public class OrderTable {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
+
+        if(isNotCompletedOrders()) {
+            throw new IllegalArgumentException();
+        }
+
         this.empty = empty;
+    }
+
+    private boolean isNotCompletedOrders() {
+        return orders.stream().anyMatch(order -> isNotCompleted(order.getOrderStatus()));
+    }
+
+    private boolean isNotCompleted(final String orderStatus) {
+        return orderStatus.equals(OrderStatus.COOKING.name())
+                || orderStatus.equals(OrderStatus.MEAL.name());
     }
 
     public TableGroup getTableGroup() {
@@ -61,5 +82,13 @@ public class OrderTable {
 
     public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrder(final Order order) {
+        this.orders.add(order);
     }
 }

@@ -16,9 +16,7 @@ class OrderTest {
     @Test
     void of() {
         // given
-        long expectedId = 1L;
         Long expectedTableId = 1L;
-        String expectedOrderStatus = OrderStatus.COMPLETION.name();
         MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
         MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
         Menu 짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
@@ -34,7 +32,6 @@ class OrderTest {
         assertAll(
                 () -> assertThat(order).isNotNull(),
                 () -> assertThat(order.getOrderTable().getId()).isEqualTo(expectedTableId),
-                () -> assertThat(order.getOrderStatus()).isEqualTo(expectedOrderStatus),
                 () -> assertThat(order.getOrderLineItems()).containsAll(expectedOrderLineItems)
         );
     }

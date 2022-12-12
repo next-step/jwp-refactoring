@@ -61,7 +61,7 @@ public class TableService {
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     @Transactional

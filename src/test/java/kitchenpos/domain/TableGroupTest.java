@@ -15,8 +15,8 @@ class TableGroupTest {
     void of() {
         // when
         long expectedId = 1L;
-        OrderTable 주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, false));
-        OrderTable 주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(2L, null, 20, false));
+        OrderTable 주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, true));
+        OrderTable 주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(2L, null, 20, true));
         TableGroup 단체1 = TableGroup.of(expectedId, Arrays.asList(주문테이블1, 주문테이블2), Arrays.asList(주문테이블1, 주문테이블2));
 
         // then

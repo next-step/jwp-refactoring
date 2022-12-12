@@ -157,10 +157,9 @@ class OrderServiceTest {
         // given
         주문2.setOrderStatus(OrderStatus.MEAL.name());
         when(orderRepository.findById(주문2.getId())).thenReturn(Optional.of(주문2));
-        when(orderRepository.save(주문2)).thenReturn(주문2);
 
         // when
-        Order order = orderService.changeOrderStatus(주문2.getId(), 주문2);
+        OrderResponse order = orderService.changeOrderStatus(주문2.getId(), 주문2);
 
         // then
         assertThat(order.getOrderStatus()).isEqualTo(주문2.getOrderStatus());

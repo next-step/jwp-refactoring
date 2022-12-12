@@ -111,7 +111,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
 
         // when
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(order.getId(), order);
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(orderResponse.getId(), order);
 
         // then
         주문_상태_변경됨(response, order.getOrderStatus());

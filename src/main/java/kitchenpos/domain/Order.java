@@ -14,7 +14,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
     private String orderStatus;
@@ -24,6 +24,7 @@ public class Order {
 
     public Order(final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
+        this.orderTable.setOrder(this);
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;

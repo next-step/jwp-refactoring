@@ -15,7 +15,6 @@ import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,13 +74,12 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.setOrderStatus(order.getOrderStatus());
-//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-        return orderRepository.save(savedOrder);
+        return OrderResponse.from(savedOrder);
     }
 }

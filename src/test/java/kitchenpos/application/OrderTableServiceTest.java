@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
@@ -14,9 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -87,7 +90,6 @@ class OrderTableServiceTest {
         주문테이블1.changeTableGroup(null);
         주문테이블1.setEmpty(true);
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-        when(orderTableRepository.save(주문테이블1)).thenReturn(주문테이블1);
 
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(주문테이블1.getId(), 주문테이블1);
@@ -112,6 +114,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmptyWithException2() {
         // given
+        Order.of(주문테이블1, Collections.singletonList(createOrderLineItem(1L, null, 1L, 1)));
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         // when & then
