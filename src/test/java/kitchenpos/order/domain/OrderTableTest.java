@@ -57,8 +57,8 @@ public class OrderTableTest {
         // then
         assertAll(
                 () -> assertThat(주문테이블B.getTableGroup()).isNull(),
-                () -> assertThat(주문테이블A.isNotNullTableGroup()).isTrue(),
-                () -> assertThat(주문테이블B.isNotNullTableGroup()).isFalse()
+                () -> assertThat(주문테이블A.hasTableGroup()).isTrue(),
+                () -> assertThat(주문테이블B.hasTableGroup()).isFalse()
         );
     }
 

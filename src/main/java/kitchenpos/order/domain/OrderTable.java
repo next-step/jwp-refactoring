@@ -54,7 +54,7 @@ public class OrderTable {
         return empty.isEmpty();
     }
 
-    public boolean isNotNullTableGroup() {
+    public boolean hasTableGroup() {
         return tableGroup != null;
     }
 
@@ -70,7 +70,7 @@ public class OrderTable {
     }
 
     private void validateHasTableGroup() {
-        if(isNotNullTableGroup()) {
+        if(hasTableGroup()) {
             throw new IllegalArgumentException(ErrorCode.단체_그룹_지정되어_있음.getErrorMessage());
         }
     }

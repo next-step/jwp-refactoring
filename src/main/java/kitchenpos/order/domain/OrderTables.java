@@ -43,7 +43,7 @@ public class OrderTables {
 
     public boolean anyHasGroupId() {
         return orderTables.stream()
-                .anyMatch(OrderTable::isNotNullTableGroup);
+                .anyMatch(OrderTable::hasTableGroup);
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
