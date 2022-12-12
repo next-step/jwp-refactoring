@@ -7,8 +7,8 @@ import java.util.List;
 
 public class TableGroupRequest {
     private Long id;
-    private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    private final LocalDateTime createdDate;
+    private final List<OrderTable> orderTables;
 
     private TableGroupRequest(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
@@ -32,15 +32,7 @@ public class TableGroupRequest {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 }

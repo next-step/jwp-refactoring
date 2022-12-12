@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 public class TableGroupResponse {
     private Long id;
-    private LocalDateTime createdDate;
-    private List<OrderTableResponse> orderTables;
+    private final LocalDateTime createdDate;
+    private final List<OrderTableResponse> orderTables;
 
     private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
         this.id = id;
@@ -34,10 +34,6 @@ public class TableGroupResponse {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTableResponse> getOrderTables() {
