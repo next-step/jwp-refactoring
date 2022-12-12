@@ -63,7 +63,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        Order savedOrder = orderRepository.save(Order.of(order.getId(), orderTable, order.getOrderLineItems()));
+        Order savedOrder = orderRepository.save(Order.of(orderTable, order.getOrderLineItems()));
 
         return OrderResponse.from(savedOrder);
     }
@@ -76,12 +76,12 @@ public class OrderService {
 
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderDao.findById(orderId)
+        final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.setOrderStatus(order.getOrderStatus());
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-        return orderDao.save(savedOrder);
+        return orderRepository.save(savedOrder);
     }
 }

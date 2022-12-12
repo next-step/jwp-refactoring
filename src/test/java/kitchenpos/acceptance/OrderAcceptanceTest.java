@@ -105,7 +105,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // given
         OrderResponse orderResponse = 등록된_주문(주문1).as(OrderResponse.class);
         Order order = Order.of(
-                orderResponse.getId(),
                 OrderTable.of(1L, null, 10, false),
                 Collections.singletonList(짜장면_탕수육_1인_메뉴_세트주문)
         );

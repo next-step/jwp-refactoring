@@ -22,8 +22,7 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
-    public Order(final Long id, final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
-        this.id = id;
+    public Order(final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
@@ -33,7 +32,7 @@ public class Order {
     public Order() {
     }
 
-    public static Order of(final Long id, final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+    public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
@@ -42,7 +41,7 @@ public class Order {
             throw new IllegalArgumentException();
         }
 
-        return new Order(id, orderTable, OrderStatus.COOKING.name(), orderLineItems);
+        return new Order(orderTable, OrderStatus.COOKING.name(), orderLineItems);
     }
 
     public Long getId() {

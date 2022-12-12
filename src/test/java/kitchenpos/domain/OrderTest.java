@@ -28,12 +28,11 @@ class OrderTest {
         List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
 
         // when
-        Order order = Order.of(expectedId, OrderTable.of(1L, null, 10, false), expectedOrderLineItems);
+        Order order = Order.of(OrderTable.of(1L, null, 10, false), expectedOrderLineItems);
 
         // then
         assertAll(
                 () -> assertThat(order).isNotNull(),
-                () -> assertThat(order.getId()).isEqualTo(expectedId),
                 () -> assertThat(order.getOrderTable().getId()).isEqualTo(expectedTableId),
                 () -> assertThat(order.getOrderStatus()).isEqualTo(expectedOrderStatus),
                 () -> assertThat(order.getOrderLineItems()).containsAll(expectedOrderLineItems)
