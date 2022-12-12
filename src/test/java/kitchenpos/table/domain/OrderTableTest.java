@@ -24,14 +24,27 @@ class OrderTableTest {
         );
     }
 
-    @DisplayName("요리중일 경우 변경할 수 없다.")
+    @DisplayName("공석 상태로 변경 / 테이블 그룹이 없을 수 없다.")
     @Test
-    void name() {
+    void empty_fail_tableGroup() {
 
         OrderTable orderTable = new OrderTable();
 
         assertThatThrownBy(orderTable::empty)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("공석 상태로 변경")
+    @Test
+    void empty_fail_cooking() {
+
+        OrderTable orderTable = new OrderTable();
+        orderTable.setTableGroupId(1L);
+
+        assertThat(orderTable.isEmpty()).isFalse();
+
+        orderTable.empty();
+        assertThat(orderTable.isEmpty()).isTrue();
     }
 }
