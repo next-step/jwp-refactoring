@@ -26,13 +26,10 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct toMenuProducts(Menu menu, List<Product> products) {
+    public MenuProduct toMenuProducts(final Menu menu, final List<Product> products) {
         return MenuProduct.builder()
                 .menu(menu)
-                .product(products.stream()
-                        .filter(product -> product.getId().equals(productId))
-                        .findFirst()
-                        .orElseThrow(IllegalArgumentException::new))
+                .product(products.stream().filter(product -> product.getId().equals(productId)).findFirst().get())
                 .build();
     }
 }
