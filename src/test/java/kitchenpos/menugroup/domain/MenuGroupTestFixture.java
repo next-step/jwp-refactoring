@@ -1,17 +1,16 @@
 package kitchenpos.menugroup.domain;
 
 import kitchenpos.common.domain.Name;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 public class MenuGroupTestFixture {
 
     public static MenuGroup generateMenuGroup(Long id, String name) {
-        return MenuGroup.of(id, name);
+        return new MenuGroup(id, name);
     }
 
     public static MenuGroup generateMenuGroup(String name) {
-        return MenuGroup.of(null, name);
+        return new MenuGroup(null, name);
     }
 
     public static MenuGroupRequest generateMenuGroupRequest(Name name) {

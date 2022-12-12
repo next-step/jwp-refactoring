@@ -19,13 +19,9 @@ public class TableGroup {
 
     protected TableGroup() {}
 
-    private TableGroup(Long id) {
+    protected TableGroup(Long id) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-    }
-
-    public static TableGroup from(Long id) {
-        return new TableGroup(id);
     }
 
     public static TableGroup from() {

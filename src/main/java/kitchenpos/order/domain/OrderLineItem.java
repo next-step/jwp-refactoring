@@ -35,15 +35,11 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    private OrderLineItem(Long seq, Order order, OrderMenu orderMenu, long quantity) {
+    protected OrderLineItem(Long seq, Order order, OrderMenu orderMenu, long quantity) {
         this.seq = seq;
         this.order = order;
         this.orderMenu = orderMenu;
         this.quantity = Quantity.from(quantity);
-    }
-
-    public static OrderLineItem of(Long seq, Order order, OrderMenu orderMenu, long quantity) {
-        return new OrderLineItem(seq, order, orderMenu, quantity);
     }
 
     public static OrderLineItem of(OrderMenu orderMenu, long quantity) {

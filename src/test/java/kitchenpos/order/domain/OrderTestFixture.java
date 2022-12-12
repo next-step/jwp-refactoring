@@ -10,12 +10,12 @@ public class OrderTestFixture {
 
     public static Order generateOrder(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTable);
-        return Order.of(id, orderTable.getId(), orderLineItems);
+        return new Order(id, orderTable.getId(), OrderLineItems.from(orderLineItems));
     }
 
     public static Order generateOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
-        return Order.of(orderTable.getId(), orderLineItems);
+        return new Order(null, orderTable.getId(), orderLineItems);
     }
 
     public static Order generateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {

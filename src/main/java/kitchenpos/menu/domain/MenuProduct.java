@@ -27,17 +27,13 @@ public class MenuProduct {
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {}
+    protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    protected MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
         this.quantity = Quantity.from(quantity);
-    }
-
-    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProduct(seq, menu, product, quantity);
     }
 
     public static MenuProduct of(Product product, long quantity) {

@@ -24,7 +24,7 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    private OrderTable(Long id, int numberOfGuests, boolean empty) {
+    protected OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = Empty.valueOf(empty);

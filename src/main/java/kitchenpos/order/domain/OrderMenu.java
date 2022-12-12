@@ -20,7 +20,7 @@ public class OrderMenu {
 
     protected OrderMenu() {}
 
-    private OrderMenu(Long menuId, Name name, Price price) {
+    protected OrderMenu(Long menuId, Name name, Price price) {
         this.menuId = menuId;
         this.name = name;
         this.price = price;
