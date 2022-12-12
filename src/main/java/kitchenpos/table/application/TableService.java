@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderDao;
     private final OrderTableRepository orderTableDao;
 
-    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableDao) {
+    public TableService(final OrderRepository orderDao, final OrderTableRepository orderTableDao) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
     }
@@ -39,7 +39,7 @@ public class TableService {
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        List<Order> savedOrders = orderDao.findAllByOrderTableId(orderTableId);
+        List<Order> savedOrders = orderDao.findAllByOrderTable(savedOrderTable);
         boolean isBeforeComplete = savedOrders.stream().anyMatch(order -> order.getOrderStatus()
                 .equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name()));
         if (isBeforeComplete) {

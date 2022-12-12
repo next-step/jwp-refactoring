@@ -1,13 +1,12 @@
 package kitchenpos.order.ui;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -41,12 +41,9 @@ public class OrderRestControllerTest extends ControllerTest {
         doReturn(order).when(orderService).create(any(Order.class));
 
         webMvc.perform(post("/api/orders")
-                        .content(mapper.writeValueAsString(Menu.builder().build()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(Menu.builder().build()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(order.getId().intValue())))
-                .andExpect(jsonPath("$.orderTableId", is(order.getOrderTableId().intValue())))
-                .andExpect(jsonPath("$.orderStatus", is(order.getOrderStatus())))
-                .andExpect(jsonPath("$.orderLineItems", hasSize(order.getOrderLineItems().size())))
                 .andExpect(status().isCreated());
     }
 
@@ -56,17 +53,17 @@ public class OrderRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(orderService).create(any(Order.class));
 
         webMvc.perform(post("/api/orders")
-                        .content(mapper.writeValueAsString(Order.builder().build()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(Order.builder().build()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("주문목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnOrders() throws Exception {
-        List<Order> orders = FixtureMonkey.create()
-                .giveMeBuilder(Order.class)
-                .sampleList(Arbitraries.integers().between(1, 50).sample());
+        List<Order> orders = getOrders(Order.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .build(), 5);
         doReturn(orders).when(orderService).list();
 
         webMvc.perform(get("/api/orders"))
@@ -74,25 +71,32 @@ public class OrderRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
+    private List<Order> getOrders(Order order, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> Order.builder()
+                        .id(order.getId())
+                        .orderTable(order.getOrderTable())
+                        .orderStatus(order.getOrderStatus())
+                        .orderLineItems(order.getOrderLineItems())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     private Order getOrder() {
-        return   FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(Order.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("orderTableId", Arbitraries.longs().between(1, 100))
-                .set("orderStatus", OrderStatus.COOKING.name())
-                .set("orderedTime", LocalDateTime.now())
-                .set("orderLineItems", getOrderLineItems())
-                .sample();
+        return Order.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .orderLineItems(getOrderLineItems())
+                .orderStatus(OrderStatus.COOKING.name())
+                .orderTable(OrderTable.builder().id(13l).build())
+                .build();
     }
 
     private List<OrderLineItem> getOrderLineItems() {
-        return  FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(OrderLineItem.class)
-                .set("id", Arbitraries.longs().between(1, 20))
-                .sampleList(10);
+        return IntStream.rangeClosed(1, 20)
+                .mapToObj(value -> OrderLineItem.builder()
+                        .seq(Arbitraries.longs().between(1, 20).sample())
+                        .order(Order.builder().id(14l).orderTable(OrderTable.builder().build()).build())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

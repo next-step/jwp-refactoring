@@ -1,17 +1,14 @@
 package kitchenpos.table.application;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,17 +32,9 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderDao;
     @Mock
     private OrderTableRepository orderTableDao;
-    public static FixtureMonkey fixtureMonkey;
-
-    @BeforeAll
-    public static void setup() {
-        fixtureMonkey = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build();
-    }
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
@@ -85,9 +74,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
-                .set("orderStatus", OrderStatus.COOKING.name())
-                .sampleList(5);
+        List<Order> orders = getOrders(Order.builder().orderStatus(OrderStatus.COOKING.name()).build(), 5);
         OrderTable orderTable = OrderTable.builder()
                 .tableGroup(TableGroup.builder().id(13l).build())
                 .build();
@@ -95,20 +82,18 @@ public class TableServiceTest {
                 .when(orderTableDao)
                 .findById(orderTable.getId());
         doReturn(orders).when(orderDao)
-                .findAllByOrderTableId(orderTable.getId());
+                .findAllByOrderTable(orderTable);
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
-        List<Order> orders = fixtureMonkey.giveMeBuilder(Order.class)
-                .set("orderStatus", OrderStatus.COOKING.name())
-                .sampleList(5);
+        List<Order> orders = getOrders(Order.builder().orderStatus(OrderStatus.COOKING.name()).build(), 5);
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(orders).when(orderDao)
-                .findAllByOrderTableId(orderTable.getId());
+                .findAllByOrderTable(orderTable);
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
     }
@@ -174,6 +159,17 @@ public class TableServiceTest {
 
         assertThat(tableService.changeNumberOfGuests(orderTable.getId(), orderTable).getNumberOfGuests()).isEqualTo(15);
 
+    }
+
+    private List<Order> getOrders(Order order, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> Order.builder()
+                        .id(order.getId())
+                        .orderTable(order.getOrderTable())
+                        .orderStatus(order.getOrderStatus())
+                        .orderLineItems(order.getOrderLineItems())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private List<OrderTable> getOrderTables(OrderTable orderTable, int size) {

@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.persistence.OrderDao;
+import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.persistence.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderDao;
     private final OrderTableRepository orderTableDao;
     private final TableGroupRepository tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableDao, final TableGroupRepository tableGroupDao) {
+    public TableGroupService(final OrderRepository orderDao, final OrderTableRepository orderTableDao, final TableGroupRepository tableGroupDao) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
@@ -75,10 +75,10 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+/*        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
-        }
+        }*/
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(null);

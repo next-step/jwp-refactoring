@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -68,7 +69,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroup.getId();
+        return Objects.isNull(tableGroup) ? null : tableGroup.getId();
     }
 
     public void setTableGroup(final TableGroup tableGroup) {

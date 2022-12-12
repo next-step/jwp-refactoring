@@ -1,17 +1,28 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Menu menu;
+    @Column
     private long quantity;
 
     public OrderLineItem(){}
 
     private OrderLineItem(OrderLineItemBuilder builder) {
         this.seq = builder.seq;
-        this.orderId = builder.orderId;
-        this.menuId = builder.menuId;
+        this.order = builder.order;
+        this.menu = builder.menu;
         this.quantity = builder.quantity;
     }
 
@@ -21,8 +32,8 @@ public class OrderLineItem {
 
     public static class OrderLineItemBuilder {
         private Long seq;
-        private Long orderId;
-        private Long menuId;
+        private Order order;
+        private Menu menu;
         private long quantity;
 
         public OrderLineItemBuilder seq(Long seq) {
@@ -30,13 +41,13 @@ public class OrderLineItem {
             return this;
         }
 
-        public OrderLineItemBuilder orderId(Long orderId) {
-            this.orderId = orderId;
+        public OrderLineItemBuilder order(Order order) {
+            this.order = order;
             return this;
         }
 
-        public OrderLineItemBuilder menuId(Long menuId) {
-            this.menuId = menuId;
+        public OrderLineItemBuilder menu(Menu menu) {
+            this.menu = menu;
             return this;
         }
 
@@ -59,19 +70,19 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return orderId;
+        return Objects.isNull(order) ? null : order.getId();
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getMenuId() {
-        return menuId;
+        return Objects.isNull(menu) ? null : menu.getId();
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
     public long getQuantity() {
