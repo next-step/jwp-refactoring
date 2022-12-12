@@ -2,7 +2,6 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.menu.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
@@ -17,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,7 +32,8 @@ class MenuServiceTest {
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductService productService;
+
     @InjectMocks
     private MenuService service;
 
@@ -75,7 +74,7 @@ class MenuServiceTest {
         Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
         given(menuGroupRepository.existsById(menuId)).willReturn(true);
-        given(productDao.findById(product1Id)).willReturn(Optional.empty());
+        given(productService.findById(product1Id)).willThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -88,8 +87,8 @@ class MenuServiceTest {
         Menu menu = getMenu(10000,  getTwoMenuProducts(menuId,product1Id,3, product2Id, 5));
 
         given(menuGroupRepository.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(product1Id)).willReturn(Optional.of(상품1));
-        given(productDao.findById(product2Id)).willReturn(Optional.of(상품2));
+        given(productService.findById(product1Id)).willReturn(상품1);
+        given(productService.findById(product2Id)).willReturn(상품2);
 
         assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }

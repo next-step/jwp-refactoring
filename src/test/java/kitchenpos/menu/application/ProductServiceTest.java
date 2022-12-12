@@ -1,8 +1,5 @@
 package kitchenpos.menu.application;
 
-import com.sun.tools.xjc.model.CPropertyInfo;
-import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.dao.ProductDao;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;

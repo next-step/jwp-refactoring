@@ -28,6 +28,11 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public Product findById(final Long productId){
+        return productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     public List<Product> list() {
         return productRepository.findAll();
     }
