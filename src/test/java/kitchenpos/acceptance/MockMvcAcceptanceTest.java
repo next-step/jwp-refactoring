@@ -66,6 +66,14 @@ public class MockMvcAcceptanceTest {
         );
     }
 
+    ResultActions mockDelete(String url, Long targetId) throws Exception{
+        return mockMvc.perform(delete(url, targetId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .characterEncoding("UTF-8")
+        );
+    }
+
     <T> T getObjectByResponse(ResultActions resultActions, Class<T> clazz)
             throws JsonProcessingException, UnsupportedEncodingException {
         String responseContent = resultActions.andReturn().getResponse().getContentAsString();

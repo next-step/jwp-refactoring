@@ -18,7 +18,6 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,16 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 class TableGroupServiceTest {
-
     @Autowired
-    OrderDao orderDao;
-
-    @Autowired
-    OrderTableDao orderTableDao;
-
-    @Autowired
-    TableGroupDao tableGroupDao;
-
     TableGroupService tableGroupService;
 
     @Autowired
@@ -56,13 +46,11 @@ class TableGroupServiceTest {
     @Autowired
     OrderService orderService;
 
-    @BeforeEach
-    void beforeEach(){
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
-    }
+    @Autowired
+    OrderTableDao orderTableDao;
 
     @Test
-    @DisplayName("테이블 단체 지정 성")
+    @DisplayName("테이블 단체 지정 성공")
     void createTest(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTable(0, true));
