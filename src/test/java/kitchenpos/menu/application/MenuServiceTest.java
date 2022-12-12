@@ -4,11 +4,11 @@ import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +60,7 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -70,9 +70,9 @@ public class MenuServiceTest {
     void createMenuTest() {
         //given
         when(menuGroupDao.existsById(분식.getId())).thenReturn(true);
-        when(productDao.findById(참치김밥.getId())).thenReturn(Optional.ofNullable(참치김밥));
-        when(productDao.findById(라볶이.getId())).thenReturn(Optional.ofNullable(라볶이));
-        when(productDao.findById(돈까스.getId())).thenReturn(Optional.ofNullable(돈까스));
+        when(productRepository.findById(참치김밥.getId())).thenReturn(Optional.ofNullable(참치김밥));
+        when(productRepository.findById(라볶이.getId())).thenReturn(Optional.ofNullable(라볶이));
+        when(productRepository.findById(돈까스.getId())).thenReturn(Optional.ofNullable(돈까스));
         when(menuDao.save(라볶이세트)).thenReturn(라볶이세트);
         when(menuProductDao.save(라볶이세트참치김밥)).thenReturn(라볶이세트참치김밥);
         when(menuProductDao.save(라볶이세트라볶이)).thenReturn(라볶이세트라볶이);
@@ -135,9 +135,9 @@ public class MenuServiceTest {
     @Test
     void notExistProductInMenuProductListExceptionTest() {
         //given
-        when(productDao.findById(참치김밥.getId())).thenReturn(Optional.ofNullable(참치김밥));
-        when(productDao.findById(라볶이.getId())).thenReturn(Optional.ofNullable(라볶이));
-        when(productDao.findById(돈까스.getId())).thenReturn(Optional.ofNullable(null));
+        when(productRepository.findById(참치김밥.getId())).thenReturn(Optional.ofNullable(참치김밥));
+        when(productRepository.findById(라볶이.getId())).thenReturn(Optional.ofNullable(라볶이));
+        when(productRepository.findById(돈까스.getId())).thenReturn(Optional.ofNullable(null));
 
         when(menuGroupDao.existsById(분식.getId())).thenReturn(true);
 
@@ -164,9 +164,9 @@ public class MenuServiceTest {
     void productPriceSumUpperThanMenuPriceExceptionTest() {
         //given
         when(menuGroupDao.existsById(분식.getId())).thenReturn(true);
-        when(productDao.findById(참치김밥.getId())).thenReturn(Optional.ofNullable(참치김밥));
-        when(productDao.findById(라볶이.getId())).thenReturn(Optional.ofNullable(라볶이));
-        when(productDao.findById(돈까스.getId())).thenReturn(Optional.ofNullable(돈까스));
+        when(productRepository.findById(참치김밥.getId())).thenReturn(Optional.ofNullable(참치김밥));
+        when(productRepository.findById(라볶이.getId())).thenReturn(Optional.ofNullable(라볶이));
+        when(productRepository.findById(돈까스.getId())).thenReturn(Optional.ofNullable(돈까스));
         Menu newMenu = new Menu(1L, "라볶이세트", new BigDecimal(20000), 분식.getId(),
                 Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
 
