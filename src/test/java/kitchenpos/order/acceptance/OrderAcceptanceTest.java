@@ -1,11 +1,12 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
 import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_생성_요청_객체_생성;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
+import static kitchenpos.order.domain.OrderLineItemTest.주문_항목_생성;
+import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_생성_요청_객체_생성;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
-import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -20,13 +21,14 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -41,8 +43,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuResponse 소머리국밥_메뉴;
     private MenuResponse 순대국밥_메뉴;
 
-    private OrderTable 주문_테이블_1;
-    private OrderTable 주문_테이블_2;
+    private OrderTableResponse 주문_테이블_1;
+    private OrderTableResponse 주문_테이블_2;
 
     @BeforeEach
     public void setUp() {
@@ -58,8 +60,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(순대국밥.getId(), 2L);
         순대국밥_메뉴 = 메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사.getId(), Arrays.asList(순대국밥_메뉴상품)).as(MenuResponse.class);
 
-        주문_테이블_1 = 주문_테이블_등록되어_있음(2, false).as(OrderTable.class);
-        주문_테이블_2 = 주문_테이블_등록되어_있음(4, false).as(OrderTable.class);
+        주문_테이블_1 = 주문_테이블_등록되어_있음(2, false).as(OrderTableResponse.class);
+        주문_테이블_2 = 주문_테이블_등록되어_있음(4, false).as(OrderTableResponse.class);
     }
 
 
@@ -67,11 +69,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문을 등록할 수 있다.")
     void name() {
         // given
-//        OrderLineItem 주문_항목 = 주문_항목_생성(null, null, 소머리국밥_메뉴, 2);
-//        ExtractableResponse<Response> response = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목));
-//
-//        // when
-//        주문_등록됨(response);
+        OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
+        ExtractableResponse<Response> response = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목));
+
+        // when
+        주문_등록됨(response);
     }
 
     @Test
@@ -88,20 +90,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-//        OrderLineItem 주문_항목 = 주문_항목_생성(null, null, 소머리국밥.getId(), 2);
-//        Order 주문 = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목)).as(Order.class);
-//
-//        // when
-//        ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), OrderStatus.COOKING.name());
-//
-//        // then
-//        주문_상태_변경됨(response);
+        OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
+        OrderResponse 주문 = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목)).as(OrderResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId() , OrderStatus.MEAL.name());
+
+        // then
+        주문_상태_변경됨(response);
     }
 
-    public static ExtractableResponse<Response> 주문_등록_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public static ExtractableResponse<Response> 주문_등록_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
         Map<String, Object> params = new HashMap<>();
         params.put("orderTableId", orderTableId);
-        params.put("orderLineItems", orderLineItems);
+        params.put("orderLineItems", orderLineItemRequests);
 
         return RestAssured
                 .given().log().all()

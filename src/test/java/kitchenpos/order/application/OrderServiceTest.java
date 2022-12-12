@@ -1,33 +1,36 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
-import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
-import static kitchenpos.table.domain.OrderTableTest.주문_테이블_생성;
-import static kitchenpos.domain.OrderTest.주문_생성;
 import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
 import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.order.domain.OrderLineItemTest.주문_항목_생성;
+import static kitchenpos.order.domain.OrderTest.주문_생성;
+import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_생성_요청_객체_생성;
+import static kitchenpos.order.dto.OrderRequestTest.주문_생성_요청_객체_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
+import static kitchenpos.table.domain.OrderTableTest.주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,16 +43,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -87,46 +87,44 @@ class OrderServiceTest {
     @DisplayName("주문 등록")
     void create() {
         // given
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(orderDao.save(any(Order.class))).thenReturn(주문);
-        when(orderLineItemDao.save(any(OrderLineItem.class))).thenReturn(주문_항목);
+        when(menuRepository.findById(any())).thenReturn(Optional.of(미역국_메뉴));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderRepository.save(any(Order.class))).thenReturn(주문);
+
+        OrderLineItemRequest orderLineItemRequest = 주문_항목_생성_요청_객체_생성(미역국_메뉴.getId(), 2L);
+        OrderRequest 주문_생성_요청_객체 = 주문_생성_요청_객체_생성(주문_테이블.getId(), null, Arrays.asList(orderLineItemRequest));
 
         // when
-        Order 등록된_주문 = orderService.create(주문);
+        OrderResponse 주문_생성_결과 = orderService.create(주문_생성_요청_객체);
 
         // then
-        assertThat(등록된_주문).isEqualTo(주문);
+        assertThat(주문_생성_결과.getId()).isEqualTo(주문.getId());
     }
 
     @Test
     @DisplayName("주문 목록 조회")
     void list() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문_항목));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> 주문_목록_조회_결과 = orderService.list();
 
         // then
-        assertThat(orders).hasSize(1);
-        assertThat(orders).contains(주문);
+        assertThat(주문_목록_조회_결과).hasSize(1);
     }
 
     @Test
     @DisplayName("주문 상태 변경")
     void changeOrderStatus() {
         // given
-        when(orderDao.findById(any())).thenReturn(Optional.of(주문));
-        when(orderDao.save(any(Order.class))).thenReturn(주문);
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문_항목));
-        Order 상태_변경_주문 = 주문_생성(null, null, OrderStatus.MEAL, null, null);
+        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
+        OrderRequest 주문_생성_요청_객체 = 주문_생성_요청_객체_생성(null, OrderStatus.MEAL, null);
 
         // when
-        orderService.changeOrderStatus(주문.getId(), 상태_변경_주문);
+        OrderResponse 주문_상태_변경_결과 = orderService.changeOrderStatus(주문.getId(), 주문_생성_요청_객체);
 
         // then
-        assertThat(주문.getOrderStatus()).isEqualTo(상태_변경_주문.getOrderStatus());
+        assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(주문_생성_요청_객체.getOrderStatus());
     }
 }

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -69,6 +69,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+
+    public Long getOrderId(){
+        return order.getId();
+    }
     public Long getMenuId() {
         return menu.getId();
     }
