@@ -1,10 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.menu.domain.MenuGroup;
+
 public class MenuGroupTestFixture {
     public static MenuGroup menuGroup(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
+        return MenuGroup.from(id, name);
     }
 }

@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ class MenuAcceptanceTestUtils {
 
     public static Menu 메뉴_면류_짜장면() {
         ProductResponse 짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000));
-        MenuGroup 면류 = 메뉴_그룹_등록되어_있음("면류");
+        MenuGroupResponse 면류 = 메뉴_그룹_등록되어_있음("면류");
         MenuProduct 짜장면_1그릇 = new MenuProduct();
         짜장면_1그릇.setSeq(1L);
         짜장면_1그릇.setMenuId(면류.getId());

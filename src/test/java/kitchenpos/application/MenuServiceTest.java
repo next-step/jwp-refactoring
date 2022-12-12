@@ -13,9 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -65,7 +65,7 @@ class MenuServiceTest {
         // given
         MenuProduct 탕수육_소_1그릇 = menuProduct(2L, null, 5L, 1);
         Menu 탕수육소1 = menu(1L, "탕수육소1", 2L, BigDecimal.valueOf(18000), Collections.singletonList(탕수육_소_1그릇));
-        given(menuGroupDao.existsById(2L)).willReturn(false);
+        given(menuGroupRepository.existsById(2L)).willReturn(false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(탕수육소1));
@@ -77,7 +77,7 @@ class MenuServiceTest {
         // given
         MenuProduct 탕수육_소_1그릇 = menuProduct(2L, null, 5L, 1);
         Menu 탕수육소1 = menu(1L, "탕수육소1", 2L, BigDecimal.valueOf(18000), Collections.singletonList(탕수육_소_1그릇));
-        given(menuGroupDao.existsById(2L)).willReturn(true);
+        given(menuGroupRepository.existsById(2L)).willReturn(true);
         given(productRepository.findById(5L)).willReturn(Optional.empty());
 
         // when & then
@@ -101,7 +101,7 @@ class MenuServiceTest {
         // given
         MenuProduct 짬뽕_2그릇 = menuProduct(2L, null, 2L, 2);
         Menu 짜장1_짬뽕2 = menu(1L, "짜장1_짬뽕2", 1L, BigDecimal.valueOf(23000), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇));
-        given(menuGroupDao.existsById(1L)).willReturn(true);
+        given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productRepository.findById(1L)).willReturn(Optional.of(짜장면));
         given(productRepository.findById(2L)).willReturn(Optional.of(짬뽕));
         given(menuProductDao.save(짜장면_1그릇)).willReturn(짜장면_1그릇);

@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.TestFactory;
 class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 짜장면;
     private ProductResponse 짬뽕;
-    private MenuGroup 면류;
+    private MenuGroupResponse 면류;
     private MenuProduct 짜장면_1그릇;
 
     @BeforeEach
