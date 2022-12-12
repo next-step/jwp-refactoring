@@ -66,6 +66,17 @@ class TableServiceTest {
         );
     }
 
+    @DisplayName("손님수를 변경한다.")
+    @Test
+    void changeNumberOfGuests_success() {
+        OrderTable orderTable = orderTableDao.findById(1L).get();
+        assertThat(orderTable.getNumberOfGuests()).isNotEqualTo(1);
+        orderTable.setEmpty(false);
+        orderTableDao.save(orderTable);
+        ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(1);
+        assertThat(tableService.changeNumberOfGuests(1L, changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(1);
+    }
+
     @DisplayName("손님수를 변경한다. / 0명보다 작을 수 없다.")
     @Test
     void changeNumberOfGuests_fail_minimum() {
