@@ -55,7 +55,7 @@ class MenuServiceTest {
         menuGroupId = menuGroupDao.save(new MenuGroup("A")).getId();
         Menu menu = menuDao.save(new Menu("A", BigDecimal.valueOf(2), menuGroupId));
         Product product = productDao.save(new Product("A", BigDecimal.valueOf(2)));
-        menuProduct = menuProductDao.save(new MenuProduct(menu.getId(), menu.getId(), product.getId(), 1));
+        menuProduct = menuProductDao.save(new MenuProduct(menu.getId(), menu.getId(), product.getId(), 1L));
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
