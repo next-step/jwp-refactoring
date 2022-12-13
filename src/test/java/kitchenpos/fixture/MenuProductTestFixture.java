@@ -44,7 +44,7 @@ public class MenuProductTestFixture {
         return 메뉴상품요청(null, 단무지상품ID, 1L);
     }
 
-    public static MenuProduct 단무지메뉴상품() {
+    public static MenuProduct 짜장면메뉴상품() {
         return MenuProduct.of(상품생성(짜장면요청()), 1L);
     }
 
