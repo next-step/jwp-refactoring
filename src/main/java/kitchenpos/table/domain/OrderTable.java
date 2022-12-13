@@ -27,8 +27,47 @@ public class OrderTable {
         this.empty = builder.empty;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Long getTableGroupId() {
+        return Objects.isNull(tableGroup) ? null : tableGroup.getId();
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void changeEmpty(final boolean empty, List<Order> orders) {
+        boolean isBeforeComplete = orders.stream().anyMatch(order -> order.getOrderStatus()
+                .equals(OrderStatus.COOKING) || order.getOrderStatus().equals(OrderStatus.MEAL));
+        if (isBeforeComplete) {
+            throw new IllegalArgumentException();
+        }
+        this.empty = empty;
+    }
+
     public static OrderTableBuilder builder() {
         return new OrderTableBuilder();
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     public static class OrderTableBuilder {
@@ -60,48 +99,5 @@ public class OrderTable {
         public OrderTable build() {
             return new OrderTable(this);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return Objects.isNull(tableGroup) ? null : tableGroup.getId();
-    }
-
-    public void setTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public void changeNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-        if (empty) {
-            throw new IllegalArgumentException();
-        }
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void chnageEmpty(final boolean empty, List<Order> orders) {
-        boolean isBeforeComplete = orders.stream().anyMatch(order -> order.getOrderStatus()
-                .equals(OrderStatus.COOKING) || order.getOrderStatus().equals(OrderStatus.MEAL));
-        if (isBeforeComplete) {
-            throw new IllegalArgumentException();
-        }
-        this.empty = empty;
     }
 }

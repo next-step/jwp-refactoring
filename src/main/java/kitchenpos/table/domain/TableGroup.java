@@ -51,7 +51,7 @@ public class TableGroup {
         if(isEnable){
             throw new IllegalArgumentException();
         }
-        orderTables.stream().forEach(orderTable -> orderTable.setTableGroup(null));
+        orderTables.stream().forEach(orderTable -> orderTable.ungroup());
     }
 
     public static class TableGroupBuilder {
