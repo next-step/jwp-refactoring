@@ -30,4 +30,16 @@ public class Product2 {
         this.name = name;
         this.price = price;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
 }
