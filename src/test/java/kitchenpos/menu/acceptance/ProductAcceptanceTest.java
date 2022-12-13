@@ -94,7 +94,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성_요청("스파게티", new BigDecimal(18000));
 
         // when
-        ExtractableResponse<Response> response = product_list_has_been_queried();
+        ExtractableResponse<Response> response = 상품_목록_요청();
 
         // then
         assertThat(response.jsonPath().getList(".", ProductResponse.class)).hasSize(2);
@@ -111,7 +111,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> product_list_has_been_queried() {
+    public static ExtractableResponse<Response> 상품_목록_요청() {
         return RestAssured.given().log().all()
                 .when().get("/api/products")
                 .then().log().all()

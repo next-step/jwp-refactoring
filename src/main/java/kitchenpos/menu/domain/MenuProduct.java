@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.dto.MenuGroupResponse;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -43,5 +45,17 @@ public class MenuProduct {
 
     public BigDecimal getPrice() {
         return this.product.calculate(this.getQuantity());
+    }
+
+    public Long getSeq() {
+        return this.seq;
+    }
+
+    public Long getMenuId() {
+        return this.menu.getId();
+    }
+
+    public Long getProductId() {
+        return this.product.getId();
     }
 }

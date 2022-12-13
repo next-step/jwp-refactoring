@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    public Menu(long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = Price.of(price);
@@ -43,6 +44,10 @@ public class Menu {
 
     public static Menu of(long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroup, menuProducts);
+    }
+
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(null, name, price,menuGroup, new ArrayList<>());
     }
 
     public Long getId() {
@@ -65,5 +70,17 @@ public class Menu {
         if (!this.price.isLessOrEqualTo(this.menuProducts.getSum())) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public BigDecimal getPrice() {
+        return this.price.getValue();
+    }
+
+    public MenuGroup getMenuGroup() {
+        return this.getMenuGroup();
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return this.getMenuProducts();
     }
 }
