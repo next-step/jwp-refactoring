@@ -1,9 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.ordertable.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
+public
 class TableAcceptanceTest extends AcceptanceTest {
     private OrderTable 주문테이블_A;
     private OrderTable 주문테이블_B;
