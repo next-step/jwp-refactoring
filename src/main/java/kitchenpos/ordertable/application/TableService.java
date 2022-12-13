@@ -3,7 +3,7 @@ package kitchenpos.ordertable.application;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
