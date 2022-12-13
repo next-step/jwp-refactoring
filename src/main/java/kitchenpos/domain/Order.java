@@ -45,13 +45,15 @@ public class Order {
     }
 
     private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        checkOrderTableIsNotEmpty(orderTable);
+
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = OrderLineItems.from(orderLineItems);
-        checkOrderTableIsNotEmpty(orderTable);
-        orderTable.addOrder(this);
+
+        this.orderTable.addOrder(this);
         this.orderLineItems.setup(this);
     }
 
