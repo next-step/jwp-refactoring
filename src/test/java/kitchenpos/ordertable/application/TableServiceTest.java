@@ -5,17 +5,28 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,10 +41,30 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    private Product 하와이안피자;
+    private MenuProduct 하와이안피자상품;
+    private MenuGroup 피자;
+    private Menu 하와이안피자세트;
+    private OrderLineItemRequest 하와이안피자세트주문요청;
+    private Order 주문;
+    private OrderTable 주문테이블;
+
+    @BeforeEach
+    void setUp() {
+        하와이안피자 = new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000));
+        피자 = new MenuGroup(1L, "피자");
+        하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트, 하와이안피자, 1L);
+        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
+            MenuProducts.from(Arrays.asList(하와이안피자상품)));
+        하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
+        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(하와이안피자세트))));
+    }
 
     @InjectMocks
     private TableService tableService;
@@ -77,9 +108,9 @@ public class TableServiceTest {
         // given
         OrderTableRequest orderTableRequest = OrderTableRequest.of(4, true);
         OrderTableRequest updateOrderTableRequest = OrderTableRequest.of(4, false);
+        Order order = 주문.changeOrderStatus(OrderStatus.COMPLETION);
         when(orderTableRepository.findById(orderTableRequest.toOrderTable().getId())).thenReturn(Optional.of(orderTableRequest.toOrderTable()));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableRequest.toOrderTable().getId(),
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderRepository.findAllByOrderTableId(orderTableRequest.toOrderTable().getId())).thenReturn(Collections.singletonList(order));
 
         // when
         OrderTableResponse resultOrderTable = tableService.changeEmpty(orderTableRequest.toOrderTable().getId(), updateOrderTableRequest);
@@ -122,9 +153,9 @@ public class TableServiceTest {
     void updateOrderTableStatusException() {
         // given
         OrderTableRequest orderTableRequest = OrderTableRequest.of(4, true);
+        Order order = 주문.changeOrderStatus(OrderStatus.COOKING);
         when(orderTableRepository.findById(orderTableRequest.toOrderTable().getId())).thenReturn(Optional.of(orderTableRequest.toOrderTable()));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableRequest.toOrderTable().getId(),
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        when(orderRepository.findAllByOrderTableId(orderTableRequest.toOrderTable().getId())).thenReturn(Collections.singletonList(order));
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableRequest.toOrderTable().getId(), orderTableRequest))

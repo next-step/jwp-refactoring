@@ -2,9 +2,7 @@ package kitchenpos.ordertable.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -13,7 +11,6 @@ import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service

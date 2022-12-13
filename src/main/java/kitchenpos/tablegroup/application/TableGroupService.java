@@ -1,9 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -15,7 +13,6 @@ import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

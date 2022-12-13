@@ -6,15 +6,24 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -32,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -43,11 +52,27 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    private Product 하와이안피자;
+    private MenuProduct 하와이안피자상품;
+    private MenuGroup 피자;
+    private Menu 하와이안피자세트;
+    private OrderLineItemRequest 하와이안피자세트주문요청;
+    private Order 주문;
+    private OrderTable 주문테이블;
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
 
     @BeforeEach
     void setUp() {
+        하와이안피자 = new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000));
+        피자 = new MenuGroup(1L, "피자");
+        하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트, 하와이안피자, 1L);
+        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
+            MenuProducts.from(Arrays.asList(하와이안피자상품)));
+        하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
+        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(하와이안피자세트))));
+
         주문테이블A = new OrderTable(1L, null, 4, true);
         주문테이블B = new OrderTable(2L, null, 6, true);
     }
@@ -129,11 +154,11 @@ public class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(주문테이블A, 주문테이블B)));
+        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(주문테이블, 주문테이블A, 주문테이블B)));
+        Order order = 주문.changeOrderStatus(OrderStatus.COMPLETION);
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
-        when(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(주문테이블A, 주문테이블B));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()),
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderRepository.findAllByOrderTableIdIn(
+            Arrays.asList(주문테이블.getId(), 주문테이블A.getId(), 주문테이블B.getId()))).thenReturn(Collections.singletonList(order));
 
         // when
         tableGroupService.ungroup(tableGroup.getId());
@@ -149,11 +174,11 @@ public class TableGroupServiceTest {
     @Test
     void unGroupStateException() {
         // given
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(주문테이블A, 주문테이블B)));
+        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(주문테이블, 주문테이블A, 주문테이블B)));
+        Order order = 주문.changeOrderStatus(OrderStatus.COOKING);
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
-        when(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(주문테이블A, 주문테이블B));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()),
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        when(orderRepository.findAllByOrderTableIdIn(
+            Arrays.asList(주문테이블.getId(), 주문테이블A.getId(), 주문테이블B.getId()))).thenReturn(Collections.singletonList(order));
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
