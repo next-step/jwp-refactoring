@@ -26,8 +26,7 @@ import org.springframework.http.MediaType;
 
 
 @DisplayName("메뉴 관련 인수 테스트")
-public
-class MenuAcceptanceTest extends AcceptanceTest {
+public class MenuAcceptanceTest extends AcceptanceTest {
     private Product 후라이드치킨;
     private Product 콜라;
     private MenuGroup 치킨;
@@ -38,13 +37,13 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드치킨 = 상품_생성_요청(new Product(1L, "후라이드 치킨", BigDecimal.valueOf(18_000))).as(Product.class);
-        콜라 = 상품_생성_요청(new Product(2L, "콜라", BigDecimal.valueOf(1_800))).as(Product.class);
-        치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
+        후라이드치킨 = 상품_생성_요청(new Product(null, "후라이드 치킨", BigDecimal.valueOf(18_000))).as(Product.class);
+        콜라 = 상품_생성_요청(new Product(null, "콜라", BigDecimal.valueOf(1_800))).as(Product.class);
+        치킨 = 메뉴그룹_생성_요청(new MenuGroup(null, "치킨")).as(MenuGroup.class);
 
-        치킨콜라세트 = new Menu(1L, "치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨.getId(), new ArrayList<>());
-        후라이드치킨상품 = new MenuProduct(1L, 치킨콜라세트.getId(), 후라이드치킨.getId(), 1L);
-        콜라상품 = new MenuProduct(2L, 치킨콜라세트.getId(), 콜라.getId(), 1L);
+        치킨콜라세트 = new Menu(null, "치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨.getId(), new ArrayList<>());
+        후라이드치킨상품 = new MenuProduct(null, 치킨콜라세트.getId(), 후라이드치킨.getId(), 1L);
+        콜라상품 = new MenuProduct(null, 치킨콜라세트.getId(), 콜라.getId(), 1L);
         치킨콜라세트.setMenuProducts(Arrays.asList(후라이드치킨상품, 콜라상품));
     }
 

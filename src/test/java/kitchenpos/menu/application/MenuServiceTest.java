@@ -9,14 +9,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menugroup.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.dao.MenuProductRepository;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,16 +28,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -60,12 +59,12 @@ class MenuServiceTest {
     void 메뉴를_등록할_수_있다() {
         Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(60_000), 1L, Arrays.asList(치킨_두마리,
                 스파게티_이인분));
-        given(menuGroupDao.existsById(1L)).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(치킨));
-        given(productDao.findById(2L)).willReturn(Optional.of(스파게티));
+        given(menuGroupRepository.existsById(1L)).willReturn(true);
+        given(productRepository.findById(1L)).willReturn(Optional.of(치킨));
+        given(productRepository.findById(2L)).willReturn(Optional.of(스파게티));
         given(menuProductDao.save(치킨_두마리)).willReturn(치킨_두마리);
         given(menuProductDao.save(스파게티_이인분)).willReturn(스파게티_이인분);
-        given(menuDao.save(치킨_스파게티_더블세트_메뉴)).willReturn(치킨_스파게티_더블세트_메뉴);
+        given(menuRepository.save(치킨_스파게티_더블세트_메뉴)).willReturn(치킨_스파게티_더블세트_메뉴);
 
         Menu savedMenu = menuService.create(치킨_스파게티_더블세트_메뉴);
 
@@ -103,7 +102,7 @@ class MenuServiceTest {
     void 메뉴_목록을_조회할_수_있다() {
         Menu 치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(60_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
         Menu 치킨_피자_더블세트_메뉴 = new Menu(1L, "치킨_피자_더블세트_메뉴", new BigDecimal(50_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
-        given(menuDao.findAll()).willReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴, 치킨_피자_더블세트_메뉴));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴, 치킨_피자_더블세트_메뉴));
 
         List<Menu> menus = menuService.list();
 
