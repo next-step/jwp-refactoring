@@ -7,7 +7,7 @@
     - [ ] 메뉴 서비스
     - [ ] 주문 CRUD 서비스
     - [ ] 주문 상태 서비스
-    - [ ] 상품 서비스
+    - [x] 상품 서비스
     - [ ] 테이블그룹 서비스
     - [ ] 테이블 서비스
 - [ ] spring.jpa.hibernate.ddl-auto=validate 추가
