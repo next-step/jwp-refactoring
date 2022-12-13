@@ -59,7 +59,7 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty, List<Order> orders) {
         validateTableGroup();
-        orders.forEach(order -> order.validateComplete());
+        orders.forEach(Order::validateComplete);
         this.empty = empty;
     }
 

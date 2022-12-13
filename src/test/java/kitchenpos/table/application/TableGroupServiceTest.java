@@ -4,6 +4,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -96,7 +97,6 @@ public class TableGroupServiceTest {
                 .findAllById(anyList());
 
         TableGroupResponse tableGroupResponse = tableGroupService.create(new TableGroupRequest(Arrays.asList(1l, 2l)));
-
         assertThat(tableGroupResponse.getOrderTableIds()).containsExactly(1l, 2l);
     }
 
@@ -115,7 +115,7 @@ public class TableGroupServiceTest {
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
         List<Order> orders = Arrays.asList(Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COOKING).build());
         TableGroup tableGroup = TableGroup.builder()
-                .orderTables(Arrays.asList(OrderTable.builder().build()))
+                .orderTables(OrderTables.of(Arrays.asList(OrderTable.builder().build())))
                 .build();
         doReturn(Optional.ofNullable(tableGroup))
                 .when(tableGroupDao)

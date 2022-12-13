@@ -3,6 +3,7 @@ package kitchenpos.table.ui;
 import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -62,8 +63,9 @@ public class TableGroupRestControllerTest extends ControllerTest {
     @DisplayName("테이블그룹 해재를 요청하면 성공응답")
     @Test
     public void unTableGroup() throws Exception {
+        OrderTables orderTables = OrderTables.of(Arrays.asList(OrderTable.builder().id(1l).build()));
         TableGroup tableGroup = TableGroup.builder().id(13l)
-                .orderTables(Arrays.asList(OrderTable.builder().id(1l).build()))
+                .orderTables(orderTables)
                 .build();
         webMvc.perform(delete("/api/table-groups/" + tableGroup.getId()))
                 .andExpect(status().isNoContent());
@@ -72,8 +74,9 @@ public class TableGroupRestControllerTest extends ControllerTest {
     @DisplayName("테이블그룹 해재를 요청하면 실패응답")
     @Test
     public void throwsExceptionWhenUnTableGroup() throws Exception {
+        OrderTables orderTables = OrderTables.of(Arrays.asList(OrderTable.builder().id(1l).build()));
         TableGroup tableGroup = TableGroup.builder().id(13l)
-                .orderTables(Arrays.asList(OrderTable.builder().id(1l).build()))
+                .orderTables(orderTables)
                 .build();
         doThrow(new IllegalArgumentException()).when(tableGroupService).ungroup(anyLong());
         webMvc.perform(delete("/api/table-groups/" + tableGroup.getId()))
@@ -83,7 +86,7 @@ public class TableGroupRestControllerTest extends ControllerTest {
     private TableGroupResponse getTableGroup() {
         return TableGroupResponse.of(TableGroup.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
-                .orderTables(getTables())
+                .orderTables(OrderTables.of(getTables()))
                 .build());
     }
 

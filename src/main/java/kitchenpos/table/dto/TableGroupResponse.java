@@ -3,17 +3,21 @@ package kitchenpos.table.dto;
 import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TableGroupResponse {
     private Long id;
-    private List<Long> orderTableIds;
+    private List<OrderTableResponse> orderTableResponses;
 
     public TableGroupResponse(TableGroup tableGroup) {
         this.id = tableGroup.getId();
-        this.orderTableIds = tableGroup.getOrderTableIds();
+        this.orderTableResponses = tableGroup.getOrderTables()
+                .stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup){
+    public static TableGroupResponse of(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup);
     }
 
@@ -22,6 +26,8 @@ public class TableGroupResponse {
     }
 
     public List<Long> getOrderTableIds() {
-        return orderTableIds;
+        return orderTableResponses.stream()
+                .map(OrderTableResponse::getId)
+                .collect(Collectors.toList());
     }
 }

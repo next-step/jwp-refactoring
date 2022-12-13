@@ -18,8 +18,8 @@ public class TableGroup {
     private Long id;
     @Column
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
@@ -30,34 +30,28 @@ public class TableGroup {
         this.orderTables = builder.orderTables;
     }
 
-    public static TableGroupBuilder builder() {
-        return new TableGroupBuilder();
-    }
-
     public void addOrderTables(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-        boolean isUse = orderTables.stream().anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId()));
-        if(isUse){
-            throw new IllegalArgumentException();
-        }
-        this.orderTables.addAll(orderTables);
+
+        this.orderTables.addOrderTables(orderTables);
     }
 
     public void ungroup(List<Order> orders) {
-        boolean isEnable = orders.stream()
-                .anyMatch(order -> order.getOrderStatus().equals(OrderStatus.COOKING) || order.getOrderStatus().equals(OrderStatus.MEAL));
-        if(isEnable){
-            throw new IllegalArgumentException();
-        }
-        orderTables.stream().forEach(orderTable -> orderTable.ungroup());
+        orders.forEach(Order::validateComplete);
+        orderTables.ungroup();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
     }
 
     public static class TableGroupBuilder {
         private Long id;
         private LocalDateTime createdDate;
-        private List<OrderTable> orderTables = new ArrayList<>();
+        private OrderTables orderTables = new OrderTables();
 
         public TableGroupBuilder id(Long id) {
             this.id = id;
@@ -69,7 +63,7 @@ public class TableGroup {
             return this;
         }
 
-        public TableGroupBuilder orderTables(List<OrderTable> orderTables) {
+        public TableGroupBuilder orderTables(OrderTables orderTables) {
             this.orderTables = orderTables;
             return this;
         }
@@ -79,31 +73,7 @@ public class TableGroup {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-    public List<Long> getOrderTableIds() {
-        return orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
-    }
-
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public static TableGroupBuilder builder() {
+        return new TableGroupBuilder();
     }
 }
