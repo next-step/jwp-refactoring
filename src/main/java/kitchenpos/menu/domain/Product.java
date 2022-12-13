@@ -15,22 +15,16 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
 
     }
 
     public Product(String name, BigDecimal price) {
-        validatePrice(price);
         this.name = name;
-        this.price = price;
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+        this.price =  Price.of(price);
     }
 
     public Long getId() {
@@ -42,7 +36,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
 }

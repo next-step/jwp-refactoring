@@ -138,8 +138,8 @@ class TableServiceTest {
     @Test
     void change_number_guest() {
         // given
-        주문테이블_1번.setNumberOfGuests(20);
         주문테이블_1번.setEmpty(false);
+        주문테이블_1번.setNumberOfGuests(20);
         when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
         when(orderTableRepository.save(주문테이블_1번)).thenReturn(주문테이블_1번);
 
@@ -148,17 +148,6 @@ class TableServiceTest {
 
         // then
         assertThat(주문테이블_변경_응답.getNumberOfGuests()).isEqualTo(6);
-    }
-
-    @DisplayName("손님의 수가 0보다 작다면 변경할 수 없다.")
-    @Test
-    void error_change_number_guest_less_then_0() {
-        // given
-        주문테이블_1번.setNumberOfGuests(-1);
-
-        // when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("요청한 테이블을 찾을 수 없으면 손님의 수를 변경할 수 없다.")

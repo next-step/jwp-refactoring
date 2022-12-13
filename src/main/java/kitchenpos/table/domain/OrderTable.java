@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -12,8 +11,9 @@ public class OrderTable {
 
     private Long tableGroupId;
 
+    @Embedded
     @Column(nullable = false)
-    private int numberOfGuests;
+    private NumberOfGuests numberOfGuests;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean empty;
@@ -23,13 +23,13 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
 
@@ -50,11 +50,14 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
     public boolean isEmpty() {
