@@ -6,14 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderStatusRequest;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
@@ -29,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private Order order = new Order();
+    private Order order = new Order(new OrderTable(1L, 1L, 1, false));
     @Mock
     private MenuRepository menuRepository;
     @Mock
@@ -47,55 +49,61 @@ class OrderServiceTest {
 
     @Test
     void 주문을_등록할_수_있다() {
-        OrderTable orderTable = new OrderTable(1L, 1L, 1, false);
-        given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-        given(menuRepository.countByIdIn(any())).willReturn(1l);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderRepository.save(order)).willReturn(order);
+        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
+                new OrderLineItemRequest(2L, 1l));
+        OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 2, false)));
+        given(menuRepository.countByIdIn(any())).willReturn(2L);
+        given(orderRepository.save(any())).willReturn(order);
 
-        Order createOrder = orderService.create(order);
+        Order createOrder = orderService.create(orderRequest);
 
         assertThat(createOrder).isEqualTo(order);
     }
 
     @Test
     void 수량이_남은_메뉴만_주문할_수_있다() {
-        Order 수량이_남지_않은_메뉴 = new Order();
+        OrderRequest orderRequest = new OrderRequest(1L, Collections.emptyList());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 2, false)));
 
-        ThrowingCallable 수량이_남지_않은_메뉴_주문시도 = () -> orderService.create(수량이_남지_않은_메뉴);
+        ThrowingCallable 수량이_남지_않은_메뉴_주문시도 = () -> orderService.create(orderRequest);
 
         assertThatIllegalArgumentException().isThrownBy(수량이_남지_않은_메뉴_주문시도);
     }
 
     @Test
     void 등록_된_메뉴만_지정할_수_있다() {
-        Order 없는_메뉴가_포함된_주문 = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(new OrderLineItem(1L, 1L, 1L, 1)));
+        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
+                new OrderLineItemRequest(2L, 1l));
+        OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 2, false)));
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
 
-        ThrowingCallable 없는_메뉴가_포함된_주문시도 = () -> orderService.create(없는_메뉴가_포함된_주문);
+        ThrowingCallable 없는_메뉴가_포함된_주문시도 = () -> orderService.create(orderRequest);
 
         assertThatIllegalArgumentException().isThrownBy(없는_메뉴가_포함된_주문시도);
     }
 
     @Test
     void 등록_된_주문_테이블만_지정할_수_있다() {
-        given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-        given(menuRepository.countByIdIn(any())).willReturn(1l);
+        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
+                new OrderLineItemRequest(2L, 1l));
+        OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
-        ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(order);
+        ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(orderRequest);
 
         assertThatIllegalArgumentException().isThrownBy(등록_되지_않은_주문_테이블_지정);
     }
 
     @Test
     void 주문_테이블은_비어있으면_안된다() {
-        OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
-        given(order.getOrderLineItems()).willReturn(Collections.singletonList(new OrderLineItem()));
-        given(menuRepository.countByIdIn(any())).willReturn(1l);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
+                new OrderLineItemRequest(2L, 1l));
+        OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 2, true)));
 
-        ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(order);
+        ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(orderRequest);
 
         assertThatIllegalArgumentException().isThrownBy(빈_주문_테이블일_경우);
     }
@@ -115,9 +123,8 @@ class OrderServiceTest {
     @Test
     void 주문_상태를_변경할_수_있다() {
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
-        given(order.getOrderStatus()).willReturn(OrderStatus.COOKING.name());
 
-        Order saveOrder = orderService.changeOrderStatus(1L, this.order);
+        Order saveOrder = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING.name()));
 
         assertThat(saveOrder).isEqualTo(order);
     }
@@ -126,7 +133,8 @@ class OrderServiceTest {
     void 등록_된_주문의_상태만_변경할_수_있다() {
         given(orderRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
-        ThrowingCallable 등록되지_않은_주문의_상태변경 = () -> orderService.changeOrderStatus(1L, order);
+        ThrowingCallable 등록되지_않은_주문의_상태변경 = () -> orderService
+                .changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING.name()));
 
         assertThatIllegalArgumentException().isThrownBy(등록되지_않은_주문의_상태변경);
     }
@@ -134,9 +142,10 @@ class OrderServiceTest {
     @Test
     void 이미_완료된_주문의_상태는_변경할_수_없다() {
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
-        given(order.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
+        given(order.changeStatus(any())).willThrow(IllegalArgumentException.class);
 
-        ThrowingCallable 이미_완료된_주문의_상태_변경 = () -> orderService.changeOrderStatus(1L, order);
+        ThrowingCallable 이미_완료된_주문의_상태_변경 = () -> orderService
+                .changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING.name()));
 
         assertThatIllegalArgumentException().isThrownBy(이미_완료된_주문의_상태_변경);
     }

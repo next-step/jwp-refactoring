@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrderLineItemRepository extends JpaRepository<OrderLineItem, Long> {
 
-    @Query(value = "SELECT oli FROM OrderLineItem oli WHERE oli.orderId =:orderId")
+    @Query(value = "SELECT oli FROM OrderLineItem oli WHERE oli.order.id =:orderId")
     List<OrderLineItem> findAllByOrderId(@Param("orderId") Long orderId);
 }

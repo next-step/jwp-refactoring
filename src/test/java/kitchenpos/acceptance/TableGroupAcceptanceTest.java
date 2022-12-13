@@ -12,13 +12,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -148,12 +147,11 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private Order 주문이_등록되어_있다(OrderTable orderTable) throws Exception {
+    private OrderRequest 주문이_등록되어_있다(OrderTable orderTable) throws Exception {
         메뉴그룹_등록(후라이드치킨_메뉴그룹);
         상품_등록(후라이드치킨_상품);
         메뉴_등록(후라이드치킨);
-        Order 주문 = new Order(null, orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Collections.singletonList(new OrderLineItem(1L, 1L, 1L, 1)));
+        OrderRequest 주문 = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
         주문_등록(주문);
         return 주문;
     }
@@ -166,7 +164,7 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private ResultActions 주문_등록(Order order) throws Exception {
+    private ResultActions 주문_등록(OrderRequest order) throws Exception {
         return mvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(order))
