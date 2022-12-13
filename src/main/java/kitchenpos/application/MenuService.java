@@ -37,7 +37,7 @@ public class MenuService {
         List<Product> products = productRepository.findAllById(menuProducts.toProductIds());
         boolean menuGroupNotExists = !menuGroupRepository.existsById(menu.getMenuGroupId());
 
-        menu.validate(menuValidator, products, menuGroupNotExists);
+        menuValidator.validate(menu, products, menuGroupNotExists);
 
         return menuRepository.save(menu);
     }

@@ -56,8 +56,4 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-
-    public void validate(MenuValidator menuValidator, List<Product> products, boolean menuGroupNotExists) {
-        menuValidator.validate(this, products, menuGroupNotExists);
-    }
 }
