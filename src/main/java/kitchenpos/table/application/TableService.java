@@ -40,32 +40,15 @@ public class TableService {
         OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         List<Order> savedOrders = orderDao.findAllByOrderTable(savedOrderTable);
-        boolean isBeforeComplete = savedOrders.stream().anyMatch(order -> order.getOrderStatus()
-                .equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name()));
-        if (isBeforeComplete) {
-            throw new IllegalArgumentException();
-        }
-        savedOrderTable.chnageEmpty(orderTable.isEmpty());
+        savedOrderTable.chnageEmpty(orderTable.isEmpty(),savedOrders);
         return orderTableDao.save(savedOrderTable);
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
         return orderTableDao.save(savedOrderTable);
     }
 }

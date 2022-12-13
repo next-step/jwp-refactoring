@@ -1,8 +1,10 @@
 package kitchenpos.table.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -80,7 +82,13 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (empty) {
+            throw new IllegalStateException();
+        }
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -88,7 +96,13 @@ public class OrderTable {
         return empty;
     }
 
-    public void chnageEmpty(final boolean empty) {
+    public void chnageEmpty(final boolean empty, List<Order> orders) {
+        boolean isBeforeComplete = orders.stream().anyMatch(order -> order.getOrderStatus()
+                .equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name()));
+        if (isBeforeComplete) {
+            throw new IllegalArgumentException();
+        }
+
         this.empty = empty;
     }
 }

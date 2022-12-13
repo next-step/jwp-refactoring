@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,35 +15,40 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup(){}
+    public TableGroup() {
+    }
 
-    private TableGroup(TableGroupBuilder builder){
+    private TableGroup(TableGroupBuilder builder) {
         this.id = builder.id;
         this.createdDate = builder.createdDate;
         this.orderTables = builder.orderTables;
     }
 
-    public static TableGroupBuilder builder(){
+    public static TableGroupBuilder builder() {
         return new TableGroupBuilder();
     }
 
-    public static class TableGroupBuilder{
+    public static class TableGroupBuilder {
         private Long id;
         private LocalDateTime createdDate;
         private List<OrderTable> orderTables;
-        public TableGroupBuilder id(Long id){
+
+        public TableGroupBuilder id(Long id) {
             this.id = id;
             return this;
         }
-        public TableGroupBuilder createDate(LocalDateTime createdDate){
+
+        public TableGroupBuilder createDate(LocalDateTime createdDate) {
             this.createdDate = createdDate;
             return this;
         }
-        public TableGroupBuilder orderTables(List<OrderTable> orderTables){
+
+        public TableGroupBuilder orderTables(List<OrderTable> orderTables) {
             this.orderTables = orderTables;
             return this;
         }
-        public TableGroup build(){
+
+        public TableGroup build() {
             return new TableGroup(this);
         }
     }

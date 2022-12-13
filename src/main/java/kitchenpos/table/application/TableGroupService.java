@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.persistence.OrderTableRepository;
@@ -52,11 +51,11 @@ public class TableGroupService {
 
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
+/*        for (final OrderTable savedOrderTable : savedOrderTables) {
             savedOrderTable.setTableGroup(savedTableGroup);
             savedOrderTable.chnageEmpty(false);
             orderTableDao.save(savedOrderTable);
-        }
+        }*/
         savedTableGroup.setOrderTables(savedOrderTables);
 
         return savedTableGroup;
