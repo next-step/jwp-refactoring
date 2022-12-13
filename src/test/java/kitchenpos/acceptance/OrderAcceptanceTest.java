@@ -174,7 +174,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
 
-        String orderStatus = OrderStatus.MEAL.name();
+        OrderStatus orderStatus = OrderStatus.MEAL;
         ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(orderStatus));
 
         주문_상태_변경됨(response, orderStatus);
@@ -187,7 +187,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문이 없으면 주문의 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusFail() {
-        OrderRequest 등록되지_않은_주문 = OrderRequest.from(OrderStatus.MEAL.name());
+        OrderRequest 등록되지_않은_주문 = OrderRequest.from(OrderStatus.MEAL);
 
         ExtractableResponse<Response> response = 주문_상태_변경_요청(0L, 등록되지_않은_주문);
 
@@ -206,11 +206,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
         List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
         OrderResponse 등록된_주문 = 주문_등록되어_있음(OrderRequest.of(주문_테이블.getId(), 주문_항목)).as(OrderResponse.class);
 
-        OrderResponse 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(OrderStatus.COMPLETION.name()))
+        OrderResponse 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(OrderStatus.COMPLETION))
                 .as(OrderResponse.class);
 
         ExtractableResponse<Response> response =
-                주문_상태_변경_요청(계산완료된_주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
+                주문_상태_변경_요청(계산완료된_주문.getId(), OrderRequest.from(OrderStatus.MEAL));
 
         주문_상태_변경_실패함(response);
     }
@@ -235,7 +235,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
+    private void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),

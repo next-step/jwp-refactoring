@@ -72,7 +72,7 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.getOrderStatus())) {
             throw new OrderStatusChangeException(ExceptionMessage.ORDER_STATUS_CHANGE);
         }
 
@@ -87,8 +87,8 @@ public class Order {
         return orderTable.getId();
     }
 
-    public String getOrderStatus() {
-        return orderStatus.name();
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {

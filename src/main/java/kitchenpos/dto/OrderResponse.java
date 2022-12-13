@@ -10,14 +10,14 @@ import kitchenpos.domain.OrderStatus;
 public class OrderResponse {
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
     private OrderResponse() {
     }
 
-    private OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
                           List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -47,7 +47,7 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

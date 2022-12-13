@@ -245,7 +245,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
 
         // And 주문 상태(식사) 변경되어 있음
-        OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
+        OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL));
 
         // When 단체 지정 취소 요청함
         ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());

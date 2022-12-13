@@ -168,11 +168,11 @@ class OrderServiceTest {
     void changeOrderStatus() {
         when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
 
-        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL.name());
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
+                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
         );
     }
 
@@ -181,7 +181,7 @@ class OrderServiceTest {
     void changeOrderStatusException() {
         when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.ORDER_NOT_FOUND);
     }
@@ -192,7 +192,7 @@ class OrderServiceTest {
         when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
         Long orderId = 계산완료_주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL.name()))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL))
                 .isInstanceOf(OrderStatusChangeException.class)
                 .hasMessageStartingWith(ExceptionMessage.ORDER_STATUS_CHANGE);
     }

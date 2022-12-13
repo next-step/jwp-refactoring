@@ -203,7 +203,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         OrderResponse 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(OrderResponse.class);
 
         // And 주문 상태(식사) 변경되어 있음
-        OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
+        OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL));
 
         // When 주문 테이블 빈 상태 변경 요청
         OrderTableRequest 변경할_주문_테이블 =

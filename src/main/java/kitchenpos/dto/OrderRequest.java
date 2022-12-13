@@ -5,13 +5,13 @@ import kitchenpos.domain.OrderStatus;
 
 public class OrderRequest {
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
     private OrderRequest() {
     }
 
-    private OrderRequest(Long orderTableId, String orderStatus, List<OrderLineItemRequest> orderLineItems) {
+    private OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
@@ -21,7 +21,7 @@ public class OrderRequest {
         return new OrderRequest(orderTableId, null, orderLineItems);
     }
 
-    public static OrderRequest from(String orderStatus) {
+    public static OrderRequest from(OrderStatus orderStatus) {
         return new OrderRequest(null, orderStatus, null);
     }
 
@@ -29,7 +29,7 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
