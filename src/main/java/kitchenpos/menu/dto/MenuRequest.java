@@ -31,6 +31,7 @@ public class MenuRequest {
                 .map(request -> request.toMenuProducts(menu, products))
                 .collect(Collectors.toList());
         menu.create(allMenuProducts);
+        menu.validatePrice();
 
         return menu;
     }

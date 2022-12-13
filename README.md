@@ -122,7 +122,7 @@ PUT /api/orders/{orderId}/order-status
 - Lombok없이 진행하기
 - 자바 코드 컨벤션 지키기
 ### 피드백
-- [ ] Menu - price 포장하기
+- [x] Menu - price 포장하기
 - [x] application 테스트 도메인 패키지 하위로 옮기기
 
 ## Step3 의존성 리팩터링

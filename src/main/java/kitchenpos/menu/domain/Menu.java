@@ -15,7 +15,8 @@ public class Menu {
 
     @Column(nullable = false, unique = true)
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
@@ -28,15 +29,12 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(MenuError.INVALID_PRICE);
-        }
         if (menuGroup == null) {
             throw new IllegalArgumentException(MenuError.REQUIRED_MENU_GROUP);
         }
 
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
         this.menuGroup = menuGroup;
     }
 
@@ -55,7 +53,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public MenuGroup getMenuGroup() {
