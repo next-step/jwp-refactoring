@@ -65,7 +65,7 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("테이블 그룹이 존재하지 않습니다.");
+            throw new IllegalArgumentException("테이블 그룹이 지정되어 있습니다.");
         }
 
         if (isNotCompletedOrders()) {

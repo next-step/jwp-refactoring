@@ -4,6 +4,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.repository.OrderRepository;
@@ -35,12 +36,12 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         List<OrderTable> orderTables = findOrderTables(request.getOrderTables());
 
-        TableGroup tableGroup = TableGroup.of(request.getId(), request.getOrderTables(), orderTables);
+        TableGroup tableGroup = TableGroup.of(request.getId(), orderTables, orderTables);
 
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
     }
 
-    private List<OrderTable> findOrderTables(final List<OrderTable> orderTables) {
+    private List<OrderTable> findOrderTables(final List<OrderTableRequest> orderTables) {
         List<Long> orderTableIds = mapToOrderTableIds(orderTables);
 
         validateOrderTableIds(orderTableIds);
@@ -57,9 +58,9 @@ public class TableGroupService {
         }
     }
 
-    private List<Long> mapToOrderTableIds(final List<OrderTable> orderTables) {
+    private List<Long> mapToOrderTableIds(final List<OrderTableRequest> orderTables) {
         return orderTables.stream()
-                .map(OrderTable::getId)
+                .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
     }
 

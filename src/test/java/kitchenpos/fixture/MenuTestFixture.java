@@ -6,10 +6,13 @@ import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트;
@@ -32,9 +35,13 @@ public class MenuTestFixture {
                 Arrays.asList(짜장면메뉴상품(), 탕수육메뉴상품(), 단무지메뉴상품()));
     }
 
-    public static Menu 메뉴_세트_생성(MenuRequest request) {
+    public static Menu 메뉴_세트_생성(MenuRequest request, long id) {
         List<MenuProduct> menuProducts = getMenuProducts(request.getName(), request.getPrice(), request.getMenuProducts());
-        return Menu.of(request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), MenuProducts.from(menuProducts));
+        Menu menu = Menu.of(request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), MenuProducts.from(menuProducts));
+        Field idField = Objects.requireNonNull(ReflectionUtils.findField(Menu.class, "id"));
+        ReflectionUtils.makeAccessible(idField);
+        ReflectionUtils.setField(idField, menu, id);
+        return menu;
     }
 
     private static List<MenuProduct> getMenuProducts(String name, BigDecimal price, final List<MenuProductRequest> menuProductRequests) {

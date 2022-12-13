@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.repository.MenuRepository;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.MenuTestFixture.*;
-import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
+import static kitchenpos.fixture.OrderLineItemTestFixture.*;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
 import static kitchenpos.fixture.OrderTestFixture.createOrder;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,8 +58,8 @@ class OrderServiceTest {
     private Menu 짬뽕_탕수육_1인_메뉴_세트;
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
-    private OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문;
-    private OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문;
+    private OrderLineItemRequest 짜장면_탕수육_1인_메뉴_세트주문;
+    private OrderLineItemRequest 짬뽕_탕수육_1인_메뉴_세트주문;
     private OrderRequest 주문1_요청;
     private OrderRequest 주문2_요청;
     private Order 주문1;
@@ -68,16 +69,16 @@ class OrderServiceTest {
     public void setUp() {
         짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
         짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
-        짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
-        짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청);
+        짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
+        짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청, 2L);
         주문테이블1 = 그룹_없는_주문테이블_생성(주문테이블1_요청());
         주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블2_요청());
-        짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
-        짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
+        짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItemRequest(1L, 1);
+        짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItemRequest(2L, 1);
         주문1_요청 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
         주문2_요청 = createOrder(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        주문1 = Order.of(주문테이블1, 주문1_요청.getOrderLineItems());
-        주문2 = Order.of(주문테이블2, 주문2_요청.getOrderLineItems());
+        주문1 = Order.of(주문테이블1, mapToEntity(주문1_요청.getOrderLineItems()));
+        주문2 = Order.of(주문테이블2, mapToEntity(주문2_요청.getOrderLineItems()));
     }
 
     @DisplayName("주문 생성 작업을 성공한다.")
@@ -161,7 +162,7 @@ class OrderServiceTest {
     void changeOrderWithException1() {
         // given
         OrderRequest 미등록_주문_요청 = createOrder(10L, null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        Order 미등록_주문 = Order.of(OrderTable.of(10L, null, 10, false), 미등록_주문_요청.getOrderLineItems());
+        Order 미등록_주문 = Order.of(OrderTable.of(10L, null, 10, false), mapToEntity(미등록_주문_요청.getOrderLineItems()));
         when(orderRepository.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then

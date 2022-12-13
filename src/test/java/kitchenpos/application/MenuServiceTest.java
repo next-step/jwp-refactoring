@@ -70,7 +70,7 @@ class MenuServiceTest {
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         짬뽕_탕수육_1인_메뉴_세트_요청 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
-        짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
+        짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
     }
 
     @DisplayName("메뉴 생성 작업을 성공한다.")
@@ -141,7 +141,7 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        List<Menu> menus = Arrays.asList(메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청), 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청));
+        List<Menu> menus = Arrays.asList(메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청, 1L), 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청, 2L));
         when(menuRepository.findAll()).thenReturn(menus);
 
         // when

@@ -2,6 +2,7 @@ package kitchenpos.fixture;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class TableGroupTestFixture {
 
-    public static TableGroupRequest createTableGroupRequest(List<OrderTable> orderTables) {
+    public static TableGroupRequest createTableGroupRequest(List<OrderTableRequest> orderTables) {
         return TableGroupRequest.of(null, null, orderTables);
     }
 

@@ -17,14 +17,21 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    private OrderLineItem(Order order, Long menuId, long quantity) {
-        this.order = order;
+    private OrderLineItem(Long menuId, long quantity) {
         this.menuId = menuId;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Order order, Long menuId, long quantity) {
-        return new OrderLineItem(order, menuId, quantity);
+    public static OrderLineItem of(Long menuId, long quantity) {
+        return new OrderLineItem(menuId, quantity);
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public void setOrder(final Order order) {
+        this.order = order;
     }
 
     public Order getOrder() {

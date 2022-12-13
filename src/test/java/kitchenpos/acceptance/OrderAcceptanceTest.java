@@ -24,7 +24,7 @@ import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuProductTestFixture.단무지메뉴상품;
 import static kitchenpos.fixture.MenuTestFixture.createMenu;
-import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
+import static kitchenpos.fixture.OrderLineItemTestFixture.*;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
 import static kitchenpos.fixture.OrderTestFixture.createOrder;
 import static kitchenpos.fixture.ProductTestFixture.*;
@@ -68,10 +68,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 등록된_메뉴(createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(), 짬뽕메뉴세트)).as(MenuResponse.class);
         주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, false)).as(OrderTableResponse.class);
         주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, false)).as(OrderTableResponse.class);
-        짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
-        짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
-        주문1 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
-        주문2 = createOrder(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(짜장면_탕수육_1인_메뉴_세트.getId(), 1);
+        짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
+        주문1 = createOrder(주문테이블1.getId(), null, null, mapToRequest(Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문)));
+        주문2 = createOrder(주문테이블2.getId(), null, null, mapToRequest(singletonList(짜장면_탕수육_1인_메뉴_세트주문)));
     }
 
     @DisplayName("주문을 생성한다.")

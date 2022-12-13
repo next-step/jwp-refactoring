@@ -19,10 +19,10 @@ class OrderTest {
         Long expectedTableId = 1L;
         MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
         MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
-        Menu 짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청);
-        Menu 짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청);
-        OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(null, 짜장면_탕수육_1인_메뉴_세트.getId(), 1);
-        OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(null, 짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
+        Menu 짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
+        Menu 짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청, 2L);
+        OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(짜장면_탕수육_1인_메뉴_세트.getId(), 1);
+        OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
         List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
 
         // when

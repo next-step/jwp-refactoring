@@ -34,19 +34,20 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        validateOrderLineItems(request.getOrderLineItems());
-
         Long orderTableId = request.getOrderTableId();
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException(orderTableId + "에 해당하는 주문테이블을 찾을 수가 없습니다."));
-
-        Order savedOrder = orderRepository.save(Order.of(orderTable, request.getOrderLineItems()));
+        List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
+                .map(orderLineItem -> OrderLineItem.of(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
+                .collect(Collectors.toList());
+        validateOrderLineItems(orderLineItems);
+        Order savedOrder = orderRepository.save(Order.of(orderTable, orderLineItems));
 
         return OrderResponse.from(savedOrder);
     }
 
     private void validateOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        if(Objects.isNull(orderLineItems)) {
+        if (Objects.isNull(orderLineItems)) {
             throw new IllegalArgumentException("요청정보에 orderLineItems가 존재하지 않습니다.");
         }
 

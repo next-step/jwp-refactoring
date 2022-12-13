@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class Order {
     private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
+    @JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
@@ -30,6 +32,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
     }
 
     public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
