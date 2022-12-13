@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
@@ -23,13 +23,13 @@ public class OrderCrudService {
     public static final String ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE = "주문 항목이 비어있을 수 없다.";
     public static final String ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE = "주문 항목의 수와 메뉴의 수는 같아야 한다.";
     public static final String ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "주문 테이블은 비어있을 수 없습니다.";
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
-    public OrderCrudService(final MenuDao menuDao, final OrderDao orderDao, final OrderLineItemDao orderLineItemDao, final OrderTableDao orderTableDao) {
-        this.menuDao = menuDao;
+    public OrderCrudService(final MenuRepository menuRepository, final OrderDao orderDao, final OrderLineItemDao orderLineItemDao, final OrderTableDao orderTableDao) {
+        this.menuRepository = menuRepository;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
@@ -47,7 +47,7 @@ public class OrderCrudService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuRepository.findAllById(menuIds).size()) {
             throw new IllegalArgumentException(ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
         }
 

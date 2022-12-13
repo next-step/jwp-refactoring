@@ -1,14 +1,18 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -36,7 +40,7 @@ class TableServiceTest extends ServiceTest {
     private OrderDao orderDao;
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Autowired
     private MenuGroupDao menuGroupDao;
@@ -177,7 +181,7 @@ class TableServiceTest extends ServiceTest {
 
     private Order createOrder() {
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
-        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
         OrderTable orderTable = orderTableDao.save(new OrderTable());
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));

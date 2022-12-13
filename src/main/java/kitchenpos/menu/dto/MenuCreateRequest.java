@@ -1,5 +1,7 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 
@@ -21,7 +23,7 @@ public class MenuCreateRequest {
     }
 
     public Menu toMenu() {
-        return new Menu(this.name, this.price, this.menuGroupId);
+        return new Menu(new Name(this.name), new Price(this.price), this.menuGroupId, this.menuProducts);
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -34,5 +36,9 @@ public class MenuCreateRequest {
 
     public BigDecimal getPrice() {
         return this.price;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

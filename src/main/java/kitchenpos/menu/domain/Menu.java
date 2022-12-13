@@ -1,35 +1,56 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Menu {
     public static final String MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "메뉴 그룹이 없을 수 없습니다.";
     public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
-    public static final String PRICE_NEGATIVE_EXCEPTION_MESSAGE = "가격은 필수입니다.";
-    private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    public static final String MENU_PRICE_EXCEPTION_MESSAGE = "메뉴의 가격이 메뉴 상품의 합보다 클 수 없다.";
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Name name;
+    @Embedded
+    private Price price;
+    private Long menuGroupId;
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
+
+    public Menu(Name name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         if (Objects.isNull(menuGroupId)) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
         if (Objects.isNull(price)) {
             throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
         }
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(PRICE_NEGATIVE_EXCEPTION_MESSAGE);
+        BigDecimal sum = BigDecimal.ZERO;
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException("메뉴 상품이 없습니다.");
+        }
+        for (final MenuProduct menuProduct : menuProducts) {
+            sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+
+        if (price.getPrice().compareTo(sum) > 0) {
+            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
         }
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
+        this.menuProducts.addAll(menuProducts);
     }
 
-    public Menu(long id, String name, BigDecimal price, long menuGroupId) {
+    public Menu(long id, Name name, Price price, long menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -44,22 +65,6 @@ public class Menu {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
     }
@@ -68,11 +73,15 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+    public String getName() {
+        return this.name.getName();
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public BigDecimal getPrice() {
+        return this.price.getPrice();
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return this.menuProducts.getMenuProducts();
     }
 }

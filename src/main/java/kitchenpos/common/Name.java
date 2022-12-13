@@ -38,4 +38,8 @@ public class Name {
             throw new IllegalArgumentException(NAME_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
     }
+
+    public String getName() {
+        return this.name;
+    }
 }

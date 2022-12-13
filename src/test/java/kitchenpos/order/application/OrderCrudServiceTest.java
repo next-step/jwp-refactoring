@@ -1,16 +1,17 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -37,7 +38,7 @@ class OrderCrudServiceTest extends ServiceTest {
     private OrderCrudService orderCrudService;
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Autowired
     private OrderDao orderDao;
@@ -61,7 +62,9 @@ class OrderCrudServiceTest extends ServiceTest {
     void setUp() {
 
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("A"));
-        menu = menuDao.save(new Menu("A", BigDecimal.valueOf(2), menuGroup.getId()));
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.valueOf(2))), 1L));
+        menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup.getId(), menuProducts));
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable());
@@ -72,7 +75,7 @@ class OrderCrudServiceTest extends ServiceTest {
 
         OrderTable orderTable1 = orderTableDao.save(orderTable);
         orderTableId = orderTable1.getId();
-        orderCrudService = new OrderCrudService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+        orderCrudService = new OrderCrudService(menuRepository, orderDao, orderLineItemDao, orderTableDao);
     }
 
     @DisplayName("주문을 생성한다. / 주문 항목이 비어있을 수 없다.")

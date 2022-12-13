@@ -1,16 +1,20 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
+import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -22,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.order.application.OrderStatusService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
@@ -42,7 +47,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private MenuGroupDao menuGroupDao;
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Autowired
     private TableGroupDao tableGroupDao;
@@ -59,7 +64,7 @@ class OrderStatusServiceTest extends ServiceTest {
     void setUp() {
 
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
-        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
+        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
 
         OrderTable orderTable1 = orderTableDao.save(new OrderTable());
         OrderTable orderTable2 = orderTableDao.save(new OrderTable());
