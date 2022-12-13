@@ -40,13 +40,17 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
+        validateGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateGuests(int numberOfGuests){
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
-        if (empty) {
+        if (isEmpty()) {
             throw new IllegalArgumentException();
         }
-        this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
@@ -54,20 +58,23 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty, List<Order> orders) {
-        boolean isBeforeComplete = orders.stream().anyMatch(order -> order.getOrderStatus()
-                .equals(OrderStatus.COOKING) || order.getOrderStatus().equals(OrderStatus.MEAL));
-        if (isBeforeComplete) {
-            throw new IllegalArgumentException();
-        }
+        validateTableGroup();
+        orders.forEach(order -> order.validateComplete());
         this.empty = empty;
     }
 
-    public static OrderTableBuilder builder() {
-        return new OrderTableBuilder();
+    private void validateTableGroup(){
+        if(Objects.nonNull(tableGroup)){
+            throw new IllegalArgumentException();
+        }
     }
 
     public void ungroup() {
         this.tableGroup = null;
+    }
+
+    public static OrderTableBuilder builder() {
+        return new OrderTableBuilder();
     }
 
     public static class OrderTableBuilder {

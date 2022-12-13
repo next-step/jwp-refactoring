@@ -69,6 +69,12 @@ public class Order {
         return new OrderBuilder();
     }
 
+    public void validateComplete() {
+        if(orderStatus.equals(OrderStatus.MEAL) || orderStatus.equals(OrderStatus.COOKING)){
+            throw new IllegalArgumentException();
+        }
+    }
+
     public static class OrderBuilder {
         private Long id;
         private OrderTable orderTable;
