@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,111 +19,48 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private ProductRepository productRepository;
     @Mock
-    private ProductDao productDao;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
-
-    @DisplayName("메뉴 등록 API - 가격 없음")
-    @Test
-    void create_price_null() {
-        // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", null, 1L, Collections.singletonList(menuProduct));
-
-        // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴 등록 API - 가격 0원")
-    @Test
-    void create_price_zero() {
-        // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", BigDecimal.ZERO, 1L, Collections.singletonList(menuProduct));
-
-        // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴 등록 API - 메뉴 그룹 존재 하지 않음")
-    @Test
-    void create_menu_group_not_exists() {
-        // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(false);
-
-        // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴 등록 API - 메뉴 상품 존재 하지 않음")
-    @Test
-    void create_product_not_exists() {
-        // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴 등록 API - 메뉴 상품 가격, 상품 가격 합계 초과")
-    @Test
-    void create_product_price_invalid() {
-        // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        Product savedProduct = savedProduct(1L, new BigDecimal(5000));
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(savedProduct));
-
-        // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 
     @DisplayName("메뉴 등록 API")
     @Test
     void create() {
         // given
         MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        Product savedProduct = savedProduct(1L, new BigDecimal(10000));
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(savedProduct));
-        Menu savedMenu = savedMenu(1L, menu);
-        given(menuDao.save(menu)).willReturn(savedMenu);
-        MenuProduct savedMenuProduct = savedMenuProduct(1L, menu.getId(), menuProduct);
-        given(menuProductDao.save(menuProduct)).willReturn(savedMenuProduct);
+        Menu menuParam = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
+
+        given(menuGroupRepository.existsById(menuParam.getMenuGroupId())).willReturn(true);
+        List<Product> savedProducts = Collections.singletonList(savedProduct(1L, new BigDecimal(10000)));
+
+        given(productRepository.findAllById(anyList())).willReturn(savedProducts);
+        doNothing().when(menuValidator).validate(menuParam, savedProducts, false);
+
+        MenuProduct savedMenuProduct = savedMenuProduct(1L, menuProduct);
+        Menu savedMenu = savedMenu(1L, menuParam.getName(), menuParam.getPrice(), menuParam.getMenuGroupId(),
+            Collections.singletonList(savedMenuProduct));
+        given(menuRepository.save(menuParam)).willReturn(savedMenu);
 
         // when
-        Menu actual = menuService.create(menu);
+        Menu actual = menuService.create(menuParam);
 
         // then
         assertAll(
@@ -139,11 +75,13 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        Menu savedMenu = savedMenu(1L, "메뉴", new BigDecimal(13000), 1L);
-        given(menuDao.findAll()).willReturn(Arrays.asList(savedMenu));
-        MenuProduct menuProduct1 = savedMenuProduct(1L, savedMenu.getId(), 1L, 2L);
-        MenuProduct menuProduct2 = savedMenuProduct(2L, savedMenu.getId(), 2L, 3L);
-        given(menuProductDao.findAllByMenuId(savedMenu.getId())).willReturn(Arrays.asList(menuProduct1, menuProduct2));
+        Long menuId = 1L;
+        MenuProduct menuProduct1 = savedMenuProduct(1L, 1L, 2L);
+        MenuProduct menuProduct2 = savedMenuProduct(2L, 2L, 3L);
+        List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
+
+        Menu savedMenu = savedMenu(menuId, "메뉴", BigDecimal.valueOf(13000), 1L, menuProducts);
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(savedMenu));
 
         // when
         List<Menu> menus = menuService.list();
