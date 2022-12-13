@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import java.util.List;
 import java.util.Optional;
 
-public interface MenuProductDao {
+public interface MenuProductRepository {
     MenuProduct save(MenuProduct entity);
 
     Optional<MenuProduct> findById(Long id);
