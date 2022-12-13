@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.application;
+package kitchenpos.menu.application;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;

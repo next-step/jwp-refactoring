@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order,Long> {
     List<Order> findAllByOrderTable(OrderTable orderTable);
+
+    List<Order> findAllByOrderTableIn(List<OrderTable> orderTables);
 }
