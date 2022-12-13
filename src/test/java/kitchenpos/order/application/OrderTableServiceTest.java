@@ -27,12 +27,10 @@ public class OrderTableServiceTest {
     @InjectMocks
     private OrderTableService orderTableService;
     private OrderTable orderTable;
-    private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
-        tableGroup = TableGroup.of(1L, LocalDateTime.now());
-        orderTable = OrderTable.of(1L, tableGroup, 4, false);
+        orderTable = OrderTable.of(1L, null, 4, false);
     }
 
     @Test
@@ -65,6 +63,9 @@ public class OrderTableServiceTest {
     @Test
     @DisplayName("주문 테이블 비울 때 주문 테이블이 이미 단체 지정됐을 경우 Exception")
     public void throwExceptionWhenOrderTableToBeEmptyWasAlreadyGrouped() {
+        TableGroup tableGroup = TableGroup.of();
+        tableGroup.addOrderTable(orderTable);
+
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), orderTable))

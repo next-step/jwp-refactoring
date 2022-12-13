@@ -32,14 +32,6 @@ public class OrderTableService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public OrderTable findOrderTableThrowIfEmpty(Long orderTableId) {
-        OrderTable orderTable = findOrderTable(orderTableId);
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        return orderTable;
-    }
-
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
     }
@@ -47,7 +39,9 @@ public class OrderTableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        savedOrderTable.throwIfTableGroupExist();
+        if(savedOrderTable.isInTableGroup()){
+            throw new IllegalArgumentException();
+        }
         throwIfOrderTableInProgress(savedOrderTable);
         savedOrderTable.setEmpty(orderTable.isEmpty());
         return savedOrderTable;
@@ -55,9 +49,8 @@ public class OrderTableService {
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-        final OrderTable savedOrderTable = findOrderTableThrowIfEmpty(orderTableId);
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
         return savedOrderTable;
     }
 

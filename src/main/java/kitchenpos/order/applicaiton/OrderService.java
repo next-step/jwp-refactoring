@@ -11,16 +11,14 @@ import java.util.List;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableService orderTableService;
 
     public OrderService(
-            MenuRepository menuRepository, final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
-            OrderTableService orderTableService) {
+            final MenuRepository menuRepository,
+            final OrderRepository orderRepository,
+            final OrderTableService orderTableService) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableService = orderTableService;
     }
 

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
+import java.nio.file.Path;
 import java.util.Objects;
 
 @Entity
@@ -54,6 +55,9 @@ public class OrderTable {
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         checkValidNumberOfGuests(numberOfGuests);
+        if(this.empty){
+            throw new IllegalArgumentException();
+        }
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -75,5 +79,13 @@ public class OrderTable {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean canBeAddedToTableGroup() {
+        return this.isEmpty() && Objects.isNull(this.getTableGroup());
+    }
+
+    public boolean isInTableGroup() {
+        return Objects.nonNull(this.tableGroup);
     }
 }

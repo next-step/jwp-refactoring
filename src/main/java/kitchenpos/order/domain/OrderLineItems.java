@@ -29,10 +29,6 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return Collections.unmodifiableList(orderLineItems);
-    }
-
     public void addItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
