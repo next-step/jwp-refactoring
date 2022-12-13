@@ -52,7 +52,7 @@ public class MenuRestAssured {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/products")
+                .when().get("/api/menus")
                 .then().log().all()
                 .extract();
     }
