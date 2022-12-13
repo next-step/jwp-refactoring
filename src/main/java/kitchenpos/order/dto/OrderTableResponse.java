@@ -3,7 +3,6 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.OrderTable;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -15,21 +14,19 @@ public class OrderTableResponse {
 
     public OrderTableResponse() {}
 
-    public OrderTableResponse(OrderTable orderTable) {
-        this.id = orderTable.getId();
-        if (Objects.nonNull(orderTable.getTableGroup())) {
-            this.tableGroupId = orderTable.getTableGroup().getId();
-        }
-        this.numberOfGuests = orderTable.getNumberOfGuests();
-        this.empty = orderTable.isEmpty();
+    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable);
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> list(List<OrderTable> orderTables) {
-        return orderTables.stream().map(OrderTableResponse::new).collect(toList());
+        return orderTables.stream().map(OrderTableResponse::of).collect(toList());
     }
 
     public Long getId() {

@@ -12,33 +12,21 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
 
     }
 
-    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
+    private TableGroup(Long id) {
+        this.id = id;
     }
 
-    public void addOrderTable(OrderTable orderTable) {
-        this.orderTables.addOrderTable(this, orderTable);
-    }
-
-    public void group(List<OrderTable> target) {
-        orderTables.group(this, target);
+    public static TableGroup of(Long id) {
+        return new TableGroup(id);
     }
 
     public void ungroup(List<Order> orders) {
         orders.forEach(Order::checkOngoingOrderTable);
-        this.orderTables.ungroup();
-    }
-
-    public List<Long> getOrderTableIds() {
-        return orderTables.getOrderTableIds();
     }
 
     public Long getId() {
@@ -47,9 +35,5 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
     }
 }

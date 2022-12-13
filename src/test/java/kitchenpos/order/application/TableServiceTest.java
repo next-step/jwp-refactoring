@@ -114,9 +114,11 @@ class TableServiceTest {
         // given
         ReflectionTestUtils.setField(주문테이블1, "empty", true);
         ReflectionTestUtils.setField(주문테이블2, "empty", true);
-        단체테이블.group(Arrays.asList(주문테이블1, 주문테이블2));
+        OrderTables orderTables = OrderTables.of(Arrays.asList(주문테이블1, 주문테이블2));
+        orderTables.group(단체테이블.getId());
 
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        when(orderRepository.findAllByOrderTableId(any())).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(() ->
             tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))

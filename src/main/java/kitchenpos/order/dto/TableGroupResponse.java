@@ -6,24 +6,24 @@ import java.util.List;
 
 public class TableGroupResponse {
     private Long id;
-    private List<Long> orderTables;
+    private List<OrderTableResponse> orderTables;
 
     public TableGroupResponse() {}
 
-    public TableGroupResponse(TableGroup tableGroup) {
+    public TableGroupResponse(TableGroup tableGroup, List<OrderTableResponse> orderTableResponses) {
         this.id = tableGroup.getId();
-        this.orderTables = tableGroup.getOrderTableIds();
+        this.orderTables = orderTableResponses;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup);
+    public static TableGroupResponse of(TableGroup tableGroup, List<OrderTableResponse> orderTableResponses) {
+        return new TableGroupResponse(tableGroup, orderTableResponses);
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<Long> getOrderTables() {
+    public List<OrderTableResponse> getOrderTables() {
         return orderTables;
     }
 }
