@@ -8,11 +8,10 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.ordertable.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,10 +24,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -58,7 +57,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블_목록을_조회할_수_있다() {
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(firstTable, secondTable));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(firstTable, secondTable));
 
         List<OrderTable> orderTables = tableService.list();
 
@@ -69,8 +68,8 @@ public class TableServiceTest {
     @Test
     void 주문_테이블_이용_여부를_변경할_수_있다() {
         OrderTable expected = new OrderTable(1L, null, 0, false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
-        given(orderTableDao.save(firstTable)).willReturn(firstTable);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(firstTable));
+        given(orderTableRepository.save(firstTable)).willReturn(firstTable);
 
         OrderTable changeOrderTable = tableService.changeEmpty(1L, expected);
 
@@ -80,7 +79,7 @@ public class TableServiceTest {
     @Test
     void 단체_테이블에_지정되어_있으면_주문_테이블을_변경할_수_없다() {
         firstTable.setTableGroupId(1L);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(firstTable));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -89,8 +88,8 @@ public class TableServiceTest {
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
         List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, orderStatus)).willReturn(true);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(firstTable));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, orderStatus)).willReturn(true);
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -100,8 +99,8 @@ public class TableServiceTest {
     void 주문_테이블의_손님_수를_변경할_수_있다() {
         OrderTable expected = new OrderTable(1L, null, 5, false);
         firstTable.setEmpty(false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
-        given(orderTableDao.save(firstTable)).willReturn(firstTable);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(firstTable));
+        given(orderTableRepository.save(firstTable)).willReturn(firstTable);
 
         OrderTable changeOrderTable = tableService.changeNumberOfGuests(1L, expected);
 
@@ -119,7 +118,7 @@ public class TableServiceTest {
     @Test
     void 주문_테이블이_빈_테이블이면_손님_수를_변경할_수_없다() {
         firstTable.setEmpty(true);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(firstTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(firstTable));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
