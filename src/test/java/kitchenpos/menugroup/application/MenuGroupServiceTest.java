@@ -46,14 +46,14 @@ public class MenuGroupServiceTest {
     void create() {
         // given
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(식사);
-        MenuGroupRequest 식사_생성_요청_객체 = 메뉴그룹_생성_요청_객체_생성(식사.getName());
+        MenuGroupRequest 식사_생성_요청_객체 = 메뉴그룹_생성_요청_객체_생성(식사.getNameValue());
 
         // when
         MenuGroupResponse 등록된_식사 = menuGroupService.create(식사_생성_요청_객체);
 
         // then
         assertThat(등록된_식사.getId()).isEqualTo(식사.getId());
-        assertThat(등록된_식사.getName()).isEqualTo(식사.getName());
+        assertThat(등록된_식사.getName()).isEqualTo(식사.getNameValue());
     }
 
     @Test

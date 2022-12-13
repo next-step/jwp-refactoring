@@ -78,7 +78,7 @@ public class MenuServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.of(소머리국밥));
         when(menuRepository.save(any(Menu.class))).thenReturn(소머리국밥_메뉴);
         MenuProductRequest productRequest = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);
-        MenuRequest 메뉴_생성_요청_객체 = 메뉴_생성_요청_객체_생성(소머리국밥_메뉴.getName(), 소머리국밥_메뉴.getPrice(), 식사.getId(), Arrays.asList(productRequest));
+        MenuRequest 메뉴_생성_요청_객체 = 메뉴_생성_요청_객체_생성(소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceVale(), 식사.getId(), Arrays.asList(productRequest));
 
         // when
         MenuResponse 소머리국밥_메뉴_생성_결과 = menuService.create(메뉴_생성_요청_객체);

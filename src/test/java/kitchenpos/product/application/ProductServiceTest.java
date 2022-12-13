@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -49,15 +48,15 @@ public class ProductServiceTest {
     void create() {
         // given
         when(productRepository.save(any(Product.class))).thenReturn(미역국);
-        ProductRequest 미역국_생성_요청_객체 = 상품_생성_요청_객체_생성(미역국.getName(), 미역국.getPrice());
+        ProductRequest 미역국_생성_요청_객체 = 상품_생성_요청_객체_생성(미역국.getNameValue(), 미역국.getPriceVale());
 
         // when
         ProductResponse 등록된_미역국 = productService.create(미역국_생성_요청_객체);
 
         // then
         assertThat(등록된_미역국.getId()).isEqualTo(미역국.getId());
-        assertThat(등록된_미역국.getName()).isEqualTo(미역국.getName());
-        assertThat(등록된_미역국.getPrice()).isEqualTo(미역국.getPrice());
+        assertThat(등록된_미역국.getName()).isEqualTo(미역국.getNameValue());
+        assertThat(등록된_미역국.getPrice()).isEqualTo(미역국.getPriceVale());
     }
 
     @Test

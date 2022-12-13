@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -26,47 +29,36 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
-    public MenuProduct() {}
+    protected MenuProduct() {}
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = Quantity.from(quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
     public Menu getMenu() {
         return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
+    public long getQuantityValue() {
+        return quantity.value();
     }
 
     public Long getMenuId() {
@@ -76,6 +68,15 @@ public class MenuProduct {
     public Long getProductId() {
         return product.getId();
     }
+
+    public Price getProductPriceTotal() {
+        return product.getPrice().multiply(this.quantity);
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
 
     public static class Builder {
 

@@ -19,8 +19,8 @@ public class ProductResponseTest {
     public static ProductResponse 상품_응답_객체_생성(Product product) {
         return new ProductResponse.Builder()
                 .id(product.getId())
-                .name(product.getName())
-                .price(product.getPrice())
+                .name(product.getNameValue())
+                .price(product.getPriceVale())
                 .build();
     }
 

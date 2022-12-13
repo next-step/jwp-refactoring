@@ -25,6 +25,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -37,8 +38,8 @@ import org.springframework.http.MediaType;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private Product 소머리국밥;
-    private Product 순대국밥;
+    private ProductResponse 소머리국밥;
+    private ProductResponse 순대국밥;
     private MenuGroup 식사;
     private MenuResponse 소머리국밥_메뉴;
     private MenuResponse 순대국밥_메뉴;
@@ -50,8 +51,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        소머리국밥 = 상품_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000)).as(Product.class);
-        순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(Product.class);
+        소머리국밥 = 상품_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000)).as(ProductResponse.class);
+        순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(ProductResponse.class);
         식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroup.class);
 
         MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);

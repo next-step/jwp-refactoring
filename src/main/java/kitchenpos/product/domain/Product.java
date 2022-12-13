@@ -2,33 +2,40 @@ package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
 @Entity
-@Table(name = "PRODUCT")
+@Table(name = "product")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
 
-    public Product() {}
+    @Embedded
+    private Name name;
+
+    @Embedded
+    private Price price;
+
+    protected Product() {}
 
     public Product(Long id, String name, BigDecimal price) {
         validatePrice(price);
 
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = Name.from(name);
+        this.price = Price.from(price);
     }
 
-    private void validatePrice(BigDecimal price){
+    private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
@@ -38,24 +45,20 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public String getNameValue() {
+        return name.value();
+    }
+
+    public BigDecimal getPriceVale() {
+        return price.value();
     }
 
     public static class Builder {

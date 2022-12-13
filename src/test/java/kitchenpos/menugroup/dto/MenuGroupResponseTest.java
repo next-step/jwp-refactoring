@@ -17,7 +17,7 @@ public class MenuGroupResponseTest {
     public static MenuGroupResponse 메뉴그룹_응답_객체_생성(MenuGroup menuGroup) {
         return new MenuGroupResponse.Builder()
                 .id(menuGroup.getId())
-                .name(menuGroup.getName())
+                .name(menuGroup.getNameValue())
                 .build();
     }
 

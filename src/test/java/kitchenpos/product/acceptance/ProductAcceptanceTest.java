@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,15 @@ import org.springframework.http.MediaType;
 @DisplayName("상품 관련 기능")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
-    private Product 소머리국밥;
-    private Product 순대국밥;
+    private ProductResponse 소머리국밥;
+    private ProductResponse 순대국밥;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        소머리국밥 = 상품_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000)).as(Product.class);
-        순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(Product.class);
+        소머리국밥 = 상품_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000)).as(ProductResponse.class);
+        순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(ProductResponse.class);
     }
 
 
