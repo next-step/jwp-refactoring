@@ -112,9 +112,8 @@
 * [x] 요구사항 정의
 * [x] 패키기 구조 변경
 * [x] jpa 종속성 추가
-* [ ] 도메인을 Entity화
+* [x] 도메인을 Entity화
 * [ ] Service에서 DAO대신 Repository로 사용으로 변경
 * [ ] Service에서 DAO 제거
 * [ ] Service test를 Repository 사용으로 변경
 * [ ] 종속성 관계 추가
-
