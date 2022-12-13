@@ -20,6 +20,7 @@ import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.exception.MenuPriceGreaterThanAmountException;
@@ -117,7 +118,8 @@ class MenuServiceTest {
         when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴그룹_없는_메뉴요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.MENU_GROUP_NOT_FOUND);
     }
 
     @DisplayName("상품에 등록되지 않은 메뉴 상품으로 메뉴를 생성 시 예외가 발생한다.")
@@ -127,7 +129,8 @@ class MenuServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.PRODUCT_NOT_FOUND);
     }
 
     @DisplayName("메뉴의 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성 시 예외가 발생한다.")

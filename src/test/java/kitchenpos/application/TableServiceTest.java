@@ -16,6 +16,7 @@ import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.exception.CannotChangeEmptyException;
 import kitchenpos.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidNumberOfGuestsSize;
 import org.assertj.core.api.Assertions;
@@ -79,7 +80,8 @@ class TableServiceTest {
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
     }
 
     @DisplayName("단체 지정된 주문 테이블의 빈 상태를 변경할 수 없다.")
@@ -149,7 +151,8 @@ class TableServiceTest {
         OrderTable orderTable = OrderTable.of(orderTableId, 4, 비어있지않은_주문_테이블.isEmpty());
         int numberOfGuests = orderTable.getNumberOfGuests();
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
     }
 
     @DisplayName("등록된 주문 테이블이 빈 상태이면 방문한 손님 수를 변경할 수 없다.")

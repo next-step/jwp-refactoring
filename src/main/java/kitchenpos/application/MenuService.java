@@ -11,6 +11,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.ExceptionMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,11 +55,11 @@ public class MenuService {
 
     private Product findProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
     }
 
     private MenuGroup findMenuGroupById(Long id) {
         return menuGroupRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.MENU_GROUP_NOT_FOUND));
     }
 }

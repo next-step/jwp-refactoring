@@ -21,6 +21,7 @@ import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.exception.CannotGroupOrderTablesException;
 import kitchenpos.exception.CannotUnGroupOrderTablesException;
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,7 +81,8 @@ class TableGroupServiceTest {
         TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId()));
 
         Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
     }
 
     @DisplayName("단체 지정할 주문 테이블이 등록된 주문 테이블이 아니면 단체 지정을 할 수 없다.")
@@ -89,7 +91,8 @@ class TableGroupServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> tableGroupService.create(단체지정요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
     }
 
     @DisplayName("등록된 주문 테이블 하나라도 빈 테이블이 아니면 단체 지정을 할 수 없다.")

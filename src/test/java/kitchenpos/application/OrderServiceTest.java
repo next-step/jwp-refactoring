@@ -26,6 +26,7 @@ import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.EmptyOrderTableException;
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.OrderStatusChangeException;
 import org.assertj.core.api.Assertions;
@@ -111,7 +112,8 @@ class OrderServiceTest {
     @Test
     void createException() {
         Assertions.assertThatThrownBy(() -> orderService.create(주문항목_없는_주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
     }
 
     @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문 생성 시 예외가 발생한다.")
@@ -120,7 +122,8 @@ class OrderServiceTest {
         when(menuRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.create(메뉴등록_안된_주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.MENU_NOT_FOUND);
     }
 
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
@@ -130,7 +133,8 @@ class OrderServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성 시 예외가 발생한다.")
@@ -178,7 +182,8 @@ class OrderServiceTest {
         when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.ORDER_NOT_FOUND);
     }
 
     @DisplayName("주문 상태가 계산 완료이면 주문의 상태 변경 시 예외가 발생한다.")
