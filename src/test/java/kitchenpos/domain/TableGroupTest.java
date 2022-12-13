@@ -16,7 +16,7 @@ class TableGroupTest {
         // when
         OrderTable 주문테이블1 = 그룹_없는_주문테이블_생성(주문테이블(null, null, 10, true));
         OrderTable 주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블(null, null, 20, true));
-        TableGroup 단체1 = TableGroup.of(Arrays.asList(주문테이블1, 주문테이블2), Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroup 단체1 = TableGroup.of(Arrays.asList(주문테이블1, 주문테이블2));
 
         // then
         assertAll(

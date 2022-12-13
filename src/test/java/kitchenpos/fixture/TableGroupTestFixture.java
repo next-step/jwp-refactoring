@@ -18,9 +18,6 @@ public class TableGroupTestFixture {
         return TableGroup.of(Arrays.asList(
                 OrderTable.of(null, 10, true),
                 OrderTable.of(null, 10, true)
-        ), Arrays.asList(
-                OrderTable.of(null, 10, true),
-                OrderTable.of(null, 10, true)
         ));
     }
 }

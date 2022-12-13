@@ -54,13 +54,13 @@ public class OrderService {
 
     private void validateOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
         if (Objects.isNull(orderLineItems)) {
-            throw new IllegalArgumentException("요청정보에 orderLineItems가 존재하지 않습니다.");
+            throw new IllegalArgumentException("요청정보에 주문정보가 존재하지 않습니다.");
         }
 
         final List<Long> menuIds = mapToMenuIds(orderLineItems);
 
         if (orderLineItems.size() != countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문정보 중 존재하지 않는 메뉴 정보가 있습니다.");
         }
     }
 
@@ -83,7 +83,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(orderId + "에 대한 주문을 찾을 수 없습니다."));
 
         savedOrder.changeOrderStatus(order.getOrderStatus());
 

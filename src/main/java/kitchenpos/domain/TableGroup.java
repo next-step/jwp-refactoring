@@ -28,25 +28,18 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public static TableGroup of(List<OrderTable> requestOrderTables, List<OrderTable> savedOrderTables) {
-        validateOrderTables(requestOrderTables, savedOrderTables);
+    public static TableGroup of(List<OrderTable> savedOrderTables) {
+        validateOrderTables(savedOrderTables);
 
         return new TableGroup(LocalDateTime.now(), savedOrderTables);
     }
 
-    private static void validateOrderTables(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
-        validateOrderTable(requestOrderTables, savedOrderTables);
-        validateIsCreatableTableGroup(requestOrderTables, savedOrderTables);
+    private static void validateOrderTables(final List<OrderTable> savedOrderTables) {
+        validateIsCreatableTableGroup(savedOrderTables);
     }
 
-    private static void validateOrderTable(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
-        if(requestOrderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private static void validateIsCreatableTableGroup(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
-        if (CollectionUtils.isEmpty(requestOrderTables) || requestOrderTables.size() < 2) {
+    private static void validateIsCreatableTableGroup(final List<OrderTable> savedOrderTables) {
+        if (CollectionUtils.isEmpty(savedOrderTables) || savedOrderTables.size() < 2) {
             throw new IllegalArgumentException("그룹을 지정하기 위해서는 주문테이블이 2개 이상 필요합니다.");
         }
 

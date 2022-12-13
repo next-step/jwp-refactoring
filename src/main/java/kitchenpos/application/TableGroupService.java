@@ -34,11 +34,18 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        List<OrderTable> orderTables = findOrderTables(request.getOrderTables());
-
-        TableGroup tableGroup = TableGroup.of(orderTables, orderTables);
+        List<OrderTableRequest> orderTablesRequest = request.getOrderTables();
+        List<OrderTable> orderTables = findOrderTables(orderTablesRequest);
+        validateOrderTable(orderTables.size(), request.getOrderTables().size());
+        TableGroup tableGroup = TableGroup.of(orderTables);
 
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
+    }
+
+    private static void validateOrderTable(final int countOfOrderTableRequest, final int countOfOrderTable) {
+        if(countOfOrderTableRequest != countOfOrderTable) {
+            throw new IllegalArgumentException("존재하지 않는 주문테이블 정보가 포함되어 있습니다.");
+        }
     }
 
     private List<OrderTable> findOrderTables(final List<OrderTableRequest> orderTables) {
@@ -54,7 +61,7 @@ public class TableGroupService {
                 orderRepository.findAllByOrderStatusInAndOrderTableIdIn(OrderStatus.onGoingOrderStatus(), orderTableIds);
 
         if (!orders.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문상태가 완료되지 않은 주문이 포함되어 있습니다.");
         }
     }
 
