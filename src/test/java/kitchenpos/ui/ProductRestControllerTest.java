@@ -19,8 +19,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,7 +30,7 @@ class ProductRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @DisplayName("상품을 등록한다")
     @Test
@@ -47,7 +47,7 @@ class ProductRestControllerTest {
             .andExpect(jsonPath("$.price").value(product.getPrice().intValue()))
             .andReturn();
 
-        assertThat(productDao.findById(getId(result))).isNotEmpty();
+        assertThat(productRepository.findById(getId(result))).isNotEmpty();
     }
 
     @DisplayName("전체 상품을 조회한다")

@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,7 +29,7 @@ class MenuGroupRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @DisplayName("메뉴그룹을 등록한다")
     @Test
@@ -45,7 +45,7 @@ class MenuGroupRestControllerTest {
             .andExpect(jsonPath("$.name").value(group.getName()))
             .andReturn();
 
-        assertThat(menuGroupDao.findById(getId(result))).isNotEmpty();
+        assertThat(menuGroupRepository.findById(getId(result))).isNotEmpty();
     }
 
     @DisplayName("전체 메뉴그룹을 조회한다")

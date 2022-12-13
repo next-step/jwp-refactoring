@@ -1,13 +1,24 @@
 package kitchenpos.domain;
 
+import static javax.persistence.GenerationType.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+@Entity
 public class Menu {
+    @GeneratedValue(strategy = IDENTITY)
+    @Id
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
+    @Transient
     private List<MenuProduct> menuProducts;
 
     public Menu() {

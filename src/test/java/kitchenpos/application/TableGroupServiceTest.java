@@ -17,17 +17,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -43,7 +43,7 @@ class TableGroupServiceTest {
     @DisplayName("단체지정하려는 주문테이블은 등록되어있어야 한다")
     @Test
     void group2() {
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Collections.emptyList());
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(
             () -> tableGroupService.create(new TableGroup(asList(new OrderTable(), new OrderTable()))))
@@ -54,7 +54,7 @@ class TableGroupServiceTest {
     @Test
     void group3() {
         List<OrderTable> orderTables = asList(new OrderTable(null, 10, false), new OrderTable());
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(new TableGroup(orderTables)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -64,7 +64,7 @@ class TableGroupServiceTest {
     @Test
     void group4() {
         List<OrderTable> orderTables = asList(new OrderTable(10L, 10, true), new OrderTable());
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(new TableGroup(orderTables)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -73,7 +73,7 @@ class TableGroupServiceTest {
     @DisplayName("요리중, 식사중 주문상태에선 단체지정 해제할 수 없다")
     @Test
     void group5() {
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(),
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(),
             eq(asList(COOKING.name(), MEAL.name())))).thenReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

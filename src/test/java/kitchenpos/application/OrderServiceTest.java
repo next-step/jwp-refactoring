@@ -15,22 +15,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -44,8 +44,8 @@ class OrderServiceTest {
     @DisplayName("등록된 메뉴만 주문 등록할 수 있다")
     @Test
     void order2() {
-        List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10));
-        when(menuDao.countByIdIn(any())).thenReturn(0L);
+        List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10L));
+        when(menuRepository.countByIdIn(any())).thenReturn(0L);
 
         assertThatThrownBy(() -> orderService.create(new Order(null, orderLineItems)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -54,9 +54,9 @@ class OrderServiceTest {
     @DisplayName("등록된 주문테이블만 주문 등록할 수 있다")
     @Test
     void order3() {
-        List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10));
-        when(menuDao.countByIdIn(any())).thenReturn(Long.valueOf(orderLineItems.size()));
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10L));
+        when(menuRepository.countByIdIn(any())).thenReturn(Long.valueOf(orderLineItems.size()));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(new Order(1L, orderLineItems)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -65,9 +65,9 @@ class OrderServiceTest {
     @DisplayName("빈 주문테이블은 주문 등록할 수 없다")
     @Test
     void order4() {
-        List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10));
-        when(menuDao.countByIdIn(any())).thenReturn(Long.valueOf(orderLineItems.size()));
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 0, true)));
+        List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10L));
+        when(menuRepository.countByIdIn(any())).thenReturn(Long.valueOf(orderLineItems.size()));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 0, true)));
 
         assertThatThrownBy(() -> orderService.create(new Order(1L, orderLineItems)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -76,7 +76,7 @@ class OrderServiceTest {
     @DisplayName("등록된 주문만 상태변경할 수 있다")
     @Test
     void order5() {
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order()))
             .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +85,7 @@ class OrderServiceTest {
     @DisplayName("주문상태가 완료인 경우 상태변경할 수 없다")
     @Test
     void order6() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(new Order(OrderStatus.COMPLETION.name())));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(new Order(OrderStatus.COMPLETION.name())));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order()))
             .isInstanceOf(IllegalArgumentException.class);

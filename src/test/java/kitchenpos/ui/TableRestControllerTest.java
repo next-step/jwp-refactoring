@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,7 +29,7 @@ class TableRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @DisplayName("주문테이블을 등록한다")
     @Test
@@ -47,7 +47,7 @@ class TableRestControllerTest {
             .andExpect(jsonPath("$.empty").value(table.isEmpty()))
             .andReturn();
 
-        assertThat(orderTableDao.findById(getId(result))).isNotEmpty();
+        assertThat(orderTableRepository.findById(getId(result))).isNotEmpty();
     }
 
     @DisplayName("전체 주문테이블을 조회한다")
@@ -98,7 +98,7 @@ class TableRestControllerTest {
     }
 
     private OrderTable findById(Long id) {
-        return orderTableDao.findById(id).orElseThrow(RuntimeException::new);
+        return orderTableRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     private Long getId(MvcResult result) throws

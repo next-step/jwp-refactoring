@@ -21,9 +21,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,12 +33,12 @@ class OrderRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @DisplayName("주문을 등록한다")
     @Test
     Long 주문_등록() throws Exception {
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 1));
+        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L), new OrderLineItem(2L, 1L));
         Order order = new Order(9L, orderLineItems);
 
         MvcResult result = mockMvc.perform(post("/api/orders")
@@ -54,7 +54,7 @@ class OrderRestControllerTest {
             .andReturn();
 
         Long id = getId(result);
-        assertThat(orderDao.findById(id)).isNotEmpty();
+        assertThat(orderRepository.findById(id)).isNotEmpty();
         return id;
     }
 
@@ -90,7 +90,7 @@ class OrderRestControllerTest {
             .andExpect(jsonPath("$.orderStatus").value(order.getOrderStatus()))
             .andExpect(jsonPath("$.orderedTime").exists());
 
-        assertThat(orderDao.findById(id)).isNotEmpty();
+        assertThat(orderRepository.findById(id)).isNotEmpty();
     }
 
     private Long getId(MvcResult result) throws

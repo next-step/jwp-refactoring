@@ -21,9 +21,9 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,12 +33,12 @@ class MenuRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @DisplayName("메뉴를 등록한다")
     @Test
     void menu1() throws Exception {
-        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1));
+        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, 1L), new MenuProduct(2L, 1L));
         Menu menu = new Menu("치킨세트", BigDecimal.valueOf(20_000), 1L, menuProducts);
 
         MvcResult result = mockMvc.perform(post("/api/menus")
@@ -53,7 +53,7 @@ class MenuRestControllerTest {
             .andExpect(jsonPath("$.menuProducts.length()").value(menuProducts.size()))
             .andReturn();
 
-        assertThat(menuDao.findById(getId(result))).isNotEmpty();
+        assertThat(menuRepository.findById(getId(result))).isNotEmpty();
     }
 
     @DisplayName("전체 메뉴를 조회한다")

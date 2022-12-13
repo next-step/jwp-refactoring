@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,13 +34,13 @@ class TableGroupRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @DisplayName("단체지정을 등록한다")
     @Test
-    void group1() throws Exception {
+    Long 단체_지정() throws Exception {
         List<Long> tableIds = Arrays.asList(1L, 2L);
         TableGroup group = new TableGroup(tableIds.stream().map(OrderTable::new).collect(Collectors.toList()));
 
@@ -54,22 +54,23 @@ class TableGroupRestControllerTest {
             .andExpect(jsonPath("$.orderTables.length()").value(tableIds.size()))
             .andReturn();
 
-        assertThat(tableGroupDao.findById(getId(result))).isNotEmpty();
+        Long id = getId(result);
+        assertThat(tableGroupRepository.findById(id)).isNotEmpty();
+        return id;
     }
 
     @DisplayName("단체지정을 해제한다")
     @Test
     void group2() throws Exception {
-        Long tableGroupId = 1L;
+        Long tableGroupId = 단체_지정();
 
         mockMvc.perform(delete("/api/table-groups/" + tableGroupId))
             .andDo(print())
             .andExpect(status().isNoContent());
 
-        List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         for (OrderTable orderTable : orderTables) {
             assertThat(orderTable.getTableGroupId()).isNull();
-            ;
         }
     }
 

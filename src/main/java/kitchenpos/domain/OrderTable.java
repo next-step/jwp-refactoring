@@ -1,10 +1,19 @@
 package kitchenpos.domain;
 
+import static javax.persistence.GenerationType.*;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class OrderTable {
+    @GeneratedValue(strategy = IDENTITY)
+    @Id
     private Long id;
     private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
+    private Integer numberOfGuests;
+    private Boolean empty;
 
     public OrderTable() {
     }
@@ -35,16 +44,16 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
-    public int getNumberOfGuests() {
+    public Integer getNumberOfGuests() {
         return numberOfGuests;
+    }
+
+    public Boolean isEmpty() {
+        return empty;
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
     }
 
     public void setEmpty(final boolean empty) {
