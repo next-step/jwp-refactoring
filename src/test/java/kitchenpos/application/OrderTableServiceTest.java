@@ -110,7 +110,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmptyWithException2() {
         // given
-        Order.of(주문테이블1, Collections.singletonList(createOrderLineItem(1L, null, 1L, 1)));
+        Order.of(주문테이블1, Collections.singletonList(createOrderLineItem(null, 1L, 1)));
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         // when & then

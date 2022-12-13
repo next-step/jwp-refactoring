@@ -5,7 +5,7 @@ import kitchenpos.domain.OrderLineItem;
 
 public class OrderLineItemTestFixture {
 
-    public static OrderLineItem createOrderLineItem(Long seq, Order order, Long menuId, long quantity) {
-        return OrderLineItem.of(seq, order, menuId, quantity);
+    public static OrderLineItem createOrderLineItem(Order order, Long menuId, long quantity) {
+        return OrderLineItem.of(order, menuId, quantity);
     }
 }
