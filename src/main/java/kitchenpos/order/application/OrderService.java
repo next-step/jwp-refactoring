@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -32,7 +33,9 @@ public class OrderService {
     public OrderResponse create(OrderRequest request) {
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
+        List<OrderMenu> menus = findAllMenuById(request.findAllMenuIds()).stream()
+                .map(OrderMenu::of)
+                .collect(Collectors.toList());
         Order order = request.toOrder(orderTable, OrderStatus.COOKING, menus);
 
         return OrderResponse.of(orderRepository.save(order));

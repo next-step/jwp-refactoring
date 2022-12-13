@@ -16,8 +16,13 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "id", column = @Column(name = "menu_id")),
+            @AttributeOverride(name = "name", column = @Column(name = "menu_name")),
+            @AttributeOverride(name = "price.price", column = @Column(name = "menu_price"))
+    })
+    private OrderMenu menu;
 
     private long quantity;
 
@@ -25,7 +30,7 @@ public class OrderLineItem {
 
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
+    public OrderLineItem(Order order, OrderMenu menu, long quantity) {
         if (Objects.isNull(order)) {
             throw new IllegalArgumentException(OrderLineItemError.REQUIRED_ORDER);
         }
@@ -53,7 +58,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
+    public OrderMenu getMenu() {
         return menu;
     }
 

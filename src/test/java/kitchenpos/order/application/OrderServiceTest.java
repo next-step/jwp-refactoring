@@ -63,8 +63,10 @@ class OrderServiceTest {
         ReflectionTestUtils.setField(뿌링클_세트1, "id", 1L);
         ReflectionTestUtils.setField(뿌링클_세트2, "id", 2L);
 
-        주문_메뉴1 = new OrderLineItem(주문, 뿌링클_세트1, 1L);
-        주문_메뉴2 = new OrderLineItem(주문, 뿌링클_세트2, 1L);
+        OrderMenu 뿌링클_세트1_주문메뉴 = OrderMenu.of(뿌링클_세트1);
+        OrderMenu 뿌링클_세트2_주문메뉴 = OrderMenu.of(뿌링클_세트2);
+        주문_메뉴1 = new OrderLineItem(주문, 뿌링클_세트1_주문메뉴, 1L);
+        주문_메뉴2 = new OrderLineItem(주문, 뿌링클_세트2_주문메뉴, 1L);
 
         List<OrderLineItem> 주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
         주문.order(주문_메뉴_목록);
