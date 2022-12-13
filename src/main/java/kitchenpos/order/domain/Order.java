@@ -30,21 +30,6 @@ public class Order {
     protected Order() {}
 
     public Order(
-            Long id,
-            OrderTable orderTable,
-            OrderStatus orderStatus,
-            LocalDateTime orderedTime,
-            OrderLineItems orderLineItems
-    ) {
-        validate(orderTable);
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(
             OrderTable orderTable,
             OrderStatus orderStatus,
             LocalDateTime orderedTime
@@ -53,6 +38,18 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+    }
+
+    public Order(
+            Long id,
+            OrderTable orderTable,
+            OrderStatus orderStatus,
+            LocalDateTime orderedTime,
+            OrderLineItems orderLineItems
+    ) {
+        this(orderTable, orderStatus, orderedTime);
+        this.id = id;
+        this.orderLineItems = orderLineItems;
     }
 
     private void validate(OrderTable orderTable) {
@@ -79,11 +76,11 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final OrderStatus orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public void updateOrderStatus(final OrderStatus status) {
+    public void updateOrderStatus(OrderStatus status) {
         validateUpdateOrderStatus();
         this.orderStatus = status;
     }
@@ -109,8 +106,12 @@ public class Order {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Order order = (Order) o;
         return Objects.equals(id, order.id);
     }

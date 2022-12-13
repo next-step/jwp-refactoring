@@ -15,14 +15,14 @@ import java.util.List;
 public class TableRestController {
     private final TableService tableService;
 
-    public TableRestController(final TableService tableService) {
+    public TableRestController(TableService tableService) {
         this.tableService = tableService;
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest request) {
-        final OrderTableResponse created = tableService.create(request);
-        final URI uri = URI.create("/api/tables/" + created.getId());
+    public ResponseEntity<OrderTableResponse> create(@RequestBody OrderTableRequest request) {
+        OrderTableResponse created = tableService.create(request);
+        URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
                 ;
@@ -31,27 +31,24 @@ public class TableRestController {
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> findAll() {
         return ResponseEntity.ok()
-                .body(tableService.findAll())
-                ;
+                .body(tableService.findAll());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(
-            @PathVariable final Long orderTableId,
-            @RequestBody final UpdateEmptyRequest request
+            @PathVariable Long orderTableId,
+            @RequestBody UpdateEmptyRequest request
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId, request))
-                ;
+                .body(tableService.changeEmpty(orderTableId, request));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
-            @PathVariable final Long orderTableId,
-            @RequestBody final UpdateNumberOfGuestsRequest orderTable
+            @PathVariable Long orderTableId,
+            @RequestBody UpdateNumberOfGuestsRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
-                ;
+                .body(tableService.changeNumberOfGuests(orderTableId, orderTable));
     }
 }

@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public ProductService(final ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     @Transactional
-    public ProductResponse create(final ProductRequest request) {
+    public ProductResponse create(ProductRequest request) {
         Product product = productRepository.save(request.createProduct());
         return ProductResponse.from(product);
     }

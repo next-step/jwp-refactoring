@@ -26,17 +26,15 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Long id, Name name, Price price, MenuGroup menuGroup) {
-        this.id = id;
+    public Menu(Name name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public Menu(Name name, Price price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
+    public Menu(Long id, Name name, Price price, MenuGroup menuGroup) {
+        this(name, price, menuGroup);
+        this.id = id;
     }
 
     public Long getId() {
@@ -51,7 +49,7 @@ public class Menu {
         return price;
     }
 
-    public void setPrice(final Price price) {
+    public void setPrice(Price price) {
         this.price = price;
     }
 
@@ -67,7 +65,7 @@ public class Menu {
         validatePrice(menuProducts.totalMenuPrice());
 
         this.menuProducts = menuProducts;
-        menuProducts.get().forEach(menuProduct -> menuProduct.setMenu(this));
+        menuProducts.setMenu(this);
     }
 
     private void validatePrice(Price totalPrice) {

@@ -52,17 +52,10 @@ public class MenuRequest {
                 .collect(Collectors.toList());
     }
 
-    public Menu createMenu(MenuGroup menuGroup, List<Product> products) {
+    public Menu createMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
         Menu menu = new Menu(new Name(name), new Price(price), menuGroup);
-        menu.setMenuProducts(createMenuProducts(products));
+        menu.setMenuProducts(menuProducts);
 
         return menu;
-    }
-
-    private MenuProducts createMenuProducts(List<Product> products) {
-        return new MenuProducts(menuProducts.stream()
-                .map(menuProduct -> menuProduct.createMenuProduct(products))
-                .collect(Collectors.toList())
-        );
     }
 }

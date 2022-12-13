@@ -26,7 +26,7 @@ public class OrderLineItems {
         }
     }
 
-    public void setOrder(final Order order) {
+    public void setOrder(Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
     }
 

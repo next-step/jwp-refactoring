@@ -27,9 +27,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable createOrderTable() {
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(numberOfGuests), empty);
-        orderTable.setTableGroup(null);
-
-        return orderTable;
+        return new OrderTable(new NumberOfGuests(numberOfGuests), empty);
     }
 }

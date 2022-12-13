@@ -21,15 +21,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
-            final OrderTableRepository orderTableRepository,
-            final OrderRepository orderRepository
+            MenuRepository menuRepository,
+            OrderTableRepository orderTableRepository,
+            OrderRepository orderRepository
     ) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
@@ -37,11 +38,11 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest request) {
+    public OrderResponse create(OrderRequest request) {
         List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        final OrderTable orderTable = findOrderTableById(request.getOrderTableId());
+        OrderTable orderTable = findOrderTableById(request.getOrderTableId());
 
-        final Order savedOrder = orderRepository.save(request.createOrder(orderTable, menus));
+        Order savedOrder = orderRepository.save(request.createOrder(orderTable, menus));
         return OrderResponse.from(savedOrder);
     }
 
@@ -64,8 +65,8 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final UpdateOrderStatusRequest request) {
-        final Order savedOrder = findOrderById(orderId);
+    public OrderResponse changeOrderStatus(Long orderId, UpdateOrderStatusRequest request) {
+        Order savedOrder = findOrderById(orderId);
         savedOrder.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.from(orderRepository.save(savedOrder));
     }

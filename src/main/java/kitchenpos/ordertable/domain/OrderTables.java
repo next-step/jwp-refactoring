@@ -55,7 +55,7 @@ public class OrderTables {
 
     private void validateHasNotGroup() {
         boolean hasGroup = orderTables.stream()
-                .anyMatch(orderTable -> orderTable.getTableGroup() != null);
+                .anyMatch(OrderTable::hasTableGroup);
 
         if (hasGroup) {
             throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_HAS_GROUP_TABLE.getMessage());

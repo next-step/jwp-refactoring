@@ -18,15 +18,14 @@ public class Product {
 
     protected Product() {}
 
-    public Product(Long id, Name name, Price price) {
-        this.id = id;
+    public Product(Name name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public Product(Name name, Price price) {
-        this.name = name;
-        this.price = price;
+    public Product(Long id, Name name, Price price) {
+        this(name, price);
+        this.id = id;
     }
 
     public Long getId() {
@@ -43,8 +42,12 @@ public class Product {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Product product = (Product) o;
         return Objects.equals(id, product.id);
     }

@@ -16,17 +16,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
         this.orderRepository = orderRepository;
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTableRequest request) {
+    public OrderTableResponse create(OrderTableRequest request) {
         OrderTable orderTable = orderTableRepository.save(request.createOrderTable());
         return OrderTableResponse.from(orderTable);
     }
@@ -39,8 +40,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final UpdateEmptyRequest request) {
-        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+    public OrderTableResponse changeEmpty(Long orderTableId, UpdateEmptyRequest request) {
+        OrderTable savedOrderTable = findOrderTableById(orderTableId);
         List<Order> orders = findAllOrderByOrderTableId(orderTableId);
 
         savedOrderTable.updateEmpty(request.isEmpty(), orders);
@@ -53,10 +54,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(
-            final Long orderTableId,
-            final UpdateNumberOfGuestsRequest request
+            Long orderTableId,
+            UpdateNumberOfGuestsRequest request
     ) {
-        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+        OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.updateNumberOfGuest(request.getNumberOfGuests());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));

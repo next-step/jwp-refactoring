@@ -16,15 +16,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
     public TableGroupService(
-            final OrderTableRepository orderTableRepository,
-            final TableGroupRepository tableGroupRepository,
-            final OrderRepository orderRepository
+            OrderTableRepository orderTableRepository,
+            TableGroupRepository tableGroupRepository,
+            OrderRepository orderRepository
     ) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
@@ -32,15 +33,15 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
+    public TableGroupResponse create(TableGroupRequest request) {
+        List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup(savedOrderTables));
+        TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup(savedOrderTables));
         return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
-    public void ungroup(final Long tableGroupId) {
+    public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         List<Order> orders = findAllOrderByTableIds(tableGroup.getOrderTableIds());
 
@@ -49,14 +50,13 @@ public class TableGroupService {
     }
 
     private List<OrderTable> findAllOrderTablesByIds(List<Long> ids) {
-        return ids.stream()
-                .map(this::findOrderTableById)
-                .collect(Collectors.toList());
-    }
+        List<OrderTable> orderTables = orderTableRepository.findAllById(ids);
 
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage()));
+        if (orderTables.size() != ids.size()) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage());
+        }
+
+        return orderTables;
     }
 
     private List<Order> findAllOrderByTableIds(List<Long> ids) {

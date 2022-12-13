@@ -23,15 +23,14 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
+        this.id = id;
     }
 
     public void updateEmpty(boolean empty, List<Order> orders) {
@@ -62,6 +61,10 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
+    public boolean hasTableGroup() {
+        return tableGroup != null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,7 +73,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(final TableGroup tableGroup) {
+    public void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -84,8 +87,12 @@ public class OrderTable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         OrderTable that = (OrderTable) o;
         return Objects.equals(id, that.id);
     }

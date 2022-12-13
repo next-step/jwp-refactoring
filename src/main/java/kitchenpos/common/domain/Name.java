@@ -19,7 +19,7 @@ public class Name {
 
     private void validate(String name) {
         if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.NAME_SHOULD_NOT_EMPTY.getMessage());
+            throw new IllegalArgumentException("이름은 값이 존재해야 합니다.");
         }
     }
 

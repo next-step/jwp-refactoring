@@ -24,17 +24,15 @@ public class TableGroup {
 
     protected TableGroup() {}
 
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        orderTables.validateGroup();
-        this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
-    }
-
     public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
         orderTables.validateGroup();
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        this(createdDate, orderTables);
+        this.id = id;
     }
 
     public void ungroup(List<Order> orders) {
@@ -63,8 +61,12 @@ public class TableGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TableGroup that = (TableGroup) o;
         return Objects.equals(id, that.id);
     }
