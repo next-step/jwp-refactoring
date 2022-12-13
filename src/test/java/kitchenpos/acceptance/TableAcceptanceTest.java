@@ -19,6 +19,8 @@ import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -31,10 +33,13 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
     MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
     MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
             Collections.singletonList(후라이드치킨_메뉴상품));
+    OrderTableChangeNumberOfGuestsRequest orderTableChangeNumberOfGuestsRequest =
+            new OrderTableChangeNumberOfGuestsRequest(1);
+    OrderTableChangeEmptyRequest orderTableChangeEmptyRequest = new OrderTableChangeEmptyRequest(true);
 
     @Test
     void 주문_테이블을_등록할_수_있다() throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(null, 1L, 1, false);
+        OrderTable 주문_테이블 = new OrderTable(1L, 1, false);
 
         ResultActions resultActions = 주문_테이블_등록(주문_테이블);
 
@@ -52,64 +57,59 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_주문_테이블에_대해서만_수정할_수_있다() throws Exception {
-        OrderTable 등록_되어_있지_않은_주문_테이블 = new OrderTable(1L, 1L, 1, true);
-
-        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(등록_되어_있지_않은_주문_테이블);
+        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTableChangeEmptyRequest);
 
         주문_테이블_수정_실패(resultActions);
     }
 
     @Test
     void 주문_테이블의_비어있음_여부를_수정할_수_있다() throws Exception {
-        OrderTable orderTable = 주문_테이블이_등록되어_있다();
+        주문_테이블이_등록되어_있다();
 
-        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTable);
+        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTableChangeEmptyRequest);
 
         주문_테이블_수정_성공(resultActions);
     }
 
     @Test
     void 이미_단체_지정이_된_주문_테이블은_수정할_수_없다() throws Exception {
-        OrderTable orderTable = 이미_단체_지정이_된_주문_테이블();
+        주문_테이블에_이미_단체_지정이_되어있다();
 
-        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTable);
+        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTableChangeEmptyRequest);
 
         주문_테이블_수정_실패(resultActions);
     }
 
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() throws Exception {
-        OrderTable orderTable = 조리_식사_상태의_주문이_포함된_테이블();
+        주문_테이블에_조리_식사_상태의_주문이_포함되어_있다();
 
-        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTable);
+        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTableChangeEmptyRequest);
 
         주문_테이블_수정_실패(resultActions);
     }
 
     @Test
     void 방문한_손님수를_0명_이하로_수정할_수_없다() throws Exception {
-        OrderTable orderTable = 주문_테이블이_등록되어_있다();
-        orderTable.setNumberOfGuests(-1);
+        주문_테이블이_등록되어_있다();
 
-        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTable);
+        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(new OrderTableChangeNumberOfGuestsRequest(-1));
 
         주문_테이블_수정_실패(resultActions);
     }
 
     @Test
     void 등록_된_주문_테이블에_대해서만_손님수를_수정할_수_있다() throws Exception {
-        OrderTable 등록되지_않은_주문_테이블 = new OrderTable(1L, 1L, 1, false);
-
-        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(등록되지_않은_주문_테이블);
+        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTableChangeNumberOfGuestsRequest);
 
         주문_테이블_수정_실패(resultActions);
     }
 
     @Test
     void 빈_테이블은_방문한_손님수를_수정할_수_없다() throws Exception {
-        OrderTable orderTable = 빈_테이블이_등록되어_있다();
+        빈_테이블이_등록되어_있다();
 
-        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTable);
+        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTableChangeNumberOfGuestsRequest);
 
         주문_테이블_수정_실패(resultActions);
     }
@@ -117,9 +117,8 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void 주문_테이블의_방문한_손님수를_수정할_수_있다() throws Exception {
         OrderTable orderTable = 주문_테이블이_등록되어_있다();
-        orderTable.setNumberOfGuests(2);
 
-        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTable);
+        ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTableChangeNumberOfGuestsRequest);
 
         주문_테이블_방문한_손님수_수정_성공(resultActions);
     }
@@ -130,13 +129,13 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
 
     private OrderTable 빈_테이블이_등록되어_있다() throws Exception {
         OrderTable orderTable = 주문_테이블이_등록되어_있다();
-        orderTable.setEmpty(true);
-        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(orderTable);
+
+        ResultActions resultActions = 주문_테이블_비어있음_여부_수정(new OrderTableChangeEmptyRequest(true));
         주문_테이블_수정_성공(resultActions);
         return orderTable;
     }
 
-    private OrderTable 조리_식사_상태의_주문이_포함된_테이블() throws Exception {
+    private OrderTable 주문_테이블에_조리_식사_상태의_주문이_포함되어_있다() throws Exception {
         OrderTable orderTable = 주문_테이블이_등록되어_있다();
         주문이_등록되어_있다(orderTable);
         return orderTable;
@@ -188,18 +187,18 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
         resultActions.andExpect(status().is4xxClientError());
     }
 
-    private ResultActions 주문_테이블_방문한_손님수_수정(OrderTable orderTable) throws Exception {
+    private ResultActions 주문_테이블_방문한_손님수_수정(OrderTableChangeNumberOfGuestsRequest request) throws Exception {
         return mvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable))
+                .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print());
     }
 
-    private ResultActions 주문_테이블_비어있음_여부_수정(OrderTable orderTable) throws Exception {
+    private ResultActions 주문_테이블_비어있음_여부_수정(OrderTableChangeEmptyRequest request) throws Exception {
         return mvc.perform(put("/api/tables/{orderTableId}/empty", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable))
+                .content(objectMapper.writeValueAsString(request))
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print());
     }
@@ -213,7 +212,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
     }
 
     private OrderTable 주문_테이블이_등록되어_있다() throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(null, 1L, 1, false);
+        OrderTable 주문_테이블 = new OrderTable(1L, 1, false);
         ResultActions resultActions = 주문_테이블_등록(주문_테이블);
         주문_테이블_등록_성공(resultActions, 주문_테이블);
         return 주문_테이블;
@@ -245,9 +244,9 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private OrderTable 이미_단체_지정이_된_주문_테이블() throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(null, null, 1, true);
-        OrderTable 주문_테이블2 = new OrderTable(null, null, 1, true);
+    private OrderTable 주문_테이블에_이미_단체_지정이_되어있다() throws Exception {
+        OrderTable 주문_테이블 = new OrderTable(null, 1, true);
+        OrderTable 주문_테이블2 = new OrderTable(null, 1, true);
         주문_테이블_등록(주문_테이블);
         주문_테이블_등록(주문_테이블2);
         주문_테이블.setId(1L);

@@ -62,8 +62,8 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_주문_테이블만_단체_지정이_가능하다() throws Exception {
-        OrderTable 등록_되지_않은_주문_테이블 = new OrderTable(null, null, 2, true);
-        OrderTable 등록_되지_않은_주문_테이블2 = new OrderTable(null, null, 2, true);
+        OrderTable 등록_되지_않은_주문_테이블 = new OrderTable(null, 2, true);
+        OrderTable 등록_되지_않은_주문_테이블2 = new OrderTable(null, 2, true);
 
         ResultActions resultActions = 단체_지정(등록_되지_않은_주문_테이블, 등록_되지_않은_주문_테이블2);
 
@@ -189,15 +189,15 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     }
 
     private OrderTable 빈_테이블이_아닌_주문_테이블(Long id) throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(null, null, 1, false);
+        OrderTable 주문_테이블 = new OrderTable(null, 1, false);
         주문_테이블_등록(주문_테이블);
         주문_테이블.setId(id);
         return 주문_테이블;
     }
 
     private OrderTable 이미_단체_지정이_된_주문_테이블() throws Exception {
-        주문_테이블 = new OrderTable(null, null, 1, true);
-        주문_테이블2 = new OrderTable(null, null, 1, true);
+        주문_테이블 = new OrderTable(null, 1, true);
+        주문_테이블2 = new OrderTable(null, 1, true);
         주문_테이블_등록(주문_테이블);
         주문_테이블_등록(주문_테이블2);
         주문_테이블.setId(1L);
@@ -216,8 +216,8 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     }
 
     private TableGroup 단체_지정_가능한_주문_테이블_등록() throws Exception {
-        주문_테이블 = new OrderTable(null, null, 1, true);
-        주문_테이블2 = new OrderTable(null, null, 1, true);
+        주문_테이블 = new OrderTable(null, 1, true);
+        주문_테이블2 = new OrderTable(null, 1, true);
         주문_테이블_등록(주문_테이블);
         주문_테이블_등록(주문_테이블2);
         주문_테이블.setId(1L);
@@ -239,7 +239,7 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     }
 
     private OrderTable 주문_테이블이_등록되어_있다(Long id) throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(null, null, 1, false);
+        OrderTable 주문_테이블 = new OrderTable(null, 1, false);
         주문_테이블_등록(주문_테이블);
         주문_테이블.setId(id);
         return 주문_테이블;

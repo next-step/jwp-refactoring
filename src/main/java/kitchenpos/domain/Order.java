@@ -38,6 +38,7 @@ public class Order {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
+        orderTable.addOrder(this);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING.name();
         this.orderedTime = LocalDateTime.now();

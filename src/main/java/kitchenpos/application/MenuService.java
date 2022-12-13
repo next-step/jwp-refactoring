@@ -39,17 +39,9 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        List<MenuProduct> menuProducts = menuRequest.getMenuProductRequests().stream()
-                .map(menuProductRequest -> {
-                    Product product = productRepository.findById(menuProductRequest.getProductId())
-                            .orElseThrow(IllegalArgumentException::new);
-                    return new MenuProduct(null, product, menuProductRequest.getQuantity());
-                })
-                .collect(Collectors.toList());
-
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 
-        menu.addMenuProducts(menuProducts);
+        menu.addMenuProducts(createMenuProducts(menuRequest));
         menu.validateProductsPrice();
 
         return menuRepository.save(menu);
@@ -64,5 +56,15 @@ public class MenuService {
         }
 
         return menus;
+    }
+
+    private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
+        return menuRequest.getMenuProductRequests().stream()
+                .map(menuProductRequest -> {
+                    Product product = productRepository.findById(menuProductRequest.getProductId())
+                            .orElseThrow(IllegalArgumentException::new);
+                    return new MenuProduct(null, product, menuProductRequest.getQuantity());
+                })
+                .collect(Collectors.toList());
     }
 }

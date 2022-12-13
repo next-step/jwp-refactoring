@@ -31,8 +31,8 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
     MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
             Collections.singletonList(후라이드치킨_메뉴상품));
-    OrderTable 빈_주문_테이블 = new OrderTable(null, 1L, 1, true);
-    OrderTable 주문_테이블 = new OrderTable(null, 1L, 1, false);
+    OrderTable 빈_주문_테이블 = new OrderTable(1L, 1, true);
+    OrderTable 주문_테이블 = new OrderTable(1L, 1, false);
 
     @Test
     void 수량이_남은_메뉴만_주문할_수_있다() throws Exception {

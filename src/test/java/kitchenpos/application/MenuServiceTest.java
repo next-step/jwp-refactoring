@@ -65,7 +65,6 @@ class MenuServiceTest {
     @Test
     void 메뉴등록시_가격이_0원_미만이면_오류발생() {
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(new MenuGroup(1L, "메뉴그룹")));
-        given(productRepository.findById(any())).willReturn(Optional.of(new Product()));
         MenuRequest 메뉴_가격이_0원_미만일_경우 = new MenuRequest(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L,
                 Collections.singletonList(new MenuProductRequest(1L, 1L, 1L, 1l)));
 
@@ -77,7 +76,6 @@ class MenuServiceTest {
     @Test
     void 메뉴등록시_가격이_null_이면_오류발생() {
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(new MenuGroup(1L, "메뉴그룹")));
-        given(productRepository.findById(any())).willReturn(Optional.of(new Product()));
         MenuRequest 메뉴_가격이_null_일_경우 = new MenuRequest(1L, "잘못된_가격이_측정된_메뉴", null, 1L,
                 Collections.singletonList(new MenuProductRequest(1L, 1L, 1L, 1l)));
 
