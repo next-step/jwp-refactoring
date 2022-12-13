@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -15,40 +14,40 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderDao;
-    private final OrderTableRepository orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderDao, final OrderTableRepository orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        return OrderTableResponse.of(orderTableDao.save(orderTableRequest.toOrderTable()));
+        return OrderTableResponse.of(orderTableRepository.save(orderTableRequest.toOrderTable()));
     }
 
     public List<OrderTableResponse> list() {
-        return orderTableDao.findAll()
+        return orderTableRepository.findAll()
                 .stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
+        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        List<Order> savedOrders = orderDao.findAllByOrderTable(savedOrderTable);
+        List<Order> savedOrders = orderRepository.findAllByOrderTable(savedOrderTable);
         savedOrderTable.chnageEmpty(orderTable.isEmpty(),savedOrders);
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTable) {
+        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 }

@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,13 +69,15 @@ public class TableServiceTest {
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        List<Order> orders = getOrders(Order.builder().orderStatus(OrderStatus.COOKING.name()).build(), 5);
+        List<Order> orders = getOrders(Order.builder()
+                .orderTable(OrderTable.builder().build())
+                .orderStatus(OrderStatus.COOKING.name()).build(), 5);
         OrderTable orderTable = OrderTable.builder()
                 .tableGroup(TableGroup.builder().id(13l).build())
                 .build();
@@ -83,38 +86,40 @@ public class TableServiceTest {
                 .findById(orderTable.getId());
         doReturn(orders).when(orderDao)
                 .findAllByOrderTable(orderTable);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
-        List<Order> orders = getOrders(Order.builder().orderStatus(OrderStatus.COOKING.name()).build(), 5);
+        List<Order> orders = getOrders(Order.builder()
+                .orderTable(OrderTable.builder().build())
+                .orderStatus(OrderStatus.COOKING.name()).build(), 5);
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(orders).when(orderDao)
                 .findAllByOrderTable(orderTable);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTable.builder().build())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")
     @Test
     public void returnOrderTableWithEmpty() {
-        OrderTable orderTable = OrderTable.builder().build();
+        OrderTableRequest orderTable = new OrderTableRequest();
         OrderTable savedTable = OrderTable.builder().empty(true).build();
-
         doReturn(Optional.ofNullable(savedTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(savedTable).when(orderTableDao).save(savedTable);
+
         assertThat(tableService.changeEmpty(orderTable.getId(), orderTable).isEmpty()).isFalse();
     }
 
     @DisplayName("주문테이블의 손님수를 수정할 경우 손님수가 0보다 작으면 예외발생")
     @Test
     public void throwsExceptionWhenGuestNumberIsNegative() {
-        OrderTable orderTable = OrderTable.builder()
-                .numberOfGuests(Arbitraries.integers().lessOrEqual(-1).sample())
-                .build();
+        OrderTableRequest orderTable = new OrderTableRequest();
+        orderTable.setNumberOfGuests(-1);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -123,9 +128,9 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
-        OrderTable orderTable = OrderTable.builder()
-                .numberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample())
-                .build();
+        OrderTableRequest orderTable = new OrderTableRequest();
+        orderTable.setNumberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample());
+
         doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
@@ -135,11 +140,11 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 테이블이 공석이면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyTable() {
-        OrderTable orderTable = OrderTable.builder()
-                .numberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample())
-                .empty(true)
-                .build();
-        doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
+        OrderTableRequest orderTable = new OrderTableRequest();
+        orderTable.setId(1l);
+        orderTable.setNumberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample());
+
+        doReturn(Optional.ofNullable(OrderTable.builder().empty(true).build())).when(orderTableDao).findById(anyLong());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -148,9 +153,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 손님수를 수정할 경우 수정된 테이블을 반환")
     @Test
     public void returnOrderTableWithGuest() {
-        OrderTable orderTable = OrderTable.builder()
-                .numberOfGuests(15)
-                .build();
+        OrderTableRequest orderTable = new OrderTableRequest();
+        orderTable.setNumberOfGuests(15);
         OrderTable findTable = OrderTable.builder()
                 .numberOfGuests(5)
                 .build();

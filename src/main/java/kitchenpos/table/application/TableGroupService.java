@@ -50,12 +50,6 @@ public class TableGroupService {
         tableGroup.setCreatedDate(LocalDateTime.now());
 
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-/*        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.chnageEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }*/
         savedTableGroup.setOrderTables(savedOrderTables);
 
         return savedTableGroup;

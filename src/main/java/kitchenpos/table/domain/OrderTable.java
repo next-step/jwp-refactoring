@@ -87,7 +87,7 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
         if (empty) {
-            throw new IllegalStateException();
+            throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;
     }
@@ -102,7 +102,6 @@ public class OrderTable {
         if (isBeforeComplete) {
             throw new IllegalArgumentException();
         }
-
         this.empty = empty;
     }
 }
