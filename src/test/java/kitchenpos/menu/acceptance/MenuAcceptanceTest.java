@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -13,10 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 
 
 @DisplayName("메뉴 관련 인수 테스트")
+public
 class MenuAcceptanceTest extends AcceptanceTest {
     private Product 후라이드치킨;
     private Product 콜라;
