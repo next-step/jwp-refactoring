@@ -1,7 +1,7 @@
 package kitchenpos.menugroup.application;
 
 import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
-import static kitchenpos.menugroup.dto.MenuGroupRequestTest.메뉴그룹_생성_요청_객체_생성;
+import static kitchenpos.menugroup.dto.MenuGroupRequestTest.메뉴그룹_요청_객체_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -46,7 +46,7 @@ public class MenuGroupServiceTest {
     void create() {
         // given
         when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(식사);
-        MenuGroupRequest 식사_생성_요청_객체 = 메뉴그룹_생성_요청_객체_생성(식사.getNameValue());
+        MenuGroupRequest 식사_생성_요청_객체 = 메뉴그룹_요청_객체_생성(식사.getNameValue());
 
         // when
         MenuGroupResponse 등록된_식사 = menuGroupService.create(식사_생성_요청_객체);

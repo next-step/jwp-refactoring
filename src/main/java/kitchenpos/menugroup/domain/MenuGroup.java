@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import kitchenpos.common.domain.Name;
 
 @Entity
-@Table(name = "MENU_GROUP")
+@Table(name = "menu_group")
 public class MenuGroup {
 
     @Id

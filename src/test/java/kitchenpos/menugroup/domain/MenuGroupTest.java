@@ -8,5 +8,4 @@ public class MenuGroupTest {
                 .name(name)
                 .build();
     }
-
 }

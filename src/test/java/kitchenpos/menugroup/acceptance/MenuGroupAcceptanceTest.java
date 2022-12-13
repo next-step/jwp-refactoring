@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,15 +18,15 @@ import org.springframework.http.MediaType;
 @DisplayName("메뉴그룹 관련 기능")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 요리;
-    private MenuGroup 안주;
+    private MenuGroupResponse 요리;
+    private MenuGroupResponse 안주;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        요리 = 메뉴그룹_등록되어_있음("요리").as(MenuGroup.class);
-        안주 = 메뉴그룹_등록되어_있음("안주").as(MenuGroup.class);
+        요리 = 메뉴그룹_등록되어_있음("요리").as(MenuGroupResponse.class);
+        안주 = 메뉴그룹_등록되어_있음("안주").as(MenuGroupResponse.class);
     }
 
     @Test
