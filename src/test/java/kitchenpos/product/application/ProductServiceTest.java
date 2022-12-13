@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -25,8 +26,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
-    private static final Product 참치김밥 = new Product(1L, "참치김밥", new BigDecimal(3000));
-    private static final Product 치즈김밥 = new Product(2L, "치즈김밥", new BigDecimal(2500));
+    private static final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
+    private static final Product 치즈김밥 = new Product(2L, "치즈김밥", new Price(new BigDecimal(2500)));
 
     @Mock
     private ProductRepository productRepository;
@@ -38,16 +39,18 @@ public class ProductServiceTest {
     @Test
     void createProductTest() {
         //given
-        given(productRepository.save(any(Product.class))).willReturn(참치김밥);
+        final String productName = 참치김밥.getName();
+        final BigDecimal productPrice = 참치김밥.getPrice().getValue();
+        given(productRepository.save(any(Product.class)))
+                .willReturn(참치김밥);
 
         //when
-        ProductResponse product = productService.create(
-                new ProductRequest(참치김밥.getName(), 참치김밥.getPrice()));
+        ProductResponse product = productService.create(new ProductRequest(productName, productPrice));
 
         //then
         assertAll(
-                () -> assertThat(product.getName()).isEqualTo(참치김밥.getName()),
-                () -> assertThat(product.getPrice()).isEqualTo(참치김밥.getPrice())
+                () -> assertThat(product.getName()).isEqualTo(productName),
+                () -> assertThat(product.getPrice()).isEqualTo(productPrice)
         );
     }
 
@@ -74,28 +77,35 @@ public class ProductServiceTest {
                 .collect(Collectors.toList());
     }
 
-    private List<BigDecimal> productsToPrices(List<ProductResponse> products) {
+    private List<Price> productsToPrices(List<ProductResponse> products) {
         return products.stream()
                 .map(ProductResponse::getPrice)
+                .map(Price::new)
                 .collect(Collectors.toList());
     }
 
     @DisplayName("상품등록 가격 데이터가 없을 경우 오류 테스트")
     @Test
     void createProductPriceNullExceptionTest() {
-        assertThatThrownBy(() -> productService.create(
-                new ProductRequest(참치김밥.getName(), null)))
+        //given
+        final ProductRequest request = new ProductRequest(참치김밥.getName(), null);
+
+        //when
+        //then
+        assertThatThrownBy(() -> productService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품등록 가격 데이터가 0보다 작은 경우 오류 테스트")
     @Test
     void createProductPriceUnderZeroExceptionTest() {
-        assertThatThrownBy(() -> productService.create(
-                new ProductRequest(참치김밥.getName(), new BigDecimal(-1))))
+        //given
+        final ProductRequest request = new ProductRequest(참치김밥.getName(), new BigDecimal(-1));
+
+        //when
+        //then
+        assertThatThrownBy(() -> productService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-
 
 }

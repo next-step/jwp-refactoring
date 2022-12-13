@@ -7,6 +7,7 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -28,11 +29,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
 
-    private final Product 참치김밥 = new Product(1L, "참치김밥", new BigDecimal(3000));
-    private final Product 치즈김밥 = new Product(2L, "치즈김밥", new BigDecimal(2500));
-    private final Product 라볶이 = new Product(3L, "라볶이", new BigDecimal(4500));
-    private final Product 돈까스 = new Product(4L, "돈까스", new BigDecimal(7000));
-    private final Product 쫄면 = new Product(5L, "쫄면", new BigDecimal(5000));
+    private final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
+    private final Product 치즈김밥 = new Product(2L, "치즈김밥", new Price(new BigDecimal(2500)));
+    private final Product 라볶이 = new Product(3L, "라볶이", new Price(new BigDecimal(4500)));
+    private final Product 돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
+    private final Product 쫄면 = new Product(5L, "쫄면", new Price(new BigDecimal(5000)));
 
     private final MenuProduct 라볶이세트참치김밥 = new MenuProduct(1L, 1L, 참치김밥.getId(), 1);
     private final MenuProduct 라볶이세트라볶이 = new MenuProduct(2L, 1L, 라볶이.getId(), 1);
