@@ -2,9 +2,14 @@ package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import kitchenpos.ordertable.domain.OrderTable;
 
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
