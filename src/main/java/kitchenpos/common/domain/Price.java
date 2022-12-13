@@ -16,7 +16,7 @@ public class Price {
     protected Price() {}
 
     private Price(BigDecimal price) {
-        validateNotNull(price);
+        validateNonNull(price);
         validateNotUnderPrice(price);
         this.price = price;
     }
@@ -29,7 +29,11 @@ public class Price {
         return new Price(BigDecimal.valueOf(price));
     }
 
-    private static void validateNotNull(BigDecimal price) {
+    public static Price zero(){
+        return new Price(BigDecimal.ZERO);
+    }
+
+    private static void validateNonNull(BigDecimal price) {
         if (Objects.isNull(price)) {
             throw new IllegalArgumentException("금액이 비었습니다.");
         }

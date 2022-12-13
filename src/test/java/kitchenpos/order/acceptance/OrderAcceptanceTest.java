@@ -1,9 +1,8 @@
 package kitchenpos.order.acceptance;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
-import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_생성_요청_객체_생성;
+import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
-import static kitchenpos.order.domain.OrderLineItemTest.주문_항목_생성;
 import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_생성_요청_객체_생성;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
@@ -21,13 +20,10 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,10 +51,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(ProductResponse.class);
         식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroup.class);
 
-        MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);
+        MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_요청_객체_생성(소머리국밥.getId(), 1L);
         소머리국밥_메뉴 = 메뉴_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000), 식사.getId(), Arrays.asList(소머리국밥_메뉴상품)).as(MenuResponse.class);
 
-        MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(순대국밥.getId(), 2L);
+        MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_요청_객체_생성(순대국밥.getId(), 2L);
         순대국밥_메뉴 = 메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사.getId(), Arrays.asList(순대국밥_메뉴상품)).as(MenuResponse.class);
 
         주문_테이블_1 = 주문_테이블_등록되어_있음(2, false).as(OrderTableResponse.class);

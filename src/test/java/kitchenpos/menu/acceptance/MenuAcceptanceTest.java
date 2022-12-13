@@ -1,7 +1,6 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
-import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_생성_요청_객체_생성;
+import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,10 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +28,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private ProductResponse 소머리국밥;
     private ProductResponse 순대국밥;
-    private MenuGroup 식사;
+    private MenuGroupResponse 식사_메뉴그룹;
 
     @BeforeEach
     public void setUp() {
@@ -39,10 +36,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         소머리국밥 = 상품_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000)).as(ProductResponse.class);
         순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(ProductResponse.class);
-        식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroup.class);
+        식사_메뉴그룹 = 메뉴그룹_등록되어_있음("식사").as(MenuGroupResponse.class);
 
-        MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(순대국밥.getId(), 1L);
-        메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사.getId(), Arrays.asList(순대국밥_메뉴상품));
+        MenuProductRequest 순대국밥_메뉴상품 = 메뉴상품_요청_객체_생성(순대국밥.getId(), 1L);
+        메뉴_등록되어_있음("순대국밥", BigDecimal.valueOf(7000), 식사_메뉴그룹.getId(), Arrays.asList(순대국밥_메뉴상품));
     }
 
 
@@ -50,14 +47,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록할 수 있다.")
     void create() {
         // given
-        String name = "소머리국밥";
-        BigDecimal price = BigDecimal.valueOf(8000);
-        Long menuGroupId = 식사.getId();
-        MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);
-        List<MenuProductRequest> menuProductRequests = Arrays.asList(소머리국밥_메뉴상품);
+        String 메뉴명 = "소머리국밥";
+        BigDecimal 가격 = BigDecimal.valueOf(8000);
+        Long 메뉴그룹_아이디 = 식사_메뉴그룹.getId();
+        MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_요청_객체_생성(소머리국밥.getId(), 1L);
+        List<MenuProductRequest> 메뉴상품들 = Arrays.asList(소머리국밥_메뉴상품);
 
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청(name, price, menuGroupId, menuProductRequests);
+        ExtractableResponse<Response> response = 메뉴_등록_요청(메뉴명, 가격, 메뉴그룹_아이디, 메뉴상품들);
 
         // then
         메뉴_등록됨(response);

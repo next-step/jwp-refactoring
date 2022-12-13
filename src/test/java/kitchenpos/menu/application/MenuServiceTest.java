@@ -2,8 +2,8 @@ package kitchenpos.menu.application;
 
 import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
-import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_생성_요청_객체_생성;
-import static kitchenpos.menu.dto.MenuRequestTest.메뉴_생성_요청_객체_생성;
+import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
+import static kitchenpos.menu.dto.MenuRequestTest.메뉴_요청_객체_생성;
 import static kitchenpos.menu.dto.MenuResponseTest.메뉴_응답_객체들_생성;
 import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
@@ -50,7 +50,7 @@ public class MenuServiceTest {
 
     private Product 미역국;
     private Product 소머리국밥;
-    private MenuGroup 식사;
+    private MenuGroup 식사_메뉴그룹;
     private MenuProduct 미역국_메뉴상품;
     private MenuProduct 소머리국밥_메뉴상품;
     private Menu 미역국_메뉴;
@@ -60,13 +60,13 @@ public class MenuServiceTest {
     public void setUp() {
         미역국 = 상품_생성(1L, "미역국", BigDecimal.valueOf(6000));
         소머리국밥 = 상품_생성(2L, "소머리국밥", BigDecimal.valueOf(8000));
-        식사 = 메뉴그룹_생성(1L, "식사");
+        식사_메뉴그룹 = 메뉴그룹_생성(1L, "식사");
 
         미역국_메뉴상품 = 메뉴상품_생성(1L, null, 미역국, 1L);
-        미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사, Arrays.asList(미역국_메뉴상품));
+        미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사_메뉴그룹, Arrays.asList(미역국_메뉴상품));
 
         소머리국밥_메뉴상품 = 메뉴상품_생성(2L, null, 소머리국밥, 1L);
-        소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사, Arrays.asList(소머리국밥_메뉴상품));
+        소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사_메뉴그룹, Arrays.asList(소머리국밥_메뉴상품));
     }
 
 
@@ -74,17 +74,17 @@ public class MenuServiceTest {
     @DisplayName("메뉴 생성")
     void create() {
         // given
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(식사));
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(식사_메뉴그룹));
         when(productRepository.findById(any())).thenReturn(Optional.of(소머리국밥));
         when(menuRepository.save(any(Menu.class))).thenReturn(소머리국밥_메뉴);
-        MenuProductRequest productRequest = 메뉴상품_생성_요청_객체_생성(소머리국밥.getId(), 1L);
-        MenuRequest 메뉴_생성_요청_객체 = 메뉴_생성_요청_객체_생성(소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceVale(), 식사.getId(), Arrays.asList(productRequest));
+        MenuProductRequest productRequest = 메뉴상품_요청_객체_생성(소머리국밥.getId(), 1L);
+        MenuRequest menuRequest = 메뉴_요청_객체_생성(소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue(), 식사_메뉴그룹.getId(), Arrays.asList(productRequest));
 
         // when
-        MenuResponse 소머리국밥_메뉴_생성_결과 = menuService.create(메뉴_생성_요청_객체);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
-        assertThat(소머리국밥_메뉴_생성_결과.getId()).isEqualTo(소머리국밥_메뉴.getId());
+        assertThat(menuResponse.getId()).isEqualTo(소머리국밥_메뉴.getId());
     }
 
     @Test

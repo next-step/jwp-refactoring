@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MenuRequestTest {
 
-    public static MenuRequest 메뉴_생성_요청_객체_생성(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public static MenuRequest 메뉴_요청_객체_생성(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return new MenuRequest.Builder()
                 .name(name)
                 .price(price)

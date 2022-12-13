@@ -13,7 +13,7 @@ public class Name {
     protected Name() {}
 
     private Name(String name) {
-        validateName(name);
+        validateNotBlackName(name);
         this.name = name;
     }
 
@@ -21,7 +21,7 @@ public class Name {
         return new Name(name);
     }
 
-    private static void validateName(String name) {
+    private static void validateNotBlackName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("이름이 비었습니다.");
         }

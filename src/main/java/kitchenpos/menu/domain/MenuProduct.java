@@ -69,7 +69,7 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public Price getProductPriceTotal() {
+    public Price totalPrice() {
         return product.getPrice().multiply(this.quantity);
     }
 

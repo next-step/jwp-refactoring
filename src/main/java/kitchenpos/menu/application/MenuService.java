@@ -23,29 +23,15 @@ public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository, final ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }
 
-    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            final Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            menuProducts.add(new MenuProduct.Builder()
-                    .product(product)
-                    .quantity(menuProductRequest.getQuantity())
-                    .build());
-        }
-        return menuProducts;
-    }
-
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalAccessError::new);
+        MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
         List<MenuProduct> menuProducts = findMenuProducts(menuRequest.getMenuProductRequests());
         Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.from(menu);
@@ -57,4 +43,25 @@ public class MenuService {
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
     }
+
+    private MenuGroup findMenuGroupById(Long id) {
+        return menuGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 존재하지 않습니다."));
+    }
+
+    private Product findProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+    }
+
+    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        for (MenuProductRequest menuProductRequest : menuProductRequests) {
+            final Product product = findProductById(menuProductRequest.getProductId());
+            menuProducts.add(new MenuProduct.Builder()
+                    .product(product)
+                    .quantity(menuProductRequest.getQuantity())
+                    .build());
+        }
+        return menuProducts;
+    }
+
 }
