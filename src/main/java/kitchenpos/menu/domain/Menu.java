@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import io.micrometer.core.instrument.util.StringUtils;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,7 +12,6 @@ import java.util.Objects;
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_id")
     private Long id;
 
     @Column(nullable = false)
@@ -26,7 +27,12 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
+    protected Menu(){
+
+    }
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        validateMenuName(name);
+
         this.id = id;
         this.name = name;
         this.price = Price.of(price);
@@ -48,6 +54,12 @@ public class Menu {
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
         return new Menu(null, name, price,menuGroup, new ArrayList<>());
+    }
+
+    private static void validateMenuName(String name){
+        if(StringUtils.isBlank(name)){
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -77,10 +89,10 @@ public class Menu {
     }
 
     public MenuGroup getMenuGroup() {
-        return this.getMenuGroup();
+        return this.menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return this.getMenuProducts();
+        return this.menuProducts.getMenuProducts();
     }
 }

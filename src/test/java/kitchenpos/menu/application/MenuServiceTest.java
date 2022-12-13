@@ -1,6 +1,9 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,45 +46,44 @@ class MenuServiceTest {
     private Product product1;
     private Product product2;
     private Menu menu;
+    private MenuRequest menuRequest;
 
     @BeforeEach
     void setUp() {
         menuGroup = MenuGroup.of(1L, "test menu group");
         product1 = Product.of(product1Id, "상품1", BigDecimal.valueOf(1000));
         product2 = Product.of(product2Id, "상품2", BigDecimal.valueOf(1000));
+
+        menu = getMenuWithTwoMenuProduct(10000, 3, 5);
+        menuRequest = MenuRequest.of("메뉴", BigDecimal.valueOf(10000), null,
+                menu.getMenuProducts().stream().map(MenuProductRequest::of).collect(Collectors.toList()));
     }
 
     @Test
     @DisplayName("메뉴 그룹 아이디가 존재하지 않으면 exception이 발생함")
     void throwExceptionWhenMenuGroupIdNotExist() {
+
         given(menuGroupRepository.existsById(anyLong())).willReturn(false);
 
-        Menu menu = getMenuWithTwoMenuProduct(10000, 3, 5);
-
-        assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("메뉴 그룹이 가진 상품의 아이디가 존재하지 않으면 exception이 발생함")
     void throwExceptionWhenIdOfProductContainedByMenuGroupNotExist() {
-        Menu menu = getMenuWithTwoMenuProduct(10000, 3, 5);
 
         given(menuGroupRepository.existsById(menuId)).willReturn(true);
-        //given(productService.findById(product1Id)).willThrow(IllegalArgumentException.class);
 
-        assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("메뉴 가격은 각 상품의 합보다 클 수 없다")
     void menuPriceCanNotBeBiggerThanSumOfProductPriceMultipliedByQuantity() {
-        Menu menu = getMenuWithTwoMenuProduct(10000, 3, 5);
 
         given(menuGroupRepository.existsById(menuGroupId)).willReturn(true);
-//        given(productService.findById(product1Id)).willReturn(product1);
-//        given(productService.findById(product2Id)).willReturn(product2);
 
-        assertThatThrownBy(() -> service.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
 
@@ -92,10 +95,10 @@ class MenuServiceTest {
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu));
 
-        List<Menu> list = service.list();
+        List<MenuResponse> list = service.list();
 
         menu.setMenuProducts(menuProducts);
-        assertThat(list).isEqualTo(Arrays.asList(menu));
+        assertThat(list).isEqualTo(Arrays.asList(MenuResponse.of(menu)));
     }
 
     private Menu getMenuWithTwoMenuProduct(int menuPrice, int product1Quantity, int product2Quantity) {

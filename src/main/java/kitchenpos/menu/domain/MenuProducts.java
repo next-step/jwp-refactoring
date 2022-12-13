@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.dto.MenuProductRequest;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -17,7 +18,11 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private List<MenuProduct> menuProducts;
 
-    protected MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
+    protected MenuProducts(){
+
+    }
+
+    private MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
         this.menu = menu;
         setMenuProducts(menuProducts);
     }

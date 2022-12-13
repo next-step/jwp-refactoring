@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.Menu;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -52,5 +53,18 @@ public class MenuResponse {
 
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuResponse that = (MenuResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroup, that.menuGroup) && Objects.equals(menuProducts, that.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }

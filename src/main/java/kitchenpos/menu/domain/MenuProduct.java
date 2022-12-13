@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.dto.MenuGroupResponse;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -19,6 +17,10 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
     private long quantity;
+
+    protected MenuProduct(){
+
+    }
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
