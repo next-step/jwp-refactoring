@@ -52,8 +52,8 @@ public class MenuRequest {
                 .collect(Collectors.toList());
     }
 
-    public Menu createMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-        Menu menu = new Menu(new Name(name), new Price(price), menuGroup);
+    public Menu createMenu(MenuProducts menuProducts) {
+        Menu menu = new Menu(new Name(name), new Price(price), menuGroupId);
         menu.setMenuProducts(menuProducts);
 
         return menu;

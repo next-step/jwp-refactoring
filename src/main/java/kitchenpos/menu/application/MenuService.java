@@ -8,8 +8,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -22,27 +21,26 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             MenuRepository menuRepository,
-            MenuGroupRepository menuGroupRepository,
-            ProductRepository productRepository
+            ProductRepository productRepository,
+            MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(MenuRequest request) {
-        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_GROUP_IS_NOT_EXIST.getMessage()));
+        menuValidator.createMenu(request);
         List<MenuProduct> menuProducts =
                 findAllMenuProducts(request.getMenuProducts(), findAllProductByIds(request.getMenuProductIds()));
 
-        final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, new MenuProducts(menuProducts)));
+        final Menu savedMenu = menuRepository.save(request.createMenu(new MenuProducts(menuProducts)));
         return MenuResponse.from(savedMenu);
     }
 

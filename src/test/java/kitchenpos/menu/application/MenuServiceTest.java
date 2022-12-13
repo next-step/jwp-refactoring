@@ -9,6 +9,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
@@ -49,6 +50,9 @@ class MenuServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private MenuValidator menuValidator;
+
     @InjectMocks
     private MenuService menuService;
 
@@ -67,7 +71,7 @@ class MenuServiceTest {
         김치 = new Product(2L, new Name("김치"), new Price(BigDecimal.valueOf(1_000)));
         공기밥 = new Product(3L, new Name("공기밥"), new Price(BigDecimal.valueOf(1_000)));
         한식 = new MenuGroup(1L, new Name("한식"));
-        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식);
+        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식.getId());
         불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기정식, 불고기);
         김치상품 = new MenuProduct(2L, new Quantity(1L), 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, new Quantity(1L), 불고기정식, 공기밥);
@@ -82,7 +86,6 @@ class MenuServiceTest {
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
         MenuRequest request = MenuRequest.of(불고기정식.getName().value(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
-        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findAllById(Arrays.asList(불고기.getId(), 김치.getId(), 공기밥.getId())))
                 .thenReturn(Arrays.asList(불고기, 김치, 공기밥));
         when(menuRepository.save(any())).thenReturn(불고기정식);
@@ -120,24 +123,22 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴가 속한 메뉴그룹이 없을 경우 예외가 발생한다.")
-    @Test
-    void notExistMenuGroupException() {
-        // given
-        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
-        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+//    @DisplayName("메뉴가 속한 메뉴그룹이 없을 경우 예외가 발생한다.")
+//    @Test
+//    void notExistMenuGroupException() {
+//        // given
+//        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
+//
+//        // when & then
+//        assertThatThrownBy(() -> menuService.create(request))
+//                .isInstanceOf(IllegalArgumentException.class);
+//    }
 
     @DisplayName("메뉴에 포함된 상품이 없을 경우 예외가 발생한다.")
     @Test
     void notExistProductException() {
         // given
         MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
-        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(request))
@@ -149,7 +150,6 @@ class MenuServiceTest {
     void menuPriceException() {
         // given
         불고기정식.setPrice(new Price(BigDecimal.valueOf(200_000)));
-        when(menuGroupRepository.findById(불고기정식.getMenuGroup().getId())).thenReturn(Optional.of(한식));
         when(productRepository.findAllById(Arrays.asList(불고기.getId(), 김치.getId(), 공기밥.getId())))
                 .thenReturn(Arrays.asList(불고기, 김치, 공기밥));
         List<MenuProductRequest> menuProductRequests = Arrays.asList(불고기상품, 김치상품, 공기밥상품)

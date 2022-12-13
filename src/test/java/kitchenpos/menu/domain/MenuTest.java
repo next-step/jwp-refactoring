@@ -23,10 +23,10 @@ class MenuTest {
     @Test
     void setMenuProducts() {
         // given
-        MenuGroup menuGroup = new MenuGroup(new Name("한식"));
+        MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
         Product product = new Product(new Name("불고기"), new Price(BigDecimal.valueOf(10_000)));
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(new Quantity(1L), product)));
-        Menu menu = new Menu(new Name("불고기정식"), new Price(BigDecimal.valueOf(10_000)), menuGroup);
+        Menu menu = new Menu(new Name("불고기정식"), new Price(BigDecimal.valueOf(10_000)), menuGroup.getId());
 
         // when
         menu.setMenuProducts(menuProducts);
@@ -39,10 +39,10 @@ class MenuTest {
     @Test
     void menuPriceNotOverThanTotalPriceException() {
         // given
-        MenuGroup menuGroup = new MenuGroup(new Name("한식"));
+        MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
         Product product = new Product(new Name("불고기"), new Price(BigDecimal.valueOf(10_000)));
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(new Quantity(1L), product)));
-        Menu menu = new Menu(new Name("불고기정식"), new Price(BigDecimal.valueOf(200_000)), menuGroup);
+        Menu menu = new Menu(new Name("불고기정식"), new Price(BigDecimal.valueOf(200_000)), menuGroup.getId());
 
         // when & then
         assertThatThrownBy(() -> menu.setMenuProducts(menuProducts))

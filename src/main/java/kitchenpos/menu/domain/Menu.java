@@ -17,23 +17,21 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
-    public Menu(Name name, Price price, MenuGroup menuGroup) {
+    public Menu(Name name, Price price, Long menuGroupId) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
     }
 
-    public Menu(Long id, Name name, Price price, MenuGroup menuGroup) {
-        this(name, price, menuGroup);
+    public Menu(Long id, Name name, Price price, Long menuGroupId) {
+        this(name, price, menuGroupId);
         this.id = id;
     }
 
@@ -53,8 +51,8 @@ public class Menu {
         this.price = price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -80,7 +78,7 @@ public class Menu {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", menuGroup=" + menuGroup +
+                ", menuGroupId=" + menuGroupId +
                 ", menuProducts=" + menuProducts +
                 '}';
     }

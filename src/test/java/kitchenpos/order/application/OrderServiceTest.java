@@ -77,7 +77,7 @@ class OrderServiceTest {
         김치 = new Product(2L, new Name("김치"), new Price(BigDecimal.valueOf(1_000)));
         공기밥 = new Product(3L, new Name("공기밥"), new Price(BigDecimal.valueOf(1_000)));
         한식 = new MenuGroup(1L, new Name("한식"));
-        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식);
+        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식.getId());
         불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기정식, 불고기);
         김치상품 = new MenuProduct(2L, new Quantity(1L), 불고기정식, 김치);
         공기밥상품 = new MenuProduct(3L, new Quantity(1L), 불고기정식, 공기밥);
@@ -86,7 +86,7 @@ class OrderServiceTest {
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));
-        불고기정식주문요청 = OrderLineItemRequest.of(불고기정식.getMenuGroup().getId(), 1L);
+        불고기정식주문요청 = OrderLineItemRequest.of(불고기정식.getMenuGroupId(), 1L);
     }
 
     @DisplayName("주문을 생성한다.")

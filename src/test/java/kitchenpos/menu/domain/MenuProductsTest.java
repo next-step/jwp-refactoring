@@ -37,8 +37,8 @@ class MenuProductsTest {
     @Test
     void setMenu() {
         // given
-        MenuGroup menuGroup = new MenuGroup(new Name("한식"));
-        Menu menu = new Menu(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)), menuGroup);
+        MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
+        Menu menu = new Menu(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)), menuGroup.getId());
         Product product = new Product(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)));
         MenuProduct menuProduct = new MenuProduct(new Quantity(1L), product);
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(menuProduct));

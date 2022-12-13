@@ -38,8 +38,8 @@ class OrderLineItemsTest {
     @Test
     void setOrder() {
         // given
-        MenuGroup menuGroup = new MenuGroup(new Name("한식"));
-        Menu menu = new Menu(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)), menuGroup);
+        MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
+        Menu menu = new Menu(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)), menuGroup.getId());
 
         OrderLineItem orderLineItem = new OrderLineItem(new Quantity(1L), menu);
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
