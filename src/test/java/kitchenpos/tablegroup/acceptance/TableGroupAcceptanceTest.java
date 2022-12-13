@@ -1,10 +1,11 @@
-package kitchenpos.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 
-import static kitchenpos.acceptance.TableAcceptanceTest.주문테이블_생성_요청;
+import static kitchenpos.ordertable.acceptance.TableAcceptanceTest.주문테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단체 지정 관련 인수 테스트")
