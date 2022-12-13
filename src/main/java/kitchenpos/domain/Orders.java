@@ -26,4 +26,12 @@ public class Orders {
     public void addOrder(Order order) {
         orders.add(order);
     }
+
+    public void findByInOrderStatus(List<String> orderStatuses) {
+        boolean isFindByInOrderStatus = orders.stream()
+                .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
+        if (isFindByInOrderStatus) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

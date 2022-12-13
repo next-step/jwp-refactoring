@@ -15,6 +15,6 @@
 
 ### 서비스 리팩터링
 
-* [ ] 단위 테스트하기 어려운 코드와 가능한 코드 분리
-  * [ ] 단위 테스트 구현
-* [ ] Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션 필수
+* [x] 단위 테스트하기 어려운 코드와 가능한 코드 분리
+  * [x] 단위 테스트 구현
+* [x] Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션 필수

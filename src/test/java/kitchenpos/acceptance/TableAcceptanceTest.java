@@ -8,20 +8,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -39,7 +38,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 주문_테이블을_등록할_수_있다() throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(1L, 1, false);
+        OrderTableRequest 주문_테이블 = new OrderTableRequest(null, 1, false);
 
         ResultActions resultActions = 주문_테이블_등록(주문_테이블);
 
@@ -48,7 +47,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 주문_테이블_목록을_조회할_수_있다() throws Exception {
-        OrderTable orderTable = 주문_테이블이_등록되어_있다();
+        OrderTableRequest orderTable = 주문_테이블이_등록되어_있다();
 
         ResultActions resultActions = 주문_테이블_목록_조회();
 
@@ -116,7 +115,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 주문_테이블의_방문한_손님수를_수정할_수_있다() throws Exception {
-        OrderTable orderTable = 주문_테이블이_등록되어_있다();
+        주문_테이블이_등록되어_있다();
 
         ResultActions resultActions = 주문_테이블_방문한_손님수_수정(orderTableChangeNumberOfGuestsRequest);
 
@@ -127,21 +126,21 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
         resultActions.andExpect(status().isOk());
     }
 
-    private OrderTable 빈_테이블이_등록되어_있다() throws Exception {
-        OrderTable orderTable = 주문_테이블이_등록되어_있다();
+    private OrderTableRequest 빈_테이블이_등록되어_있다() throws Exception {
+        OrderTableRequest orderTable = 주문_테이블이_등록되어_있다();
 
         ResultActions resultActions = 주문_테이블_비어있음_여부_수정(new OrderTableChangeEmptyRequest(true));
         주문_테이블_수정_성공(resultActions);
         return orderTable;
     }
 
-    private OrderTable 주문_테이블에_조리_식사_상태의_주문이_포함되어_있다() throws Exception {
-        OrderTable orderTable = 주문_테이블이_등록되어_있다();
+    private OrderTableRequest 주문_테이블에_조리_식사_상태의_주문이_포함되어_있다() throws Exception {
+        OrderTableRequest orderTable = 주문_테이블이_등록되어_있다();
         주문이_등록되어_있다(orderTable);
         return orderTable;
     }
 
-    private OrderRequest 주문이_등록되어_있다(OrderTable orderTable) throws Exception {
+    private OrderRequest 주문이_등록되어_있다(OrderTableRequest orderTable) throws Exception {
         메뉴그룹_등록(후라이드치킨_메뉴그룹);
         상품_등록(후라이드치킨_상품);
         메뉴_등록(후라이드치킨);
@@ -203,7 +202,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private void 주문_테이블_목록_조회_성공(ResultActions resultActions, OrderTable orderTable) throws Exception {
+    private void 주문_테이블_목록_조회_성공(ResultActions resultActions, OrderTableRequest orderTable) throws Exception {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(1L))
                 .andExpect(jsonPath("$.[0].tableGroupId").isEmpty())
@@ -211,8 +210,8 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("$.[0].empty").value(orderTable.isEmpty()));
     }
 
-    private OrderTable 주문_테이블이_등록되어_있다() throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(1L, 1, false);
+    private OrderTableRequest 주문_테이블이_등록되어_있다() throws Exception {
+        OrderTableRequest 주문_테이블 = new OrderTableRequest(1L, 1, false);
         ResultActions resultActions = 주문_테이블_등록(주문_테이블);
         주문_테이블_등록_성공(resultActions, 주문_테이블);
         return 주문_테이블;
@@ -228,7 +227,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
         resultActions.andExpect(status().isOk());
     }
 
-    private void 주문_테이블_등록_성공(ResultActions resultActions, OrderTable orderTable) throws Exception {
+    private void 주문_테이블_등록_성공(ResultActions resultActions, OrderTableRequest orderTable) throws Exception {
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("tableGroupId").isEmpty())
@@ -236,7 +235,7 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("empty").value(orderTable.isEmpty()));
     }
 
-    private ResultActions 주문_테이블_등록(OrderTable orderTable) throws Exception {
+    private ResultActions 주문_테이블_등록(OrderTableRequest orderTable) throws Exception {
         return mvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderTable))
@@ -244,14 +243,14 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private OrderTable 주문_테이블에_이미_단체_지정이_되어있다() throws Exception {
-        OrderTable 주문_테이블 = new OrderTable(null, 1, true);
-        OrderTable 주문_테이블2 = new OrderTable(null, 1, true);
+    private OrderTableRequest 주문_테이블에_이미_단체_지정이_되어있다() throws Exception {
+        OrderTableRequest 주문_테이블 = new OrderTableRequest(null, 1, true);
+        OrderTableRequest 주문_테이블2 = new OrderTableRequest(null, 1, true);
         주문_테이블_등록(주문_테이블);
         주문_테이블_등록(주문_테이블2);
         주문_테이블.setId(1L);
         주문_테이블2.setId(2L);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(주문_테이블, 주문_테이블2));
         mvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tableGroup))

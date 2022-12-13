@@ -13,12 +13,12 @@ import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -31,8 +31,8 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
     MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
             Collections.singletonList(후라이드치킨_메뉴상품));
-    OrderTable 빈_주문_테이블 = new OrderTable(1L, 1, true);
-    OrderTable 주문_테이블 = new OrderTable(1L, 1, false);
+    OrderTableRequest 빈_주문_테이블 = new OrderTableRequest(null, 1, true);
+    OrderTableRequest 주문_테이블 = new OrderTableRequest(null, 1, false);
 
     @Test
     void 수량이_남은_메뉴만_주문할_수_있다() throws Exception {
@@ -105,8 +105,6 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_주문의_상태만_변경할_수_있다() throws Exception {
-        OrderRequest 등록되지_않은_주문 = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
-
         ResultActions resultActions = 주문_상태를_변경(new OrderStatusRequest(OrderStatus.COOKING.name()));
 
         주문_상태_변경_실패(resultActions);
@@ -115,7 +113,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 이미_완료된_주문의_상태는_변경할_수_없다() throws Exception {
-        OrderRequest 이미_완료된_주문 = 이미_완료된_주문();
+        이미_완료된_주문();
 
         ResultActions resultActions = 주문_상태를_변경(new OrderStatusRequest(OrderStatus.COOKING.name()));
 
@@ -180,7 +178,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private ResultActions 주문_테이블_등록(OrderTable orderTable) throws Exception {
+    private ResultActions 주문_테이블_등록(OrderTableRequest orderTable) throws Exception {
         return mvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderTable))

@@ -7,7 +7,6 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,20 +14,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTable create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = new OrderTable(null, orderTableRequest.getNumberOfGuests(),
+        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests(),
                 orderTableRequest.isEmpty());
 
         return orderTableRepository.save(orderTable);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable findById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds).orElseThrow(IllegalArgumentException::new);
     }
 
     @Transactional(readOnly = true)

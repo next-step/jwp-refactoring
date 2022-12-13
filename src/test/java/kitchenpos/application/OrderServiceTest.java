@@ -16,10 +16,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderStatusRequest;
-import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,20 +29,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private Order order = new Order(new OrderTable(1L, 1, false));
+    private Order order = new Order(new OrderTable(1, false));
     @Mock
-    private MenuRepository menuRepository;
+    private MenuService menuService;
+    @Mock
+    private TableService tableService;
     @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuService, tableService, orderRepository, orderLineItemRepository);
     }
 
     @Test
@@ -52,8 +50,8 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 2, false)));
-        given(menuRepository.countByIdIn(any())).willReturn(2L);
+        given(tableService.findById(any())).willReturn(new OrderTable(2, false));
+        given(menuService.countByIdIn(any())).willReturn(2L);
         given(orderRepository.save(any())).willReturn(order);
 
         Order createOrder = orderService.create(orderRequest);
@@ -64,7 +62,7 @@ class OrderServiceTest {
     @Test
     void 수량이_남은_메뉴만_주문할_수_있다() {
         OrderRequest orderRequest = new OrderRequest(1L, Collections.emptyList());
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 2, false)));
+        given(tableService.findById(any())).willReturn(new OrderTable(2, false));
 
         ThrowingCallable 수량이_남지_않은_메뉴_주문시도 = () -> orderService.create(orderRequest);
 
@@ -76,8 +74,8 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 2, false)));
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(tableService.findById(any())).willReturn(new OrderTable(2, false));
+        given(menuService.countByIdIn(any())).willReturn(1L);
 
         ThrowingCallable 없는_메뉴가_포함된_주문시도 = () -> orderService.create(orderRequest);
 
@@ -89,7 +87,7 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
+        given(tableService.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(orderRequest);
 
@@ -101,7 +99,7 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 2, true)));
+        given(tableService.findById(any())).willReturn(new OrderTable(2, true));
 
         ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(orderRequest);
 

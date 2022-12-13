@@ -11,7 +11,8 @@ class OrderTableTest {
 
     @Test
     void 이미_단체_지정이_된_주문_테이블은_수정할_수_없다() {
-        OrderTable orderTable = new OrderTable(1L, 1, false);
+        OrderTable orderTable = new OrderTable(1, false);
+        orderTable.changeTableGroup(new TableGroup());
 
         ThrowingCallable 이미_단체_지정이_된_테이블_수정 = orderTable::validateAlreadyTableGroup;
 
@@ -20,8 +21,8 @@ class OrderTableTest {
 
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
-        OrderTable orderTable = new OrderTable(1L, 1, false);
-        orderTable.addOrder(new Order(new OrderTable(1L, 1, false)));
+        OrderTable orderTable = new OrderTable(1, false);
+        orderTable.addOrder(new Order(new OrderTable(1, false)));
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_테이블_수정 = () -> orderTable.validateOrderStatus(
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));

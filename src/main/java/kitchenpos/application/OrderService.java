@@ -5,41 +5,35 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderStatusRequest;
-import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
 
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
+    private final TableService tableService;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final MenuRepository menuRepository,
-            final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
-        this.menuRepository = menuRepository;
+    public OrderService(MenuService menuService, TableService tableService,
+                        OrderRepository orderRepository,
+                        OrderLineItemRepository orderLineItemRepository) {
+        this.menuService = menuService;
+        this.tableService = tableService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
 
         Order order = new Order(orderTable);
         order.addLineItems(orderRequest.getOrderLineItems());
-        order.validateOrderLineItemsSizeAndMenuCount(menuRepository.countByIdIn(order.makeMenuIds()));
+        order.validateOrderLineItemsSizeAndMenuCount(menuService.countByIdIn(order.makeMenuIds()));
 
         return orderRepository.save(order);
     }

@@ -13,7 +13,6 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,8 +25,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private OrderTable orderTable;
@@ -38,14 +35,14 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderTableRepository);
     }
 
     @Test
     void 주문_테이블을_등록할_수_있다() {
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
-        OrderTable createOrderTable = tableService.create(new OrderTableRequest(1, true));
+        OrderTable createOrderTable = tableService.create(new OrderTableRequest(null, 1, true));
 
         assertThat(createOrderTable).isEqualTo(orderTable);
     }

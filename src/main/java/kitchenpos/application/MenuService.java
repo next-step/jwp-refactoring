@@ -7,10 +7,8 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuRequest;
-import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,26 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
+    private final MenuGroupService menuGroupService;
     private final MenuProductRepository menuProductRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final MenuProductRepository menuProductRepository,
-            final ProductRepository productRepository
-    ) {
+    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService,
+                       MenuProductRepository menuProductRepository, ProductService productService) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
+        this.menuGroupService = menuGroupService;
         this.menuProductRepository = menuProductRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
+        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 
@@ -58,11 +51,15 @@ public class MenuService {
         return menus;
     }
 
+    @Transactional(readOnly = true)
+    public long countByIdIn(List<Long> makeMenuIds) {
+        return menuRepository.countByIdIn(makeMenuIds);
+    }
+
     private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
         return menuRequest.getMenuProductRequests().stream()
                 .map(menuProductRequest -> {
-                    Product product = productRepository.findById(menuProductRequest.getProductId())
-                            .orElseThrow(IllegalArgumentException::new);
+                    Product product = productService.findById(menuProductRequest.getProductId());
                     return new MenuProduct(null, product, menuProductRequest.getQuantity());
                 })
                 .collect(Collectors.toList());
