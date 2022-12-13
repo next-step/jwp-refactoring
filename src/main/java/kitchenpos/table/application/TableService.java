@@ -39,7 +39,7 @@ public class TableService {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 
@@ -48,7 +48,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(request.isEmpty());
+        savedOrderTable.changeEmptyStatus(request.isEmpty());
 
         OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
@@ -60,11 +60,7 @@ public class TableService {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(request.getNumberOfGuests());
+        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
         OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);

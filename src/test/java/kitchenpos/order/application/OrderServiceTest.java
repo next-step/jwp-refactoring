@@ -9,8 +9,8 @@ import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
 
     private Order 주문;
@@ -64,7 +64,7 @@ class OrderServiceTest {
         주문 = OrderFixture.create(
                 1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문_항목)
         );
-        주문_테이블 = OrderTableFixture.create(null, 1L, 10, false);
+        주문_테이블 = OrderTableFixture.create(null, 1, false);
     }
 
     @DisplayName("주문을 등록할 수 있다.")
@@ -72,7 +72,7 @@ class OrderServiceTest {
     void create() {
         // given
         when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
         when(orderDao.save(any())).thenReturn(주문);
 
         // when
@@ -109,7 +109,7 @@ class OrderServiceTest {
     void create_error_order_table_empty() {
         // given
         when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // when && then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -120,9 +120,9 @@ class OrderServiceTest {
     @Test
     void create_error_order_table_value_empty() {
         // given
-        주문_테이블.setEmpty(true);
+        주문_테이블.changeEmptyStatus(true);
         when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
 
         // when && then
         assertThatThrownBy(() -> orderService.create(주문))

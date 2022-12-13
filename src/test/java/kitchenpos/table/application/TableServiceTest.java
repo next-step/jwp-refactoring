@@ -45,9 +45,9 @@ class TableServiceTest {
 
     @BeforeEach
     void set_up() {
-        주문테이블_1번 = OrderTableFixture.create(1L, null, 6, true);
-        주문테이블_1번_요청 = new OrderTableRequest(6, true);
-        주문테이블_2번 = OrderTableFixture.create(2L, null, 0, true);
+        주문테이블_1번 = OrderTableFixture.create(null, 6, true);
+        주문테이블_1번_요청 = new OrderTableRequest(1L, 6, true);
+        주문테이블_2번 = OrderTableFixture.create(null, 0, true);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -86,7 +86,7 @@ class TableServiceTest {
     @Test
     void update_table_empty() {
         // given
-        OrderTable 주문테이블_변경 = OrderTableFixture.create(2L, null, 10, false);
+        OrderTable 주문테이블_변경 = OrderTableFixture.create(null, 10, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문테이블_변경));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(주문테이블_변경);
@@ -107,17 +107,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블에 테이블 그룹이 등록되어 있다면 변경할 수 없다.")
-    @Test
-    void update_error_exist_table_group() {
-        // given
-        주문테이블_1번.setTableGroupId(1L);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.ofNullable(주문테이블_1번));
 
-        // when && then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 
     @DisplayName("주문 테이블의 주문의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.")
     @Test
@@ -138,8 +128,8 @@ class TableServiceTest {
     @Test
     void change_number_guest() {
         // given
-        주문테이블_1번.setEmpty(false);
-        주문테이블_1번.setNumberOfGuests(20);
+        주문테이블_1번.changeEmptyStatus(false);
+        주문테이블_1번.changeNumberOfGuests(20);
         when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
         when(orderTableRepository.save(주문테이블_1번)).thenReturn(주문테이블_1번);
 

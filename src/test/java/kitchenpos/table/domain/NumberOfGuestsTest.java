@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("손님 테스트")
 class NumberOfGuestsTest {
 
     @DisplayName("0명 이상의 손님을 생성 할 수 있다.")
