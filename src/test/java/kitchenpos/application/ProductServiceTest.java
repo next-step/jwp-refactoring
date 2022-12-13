@@ -16,15 +16,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductFixture;
+import kitchenpos.domain.ProductRepository;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -57,7 +57,7 @@ class ProductServiceTest {
         String name = "상품";
         BigDecimal price = new BigDecimal(17000);
         Product product = productParam(name, price);
-        given(productDao.save(product)).willReturn(ProductFixture.savedProduct(1L, name, price));
+        given(productRepository.save(product)).willReturn(ProductFixture.savedProduct(1L, name, price));
 
         // when
         Product actual = productService.create(product);
@@ -76,10 +76,10 @@ class ProductServiceTest {
         // given
         Product savedProduct1 = savedProduct(1L, "상품1", new BigDecimal(17000));
         Product savedProduct2 = savedProduct(2L, "상품2", new BigDecimal(17000));
-        given(productDao.findAll()).willReturn(Arrays.asList(savedProduct1, savedProduct2));
+        given(productRepository.findAll()).willReturn(Arrays.asList(savedProduct1, savedProduct2));
 
         // when
-        List<Product> products = productDao.findAll();
+        List<Product> products = productRepository.findAll();
 
         // then
         assertThat(products).hasSize(2);
