@@ -9,7 +9,7 @@ import static kitchenpos.fixture.ProductTestFixture.*;
 public class MenuProductTestFixture {
 
     public static MenuProduct createMenuProduct(Menu menu, Product product, long quantity) {
-        return MenuProduct.of(null, menu, product, quantity);
+        return MenuProduct.of(menu, product, quantity);
     }
 
     public static MenuProduct 짜장면메뉴상품() {
