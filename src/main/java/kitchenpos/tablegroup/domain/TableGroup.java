@@ -3,15 +3,14 @@ package kitchenpos.tablegroup.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import org.springframework.util.CollectionUtils;
 
 @Entity
@@ -23,18 +22,18 @@ public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup", cascade = CascadeType.ALL)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
-    public TableGroup() {}
+    protected TableGroup() {}
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, List<OrderTable> orderTables) {
         validateOrderTableMinSize(orderTables);
-        validateOrderTableIsEmptyOrNonNull(orderTables);
-        setOrderTablesTableGourp(orderTables);
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
+        this.orderTables = OrderTables.from(orderTables);
+
+        setOrderTablesTableGourp(orderTables);
     }
 
     private void validateOrderTableMinSize(List<OrderTable> orderTables) {
@@ -43,58 +42,35 @@ public class TableGroup {
         }
     }
 
-    private void validateOrderTableIsEmptyOrNonNull(List<OrderTable> orderTables){
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.tableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    private void setOrderTablesTableGourp(List<OrderTable> orderTables){
+    private void setOrderTablesTableGourp(List<OrderTable> orderTables) {
         for (OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(this);
         }
     }
 
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public List<OrderTable> getOrderTablesReadOnlyValue() {
+        return orderTables.readOnlyValue();
     }
 
     public static class Builder {
 
         private Long id;
-        private LocalDateTime createdDate;
         private List<OrderTable> orderTables;
 
         public Builder id(Long id) {
             this.id = id;
-            return this;
-        }
-
-        public Builder createdDate(LocalDateTime createdDate) {
-            this.createdDate = createdDate;
             return this;
         }
 
@@ -104,7 +80,7 @@ public class TableGroup {
         }
 
         public TableGroup build() {
-            return new TableGroup(id, createdDate, orderTables);
+            return new TableGroup(id, orderTables);
         }
     }
 }

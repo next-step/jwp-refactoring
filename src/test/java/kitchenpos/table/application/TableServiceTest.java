@@ -55,7 +55,7 @@ class TableServiceTest {
     void create() {
         // given
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문_테이블_1);
-        OrderTableRequest 주문_테이블_생성_요청_객체 = 주문_테이블_생성_요청_객체_생성(주문_테이블_1.getNumberOfGuests(), 주문_테이블_1.isEmpty());
+        OrderTableRequest 주문_테이블_생성_요청_객체 = 주문_테이블_생성_요청_객체_생성(주문_테이블_1.getNumberOfGuestsValue(), 주문_테이블_1.isEmpty());
 
         // when
         OrderTableResponse 주문_테이블_생성_응답_객체 = tableService.create(주문_테이블_생성_요청_객체);

@@ -11,7 +11,7 @@ public class OrderTableResponseTest {
         return new OrderTableResponse.Builder()
                 .id(orderTable.getId())
                 .tableGroupId(orderTable.tableGroupId())
-                .numberOfGuests(orderTable.getNumberOfGuests())
+                .numberOfGuests(orderTable.getNumberOfGuestsValue())
                 .empty(orderTable.isEmpty())
                 .build();
     }

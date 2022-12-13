@@ -80,7 +80,7 @@ class OrderServiceTest {
         주문_항목 = 주문_항목_생성(1L, null, 소머리국밥_메뉴, 2);
         주문_테이블 = 주문_테이블_생성(1L, null, 2, false);
 
-        주문 = 주문_생성(1L, 주문_테이블, null, null, Arrays.asList(주문_항목));
+        주문 = 주문_생성(1L, 주문_테이블, Arrays.asList(주문_항목));
     }
 
     @Test

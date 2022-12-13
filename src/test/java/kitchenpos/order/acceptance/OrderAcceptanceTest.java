@@ -69,17 +69,21 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문을 등록할 수 있다.")
     void name() {
-        // given
+        // when
         OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
         ExtractableResponse<Response> response = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목));
 
-        // when
+        // then
         주문_등록됨(response);
     }
 
     @Test
     @DisplayName("주문 목록을 조회할 수 있다.")
     void list() {
+        // given
+        OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
+        주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목));
+
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 

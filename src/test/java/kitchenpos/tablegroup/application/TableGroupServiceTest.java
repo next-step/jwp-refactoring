@@ -47,7 +47,7 @@ class TableGroupServiceTest {
     public void setUp() {
         주문_테이블_1 = 주문_테이블_생성(1L, null, 0, true);
         주문_테이블_2 = 주문_테이블_생성(2L, null, 0, true);
-        단체 = 단체_생성(1L, null, Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        단체 = 단체_생성(1L, Arrays.asList(주문_테이블_1, 주문_테이블_2));
     }
 
 

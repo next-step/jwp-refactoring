@@ -25,7 +25,7 @@ public class OrderResponse {
     }
 
     public static OrderResponse from(Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
+        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItemsReadOnlyValue().stream()
                 .map(OrderLineItemResponse::from)
                 .collect(Collectors.toList());
 

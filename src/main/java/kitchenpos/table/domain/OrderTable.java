@@ -1,6 +1,8 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,15 +25,18 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+
+    @Column(nullable = false)
     private boolean empty;
 
-    public OrderTable() {}
+    protected OrderTable() {}
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
@@ -49,7 +54,7 @@ public class OrderTable {
     public void changeNumberOfGuests(int numberOfGuests) {
         vaildateNumberOfGuestsMinSize(numberOfGuests);
         validateNumberOfGuestsNotEmpty();
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
     private void vaildateNumberOfGuestsMinSize(int numberOfGuests) {
@@ -64,7 +69,7 @@ public class OrderTable {
         }
     }
 
-    public void unTableGroup(){
+    public void unTableGroup() {
         this.tableGroup = null;
     }
 
@@ -72,24 +77,16 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public int getNumberOfGuestsValue() {
+        return numberOfGuests.value();
     }
 
     public boolean isEmpty() {
@@ -98,6 +95,10 @@ public class OrderTable {
 
     public void setEmpty(boolean empty) {
         this.empty = empty;
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public Long tableGroupId() {
