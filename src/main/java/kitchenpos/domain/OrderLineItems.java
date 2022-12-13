@@ -14,7 +14,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
+    protected OrderLineItems() {
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItemsParam) {

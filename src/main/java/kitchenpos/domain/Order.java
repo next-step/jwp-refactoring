@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +27,8 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -40,7 +43,7 @@ public class Order {
         }
         orderTable.addOrder(this);
         this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = new OrderLineItems();
     }
@@ -60,8 +63,7 @@ public class Order {
 
     public Void changeStatus(String orderStatusParam) {
         validateOrderStatus();
-        OrderStatus orderStatus = OrderStatus.valueOf(orderStatusParam);
-        this.orderStatus = orderStatus.name();
+        this.orderStatus = OrderStatus.valueOf(orderStatusParam);
         return null;
     }
 
@@ -74,7 +76,7 @@ public class Order {
     }
 
     public String getOrderStatus() {
-        return orderStatus;
+        return orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {

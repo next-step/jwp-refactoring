@@ -13,17 +13,19 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Embedded
+    private ProductName name;
 
     @Embedded
     private ProductPrice price;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
-        this.name = name;
+        this.name = new ProductName(name);
         this.price = new ProductPrice(price);
     }
 
@@ -36,7 +38,7 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {

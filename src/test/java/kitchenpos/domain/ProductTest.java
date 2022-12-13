@@ -25,4 +25,11 @@ class ProductTest {
 
         assertThatIllegalArgumentException().isThrownBy(상품_가격_null_지정);
     }
+
+    @Test
+    void 상품명은_필수로_입력해야_한다() {
+        ThrowingCallable 상품명이_입력되지_않은_경우 = () -> new Product(1L, null, new BigDecimal(16000));
+
+        assertThatIllegalArgumentException().isThrownBy(상품명이_입력되지_않은_경우);
+    }
 }

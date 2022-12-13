@@ -32,7 +32,7 @@ class OrderTableTest {
 
     @Test
     void 비어있음_여부를_수정할_수_있다() {
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(1, false);
 
         orderTable.changeEmpty(true);
 
@@ -41,7 +41,7 @@ class OrderTableTest {
 
     @Test
     void 방문한_손님_수_수정시_빈_테이블일_경우_수정_할_수_없다() {
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(1, false);
         orderTable.changeEmpty(true);
 
         ThrowingCallable 빈_테이블인_상태에서_방문한_손님_수_수정 = orderTable::validateEmpty;

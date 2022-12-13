@@ -1,5 +1,11 @@
 package kitchenpos.domain;
 
 public enum OrderStatus {
-    COOKING, MEAL, COMPLETION
+    COOKING("COOKING"), MEAL("MEAL"), COMPLETION("COMPLETION");
+
+    private String orderStatus;
+
+    OrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }
