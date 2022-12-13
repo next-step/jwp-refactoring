@@ -8,18 +8,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import org.springframework.util.ObjectUtils;
 
 @Entity
 public class Menu {
-    private static final String NAME_NOT_ALLOW_NULL_OR_EMPTY = "메뉴명은 비어있거나 공백일 수 없습니다.";
     private static final String REQUIRED_MENU_GROUP = "메뉴 그룹은 필수 값 입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private MenuName name;
 
     @Embedded
     private MenuPrice price;
@@ -32,17 +31,10 @@ public class Menu {
     protected Menu() {}
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
-        validateName(name);
         validateMenuGroup(menuGroupId);
-        this.name = name;
+        this.name = new MenuName(name);
         this.price = new MenuPrice(price);
         this.menuGroupId = menuGroupId;
-    }
-
-    private void validateName(String name) {
-        if (ObjectUtils.isEmpty(name)) {
-            throw new IllegalArgumentException(NAME_NOT_ALLOW_NULL_OR_EMPTY);
-        }
     }
 
     private void validateMenuGroup(Long menuGroupId) {
@@ -65,7 +57,7 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.value();
     }
 
     public Long getMenuGroupId() {
