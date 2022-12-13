@@ -1,12 +1,12 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -35,21 +35,21 @@ public class MenuServiceTest {
     private final Product 돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
     private final Product 쫄면 = new Product(5L, "쫄면", new Price(new BigDecimal(5000)));
 
-    private final MenuProduct 라볶이세트참치김밥 = new MenuProduct(1L, 1L, 참치김밥.getId(), 1);
-    private final MenuProduct 라볶이세트라볶이 = new MenuProduct(2L, 1L, 라볶이.getId(), 1);
-    private final MenuProduct 라볶이세트돈까스 = new MenuProduct(3L, 1L, 돈까스.getId(), 1);
-
-    private final MenuProduct 쫄면세트치즈김밥 = new MenuProduct(4L, 2L, 치즈김밥.getId(), 1);
-    private final MenuProduct 쫄면세트쫄면 = new MenuProduct(5L, 2L, 쫄면.getId(), 1);
-    private final MenuProduct 쫄면세트돈까스 = new MenuProduct(6L, 2L, 돈까스.getId(), 1);
-
     private final MenuGroup 분식 = new MenuGroup(1L, "분식");
 
-    private final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new BigDecimal(14000), 분식.getId(),
-            Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
+    private final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식);
 
-    private final Menu 쫄면세트 = new Menu(2L, "쫄면세트", new BigDecimal(14000), 분식.getId(),
-            Arrays.asList(쫄면세트치즈김밥, 쫄면세트쫄면, 쫄면세트돈까스));
+    private final Menu 쫄면세트 = new Menu(2L, "쫄면세트", new Price(new BigDecimal(14000)), 분식);
+
+    private final MenuProduct 라볶이세트참치김밥 = new MenuProduct(1L, 라볶이세트, 참치김밥, new Quantity(1));
+    private final MenuProduct 라볶이세트라볶이 = new MenuProduct(2L, 라볶이세트, 라볶이, new Quantity(1));
+    private final MenuProduct 라볶이세트돈까스 = new MenuProduct(3L, 라볶이세트, 돈까스, new Quantity(1));
+
+    private final MenuProduct 쫄면세트치즈김밥 = new MenuProduct(4L, 쫄면세트, 치즈김밥, new Quantity(1));
+    private final MenuProduct 쫄면세트쫄면 = new MenuProduct(5L, 쫄면세트, 쫄면, new Quantity(1));
+    private final MenuProduct 쫄면세트돈까스 = new MenuProduct(6L, 쫄면세트, 돈까스, new Quantity(1));
+
+
 
     @Mock
     private MenuDao menuDao;

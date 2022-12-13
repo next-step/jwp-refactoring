@@ -1,6 +1,4 @@
-package kitchenpos.domain;
-
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
