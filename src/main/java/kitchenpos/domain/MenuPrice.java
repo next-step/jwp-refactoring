@@ -23,10 +23,6 @@ public class MenuPrice {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public void compareTo(BigDecimal sum) {
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();

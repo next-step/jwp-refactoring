@@ -21,10 +21,6 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id) {
-        this.id = id;
-    }
-
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
@@ -39,23 +35,12 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price.getPrice();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price.setPrice(price);
-    }
 }

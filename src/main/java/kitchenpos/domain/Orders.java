@@ -18,7 +18,7 @@ public class Orders {
                         .contains(order.getOrderStatus()))
                 .findAny();
 
-        if (orders.size() > 0 && findInOrderStatuses.isPresent()) {
+        if (findInOrderStatuses.isPresent()) {
             throw new IllegalArgumentException();
         }
     }

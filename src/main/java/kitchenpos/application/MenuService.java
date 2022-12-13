@@ -45,7 +45,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
+            menu.addMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
         }
 
         return menus;

@@ -31,8 +31,4 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
 }
