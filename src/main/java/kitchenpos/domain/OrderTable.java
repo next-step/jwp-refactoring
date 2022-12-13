@@ -54,7 +54,7 @@ public class OrderTable {
         if (isEmpty()) {
             throw new IllegalArgumentException("해당테이블은 비어있는 상태입니다.");
         }
-        
+
         this.numberOfGuests = numberOfGuests;
     }
 

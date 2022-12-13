@@ -17,35 +17,34 @@ public class TableGroup {
     private List<OrderTable> orderTables;
 
     private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        validateOrderTables(orderTables);
         this.createdDate = createdDate;
         this.orderTables = orderTables;
-        for (final OrderTable savedOrderTable : orderTables) {
-            savedOrderTable.changeEmpty(false);
-            savedOrderTable.changeTableGroup(this);
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.changeEmpty(false);
+            orderTable.changeTableGroup(this);
         }
     }
 
     public TableGroup() {
     }
 
-    public static TableGroup of(List<OrderTable> savedOrderTables) {
-        validateOrderTables(savedOrderTables);
-
-        return new TableGroup(LocalDateTime.now(), savedOrderTables);
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(LocalDateTime.now(), orderTables);
     }
 
-    private static void validateOrderTables(final List<OrderTable> savedOrderTables) {
-        validateIsCreatableTableGroup(savedOrderTables);
+    private void validateOrderTables(final List<OrderTable> orderTables) {
+        validateIsCreatableTableGroup(orderTables);
     }
 
-    private static void validateIsCreatableTableGroup(final List<OrderTable> savedOrderTables) {
-        if (CollectionUtils.isEmpty(savedOrderTables) || savedOrderTables.size() < 2) {
+    private void validateIsCreatableTableGroup(final List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException("그룹을 지정하기 위해서는 주문테이블이 2개 이상 필요합니다.");
         }
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException("그룹을 지정하기 위해서는 테이블은 그룹이 지정되어 있거나 비어있으면 안됩니다.");
+        for (final OrderTable orderTable : orderTables) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+                throw new IllegalArgumentException("그룹을 지정하기 위해서는 테이블은 그룹이 지정되어 있거나 테이블이 비어있어야 합니다.");
             }
         }
     }

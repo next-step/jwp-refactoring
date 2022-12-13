@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.dto.MenuRequest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTest {
 
+    @DisplayName("주문 생성 작업을 성공한다.")
     @Test
     void of() {
         // given
@@ -34,6 +36,7 @@ class OrderTest {
         );
     }
 
+    @DisplayName("주문 상태 변경 작업을 성공한다.")
     @Test
     void changeOrderStatus() {
         // given
