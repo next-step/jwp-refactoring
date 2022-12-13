@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
