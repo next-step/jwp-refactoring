@@ -1,21 +1,46 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
+@Entity
 public class Product {
-    private Long id;
-    private String name;
-    private BigDecimal price;
 
-    public Product(String name, BigDecimal price) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Name name;
+
+    @Embedded
+    private Price price;
+
+    public Product(Name name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public Product(long id, String name, BigDecimal price) {
+    public Product(long id, Name name, Price price) {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
     }
 
     public Long getId() {
@@ -26,19 +51,11 @@ public class Product {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
-        return price;
+        return this.price.getPrice();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public Name getName() {
+        return this.name;
     }
 }

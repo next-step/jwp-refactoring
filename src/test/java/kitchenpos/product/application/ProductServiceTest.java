@@ -1,12 +1,15 @@
 package kitchenpos.product.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.common.Name;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -26,20 +29,21 @@ class ProductServiceTest extends ServiceTest {
     private ProductService productService;
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService(productDao);
+        productService = new ProductService(productRepository);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"상품A"})
     @DisplayName("상품 생성")
-    @Test
-    void create() {
-        Product product = productService.create(new ProductCreateRequest("상품A", BigDecimal.ONE));
+    void create(String name) {
+        Product product = productService.create(new ProductCreateRequest(name, BigDecimal.ONE));
         assertAll(
                 () -> assertEquals(0, product.getPrice().compareTo(BigDecimal.ONE)),
-                () -> assertThat(product.getName()).isEqualTo("상품A")
+                () -> assertThat(product.getName()).isEqualTo(new Name(name))
         );
     }
 

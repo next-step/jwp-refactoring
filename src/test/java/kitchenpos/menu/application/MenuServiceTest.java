@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
@@ -9,8 +11,8 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +49,7 @@ class MenuServiceTest extends ServiceTest {
     private MenuProductDao menuProductDao;
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Long menuGroupId;
     private MenuProduct menuProduct;
@@ -56,9 +58,9 @@ class MenuServiceTest extends ServiceTest {
     void setUp() {
         menuGroupId = menuGroupDao.save(new MenuGroup("A")).getId();
         Menu menu = menuDao.save(new Menu("A", BigDecimal.valueOf(2), menuGroupId));
-        Product product = productDao.save(new Product("A", BigDecimal.valueOf(2)));
+        Product product = productRepository.save(new Product(new Name("A"), new Price(BigDecimal.valueOf(2))));
         menuProduct = menuProductDao.save(new MenuProduct(menu.getId(), menu.getId(), product.getId(), 1L));
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productRepository);
     }
 
     @DisplayName("가격을 필수값으로 갖는다.")

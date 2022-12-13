@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +15,6 @@ class ProductTest {
     @DisplayName("상품 생성")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(() -> new Product("name", BigDecimal.ONE));
+        assertThatNoException().isThrownBy(() -> new Product(new Name("name"), new Price(BigDecimal.ONE)));
     }
 }
