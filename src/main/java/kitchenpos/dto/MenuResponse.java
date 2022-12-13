@@ -12,15 +12,15 @@ public class MenuResponse {
     private final String name;
     private final BigDecimal price;
     private final Long menuGroupId;
-    private final List<MenuProductResponse> menuProducts;
+    private final List<MenuProductResponse> menuProductResponses;
 
     public MenuResponse(final Long id, final String name, final BigDecimal price,
-                        final Long menuGroupId, final List<MenuProductResponse> menuProducts) {
+                        final Long menuGroupId, final List<MenuProductResponse> menuProductResponses) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProductResponses = menuProductResponses;
     }
 
     public static MenuResponse from(final Menu menu) {
@@ -50,7 +50,7 @@ public class MenuResponse {
         return menuGroupId;
     }
 
-    public List<MenuProductResponse> getMenuProducts() {
-        return menuProducts;
+    public List<MenuProductResponse> getMenuProductResponses() {
+        return menuProductResponses;
     }
 }

@@ -7,13 +7,13 @@ public class MenuRequest {
     private final String name;
     private final BigDecimal price;
     private final Long menuGroupId;
-    private final List<MenuProductRequest> menuProducts;
+    private final List<MenuProductRequest> menuProductsRequest;
 
-    public MenuRequest(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProductRequest> menuProducts) {
+    public MenuRequest(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProductRequest> menuProductsRequest) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProductsRequest = menuProductsRequest;
     }
 
     public static MenuRequest of(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProductRequest> menuProducts) {
@@ -32,7 +32,7 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProducts;
+    public List<MenuProductRequest> getMenuProductsRequest() {
+        return menuProductsRequest;
     }
 }

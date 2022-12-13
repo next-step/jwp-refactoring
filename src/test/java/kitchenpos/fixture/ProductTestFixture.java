@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class ProductTestFixture {
 
     public static ProductRequest createProduct(String name, BigDecimal price) {
-        return ProductRequest.of(null, name, price);
+        return ProductRequest.of(name, price);
     }
 
     public static ProductRequest 단무지_요청() {

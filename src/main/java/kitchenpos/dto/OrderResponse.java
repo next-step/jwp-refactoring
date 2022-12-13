@@ -13,15 +13,15 @@ public class OrderResponse {
     private final Long orderTableId;
     private final String orderStatus;
     private final LocalDateTime orderedTime;
-    private final List<OrderLineItemResponse> orderLineItems;
+    private final List<OrderLineItemResponse> orderLineItemsResponse;
 
     private OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                          List<OrderLineItemResponse> orderLineItems) {
+                          List<OrderLineItemResponse> orderLineItemsResponse) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItemsResponse = orderLineItemsResponse;
     }
 
     public static OrderResponse from(final Order order) {
@@ -55,8 +55,8 @@ public class OrderResponse {
         return orderedTime;
     }
 
-    public List<OrderLineItemResponse> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItemResponse> getOrderLineItemsResponse() {
+        return orderLineItemsResponse;
     }
 
     @Override

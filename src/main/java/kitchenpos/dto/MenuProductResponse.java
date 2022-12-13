@@ -6,12 +6,12 @@ import java.util.Objects;
 
 public class MenuProductResponse {
     private final Long seq;
-    private final ProductResponse product;
+    private final ProductResponse productResponse;
     private final long quantity;
 
-    public MenuProductResponse(final Long seq, final ProductResponse product, final long quantity) {
+    public MenuProductResponse(final Long seq, final ProductResponse productResponse, final long quantity) {
         this.seq = seq;
-        this.product = product;
+        this.productResponse = productResponse;
         this.quantity = quantity;
     }
 
@@ -25,8 +25,8 @@ public class MenuProductResponse {
         return seq;
     }
 
-    public ProductResponse getProduct() {
-        return product;
+    public ProductResponse getProductResponse() {
+        return productResponse;
     }
 
     public long getQuantity() {

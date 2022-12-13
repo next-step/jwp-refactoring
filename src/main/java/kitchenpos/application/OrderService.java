@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.repository.MenuRepository;
@@ -37,16 +38,21 @@ public class OrderService {
         Long orderTableId = request.getOrderTableId();
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException(orderTableId + "에 해당하는 주문테이블을 찾을 수가 없습니다."));
-        List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
-                .map(orderLineItem -> OrderLineItem.of(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
-                .collect(Collectors.toList());
-        validateOrderLineItems(orderLineItems);
+        List<OrderLineItemRequest> requestOrderLineItems = request.getOrderLineItemsRequest();
+        validateOrderLineItems(requestOrderLineItems);
+        List<OrderLineItem> orderLineItems = mapToOrderLineItems(requestOrderLineItems);
         Order savedOrder = orderRepository.save(Order.of(orderTable, orderLineItems));
 
         return OrderResponse.from(savedOrder);
     }
 
-    private void validateOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    private List<OrderLineItem> mapToOrderLineItems(final List<OrderLineItemRequest> requestOrderLineItems) {
+        return requestOrderLineItems.stream()
+                .map(orderLineItem -> OrderLineItem.of(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
+                .collect(Collectors.toList());
+    }
+
+    private void validateOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
         if (Objects.isNull(orderLineItems)) {
             throw new IllegalArgumentException("요청정보에 orderLineItems가 존재하지 않습니다.");
         }
@@ -62,9 +68,9 @@ public class OrderService {
         return menuRepository.countByIdIn(menuIds);
     }
 
-    private List<Long> mapToMenuIds(final List<OrderLineItem> orderLineItems) {
+    private List<Long> mapToMenuIds(final List<OrderLineItemRequest> orderLineItems) {
         return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
     }
 

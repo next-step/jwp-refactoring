@@ -8,15 +8,15 @@ public class OrderRequest {
     private final Long orderTableId;
     private final String orderStatus;
     private final LocalDateTime orderedTime;
-    private final List<OrderLineItemRequest> orderLineItems;
+    private final List<OrderLineItemRequest> orderLineItemsRequest;
 
     private OrderRequest(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                         List<OrderLineItemRequest> orderLineItems) {
+                         List<OrderLineItemRequest> orderLineItemsRequest) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItemsRequest = orderLineItemsRequest;
     }
 
     public static OrderRequest of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
@@ -40,7 +40,7 @@ public class OrderRequest {
         return orderedTime;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItemRequest> getOrderLineItemsRequest() {
+        return orderLineItemsRequest;
     }
 }

@@ -36,7 +36,7 @@ public class MenuTestFixture {
     }
 
     public static Menu 메뉴_세트_생성(MenuRequest request, long id) {
-        List<MenuProduct> menuProducts = getMenuProducts(request.getName(), request.getPrice(), request.getMenuProducts());
+        List<MenuProduct> menuProducts = getMenuProducts(request.getName(), request.getPrice(), request.getMenuProductsRequest());
         Menu menu = Menu.of(request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), MenuProducts.from(menuProducts));
         Field idField = Objects.requireNonNull(ReflectionUtils.findField(Menu.class, "id"));
         ReflectionUtils.makeAccessible(idField);
