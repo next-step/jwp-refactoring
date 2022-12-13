@@ -37,8 +37,7 @@ public class TableService {
 
     @Transactional
     public TableResponse changeEmpty(Long orderTableId, boolean empty) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_TABLE));
+        OrderTable savedOrderTable = findOrderTable(orderTableId);
         orderTableValidator.validateOrderStatus(savedOrderTable.getId());
         savedOrderTable.changeEmpty(empty);
         return TableResponse.from(savedOrderTable);
@@ -46,9 +45,13 @@ public class TableService {
 
     @Transactional
     public TableResponse changeNumberOfGuests(Long orderTableId, int numberOfGuests) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_TABLE));
+        OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return TableResponse.from(savedOrderTable);
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_TABLE));
     }
 }
