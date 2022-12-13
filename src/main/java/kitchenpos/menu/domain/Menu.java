@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,7 +11,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    private MenuPrice price;
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -25,15 +23,9 @@ public class Menu {
     private Menu(MenuBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.price = builder.price;
+        this.price = MenuPrice.of(builder.price);
         this.menuGroup = builder.menuGroup;
         this.menuProducts = builder.menuProducts;
-    }
-
-    private void validatePrice(BigDecimal price,List<MenuProduct> menuProducts) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public Long getMenuGroupId() {
@@ -47,44 +39,20 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+        return price.value();
     }
 
     public MenuGroup getMenuGroup() {
         return menuGroup;
     }
 
-    public void setMenuGroup(final MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    public static MenuBuilder builder() {
-        return new MenuBuilder();
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
@@ -92,10 +60,14 @@ public class Menu {
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
-        if (price.compareTo(sum) > 0) {
+        if (price.value().compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
         menuProducts.stream().forEach(menuProduct -> this.menuProducts.add(menuProduct));
+    }
+
+    public static MenuBuilder builder() {
+        return new MenuBuilder();
     }
 
     public static class MenuBuilder {

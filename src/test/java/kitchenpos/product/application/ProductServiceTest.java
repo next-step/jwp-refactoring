@@ -56,7 +56,7 @@ public class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(longs = {-1, -2, -3, -100, -999})
     public void throwsExceptionWhenNegativePrice(long price) {
-        ProductRequest product = new ProductRequest("product", price);
+        ProductRequest product = new ProductRequest("product", BigDecimal.valueOf(price));
 
         assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -66,10 +66,10 @@ public class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(longs = {1, 342, 21, 3423, 4})
     public void returnProduct(long id) {
-        ProductRequest productRequest = new ProductRequest("product", 1500l);
+        ProductRequest productRequest = new ProductRequest("product", BigDecimal.valueOf(1500l));
 
         Product mockProduct = Product.builder()
-                .price(ProductPrice.of(1500l))
+                .price(ProductPrice.of(BigDecimal.valueOf(1500)))
                 .id(id)
                 .build();
         doReturn(mockProduct).when(productDao).save(any(Product.class));
@@ -85,7 +85,7 @@ public class ProductServiceTest {
         List<Product> mockProducts = builderFixtureMonkey
                 .giveMeBuilder(Product.class)
                 .set("id", Arbitraries.longs().between(1, 5))
-                .set("price", ProductPrice.of(Arbitraries.longs().between(1000, 1500).sample()))
+                .set("price", ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
                 .sampleList(5);
         doReturn(mockProducts).when(productDao).findAll();
 

@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -68,7 +69,7 @@ public class ProductRestControllerTest extends ControllerTest {
                 .build()
                 .giveMeBuilder(Product.class)
                 .set("id", Arbitraries.longs().between(1, 5))
-                .set("price", ProductPrice.of(Arbitraries.longs().between(1000, 1500).sample()))
+                .set("price", ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
         doReturn(products).when(productService).list();
 
@@ -81,7 +82,7 @@ public class ProductRestControllerTest extends ControllerTest {
         return ProductResponse.of(Product.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .price(ProductPrice.of(20000l))
+                .price(ProductPrice.of(BigDecimal.valueOf(20000)))
                 .build());
     }
 }

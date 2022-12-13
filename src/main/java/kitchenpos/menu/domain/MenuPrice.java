@@ -1,25 +1,23 @@
-package kitchenpos.product.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Embeddable
-public class ProductPrice {
+public class MenuPrice {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public ProductPrice() {
+    public MenuPrice() {
     }
 
-    private ProductPrice(BigDecimal price) {
+    private MenuPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public static ProductPrice of(BigDecimal price) {
+    public static MenuPrice of(BigDecimal price) {
         validatePrice(price);
-        return new ProductPrice(price);
+        return new MenuPrice(price);
     }
 
     private static void validatePrice(BigDecimal price) {
@@ -32,6 +30,6 @@ public class ProductPrice {
     }
 
     public BigDecimal value() {
-        return price;
+        return value();
     }
 }

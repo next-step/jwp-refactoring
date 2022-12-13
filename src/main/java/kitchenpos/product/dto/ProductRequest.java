@@ -3,23 +3,25 @@ package kitchenpos.product.dto;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.Product;
 
+import java.math.BigDecimal;
+
 public class ProductRequest {
 
     private String name;
-    private Long money;
+    private BigDecimal price;
 
     public ProductRequest() {
     }
 
-    public ProductRequest(String name, Long money) {
+    public ProductRequest(String name, BigDecimal price) {
         this.name = name;
-        this.money = money;
+        this.price = price;
     }
 
     public Product toProduct() {
         return Product.builder()
                 .name(name)
-                .price(ProductPrice.of(money))
+                .price(ProductPrice.of(price))
                 .build();
     }
 
@@ -27,12 +29,12 @@ public class ProductRequest {
         return name;
     }
 
-    public Long getMoney() {
-        return money;
+    public BigDecimal getMoney() {
+        return price;
     }
 
-    public void setMoney(Long money) {
-        this.money = money;
+    public void setMoney(BigDecimal price) {
+        this.price = price;
     }
 
     public void setName(String name) {
