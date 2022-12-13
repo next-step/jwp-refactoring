@@ -33,4 +33,24 @@ class OrderTest {
                 () -> assertThat(order.getOrderLineItems()).containsAll(expectedOrderLineItems)
         );
     }
+
+    @Test
+    void changeOrderStatus() {
+        // given
+        String expectedOrderStatus = OrderStatus.COMPLETION.name();
+        MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
+        MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
+        Menu 짜장면_탕수육_1인_메뉴_세트 = 메뉴세트(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
+        Menu 짬뽕_탕수육_1인_메뉴_세트 = 메뉴세트(짬뽕_탕수육_1인_메뉴_세트_요청, 2L);
+        OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문 = 주문정보(짜장면_탕수육_1인_메뉴_세트.getId(), 1);
+        OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문 = 주문정보(짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
+        List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
+        Order order = Order.of(OrderTable.of(null, 10, false), expectedOrderLineItems);
+
+        // when
+        order.changeOrderStatus(expectedOrderStatus);
+
+        // then
+        assertThat(order.getOrderStatus()).isEqualTo(expectedOrderStatus);
+    }
 }
