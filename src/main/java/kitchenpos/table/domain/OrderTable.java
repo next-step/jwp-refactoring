@@ -1,14 +1,24 @@
 package kitchenpos.table.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long tableGroupId;
+
+    @Column(nullable = false)
     private int numberOfGuests;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
 
     }
 
@@ -17,8 +27,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;

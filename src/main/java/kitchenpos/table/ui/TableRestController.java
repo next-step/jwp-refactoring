@@ -14,15 +14,14 @@ import java.util.List;
 public class TableRestController {
     private final TableService tableService;
 
-    public TableRestController(final TableService tableService) {
+    public TableRestController(TableService tableService) {
         this.tableService = tableService;
     }
 
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTableResponse> create(@RequestBody OrderTableRequest orderTableRequest) {
-        final OrderTableResponse response = tableService.create(orderTableRequest);
-
-        final URI uri = URI.create("/api/tables/" + response.getId());
+        OrderTableResponse response = tableService.create(orderTableRequest);
+        URI uri = URI.create("/api/tables/" + response.getId());
         return ResponseEntity.created(uri).body(response);
     }
 

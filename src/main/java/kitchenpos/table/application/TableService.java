@@ -2,8 +2,8 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -16,27 +16,27 @@ import java.util.Objects;
 @Service
 public class TableService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderDao orderDao, OrderTableDao orderTableDao) {
+    public TableService(OrderDao orderDao, OrderTableRepository orderTableRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(OrderTableRequest orderTableRequest) {
-        OrderTable savedOrderTable = orderTableDao.save(orderTableRequest.toEntity());
+        OrderTable savedOrderTable = orderTableRepository.save(orderTableRequest.toEntity());
         return OrderTableResponse.from(savedOrderTable);
     }
 
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableDao.findAll();
+        List<OrderTable> orderTables = orderTableRepository.findAll();
         return OrderTableResponse.toList(orderTables);
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
@@ -50,7 +50,7 @@ public class TableService {
 
         savedOrderTable.setEmpty(request.isEmpty());
 
-        OrderTable changedOrderTable = orderTableDao.save(savedOrderTable);
+        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
     }
 
@@ -62,7 +62,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
@@ -71,7 +71,7 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        OrderTable changedOrderTable = orderTableDao.save(savedOrderTable);
+        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.fixture.OrderFixture;
 import kitchenpos.fixture.OrderLineItemFixture;
+import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
@@ -55,6 +56,7 @@ class OrderServiceTest {
 
     private Order 주문;
     private OrderLineItem 주문_항목;
+    private OrderTable 주문_테이블;
 
     @BeforeEach
     void set_up() {
@@ -62,6 +64,7 @@ class OrderServiceTest {
         주문 = OrderFixture.create(
                 1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문_항목)
         );
+        주문_테이블 = OrderTableFixture.create(null, 1L, 10, false);
     }
 
     @DisplayName("주문을 등록할 수 있다.")
@@ -69,7 +72,7 @@ class OrderServiceTest {
     void create() {
         // given
         when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable()));
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
         when(orderDao.save(any())).thenReturn(주문);
 
         // when
@@ -117,7 +120,6 @@ class OrderServiceTest {
     @Test
     void create_error_order_table_value_empty() {
         // given
-        OrderTable 주문_테이블 = new OrderTable();
         주문_테이블.setEmpty(true);
         when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));

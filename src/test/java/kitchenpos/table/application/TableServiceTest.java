@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
+import kitchenpos.fixture.OrderTableFixture;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.fixture.OrderTableFixture;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,7 @@ class TableServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private OrderTable 주문테이블_1번;
     private OrderTableRequest 주문테이블_1번_요청;
@@ -55,7 +54,7 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        when(orderTableDao.save(any())).thenReturn(주문테이블_1번);
+        when(orderTableRepository.save(any())).thenReturn(주문테이블_1번);
 
         // when
         OrderTableResponse 테이블_등록_결과 = tableService.create(주문테이블_1번_요청);
@@ -68,7 +67,7 @@ class TableServiceTest {
     @Test
     void list() {
         // given
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(주문테이블_1번, 주문테이블_2번));
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(주문테이블_1번, 주문테이블_2번));
 
         // when
         List<OrderTableResponse> 테이블_목록_조회 = tableService.list();
@@ -88,9 +87,9 @@ class TableServiceTest {
     void update_table_empty() {
         // given
         OrderTable 주문테이블_변경 = OrderTableFixture.create(2L, null, 10, false);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문테이블_변경));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문테이블_변경));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
-        when(orderTableDao.save(any())).thenReturn(주문테이블_변경);
+        when(orderTableRepository.save(any())).thenReturn(주문테이블_변경);
 
         // when
         OrderTableResponse 주문테이블_변경_응답 = tableService.changeEmpty(주문테이블_변경.getId(), 주문테이블_1번_요청);
@@ -113,7 +112,7 @@ class TableServiceTest {
     void update_error_exist_table_group() {
         // given
         주문테이블_1번.setTableGroupId(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.ofNullable(주문테이블_1번));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.ofNullable(주문테이블_1번));
 
         // when && then
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_1번.getId(), 주문테이블_1번_요청))
@@ -124,7 +123,7 @@ class TableServiceTest {
     @Test
     void update_error_table_status() {
         // given
-        when(orderTableDao.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
+        when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(
                 주문테이블_1번.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
         )).thenReturn(true);
@@ -141,8 +140,8 @@ class TableServiceTest {
         // given
         주문테이블_1번.setNumberOfGuests(20);
         주문테이블_1번.setEmpty(false);
-        when(orderTableDao.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
-        when(orderTableDao.save(주문테이블_1번)).thenReturn(주문테이블_1번);
+        when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
+        when(orderTableRepository.save(주문테이블_1번)).thenReturn(주문테이블_1번);
 
         // when
         OrderTableResponse 주문테이블_변경_응답 = tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청);
@@ -174,7 +173,7 @@ class TableServiceTest {
     @Test
     void error_change_number_table_empty() {
         // given
-        when(orderTableDao.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
+        when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_1번.getId(), 주문테이블_1번_요청))
