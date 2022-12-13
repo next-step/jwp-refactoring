@@ -36,7 +36,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         List<OrderTable> orderTables = findOrderTables(request.getOrderTables());
 
-        TableGroup tableGroup = TableGroup.of(request.getId(), orderTables, orderTables);
+        TableGroup tableGroup = TableGroup.of(orderTables, orderTables);
 
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
     }

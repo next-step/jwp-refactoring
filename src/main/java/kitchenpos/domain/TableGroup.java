@@ -16,8 +16,7 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
-    private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.id = id;
+    private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.createdDate = createdDate;
         this.orderTables = orderTables;
         for (final OrderTable savedOrderTable : orderTables) {
@@ -29,10 +28,10 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public static TableGroup of(Long id, List<OrderTable> requestOrderTables, List<OrderTable> savedOrderTables) {
+    public static TableGroup of(List<OrderTable> requestOrderTables, List<OrderTable> savedOrderTables) {
         validateOrderTables(requestOrderTables, savedOrderTables);
 
-        return new TableGroup(id, LocalDateTime.now(), savedOrderTables);
+        return new TableGroup(LocalDateTime.now(), savedOrderTables);
     }
 
     private static void validateOrderTables(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {

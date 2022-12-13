@@ -16,7 +16,6 @@ class OrderTest {
     @Test
     void of() {
         // given
-        Long expectedTableId = 1L;
         MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
         MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
         Menu 짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
@@ -26,12 +25,11 @@ class OrderTest {
         List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
 
         // when
-        Order order = Order.of(OrderTable.of(1L, null, 10, false), expectedOrderLineItems);
+        Order order = Order.of(OrderTable.of(null, 10, false), expectedOrderLineItems);
 
         // then
         assertAll(
                 () -> assertThat(order).isNotNull(),
-                () -> assertThat(order.getOrderTable().getId()).isEqualTo(expectedTableId),
                 () -> assertThat(order.getOrderLineItems()).containsAll(expectedOrderLineItems)
         );
     }

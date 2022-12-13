@@ -161,8 +161,8 @@ class OrderServiceTest {
     @Test
     void changeOrderWithException1() {
         // given
-        OrderRequest 미등록_주문_요청 = createOrder(10L, null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        Order 미등록_주문 = Order.of(OrderTable.of(10L, null, 10, false), mapToEntity(미등록_주문_요청.getOrderLineItemsRequest()));
+        OrderRequest 미등록_주문_요청 = createOrder(null,null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        Order 미등록_주문 = Order.of(OrderTable.of(null, 10, false), mapToEntity(미등록_주문_요청.getOrderLineItemsRequest()));
         when(orderRepository.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then

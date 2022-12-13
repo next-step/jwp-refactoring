@@ -30,7 +30,7 @@ public class TableService {
         TableGroup tableGroup = findTableGroupById(request.getTableGroupId());
 
         OrderTable orderTable =
-                OrderTable.of(request.getId(), tableGroup, request.getNumberOfGuests(), request.isEmpty());
+                OrderTable.of(tableGroup, request.getNumberOfGuests(), request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }

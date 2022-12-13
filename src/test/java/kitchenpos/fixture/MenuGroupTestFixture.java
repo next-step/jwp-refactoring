@@ -18,6 +18,6 @@ public class MenuGroupTestFixture {
     }
 
     public static MenuGroup 중국집_1인_메뉴_세트(final MenuGroupRequest menuGroupRequest) {
-        return MenuGroup.of(menuGroupRequest.getId(), menuGroupRequest.getName());
+        return MenuGroup.of(menuGroupRequest.getName());
     }
 }

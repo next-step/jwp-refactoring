@@ -15,12 +15,12 @@ public class TableGroupTestFixture {
     }
 
     public static TableGroup createTableGroup() {
-        return TableGroup.of(1L, Arrays.asList(
-                OrderTable.of(1L, null, 10, true),
-                OrderTable.of(2L, null, 10, true)
+        return TableGroup.of(Arrays.asList(
+                OrderTable.of(null, 10, true),
+                OrderTable.of(null, 10, true)
         ), Arrays.asList(
-                OrderTable.of(1L, null, 10, true),
-                OrderTable.of(2L, null, 10, true)
+                OrderTable.of(null, 10, true),
+                OrderTable.of(null, 10, true)
         ));
     }
 }

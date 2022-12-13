@@ -53,7 +53,7 @@ class TableGroupServiceTest {
         주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, true));
         주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(2L, null, 20, true));
         단체1_요청 = createTableGroupRequest(mapToRequest(Arrays.asList(주문테이블1, 주문테이블2)));
-        단체1 = TableGroup.of(단체1_요청.getId(), mapToEntityForNoGroup(단체1_요청.getOrderTables()), mapToEntityForNoGroup(단체1_요청.getOrderTables()));
+        단체1 = TableGroup.of(mapToEntityForNoGroup(단체1_요청.getOrderTables()), mapToEntityForNoGroup(단체1_요청.getOrderTables()));
     }
 
     @DisplayName("주문 테이블들의 단체 지정을 성공한다.")
@@ -89,7 +89,7 @@ class TableGroupServiceTest {
     @Test
     void createWithException2() {
         // given
-        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(1L,null, 10, false));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, false));
         TableGroupRequest tableGroup = createTableGroupRequest(mapToRequest(Arrays.asList(orderTable, 주문테이블1)));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));
@@ -102,7 +102,7 @@ class TableGroupServiceTest {
     @Test
     void createWithException3() {
         // given
-        OrderTable orderTable = 그룹_있는_주문테이블_생성(createOrderTable(1L,3L, 10, true));
+        OrderTable orderTable = 그룹_있는_주문테이블_생성(createOrderTable(1L, 3L, 10, true));
         TableGroupRequest tableGroup = createTableGroupRequest(mapToRequest(Arrays.asList(orderTable, 주문테이블1)));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));

@@ -38,10 +38,14 @@ public class MenuTestFixture {
     public static Menu 메뉴_세트_생성(MenuRequest request, long id) {
         List<MenuProduct> menuProducts = getMenuProducts(request.getName(), request.getPrice(), request.getMenuProductsRequest());
         Menu menu = Menu.of(request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), MenuProducts.from(menuProducts));
+        setId(id, menu);
+        return menu;
+    }
+
+    private static void setId(final long id, final Menu menu) {
         Field idField = Objects.requireNonNull(ReflectionUtils.findField(Menu.class, "id"));
         ReflectionUtils.makeAccessible(idField);
         ReflectionUtils.setField(idField, menu, id);
-        return menu;
     }
 
     private static List<MenuProduct> getMenuProducts(String name, BigDecimal price, final List<MenuProductRequest> menuProductRequests) {
