@@ -24,6 +24,16 @@ public class TableFixture {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 주문_테이블_목록_조회() {
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/tables")
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> 주문_테이블_빈_테이블_상태_변경(Long orderTableId,
         boolean empty) {
         OrderTable orderTable = new OrderTable();
@@ -47,7 +57,7 @@ public class TableFixture {
             .given().log().all()
             .body(orderTable)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put("/api/tables/" + orderTableId + "/empty")
+            .when().put("/api/tables/" + orderTableId + "/number-of-guests")
             .then().log().all()
             .extract();
     }
