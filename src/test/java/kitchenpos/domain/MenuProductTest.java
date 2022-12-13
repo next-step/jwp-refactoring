@@ -10,7 +10,7 @@ class MenuProductTest {
 
     @Test
     void of() {
-        MenuProduct menuProduct = MenuProduct.of(null, 상품생성(단무지_요청()), 1L);
+        MenuProduct menuProduct = MenuProduct.of(상품생성(단무지_요청()), 1L);
 
         assertThat(menuProduct).isNotNull();
     }

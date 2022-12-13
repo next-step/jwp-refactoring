@@ -3,10 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
-import kitchenpos.dto.MenuResponse;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,12 +19,15 @@ import static kitchenpos.acceptance.MenuAcceptanceStep.등록된_메뉴;
 import static kitchenpos.acceptance.MenuGroupAcceptanceStep.등록된_메뉴_그룹;
 import static kitchenpos.acceptance.OrderAcceptanceStep.*;
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.등록된_주문_테이블;
+import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
 import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
+import static kitchenpos.fixture.MenuProductTestFixture.단무지메뉴상품;
 import static kitchenpos.fixture.MenuTestFixture.createMenu;
 import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
 import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
 import static kitchenpos.fixture.OrderTestFixture.createOrder;
+import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -35,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     private MenuGroup 중국집_1인_메뉴_세트;
-    private MenuProduct 짜장면메뉴상품;
-    private MenuProduct 짬뽕메뉴상품;
-    private MenuProduct 단무지메뉴상품;
-    private MenuProduct 탕수육메뉴상품;
+    private MenuProductRequest 짜장면메뉴상품;
+    private MenuProductRequest 짬뽕메뉴상품;
+    private MenuProductRequest 단무지메뉴상품;
+    private MenuProductRequest 탕수육메뉴상품;
     private MenuResponse 짜장면_탕수육_1인_메뉴_세트;
     private MenuResponse 짬뽕_탕수육_1인_메뉴_세트;
     private OrderTableResponse 주문테이블1;
@@ -52,12 +52,16 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         중국집_1인_메뉴_세트 = 등록된_메뉴_그룹(createMenuGroup("중국집_1인_메뉴_세트")).as(MenuGroup.class);
-        짜장면메뉴상품 = 짜장면메뉴상품();
-        탕수육메뉴상품 = 탕수육메뉴상품();
-        짬뽕메뉴상품 = 짬뽕메뉴상품();
-        단무지메뉴상품 = 단무지메뉴상품();
-        List<MenuProduct> 짜장면메뉴세트 = Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품);
-        List<MenuProduct> 짬뽕메뉴세트 = Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품);
+        Long 짜짱면상품ID = 등록된_상품(짜장면_요청()).as(ProductResponse.class).getId();
+        Long 짬뽕상품ID = 등록된_상품(짬뽕_요청()).as(ProductResponse.class).getId();
+        Long 탕수육상품ID = 등록된_상품(탕수육_요청()).as(ProductResponse.class).getId();
+        Long 단무지상품ID = 등록된_상품(단무지_요청()).as(ProductResponse.class).getId();
+        짜장면메뉴상품 = 짜장면메뉴상품(짜짱면상품ID);
+        탕수육메뉴상품 = 탕수육메뉴상품(탕수육상품ID);
+        짬뽕메뉴상품 = 짬뽕메뉴상품(짬뽕상품ID);
+        단무지메뉴상품 = 단무지메뉴상품(단무지상품ID);
+        List<MenuProductRequest> 짜장면메뉴세트 = Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품);
+        List<MenuProductRequest> 짬뽕메뉴세트 = Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품);
         짜장면_탕수육_1인_메뉴_세트 =
                 등록된_메뉴(createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(), 짜장면메뉴세트)).as(MenuResponse.class);
         짬뽕_탕수육_1인_메뉴_세트 =

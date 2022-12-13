@@ -80,8 +80,7 @@ public class OrderTable {
     }
 
     private boolean isNotCompleted(final String orderStatus) {
-        return orderStatus.equals(OrderStatus.COOKING.name())
-                || orderStatus.equals(OrderStatus.MEAL.name());
+        return orderStatus.equals(OrderStatus.COOKING.name()) || orderStatus.equals(OrderStatus.MEAL.name());
     }
 
     public TableGroup getTableGroup() {

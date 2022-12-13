@@ -2,12 +2,12 @@ package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,7 @@ import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세�
 import static kitchenpos.fixture.MenuProductTestFixture.*;
 import static kitchenpos.fixture.MenuTestFixture.createMenu;
 import static kitchenpos.fixture.MenuTestFixture.메뉴_세트_생성;
+import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,14 +44,17 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
+    @Mock
+    private ProductRepository productRepository;
+
     @InjectMocks
     private MenuService menuService;
 
     private MenuGroup 중국집_1인_메뉴_세트;
-    private MenuProduct 짜장면메뉴상품;
-    private MenuProduct 짬뽕메뉴상품;
-    private MenuProduct 탕수육메뉴상품;
-    private MenuProduct 단무지메뉴상품;
+    private MenuProductRequest 짜장면메뉴상품;
+    private MenuProductRequest 짬뽕메뉴상품;
+    private MenuProductRequest 탕수육메뉴상품;
+    private MenuProductRequest 단무지메뉴상품;
     private MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청;
     private MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청;
     private Menu 짜장면_탕수육_1인_메뉴_세트;
@@ -58,10 +62,10 @@ class MenuServiceTest {
     @BeforeEach
     public void setUp() {
         중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청());
-        짜장면메뉴상품 = 짜장면메뉴상품();
-        짬뽕메뉴상품 = 짬뽕메뉴상품();
-        탕수육메뉴상품 = 탕수육메뉴상품();
-        단무지메뉴상품 = 단무지메뉴상품();
+        짜장면메뉴상품 = 짜장면메뉴상품(1L);
+        탕수육메뉴상품 = 탕수육메뉴상품(2L);
+        짬뽕메뉴상품 = 짬뽕메뉴상품(3L);
+        단무지메뉴상품 = 단무지메뉴상품(4L);
         짜장면_탕수육_1인_메뉴_세트_요청 = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
                 중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
         짬뽕_탕수육_1인_메뉴_세트_요청 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
@@ -75,16 +79,18 @@ class MenuServiceTest {
         // given
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(중국집_1인_메뉴_세트));
         when(menuRepository.save(any())).thenReturn(짜장면_탕수육_1인_메뉴_세트);
+        when(productRepository.findById(짜장면메뉴상품.getProductId())).thenReturn(Optional.of(상품생성(짜장면_요청())));
+        when(productRepository.findById(탕수육메뉴상품.getProductId())).thenReturn(Optional.of(상품생성(탕수육_요청())));
+        when(productRepository.findById(단무지메뉴상품.getProductId())).thenReturn(Optional.of(상품생성(단무지_요청())));
 
         // when
         MenuResponse saveMenu = menuService.create(짜장면_탕수육_1인_메뉴_세트_요청);
 
         // then
         assertAll(
-                () -> assertThat(saveMenu).isNotNull(),
-                () -> assertThat(saveMenu.getMenuProducts())
-                        .containsExactly(MenuProductResponse.from(짜장면메뉴상품), MenuProductResponse.from(탕수육메뉴상품), MenuProductResponse.from(단무지메뉴상품))
+                () -> assertThat(saveMenu).isNotNull()
         );
+
     }
 
     @DisplayName("가격이 0원 미만인 메뉴를 생성하면 IllegalArgumentException을 반환한다.")

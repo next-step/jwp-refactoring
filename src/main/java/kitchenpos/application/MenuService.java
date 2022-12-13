@@ -1,11 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +18,24 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository
+            final MenuGroupRepository menuGroupRepository,
+            final ProductRepository productRepository
     ) {
         this.menuGroupRepository = menuGroupRepository;
         this.menuRepository = menuRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(() -> new IllegalArgumentException("메뉴그룹을 찾을 수 없습니다."));
-
-        Menu menu = Menu.of(request.getId(), request.getName(), request.getPrice(), menuGroup, request.getMenuProducts());
+        MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProducts()));
+        Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
 
         return MenuResponse.from(menuRepository.save(menu));
     }
@@ -40,5 +44,16 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
+                .map(menuProductRequest -> menuProductRequest.toMenuProduct(findProductById(menuProductRequest.getProductId())))
+                .collect(Collectors.toList());
+    }
+
+    private Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,53 +10,44 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private Price price;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
-                 List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup,
+                 MenuProducts menuProducts) {
+        this.price = Price.from(price);
         this.menuProducts = menuProducts;
+        menuProducts.setMenu(this);
+        validateMenu(menuGroup, this.price, this.menuProducts);
+        this.name = name;
+        this.menuGroup = menuGroup;
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validateMenu(price, menuGroup, menuProducts);
-
-        return new Menu(id, name, price, menuGroup, menuProducts);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
-    private static void validateMenu(final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
+    private void validateMenu(final MenuGroup menuGroup, final Price price, final MenuProducts menuProducts) {
         validatePrice(price, menuProducts);
         validateMenuGroup(menuGroup);
     }
 
-    private static void validateMenuGroup(final MenuGroup menuGroup) {
+    private void validateMenuGroup(final MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private static void validatePrice(final BigDecimal price, final List<MenuProduct> menuProducts) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getSumOfPrice());
-        }
-
-        if (price.compareTo(sum) > 0) {
+    private void validatePrice(final Price price, final MenuProducts menuProducts) {
+        if (price.compareTo(menuProducts.totalPrice()) > 0) {
             throw new IllegalArgumentException();
         }
     }
@@ -75,14 +65,14 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.value();
     }
 
     public MenuGroup getMenuGroup() {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 }

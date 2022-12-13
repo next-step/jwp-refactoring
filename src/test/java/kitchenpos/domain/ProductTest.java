@@ -20,7 +20,7 @@ class ProductTest {
         assertAll(
                 () -> assertThat(짜장면).isNotNull(),
                 () -> assertThat(짜장면.getName()).isEqualTo(expectedName),
-                () -> assertThat(짜장면.getPrice()).isEqualTo(expectedPrice)
+                () -> assertThat(짜장면.getPrice().value()).isEqualTo(expectedPrice)
         );
     }
 }

@@ -2,11 +2,15 @@ package kitchenpos.fixture;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트;
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트_요청;
@@ -14,12 +18,8 @@ import static kitchenpos.fixture.MenuProductTestFixture.*;
 
 public class MenuTestFixture {
 
-    public static MenuRequest createMenu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return MenuRequest.of(id, name, price, menuGroupId, menuProducts);
-    }
-
-    public static MenuRequest createMenu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return MenuRequest.of(null, name, price, menuGroupId, menuProducts);
+    public static MenuRequest createMenu(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        return MenuRequest.of(name, price, menuGroupId, menuProducts);
     }
 
     public static MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청() {
@@ -33,6 +33,13 @@ public class MenuTestFixture {
     }
 
     public static Menu 메뉴_세트_생성(MenuRequest request) {
-        return Menu.of(request.getId(), request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), request.getMenuProducts());
+        List<MenuProduct> menuProducts = getMenuProducts(request.getName(), request.getPrice(), request.getMenuProducts());
+        return Menu.of(request.getName(), request.getPrice(), 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청()), MenuProducts.from(menuProducts));
+    }
+
+    private static List<MenuProduct> getMenuProducts(String name, BigDecimal price, final List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
+                .map(o -> o.toMenuProduct(Product.of(name, price)))
+                .collect(Collectors.toList());
     }
 }
