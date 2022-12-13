@@ -37,7 +37,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest request) {
         List<OrderLineItem> orderLineItems = toOrderLineItems(request);
-        OrderTable orderTable = findOrderTableById(request);
+        OrderTable orderTable = findOrderTableById(request.getOrderTableId());
         Order order = Order.of(orderTable, orderLineItems);
         return OrderResponse.from(orderRepository.save(order));
     }
@@ -75,8 +75,8 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.MENU_NOT_FOUND));
     }
 
-    private OrderTable findOrderTableById(OrderRequest request) {
-        return orderTableRepository.findById(request.getOrderTableId())
+    private OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.ORDER_TABLE_NOT_FOUND));
     }
 
