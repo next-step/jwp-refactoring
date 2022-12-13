@@ -14,12 +14,25 @@ public class Product {
     @Embedded
     private ProductPrice price;
 
-    public Product() { }
+    public Product() {
+    }
 
     private Product(ProductBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.price = builder.price;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price.value();
     }
 
     public static ProductBuilder builder() {
@@ -49,26 +62,6 @@ public class Product {
         public Product build() {
             return new Product(this);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice(){
-        return price.value();
     }
 
 
