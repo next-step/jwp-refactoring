@@ -37,16 +37,14 @@ public class MenuValidator {
     }
 
     private MenuPrice totalMenuProductPrice(Menu menu) {
-        BigDecimal totalPrice = menu.getMenuProducts().stream()
+        return menu.getMenuProducts().stream()
                 .map(this::menuProductPrice)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-
-        return new MenuPrice(totalPrice);
+                .reduce(MenuPrice::add)
+                .orElse(new MenuPrice(BigDecimal.ZERO));
     }
 
-    private BigDecimal menuProductPrice(MenuProduct menuProduct) {
-        return productPrice(menuProduct.getProductId()).multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
+    private MenuPrice menuProductPrice(MenuProduct menuProduct) {
+        return menuProduct.calculatePrice(productPrice(menuProduct.getProductId()));
     }
 
     private BigDecimal productPrice(Long productId) {

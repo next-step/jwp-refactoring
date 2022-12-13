@@ -30,6 +30,10 @@ public class MenuPrice {
         }
     }
 
+    public MenuPrice add(MenuPrice price) {
+        return new MenuPrice(this.value.add(price.value));
+    }
+
     public boolean greaterThan(MenuPrice price) {
         return value.compareTo(price.value) > ZERO;
     }

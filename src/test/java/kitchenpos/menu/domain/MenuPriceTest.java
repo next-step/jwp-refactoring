@@ -32,4 +32,13 @@ class MenuPriceTest {
 
         assertThat(bigger.greaterThan(less)).isTrue();
     }
+
+    @DisplayName("메뉴 가격을 더 할 수 있다.")
+    @Test
+    void add() {
+        MenuPrice firstPrice = new MenuPrice(BigDecimal.valueOf(1000));
+        MenuPrice secondPrice = new MenuPrice(BigDecimal.valueOf(2000));
+
+        assertThat(firstPrice.add(secondPrice).value()).isEqualTo(BigDecimal.valueOf(3000));
+    }
 }
