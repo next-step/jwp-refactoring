@@ -44,7 +44,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
-        List<Menu> menus = findAllMenuByIds(orderRequest.getMenuIds());
+        List<Menu> menus = findAllMenuByIds(orderRequest.findMenuIds());
         Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING.name(), menus);
         return OrderResponse.of(orderRepository.save(order));
     }

@@ -10,7 +10,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,11 +17,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -39,59 +38,56 @@ public class OrderRestControllerTest extends ControllerTest {
 
     @DisplayName("주문생성을 요청하면 생성된 주문 응답")
     @Test
-    @Disabled
     public void returnOrder() throws Exception {
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest();
-        orderLineItemRequest.setMenuId(16l);
-        OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setOrderTableId(13l);
-        orderRequest.setOrderStatus(OrderStatus.COOKING);
-        orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
-
-        doReturn(OrderResponse.of(Order.builder().id(14l)
-                .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().id(35l).build()).build()))
-                .orderTable(OrderTable.builder().build())
+        long menuId = 16;
+        long quantity = 1;
+        long orderTableId = 13;
+        long orderId = 7;
+        OrderRequest orderRequest = new OrderRequest(orderTableId, OrderStatus.COOKING, Arrays.asList(new OrderLineItemRequest(menuId, quantity)));
+        Menu menu = Menu.builder().id(menuId).build();
+        OrderLineItem orderLineItem = OrderLineItem.builder().menu(menu).build();
+        OrderTable orderTable = OrderTable.builder().build();
+        doReturn(OrderResponse.of(Order.builder().id(orderId)
+                .orderLineItems(Arrays.asList(orderLineItem))
+                .orderTable(orderTable)
                 .build())).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
-                        .content(mapper.writeValueAsString(orderRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(orderRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is((int) orderId)))
+                .andExpect(jsonPath("$.orderLineItems", hasSize(1)))
                 .andExpect(status().isCreated());
     }
 
     @DisplayName("주문생성을 요청하면 주문생성 실패응답")
     @Test
     public void throwsExceptionWhenOrderCreate() throws Exception {
-        OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setOrderTableId(13l);
-        orderRequest.setOrderStatus(OrderStatus.COOKING);
-        orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
         doThrow(new IllegalArgumentException()).when(orderService).create(any(OrderRequest.class));
+
         webMvc.perform(post("/api/orders")
-                        .content(mapper.writeValueAsString(orderRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new OrderRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("주문목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnOrders() throws Exception {
-        List<OrderResponse> orders = Arrays.asList(new OrderResponse(), new OrderResponse());
+        Order order1 = Order.builder().id(1l)
+                .orderLineItems(Collections.EMPTY_LIST)
+                .orderTable(OrderTable.builder().build())
+                .build();
+        Order order2 = Order.builder().id(2l)
+                .orderLineItems(Collections.EMPTY_LIST)
+                .orderTable(OrderTable.builder().build())
+                .build();
+        List<OrderResponse> orders = Arrays.asList(new OrderResponse(order1), new OrderResponse(order2));
         doReturn(orders).when(orderService).list();
 
         webMvc.perform(get("/api/orders"))
                 .andExpect(jsonPath("$", hasSize(orders.size())))
                 .andExpect(status().isOk());
     }
-
-    private List<Order> getOrders(Order order, int size) {
-        return IntStream.rangeClosed(1, size)
-                .mapToObj(value -> Order.builder()
-                        .id(order.getId())
-                        .orderTable(order.getOrderTable())
-                        .orderStatus(order.getOrderStatus())
-                        .orderLineItems(order.getOrderLineItems())
-                        .build())
-                .collect(Collectors.toList());
-    }
 }
+

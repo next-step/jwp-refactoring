@@ -42,8 +42,8 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public List<Long> getMenuIds() {
-        return orderLineItems == null ? Collections.EMPTY_LIST : orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
+    public List<Long> findMenuIds() {
+        return orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
     }
 
     public Order toOrder(OrderTable orderTable, String orderStatus, List<Menu> menus) {

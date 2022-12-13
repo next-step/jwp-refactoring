@@ -132,7 +132,6 @@ public class TableGroupServiceTest {
                         .allMatch(tableGroupId -> Objects.equals(tableGroupId, savedTableGroup.getId())));
     }
 
-    @Disabled
     @DisplayName("테이블그룹을 해제할경우 테이블이 조리중이거나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
