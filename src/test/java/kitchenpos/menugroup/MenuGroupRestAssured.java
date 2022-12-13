@@ -59,8 +59,8 @@ public class MenuGroupRestAssured {
     }
 
     public static void 메뉴그룹_조회_목록_포함됨(ExtractableResponse<Response> response, List<String> expectList) {
-        List<String> retrieveList = response.jsonPath().getList(".", Menu.class).stream()
-                .map(Menu::getName)
+        List<String> retrieveList = response.jsonPath().getList(".", MenuGroup.class).stream()
+                .map(MenuGroup::getName)
                 .collect(Collectors.toList());
 
         assertThat(retrieveList).containsAll(expectList);
