@@ -20,57 +20,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
-
-    @DisplayName("주문 등록 API - 빈 주문 항목")
-    @Test
-    void create_order_line_items_is_empty() {
-        // given
-        Order order = orderParam(1L, Collections.emptyList());
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 등록 API - 등록 되어 있지 않은 주문 항목 메뉴")
-    @Test
-    void create_order_line_items_not_exists() {
-        // given
-        Long menuId1 = 1L;
-        Long menuId2 = 2L;
-        Order order = orderParam(1L, Arrays.asList(
-            orderLineItemParam(menuId1, 1),
-            orderLineItemParam(menuId2, 2))
-        );
-        given(menuDao.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(1L);
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 
     @DisplayName("주문 등록 API - 등록 되어 있지 않은 주문 테이블")
     @Test
@@ -83,34 +54,14 @@ class OrderServiceTest {
             orderLineItemParam(menuId1, 1),
             orderLineItemParam(menuId2, 2))
         );
-        given(menuDao.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(2L);
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> orderService.create(order))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 등록 API - 주문 테이블 빈 테이블")
-    @Test
-    void create_order_table_is_empty() {
-        // given
-        Long orderTableId = 1L;
-        Long menuId1 = 1L;
-        Long menuId2 = 2L;
-        Order order = orderParam(orderTableId, Arrays.asList(
-            orderLineItemParam(menuId1, 1),
-            orderLineItemParam(menuId2, 2))
-        );
-        given(menuDao.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(2L);
-        OrderTable orderTable = savedOrderTable(orderTableId, true);
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
+    @DisplayName("주문 등록 API")
     @Test
     void create() {
         // given
@@ -122,25 +73,25 @@ class OrderServiceTest {
 
         Order order = orderParam(orderTableId, Arrays.asList(
             orderLineItem1,
-            orderLineItem2)
-        );
-        Order savedOrder = savedOrder(1L, orderTableId);
-        OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L, savedOrder.getId());
-        OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L, savedOrder.getId());
+            orderLineItem2
+        ));
+        OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L);
+        OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L);
+        Order savedOrder = savedOrder(1L, orderTableId, Arrays.asList(savedOrderLineItem1, savedOrderLineItem2));
 
-        given(menuDao.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(2L);
+        long menuCount = 2L;
+        given(menuRepository.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(menuCount);
         OrderTable orderTable = savedOrderTable(orderTableId, false);
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(savedOrder);
-        given(orderLineItemDao.save(orderLineItem1)).willReturn(savedOrderLineItem1);
-        given(orderLineItemDao.save(orderLineItem2)).willReturn(savedOrderLineItem2);
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderRepository.save(order)).willReturn(savedOrder);
+        doNothing().when(orderValidator).validateSave(order, orderTable, menuCount);
 
         // when
         Order actual = orderService.create(order);
 
         // then
         assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId());
-        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(actual.getOrderedTime()).isNotNull();
         assertThat(actual.getOrderLineItems()).containsExactly(savedOrderLineItem1, savedOrderLineItem2);
     }
@@ -149,13 +100,10 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        Long orderId = 1L;
-        Order savedOrder = savedOrder(orderId, "COOKING");
-        OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L, savedOrder.getId());
-        OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L, savedOrder.getId());
-        given(orderDao.findAll()).willReturn(Collections.singletonList(savedOrder));
-        given(orderLineItemDao.findAllByOrderId(orderId))
-            .willReturn(Arrays.asList(savedOrderLineItem1, savedOrderLineItem2));
+        OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L);
+        OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L);
+        Order savedOrder = savedOrder(1L, OrderStatus.COOKING, Arrays.asList(savedOrderLineItem1, savedOrderLineItem2));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(savedOrder));
 
         // when
         List<Order> orders = orderService.list();
@@ -171,8 +119,8 @@ class OrderServiceTest {
     void changeOrderStatus_save_order_not_exists(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
-        Order order = orderParam(orderStatus.name());
-        given(orderDao.findById(orderId)).willReturn(Optional.empty());
+        Order order = orderParam(orderStatus);
+        given(orderRepository.findById(orderId)).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, order))
@@ -185,8 +133,9 @@ class OrderServiceTest {
     void changeOrderStatus_save_order_already_completion(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
-        Order order = orderParam(orderStatus.name());
-        given(orderDao.findById(orderId)).willReturn(Optional.of(savedOrder(orderId, OrderStatus.COMPLETION.name())));
+        Order order = orderParam(orderStatus);
+        given(orderRepository.findById(orderId)).willReturn(
+            Optional.of(savedOrder(orderId, OrderStatus.COMPLETION)));
 
         // when, then
         assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, order))
@@ -199,19 +148,16 @@ class OrderServiceTest {
     void changeOrderStatus(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
-        Order order = orderParam(orderStatus.name());
-        Order savedOrder = savedOrder(orderId, OrderStatus.COOKING.name());
-        List<OrderLineItem> savedOrderLineItems = Collections.singletonList(savedOrderLineItem(1L, orderId));
-        given(orderDao.findById(orderId)).willReturn(Optional.of(savedOrder));
-        given(orderDao.save(savedOrder)).willReturn(savedOrder);
-        given(orderLineItemDao.findAllByOrderId(orderId))
-            .willReturn(savedOrderLineItems);
+        Order order = orderParam(orderStatus);
+        List<OrderLineItem> savedOrderLineItems = Collections.singletonList(savedOrderLineItem(1L));
+        Order savedOrder = savedOrder(orderId, OrderStatus.COOKING, savedOrderLineItems);
+        given(orderRepository.findById(orderId)).willReturn(Optional.of(savedOrder));
 
         // when
         Order actual = orderService.changeOrderStatus(orderId, order);
 
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo(orderStatus.name());
+        assertThat(actual.getOrderStatus()).isEqualTo(orderStatus);
         assertThat(actual.getOrderLineItems()).isEqualTo(savedOrderLineItems);
     }
 }

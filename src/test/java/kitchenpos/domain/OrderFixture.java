@@ -13,15 +13,20 @@ public class OrderFixture {
 
     }
 
-    public static Order orderParam(String orderStatus) {
+    public static Order orderParam(OrderStatus orderStatus) {
         return new Order(null, null, orderStatus, null, null);
     }
 
-    public static Order savedOrder(Long id, String orderStatus) {
+    public static Order savedOrder(Long id, OrderStatus orderStatus) {
         return new Order(id, 1L, orderStatus, LocalDateTime.now(), new ArrayList<>());
     }
 
-    public static Order savedOrder(Long id, Long orderTableId) {
-        return new Order(id, orderTableId, "COOKING", LocalDateTime.now(), new ArrayList<>());
+    public static Order savedOrder(Long id, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(id, 1L, orderStatus, LocalDateTime.now(), orderLineItems);
     }
+
+    public static Order savedOrder(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+    }
+
 }

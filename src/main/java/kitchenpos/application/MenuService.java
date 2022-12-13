@@ -34,7 +34,7 @@ public class MenuService {
     @Transactional
     public Menu create(final Menu menu) {
         final MenuProducts menuProducts = new MenuProducts(menu.getMenuProducts());
-        List<Product> products = productRepository.findAllById(menuProducts.getProductIds());
+        List<Product> products = productRepository.findAllById(menuProducts.toProductIds());
         boolean menuGroupNotExists = !menuGroupRepository.existsById(menu.getMenuGroupId());
 
         menu.validate(menuValidator, products, menuGroupNotExists);

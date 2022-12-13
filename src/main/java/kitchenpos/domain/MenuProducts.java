@@ -10,13 +10,9 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public List<Long> getProductIds() {
+    public List<Long> toProductIds() {
         return menuProducts.stream()
             .map(MenuProduct::getProductId)
             .collect(Collectors.toList());
-    }
-
-    public List<MenuProduct> getList() {
-        return menuProducts;
     }
 }
