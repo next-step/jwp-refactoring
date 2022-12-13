@@ -9,7 +9,11 @@ public enum ErrorCode {
     QUANTITY_LESS_THAN_ZERO("수량은 0단위보다 작을 수 없습니다."),
     MENU_PRICE_MORE_THAN_TOTAL_PRICE("메뉴의 가격은 전체 메뉴 상품 가격보다 크지 않습니다."),
     MENU_GROUP_NOT_EMPTY("메뉴 그룹은 빈 값을 허용하지 않습니다."),
-    MENU_PRODUCT_NOT_EMPTY("메뉴 상품은 빈 값을 허용하지 않습니다.");
+    MENU_PRODUCT_NOT_EMPTY("메뉴 상품은 빈 값을 허용하지 않습니다."),
+    HAS_TABLE_GROUP("단체 그룹이 지정되어 있습니다."),
+    ORDER_TABLE_NOT_EMPTY("주문 테이블이 비어 있습니다."),
+    NOT_COMPLETE_ORDER("완료되지 않은 주문입니다."),
+    ORDER_TABLE_MIN_SIZE("주문 테이블 2개 이상이여야 합니다.");
 
     private final String errorMessage;
 

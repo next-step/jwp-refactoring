@@ -1,17 +1,18 @@
-package kitchenpos.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 public class TableGroupRestAssured {
 
-    public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_요청(TableGroupRequest tableGroupRequest) {
         return RestAssured
             .given().log().all()
-            .body(tableGroup)
+            .body(tableGroupRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/api/table-groups")
             .then().log().all()

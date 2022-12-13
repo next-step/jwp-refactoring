@@ -6,7 +6,7 @@ import static kitchenpos.acceptance.OrderRestAssured.주문_목록_조회_요청
 import static kitchenpos.acceptance.OrderRestAssured.주문_상태_수정_요청;
 import static kitchenpos.acceptance.OrderRestAssured.주문_생성_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
-import static kitchenpos.acceptance.TableRestAssured.주문_테이블_생성_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -16,18 +16,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +44,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuProductRequest 하와이안피자상품;
     private MenuProductRequest 콜라상품;
     private MenuProductRequest 피클상품;
-    private OrderTable 주문테이블;
+    private OrderTableResponse 주문테이블;
     private Order 주문;
     private OrderLineItem 하와이안피자세트주문;
 
@@ -67,7 +65,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         하와이안피자세트 = 메뉴_생성_요청(MenuRequest.of("하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(),
             Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))).as(MenuResponse.class);
 
-        주문테이블 = 주문_테이블_생성_요청(new OrderTable(null, null, 0, false)).as(OrderTable.class);
+        주문테이블 = 주문_테이블_생성_요청(OrderTableRequest.of(0, false)).as(OrderTableResponse.class);
         하와이안피자세트주문 = new OrderLineItem(null, null, 하와이안피자세트.getId(), 1);
         주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(하와이안피자세트주문));
     }

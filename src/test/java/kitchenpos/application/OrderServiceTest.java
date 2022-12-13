@@ -3,7 +3,6 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuRepository;
@@ -24,7 +22,8 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +47,7 @@ public class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -95,7 +94,7 @@ public class OrderServiceTest {
             .map(OrderLineItem::getMenuId)
             .collect(Collectors.toList());
         // when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
+        //when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderDao.save(주문)).thenReturn(주문);
         when(orderLineItemDao.save(하와이안피자세트주문)).thenReturn(하와이안피자세트주문);
 
@@ -118,7 +117,7 @@ public class OrderServiceTest {
             .map(OrderLineItem::getMenuId)
             .collect(Collectors.toList());
         // when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
+        //when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문))

@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import kitchenpos.common.constant.ErrorCode;
 
 public class Order {
     private Long id;
@@ -20,6 +22,12 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public void validateNotCompleteOrder() {
+        if (!Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException(ErrorCode.NOT_COMPLETE_ORDER.getErrorMessage());
+        }
     }
 
     public Long getId() {
