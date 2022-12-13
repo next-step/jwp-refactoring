@@ -25,7 +25,7 @@ public class OrderTables {
         validate(target);
         target.forEach(orderTable -> {
             orderTable.checkOrderTableIsEmpty();
-            orderTable.changeEmpty(false, Collections.emptyList());
+            orderTable.changeEmpty(false);
             addOrderTable(tableGroup, orderTable);
         });
     }

@@ -43,19 +43,17 @@ class OrderServiceTest {
 
     private OrderTable 주문테이블;
     private Order 주문;
-    private MenuGroup 뼈치킨;
     private Menu 뿌링클_세트1;
     private Menu 뿌링클_세트2;
     private OrderLineItem 주문_메뉴1;
     private OrderLineItem 주문_메뉴2;
-    private List<OrderLineItem> 주문_메뉴_목록;
 
     @BeforeEach
     void setUp() {
         주문테이블 = new OrderTable(2, false);
         주문 = new Order(주문테이블, OrderStatus.COOKING);
 
-        뼈치킨 = new MenuGroup("뼈치킨");
+        MenuGroup 뼈치킨 = new MenuGroup("뼈치킨");
         뿌링클_세트1 = new Menu("뼈치킨 세트1", BigDecimal.valueOf(43000), 뼈치킨);
         뿌링클_세트2 = new Menu("뼈치킨 세트2", BigDecimal.valueOf(50000), 뼈치킨);
 
@@ -68,7 +66,7 @@ class OrderServiceTest {
         주문_메뉴1 = new OrderLineItem(주문, 뿌링클_세트1, 1L);
         주문_메뉴2 = new OrderLineItem(주문, 뿌링클_세트2, 1L);
 
-        주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
+        List<OrderLineItem> 주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
         주문.order(주문_메뉴_목록);
     }
 
@@ -100,7 +98,7 @@ class OrderServiceTest {
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
         when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
-        when(menuRepository.findAllById(request.findAllMenuIds())).thenReturn(Arrays.asList(뿌링클_세트1));
+        when(menuRepository.findAllById(request.findAllMenuIds())).thenReturn(Collections.singletonList(뿌링클_세트1));
 
         assertThatThrownBy(() -> orderService.create(request)).isInstanceOf(EntityNotFoundException.class);
     }
@@ -120,7 +118,7 @@ class OrderServiceTest {
     @Test
     void 빈_테이블_주문_생성() {
         // given
-        주문테이블.changeEmpty(true, Collections.emptyList());
+        주문테이블.changeEmpty(true);
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
@@ -134,7 +132,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void 주문_목록_조회() {
-        when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
+        when(orderRepository.findAll()).thenReturn(Collections.singletonList(주문));
 
         List<OrderResponse> orders = orderService.list();
 

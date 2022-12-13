@@ -36,9 +36,14 @@ public class TableService {
                 .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
         List<Order> orders = orderRepository.findAllByOrderTableId(savedOrderTable.getId());
 
-        savedOrderTable.changeEmpty(request.isEmpty(), orders);
+        validateOngoingOrder(orders);
+        savedOrderTable.changeEmpty(request.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+    }
+
+    private void validateOngoingOrder(List<Order> orders) {
+        orders.forEach(Order::checkOngoingOrderTable);
     }
 
     @Transactional

@@ -42,11 +42,11 @@ public class OrderTable {
         }
     }
 
-    public void changeEmpty(boolean empty, List<Order> orders) {
+    public void changeEmpty(boolean empty) {
         if (Objects.nonNull(this.tableGroup)) {
             throw new IllegalArgumentException(OrderTableError.HAS_GROUP);
         }
-        orders.forEach(Order::checkOngoingOrderTable);
+
         this.empty = empty;
     }
 

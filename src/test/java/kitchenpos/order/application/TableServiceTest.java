@@ -89,7 +89,7 @@ class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .thenReturn(Arrays.asList(new Order(주문테이블1, OrderStatus.COMPLETION)));
+                .thenReturn(Collections.singletonList(new Order(주문테이블1, OrderStatus.COMPLETION)));
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문테이블1);
 
         OrderTableRequest request = new OrderTableRequest(0, true);
@@ -130,7 +130,7 @@ class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .thenReturn(Arrays.asList(new Order(주문테이블1, orderStatus)));
+                .thenReturn(Collections.singletonList(new Order(주문테이블1, orderStatus)));
 
         assertThatThrownBy(() ->
             tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
@@ -176,7 +176,7 @@ class TableServiceTest {
     @Test
     void 빈_주문테이블_손님수_변경() {
         // given
-        주문테이블1.changeEmpty(true, Collections.emptyList());
+        주문테이블1.changeEmpty(true);
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         assertThatThrownBy(() ->
