@@ -17,39 +17,39 @@ import java.util.List;
 import static kitchenpos.acceptance.MenuAcceptanceStep.*;
 import static kitchenpos.acceptance.MenuGroupAcceptanceStep.등록된_메뉴_그룹;
 import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
-import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupTestFixture.메뉴그룹;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
-import static kitchenpos.fixture.MenuTestFixture.createMenu;
+import static kitchenpos.fixture.MenuTestFixture.메뉴세트요청;
 import static kitchenpos.fixture.ProductTestFixture.*;
-import static kitchenpos.fixture.ProductTestFixture.단무지_요청;
+import static kitchenpos.fixture.ProductTestFixture.단무지요청;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 중국집_1인_메뉴_세트;
-    private MenuProductRequest 짜장면메뉴상품;
-    private MenuProductRequest 짬뽕메뉴상품;
-    private MenuProductRequest 탕수육메뉴상품;
-    private MenuProductRequest 단무지메뉴상품;
+    private MenuGroup 중국집1인메뉴세트그룹;
+    private MenuProductRequest 짜장면메뉴상품요청;
+    private MenuProductRequest 짬뽕메뉴상품요청;
+    private MenuProductRequest 탕수육메뉴상품요청;
+    private MenuProductRequest 단무지메뉴상품요청;
     private MenuRequest 짜장면_탕수육_1인_메뉴_세트;
     private MenuRequest 짬뽕_탕수육_1인_메뉴_세트;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        중국집_1인_메뉴_세트 = 등록된_메뉴_그룹(createMenuGroup("중국집_1인_메뉴_세트")).as(MenuGroup.class);
-        Long 짜짱면상품ID = 등록된_상품(짜장면_요청()).as(ProductResponse.class).getId();
-        Long 짬뽕상품ID = 등록된_상품(짬뽕_요청()).as(ProductResponse.class).getId();
-        Long 탕수육상품ID = 등록된_상품(탕수육_요청()).as(ProductResponse.class).getId();
-        Long 단무지상품ID = 등록된_상품(단무지_요청()).as(ProductResponse.class).getId();
-        짜장면메뉴상품 = 짜장면메뉴상품(짜짱면상품ID);
-        탕수육메뉴상품 = 탕수육메뉴상품(탕수육상품ID);
-        짬뽕메뉴상품 = 짬뽕메뉴상품(짬뽕상품ID);
-        단무지메뉴상품 = 단무지메뉴상품(단무지상품ID);
-        짜장면_탕수육_1인_메뉴_세트 = createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
-                중국집_1인_메뉴_세트.getId(), Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
-        짬뽕_탕수육_1인_메뉴_세트 = createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
-                중국집_1인_메뉴_세트.getId(), Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품));
+        중국집1인메뉴세트그룹 = 등록된_메뉴_그룹(메뉴그룹("중국집1인메뉴세트그룹")).as(MenuGroup.class);
+        Long 짜짱면상품ID = 등록된_상품(짜장면요청()).as(ProductResponse.class).getId();
+        Long 짬뽕상품ID = 등록된_상품(짬뽕요청()).as(ProductResponse.class).getId();
+        Long 탕수육상품ID = 등록된_상품(탕수육요청()).as(ProductResponse.class).getId();
+        Long 단무지상품ID = 등록된_상품(단무지요청()).as(ProductResponse.class).getId();
+        짜장면메뉴상품요청 = 짜장면메뉴상품요청(짜짱면상품ID);
+        탕수육메뉴상품요청 = 탕수육메뉴상품요청(탕수육상품ID);
+        짬뽕메뉴상품요청 = 짬뽕메뉴상품요청(짬뽕상품ID);
+        단무지메뉴상품요청 = 단무지메뉴상품요청(단무지상품ID);
+        짜장면_탕수육_1인_메뉴_세트 = 메뉴세트요청("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L),
+                중국집1인메뉴세트그룹.getId(), Arrays.asList(짜장면메뉴상품요청, 탕수육메뉴상품요청, 단무지메뉴상품요청));
+        짬뽕_탕수육_1인_메뉴_세트 = 메뉴세트요청("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L),
+                중국집1인메뉴세트그룹.getId(), Arrays.asList(짬뽕메뉴상품요청, 탕수육메뉴상품요청, 단무지메뉴상품요청));
     }
 
     @DisplayName("메뉴를 생성한다.")

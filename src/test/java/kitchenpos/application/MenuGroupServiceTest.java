@@ -15,8 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트;
-import static kitchenpos.fixture.MenuGroupTestFixture.중국집_1인_메뉴_세트_요청;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,23 +32,23 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroupRequest 중국집_1인_메뉴_세트_요청;
-    private MenuGroup 중국집_1인_메뉴_세트;
+    private MenuGroupRequest 중국집1인메뉴세트그룹요청;
+    private MenuGroup 중국집1인메뉴세트그룹;
 
     @BeforeEach
     void setUp() {
-        중국집_1인_메뉴_세트_요청 = 중국집_1인_메뉴_세트_요청();
-        중국집_1인_메뉴_세트 = 중국집_1인_메뉴_세트(중국집_1인_메뉴_세트_요청);
+        중국집1인메뉴세트그룹요청 = 중국집1인메뉴세트그룹요청();
+        중국집1인메뉴세트그룹 = 중국집1인메뉴세트그룹(중국집1인메뉴세트그룹요청);
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
         // given
-        when(menuGroupRepository.save(any())).thenReturn(중국집_1인_메뉴_세트);
+        when(menuGroupRepository.save(any())).thenReturn(중국집1인메뉴세트그룹);
 
         // when
-        MenuGroupResponse saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트_요청);
+        MenuGroupResponse saveMenuGroup = menuGroupService.create(중국집1인메뉴세트그룹요청);
 
         // then
         assertThat(saveMenuGroup).isNotNull();
@@ -58,7 +58,7 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         // given
-        List<MenuGroup> menuGroups = Collections.singletonList(중국집_1인_메뉴_세트);
+        List<MenuGroup> menuGroups = Collections.singletonList(중국집1인메뉴세트그룹);
         when(menuGroupRepository.findAll()).thenReturn(menuGroups);
 
         // when
@@ -67,7 +67,7 @@ class MenuGroupServiceTest {
         // then
         assertAll(
                 () -> assertThat(findMenuGroups).hasSize(menuGroups.size()),
-                () -> assertThat(findMenuGroups).containsExactly(MenuGroupResponse.from(중국집_1인_메뉴_세트))
+                () -> assertThat(findMenuGroups).containsExactly(MenuGroupResponse.from(중국집1인메뉴세트그룹))
         );
     }
 }

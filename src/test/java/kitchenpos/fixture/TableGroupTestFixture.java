@@ -10,11 +10,11 @@ import java.util.List;
 
 public class TableGroupTestFixture {
 
-    public static TableGroupRequest createTableGroupRequest(List<OrderTableRequest> orderTables) {
+    public static TableGroupRequest 테이블그룹요청(List<OrderTableRequest> orderTables) {
         return TableGroupRequest.of(null, null, orderTables);
     }
 
-    public static TableGroup createTableGroup() {
+    public static TableGroup 테이블그룹() {
         return TableGroup.of(Arrays.asList(
                 OrderTable.of(null, 10, true),
                 OrderTable.of(null, 10, true)

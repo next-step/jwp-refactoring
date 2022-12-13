@@ -9,43 +9,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static kitchenpos.fixture.TableGroupTestFixture.createTableGroup;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 
 public class OrderTableTestFixture {
 
-    public static OrderTableRequest createOrderTable(Long id, Long getTableGroupId, int numberOfGuests, boolean empty) {
+    public static OrderTableRequest 주문테이블(Long id, Long getTableGroupId, int numberOfGuests, boolean empty) {
         return OrderTableRequest.of(id, getTableGroupId, numberOfGuests, empty);
     }
 
-    public static OrderTableRequest createOrderTable(Long getTableGroupId, int numberOfGuests, boolean empty) {
+    public static OrderTableRequest 주문테이블(Long getTableGroupId, int numberOfGuests, boolean empty) {
         return OrderTableRequest.of(null, getTableGroupId, numberOfGuests, empty);
     }
 
     public static OrderTableRequest 주문테이블2_요청() {
-        return createOrderTable(null, null, 20, false);
+        return 주문테이블(null, null, 20, false);
     }
 
     public static OrderTableRequest 주문테이블1_요청() {
-        return createOrderTable(null, null, 10, false);
+        return 주문테이블(null, null, 10, false);
     }
 
     public static OrderTable 그룹_있는_주문테이블_생성(OrderTableRequest request) {
-        return OrderTable.of(createTableGroup(), request.getNumberOfGuests(), request.isEmpty());
+        return OrderTable.of(테이블그룹(), request.getNumberOfGuests(), request.isEmpty());
     }
 
     public static OrderTable 그룹_없는_주문테이블_생성(OrderTableRequest request) {
         return OrderTable.of(null, request.getNumberOfGuests(), request.isEmpty());
     }
 
-    public static List<OrderTableRequest> mapToRequest(List<OrderTable> orderTables) {
+    public static List<OrderTableRequest> 주문정보요청목록(List<OrderTable> orderTables) {
         return orderTables.stream()
                 .map(orderTable -> OrderTableRequest.of(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.isEmpty()))
                 .collect(Collectors.toList());
     }
 
-    public static List<OrderTable> mapToEntity(List<OrderTableRequest> orderTables) {
+    public static List<OrderTable> 주문정보목록(List<OrderTableRequest> orderTables) {
         return orderTables.stream()
-                .map(orderTable -> OrderTable.of(createTableGroup(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+                .map(orderTable -> OrderTable.of(테이블그룹(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
                 .collect(Collectors.toList());
     }
 

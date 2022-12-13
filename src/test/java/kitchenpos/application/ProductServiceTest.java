@@ -33,17 +33,17 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private ProductRequest 짜장면_요청;
-    private ProductRequest 단무지_요청;
+    private ProductRequest 짜장면요청;
+    private ProductRequest 단무지요청;
     private Product 짜장면;
     private Product 단무지;
 
     @BeforeEach
     void setUp() {
-        짜장면_요청 = 짜장면_요청();
-        단무지_요청 = 단무지_요청();
-        짜장면 = 상품생성(짜장면_요청);
-        단무지 = 상품생성(단무지_요청);
+        짜장면요청 = 짜장면요청();
+        단무지요청 = 단무지요청();
+        짜장면 = 상품생성(짜장면요청);
+        단무지 = 상품생성(단무지요청);
     }
 
     @DisplayName("상품 생성 작업을 성공한다.")
@@ -53,7 +53,7 @@ class ProductServiceTest {
         when(productRepository.save(any())).thenReturn(짜장면);
 
         // when
-        ProductResponse product = productService.create(짜장면_요청);
+        ProductResponse product = productService.create(짜장면요청);
 
         // then
         assertThat(product).isNotNull();
@@ -63,7 +63,7 @@ class ProductServiceTest {
     @Test
     void createWithException1() {
         // given
-        ProductRequest product = createProduct( "짜장면", BigDecimal.valueOf(-1000));
+        ProductRequest product = 상품( "짜장면", BigDecimal.valueOf(-1000));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));

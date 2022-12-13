@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderLineItemTestFixture.createOrderLineItem;
+import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -98,7 +98,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmptyWithException1() {
         // given
-        OrderTable orderTable = 그룹_있는_주문테이블_생성(createOrderTable(null, 1L, 10, true));
+        OrderTable orderTable = 그룹_있는_주문테이블_생성(주문테이블(null, 1L, 10, true));
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
@@ -110,7 +110,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmptyWithException2() {
         // given
-        Order.of(주문테이블1, Collections.singletonList(createOrderLineItem(1L, 1)));
+        Order.of(주문테이블1, Collections.singletonList(주문정보(1L, 1)));
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         // when & then
@@ -137,7 +137,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException1() {
         // given
-        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(null, null, -1, false));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(주문테이블(null, null, -1, false));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -149,7 +149,7 @@ class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException2() {
         // given
-        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(null, 1L, 10, true));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(주문테이블(null, 1L, 10, true));
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then

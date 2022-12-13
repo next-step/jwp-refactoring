@@ -15,7 +15,7 @@ import java.util.Arrays;
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.등록된_주문_테이블;
 import static kitchenpos.acceptance.TableGroupAcceptanceStep.*;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
-import static kitchenpos.fixture.TableGroupTestFixture.createTableGroupRequest;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹요청;
 
 @DisplayName("단체 지정 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -27,12 +27,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = 등록된_주문_테이블(createOrderTable(1L, null, 10, true)).as(OrderTableResponse.class);
-        주문테이블2 = 등록된_주문_테이블(createOrderTable(2L, null, 20, true)).as(OrderTableResponse.class);
+        주문테이블1 = 등록된_주문_테이블(주문테이블(1L, null, 10, true)).as(OrderTableResponse.class);
+        주문테이블2 = 등록된_주문_테이블(주문테이블(2L, null, 20, true)).as(OrderTableResponse.class);
         OrderTable orderTable1 = setId(주문테이블1.getId(), OrderTable.of(null, 10, true));
         OrderTable orderTable2 = setId(주문테이블2.getId(), OrderTable.of(null, 10, true));
 
-        단체1 = createTableGroupRequest(mapToRequest(Arrays.asList(orderTable1, orderTable2)));
+        단체1 = 테이블그룹요청(주문정보요청목록(Arrays.asList(orderTable1, orderTable2)));
     }
 
     @DisplayName("주문 테이블들에 대해 단체를 지정한다.")

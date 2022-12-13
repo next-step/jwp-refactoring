@@ -25,7 +25,7 @@ public class MenuResponse {
 
     public static MenuResponse from(final Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
-                menu.getMenuGroup().getId(), mapToMenuResponse(menu.getMenuProducts()));
+                menu.getMenuGroup().getId(), mapToMenuResponse(menu.메뉴세트목록()));
     }
 
     private static List<MenuProductResponse> mapToMenuResponse(final MenuProducts menuProducts) {

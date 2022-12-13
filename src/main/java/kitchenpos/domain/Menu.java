@@ -71,7 +71,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuProducts getMenuProducts() {
+    public MenuProducts 메뉴세트목록() {
         return menuProducts;
     }
 }

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.*;
-import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.주문테이블;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
@@ -23,8 +23,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = createOrderTable(null, 2, false);
-        주문테이블2 = createOrderTable(null, 3, false);
+        주문테이블1 = 주문테이블(null, 2, false);
+        주문테이블2 = 주문테이블(null, 3, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")

@@ -20,13 +20,13 @@ import static kitchenpos.acceptance.MenuGroupAcceptanceStep.등록된_메뉴_그
 import static kitchenpos.acceptance.OrderAcceptanceStep.*;
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.등록된_주문_테이블;
 import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
-import static kitchenpos.fixture.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupTestFixture.메뉴그룹;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
-import static kitchenpos.fixture.MenuProductTestFixture.단무지메뉴상품;
-import static kitchenpos.fixture.MenuTestFixture.createMenu;
+import static kitchenpos.fixture.MenuProductTestFixture.단무지메뉴상품요청;
+import static kitchenpos.fixture.MenuTestFixture.메뉴세트요청;
 import static kitchenpos.fixture.OrderLineItemTestFixture.*;
-import static kitchenpos.fixture.OrderTableTestFixture.createOrderTable;
-import static kitchenpos.fixture.OrderTestFixture.createOrder;
+import static kitchenpos.fixture.OrderTableTestFixture.주문테이블;
+import static kitchenpos.fixture.OrderTestFixture.주문;
 import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,11 +34,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 관련 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 중국집_1인_메뉴_세트;
-    private MenuProductRequest 짜장면메뉴상품;
-    private MenuProductRequest 짬뽕메뉴상품;
-    private MenuProductRequest 단무지메뉴상품;
-    private MenuProductRequest 탕수육메뉴상품;
+    private MenuGroup 중국집1인메뉴세트그룹;
+    private MenuProductRequest 짜장면메뉴상품요청;
+    private MenuProductRequest 짬뽕메뉴상품요청;
+    private MenuProductRequest 단무지메뉴상품요청;
+    private MenuProductRequest 탕수육메뉴상품요청;
     private MenuResponse 짜장면_탕수육_1인_메뉴_세트;
     private MenuResponse 짬뽕_탕수육_1인_메뉴_세트;
     private OrderTableResponse 주문테이블1;
@@ -51,27 +51,27 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        중국집_1인_메뉴_세트 = 등록된_메뉴_그룹(createMenuGroup("중국집_1인_메뉴_세트")).as(MenuGroup.class);
-        Long 짜짱면상품ID = 등록된_상품(짜장면_요청()).as(ProductResponse.class).getId();
-        Long 짬뽕상품ID = 등록된_상품(짬뽕_요청()).as(ProductResponse.class).getId();
-        Long 탕수육상품ID = 등록된_상품(탕수육_요청()).as(ProductResponse.class).getId();
-        Long 단무지상품ID = 등록된_상품(단무지_요청()).as(ProductResponse.class).getId();
-        짜장면메뉴상품 = 짜장면메뉴상품(짜짱면상품ID);
-        탕수육메뉴상품 = 탕수육메뉴상품(탕수육상품ID);
-        짬뽕메뉴상품 = 짬뽕메뉴상품(짬뽕상품ID);
-        단무지메뉴상품 = 단무지메뉴상품(단무지상품ID);
-        List<MenuProductRequest> 짜장면메뉴세트 = Arrays.asList(짜장면메뉴상품, 탕수육메뉴상품, 단무지메뉴상품);
-        List<MenuProductRequest> 짬뽕메뉴세트 = Arrays.asList(짬뽕메뉴상품, 탕수육메뉴상품, 단무지메뉴상품);
+        중국집1인메뉴세트그룹 = 등록된_메뉴_그룹(메뉴그룹("중국집1인메뉴세트그룹")).as(MenuGroup.class);
+        Long 짜짱면상품ID = 등록된_상품(짜장면요청()).as(ProductResponse.class).getId();
+        Long 짬뽕상품ID = 등록된_상품(짬뽕요청()).as(ProductResponse.class).getId();
+        Long 탕수육상품ID = 등록된_상품(탕수육요청()).as(ProductResponse.class).getId();
+        Long 단무지상품ID = 등록된_상품(단무지요청()).as(ProductResponse.class).getId();
+        짜장면메뉴상품요청 = 짜장면메뉴상품요청(짜짱면상품ID);
+        탕수육메뉴상품요청 = 탕수육메뉴상품요청(탕수육상품ID);
+        짬뽕메뉴상품요청 = 짬뽕메뉴상품요청(짬뽕상품ID);
+        단무지메뉴상품요청 = 단무지메뉴상품요청(단무지상품ID);
+        List<MenuProductRequest> 짜장면메뉴세트 = Arrays.asList(짜장면메뉴상품요청, 탕수육메뉴상품요청, 단무지메뉴상품요청);
+        List<MenuProductRequest> 짬뽕메뉴세트 = Arrays.asList(짬뽕메뉴상품요청, 탕수육메뉴상품요청, 단무지메뉴상품요청);
         짜장면_탕수육_1인_메뉴_세트 =
-                등록된_메뉴(createMenu("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집_1인_메뉴_세트.getId(), 짜장면메뉴세트)).as(MenuResponse.class);
+                등록된_메뉴(메뉴세트요청("짜장면_탕수육_1인_메뉴_세트", BigDecimal.valueOf(20000L), 중국집1인메뉴세트그룹.getId(), 짜장면메뉴세트)).as(MenuResponse.class);
         짬뽕_탕수육_1인_메뉴_세트 =
-                등록된_메뉴(createMenu("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집_1인_메뉴_세트.getId(), 짬뽕메뉴세트)).as(MenuResponse.class);
-        주문테이블1 = 등록된_주문_테이블(createOrderTable(null, 10, false)).as(OrderTableResponse.class);
-        주문테이블2 = 등록된_주문_테이블(createOrderTable(null, 20, false)).as(OrderTableResponse.class);
-        짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItem(짜장면_탕수육_1인_메뉴_세트.getId(), 1);
-        짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItem(짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
-        주문1 = createOrder(주문테이블1.getId(), null, null, mapToRequest(Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문)));
-        주문2 = createOrder(주문테이블2.getId(), null, null, mapToRequest(singletonList(짜장면_탕수육_1인_메뉴_세트주문)));
+                등록된_메뉴(메뉴세트요청("짬뽕_탕수육_1인_메뉴_세트", BigDecimal.valueOf(21000L), 중국집1인메뉴세트그룹.getId(), 짬뽕메뉴세트)).as(MenuResponse.class);
+        주문테이블1 = 등록된_주문_테이블(주문테이블(null, 10, false)).as(OrderTableResponse.class);
+        주문테이블2 = 등록된_주문_테이블(주문테이블(null, 20, false)).as(OrderTableResponse.class);
+        짜장면_탕수육_1인_메뉴_세트주문 = 주문정보(짜장면_탕수육_1인_메뉴_세트.getId(), 1);
+        짬뽕_탕수육_1인_메뉴_세트주문 = 주문정보(짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
+        주문1 = 주문(주문테이블1.getId(), null, null, 주문정보요청목록(Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문)));
+        주문2 = 주문(주문테이블2.getId(), null, null, 주문정보요청목록(singletonList(짜장면_탕수육_1인_메뉴_세트주문)));
     }
 
     @DisplayName("주문을 생성한다.")

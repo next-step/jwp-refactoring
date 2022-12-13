@@ -26,7 +26,7 @@ import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.MenuTestFixture.*;
 import static kitchenpos.fixture.OrderLineItemTestFixture.*;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
-import static kitchenpos.fixture.OrderTestFixture.createOrder;
+import static kitchenpos.fixture.OrderTestFixture.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,16 +69,16 @@ class OrderServiceTest {
     public void setUp() {
         짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
         짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
-        짜장면_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
-        짬뽕_탕수육_1인_메뉴_세트 = 메뉴_세트_생성(짬뽕_탕수육_1인_메뉴_세트_요청, 2L);
+        짜장면_탕수육_1인_메뉴_세트 = 메뉴세트(짜장면_탕수육_1인_메뉴_세트_요청, 1L);
+        짬뽕_탕수육_1인_메뉴_세트 = 메뉴세트(짬뽕_탕수육_1인_메뉴_세트_요청, 2L);
         주문테이블1 = 그룹_없는_주문테이블_생성(주문테이블1_요청());
         주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블2_요청());
-        짜장면_탕수육_1인_메뉴_세트주문 = createOrderLineItemRequest(1L, 1);
-        짬뽕_탕수육_1인_메뉴_세트주문 = createOrderLineItemRequest(2L, 1);
-        주문1_요청 = createOrder(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
-        주문2_요청 = createOrder(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        주문1 = Order.of(주문테이블1, mapToEntity(주문1_요청.getOrderLineItemsRequest()));
-        주문2 = Order.of(주문테이블2, mapToEntity(주문2_요청.getOrderLineItemsRequest()));
+        짜장면_탕수육_1인_메뉴_세트주문 = 주문정보요청(1L, 1);
+        짬뽕_탕수육_1인_메뉴_세트주문 = 주문정보요청(2L, 1);
+        주문1_요청 = 주문(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
+        주문2_요청 = 주문(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        주문1 = Order.of(주문테이블1, 주문정보목록(주문1_요청.getOrderLineItemsRequest()));
+        주문2 = Order.of(주문테이블2, 주문정보목록(주문2_요청.getOrderLineItemsRequest()));
     }
 
     @DisplayName("주문 생성 작업을 성공한다.")
@@ -104,7 +104,7 @@ class OrderServiceTest {
     @Test
     void createWithException1() {
         // given
-        OrderRequest order = createOrder(주문테이블1.getId(), null, null, null);
+        OrderRequest order = 주문(주문테이블1.getId(), null, null, null);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -161,8 +161,8 @@ class OrderServiceTest {
     @Test
     void changeOrderWithException1() {
         // given
-        OrderRequest 미등록_주문_요청 = createOrder(null,null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        Order 미등록_주문 = Order.of(OrderTable.of(null, 10, false), mapToEntity(미등록_주문_요청.getOrderLineItemsRequest()));
+        OrderRequest 미등록_주문_요청 = 주문(null,null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        Order 미등록_주문 = Order.of(OrderTable.of(null, 10, false), 주문정보목록(미등록_주문_요청.getOrderLineItemsRequest()));
         when(orderRepository.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then

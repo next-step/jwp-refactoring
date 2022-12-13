@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
-import static kitchenpos.fixture.TableGroupTestFixture.createTableGroupRequest;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,9 +50,9 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, true));
-        주문테이블2 = 그룹_없는_주문테이블_생성(createOrderTable(2L, null, 20, true));
-        단체1_요청 = createTableGroupRequest(mapToRequest(Arrays.asList(주문테이블1, 주문테이블2)));
+        주문테이블1 = 그룹_없는_주문테이블_생성(주문테이블(1L, null, 10, true));
+        주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블(2L, null, 20, true));
+        단체1_요청 = 테이블그룹요청(주문정보요청목록(Arrays.asList(주문테이블1, 주문테이블2)));
         단체1 = TableGroup.of(mapToEntityForNoGroup(단체1_요청.getOrderTables()), mapToEntityForNoGroup(단체1_요청.getOrderTables()));
     }
 
@@ -79,7 +79,7 @@ class TableGroupServiceTest {
     @Test
     void createWithException1() {
         // given
-        TableGroupRequest tableGroupRequest = createTableGroupRequest(mapToRequest(singletonList(주문테이블1)));
+        TableGroupRequest tableGroupRequest = 테이블그룹요청(주문정보요청목록(singletonList(주문테이블1)));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -89,8 +89,8 @@ class TableGroupServiceTest {
     @Test
     void createWithException2() {
         // given
-        OrderTable orderTable = 그룹_없는_주문테이블_생성(createOrderTable(1L, null, 10, false));
-        TableGroupRequest tableGroup = createTableGroupRequest(mapToRequest(Arrays.asList(orderTable, 주문테이블1)));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(주문테이블(1L, null, 10, false));
+        TableGroupRequest tableGroup = 테이블그룹요청(주문정보요청목록(Arrays.asList(orderTable, 주문테이블1)));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));
 
@@ -102,8 +102,8 @@ class TableGroupServiceTest {
     @Test
     void createWithException3() {
         // given
-        OrderTable orderTable = 그룹_있는_주문테이블_생성(createOrderTable(1L, 3L, 10, true));
-        TableGroupRequest tableGroup = createTableGroupRequest(mapToRequest(Arrays.asList(orderTable, 주문테이블1)));
+        OrderTable orderTable = 그룹_있는_주문테이블_생성(주문테이블(1L, 3L, 10, true));
+        TableGroupRequest tableGroup = 테이블그룹요청(주문정보요청목록(Arrays.asList(orderTable, 주문테이블1)));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));
 
