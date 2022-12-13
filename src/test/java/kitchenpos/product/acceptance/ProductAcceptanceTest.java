@@ -50,7 +50,6 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
         // then
         상품_목록_응답됨(response, Arrays.asList(후라이드.getId(), 순살치킨.getId()));
-
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
