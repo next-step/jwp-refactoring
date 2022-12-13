@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class TableService {
     private static final String NOT_EXIST_TABLE = "테이블이 존재하지 않습니다.";
 
