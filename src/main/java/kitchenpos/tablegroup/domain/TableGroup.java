@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -45,6 +47,11 @@ public class TableGroup {
         if(orderTables.anyHasGroupId()) {
             throw new IllegalArgumentException(ErrorCode.HAS_TABLE_GROUP.getErrorMessage());
         }
+    }
+
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::validateNotCompleteOrder);
+        orderTables.ungroupOrderTables();
     }
 
     public Long getId() {

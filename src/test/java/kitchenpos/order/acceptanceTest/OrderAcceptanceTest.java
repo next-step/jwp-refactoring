@@ -1,10 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptanceTest;
 
 import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
-import static kitchenpos.acceptance.OrderRestAssured.주문_목록_조회_요청;
-import static kitchenpos.acceptance.OrderRestAssured.주문_상태_수정_요청;
-import static kitchenpos.acceptance.OrderRestAssured.주문_생성_요청;
+import static kitchenpos.order.acceptanceTest.OrderRestAssured.주문_목록_조회_요청;
+import static kitchenpos.order.acceptanceTest.OrderRestAssured.주문_상태_수정_요청;
+import static kitchenpos.order.acceptanceTest.OrderRestAssured.주문_생성_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
 import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,16 +14,22 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.acceptance.AcceptanceTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
@@ -45,8 +51,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuProductRequest 콜라상품;
     private MenuProductRequest 피클상품;
     private OrderTableResponse 주문테이블;
-    private Order 주문;
-    private OrderLineItem 하와이안피자세트주문;
+    private OrderRequest 주문;
+    private OrderLineItemRequest 하와이안피자세트주문;
 
     @BeforeEach
     public void setUp() {
@@ -66,14 +72,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))).as(MenuResponse.class);
 
         주문테이블 = 주문_테이블_생성_요청(OrderTableRequest.of(0, false)).as(OrderTableResponse.class);
-        하와이안피자세트주문 = new OrderLineItem(null, null, 하와이안피자세트.getId(), 1);
-        주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(하와이안피자세트주문));
+        하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
+        주문 = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void createOrder() {
-        // when
+        // whenN
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
         // then
@@ -84,29 +90,33 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrder() {
         // given
-        주문 = 주문_생성_요청(주문).as(Order.class);
+        OrderResponse orderResponse = 주문_생성_요청(주문).as(OrderResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
         // then
         주문_목록_응답됨(response);
-        주문_목록_확인됨(response, Arrays.asList(주문.getId()));
+        주문_목록_확인됨(response, Arrays.asList(orderResponse.getId()));
     }
 
     @DisplayName("주문 상태를 수정한다.")
     @Test
     void updaeOrderStatus() {
         // given
-        String expectOrderStatus = OrderStatus.MEAL.name();
-        Order order = 주문_생성_요청(주문).as(Order.class);
-        Order changeOrder = new Order(주문.getId(), 주문.getOrderTableId(), expectOrderStatus, 주문.getOrderedTime(), 주문.getOrderLineItems());
+        OrderStatus expectOrderStatus = OrderStatus.MEAL;
+        OrderResponse orderResponse = 주문_생성_요청(주문).as(OrderResponse.class);
+        List<OrderLineItemRequest> orderLineItemRequests = orderResponse.getOrderLineItems()
+            .stream()
+            .map(orderLineItemResponse -> OrderLineItemRequest.from(orderLineItemResponse.getMenuId(), orderLineItemResponse.getQuantity()))
+            .collect(Collectors.toList());
+        OrderRequest orderRequest = OrderRequest.of(orderResponse.getOrderTableId(), expectOrderStatus, orderLineItemRequests);
 
         // when
-        ExtractableResponse<Response> response = 주문_상태_수정_요청(order.getId(), changeOrder);
+        ExtractableResponse<Response> response = 주문_상태_수정_요청(orderResponse.getId(), orderRequest);
 
         // then
-        주문_상태_수정됨(response, expectOrderStatus);
+        주문_상태_수정됨(response, expectOrderStatus.name());
     }
 
     private void 주문_생성됨(ExtractableResponse<Response> response) {
@@ -118,9 +128,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 주문_목록_확인됨(ExtractableResponse<Response> response, List<Long> orderIds) {
-        List<Long> resultIds = response.jsonPath().getList(".", Order.class)
+        List<Long> resultIds = response.jsonPath().getList(".", OrderResponse.class)
             .stream()
-            .map(Order::getId)
+            .map(OrderResponse::getId)
             .collect(Collectors.toList());
 
         assertThat(resultIds).containsAll(orderIds);

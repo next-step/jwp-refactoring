@@ -13,7 +13,9 @@ public enum ErrorCode {
     HAS_TABLE_GROUP("단체 그룹이 지정되어 있습니다."),
     ORDER_TABLE_NOT_EMPTY("주문 테이블이 비어 있습니다."),
     NOT_COMPLETE_ORDER("완료되지 않은 주문입니다."),
-    ORDER_TABLE_MIN_SIZE("주문 테이블 2개 이상이여야 합니다.");
+    ALREADY_COMPLETE_ORDER("이미 완료된 주문입니다."),
+    ORDER_TABLE_MIN_SIZE("주문 테이블 2개 이상이여야 합니다."),
+    ORDER_LINE_ITEM_NOT_EMPTY("주문 항목은 빈 값을 허용하지 않습니다.");
 
     private final String errorMessage;
 

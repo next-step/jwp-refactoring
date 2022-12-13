@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,8 +22,13 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -42,10 +48,7 @@ public class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -63,7 +66,7 @@ public class OrderServiceTest {
     private MenuProduct 피클상품;
     private OrderTable 주문테이블;
     private Order 주문;
-    private OrderLineItem 하와이안피자세트주문;
+    private OrderLineItemRequest 하와이안피자세트주문;
 
     @BeforeEach
     void setUp() {
@@ -81,26 +84,22 @@ public class OrderServiceTest {
             MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
 
         주문테이블 = new OrderTable(1L, null, 0, false);
-        주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        하와이안피자세트주문 = new OrderLineItem(1L, 주문.getId(), 하와이안피자세트.getId(), 1);
-        주문.setOrderLineItems(Arrays.asList(하와이안피자세트주문));
+        하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
+        주문 = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void createOrder() {
         // given
-        List<Long> menuIds = 주문.getOrderLineItems()
-            .stream()
-            .map(OrderLineItem::getMenuId)
-            .collect(Collectors.toList());
-        // when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        //when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
-        when(orderDao.save(주문)).thenReturn(주문);
-        when(orderLineItemDao.save(하와이안피자세트주문)).thenReturn(하와이안피자세트주문);
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
+        Order order = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+        when(menuRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(하와이안피자세트));
+        when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(Optional.of(주문테이블));
+        when(orderRepository.save(order)).thenReturn(order);
 
         // when
-        Order result = orderService.create(주문);
+        OrderResponse result = orderService.create(orderRequest);
 
         // then
         assertAll(
@@ -113,15 +112,12 @@ public class OrderServiceTest {
     @Test
     void crateOrderNotExistOrderTableException() {
         // given
-        List<Long> menuIds = 주문.getOrderLineItems()
-            .stream()
-            .map(OrderLineItem::getMenuId)
-            .collect(Collectors.toList());
-        // when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        //when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
+        when(menuRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(하와이안피자세트));
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -129,21 +125,23 @@ public class OrderServiceTest {
     @Test
     void createOrderNotExistOrderLineItemException() {
         // given
-        // when(menuDao.countByIdIn(anyList())).thenReturn(10L);
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
+        when(menuRepository.findById(하와이안피자세트주문.getMenuId())).thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 항목 메뉴가 빈 값이면 예외가 발생한다.")
     @Test
-    void CreateOrderEmptyOrderLineItemException() {
+    void createOrderEmptyOrderLineItemException() {
         // given
-        주문 = new Order(1L, 주문테이블.getId(), null, LocalDateTime.now(), new ArrayList<>());
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.emptyList());
+        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -151,29 +149,26 @@ public class OrderServiceTest {
     @Test
     void updateOrderStatus() {
         // given
-        String expectedStatus = OrderStatus.MEAL.name();
-        Order updatedOrder = new Order(
-            주문.getId(),
-            주문.getOrderTableId(),
-            expectedStatus,
-            주문.getOrderedTime(),
-            주문.getOrderLineItems()
-        );
-        when(orderDao.findById(주문.getId())).thenReturn(Optional.of(주문));
-        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(주문.getOrderLineItems());
+        OrderStatus expectOrderStatus = OrderStatus.MEAL;
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), expectOrderStatus, Collections.singletonList(하와이안피자세트주문));
+        when(orderRepository.findById(주문.getId())).thenReturn(Optional.of(주문));
 
         // when
-        Order result = orderService.changeOrderStatus(주문.getId(), updatedOrder);
+        OrderResponse result = orderService.changeOrderStatus(주문.getId(), orderRequest);
 
         // then
-        assertThat(result.getOrderStatus()).isEqualTo(expectedStatus);
+        assertThat(result.getOrderStatus()).isEqualTo(expectOrderStatus);
     }
 
     @DisplayName("등록되지 않은 주문의 상태를 수정하면 예외가 발생한다.")
     @Test
     void updateOrderStatusNotExistException() {
+        // given
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
+        when(orderRepository.findById(10L)).thenReturn(Optional.empty());
+
         // when & then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(3L, 주문))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(10L, orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -181,17 +176,13 @@ public class OrderServiceTest {
     @Test
     void updateOrderStatusCompleteException() {
         // given
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order updatedOrder = new Order(
-            주문.getId(),
-            주문.getOrderTableId(),
-            OrderStatus.MEAL.name(),
-            주문.getOrderedTime(),
-            주문.getOrderLineItems()
-        );
+        Order order = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))))
+            .changeOrderStatus(OrderStatus.COMPLETION);
+        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.MEAL, Collections.singletonList(하와이안피자세트주문));
+        when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));
 
         // when & then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), updatedOrder))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -199,14 +190,15 @@ public class OrderServiceTest {
     @Test
     void findAllOrder() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
-        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(주문.getOrderLineItems());
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
 
         // when
-        List<Order> results = orderService.list();
+        List<OrderResponse> result = orderService.list();
 
         // then
-        assertThat(results).hasSize(1)
-            .containsExactly(주문);
+        assertAll(
+            () -> assertThat(result).hasSize(1),
+            () -> assertThat(result.stream().map(OrderResponse::getId)).containsExactly(주문.getId())
+        );
     }
 }

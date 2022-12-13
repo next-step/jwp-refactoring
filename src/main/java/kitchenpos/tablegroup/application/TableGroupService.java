@@ -2,7 +2,9 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -19,12 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
+
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -40,19 +43,8 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         OrderTables orderTables = tableGroup.getOrderTables();
-
-        final List<OrderTable> orderTableList = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTableList.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        orderTables.ungroupOrderTables();
+        List<Order> orders = findAllOrderByOrderTableIds(orderTables);
+        tableGroup.ungroup(orders);
     }
 
     private List<OrderTable> findAllOrderTablesById(List<Long> ids) {
@@ -69,5 +61,13 @@ public class TableGroupService {
     private TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
             .orElseThrow(() -> new NotFoundException());
+    }
+
+    private List<Order> findAllOrderByOrderTableIds(OrderTables orderTables) {
+        List<Long> orderTableIds = orderTables.getOrderTables()
+            .stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
+        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 }

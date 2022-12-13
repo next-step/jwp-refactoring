@@ -3,7 +3,9 @@ package kitchenpos.ordertable.application;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -16,11 +18,12 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
+
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -40,13 +43,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        List<Order> orders = findAllOrderByOrderTableId(orderTable);
+        orderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
         return OrderTableResponse.from(orderTable);
     }
 
@@ -60,5 +58,9 @@ public class TableService {
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
             .orElseThrow(() -> new NotFoundException());
+    }
+
+    private List<Order> findAllOrderByOrderTableId(OrderTable orderTable) {
+        return orderRepository.findAllByOrderTableId(orderTable.getId());
     }
 }
