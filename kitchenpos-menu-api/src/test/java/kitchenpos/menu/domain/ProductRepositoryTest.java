@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("ProductRepository 테스트")
 @DataJpaTest
-class zProductRepositoryTest {
+class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
