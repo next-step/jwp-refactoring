@@ -16,7 +16,7 @@ public class Order {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -46,64 +46,33 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderTable getOrderTable(){
         return orderTable;
     }
 
-    public Long getOrderTableId() {
-        if(Objects.isNull(orderTable)){
-            return null;
-        }
-        return orderTable.getId();
-    }
-
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException();
+        }
+        this.orderStatus = orderStatus;
     }
 
     public static OrderBuilder builder(){
         return new OrderBuilder();
     }
 
-    public void changeOrderStatus(String orderStatus) {
-        if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
-            throw new IllegalArgumentException();
-        }
-        this.orderStatus = orderStatus;
-    }
-
     public static class OrderBuilder {
         private Long id;
         private OrderTable orderTable;
-        private String orderStatus;
+        private OrderStatus orderStatus;
         private LocalDateTime orderedTime;
         private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
@@ -117,7 +86,7 @@ public class Order {
             return this;
         }
 
-        public OrderBuilder orderStatus(String orderStatus) {
+        public OrderBuilder orderStatus(OrderStatus orderStatus) {
             this.orderStatus = orderStatus;
             return this;
         }

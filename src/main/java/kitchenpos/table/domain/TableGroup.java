@@ -47,7 +47,7 @@ public class TableGroup {
 
     public void ungroup(List<Order> orders) {
         boolean isEnable = orders.stream()
-                .anyMatch(order -> order.getOrderStatus().equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name()));
+                .anyMatch(order -> order.getOrderStatus().equals(OrderStatus.COOKING) || order.getOrderStatus().equals(OrderStatus.MEAL));
         if(isEnable){
             throw new IllegalArgumentException();
         }

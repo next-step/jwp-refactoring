@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 public class OrderResponse {
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private List<OrderLineItemResponse> orderLineItems;
 
     public OrderResponse() {
@@ -42,7 +43,7 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

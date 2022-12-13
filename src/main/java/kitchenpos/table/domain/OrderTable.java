@@ -98,7 +98,7 @@ public class OrderTable {
 
     public void chnageEmpty(final boolean empty, List<Order> orders) {
         boolean isBeforeComplete = orders.stream().anyMatch(order -> order.getOrderStatus()
-                .equals(OrderStatus.COOKING.name()) || order.getOrderStatus().equals(OrderStatus.MEAL.name()));
+                .equals(OrderStatus.COOKING) || order.getOrderStatus().equals(OrderStatus.MEAL));
         if (isBeforeComplete) {
             throw new IllegalArgumentException();
         }

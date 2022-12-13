@@ -45,7 +45,7 @@ public class OrderService {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
         List<Menu> menus = findAllMenuByIds(orderRequest.findMenuIds());
-        Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING.name(), menus);
+        Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING, menus);
         return OrderResponse.of(orderRepository.save(order));
     }
 
@@ -65,7 +65,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final String status) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
         order.changeOrderStatus(status);

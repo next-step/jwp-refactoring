@@ -8,7 +8,7 @@ public class MenuPrice {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public MenuPrice() {
+    protected MenuPrice() {
     }
 
     private MenuPrice(BigDecimal price) {

@@ -46,7 +46,7 @@ public class OrderRequest {
         return orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
     }
 
-    public Order toOrder(OrderTable orderTable, String orderStatus, List<Menu> menus) {
+    public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<Menu> menus) {
         Order order = Order.builder()
                 .orderStatus(orderStatus)
                 .orderTable(orderTable)

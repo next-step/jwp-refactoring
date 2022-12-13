@@ -25,6 +25,34 @@ public class MenuProduct {
         this.product = builder.product;
         this.quantity = builder.quantity;
     }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getMenuId() {
+        return menu.getId();
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public Long getProductId() {
+        if(Objects.isNull(product)){
+            return null;
+        }
+        return product.getId();
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
     public static MenuProductBuilder builder(){
         return new MenuProductBuilder();
     }
@@ -60,42 +88,4 @@ public class MenuProduct {
         }
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(final Menu menu) {
-        this.menu = menu;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public Long getProductId() {
-        if(Objects.isNull(product)){
-            return null;
-        }
-        return product.getId();
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
 }

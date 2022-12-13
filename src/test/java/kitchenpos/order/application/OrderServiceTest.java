@@ -142,7 +142,7 @@ public class OrderServiceTest {
     public void throwsExceptionWhenNoneExistsOrder() {
         doReturn(Optional.empty()).when(orderRepository).findById(anyLong());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1l, OrderStatus.COOKING.name()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1l, OrderStatus.COOKING))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -152,11 +152,11 @@ public class OrderServiceTest {
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
                 .orderTable(OrderTable.builder().build())
-                .orderStatus(OrderStatus.COMPLETION.name())
+                .orderStatus(OrderStatus.COMPLETION)
                 .build();
         doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION.name()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -167,14 +167,14 @@ public class OrderServiceTest {
                 .id(Arbitraries.longs().between(1, 1000).sample())
                 .orderTable(OrderTable.builder().build())
                 .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
-                .orderStatus(OrderStatus.COOKING.name())
+                .orderStatus(OrderStatus.COOKING)
                 .build();
         doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
         doReturn(order).when(orderRepository).save(any(Order.class));
 
-        OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION.name());
+        OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION);
 
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     private List<Order> getOrders(Order order, int size) {

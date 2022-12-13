@@ -77,7 +77,7 @@ public class TableServiceTest {
     public void throwsExceptionWhenExistsTableGroup() {
         List<Order> orders = getOrders(Order.builder()
                 .orderTable(OrderTable.builder().build())
-                .orderStatus(OrderStatus.COOKING.name()).build(), 5);
+                .orderStatus(OrderStatus.COOKING).build(), 5);
         OrderTable orderTable = OrderTable.builder()
                 .tableGroup(TableGroup.builder().id(13l).build())
                 .build();
@@ -94,7 +94,7 @@ public class TableServiceTest {
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
         List<Order> orders = getOrders(Order.builder()
                 .orderTable(OrderTable.builder().build())
-                .orderStatus(OrderStatus.COOKING.name()).build(), 5);
+                .orderStatus(OrderStatus.COOKING).build(), 5);
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
         doReturn(orders).when(orderDao)
