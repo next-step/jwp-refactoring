@@ -33,7 +33,6 @@ import org.springframework.http.MediaType;
 class OrderAcceptanceTest extends AcceptanceTest {
     private Product 순살치킨;
     private Product 후라이드치킨;
-    private Product 공기밥;
     private MenuGroup 치킨;
     private MenuProduct 순살치킨상품;
     private MenuProduct 후라이드치킨상품;
@@ -45,13 +44,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        순살치킨 = 상품_생성_요청(new Product(1L, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
-        후라이드치킨 = 상품_생성_요청(new Product(2L, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
-        치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
-        순살치킨상품 = new MenuProduct(1L, null, 순살치킨.getId(), 1L);
-        후라이드치킨상품 = new MenuProduct(2L, null, 후라이드치킨.getId(), 1L);
+        순살치킨 = 상품_생성_요청(new Product(null, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
+        후라이드치킨 = 상품_생성_요청(new Product(null, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
+        치킨 = 메뉴그룹_생성_요청(new MenuGroup(null, "치킨")).as(MenuGroup.class);
+        순살치킨상품 = new MenuProduct(null, null, 순살치킨.getId(), 1L);
+        후라이드치킨상품 = new MenuProduct(null, null, 후라이드치킨.getId(), 1L);
         두마리치킨세트 = 메뉴_생성_요청(new Menu(
-                1L,
+                null,
                 "두마리치킨세트",
                 BigDecimal.valueOf(38_000L),
                 치킨.getId(),
