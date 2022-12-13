@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.menugroup.acceptance;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,7 +10,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("메뉴 그룹 관련 인수 테스트")
+public
 class MenuGroupAcceptanceTest extends AcceptanceTest {
     private MenuGroup 한마리메뉴;
     private MenuGroup 두마리메뉴;
