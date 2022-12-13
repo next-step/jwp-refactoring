@@ -2,6 +2,8 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,9 +49,9 @@ class ProductServiceTest {
         Product product = Product.of(1L, "상품", BigDecimal.valueOf(10000));
         given(productRepository.save(any())).willReturn(product);
 
-        Product saved = service.create(product);
+        ProductResponse response = service.create(ProductRequest.of(product.getName(),product.getPrice()));
 
-        assertThat(saved).isEqualTo(product);
+        assertThat(response).isEqualTo(ProductResponse.of(product));
     }
 
     @Test
@@ -60,8 +63,8 @@ class ProductServiceTest {
         );
         given(productRepository.findAll()).willReturn(products);
 
-        List<Product> list = service.list();
+        List<ProductResponse> list = service.list();
 
-        assertThat(list).isEqualTo(products);
+        assertThat(list).isEqualTo(products.stream().map(ProductResponse::of).collect(Collectors.toList()));
     }
 }

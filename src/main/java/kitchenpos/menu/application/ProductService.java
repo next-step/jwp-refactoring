@@ -2,12 +2,13 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -18,8 +19,9 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        return productRepository.save(product);
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product saved = productRepository.save(productRequest.toEntity());
+        return ProductResponse.of(saved);
     }
 
     public Product findById(final Long productId){
@@ -27,7 +29,8 @@ public class ProductService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        List<Product> all = productRepository.findAll();
+        return all.stream().map(ProductResponse::of).collect(Collectors.toList());
     }
 }
