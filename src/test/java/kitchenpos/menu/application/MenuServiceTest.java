@@ -44,8 +44,7 @@ class MenuServiceTest {
 
         MenuResponse actual = menuService.create(given);
 
-        verify(menuValidator).validatePrice(any(Menu.class));
-        verify(menuValidator).validateMenuGroup(any(Menu.class));
+        verify(menuValidator).validate(any(Menu.class));
         assertAll(
                 () -> assertThat(actual.getName()).isEqualTo(expected.getName()),
                 () -> assertThat(actual.getPrice()).isEqualTo(expected.getPrice()),

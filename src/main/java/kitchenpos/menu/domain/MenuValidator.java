@@ -19,13 +19,18 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void validateMenuGroup(Menu menu) {
+    public void validate(Menu menu) {
+        validateMenuGroup(menu);
+        validatePrice(menu);
+    }
+
+    private void validateMenuGroup(Menu menu) {
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException(NOT_EXIST_MENU_GROUP);
         }
     }
 
-    public void validatePrice(Menu menu) {
+    private void validatePrice(Menu menu) {
         if (menu.moreExpensive(totalMenuProductPrice(menu))) {
             throw new IllegalArgumentException(INVALID_MENU_PRICE);
         }

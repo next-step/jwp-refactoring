@@ -33,7 +33,7 @@ class MenuValidatorTest {
         Menu menu = new Menu("두마리치킨", BigDecimal.valueOf(15000), 1000L);
         given(menuGroupRepository.existsById(1000L)).willReturn(false);
 
-        assertThatThrownBy(() -> menuValidator.validateMenuGroup(menu))
+        assertThatThrownBy(() -> menuValidator.validate(menu))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴 그룹이 존재하지 않습니다.");
     }
@@ -43,9 +43,10 @@ class MenuValidatorTest {
     void validatePrice() {
         Menu menu = new Menu("두마리치킨", BigDecimal.valueOf(35000), 1L);
         menu.addMenuProduct(new MenuProduct(1L, 2));
+        given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productRepository.findById(1L)).willReturn(Optional.of(후라이드치킨));
 
-        assertThatThrownBy(() -> menuValidator.validatePrice(menu))
+        assertThatThrownBy(() -> menuValidator.validate(menu))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴의 가격이 메뉴 상품 가격의 총합보다 클 수 없습니다.");
     }
@@ -55,9 +56,10 @@ class MenuValidatorTest {
     void validateProduct() {
         Menu menu = new Menu("두마리치킨", BigDecimal.valueOf(25000), 1L);
         menu.addMenuProduct(new MenuProduct(1000L, 2));
+        given(menuGroupRepository.existsById(1L)).willReturn(true);
         given(productRepository.findById(1000L)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> menuValidator.validatePrice(menu))
+        assertThatThrownBy(() -> menuValidator.validate(menu))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품이 존재하지 않습니다.");
     }
