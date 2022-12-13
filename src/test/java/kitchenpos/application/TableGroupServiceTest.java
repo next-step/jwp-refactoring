@@ -62,7 +62,7 @@ class TableGroupServiceTest {
     void create() {
         // given
         단체1_요청.getOrderTables().forEach(table -> table.changeTableGroup(null));
-        단체1_요청.getOrderTables().forEach(table -> table.setEmpty(true));
+        단체1_요청.getOrderTables().forEach(table -> table.changeEmpty(true));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
         when(tableGroupRepository.save(any())).thenReturn(단체1);
 

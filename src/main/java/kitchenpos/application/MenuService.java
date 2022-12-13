@@ -32,8 +32,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("메뉴그룹을 찾을 수 없습니다."));
+        Long menuGroupId = request.getMenuGroupId();
+        MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("%d에 해당하는 메뉴그룹을 찾을 수 없습니다.", menuGroupId)));
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProducts()));
         Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
 
@@ -52,8 +53,8 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private Product findProductById(Long id) {
+    private Product findProductById(final Long id) {
         return productRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 상품을 찾을 수 없습니다."));
     }
 }

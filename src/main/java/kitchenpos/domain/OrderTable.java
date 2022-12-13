@@ -49,11 +49,11 @@ public class OrderTable {
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("고객 수가 올바르지 않습니다.");
         }
 
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("해당테이블은 비어있는 상태입니다.");
         }
         
         this.numberOfGuests = numberOfGuests;
@@ -63,13 +63,13 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블 그룹이 존재하지 않습니다.");
         }
 
         if (isNotCompletedOrders()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("아직 완료되지 않은 주문이 존재합니다.");
         }
 
         this.empty = empty;

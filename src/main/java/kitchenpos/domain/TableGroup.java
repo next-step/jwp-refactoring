@@ -21,7 +21,7 @@ public class TableGroup {
         this.createdDate = createdDate;
         this.orderTables = orderTables;
         for (final OrderTable savedOrderTable : orderTables) {
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.changeEmpty(false);
             savedOrderTable.changeTableGroup(this);
         }
     }
@@ -48,12 +48,12 @@ public class TableGroup {
 
     private static void validateIsCreatableTableGroup(final List<OrderTable> requestOrderTables, final List<OrderTable> savedOrderTables) {
         if (CollectionUtils.isEmpty(requestOrderTables) || requestOrderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("그룹을 지정하기 위해서는 주문테이블이 2개 이상 필요합니다.");
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("그룹을 지정하기 위해서는 테이블은 그룹이 지정되어 있거나 비어있으면 안됩니다.");
             }
         }
     }

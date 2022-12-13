@@ -28,7 +28,7 @@ public class MenuProducts {
 
     private void validateMenuProductsIsEmpty(List<MenuProduct> menuProducts) {
         if (menuProducts.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴삼품이 존재하지 않습니다.");
         }
     }
 

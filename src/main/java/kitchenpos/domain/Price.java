@@ -27,13 +27,13 @@ public class Price implements Comparable<Price> {
 
     private void validatePriceIsNull(BigDecimal price) {
         if(price == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격이 존재하지 않습니다.");
         }
     }
 
     private void validatePriceIsSmallerThanZero(BigDecimal price) {
         if(price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격은 0보다 작을수 없습니다.");
         }
     }
 

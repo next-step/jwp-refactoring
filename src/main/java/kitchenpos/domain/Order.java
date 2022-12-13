@@ -20,7 +20,11 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
+    public Order() {
+    }
+
     public Order(final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
+        validateOrder(orderTable, orderLineItems);
         this.orderTable = orderTable;
         this.orderTable.createOrder(this);
         this.orderStatus = orderStatus;
@@ -28,19 +32,18 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order() {
+    public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, OrderStatus.COOKING.name(), orderLineItems);
     }
 
-    public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+    private void validateOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문목록이 비어있습니다.");
         }
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블이 비어있습니다.");
         }
-
-        return new Order(orderTable, OrderStatus.COOKING.name(), orderLineItems);
     }
 
     public Long getId() {
@@ -57,7 +60,7 @@ public class Order {
 
     public void changeOrderStatus(final String orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("이미 주문이 완료된 상태입니다.");
         }
         this.orderStatus = orderStatus;
     }

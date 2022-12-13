@@ -21,8 +21,7 @@ public class Menu {
     public Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup,
-                 MenuProducts menuProducts) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.price = Price.from(price);
         this.menuProducts = menuProducts;
         menuProducts.setMenu(this);
@@ -42,13 +41,13 @@ public class Menu {
 
     private void validateMenuGroup(final MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴그룹이 존재하지 않습니다.");
         }
     }
 
     private void validatePrice(final Price price, final MenuProducts menuProducts) {
         if (price.compareTo(menuProducts.totalPrice()) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴 가격이 각 상품 가격의 합보다 작습니다.");
         }
     }
 

@@ -26,7 +26,7 @@ public class Quantity {
 
     private void validateQuantityIsSmallerThanZero(long quantity) {
         if(quantity < ZERO) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
         }
     }
 

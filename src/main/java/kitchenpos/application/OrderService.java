@@ -36,8 +36,9 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         validateOrderLineItems(request.getOrderLineItems());
 
-        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("주문테이블을 찾을 수가 없습니다."));
+        Long orderTableId = request.getOrderTableId();
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(orderTableId + "에 해당하는 주문테이블을 찾을 수가 없습니다."));
 
         Order savedOrder = orderRepository.save(Order.of(orderTable, request.getOrderLineItems()));
 
