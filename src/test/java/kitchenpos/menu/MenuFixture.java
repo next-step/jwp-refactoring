@@ -16,6 +16,7 @@ public class MenuFixture {
         Menu menu = new Menu();
         menu.setName(name);
         menu.setPrice(price);
+        menu.setMenuGroupId(menuGroupId);
         menu.setMenuProducts(menuProducts);
 
         return RestAssured
