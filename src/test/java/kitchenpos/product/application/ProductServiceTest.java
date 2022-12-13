@@ -1,7 +1,7 @@
 package kitchenpos.product.application;
 
 import static kitchenpos.product.domain.ProductTest.상품_생성;
-import static kitchenpos.product.dto.ProductRequestTest.상품_생성_요청_객체_생성;
+import static kitchenpos.product.dto.ProductRequestTest.상품_요청_객체_생성;
 import static kitchenpos.product.dto.ProductResponseTest.상품_응답_객체들_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +48,7 @@ public class ProductServiceTest {
     void create() {
         // given
         when(productRepository.save(any(Product.class))).thenReturn(미역국);
-        ProductRequest 미역국_생성_요청_객체 = 상품_생성_요청_객체_생성(미역국.getNameValue(), 미역국.getPriceVale());
+        ProductRequest 미역국_생성_요청_객체 = 상품_요청_객체_생성(미역국.getNameValue(), 미역국.getPriceVale());
 
         // when
         ProductResponse 등록된_미역국 = productService.create(미역국_생성_요청_객체);

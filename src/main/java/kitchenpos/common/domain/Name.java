@@ -22,7 +22,7 @@ public class Name {
     }
 
     private static void validateName(String name) {
-        if (name == null || name.isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("이름이 비었습니다.");
         }
     }

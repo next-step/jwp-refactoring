@@ -53,7 +53,6 @@ public class Price {
         return new Price(this.price.multiply(BigDecimal.valueOf(quantity.value())));
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
