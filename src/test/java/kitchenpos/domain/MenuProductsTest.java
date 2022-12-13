@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MenuProductsTest {
 
+    @DisplayName("메뉴상품리스트 생성 작업을 성공한다.")
     @Test
     void of() {
         // given
@@ -27,6 +29,7 @@ class MenuProductsTest {
         assertThat(menuProducts.value()).isEqualTo(메뉴상품리스트);
     }
 
+    @DisplayName("메뉴상품리스트 생성 할때, 메뉴상품이 없으면 IllegalArgumentException를 반환한다.")
     @Test
     void ofWithException1() {
         // given
@@ -37,6 +40,7 @@ class MenuProductsTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("메뉴상품리스트의 모든 가격의 총합계산 작업을 성공한다.")
     @Test
     void totalPrice() {
         // given
