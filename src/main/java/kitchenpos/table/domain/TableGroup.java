@@ -1,15 +1,10 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup {
