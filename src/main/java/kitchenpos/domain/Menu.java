@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class Menu {
     private Long id;
@@ -9,6 +10,16 @@ public class Menu {
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
+
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
+    public Menu() {
+    }
 
     public Long getId() {
         return id;
@@ -48,5 +59,23 @@ public class Menu {
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Menu menu = (Menu) o;
+        return Objects.equals(name, menu.name) && Objects.equals(price.intValue(), menu.price.intValue())
+                && Objects.equals(menuGroupId, menu.menuGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, price, menuGroupId, menuProducts);
     }
 }
