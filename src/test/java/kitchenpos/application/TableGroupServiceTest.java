@@ -12,6 +12,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,12 +45,12 @@ class TableGroupServiceTest {
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2));
         given(tableGroupDao.save(좌석_그룹)).willReturn(좌석_그룹);
 
-        TableGroup tableGroup = tableGroupService.create(좌석_그룹);
+        TableGroupResponse response = tableGroupService.create(좌석_그룹);
 
         assertAll(
-                () -> assertThat(tableGroup.getOrderTables()).containsExactly(주문_좌석_1, 주문_좌석_2),
-                () -> assertThat(tableGroup.getOrderTables().get(0).getTableGroupId()).isEqualTo(좌석_그룹.getId()),
-                () -> assertThat(tableGroup.getOrderTables().get(1).getTableGroupId()).isEqualTo(좌석_그룹.getId())
+                () -> assertThat(response.getOrderTables()).containsExactly(주문_좌석_1, 주문_좌석_2),
+                () -> assertThat(response.getOrderTables().get(0).getTableGroupId()).isEqualTo(좌석_그룹.getId()),
+                () -> assertThat(response.getOrderTables().get(1).getTableGroupId()).isEqualTo(좌석_그룹.getId())
         );
     }
 

@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +31,8 @@ class MenuGroupServiceTest {
     void 생성() {
         given(menuGroupDao.save(any())).willReturn(메뉴_그룹);
 
-        MenuGroup menuGroup = menuGroupService.create(메뉴_그룹);
+        MenuGroupResponse response = menuGroupService.create(메뉴_그룹);
 
-        assertThat(menuGroup.getName()).isEqualTo("한마리메뉴");
+        assertThat(response.getName()).isEqualTo("한마리메뉴");
     }
 }

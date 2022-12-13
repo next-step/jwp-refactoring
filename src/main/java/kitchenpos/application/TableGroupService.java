@@ -6,6 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,7 @@ public class TableGroupService {
         this.tableGroupDao = tableGroupDao;
     }
 
-    public TableGroup create(final TableGroup tableGroup) {
+    public TableGroupResponse create(final TableGroup tableGroup) {
         tableGroup.validateOrderTables();
 
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(tableGroup.getOrderTableIds());
@@ -46,7 +47,7 @@ public class TableGroupService {
 
         savedTableGroup.setOrderTables(savedOrderTables);
 
-        return savedTableGroup;
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     public void ungroup(final Long tableGroupId) {

@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.util.stream.Collectors;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -7,6 +8,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuDao menuDao;
     private final MenuProductDao menuProductDao;
@@ -33,29 +36,33 @@ public class MenuService {
         this.productDao = productDao;
     }
 
-    @Transactional
-    public Menu create(final Menu menu) {
+    public MenuResponse create(final Menu menu) {
         menu.validatePriceNull();
         menu.validatePriceLessThanZero();
         existsMenuGroupById(menu.getMenuGroupId());
-        validateIsPriceGreaterThanSum(menu.getPrice(), menu.getMenuProducts());
+        validatePriceGreaterThanSum(menu.getPrice(), menu.getMenuProducts());
 
         final Menu savedMenu = menuDao.save(menu);
-
         final List<MenuProduct> savedMenuProducts = saveMenuProducts(savedMenu.getId(), menu.getMenuProducts());
-        savedMenu.setMenuProducts(savedMenuProducts);
 
-        return savedMenu;
+        return MenuResponse.of(savedMenu, savedMenuProducts);
     }
 
-    public List<Menu> list() {
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+            menu.setMenuProducts(findAllByMenuId(menu.getId()));
         }
 
-        return menus;
+        return menus.stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    private List<MenuProduct> findAllByMenuId(Long menuId) {
+        return menuProductDao.findAllByMenuId(menuId);
     }
 
     private void existsMenuGroupById(Long menuGroupId){
@@ -64,7 +71,7 @@ public class MenuService {
         }
     }
 
-    private void validateIsPriceGreaterThanSum(BigDecimal price, List<MenuProduct> menuProducts){
+    private void validatePriceGreaterThanSum(BigDecimal price, List<MenuProduct> menuProducts){
         BigDecimal sum = BigDecimal.ZERO;
 
         for (final MenuProduct menuProduct : menuProducts) {

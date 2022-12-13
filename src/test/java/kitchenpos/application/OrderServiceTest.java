@@ -22,6 +22,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,11 +64,11 @@ class OrderServiceTest {
         given(orderDao.save(any())).willReturn(주문);
         given(orderLineItemDao.save(any())).willReturn(주문_항목);
 
-        Order order = orderService.create(주문);
+        OrderResponse response = orderService.create(주문);
 
-        assertThat(order.getOrderTableId()).isEqualTo(좌석.getId());
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(order.getOrderLineItems()).containsExactly(주문_항목);
+        assertThat(response.getOrderTableId()).isEqualTo(좌석.getId());
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(response.getOrderLineItems()).containsExactly(주문_항목);
     }
 
     @Test
@@ -104,10 +105,10 @@ class OrderServiceTest {
         given(orderDao.findAll()).willReturn(Arrays.asList(주문));
         given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목));
 
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         assertAll(
-                () -> assertThat(orders).containsExactly(주문),
+                () -> assertThat(orders.size()).isEqualTo(1),
                 () -> assertThat(orders.get(0).getOrderLineItems()).containsExactly(주문_항목)
         );
     }
@@ -117,10 +118,10 @@ class OrderServiceTest {
         given(orderDao.findById(anyLong())).willReturn(Optional.of(주문));
         given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(Arrays.asList(주문_항목));
 
-        Order order = orderService.changeOrderStatus(anyLong(), 주문_변경_요청);
+        OrderResponse response = orderService.changeOrderStatus(anyLong(), 주문_변경_요청);
 
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
-        assertThat(order.getOrderLineItems()).containsExactly(주문_항목);
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(response.getOrderLineItems()).containsExactly(주문_항목);
     }
 
     @Test

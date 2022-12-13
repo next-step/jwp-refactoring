@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,11 +39,11 @@ class ProductServiceTest {
     void 생성() {
         given(productDao.save(any())).willReturn(후라이드);
 
-        Product product = productService.create(후라이드);
+        ProductResponse response = productService.create(후라이드);
 
         assertAll(
-                () -> assertThat(product.getName()).isEqualTo("후라이드"),
-                () -> assertThat(product.getPrice()).isEqualTo(BigDecimal.valueOf(16000))
+                () -> assertThat(response.getName()).isEqualTo("후라이드"),
+                () -> assertThat(response.getPrice()).isEqualTo(BigDecimal.valueOf(16000))
         );
     }
 
@@ -50,8 +51,8 @@ class ProductServiceTest {
     void 조회() {
         given(productDao.findAll()).willReturn(Arrays.asList(후라이드, 양념));
 
-        List<Product> products = productService.list();
+        List<ProductResponse> responses = productService.list();
 
-        assertThat(products).containsExactlyElementsOf(Arrays.asList(후라이드, 양념));
+        assertThat(responses.size()).isEqualTo(2);
     }
 }

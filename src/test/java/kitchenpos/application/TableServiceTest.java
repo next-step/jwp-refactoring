@@ -14,6 +14,7 @@ import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,12 +47,12 @@ class TableServiceTest {
     void 생성() {
         given(orderTableDao.save(any())).willReturn(주문_좌석);
 
-        OrderTable orderTable = tableService.create(주문_좌석);
+        OrderTableResponse response = tableService.create(주문_좌석);
 
         assertAll(
-                () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(0),
-                () -> assertThat(orderTable.getTableGroupId()).isNull(),
-                () -> assertThat(orderTable.isEmpty()).isFalse()
+                () -> assertThat(response.getNumberOfGuests()).isEqualTo(0),
+                () -> assertThat(response.getTableGroupId()).isNull(),
+                () -> assertThat(response.isEmpty()).isFalse()
         );
     }
 
@@ -59,9 +60,9 @@ class TableServiceTest {
     void 조회() {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(주문_좌석));
 
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> responses = tableService.list();
 
-        assertThat(orderTables).containsExactly(주문_좌석);
+        assertThat(responses.size()).isEqualTo(1);
     }
 
     @Test
@@ -70,9 +71,9 @@ class TableServiceTest {
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
         given(orderTableDao.save(any())).willReturn(공석_변경_요청);
 
-        OrderTable orderTable = tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청);
+        OrderTableResponse response = tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청);
 
-        assertThat(orderTable.isEmpty()).isTrue();
+        assertThat(response.isEmpty()).isTrue();
     }
 
     @Test
@@ -108,9 +109,9 @@ class TableServiceTest {
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_좌석));
         given(orderTableDao.save(any())).willReturn(인원_변경_요청);
 
-        OrderTable orderTable = tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청);
+        OrderTableResponse response = tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청);
 
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(4);
+        assertThat(response.getNumberOfGuests()).isEqualTo(4);
     }
 
     @Test

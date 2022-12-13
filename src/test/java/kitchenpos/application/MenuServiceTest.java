@@ -19,6 +19,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,13 +61,13 @@ class MenuServiceTest {
         given(menuDao.save(any())).willReturn(메뉴);
         given(menuProductDao.save(any())).willReturn(메뉴에_등록된_상품);
 
-        Menu menu = menuService.create(메뉴);
+        MenuResponse response = menuService.create(메뉴);
 
         assertAll(
-                () -> assertThat(menu.getName()).isEqualTo("후라이드치킨"),
-                () -> assertThat(menu.getPrice()).isEqualTo(BigDecimal.valueOf(16000)),
-                () -> assertThat(menu.getMenuGroupId()).isEqualTo(1L),
-                () -> assertThat(menu.getMenuProducts()).containsExactlyElementsOf(Arrays.asList(메뉴에_등록된_상품))
+                () -> assertThat(response.getName()).isEqualTo("후라이드치킨"),
+                () -> assertThat(response.getPrice()).isEqualTo(BigDecimal.valueOf(16000)),
+                () -> assertThat(response.getMenuGroupId()).isEqualTo(1L),
+                () -> assertThat(response.getMenuProducts()).containsExactlyElementsOf(Arrays.asList(메뉴에_등록된_상품))
         );
     }
 
@@ -137,11 +138,11 @@ class MenuServiceTest {
         given(menuDao.findAll()).willReturn(Arrays.asList(메뉴));
         given(menuProductDao.findAllByMenuId(메뉴.getId())).willReturn(Arrays.asList(메뉴에_등록된_상품));
 
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> response = menuService.list();
 
         assertAll(
-                () -> assertThat(menus).containsExactly(메뉴),
-                () -> assertThat(menus.get(0).getMenuProducts()).containsExactly(메뉴에_등록된_상품)
+                () -> assertThat(response.size()).isEqualTo(1),
+                () -> assertThat(response.get(0).getMenuProducts()).containsExactly(메뉴에_등록된_상품)
         );
     }
 }

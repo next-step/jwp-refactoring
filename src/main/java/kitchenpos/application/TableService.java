@@ -1,9 +1,11 @@
 package kitchenpos.application;
 
+import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +24,17 @@ public class TableService {
         this.orderTableDao = orderTableDao;
     }
 
-    public OrderTable create(final OrderTable orderTable) {
+    public OrderTableResponse create(final OrderTable orderTable) {
         orderTable.setTableGroupId(null);
 
-        return orderTableDao.save(orderTable);
+        return OrderTableResponse.of(orderTableDao.save(orderTable));
     }
 
     @Transactional(readOnly = true)
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableDao.findAll().stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -38,17 +42,17 @@ public class TableService {
         return orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
     }
 
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = findById(orderTableId);
         savedOrderTable.validateTableGroupId();
         validateOrderStatus(orderTableId);
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
     }
 
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
         validateNumberOfGuests(orderTable.getNumberOfGuests());
 
         final int numberOfGuests = orderTable.getNumberOfGuests();
@@ -58,7 +62,7 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
     }
 
     private void validateOrderStatus(Long orderTableId) {
