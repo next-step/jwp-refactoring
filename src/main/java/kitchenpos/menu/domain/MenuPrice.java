@@ -32,4 +32,8 @@ public class MenuPrice {
     public BigDecimal value() {
         return price;
     }
+
+    public boolean isExceedPrice(BigDecimal price){
+        return this.price.compareTo(price) > 0;
+    }
 }

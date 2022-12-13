@@ -5,11 +5,13 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -39,31 +41,33 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 생성된 메뉴를 응답")
     @Test
     public void returnMenu() throws Exception {
-        MenuResponse menu =  MenuResponse.of(Menu.builder()
+        Menu menu = Menu.builder().menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
+        MenuResponse menuResponse =  MenuResponse.of(Menu.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
                 .menuGroup(MenuGroup.builder().build())
-                .menuProducts(Collections.EMPTY_LIST)
+                .menuProducts(MenuProducts.of(new ManagedList<>()))
                 .price(BigDecimal.valueOf(15000))
                 .build());
-        doReturn(menu).when(menuService).create(any(MenuRequest.class));
+        doReturn(menuResponse).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                .content(mapper.writeValueAsString(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
+                .content(mapper.writeValueAsString(menu))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
-                .andExpect(jsonPath("$.name", is(menu.getName())))
-                .andExpect(jsonPath("$.price", is(menu.getPrice().intValue())))
+                .andExpect(jsonPath("$.id", is(menuResponse.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(menuResponse.getName())))
+                .andExpect(jsonPath("$.price", is(menuResponse.getPrice().intValue())))
                 .andExpect(status().isCreated());
     }
 
     @DisplayName("메뉴생성을 요청하면 메뉴생성 실패응답")
     @Test
     public void throwsExceptionWhenMenuCreate() throws Exception {
+        Menu menu = Menu.builder().menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
         doThrow(new IllegalArgumentException()).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                .content(mapper.writeValueAsString(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
+                .content(mapper.writeValueAsString(menu))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -84,7 +88,7 @@ public class MenuRestControllerTest extends ControllerTest {
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
                 .price(BigDecimal.valueOf(15000))
                 .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
-                .menuProducts(getMenuProducts())
+                .menuProducts(MenuProducts.of(getMenuProducts()))
                 .build());
     }
 

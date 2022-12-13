@@ -5,6 +5,7 @@ import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.persistence.MenuGroupRepository;
@@ -57,13 +58,15 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.builder().product(Product.builder().id(1l).build()).menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build());
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(0), 15l, Collections.EMPTY_LIST);
         Menu menu = Menu.builder().id(15l)
                 .price(BigDecimal.valueOf(1000))
-                .menuProducts(Arrays.asList(MenuProduct.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build()))
+                .menuProducts(MenuProducts.of(menuProducts))
                 .build();
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
         doReturn(Arrays.asList(Product.builder()
+                        .id(1l)
                 .build())).when(productRepository).findAllById(anyList());
         doReturn(menu).when(menuRepository).save(any(Menu.class));
 
@@ -88,10 +91,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴목록을 조회하는경우 메뉴목록을 반환")
     @Test
     public void returnMenus() {
+        List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build(), 3);
         List<Menu> menus = getMenus(Menu.builder()
                 .price(BigDecimal.valueOf(1000))
                 .id(Arbitraries.longs().between(1, 1000l).sample())
-                .menuProducts(getMenuProducts(MenuProduct.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build(), 3))
+                .menuProducts(MenuProducts.of(menuProducts))
                 .menuGroup(MenuGroup.builder().build())
                 .build(), 5);
         doReturn(menus)
@@ -110,7 +114,7 @@ public class MenuServiceTest {
                         .id(menu.getId())
                         .name(menu.getName())
                         .price(menu.getPrice())
-                        .menuProducts(menu.getMenuProducts())
+                        .menuProducts(MenuProducts.of(menu.getMenuProducts()))
                         .menuGroup(menu.getMenuGroup())
                         .build())
                 .collect(Collectors.toList());

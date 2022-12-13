@@ -15,8 +15,8 @@ public class Menu {
     private MenuPrice price;
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -53,18 +53,18 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
-    public void addMenuProducts(List<MenuProduct> menuProducts) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-        if (price.value().compareTo(sum) > 0) {
+    public void addMenuProducts(MenuProducts menuProducts) {
+        validateMenuPrice(menuProducts);
+        this.menuProducts.addMenuProducts(menuProducts);
+    }
+
+    private void validateMenuPrice(MenuProducts menuProducts) {
+        if (price.isExceedPrice(menuProducts.getSumOfMenuPrice())) {
             throw new IllegalArgumentException();
         }
-        menuProducts.stream().forEach(menuProduct -> this.menuProducts.add(menuProduct));
     }
 
     public static MenuBuilder builder() {
@@ -76,7 +76,7 @@ public class Menu {
         private String name;
         private BigDecimal price;
         private MenuGroup menuGroup;
-        private List<MenuProduct> menuProducts;
+        private MenuProducts menuProducts = new MenuProducts();
 
         public MenuBuilder id(Long id) {
             this.id = id;
@@ -98,8 +98,8 @@ public class Menu {
             return this;
         }
 
-        public MenuBuilder menuProducts(List<MenuProduct> menuProducts) {
-            this.menuProducts = menuProducts;
+        public MenuBuilder menuProducts(MenuProducts menuProducts) {
+            this.menuProducts.addMenuProducts(menuProducts);
             return this;
         }
 
