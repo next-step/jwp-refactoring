@@ -49,7 +49,7 @@ public class MenuRestControllerTest extends ControllerTest {
         doReturn(menu).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                .content(mapper.writeValueAsString(Menu.builder().build()))
+                .content(mapper.writeValueAsString(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(menu.getName())))
@@ -63,7 +63,7 @@ public class MenuRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                .content(mapper.writeValueAsString(Menu.builder().build()))
+                .content(mapper.writeValueAsString(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -97,7 +97,7 @@ public class MenuRestControllerTest extends ControllerTest {
     private List<MenuProduct> getMenuProducts() {
         return IntStream.rangeClosed(1, 5)
                 .mapToObj(value -> MenuProduct.builder()
-                        .menu(Menu.builder().build())
+                        .menu(Menu.builder().price(BigDecimal.valueOf(1500)).build())
                         .seq(Arbitraries.longs().between(1, 20).sample()).build())
                 .collect(Collectors.toList());
     }

@@ -59,7 +59,8 @@ public class MenuServiceTest {
     public void returnMenu() {
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(0), 15l, Collections.EMPTY_LIST);
         Menu menu = Menu.builder().id(15l)
-                .menuProducts(Arrays.asList(MenuProduct.builder().menu(Menu.builder().build()).build()))
+                .price(BigDecimal.valueOf(1000))
+                .menuProducts(Arrays.asList(MenuProduct.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build()))
                 .build();
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
         doReturn(Arrays.asList(Product.builder()
@@ -88,8 +89,9 @@ public class MenuServiceTest {
     @Test
     public void returnMenus() {
         List<Menu> menus = getMenus(Menu.builder()
+                .price(BigDecimal.valueOf(1000))
                 .id(Arbitraries.longs().between(1, 1000l).sample())
-                .menuProducts(getMenuProducts(MenuProduct.builder().menu(Menu.builder().build()).build(), 3))
+                .menuProducts(getMenuProducts(MenuProduct.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build(), 3))
                 .menuGroup(MenuGroup.builder().build())
                 .build(), 5);
         doReturn(menus)

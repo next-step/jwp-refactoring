@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +45,7 @@ public class OrderRestControllerTest extends ControllerTest {
         long orderTableId = 13;
         long orderId = 7;
         OrderRequest orderRequest = new OrderRequest(orderTableId, OrderStatus.COOKING, Arrays.asList(new OrderLineItemRequest(menuId, quantity)));
-        Menu menu = Menu.builder().id(menuId).build();
+        Menu menu = Menu.builder().price(BigDecimal.valueOf(1000)).id(menuId).build();
         OrderLineItem orderLineItem = OrderLineItem.builder().menu(menu).build();
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(OrderResponse.of(Order.builder().id(orderId)

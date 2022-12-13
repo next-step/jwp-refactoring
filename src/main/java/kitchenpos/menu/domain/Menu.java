@@ -11,6 +11,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Embedded
     private MenuPrice price;
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;

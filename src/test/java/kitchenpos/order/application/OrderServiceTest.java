@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,7 @@ public class OrderServiceTest {
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
         doReturn(Optional.ofNullable(OrderTable.builder().build()))
                 .when(orderTableRepository).findById(orderRequest.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().build(), Menu.builder().build()))
+        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).build(), Menu.builder().price(BigDecimal.valueOf(1000)).build()))
                 .when(menuRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -90,7 +91,7 @@ public class OrderServiceTest {
         OrderTable orderTable = OrderTable.builder().empty(true).build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableRepository).findById(order.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().build()))
+        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
                 .when(menuRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> orderService.create(order))
@@ -108,7 +109,7 @@ public class OrderServiceTest {
         OrderTable orderTable = OrderTable.builder().id(12l).build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableRepository).findById(anyLong());
-        doReturn(Arrays.asList(Menu.builder().id(2l).build()))
+        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).id(2l).build()))
                 .when(menuRepository).findAllById(anyList());
         doReturn(Order.builder()
                 .id(13l)
@@ -127,7 +128,7 @@ public class OrderServiceTest {
     public void returnOrders() {
         List<Order> orders = getOrders(Order.builder().id(150l)
                 .orderTable(OrderTable.builder().build())
-                .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().build()).build())).build(), 30);
+                .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build())).build(), 30);
         doReturn(orders)
                 .when(orderRepository).findAll();
 

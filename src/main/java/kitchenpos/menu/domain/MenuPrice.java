@@ -30,6 +30,6 @@ public class MenuPrice {
     }
 
     public BigDecimal value() {
-        return value();
+        return price;
     }
 }
