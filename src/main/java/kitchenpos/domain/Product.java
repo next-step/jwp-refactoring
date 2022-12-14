@@ -8,12 +8,30 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    public Product(String name, BigDecimal price) {
+    private Product(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }
 
     public Product() {
+    }
+
+    public static Product of(String name, BigDecimal price) {
+        validNameLength(name);
+        validMinusPrice(price);
+        return new Product(name, price);
+    }
+
+    private static void validNameLength(String name) {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("이름은 빈 값이 아니어야 합니다");
+        }
+    }
+
+    private static void validMinusPrice(BigDecimal price) {
+        if (price.intValue() < 0) {
+            throw new IllegalArgumentException("가격은 0이상 이어야 합니다");
+        }
     }
 
     public Long getId() {
