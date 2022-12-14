@@ -39,10 +39,6 @@ public class OrderCrudService {
     public OrderResponse create(final OrderCreateRequest request) {
         final List<OrderLineItem> orderLineItems = request.toOrderLineItems();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
-        }
-
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
@@ -58,7 +54,7 @@ public class OrderCrudService {
             throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
 
-        final Order savedOrder = orderDao.save(request.toOrder());
+        final Order savedOrder = orderDao.save(new Order(request.getOrderTableId(), request.toOrderLineItems()));
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();

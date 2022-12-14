@@ -82,7 +82,7 @@ class OrderCrudServiceTest extends ServiceTest {
     @Test
     void create_fail_orderLineItems() {
 
-        OrderCreateRequest request = new OrderCreateRequest(1L, new ArrayList<>());
+        OrderCreateRequest request = new OrderCreateRequest(orderTableId, new ArrayList<>());
 
         assertThatThrownBy(() -> orderCrudService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
