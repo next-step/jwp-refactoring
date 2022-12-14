@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +52,7 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup 한마리메뉴_메뉴그룹 = MenuGroup.of(1L, "한마리메뉴");
+        MenuGroup 한마리메뉴_메뉴그룹 = new MenuGroup(1L, "한마리메뉴");
         Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16_000L)));
         Product 콜라_상품 = new Product(2L, "콜라", new Price(BigDecimal.valueOf(2_000L)));
         Menu 후라이드치킨_메뉴 = Menu.of(1L, "후라이드치킨", 후라이드치킨_상품.getPrice().value(), 한마리메뉴_메뉴그룹.getId());

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -18,12 +19,12 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public ProductResponse create(final ProductRequest request) {
         Product product = productRepository.save(request.toEntity());
         return new ProductResponse(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll().stream()
                 .map(ProductResponse::new)

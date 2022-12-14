@@ -1,8 +1,11 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.MenuGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,17 +41,17 @@ public class MenuGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        한마리메뉴_메뉴그룹 = MenuGroup.of(1L, "한마리메뉴");
-        두마리메뉴_메뉴그룹 = MenuGroup.of(2L, "두마리메뉴");
+        한마리메뉴_메뉴그룹 = new MenuGroup(1L, "한마리메뉴");
+        두마리메뉴_메뉴그룹 = new MenuGroup(2L, "두마리메뉴");
     }
 
     @DisplayName("메뉴 그룹 등록에 성공한다.")
     @Test
     void 메뉴_등록에_성공한다() throws Exception {
-        given(menuGroupService.create(any(MenuGroup.class))).willReturn(한마리메뉴_메뉴그룹);
+        given(menuGroupService.create(any(MenuGroupRequest.class))).willReturn(new MenuGroupResponse(한마리메뉴_메뉴그룹));
 
         webMvc.perform(post("/api/menu-groups")
-                        .content(objectMapper.writeValueAsString(한마리메뉴_메뉴그룹))
+                        .content(objectMapper.writeValueAsString(new MenuGroupRequest("한마리메뉴")))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(한마리메뉴_메뉴그룹.getId().intValue())))
@@ -58,7 +61,7 @@ public class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void 메뉴_목록을_조회한다() throws Exception {
-        given(menuGroupService.list()).willReturn(Arrays.asList(한마리메뉴_메뉴그룹, 두마리메뉴_메뉴그룹));
+        given(menuGroupService.list()).willReturn(Arrays.asList(new MenuGroupResponse(한마리메뉴_메뉴그룹), new MenuGroupResponse(두마리메뉴_메뉴그룹)));
 
         webMvc.perform(get("/api/menu-groups"))
                 .andExpect(status().isOk())

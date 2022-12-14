@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,13 +17,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 그룹 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -29,18 +33,18 @@ public class MenuGroupTest {
 
     @BeforeEach
     void setUp() {
-        한마리메뉴_메뉴그룹 = MenuGroup.of(1L, "한마리메뉴");
-        두마리메뉴_메뉴그룹 = MenuGroup.of(1L, "두마리메뉴");
+        한마리메뉴_메뉴그룹 = new MenuGroup(1L, "한마리메뉴");
+        두마리메뉴_메뉴그룹 = new MenuGroup(2L, "두마리메뉴");
     }
 
     @DisplayName("메뉴 그룹을 생성할 수 있다.")
     @Test
     void 메뉴_그룹을_생성할_수_있다() {
         // given
-        when(menuGroupDao.save(한마리메뉴_메뉴그룹)).thenReturn(한마리메뉴_메뉴그룹);
+        when(menuGroupRepository.save(any())).thenReturn(한마리메뉴_메뉴그룹);
 
         // when
-        MenuGroup 저장된_메뉴그룹 = menuGroupService.create(한마리메뉴_메뉴그룹);
+        MenuGroupResponse 저장된_메뉴그룹 = menuGroupService.create(new MenuGroupRequest("한마리메뉴"));
 
         // then
         assertThat(저장된_메뉴그룹.getId()).isEqualTo(한마리메뉴_메뉴그룹.getId());
@@ -51,13 +55,12 @@ public class MenuGroupTest {
     @Test
     void 메뉴_그룹을_조회할_수_있다() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(한마리메뉴_메뉴그룹, 두마리메뉴_메뉴그룹));
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(한마리메뉴_메뉴그룹, 두마리메뉴_메뉴그룹));
 
         // when
-        List<MenuGroup> 메뉴그룹_목록 = menuGroupService.list();
+        List<MenuGroupResponse> 메뉴그룹_목록 = menuGroupService.list();
 
         // then
         assertThat(메뉴그룹_목록).hasSize(2);
-        assertThat(메뉴그룹_목록).containsExactly(한마리메뉴_메뉴그룹, 두마리메뉴_메뉴그룹);
     }
 }

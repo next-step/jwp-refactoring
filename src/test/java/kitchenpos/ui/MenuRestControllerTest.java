@@ -3,8 +3,8 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ public class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        한마리메뉴_메뉴그룹 = MenuGroup.of(1L, "한마리메뉴");
+        한마리메뉴_메뉴그룹 = new MenuGroup(1L, "한마리메뉴");
 
         후라이드치킨_상품 = new Product(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16_000L)));
         콜라_상품 = new Product(2L, "콜라", new Price(BigDecimal.valueOf(2_000L)));
