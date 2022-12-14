@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,8 +77,8 @@ public class OrderTableServiceTest {
     @Test
     @DisplayName("주문 테이블 비울 때 주문 테이블이 이미 단체 지정됐을 경우 Exception")
     public void throwExceptionWhenOrderTableToBeEmptyWasAlreadyGrouped() {
-        orderTable.updateEmpty(true);
-        orderTable2.updateEmpty(true);
+        ReflectionTestUtils.setField(orderTable,"empty",true);
+        ReflectionTestUtils.setField(orderTable2,"empty",true);
         TableGroup tableGroup = TableGroup.of(Arrays.asList(orderTable, orderTable2));
         tableGroup.group();
 

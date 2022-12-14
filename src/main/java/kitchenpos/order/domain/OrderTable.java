@@ -67,12 +67,13 @@ public class OrderTable {
         return empty;
     }
 
-    public void updateEmpty(final boolean empty) {
+    public void updateEmpty(final boolean empty, boolean isExistOrderTableInProgress) {
+        validate(isExistOrderTableInProgress);
         this.empty = empty;
     }
 
-    public void throwIfTableGroupExist() {
-        if (Objects.nonNull(getTableGroup())) {
+    private void validate(boolean isExistOrderTableInProgress) {
+        if(isExistOrderTableInProgress || isInTableGroup()){
             throw new IllegalArgumentException();
         }
     }
@@ -86,7 +87,6 @@ public class OrderTable {
     public boolean canBeAddedToTableGroup() {
         return this.isEmpty() && Objects.isNull(this.getTableGroup());
     }
-
     public boolean isInTableGroup() {
         return Objects.nonNull(this.tableGroup);
     }

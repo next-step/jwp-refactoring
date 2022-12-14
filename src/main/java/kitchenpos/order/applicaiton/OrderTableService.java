@@ -42,20 +42,10 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderEmpty orderEmptyRequeset) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        validateOrderTable(savedOrderTable);
-        savedOrderTable.updateEmpty(orderEmptyRequeset.isEmpty());
+        boolean isExistOrderTableInProgress = orderRepository.existsByOrderTableAndOrderStatusIn(
+                savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        savedOrderTable.updateEmpty(orderEmptyRequeset.isEmpty(), isExistOrderTableInProgress);
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    private void validateOrderTable(OrderTable savedOrderTable) {
-        throwIfOrderTableIsInTableGroup(savedOrderTable);
-        throwIfOrderTableInProgress(savedOrderTable);
-    }
-
-    private static void throwIfOrderTableIsInTableGroup(OrderTable savedOrderTable) {
-        if (savedOrderTable.isInTableGroup()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Transactional
@@ -63,12 +53,5 @@ public class OrderTableService {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.changeNumberOfGuests(changeGuestRequset.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    private void throwIfOrderTableInProgress(OrderTable savedOrderTable) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
     }
 }

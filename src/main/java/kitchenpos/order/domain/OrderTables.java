@@ -53,7 +53,7 @@ public class OrderTables {
     public void group(TableGroup tableGroup) {
         validate();
         this.orderTables.forEach(savedOrderTable -> {
-            savedOrderTable.updateEmpty(false);
+            savedOrderTable.updateEmpty(false, false);
             savedOrderTable.assignTableGroup(tableGroup);
         });
     }
