@@ -79,14 +79,18 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("해당 테이블에는 아직 진행중인 주문이 존재합니다.");
-        }
+        validateOrderStatus(orderTableIds);
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.changeTableGroup(null);
             orderTableRepository.save(orderTable);
+        }
+    }
+
+    private void validateOrderStatus(final List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException("해당 테이블에는 아직 진행중인 주문이 존재합니다.");
         }
     }
 }
