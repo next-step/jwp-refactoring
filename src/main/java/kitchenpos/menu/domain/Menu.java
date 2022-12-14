@@ -1,5 +1,8 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.MenuExceptionType;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -60,7 +63,7 @@ public class Menu {
 
     private void validateMenuPrice(MenuProducts menuProducts) {
         if (price.isExceedPrice(menuProducts.getSumOfMenuPrice())) {
-            throw new IllegalArgumentException();
+            throw new MenuException(MenuExceptionType.EXCEED_MENU_PRODUCT_PRICE);
         }
     }
 

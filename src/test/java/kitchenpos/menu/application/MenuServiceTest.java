@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Product;
@@ -82,7 +83,8 @@ public class MenuServiceTest {
                 .build())).when(productRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuException.class)
+                .hasMessageContaining("메뉴가격은 상품가격을 초과할 수 없습니다");
     }
 
 

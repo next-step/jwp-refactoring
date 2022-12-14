@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.MenuPriceException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.DisplayName;
@@ -18,14 +20,16 @@ public class MenuTest {
     @Test
     public void throwsExceptionWhenNullAmount() {
         assertThatThrownBy(() -> Menu.builder().price(null).build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("메뉴가격이 0보다작으면 예외발생")
     @Test
     public void throwsExceptionWhenNetativeAmount() {
         assertThatThrownBy(() -> Menu.builder().price(BigDecimal.valueOf(-1000)).build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuPriceException.class)
+                .hasMessageContaining("가격은 0보다 작을수 없습니다");
+
     }
 
     @DisplayName("메뉴에 메뉴상품을 추가할경우 메뉴가격이 상품의 총합보다크면 예외발생")
@@ -47,7 +51,9 @@ public class MenuTest {
         MenuProducts products = MenuProducts.of(menuProductList);
 
         assertThatThrownBy(() -> menu.addMenuProducts(products))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuException.class)
+                .hasMessageContaining("메뉴가격은 상품가격을 초과할 수 없습니다")
+        ;
     }
 
     @DisplayName("메뉴에서 메뉴상품을 조회할경우 메뉴에 포함되있는 메뉴상품 반환")

@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.MenuPriceException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class MenuPriceTest {
     @Test
     public void throwsExceptionWhenNullAmount() {
         assertThatThrownBy(() -> MenuPrice.of(null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("메뉴가격이 0보다작으면 예외발생")
@@ -23,7 +24,8 @@ public class MenuPriceTest {
     public void throwsExceptionWhenNetativeAmount() {
         BigDecimal price = Arbitraries.bigDecimals().lessOrEqual(BigDecimal.ZERO).sample();
         assertThatThrownBy(() -> MenuPrice.of(price))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuPriceException.class)
+                .hasMessageContaining("가격은 0보다 작을수 없습니다");
     }
 
     @DisplayName("메뉴가격이 비교값보다 크면 true반환")
