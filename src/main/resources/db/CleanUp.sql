@@ -1,15 +1,10 @@
-truncate table orders;
-
+SET FOREIGN_KEY_CHECKS = 0;
 truncate table order_line_item;
-
-truncate table menu;
-
-truncate table menu_group;
-
-truncate table menu_product;
-
+truncate table orders;
 truncate table order_table;
-
 truncate table table_group;
-
+truncate table menu_group;
+truncate table menu;
+truncate table menu_product;
 truncate table product;
+SET FOREIGN_KEY_CHECKS = 1;
