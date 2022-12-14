@@ -4,23 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.springframework.http.MediaType;
 
 public class TableGroupFixture {
 
-    public static ExtractableResponse<Response> 단체_지정(List<Long> orderTableIds) {
+    public static ExtractableResponse<Response> 단체_지정(List<OrderTable> orderTAbles) {
         TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = orderTableIds.stream()
-            .map(id -> {
-                OrderTable orderTable = new OrderTable();
-                orderTable.setId(id);
-                return orderTable;
-            })
-            .collect(Collectors.toList());
-        tableGroup.setOrderTables(orderTables);
+        tableGroup.setOrderTables(orderTAbles);
 
         return RestAssured
             .given().log().all()
@@ -36,7 +28,7 @@ public class TableGroupFixture {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().delete("/api/table-groups" + tableGroupId)
+            .when().delete("/api/table-groups/" + tableGroupId)
             .then().log().all()
             .extract();
     }

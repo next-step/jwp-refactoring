@@ -14,7 +14,10 @@ public class TableFixture {
         orderTable.setTableGroupId(tableGroupId);
         orderTable.setNumberOfGuests(numberOfGuest);
         orderTable.setEmpty(empty);
+        return 주문_테이블_추가(orderTable);
+    }
 
+    public static ExtractableResponse<Response> 주문_테이블_추가(OrderTable orderTable) {
         return RestAssured
             .given().log().all()
             .body(orderTable)
