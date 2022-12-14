@@ -57,7 +57,7 @@ public class OrderService {
             throw new IllegalArgumentException("요청정보에 주문정보가 존재하지 않습니다.");
         }
 
-        final List<Long> menuIds = mapToMenuIds(orderLineItems);
+        final List<Long> menuIds = fetchMenuIdsFrom(orderLineItems);
 
         if (orderLineItems.size() != countByIdIn(menuIds)) {
             throw new IllegalArgumentException("주문정보 중 존재하지 않는 메뉴 정보가 있습니다.");
@@ -68,7 +68,7 @@ public class OrderService {
         return menuRepository.countByIdIn(menuIds);
     }
 
-    private List<Long> mapToMenuIds(final List<OrderLineItemRequest> orderLineItems) {
+    private List<Long> fetchMenuIdsFrom(final List<OrderLineItemRequest> orderLineItems) {
         return orderLineItems.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
