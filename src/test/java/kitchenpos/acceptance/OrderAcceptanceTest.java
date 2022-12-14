@@ -1,6 +1,5 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴;
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴가격;
 import static kitchenpos.acceptance.OrderTableAcceptanceTest.주문_테이블;
 import static kitchenpos.fixture.ProductFixture.상품;
@@ -25,6 +24,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.MenuFixture;
 
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest<Order> {
@@ -38,7 +38,7 @@ public class OrderAcceptanceTest extends AcceptanceTest<Order> {
 	MenuGroupAcceptanceTest menuGroups;
 	private OrderTable 주문_테이블;
 	private Menu 메뉴;
-	private MenuGroup 메뉴_그룹;
+	private MenuGroup 메뉴그룹;
 
 	/**
 	 * Feature: 주문 관리 기능
@@ -60,8 +60,8 @@ public class OrderAcceptanceTest extends AcceptanceTest<Order> {
 												 상품("사과 가득 젤리", 4000));
 
 		상품_목록 = products.상품_등록되어_있음(상품_목록);
-		메뉴_그룹 = menuGroups.메뉴_그룹_등록되어_있음();
-		메뉴 = menus.메뉴_등록되어_있음(메뉴(메뉴_그룹, 상품_목록, 메뉴가격));
+		메뉴그룹 = menuGroups.메뉴_그룹_등록되어_있음();
+		메뉴 = menus.메뉴_등록되어_있음(MenuFixture.메뉴(상품_목록, 메뉴그룹, 메뉴가격));
 		주문_테이블 = orderTables.주문_테이블_등록되어_있음(주문_테이블(10));
 	}
 
@@ -102,7 +102,10 @@ public class OrderAcceptanceTest extends AcceptanceTest<Order> {
 		// then
 		등록_실패함(등록_요청_응답);
 		// when
-		Menu 존재하지_않는_메뉴 = 메뉴(메뉴_그룹, Lists.newArrayList(상품("후라이드", 10_000)), 10_000);
+		Menu 존재하지_않는_메뉴 = MenuFixture.메뉴(
+			Lists.newArrayList(상품("후라이드", 10_000)),
+			메뉴그룹,
+			10_000);
 		등록_요청_응답 = 등록_요청(조리중_주문(주문_테이블, Lists.newArrayList(존재하지_않는_메뉴)));
 		// then
 		등록_실패함(등록_요청_응답);

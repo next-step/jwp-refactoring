@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.MenuFixture.메뉴;
 import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,23 +11,21 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Money;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.fixture.ProductFixture;
@@ -37,12 +36,13 @@ class MenuServiceTest {
 	@Mock
 	MenuDao menuDao;
 	@Mock
-	MenuGroupDao menuGroupDao;
+	MenuGroupRepository menuGroupRepository;
 	@Mock
 	MenuProductDao menuProductDao;
 	@Mock
 	ProductService productService;
 
+	@InjectMocks
 	MenuService menuService;
 
 	Menu menu;
@@ -51,17 +51,16 @@ class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productService);
-
 		products = ProductFixture.상품목록(3);
 		menuGroup = 메뉴그룹();
-		menu = createMenu(products, menuGroup);
+		menu = 메뉴(products, menuGroup);
 	}
 
 	@Test
 	@DisplayName("메뉴 생성")
 	void testCreateMenu() {
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
+		// given
+		when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
 		products.forEach(
 			product -> when(productService.findById(product.getId()))
 				.thenReturn(product)
@@ -87,7 +86,7 @@ class MenuServiceTest {
 	@Test
 	@DisplayName("메뉴 그룹이 존재하지 않을경우 등록실패")
 	void testCreateMenuWhenMenuGroupNotExists() {
-		when(menuGroupDao.existsById(anyLong())).thenReturn(false);
+		when(menuGroupRepository.existsById(anyLong())).thenReturn(false);
 
 		assertThatThrownBy(() -> menuService.create(menu))
 			.isInstanceOf(IllegalArgumentException.class);
@@ -96,7 +95,7 @@ class MenuServiceTest {
 	@Test
 	@DisplayName("메뉴의 가격이 상품목록 가격 합보다 클 경우 등록 실패")
 	void testCreateMenuWhenMenuPriceGreaterThanSumOfProductsPrice() {
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
+		when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
 		products.forEach(
 			product -> when(productService.findById(product.getId()))
 				.thenReturn(product));
@@ -109,7 +108,7 @@ class MenuServiceTest {
 	@Test
 	@DisplayName("상품이 존재하지 않을경우 등록실패")
 	void testCreateMenuWhenProductNotExists() {
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
+		when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
 		when(productService.findById(anyLong())).thenThrow(EntityNotFoundException.class);
 
 		assertThatThrownBy(() -> menuService.create(menu))
@@ -131,28 +130,4 @@ class MenuServiceTest {
 		verify(menuDao, times(1)).findAll();
 	}
 
-	public static Menu createMenu(List<Product> products, MenuGroup menuGroup) {
-		Menu menu = new Menu();
-
-		menu.setId(1L);
-		menu.setName("식빵");
-		Money price = products.stream()
-			.map(Product::getPrice)
-			.reduce(Money.ZERO, Money::add);
-		menu.setPrice(price.toBigDecimal());
-		menu.setMenuProducts(createMenuProducts(products));
-		menu.setMenuGroupId(menuGroup.getId());
-
-		return menu;
-	}
-
-	private static List<MenuProduct> createMenuProducts(List<Product> products) {
-		return products.stream()
-			.map(product -> {
-				MenuProduct menuProduct = new MenuProduct();
-				menuProduct.setProductId(product.getId());
-				menuProduct.setQuantity(1);
-				return menuProduct;
-			}).collect(Collectors.toList());
-	}
 }

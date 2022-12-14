@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.exception.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +29,6 @@ public class ProductService {
 
     public Product findById(Long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(EntityNotFoundException::new);
     }
 }

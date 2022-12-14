@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.MenuGroup2;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 
 @Service
@@ -18,11 +18,11 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup2 create(final MenuGroup2 menuGroup) {
+    public MenuGroup create(final MenuGroup menuGroup) {
         return menuGroupRepository.save(menuGroup);
     }
 
-    public List<MenuGroup2> list() {
+    public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }
 

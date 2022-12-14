@@ -32,7 +32,7 @@ public class Menu2 {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_group_id")
-    private MenuGroup2 menuGroup;
+    private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct2> menuProducts = new ArrayList<>();
@@ -40,7 +40,7 @@ public class Menu2 {
     protected Menu2() {
     }
 
-    public Menu2(String name, Money price, MenuGroup2 menuGroup, List<MenuProduct2> menuProducts) {
+    public Menu2(String name, Money price, MenuGroup menuGroup, List<MenuProduct2> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;

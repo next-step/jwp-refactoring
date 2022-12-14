@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹2;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -11,7 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.MenuGroup2;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,7 +26,7 @@ class MenuGroupServiceTest {
 	@Test
 	@DisplayName("메뉴 그룹 생성")
 	void testCreateMenuGroup() {
-		MenuGroup2 menuGroup = 메뉴그룹2();
+		MenuGroup menuGroup = 메뉴그룹();
 
 		menuGroupService.create(menuGroup);
 
