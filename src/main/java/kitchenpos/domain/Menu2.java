@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
@@ -15,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import kitchenpos.exception.InvalidMenuPriceException;
 
 @Entity
 @Table(name = "menu")
@@ -40,11 +43,25 @@ public class Menu2 {
     protected Menu2() {
     }
 
-    public Menu2(String name, Money price, MenuGroup menuGroup, List<MenuProduct2> menuProducts) {
+    public Menu2(String name, Money price, MenuGroup menuGroup, List<Product> products) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
+        addMenuProducts(toMenuProduct(products));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    private List<MenuProduct2> toMenuProduct(List<Product> products) {
+        return products.stream()
+            .map(product -> new MenuProduct2(this, product, 1))
+            .collect(Collectors.toList());
     }
 
     private void addMenuProducts(List<MenuProduct2> menuProducts) {
@@ -58,5 +75,22 @@ public class Menu2 {
 
     public List<MenuProduct2> getMenuProducts() {
         return menuProducts;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public void validatePrice() {
+        Money purchasePrice = sumAllPurchasePrices();
+        if (price.isGreaterThan(purchasePrice)) {
+            throw new InvalidMenuPriceException(price, purchasePrice);
+        }
+    }
+
+    private Money sumAllPurchasePrices() {
+        return menuProducts.stream()
+            .map(MenuProduct2::getPurchasePrice)
+            .reduce(Money.ZERO, Money::add);
     }
 }

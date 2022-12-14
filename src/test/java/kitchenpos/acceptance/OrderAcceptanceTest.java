@@ -106,6 +106,7 @@ public class OrderAcceptanceTest extends AcceptanceTest<Order> {
 			Lists.newArrayList(상품("후라이드", 10_000)),
 			메뉴그룹,
 			10_000);
+
 		등록_요청_응답 = 등록_요청(조리중_주문(주문_테이블, Lists.newArrayList(존재하지_않는_메뉴)));
 		// then
 		등록_실패함(등록_요청_응답);

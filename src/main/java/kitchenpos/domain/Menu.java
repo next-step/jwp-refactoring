@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Deprecated
 public class Menu {
     private Long id;
     private String name;

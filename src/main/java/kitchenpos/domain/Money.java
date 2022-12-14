@@ -64,6 +64,14 @@ public class Money {
 		return value;
 	}
 
+	public Money multiply(long quantity) {
+		return Money.valueOf(value.multiply(BigDecimal.valueOf(quantity)));
+	}
+
+	public boolean isGreaterThan(Money other) {
+		return value.compareTo(other.value) > 0;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {

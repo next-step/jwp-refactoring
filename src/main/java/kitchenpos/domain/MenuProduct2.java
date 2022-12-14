@@ -50,4 +50,8 @@ public class MenuProduct2 {
     public void setProduct(Product newProduct) {
         this.product = newProduct;
     }
+
+	public Money getPurchasePrice() {
+        return product.getPrice().multiply(quantity);
+	}
 }
