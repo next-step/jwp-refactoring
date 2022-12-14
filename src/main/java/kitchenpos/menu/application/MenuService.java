@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,11 +37,12 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(MenuRequest request) {
-        menuValidator.createMenu(request);
-        List<MenuProduct> menuProducts =
-                findAllMenuProducts(request.getMenuProducts(), findAllProductByIds(request.getMenuProductIds()));
+        MenuProducts menuProducts = new MenuProducts(
+                findAllMenuProducts(request.getMenuProducts(), findAllProductByIds(request.getMenuProductIds()))
+        );
+        menuValidator.validateCreateMenu(request, menuProducts);
 
-        final Menu savedMenu = menuRepository.save(request.createMenu(new MenuProducts(menuProducts)));
+        final Menu savedMenu = menuRepository.save(request.createMenu(menuProducts));
         return MenuResponse.from(savedMenu);
     }
 
@@ -48,7 +50,7 @@ public class MenuService {
         return menuProducts.stream()
                 .map(menuProductRequest -> {
                     Product findProduct = products.stream()
-                            .filter(product -> product.getId() == menuProductRequest.getProductId())
+                            .filter(product -> Objects.equals(product.getId(), menuProductRequest.getProductId()))
                             .findFirst()
                             .orElseThrow(() -> new IllegalArgumentException(ErrorCode.PRODUCT_IS_NOT_EXIST.getMessage()));
                     return menuProductRequest.createMenuProduct(findProduct);

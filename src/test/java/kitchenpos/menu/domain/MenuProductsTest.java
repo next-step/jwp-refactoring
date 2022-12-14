@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,10 +40,10 @@ class MenuProductsTest {
     void setMenu() {
         // given
         MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
-        Menu menu = new Menu(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)), menuGroup.getId());
         Product product = new Product(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)));
         MenuProduct menuProduct = new MenuProduct(new Quantity(1L), product);
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(menuProduct));
+        Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(12_000), menuGroup.getId(), new ArrayList<>());
 
         // when
         menuProducts.setMenu(menu);

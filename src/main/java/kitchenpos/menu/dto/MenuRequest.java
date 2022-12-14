@@ -53,9 +53,6 @@ public class MenuRequest {
     }
 
     public Menu createMenu(MenuProducts menuProducts) {
-        Menu menu = new Menu(new Name(name), new Price(price), menuGroupId);
-        menu.setMenuProducts(menuProducts);
-
-        return menu;
+        return new Menu(new Name(name), new Price(price), menuGroupId, menuProducts);
     }
 }

@@ -24,14 +24,16 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Name name, Price price, Long menuGroupId) {
+    public Menu(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+        menuProducts.setMenu(this);
     }
 
-    public Menu(Long id, Name name, Price price, Long menuGroupId) {
-        this(name, price, menuGroupId);
+    public Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        this(name, price, menuGroupId, menuProducts);
         this.id = id;
     }
 
@@ -57,19 +59,6 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.get();
-    }
-
-    public void setMenuProducts(MenuProducts menuProducts) {
-        validatePrice(menuProducts.totalMenuPrice());
-
-        this.menuProducts = menuProducts;
-        menuProducts.setMenu(this);
-    }
-
-    private void validatePrice(Price totalPrice) {
-        if (price.isBiggerThan(totalPrice)) {
-            throw new IllegalArgumentException(ErrorCode.MENU_PRICE_SHOULD_NOT_OVER_TOTAL_PRICE.getMessage());
-        }
     }
 
     @Override

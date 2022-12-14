@@ -39,7 +39,6 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
         tableGroupValidator.validateCreateTableGroup(request);
-//        List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
 
         TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup());
         savedTableGroup.setOrderTableIds(request.getOrderTableIds());
@@ -53,20 +52,6 @@ public class TableGroupService {
 
         tableGroup.ungroup();
         tableGroupRepository.save(tableGroup);
-    }
-
-    private List<OrderTable> findAllOrderTablesByIds(List<Long> ids) {
-        List<OrderTable> orderTables = orderTableRepository.findAllById(ids);
-
-        if (orderTables.size() != ids.size()) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage());
-        }
-
-        return orderTables;
-    }
-
-    private List<Order> findAllOrderByTableIds(List<Long> ids) {
-        return orderRepository.findAllByOrderTableIdIn(ids);
     }
 
     private TableGroup findTableGroupById(Long id) {

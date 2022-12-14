@@ -2,9 +2,11 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -71,10 +73,15 @@ class MenuServiceTest {
         김치 = new Product(2L, new Name("김치"), new Price(BigDecimal.valueOf(1_000)));
         공기밥 = new Product(3L, new Name("공기밥"), new Price(BigDecimal.valueOf(1_000)));
         한식 = new MenuGroup(1L, new Name("한식"));
-        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식.getId());
-        불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기정식, 불고기);
-        김치상품 = new MenuProduct(2L, new Quantity(1L), 불고기정식, 김치);
-        공기밥상품 = new MenuProduct(3L, new Quantity(1L), 불고기정식, 공기밥);
+        불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기);
+        김치상품 = new MenuProduct(2L, new Quantity(1L), 김치);
+        공기밥상품 = new MenuProduct(3L, new Quantity(1L), 공기밥);
+        불고기정식 = TestMenuFactory.create(
+                "불고기정식",
+                BigDecimal.valueOf(12_000L),
+                한식.getId(),
+                Arrays.asList(불고기상품, 김치상품, 공기밥상품)
+        );
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -117,46 +124,6 @@ class MenuServiceTest {
     void createUnderZeroPriceMenuException(int input) {
         // given
         MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(input), 한식.getId(), new ArrayList<>());
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-//    @DisplayName("메뉴가 속한 메뉴그룹이 없을 경우 예외가 발생한다.")
-//    @Test
-//    void notExistMenuGroupException() {
-//        // given
-//        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
-//
-//        // when & then
-//        assertThatThrownBy(() -> menuService.create(request))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-
-    @DisplayName("메뉴에 포함된 상품이 없을 경우 예외가 발생한다.")
-    @Test
-    void notExistProductException() {
-        // given
-        MenuRequest request = MenuRequest.of("불고기정식", BigDecimal.valueOf(1_000), 한식.getId(), new ArrayList<>());
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴의 가격은 메뉴에 포함된 상품 가격의 합보다 작아야 한다.")
-    @Test
-    void menuPriceException() {
-        // given
-        불고기정식.setPrice(new Price(BigDecimal.valueOf(200_000)));
-        when(productRepository.findAllById(Arrays.asList(불고기.getId(), 김치.getId(), 공기밥.getId())))
-                .thenReturn(Arrays.asList(불고기, 김치, 공기밥));
-        List<MenuProductRequest> menuProductRequests = Arrays.asList(불고기상품, 김치상품, 공기밥상품)
-                .stream()
-                .map(MenuProductRequest::from)
-                .collect(Collectors.toList());
-        MenuRequest request = MenuRequest.of(불고기정식.getName().value(), 불고기정식.getPrice().value(), 한식.getId(), menuProductRequests);
 
         // when & then
         assertThatThrownBy(() -> menuService.create(request))

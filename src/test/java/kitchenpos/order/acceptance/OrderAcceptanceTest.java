@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -36,6 +37,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,7 +82,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         김치상품 = MenuProductRequest.of(김치.getId(), 1L);
         공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
 
-        불고기정식메뉴 = new Menu(new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식.getId());
+        불고기정식메뉴 = TestMenuFactory.create("불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), new ArrayList<>());
         불고기정식응답 = 메뉴_생성_요청(MenuRequest.of(
                 불고기정식메뉴.getName().value(),
                 불고기정식메뉴.getPrice().value(),

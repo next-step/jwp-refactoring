@@ -4,6 +4,7 @@ import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -39,7 +40,7 @@ class OrderLineItemsTest {
     void setOrder() {
         // given
         MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
-        Menu menu = new Menu(new Name("불고기"), new Price(BigDecimal.valueOf(12_000)), menuGroup.getId());
+        Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(12_000), menuGroup.getId(), new ArrayList<>());
 
         OrderLineItem orderLineItem = new OrderLineItem(new Quantity(1L), menu);
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));

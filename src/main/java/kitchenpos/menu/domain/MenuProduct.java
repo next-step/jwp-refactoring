@@ -30,10 +30,9 @@ public class MenuProduct {
         this.product = product;
     }
 
-    public MenuProduct(Long seq, Quantity quantity, Menu menu, Product product) {
+    public MenuProduct(Long seq, Quantity quantity, Product product) {
         this(quantity, product);
         this.seq = seq;
-        this.menu = menu;
     }
 
     public Long getSeq() {

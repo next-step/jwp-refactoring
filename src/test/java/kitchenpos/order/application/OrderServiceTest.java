@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.MenuProduct;
@@ -77,10 +78,11 @@ class OrderServiceTest {
         김치 = new Product(2L, new Name("김치"), new Price(BigDecimal.valueOf(1_000)));
         공기밥 = new Product(3L, new Name("공기밥"), new Price(BigDecimal.valueOf(1_000)));
         한식 = new MenuGroup(1L, new Name("한식"));
-        불고기정식 = new Menu(1L, new Name("불고기정식"), new Price(BigDecimal.valueOf(12_000L)), 한식.getId());
-        불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기정식, 불고기);
-        김치상품 = new MenuProduct(2L, new Quantity(1L), 불고기정식, 김치);
-        공기밥상품 = new MenuProduct(3L, new Quantity(1L), 불고기정식, 공기밥);
+        불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기);
+        김치상품 = new MenuProduct(2L, new Quantity(1L), 김치);
+        공기밥상품 = new MenuProduct(3L, new Quantity(1L), 공기밥);
+        불고기정식 = TestMenuFactory.create("불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), Arrays.asList(불고기상품, 김치상품, 공기밥상품));
+
 
         주문테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식);
