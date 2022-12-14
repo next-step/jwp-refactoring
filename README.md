@@ -186,6 +186,8 @@ CREATE TABLE table_group (
 | 주문 항목    | order line item  | 주문에 속하는 수량이 있는 메뉴             |
 | 매장 식사    | eat in           | 포장하지 않고 매장에서 식사하는 것           |
 
+## ERD
+![ERD](src/main/resources/db/kichenpsErd.png)
 ---
 
 # 🚀 1단계 - 테스트를 통한 코드 보호
