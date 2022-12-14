@@ -40,7 +40,7 @@ public class TableRestController {
             @RequestBody UpdateEmptyRequest request
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId, request));
+                .body(tableService.updateEmpty(orderTableId, request));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
@@ -49,6 +49,6 @@ public class TableRestController {
             @RequestBody UpdateNumberOfGuestsRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable));
+                .body(tableService.updateNumberOfGuests(orderTableId, orderTable));
     }
 }

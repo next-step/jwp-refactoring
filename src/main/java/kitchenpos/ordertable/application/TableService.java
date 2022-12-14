@@ -1,14 +1,13 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.dto.UpdateEmptyRequest;
 import kitchenpos.ordertable.dto.UpdateNumberOfGuestsRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +18,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.orderTableValidator = orderTableValidator;
+
     }
 
     @Transactional
@@ -40,26 +40,23 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(Long orderTableId, UpdateEmptyRequest request) {
+    public OrderTableResponse updateEmpty(Long orderTableId, UpdateEmptyRequest request) {
         OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        List<Order> orders = findAllOrderByOrderTableId(orderTableId);
+        orderTableValidator.validateUpdateEmpty(savedOrderTable);
 
-        savedOrderTable.updateEmpty(request.isEmpty(), orders);
+        savedOrderTable.setEmpty(request.isEmpty());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private List<Order> findAllOrderByOrderTableId(Long id) {
-        return orderRepository.findAllByOrderTableId(id);
-    }
-
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(
+    public OrderTableResponse updateNumberOfGuests(
             Long orderTableId,
             UpdateNumberOfGuestsRequest request
     ) {
         OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        savedOrderTable.updateNumberOfGuest(request.getNumberOfGuests());
+        orderTableValidator.validateUpdateNumberOfGuests(savedOrderTable);
 
+        savedOrderTable.setNumberOfGuest(request.getNumberOfGuests());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 

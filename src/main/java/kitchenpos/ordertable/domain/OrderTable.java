@@ -1,10 +1,8 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.order.domain.Order;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -29,28 +27,12 @@ public class OrderTable {
         this.id = id;
     }
 
-    public void updateEmpty(boolean empty, List<Order> orders) {
-        validateHasTableGroup();
-        orders.forEach(Order::validateOrderStatusShouldComplete);
-
+    public void setEmpty(boolean empty) {
         this.empty = empty;
     }
 
-    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
-        validateShouldNotEmpty();
+    public void setNumberOfGuest(NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-    }
-
-    private void validateShouldNotEmpty() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
-        }
-    }
-
-    private void validateHasTableGroup() {
-        if (tableGroupId != null) {
-            throw new IllegalArgumentException(ErrorCode.ALREADY_TABLE_GROUP.getMessage());
-        }
     }
 
     public void ungroup() {

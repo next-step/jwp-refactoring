@@ -25,23 +25,10 @@ class OrderTableTest {
         Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.COMPLETION, new ArrayList<>());
 
         // when
-        orderTable.updateEmpty(expectEmpty, Arrays.asList(order));
+        orderTable.setEmpty(expectEmpty);
 
         // then
         assertThat(orderTable.isEmpty()).isEqualTo(expectEmpty);
-    }
-
-    @DisplayName("주문 테이블의 비어있는 여부를 수정할 때, 주문의 상태가 계산완료가 아니라면 예외가 발생한다.")
-    @Test
-    void updateEmptyNotCompletionException() {
-        // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.MEAL, new ArrayList<>());
-
-        // when & then
-        assertThatThrownBy(() -> orderTable.updateEmpty(true, Arrays.asList(order)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_STATUS_NOT_COMPLETE.getMessage());
     }
 
     @DisplayName("주문 테이블의 손님 수를 수정할 수 있다.")
@@ -52,22 +39,10 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
 
         // when
-        orderTable.updateNumberOfGuest(expectNumberOfGuest);
+        orderTable.setNumberOfGuest(expectNumberOfGuest);
 
         // then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(expectNumberOfGuest.value());
-    }
-
-    @DisplayName("주문 테이블의 손님 수를 수정할 때, 주문테이블이 빈 상태라면 예외가 발생한다.")
-    @Test
-    void updateNumberOfGuestsException() {
-        // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
-
-        // when & then
-        assertThatThrownBy(() -> orderTable.updateNumberOfGuest(new NumberOfGuests(10)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
     }
 
     @DisplayName("단체 지정을 해제할 수 있다.")

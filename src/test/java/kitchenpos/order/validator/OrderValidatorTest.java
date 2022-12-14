@@ -4,8 +4,10 @@ import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.fixture.TestMenuFactory;
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.domain.NumberOfGuests;
@@ -37,7 +39,7 @@ class OrderValidatorTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
-    @DisplayName("주문 생성시 정상적으로 유효성 검사가 성공 된다")
+    @DisplayName("주문 생성시 정상적으로 유효성 검사가 성공한다")
     @Test
     void validateCreateOrder() {
         // given
@@ -105,5 +107,27 @@ class OrderValidatorTest {
         assertThatThrownBy(() -> orderValidator.validateCreateOrder(request, Arrays.asList(menu)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.ORDER_LINE_ITEMS_IS_EMPTY.getMessage());
+    }
+
+    @DisplayName("주문상태를 변경할 수 있도록 유효성 검증이 성공한다.")
+    @Test
+    void validateUpdateOrderStatus() {
+        // given
+        Order order = TestOrderFactory.createMealOrder();
+
+        // when & then
+        assertDoesNotThrow(() -> orderValidator.validateUpdateOrderStatus(order));
+    }
+
+    @DisplayName("결제완료 상태의 주문은 상태를 변경할 경우 예외가 발생한다.")
+    @Test
+    void validateCompleteOrderUpdateStatus() {
+        // given
+        Order order = TestOrderFactory.createCompleteOrder();
+
+        // when & then
+        assertThatThrownBy(() -> orderValidator.validateUpdateOrderStatus(order))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorCode.ORDER_STATUS_COMPLETE.getMessage());
     }
 }

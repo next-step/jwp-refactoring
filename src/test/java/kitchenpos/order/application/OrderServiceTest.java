@@ -9,10 +9,8 @@ import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -33,17 +31,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @DisplayName("OrderService 테스트")
@@ -54,9 +48,6 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
 
     @Mock
     private OrderValidator orderValidator;
@@ -140,7 +131,7 @@ class OrderServiceTest {
         when(orderRepository.save(주문)).thenReturn(주문);
 
         // when
-        OrderResponse result = orderService.changeOrderStatus(주문.getId(), request);
+        OrderResponse result = orderService.updateOrderStatus(주문.getId(), request);
 
         // then
         assertAll(
@@ -156,7 +147,7 @@ class OrderServiceTest {
         UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(OrderStatus.COOKING.name());
 
         // when & then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(3L, request))
+        assertThatThrownBy(() -> orderService.updateOrderStatus(3L, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -169,7 +160,7 @@ class OrderServiceTest {
 
 
         // when & then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), request))
+        assertThatThrownBy(() -> orderService.updateOrderStatus(주문.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

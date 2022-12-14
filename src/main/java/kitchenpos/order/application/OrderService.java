@@ -2,25 +2,18 @@ package kitchenpos.order.application;
 
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -59,13 +52,17 @@ public class OrderService {
     private List<OrderLineItem> findAllOrderLineItem(List<OrderLineItemRequest> orderLineItems, List<Menu> menus) {
         return orderLineItems.stream()
                 .map(orderLineItem -> {
-                    Menu findMenu = menus.stream()
-                            .filter(menu -> Objects.equals(menu.getId(), orderLineItem.getMenuId()))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage()));
+                    Menu findMenu = findMenuByMatchId(orderLineItem.getMenuId(), menus);
                     return orderLineItem.createOrderLineItem(findMenu);
                 })
                 .collect(Collectors.toList());
+    }
+
+    private Menu findMenuByMatchId(Long menuId, List<Menu> menus) {
+        return menus.stream()
+                .filter(menu -> Objects.equals(menu.getId(), menuId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage()));
     }
 
     public List<OrderResponse> findAll() {
@@ -76,9 +73,11 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(Long orderId, UpdateOrderStatusRequest request) {
+    public OrderResponse updateOrderStatus(Long orderId, UpdateOrderStatusRequest request) {
         Order savedOrder = findOrderById(orderId);
-        savedOrder.updateOrderStatus(request.getOrderStatus());
+        orderValidator.validateUpdateOrderStatus(savedOrder);
+
+        savedOrder.setOrderStatus(request.getOrderStatus());
         return OrderResponse.from(orderRepository.save(savedOrder));
     }
 

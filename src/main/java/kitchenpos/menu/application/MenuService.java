@@ -49,13 +49,17 @@ public class MenuService {
     private List<MenuProduct> findAllMenuProducts(List<MenuProductRequest> menuProducts, List<Product> products) {
         return menuProducts.stream()
                 .map(menuProductRequest -> {
-                    Product findProduct = products.stream()
-                            .filter(product -> Objects.equals(product.getId(), menuProductRequest.getProductId()))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException(ErrorCode.PRODUCT_IS_NOT_EXIST.getMessage()));
+                    Product findProduct = findProductByMatchId(menuProductRequest.getProductId(), products);
                     return menuProductRequest.createMenuProduct(findProduct);
                 })
                 .collect(Collectors.toList());
+    }
+
+    private Product findProductByMatchId(Long productId, List<Product> products) {
+        return products.stream()
+                .filter(product -> Objects.equals(product.getId(), productId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.PRODUCT_IS_NOT_EXIST.getMessage()));
     }
 
     private List<Product> findAllProductByIds(List<Long> ids) {

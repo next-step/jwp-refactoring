@@ -6,7 +6,6 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
-import org.aspectj.weaver.ast.Or;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class TestOrderFactory {
                 LocalDateTime.now(),
                 new OrderLineItems(new ArrayList<>())
         );
-        orderTable.updateEmpty(true, Arrays.asList(order));
+        orderTable.setEmpty(true);
         return order;
     }
 
@@ -37,7 +36,7 @@ public class TestOrderFactory {
                 LocalDateTime.now(),
                 new OrderLineItems(new ArrayList<>())
         );
-        orderTable.updateEmpty(true, Arrays.asList(order));
+        orderTable.setEmpty(true);
         return order;
     }
 

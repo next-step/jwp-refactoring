@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -68,19 +67,8 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void updateOrderStatus(OrderStatus status) {
-        validateUpdateOrderStatus();
+    public void setOrderStatus(OrderStatus status) {
         this.orderStatus = status;
-    }
-
-    private void validateUpdateOrderStatus() {
-        if (OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_COMPLETE.getMessage());
-        }
     }
 
     public LocalDateTime getOrderedTime() {

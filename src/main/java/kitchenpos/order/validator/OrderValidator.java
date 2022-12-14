@@ -3,6 +3,7 @@ package kitchenpos.order.validator;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.repository.OrderRepository;
@@ -49,6 +50,12 @@ public class OrderValidator {
     private void validateMenus(List<OrderLineItemRequest> orderLineItems, List<Menu> menus) {
         if (orderLineItems.size() != menus.size()) {
             throw new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage());
+        }
+    }
+
+    public void validateUpdateOrderStatus(Order order) {
+        if (order.getOrderStatus().equals(OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_COMPLETE.getMessage());
         }
     }
 }
