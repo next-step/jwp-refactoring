@@ -28,8 +28,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-        MenuGroup 추천메뉴 = new MenuGroup();
-        추천메뉴.setName("추천메뉴");
+        MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
         given(menuGroupDao.save(any())).willReturn(추천메뉴);
 
         //when
@@ -43,11 +42,8 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //given
-        MenuGroup 추천메뉴 = new MenuGroup();
-        추천메뉴.setName("추천메뉴");
-
-        MenuGroup 오늘의메뉴 = new MenuGroup();
-        오늘의메뉴.setName("오늘의메뉴");
+        MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
+        MenuGroup 오늘의메뉴 = new MenuGroup("오늘의메뉴");
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(추천메뉴, 오늘의메뉴));
 
         //when

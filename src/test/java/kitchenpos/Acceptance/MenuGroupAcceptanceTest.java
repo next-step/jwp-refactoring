@@ -23,12 +23,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        추천메뉴 = new MenuGroup();
-        추천메뉴.setName("추천메뉴");
-
-        오늘의메뉴 = new MenuGroup();
-        오늘의메뉴.setName("오늘의메뉴");
+        추천메뉴 = new MenuGroup("추천메뉴");
+        오늘의메뉴 = new MenuGroup("오늘의메뉴");
     }
 
     @DisplayName("메뉴 그룹 등록한다.")
