@@ -27,13 +27,13 @@ public class MenuResponse {
 
     public static List<MenuResponse> of(List<Menu> menus) {
         return menus.stream()
-                    .map(MenuResponse::of)
-                    .collect(Collectors.toList());
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 
     public static MenuResponse of(Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getValue(),
-                                menu.getMenuGroupId(), MenuProductResponse.of(menu.getMenuProducts()));
+                menu.getMenuGroupId(), MenuProductResponse.of(menu.getMenuProducts()));
     }
 
     public Long getId() {

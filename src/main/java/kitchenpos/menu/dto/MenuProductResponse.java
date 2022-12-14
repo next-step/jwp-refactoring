@@ -23,13 +23,13 @@ public class MenuProductResponse {
 
     public static List<MenuProductResponse> of(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
-                           .map(MenuProductResponse::of)
-                           .collect(Collectors.toList());
+                .map(MenuProductResponse::of)
+                .collect(Collectors.toList());
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenu().getId(),
-                                       menuProduct.getProduct().getId(), menuProduct.getQuantity().getValue());
+                menuProduct.getProduct().getId(), menuProduct.getQuantity().getValue());
     }
 
     public Long getSeq() {

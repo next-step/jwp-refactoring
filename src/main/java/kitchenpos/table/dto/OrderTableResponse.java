@@ -23,7 +23,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), getTableGroupId(orderTable),
-                                      orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
+                orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
     }
 
     private static Long getTableGroupId(OrderTable orderTable) {
@@ -35,8 +35,8 @@ public class OrderTableResponse {
 
     public static List<OrderTableResponse> of(List<OrderTable> orderTables) {
         return orderTables.stream()
-                          .map(OrderTableResponse::of)
-                          .collect(Collectors.toList());
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

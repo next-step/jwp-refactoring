@@ -64,8 +64,8 @@ public class OrderService {
 
     private List<Long> toMenuIds(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                             .map(OrderLineItem::getMenuId)
-                             .collect(Collectors.toList());
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 
     private void validateNotEmptyOrderTable(OrderRequest request) {

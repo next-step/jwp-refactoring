@@ -22,7 +22,7 @@ public class MenuRequest {
     }
 
     public Menu toMenu() {
-        return new Menu( name, price, menuGroupId);
+        return new Menu(name, price, menuGroupId);
     }
 
     public String getName() {

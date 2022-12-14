@@ -11,8 +11,11 @@ import kitchenpos.menu.exception.NotFoundMenuGroupException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.exception.NotFoundProductException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,9 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(MenuService.class);
+
 
     public MenuService(
             final MenuRepository menuRepository,
@@ -43,6 +49,9 @@ public class MenuService {
     private Menu createMenu(MenuRequest request) {
         Menu menu = menuRepository.save(request.toMenu());
         menu.addMenuProducts(toMenuProducts(request));
+        log.info("call tx");
+        boolean txActive = TransactionSynchronizationManager.isActualTransactionActive();
+        log.info("tx active = {}", txActive);
         return menu;
     }
 

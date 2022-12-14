@@ -11,11 +11,14 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
+
     @ManyToOne
-    @JoinColumn(foreignKey =@ForeignKey(name = "fk_order_line_item_to_order"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_to_order"))
     private Order order;
+
     @Column(nullable = false)
     private Long menuId;
+
     @Embedded
     private Quantity quantity;
 

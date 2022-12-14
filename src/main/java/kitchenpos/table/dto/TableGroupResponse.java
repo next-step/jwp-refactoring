@@ -22,7 +22,7 @@ public class TableGroupResponse {
 
     public static TableGroupResponse of(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(),
-                                      OrderTableResponse.of(tableGroup.getOrderTables()));
+                OrderTableResponse.of(tableGroup.getOrderTables()));
 
     }
 

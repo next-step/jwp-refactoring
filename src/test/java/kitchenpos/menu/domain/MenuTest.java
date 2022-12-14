@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Menu 클래스 테스트")
@@ -65,9 +65,9 @@ class MenuTest {
         assertAll(
                 () -> assertThat(menu.getMenuProducts()).hasSize(1),
                 () -> assertThat(menu.getMenuProducts()).element(0)
-                                                        .satisfies(it -> {
-                                                            assertThat(it.getMenu()).isNotNull();
-                                                        })
+                        .satisfies(it -> {
+                            assertThat(it.getMenu()).isNotNull();
+                        })
         );
     }
 
@@ -79,6 +79,6 @@ class MenuTest {
         assertThatThrownBy(() -> {
             menu.addMenuProducts(Arrays.asList(menuProduct));
         }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
+                .hasMessageContaining("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
     }
 }

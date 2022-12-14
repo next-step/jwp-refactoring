@@ -23,13 +23,13 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrder().getId(),
-                                         orderLineItem.getMenuId(), orderLineItem.getQuantity().getValue());
+                orderLineItem.getMenuId(), orderLineItem.getQuantity().getValue());
     }
 
     public static List<OrderLineItemResponse> of(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                             .map(OrderLineItemResponse::of)
-                             .collect(Collectors.toList());
+                .map(OrderLineItemResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getSeq() {

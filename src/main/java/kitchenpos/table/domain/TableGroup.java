@@ -12,8 +12,10 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private LocalDateTime createdDate;
+
     @Embedded
     private OrderTables orderTables = new OrderTables();
 

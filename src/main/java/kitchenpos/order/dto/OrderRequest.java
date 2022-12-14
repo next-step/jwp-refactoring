@@ -24,8 +24,8 @@ public class OrderRequest {
 
     public List<OrderLineItem> toOrderLineItems() {
         return orderLineItems.stream()
-                             .map(OrderLineItemRequest::toOrderLineItem)
-                             .collect(Collectors.toList());
+                .map(OrderLineItemRequest::toOrderLineItem)
+                .collect(Collectors.toList());
     }
 
     public Long getOrderTableId() {

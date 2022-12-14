@@ -2,12 +2,10 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.price.domain.Amount;
 import kitchenpos.price.domain.Price;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,11 +14,15 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     @Embedded
     private Price price;
+
     @Column(nullable = false)
     private Long menuGroupId;
+
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 

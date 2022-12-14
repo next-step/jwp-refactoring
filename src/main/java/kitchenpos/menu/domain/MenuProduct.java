@@ -14,12 +14,15 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
+
     @ManyToOne
-    @JoinColumn(name = "menu_id", nullable = false, foreignKey =@ForeignKey(name = "fk_menu_product_to_menu"))
+    @JoinColumn(name = "menu_id", nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
     private Menu menu;
+
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false,  foreignKey =@ForeignKey(name = "fk_menu_product_to_product"))
+    @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_to_product"))
     private Product product;
+
     @Embedded
     private Quantity quantity;
 

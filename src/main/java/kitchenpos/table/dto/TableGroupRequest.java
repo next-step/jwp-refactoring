@@ -16,8 +16,8 @@ public class TableGroupRequest {
 
     public List<Long> toOrderTableId() {
         return orderTables.stream()
-                          .map(OrderTableIdRequest::getId)
-                          .collect(Collectors.toList());
+                .map(OrderTableIdRequest::getId)
+                .collect(Collectors.toList());
     }
 
     public List<OrderTableIdRequest> getOrderTables() {
