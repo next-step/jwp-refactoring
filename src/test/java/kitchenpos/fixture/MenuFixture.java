@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.Menu2;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
+import kitchenpos.ui.dto.MenuGroupResponse;
+import kitchenpos.ui.dto.MenuRequest;
+import kitchenpos.ui.dto.ProductResponse;
 
 public class MenuFixture {
 
@@ -49,12 +51,15 @@ public class MenuFixture {
 			}).collect(Collectors.toList());
 	}
 
-	public static Menu2 메뉴2(List<Product> products, MenuGroup menuGroup) {
-		Money productsPrice = products.stream()
-			.map(Product::getPrice)
-			.reduce(Money.ZERO, Money::add);
+	public static MenuRequest 메뉴3(List<ProductResponse> products, MenuGroupResponse menuGroup) {
+		Long productsPrice = products.stream()
+			.map(ProductResponse::getPrice)
+			.reduce(0L, Long::sum);
 
-		return new Menu2(메뉴명, productsPrice, menuGroup, products);
+		return 메뉴3(products, menuGroup, productsPrice);
 	}
 
+	public static MenuRequest 메뉴3(List<ProductResponse> products, MenuGroupResponse menuGroup, long price) {
+		return new MenuRequest(메뉴명, price, menuGroup.getId(), products);
+	}
 }

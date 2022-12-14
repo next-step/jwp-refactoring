@@ -15,43 +15,52 @@ import javax.persistence.Table;
 @Table(name = "menu_product")
 public class MenuProduct2 {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long seq;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "menu_id")
-    private Menu2 menu;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "menu_id")
+	private Menu2 menu;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_id")
+	private Product product;
 
-    private long quantity;
+	private long quantity;
 
-    protected MenuProduct2() {
-    }
+	protected MenuProduct2() {
+	}
 
-    public MenuProduct2(Menu2 menu, Product product, long quantity) {
-        setMenu(menu);
-        setProduct(product);
-        this.quantity = quantity;
-    }
+	public MenuProduct2(Menu2 menu, Product product, long quantity) {
+		setMenu(menu);
+		setProduct(product);
+		this.quantity = quantity;
+	}
 
-    public void setMenu(Menu2 newMenu) {
-        if (Objects.nonNull(menu)) {
-            menu.getMenuProducts().remove(this);
-        }
-        menu = newMenu;
-        if (!menu.getMenuProducts().contains(this)) {
-            menu.getMenuProducts().add(this);
-        }
-    }
-    public void setProduct(Product newProduct) {
-        this.product = newProduct;
-    }
+	public Long getProductId() {
+		return product.getId();
+	}
+
+	public long getQuantity() {
+		return quantity;
+	}
+
+	public void setMenu(Menu2 newMenu) {
+		if (Objects.nonNull(menu)) {
+			menu.getMenuProducts().remove(this);
+		}
+		menu = newMenu;
+		if (!menu.getMenuProducts().contains(this)) {
+			menu.getMenuProducts().add(this);
+		}
+	}
+
+	public void setProduct(Product newProduct) {
+		this.product = newProduct;
+	}
 
 	public Money getPurchasePrice() {
-        return product.getPrice().multiply(quantity);
+		return product.getPrice().multiply(quantity);
 	}
 }

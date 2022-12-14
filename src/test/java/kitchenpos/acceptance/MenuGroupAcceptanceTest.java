@@ -12,6 +12,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
 
+@Deprecated
 @DisplayName("메뉴 그룹 관리")
 class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup> {
 

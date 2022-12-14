@@ -15,6 +15,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
 
+@Deprecated
 @DisplayName("상품목록 관리")
 class ProductAcceptanceTest extends AcceptanceTest<Product> {
 

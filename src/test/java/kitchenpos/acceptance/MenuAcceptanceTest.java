@@ -16,6 +16,7 @@ import kitchenpos.domain.Product;
 import kitchenpos.fixture.MenuFixture;
 import kitchenpos.fixture.ProductFixture;
 
+@Deprecated
 @DisplayName("메뉴 관리")
 class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 

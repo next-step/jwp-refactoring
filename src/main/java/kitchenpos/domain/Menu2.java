@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
@@ -43,11 +44,26 @@ public class Menu2 {
     protected Menu2() {
     }
 
-    public Menu2(String name, Money price, MenuGroup menuGroup, List<Product> products) {
+    public Menu2(String name, Long price, MenuGroup menuGroup, List<Product> products) {
         this.name = name;
-        this.price = price;
+        this.price = Money.valueOf(price);
         this.menuGroup = menuGroup;
         addMenuProducts(toMenuProduct(products));
+    }
+
+    public Menu2(String name, Long price, MenuGroup menuGroup, Map<Product, Integer> productsCount) {
+        this.id = null;
+        this.name = name;
+        this.price = Money.valueOf(price);
+        this.menuGroup = menuGroup;
+        addMenuProducts(toMenuProducts(productsCount));
+    }
+
+    private List<MenuProduct2> toMenuProducts(Map<Product, Integer> productsCount) {
+        return productsCount.entrySet()
+            .stream()
+            .map(entry -> new MenuProduct2(this, entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     public String getName() {
@@ -56,6 +72,10 @@ public class Menu2 {
 
     public Long getId() {
         return id;
+    }
+
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     private List<MenuProduct2> toMenuProduct(List<Product> products) {

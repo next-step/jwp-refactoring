@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.exception.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,4 +27,8 @@ public class MenuGroupService {
         return menuGroupRepository.findAll();
     }
 
+	public MenuGroup findById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+            .orElseThrow(EntityNotFoundException::new);
+	}
 }

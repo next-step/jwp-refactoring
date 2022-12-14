@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -44,7 +46,11 @@ public class Product {
         this(name, Money.valueOf(price));
 	}
 
-	public Long getId() {
+    public Product(Long id) {
+        this(id, null, null);
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -54,5 +60,22 @@ public class Product {
 
     public Money getPrice() {
         return price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product)o;
+        return id.equals(product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

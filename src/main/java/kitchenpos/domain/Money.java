@@ -29,7 +29,7 @@ public class Money {
 		return new Money(value.setScale(SCALE, RoundingMode.FLOOR));
 	}
 
-	public static Money valueOf(int value) {
+	public static Money valueOf(long value) {
 		return valueOf(BigDecimal.valueOf(value));
 	}
 
@@ -70,6 +70,10 @@ public class Money {
 
 	public boolean isGreaterThan(Money other) {
 		return value.compareTo(other.value) > 0;
+	}
+
+	public Long longValue() {
+		return value.longValue();
 	}
 
 	@Override
