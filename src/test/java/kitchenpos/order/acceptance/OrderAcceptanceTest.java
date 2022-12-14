@@ -34,7 +34,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void creatOrder() {
         // given : 주문테이블 및 메뉴 생성
-        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        Product 상품 = 상품_생성_요청("후라이드", 18_000).as(Product.class);
         MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
         Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
                 new BigDecimal(18_000),
@@ -58,7 +58,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void creatOrderExceptionByEmptyTable() {
         // given : 주문테이블 및 메뉴 생성
-        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        Product 상품 = 상품_생성_요청("후라이드", 18_000).as(Product.class);
         MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
         Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
                 new BigDecimal(18_000),
@@ -82,7 +82,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findOrders() {
         // given
-        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        Product 상품 = 상품_생성_요청("후라이드", 18_000).as(Product.class);
         MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
         Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
                 new BigDecimal(18_000),
@@ -107,7 +107,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        Product 상품 = 상품_생성_요청("후라이드", 18_000).as(Product.class);
         MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
         Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
                 new BigDecimal(18_000),
@@ -132,7 +132,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusException_이미완료된_주문() {
         // given
-        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        Product 상품 = 상품_생성_요청("후라이드", 18_000).as(Product.class);
         MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
         Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
                 new BigDecimal(18_000),
@@ -172,7 +172,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void orderIntegrationTest() {
         // given
-        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", new BigDecimal(9000));
+        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", 9_000);
         Long productId = createProductResponse.jsonPath().getLong("id");
         상품_생성됨(createProductResponse);
 

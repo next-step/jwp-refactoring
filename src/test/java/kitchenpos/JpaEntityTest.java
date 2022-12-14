@@ -1,25 +1,24 @@
 package kitchenpos;
 
-import io.restassured.RestAssured;
 import kitchenpos.utils.DatabaseCleanupByEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-public abstract class AcceptanceTest {
-    @LocalServerPort
-    private int port;
+@Import(DatabaseCleanupByEntity.class)
+public class JpaEntityTest {
 
     @Autowired
     private DatabaseCleanupByEntity databaseCleanupByEntity;
 
     @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
+    void setUp() {
         databaseCleanupByEntity.execute();
     }
 }

@@ -3,7 +3,7 @@ package kitchenpos.menu.fixture;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductTestFixture {
-    public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
-        Product productRequest = new Product(name, price);
+    public static ExtractableResponse<Response> 상품_생성_요청(String name, Integer price) {
+        ProductRequest productRequest = new ProductRequest(name, new BigDecimal(price));
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(productRequest)

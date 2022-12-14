@@ -29,7 +29,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
 
         // when
@@ -48,7 +48,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuFailed1() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
 
         // when
@@ -67,7 +67,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuFailed2() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
 
         // when
@@ -86,7 +86,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findMenus() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
         메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
 
@@ -110,7 +110,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void menuIntegrationTest() {
         // given
-        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", new BigDecimal(9000));
+        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", 9_000);
         Long productId = createProductResponse.jsonPath().getLong("id");
         상품_생성됨(createProductResponse);
 

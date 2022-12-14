@@ -7,8 +7,6 @@ import kitchenpos.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static kitchenpos.menu.fixture.ProductTestFixture.*;
 
 @DisplayName("상품 관련 인수 테스트")
@@ -22,7 +20,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProduct() {
         // when
-        ExtractableResponse<Response> response = 상품_생성_요청("순살치킨", new BigDecimal(9000));
+        ExtractableResponse<Response> response = 상품_생성_요청("순살치킨", 9_000);
 
         // then
         상품_생성됨(response);
@@ -36,7 +34,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProductFailed() {
         // when
-        ExtractableResponse<Response> response = 상품_생성_요청("순살치킨", new BigDecimal(-1));
+        ExtractableResponse<Response> response = 상품_생성_요청("순살치킨", -1);
 
         // then
         상품_생성_실패됨(response);
@@ -51,7 +49,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void findProducts() {
         // given
-        상품_생성_요청("신제품치킨", new BigDecimal(20000));
+        상품_생성_요청("신제품치킨", 20_000);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회();
