@@ -8,16 +8,10 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.exception.OrderStatusChangeException;
 
@@ -28,9 +22,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,31 +38,23 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        checkOrderTableIsNotEmpty(orderTable);
-
+    private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = OrderLineItems.from(orderLineItems);
-
-        this.orderTable.addOrder(this);
         this.orderLineItems.setup(this);
     }
 
-    public static Order of(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderLineItems);
+    public static Order of(Long id,
+                           Long orderTableId,
+                           List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderLineItems);
-    }
-
-    private static void checkOrderTableIsNotEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableException(ExceptionMessage.EMPTY_ORDER_TABLE);
-        }
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, orderLineItems);
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
@@ -85,7 +70,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

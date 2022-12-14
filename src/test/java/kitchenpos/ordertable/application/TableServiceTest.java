@@ -8,17 +8,16 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.CannotChangeEmptyException;
 import kitchenpos.ordertable.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.ordertable.exception.InvalidNumberOfGuestsSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,7 +99,7 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리이면 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException3() {
-        Order.of(비어있지않은_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order.of(비어있지않은_주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();
@@ -112,7 +111,7 @@ class TableServiceTest {
     @DisplayName("주문 상태가 식사이면 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException4() {
-        Order 주문 = Order.of(비어있지않은_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문 = Order.of(비어있지않은_주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
         주문.changeOrderStatus(OrderStatus.MEAL);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
 

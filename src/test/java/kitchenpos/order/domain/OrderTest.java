@@ -20,8 +20,8 @@ class OrderTest {
         OrderTable orderTable = OrderTable.of(10, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(1L, 2));
 
-        Order order1 = Order.of(1L, orderTable, orderLineItems);
-        Order order2 = Order.of(1L, orderTable, orderLineItems);
+        Order order1 = Order.of(1L, orderTable.getId(), orderLineItems);
+        Order order2 = Order.of(1L, orderTable.getId(), orderLineItems);
 
         Assertions.assertThat(order1).isEqualTo(order2);
     }
@@ -32,8 +32,8 @@ class OrderTest {
         OrderTable orderTable = OrderTable.of(10, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(1L, 2));
 
-        Order order1 = Order.of(1L, orderTable, orderLineItems);
-        Order order2 = Order.of(2L, orderTable, orderLineItems);
+        Order order1 = Order.of(1L, orderTable.getId(), orderLineItems);
+        Order order2 = Order.of(2L, orderTable.getId(), orderLineItems);
 
         Assertions.assertThat(order1).isNotEqualTo(order2);
     }
@@ -44,7 +44,7 @@ class OrderTest {
         OrderTable orderTable = OrderTable.of(10, false);
         List<OrderLineItem> orderLineItems = Collections.emptyList();
 
-        Assertions.assertThatThrownBy(() -> Order.of(orderTable, orderLineItems))
+        Assertions.assertThatThrownBy(() -> Order.of(orderTable.getId(), orderLineItems))
                 .isInstanceOf(EmptyOrderLineItemException.class)
                 .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_LINE_ITEM);
     }
@@ -55,7 +55,7 @@ class OrderTest {
         OrderTable orderTable = OrderTable.of(10, true);
         List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(1L, 2));
 
-        Assertions.assertThatThrownBy(() -> Order.of(orderTable, orderLineItems))
+        Assertions.assertThatThrownBy(() -> Order.of(orderTable.getId(), orderLineItems))
                 .isInstanceOf(EmptyOrderTableException.class)
                 .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_TABLE);
     }

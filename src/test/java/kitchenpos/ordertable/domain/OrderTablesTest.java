@@ -5,14 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.Collections;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.exception.CannotGroupOrderTablesException;
 import kitchenpos.ordertable.exception.CannotUnGroupOrderTablesException;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +20,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("주문 테이블 일급 콜렉션 태스트")
 class OrderTablesTest {
 
+    private OrderValidator orderValidator = orderTableId -> {
+    };
 
     @DisplayName("단체 지정 시 주문 테이블이 없으면 예외가 발생한다.")
     @Test
@@ -94,9 +95,9 @@ class OrderTablesTest {
     @Test
     void ungroupException() {
         OrderTable 주문_테이블1 = OrderTable.of(10, false);
-        Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order.of(주문_테이블1.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
         OrderTable 주문_테이블2 = OrderTable.of(10, false);
-        Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+        Order.of(주문_테이블2.getId(), Arrays.asList(OrderLineItem.of(2L, 2)));
 
         OrderTables orderTables = OrderTables.from(Arrays.asList(주문_테이블1, 주문_테이블2));
 
@@ -109,11 +110,11 @@ class OrderTablesTest {
     @Test
     void ungroupException2() {
         OrderTable 주문_테이블1 = OrderTable.of(10, false);
-        Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문1 = Order.of(주문_테이블1.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
         주문1.changeOrderStatus(OrderStatus.COMPLETION);
 
         OrderTable 주문_테이블2 = OrderTable.of(10, false);
-        Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+        Order 주문2 = Order.of(주문_테이블2.getId(), Arrays.asList(OrderLineItem.of(2L, 2)));
         주문2.changeOrderStatus(OrderStatus.MEAL);
 
         OrderTables orderTables = OrderTables.from(Arrays.asList(주문_테이블1, 주문_테이블2));

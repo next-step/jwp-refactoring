@@ -2,19 +2,18 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ExceptionMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,21 +23,21 @@ public class OrderService {
 
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(MenuRepository menuRepository,
                         OrderRepository orderRepository,
-                        OrderTableRepository orderTableRepository) {
+                        OrderValidator orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
+        orderValidator.checkOrderTableIsNotEmpty(request.getOrderTableId());
         List<OrderLineItem> orderLineItems = toOrderLineItems(request);
-        OrderTable orderTable = findOrderTableById(request.getOrderTableId());
-        Order order = Order.of(orderTable, orderLineItems);
+        Order order = Order.of(request.getOrderTableId(), orderLineItems);
         return OrderResponse.from(orderRepository.save(order));
     }
 
@@ -73,11 +72,6 @@ public class OrderService {
     private Menu findMenuById(Long id) {
         return menuRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.MENU_NOT_FOUND));
-    }
-
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.ORDER_TABLE_NOT_FOUND));
     }
 
     private Order findOrderById(Long orderId) {

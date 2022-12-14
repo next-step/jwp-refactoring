@@ -156,8 +156,8 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L, 주문_테이블_목록);
 
-        Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+        Order.of(주문_테이블1.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order.of(주문_테이블2.getId(), Arrays.asList(OrderLineItem.of(2L, 2)));
 
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
 
@@ -174,8 +174,8 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L, 주문_테이블_목록);
 
-        Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
+        Order 주문1 = Order.of(주문_테이블1.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문2 = Order.of(주문_테이블2.getId(), Arrays.asList(OrderLineItem.of(2L, 2)));
 
         주문1.changeOrderStatus(OrderStatus.MEAL);
         주문2.changeOrderStatus(OrderStatus.MEAL);

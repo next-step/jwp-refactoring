@@ -79,9 +79,9 @@ class OrderServiceTest {
 
         주문항목 = OrderLineItem.of(1L, 후라이드치킨.getId(), 2);
         List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
-        주문 = Order.of(1L, 주문_테이블, 주문항목_목록);
+        주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
 
-        계산완료_주문 = Order.of(2L, 주문_테이블, 주문항목_목록);
+        계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
         계산완료_주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         주문요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
