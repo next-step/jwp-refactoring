@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.common.exception.InvalidParameterException;
@@ -26,6 +27,10 @@ public class Quantity {
 
     public static Quantity from(long value) {
         return new Quantity(value);
+    }
+
+    public Price multiply(Price price) {
+        return price.multiply(BigDecimal.valueOf(value));
     }
 
     public long value() {

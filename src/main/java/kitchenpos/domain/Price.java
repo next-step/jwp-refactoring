@@ -42,6 +42,10 @@ public class Price {
         return new Price(value);
     }
 
+    public boolean isGreaterThan(Price totalPrice) {
+        return value.compareTo(totalPrice.value) > 0;
+    }
+
     public Price sum(Price price) {
         return Price.from(value.add(price.value));
     }
