@@ -82,7 +82,7 @@ public class TableGroupService {
         validateOrderStatus(orderTableIds);
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroup(null);
+            orderTable.unGroup();
             orderTableRepository.save(orderTable);
         }
     }

@@ -83,7 +83,7 @@ class OrderTableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        주문테이블1.changeTableGroup(null);
+        주문테이블1.unGroup();
         주문테이블1.changeEmpty(true);
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 

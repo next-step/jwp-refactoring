@@ -60,7 +60,7 @@ class TableGroupServiceTest {
     @Test
     void create() {
         // given
-        mapToEntityForNoGroup(단체1_요청.getOrderTables()).forEach(table -> table.changeTableGroup(null));
+        mapToEntityForNoGroup(단체1_요청.getOrderTables()).forEach(OrderTable::unGroup);
         mapToEntityForNoGroup(단체1_요청.getOrderTables()).forEach(table -> table.changeEmpty(true));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
         when(tableGroupRepository.save(any())).thenReturn(단체1);

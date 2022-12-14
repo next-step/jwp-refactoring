@@ -22,7 +22,7 @@ public class TableGroup {
         this.orderTables = orderTables;
         for (final OrderTable orderTable : orderTables) {
             orderTable.changeEmpty(false);
-            orderTable.changeTableGroup(this);
+            orderTable.group(this);
         }
     }
 

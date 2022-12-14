@@ -116,7 +116,7 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.of(null, 10, true);
 
         // when
-        orderTable.changeTableGroup(expectedTableGroup);
+        orderTable.group(expectedTableGroup);
 
         // then
         assertThat(orderTable.getTableGroup()).isEqualTo(expectedTableGroup);

@@ -86,7 +86,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
+    public void group(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -96,5 +96,9 @@ public class OrderTable {
 
     public void 주문(final Order order) {
         this.orders.add(order);
+    }
+
+    public void unGroup() {
+        tableGroup = null;
     }
 }
