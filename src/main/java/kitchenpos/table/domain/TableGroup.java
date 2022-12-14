@@ -26,10 +26,6 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public static TableGroup of() {
-        return new TableGroup();
-    }
-
     public TableGroup(List<OrderTable> orderTables) {
         validateTableGroup(orderTables);
 

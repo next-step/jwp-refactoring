@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -42,6 +43,9 @@ public class OrderTable {
     }
 
     public void ungroup() {
+        if (Objects.isNull(this.tableGroup)) {
+            throw new IllegalArgumentException("그룹 테이블이 존재하지 않습니다.");
+        }
         this.tableGroup = null;
     }
 

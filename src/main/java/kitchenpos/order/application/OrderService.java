@@ -2,115 +2,94 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
-    private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
+    private final OrderRepository orderRepository;
+
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final MenuRepository menuRepository,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableRepository orderTableRepository
-    ) {
+    public OrderService(MenuRepository menuRepository, OrderTableRepository orderTableRepository,
+                        OrderRepository orderRepository) {
         this.menuRepository = menuRepository;
-        this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest request) {
+    public OrderResponse create(OrderRequest request) {
+
+        validateRequest(request);
+
+        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 없습니다."));
+
+        Order saveOrder = new Order(orderTable);
+        addOrderLineItem(saveOrder, request.getOrderLineItems());
+
+        return OrderResponse.from(orderRepository.save(saveOrder));
+    }
+
+    private void validateRequest(OrderRequest request) {
         List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 항목이 없으면 주문할 수 없습니다.");
         }
 
-        final List<Long> menuIds = orderLineItems.stream()
+        List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 항목의 메뉴의 개수가 일치하지 않습니다.");
         }
-
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderDao.save(order);
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
-            savedOrderLineItems.add(orderLineItemDao.save(new OrderLineItem(orderId, orderLineItem.getMenuId(), orderLineItem.getQuantity())));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return OrderResponse.from(savedOrder);
     }
 
 
-
-    public List<OrderResponse> list() {
-        List<Order> orders = orderDao.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+    private void addOrderLineItem(Order saveOrder, List<OrderLineItemRequest> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 상품 내역이 없습니다.");
         }
 
-        return orders.stream()
+        for (OrderLineItemRequest orderLineItem : orderLineItems) {
+            Menu menu = menuRepository.findById(orderLineItem.getMenuId())
+                    .orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다."));
+
+            saveOrder.addOrderLineItem(menu, orderLineItem.getQuantity());
+        }
+    }
+
+    public List<OrderResponse> list() {
+        return orderRepository.findAll()
+                .stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(Long orderId, OrderRequest order) {
-        Order savedOrder = orderDao.findById(orderId)
+    public OrderResponse changeOrderStatus(Long orderId, OrderStatusRequest request) {
+        Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+        savedOrder.changeOrderStatus(request.getOrderStatus());
 
-        OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
-        orderDao.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return OrderResponse.from(savedOrder);
+        return OrderResponse.from(orderRepository.save(savedOrder));
     }
 }

@@ -1,8 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.fixture.OrderTableFixture;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -18,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +37,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -49,27 +47,29 @@ public class TableGroupServiceTest {
 
 
     private TableGroup 테이블그룹;
-    private TableGroupRequest 테이블그룹_요청;
     private OrderTable 주문테이블_4명;
     private OrderTable 주문테이블_6명;
 
+    private TableGroupRequest 테이블그룹_요청;
+
     @BeforeEach
     void set_up() {
-        주문테이블_4명 = OrderTableFixture.create(null, 34, true);
-        주문테이블_6명 = OrderTableFixture.create(null, 46, true);
-        테이블그룹 = TableGroup.of();
+        주문테이블_4명 = OrderTableFixture.create(34, true);
+        주문테이블_6명 = OrderTableFixture.create(46, true);
 
         OrderTableRequest 주문테이블_4명_요청 = new OrderTableRequest(1L, 6, true);
         OrderTableRequest 주문테이블_6명_요청 = new OrderTableRequest(2L, 8, true);
         List<OrderTableRequest> 주문테이블_요청들 = Arrays.asList(주문테이블_4명_요청, 주문테이블_6명_요청);
         테이블그룹_요청 = new TableGroupRequest(주문테이블_요청들);
-
     }
 
     @DisplayName("테이블 그룹을 등록할 수 있다.")
     @Test
     void create() {
         // given
+        OrderTable 주문테이블_8명 = OrderTableFixture.create(8, true);
+        OrderTable 주문테이블_10명 = OrderTableFixture.create(10, true);
+        테이블그룹 = new TableGroup(Arrays.asList(주문테이블_8명, 주문테이블_10명));
         when(orderTableRepository.findAllById(anyList())).thenReturn(Arrays.asList(주문테이블_4명, 주문테이블_6명));
         when(tableGroupRepository.save(any())).thenReturn(테이블그룹);
 
@@ -96,7 +96,7 @@ public class TableGroupServiceTest {
     @Test
     void create_error_using_table() {
         // given
-        OrderTable 주문테이블_그룹있음 = OrderTableFixture.create(null, 6, false);
+        OrderTable 주문테이블_그룹있음 = OrderTableFixture.create(6, false);
         when(orderTableRepository.findAllById(anyList())).thenReturn(Arrays.asList(주문테이블_4명, 주문테이블_그룹있음));
 
         // when && then
@@ -108,11 +108,11 @@ public class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        OrderTable 주문테이블_그룹있음 = OrderTableFixture.create(null, 99, true);
+
+        OrderTable 주문테이블_그룹있음 = OrderTableFixture.create(99, true);
         테이블그룹 = new TableGroup(Arrays.asList(주문테이블_4명, 주문테이블_6명, 주문테이블_그룹있음));
 
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(테이블그룹));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(false);
 
         // when
         tableGroupService.ungroup(테이블그룹.getId());
@@ -130,10 +130,7 @@ public class TableGroupServiceTest {
         // given
         테이블그룹 = new TableGroup(Arrays.asList(주문테이블_4명, 주문테이블_6명));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(테이블그룹));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(주문테이블_4명.getId(), 주문테이블_6명.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
-        )).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when && then
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블그룹.getId()))

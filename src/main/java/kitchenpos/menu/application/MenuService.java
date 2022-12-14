@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class MenuService {
+
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
@@ -27,7 +28,6 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(MenuRequest request) {
-
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         List<MenuProduct> menuProducts = productService.findMenuProducts(request.getMenuProducts());
 

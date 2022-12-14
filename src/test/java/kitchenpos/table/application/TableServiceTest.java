@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.fixture.OrderTableFixture;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -34,7 +34,7 @@ class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -45,9 +45,9 @@ class TableServiceTest {
 
     @BeforeEach
     void set_up() {
-        주문테이블_1번 = OrderTableFixture.create(null, 6, true);
+        주문테이블_1번 = OrderTableFixture.create(6, true);
         주문테이블_1번_요청 = new OrderTableRequest(1L, 6, true);
-        주문테이블_2번 = OrderTableFixture.create(null, 0, true);
+        주문테이블_2번 = OrderTableFixture.create(0, true);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -86,9 +86,9 @@ class TableServiceTest {
     @Test
     void update_table_empty() {
         // given
-        OrderTable 주문테이블_변경 = OrderTableFixture.create(null, 10, false);
+        OrderTable 주문테이블_변경 = OrderTableFixture.create(10, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문테이블_변경));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(주문테이블_변경);
 
         // when
@@ -108,14 +108,13 @@ class TableServiceTest {
     }
 
 
-
     @DisplayName("주문 테이블의 주문의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.")
     @Test
     void update_error_table_status() {
         // given
         when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(
-                주문테이블_1번.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(
+                주문테이블_1번, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).thenReturn(true);
 
         // when && then
