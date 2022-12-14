@@ -1,13 +1,11 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTables;
 
 @Entity
@@ -29,8 +27,7 @@ public class TableGroup {
         return new TableGroup(null);
     }
 
-    public void ungroup(List<Order> orders, OrderTables orderTables) {
-        orders.forEach(Order::validateIfNotCompletionOrder);
+    public void ungroup(OrderTables orderTables) {
         orderTables.ungroupOrderTables();
     }
 

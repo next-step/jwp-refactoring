@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -23,11 +24,16 @@ public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderValidator orderValidator;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(final OrderRepository orderRepository,
+                             final OrderTableRepository orderTableRepository,
+                             final TableGroupRepository tableGroupRepository,
+                             final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -47,7 +53,8 @@ public class TableGroupService {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         OrderTables orderTables = OrderTables.from(findAllOrderTableByTableGroupId(tableGroupId));
         List<Order> orders = findAllOrderByOrderTableIds(orderTables.findOrderTables());
-        tableGroup.ungroup(orders, orderTables);
+        orderValidator.validateIfNotCompletionOrders(orders);
+        tableGroup.ungroup(orderTables);
     }
 
     private List<OrderTable> findAllOrderTablesById(List<Long> ids) {

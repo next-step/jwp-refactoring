@@ -115,4 +115,12 @@ public class OrderValidatorTest {
         assertThatIllegalArgumentException().isThrownBy(() -> orderValidator.validator(orderRequest))
                 .withMessage(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage());
     }
+
+    @DisplayName("주문들 중 완료되지 않은 주문이 있으면 검증은 실패한다.")
+    @Test
+    void validateIfNotCompletionOrdersThrowErrorWhenOrderIsNotComplete() {
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderValidator.validateIfNotCompletionOrders(Arrays.asList(주문A, 주문B)))
+                .withMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
+    }
 }

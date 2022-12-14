@@ -30,6 +30,7 @@ import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -57,6 +58,9 @@ public class TableGroupServiceTest {
 
     @Mock
     private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -185,20 +189,5 @@ public class TableGroupServiceTest {
                 () -> assertThat(주문테이블A.findTableGroupId()).isNull(),
                 () -> assertThat(주문테이블B.findTableGroupId()).isNull()
         );
-    }
-
-    @DisplayName("단체 내 주문 테이블의 상태가 조리중이거나 식사중이면 단체 지정을 해제할 수 없다.")
-    @Test
-    void upGroupThrowErrorWhenOrderTableStatusIsCookingOrMeal() {
-        // given
-        TableGroup 단체 = generateTableGroup(1L, Arrays.asList(주문테이블A, 주문테이블B));
-        given(tableGroupRepository.findById(단체.getId())).willReturn(Optional.of(단체));
-        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문테이블A, 주문테이블B));
-        given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블A.getId(), 주문테이블B.getId()))).willReturn(singletonList(주문));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.ungroup(단체.getId()))
-                .withMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
     }
 }

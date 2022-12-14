@@ -28,6 +28,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -55,6 +56,9 @@ public class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -166,20 +170,6 @@ public class TableServiceTest {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeEmpty(orderTable.getId(), changeOrderTableRequest))
                 .withMessage(ErrorCode.단체_그룹_지정되어_있음.getErrorMessage());
-    }
-
-    @DisplayName("주문 테이블의 주문 상태가 조리중이거나 식사중이면 비어있는지 여부를 변경할 수 없다.")
-    @Test
-    void changeTableEmptyThrowErrorWhenOrderStatusIsCooking() {
-        // given
-        OrderTableRequest changeOrderTableRequest = generateOrderTableRequest(3, true);
-        given(orderTableRepository.findById(주문테이블A.getId())).willReturn(Optional.of(주문테이블A));
-        given(orderRepository.findAllByOrderTableId(주문테이블A.getId())).willReturn(singletonList(주문));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블A.getId(), changeOrderTableRequest))
-                .withMessage(ErrorCode.완료되지_않은_주문.getErrorMessage());
     }
 
     @ParameterizedTest(name = "주문 테이블에 방문한 손님 수를 변경한다. (변경된 손님 수: {0})")

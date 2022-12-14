@@ -103,7 +103,7 @@ public class OrderTableTest {
         OrderTable 주문테이블A = generateOrderTable(4, true);
 
         // when
-        주문테이블A.changeEmpty(false, emptyList());
+        주문테이블A.changeEmpty(false);
 
         // then
         assertThat(주문테이블A.isEmpty()).isFalse();
