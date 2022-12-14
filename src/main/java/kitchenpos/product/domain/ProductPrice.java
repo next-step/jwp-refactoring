@@ -1,9 +1,13 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.product.exception.ProductPriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+import static kitchenpos.product.exception.ProductPriceExceptionType.LESS_THEN_ZERO_PRICE;
 
 @Embeddable
 public class ProductPrice {
@@ -24,10 +28,10 @@ public class ProductPrice {
 
     private static void validatePrice(BigDecimal price) {
         if (Objects.isNull(price)) {
-            throw new IllegalArgumentException();
+            throw new NullPointerException();
         }
         if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new ProductPriceException(LESS_THEN_ZERO_PRICE);
         }
     }
 

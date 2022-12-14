@@ -4,6 +4,7 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.ProductPriceException;
 import kitchenpos.product.persistence.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public class ProductServiceTest {
     @Test
     public void throwsExceptionWhenNullPrice() {
         assertThatThrownBy(() -> productService.create(new ProductRequest()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("상품가격이 0보다 작은경우 예외발생")
@@ -46,7 +47,8 @@ public class ProductServiceTest {
         ProductRequest product = new ProductRequest("product", BigDecimal.valueOf(price));
 
         assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ProductPriceException.class)
+                .hasMessageContaining("가격은 0보다 작을수 없습니다");
     }
 
     @DisplayName("상품을 추가할 경우 추가된 상품정보를 반환")
