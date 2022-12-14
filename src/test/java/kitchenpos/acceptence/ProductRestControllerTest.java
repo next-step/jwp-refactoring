@@ -52,7 +52,7 @@ public class ProductRestControllerTest extends AcceptanceSupport {
 
     }
 
-    public ExtractableResponse<Response> 상품을_등록한다(Product product) {
+    public static ExtractableResponse<Response> 상품을_등록한다(Product product) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
