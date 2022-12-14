@@ -1,5 +1,7 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹2;
+
 import java.util.function.ToLongFunction;
 
 import org.junit.jupiter.api.DisplayName;
@@ -9,9 +11,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroup2;
 
 @DisplayName("메뉴 그룹 관리")
-class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup> {
+class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup2> {
 
 	static final String REQUEST_PATH = "/api/menu-groups";
 	static final String 메뉴명 = "푸드";
@@ -27,8 +30,15 @@ class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup> {
 	}
 
 	public MenuGroup 메뉴_그룹_등록되어_있음() {
-		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(메뉴_그룹());
-		return 등록됨(등록_요청_응답);
+		MenuGroup2 메뉴그룹 = 메뉴그룹2();
+		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(메뉴그룹);
+		MenuGroup2 menuGroup2 = 등록됨(등록_요청_응답);
+
+		MenuGroup menuGroup = new MenuGroup();
+		menuGroup.setName(menuGroup2.getName());
+		menuGroup.setId(menuGroup2.getId());
+
+		return menuGroup;
 	}
 
 	@Override
@@ -37,19 +47,14 @@ class MenuGroupAcceptanceTest extends AcceptanceTest<MenuGroup> {
 	}
 
 	@Override
-	protected ToLongFunction<MenuGroup> idExtractor() {
-		return MenuGroup::getId;
+	protected ToLongFunction<MenuGroup2> idExtractor() {
+		return MenuGroup2::getId;
 	}
 
 	@Override
-	protected Class<MenuGroup> getDomainClass() {
-		return MenuGroup.class;
+	protected Class<MenuGroup2> getDomainClass() {
+		return MenuGroup2.class;
 	}
 
-	public static MenuGroup 메뉴_그룹() {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName(메뉴명);
-		return menuGroup;
-	}
 
 }

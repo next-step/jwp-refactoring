@@ -33,7 +33,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품목록 등록")
     void testCreateProduct() {
-        Product product = new Product("스파게티", Money.wons(100));
+        Product product = new Product("스파게티", Money.valueOf(100));
 
         when(productRepository.save(any()))
                 .thenReturn(product);

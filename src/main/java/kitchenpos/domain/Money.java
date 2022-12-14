@@ -12,7 +12,7 @@ import kitchenpos.exception.InvalidMoneyValueException;
 @Embeddable
 public class Money {
 
-	public static final Money ZERO = Money.wons(0);
+	public static final Money ZERO = Money.valueOf(0);
 	private static final int SCALE = 0;
 
 	private BigDecimal value;
@@ -24,13 +24,13 @@ public class Money {
 		this.value = value;
 	}
 
-	public static Money wons(BigDecimal value) {
+	public static Money valueOf(BigDecimal value) {
 		validate(value);
 		return new Money(value.setScale(SCALE, RoundingMode.FLOOR));
 	}
 
-	public static Money wons(int value) {
-		return wons(BigDecimal.valueOf(value));
+	public static Money valueOf(int value) {
+		return valueOf(BigDecimal.valueOf(value));
 	}
 
 	private static void validate(BigDecimal value) {
@@ -40,7 +40,7 @@ public class Money {
 	}
 
 	public boolean isEqualTo(int other) {
-		Money otherMoney = wons(other);
+		Money otherMoney = valueOf(other);
 		return value.compareTo(otherMoney.value) == 0;
 	}
 
@@ -53,7 +53,7 @@ public class Money {
 	}
 
 	private Money add(BigDecimal other) {
-		return Money.wons(value.add(other));
+		return Money.valueOf(value.add(other));
 	}
 
 	public BigDecimal multiply(BigDecimal other) {

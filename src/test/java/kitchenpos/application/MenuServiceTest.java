@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.MenuGroupServiceTest.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -54,7 +54,7 @@ class MenuServiceTest {
 		menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productService);
 
 		products = ProductFixture.상품목록(3);
-		menuGroup = createMenuGroup();
+		menuGroup = 메뉴그룹();
 		menu = createMenu(products, menuGroup);
 	}
 

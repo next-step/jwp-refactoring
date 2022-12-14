@@ -16,14 +16,14 @@ class MoneyTest {
 	@ParameterizedTest
 	@ValueSource(ints ={-1, -100, Integer.MIN_VALUE})
 	void testValidate(int price) {
-		assertThatThrownBy(() ->Money.wons(price))
+		assertThatThrownBy(() ->Money.valueOf(price))
 			.isInstanceOf(InvalidMoneyValueException.class);
 	}
 
 	@DisplayName("금액은 null일 수 없다")
 	@Test
 	void testValidateNotNull() {
-		assertThatThrownBy(() ->Money.wons(null))
+		assertThatThrownBy(() ->Money.valueOf(null))
 			.isInstanceOf(InvalidMoneyValueException.class);
 	}
 
@@ -31,7 +31,7 @@ class MoneyTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, Integer.MAX_VALUE})
 	void testValueOf(int price) {
-		assertThat(Money.wons(price).isEqualTo(price))
+		assertThat(Money.valueOf(price).isEqualTo(price))
 			.isTrue();
 	}
 
