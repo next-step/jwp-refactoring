@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -109,9 +110,10 @@ class MenuServiceTest {
         Menu 치킨_피자_더블세트_메뉴 = new Menu(1L, "치킨_피자_더블세트_메뉴", new BigDecimal(50_000), 양식, Arrays.asList(치킨_두마리, 스파게티_이인분));
         given(menuRepository.findAll()).willReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴, 치킨_피자_더블세트_메뉴));
 
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         assertThat(menus).hasSize(2);
-        assertThat(menus).contains(치킨_스파게티_더블세트_메뉴, 치킨_피자_더블세트_메뉴);
+        assertThat(menus.stream().map(MenuResponse::getId))
+                .contains(치킨_스파게티_더블세트_메뉴.getId(), 치킨_피자_더블세트_메뉴.getId());
     }
 }

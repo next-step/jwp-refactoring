@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,9 +93,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_목록_응답됨(ExtractableResponse<Response> response, List<Long> menuIds) {
-        List<Long> ids = response.jsonPath().getList(".", Menu.class)
+        List<Long> ids = response.jsonPath().getList(".", MenuResponse.class)
                         .stream()
-                        .map(Menu::getId)
+                        .map(MenuResponse::getId)
                         .collect(Collectors.toList());
 
         assertAll(

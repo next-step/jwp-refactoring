@@ -64,14 +64,6 @@ public class OrderService {
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
-
-//        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-//        for (final OrderLineItem orderLineItem : orderLineItems) {
-//            orderLineItem.setOrder(savedOrder);
-//            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-//        }
-//        savedOrder.setOrderLineItems(savedOrderLineItems);
-
         return savedOrder;
     }
 
