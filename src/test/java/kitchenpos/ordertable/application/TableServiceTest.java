@@ -43,8 +43,8 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstTable = new OrderTable(1L, null, 0, true);
-        secondTable = new OrderTable(2L, null, 0, true);
+        firstTable = new OrderTable(1L, 0, true);
+        secondTable = new OrderTable(2L, 0, true);
         개발자_단체 = new TableGroup(1L, null, Arrays.asList(firstTable, secondTable));
     }
 
@@ -56,7 +56,7 @@ public class TableServiceTest {
 
         assertAll(
                 () -> assertThat(savedOrderTable.getId()).isNotNull(),
-                () -> assertThat(savedOrderTable.getTableGroupId()).isNull(),
+                () -> assertThat(savedOrderTable.getTableGroup()).isNull(),
                 () -> assertThat(savedOrderTable.isEmpty()).isTrue(),
                 () -> assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(0)
         );
@@ -74,7 +74,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블_이용_여부를_변경할_수_있다() {
-        OrderTable expected = new OrderTable(1L, null, 0, false);
+        OrderTable expected = new OrderTable(1L, 0, false);
         given(orderTableRepository.findById(expected.getId())).willReturn(Optional.of(firstTable));
         given(orderTableRepository.save(firstTable)).willReturn(firstTable);
 
@@ -85,7 +85,7 @@ public class TableServiceTest {
 
     @Test
     void 단체_테이블에_지정되어_있으면_주문_테이블을_변경할_수_없다() {
-        firstTable.setTableGroupId(개발자_단체.getId());
+        firstTable.setTableGroup(개발자_단체);
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
 
         assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), new OrderTable()))
@@ -104,7 +104,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블의_손님_수를_변경할_수_있다() {
-        OrderTable expected = new OrderTable(1L, null, 5, false);
+        OrderTable expected = new OrderTable(1L, 5, false);
         firstTable.setEmpty(false);
         given(orderTableRepository.findById(expected.getId())).willReturn(Optional.of(firstTable));
         given(orderTableRepository.save(firstTable)).willReturn(firstTable);
@@ -116,7 +116,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블의_손님_수를_음수로_변경할_수_없다() {
-        OrderTable expected = new OrderTable(1L, null, -1, false);
+        OrderTable expected = new OrderTable(1L, -1, false);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(expected.getId(), expected))
                 .isInstanceOf(IllegalArgumentException.class);

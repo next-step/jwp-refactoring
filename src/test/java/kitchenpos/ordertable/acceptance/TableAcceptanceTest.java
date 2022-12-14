@@ -27,8 +27,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = new OrderTable(null, null, 4,  false);
-        주문테이블_B = new OrderTable(null, null, 4,  false);
+        주문테이블_A = new OrderTable(null, 4,  false);
+        주문테이블_B = new OrderTable(null, 4,  false);
     }
 
     @Test
@@ -60,7 +60,6 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
                 주문테이블_A.getId(),
-                주문테이블_A.getTableGroupId(),
                 주문테이블_A.getNumberOfGuests(),
                 expectEmpty
         );
@@ -79,7 +78,6 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
                 주문테이블_A.getId(),
-                주문테이블_A.getTableGroupId(),
                 expectedNumberOfGuest,
                 주문테이블_A.isEmpty()
         );
