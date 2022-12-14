@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.ExceptionMessage;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,5 +61,12 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public void checkCookingOrMeal() {
+        if(orderStatus.equals(OrderStatus.COOKING.name()) ||
+                orderStatus.equals(OrderStatus.MEAL.name())) {
+            throw new IllegalArgumentException(ExceptionMessage.COOKING_OR_MEAL.getMessage());
+        }
     }
 }

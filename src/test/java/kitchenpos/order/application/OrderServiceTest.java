@@ -2,12 +2,13 @@ package kitchenpos.order.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +39,7 @@ public class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -49,13 +50,13 @@ public class OrderServiceTest {
         //given
         OrderLineItem 주문항목1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem 주문항목2 = new OrderLineItem(2L, 1L, 2L, 1);
-        OrderTable 주문테이블 = new OrderTable(1L, 1L, 4, false);
+        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
         when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
                 .thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(주문테이블));
+        when(orderTableRepository.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(주문테이블));
         when(orderDao.save(주문)).thenReturn(주문);
         for(final OrderLineItem orderLineItem : 주문.getOrderLineItems()) {
             when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
@@ -110,7 +111,7 @@ public class OrderServiceTest {
 
         when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
                 .thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(null));
+        when(orderTableRepository.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(null));
 
         //when
         //then
@@ -123,13 +124,13 @@ public class OrderServiceTest {
         //given
         OrderLineItem 주문항목1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem 주문항목2 = new OrderLineItem(2L, 1L, 2L, 1);
-        OrderTable 주문테이블 = new OrderTable(1L, 1L, 0, true);
+        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(0), true);
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
         when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
                 .thenReturn(주문.getOrderLineItems().size());
-        when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(주문테이블));
+        when(orderTableRepository.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(주문테이블));
 
         //when
         //then
@@ -165,7 +166,7 @@ public class OrderServiceTest {
         //given
         OrderLineItem 주문항목1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem 주문항목2 = new OrderLineItem(2L, 1L, 2L, 1);
-        OrderTable 주문테이블 = new OrderTable(1L, 1L, 4, false);
+        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
@@ -186,7 +187,7 @@ public class OrderServiceTest {
         //given
         OrderLineItem 주문항목1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem 주문항목2 = new OrderLineItem(2L, 1L, 2L, 1);
-        OrderTable 주문테이블 = new OrderTable(1L, 1L, 4, false);
+        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
@@ -204,7 +205,7 @@ public class OrderServiceTest {
         //given
         OrderLineItem 주문항목1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem 주문항목2 = new OrderLineItem(2L, 1L, 2L, 1);
-        OrderTable 주문테이블 = new OrderTable(1L, 1L, 4, false);
+        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
