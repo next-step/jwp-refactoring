@@ -85,12 +85,7 @@ class TableRestControllerTest extends AcceptanceSupport {
     }
 
     public static ExtractableResponse<Response> 주문테이블을_생성한다(OrderTable orderTable) {
-        return RestAssured
-                .given().log()
-                .all().contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().post("/api/tables")
-                .then().log().all().extract();
+        return RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(orderTable).when().post("/api/tables").then().log().all().extract();
     }
 
     private ExtractableResponse<Response> 주문테이블_리스트를_조회해온다() {
