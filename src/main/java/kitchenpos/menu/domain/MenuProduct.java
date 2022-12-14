@@ -61,10 +61,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
     public void setMenu(final Menu menu) {
         this.menu = menu;
     }
