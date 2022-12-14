@@ -58,9 +58,8 @@ public class TableServiceTest {
         );
 
         assertAll(
-                () -> assertThat(savedOrderTable.getId()).isNotNull(),
-                () -> assertThat(savedOrderTable.getTableGroup()).isNull(),
-                () -> assertThat(savedOrderTable.isEmpty()).isTrue()
+                () -> assertThat(savedOrderTable.getId()).isEqualTo(firstTable.getId()),
+                () -> assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(firstTable.getNumberOfGuests())
         );
     }
 

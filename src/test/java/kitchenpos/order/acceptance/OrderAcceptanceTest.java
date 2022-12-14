@@ -11,6 +11,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,9 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,9 +49,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        순살치킨 = 상품_생성_요청(new Product(null, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
-        후라이드치킨 = 상품_생성_요청(new Product(null, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
-        치킨 = 메뉴그룹_생성_요청(new MenuGroup(null, "치킨")).as(MenuGroup.class);
+        순살치킨 = 상품_생성_요청(new Product(1L, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
+        후라이드치킨 = 상품_생성_요청(new Product(2L, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
+        치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
         순살치킨상품 = MenuProductRequest.of(순살치킨.getId(), 1L);
         후라이드치킨상품 = MenuProductRequest.of(후라이드치킨.getId(), 1L);
         두마리치킨세트_응답 = 메뉴_생성_요청(MenuRequest.of(
@@ -60,13 +64,14 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
         두마리치킨세트주문 = new OrderLineItem(null, 두마리치킨세트_응답.getId(), 1);
-        주문 = new Order(null, 주문테이블, null, null, Arrays.asList(두마리치킨세트주문));
+        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(두마리치킨세트주문));
     }
 
     @Test
     void 주문을_등록할_수_있다() {
         // when
-        ExtractableResponse<Response> response = 주문_생성_요청(주문);
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(두마리치킨세트주문));
+        ExtractableResponse<Response> response = 주문_생성_요청(request);
 
         // then
         주문_생성됨(response);
@@ -75,41 +80,37 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 주문_목록을_조회할_수_있다() {
         // given
-        주문 = 주문_생성_요청(주문).as(Order.class);
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(두마리치킨세트주문));
+        OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
         // then
-        주문_목록_응답됨(response, Arrays.asList(주문.getId()));
+        주문_목록_응답됨(response, Arrays.asList(생성된_주문.getId()));
     }
 
     @Test
     void 주문_상태를_수정할_수_있다() {
         // given
         OrderStatus expectedOrderStatus = OrderStatus.MEAL;
-        주문 = 주문_생성_요청(주문).as(Order.class);
-        Order 업데이트된_주문 = new Order(
-                주문.getId(),
-                주문.getOrderTable(),
-                expectedOrderStatus,
-                주문.getOrderedTime(),
-                주문.getOrderLineItems()
-        );
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(두마리치킨세트주문));
+        OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
+        UpdateOrderStatusRequest updateRequest = UpdateOrderStatusRequest.of(OrderStatus.MEAL.name());
 
         // when
-        ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), 업데이트된_주문);
+        ExtractableResponse<Response> response = 주문_상태_수정_요청(생성된_주문.getId(), updateRequest);
 
         // then
-        주문_상태_수정됨(response, expectedOrderStatus);
+        주문_상태_수정됨(response, expectedOrderStatus.name());
 
     }
 
-    private ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    private ExtractableResponse<Response> 주문_생성_요청(OrderRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(request)
                 .when().post("/api/orders")
                 .then().log().all()
                 .extract();
@@ -123,11 +124,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, Order order) {
+    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, UpdateOrderStatusRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(request)
                 .when().put("/api/orders/{id}/order-status", id)
                 .then().log().all()
                 .extract();
@@ -138,9 +139,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_목록_응답됨(ExtractableResponse<Response> response, List<Long> orderIds) {
-        List<Long> ids = response.jsonPath().getList(".", Order.class)
+        List<Long> ids = response.jsonPath().getList(".", OrderResponse.class)
                         .stream()
-                        .map(Order::getId)
+                        .map(OrderResponse::getId)
                         .collect(Collectors.toList());
 
         assertAll(
@@ -149,7 +150,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 주문_상태_수정됨(ExtractableResponse<Response> response, OrderStatus expect) {
+    private void 주문_상태_수정됨(ExtractableResponse<Response> response, String expect) {
         String result = response.jsonPath().getString("orderStatus");
 
         assertAll(

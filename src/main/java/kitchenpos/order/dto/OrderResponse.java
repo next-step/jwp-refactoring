@@ -1,10 +1,9 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderResponse {
     private Long id;
@@ -30,7 +29,7 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse from(Order order) {
         return new OrderResponse(
                 order.getId(),
                 order.getOrderTable().getId(),
