@@ -25,12 +25,15 @@ import static kitchenpos.order.acceptance.TableAcceptanceTest.주문_테이블_�
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("주문 관련 기능 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     private MenuGroupResponse 양식;
     private MenuResponse 양식_세트;
     private OrderTableResponse 빈_주문테이블;
     private OrderTableResponse 비어있지_않은_주문테이블;
+
+    private Long notExistOrderTableId = -1L;
 
     @BeforeEach
     public void setUp() {
@@ -52,7 +55,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void createOrderWithNullOrderTable() {
         // when
         ExtractableResponse<Response> response =
-                주문_생성(-1L,
+                주문_생성(notExistOrderTableId,
                         Arrays.asList(new OrderLineItemRequest(양식_세트.getId(), 1L)));
 
         // then
@@ -68,8 +71,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void createOrderWithNullMenu() {
         // when
         ExtractableResponse<Response> response =
-                주문_생성(-1L,
-                        Arrays.asList(new OrderLineItemRequest(-1L, 1L)));
+                주문_생성(notExistOrderTableId,
+                        Arrays.asList(new OrderLineItemRequest(notExistOrderTableId, 1L)));
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -143,7 +146,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusWithNullOrder() {
         // when
-        ExtractableResponse<Response> response = 주문_상태_변경(-1L, OrderStatusRequest.of(OrderStatus.MEAL));
+        ExtractableResponse<Response> response = 주문_상태_변경(notExistOrderTableId, OrderStatusRequest.of(OrderStatus.MEAL));
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());

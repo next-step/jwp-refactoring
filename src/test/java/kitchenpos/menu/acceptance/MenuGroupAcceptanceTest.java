@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("메뉴 그룹 관련 기능 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     /**

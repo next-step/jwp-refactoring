@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,15 +22,16 @@ public class TableGroup {
     }
 
     private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        validateOrderTablesForTableGroup(orderTables);
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = OrderTables.of(orderTables);
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
+    private void validateOrderTablesForTableGroup(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public static TableGroup of(Long id, LocalDateTime createdDate, OrderTable... orderTables) {
@@ -39,12 +42,12 @@ public class TableGroup {
         return new TableGroup(id, createdDate, Collections.emptyList());
     }
 
-    public static TableGroup of(OrderTables orderTables) {
-        return new TableGroup(null, LocalDateTime.now(), orderTables);
-    }
-
     public static TableGroup of() {
         return new TableGroup(null, LocalDateTime.now(), new ArrayList<>());
+    }
+
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(null, LocalDateTime.now(), orderTables);
     }
 
     public Long getId() {
@@ -71,6 +74,5 @@ public class TableGroup {
 
     public void group() {
         this.orderTables.group(this);
-
     }
 }

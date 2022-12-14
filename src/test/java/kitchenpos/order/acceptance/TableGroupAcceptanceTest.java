@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTableResponse 비어있지_않은_주문_테이블1;
-    private OrderTableResponse 비어있지_않은_주문_테이블2;
     private OrderTableResponse 빈_주문_테이블1;
     private OrderTableResponse 빈_주문_테이블2;
 
@@ -39,7 +38,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         비어있지_않은_주문_테이블1 = 주문_테이블_생성(2, false).as(OrderTableResponse.class);
-        비어있지_않은_주문_테이블2 = 주문_테이블_생성(2, false).as(OrderTableResponse.class);
         빈_주문_테이블1 = 주문_테이블_생성(0, true).as(OrderTableResponse.class);
         빈_주문_테이블2 = 주문_테이블_생성(0, true).as(OrderTableResponse.class);
     }

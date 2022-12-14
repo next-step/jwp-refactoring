@@ -30,7 +30,7 @@ public class TableGroupService {
                 tableGroupRequest.getOrderTableIds());
 
         tableGroupRequest.throwIfOrderTableSizeWrong(savedOrderTables.size());
-        TableGroup tableGroup = TableGroup.of(OrderTables.toBeGrouped(savedOrderTables));
+        TableGroup tableGroup = TableGroup.of(savedOrderTables);
         tableGroup.group();
 
         TableGroup saved = tableGroupRepository.save(tableGroup);

@@ -20,19 +20,6 @@ public class OrderTables {
         this.orderTables = new ArrayList<>(orderTables);
     }
 
-    public static OrderTables toBeGrouped(List<OrderTable> savedOrderTables) {
-        long countOfOrderTableCanBeAddedToTableGroup = savedOrderTables.stream()
-                .filter(OrderTable::canBeAddedToTableGroup)
-                .count();
-
-        if (savedOrderTables.size() != countOfOrderTableCanBeAddedToTableGroup) {
-            throw new IllegalArgumentException();
-        }
-
-
-        return new OrderTables(savedOrderTables);
-    }
-
     public static OrderTables of(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables)) {
             return new OrderTables(new ArrayList<>());
@@ -64,9 +51,20 @@ public class OrderTables {
     }
 
     public void group(TableGroup tableGroup) {
+        validate();
         this.orderTables.forEach(savedOrderTable -> {
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.updateEmpty(false);
             savedOrderTable.assignTableGroup(tableGroup);
         });
+    }
+
+    private void validate() {
+        long countOfOrderTableCanBeAddedToTableGroup = orderTables.stream()
+                .filter(OrderTable::canBeAddedToTableGroup)
+                .count();
+
+        if (orderTables.size() != countOfOrderTableCanBeAddedToTableGroup) {
+            throw new IllegalArgumentException();
+        }
     }
 }

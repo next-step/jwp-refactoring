@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.order.applicaiton.TableGroupService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ public class TableGroupServiceTest {
     private TableGroup tableGroup;
     private OrderTable notEmptyOrderTable1;
     private OrderTable notEmptyOrderTable2;
+    private TableGroupRequest request;
 
     @BeforeEach
     void setUp() {
@@ -46,26 +48,20 @@ public class TableGroupServiceTest {
         notEmptyOrderTable2 = OrderTable.of(4L, null, 4, false);
 
         tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTable1, orderTable2);
+
+        request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
     }
 
     @Test
     @DisplayName("단체 지정 생성 시 주문 테이블이 비었을 경우 Exception")
     public void throwExceptionOrderTableIsEmpty() {
-        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(1L, 2L));
 
         assertThatThrownBy(() -> tableGroupService.create(request)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("단체 지정 생성 시 주문 테이블이 2개 미만일 경우 Exception")
-    public void throwExceptionNumberOfOrderTableIsLessThanTwo() {
-        assertThatThrownBy(() -> TableGroupRequest.of(Arrays.asList(1L))).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("단체 지정 생성 시 주문 테이블 수와 저장된 단체 지정의 주문 테이블 수가 다를 경우 Exception")
     public void throwExceptionWhenOrderTableDataIntegrityIsViolated() {
-        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(1L, 2L));
 
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1));
 
@@ -75,7 +71,7 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 생성 시 주문 테이블이 비어있지 않으면 Exception")
     public void throwExceptionWhenOrderTableIsNotEmpty() {
-        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(3L, 4L));
+        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(notEmptyOrderTable1.getId(), notEmptyOrderTable2.getId()));
 
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(notEmptyOrderTable1, notEmptyOrderTable2));
 
@@ -85,10 +81,8 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 생성 시 이미 단체 지정된 테이블은 단체로 지정 불가")
     public void canNotCreateTableGroupWhenOrderTableIsAlreadyGrouped() {
-        OrderTable orderTable1 = OrderTable.of(1L, null, 4, false);
-        OrderTable orderTable2 = OrderTable.of(2L, null, 4, false);
-        TableGroup.of(2L, LocalDateTime.now(), orderTable1, orderTable2);
-        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(1L, 2L));
+        TableGroup tableGroup = TableGroup.of(2L, LocalDateTime.now(), orderTable1, orderTable2);
+        tableGroup.group();
 
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
 
@@ -98,7 +92,6 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 생성")
     public void createTableGroup() {
-        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(1L, 2L));
 
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);

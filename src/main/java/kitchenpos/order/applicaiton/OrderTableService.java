@@ -43,7 +43,7 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderEmpty orderEmptyRequeset) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         validateOrderTable(savedOrderTable);
-        savedOrderTable.setEmpty(orderEmptyRequeset.isEmpty());
+        savedOrderTable.updateEmpty(orderEmptyRequeset.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }
 
