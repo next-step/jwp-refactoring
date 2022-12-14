@@ -7,6 +7,7 @@ import static kitchenpos.menu.domain.MenuTestFixture.generateMenuRequest;
 import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,9 @@ public class MenuValidatorTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
+
+    @Mock
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuValidator menuValidator;
@@ -77,5 +82,20 @@ public class MenuValidatorTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuValidator.validate(menuRequest))
                 .withMessage(ErrorCode.존재하지_않는_메뉴_그룹.getErrorMessage());
+    }
+
+    @DisplayName("메뉴 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성할 수 없다.")
+    @Test
+    void validateMenuRequestThrowErrorWhenMenuPriceIsHigherThanMenuProductsPrice() {
+        // given
+        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(9500L), 햄버거세트.getId(), 불고기버거상품요청);
+        given(menuGroupRepository.findById(햄버거세트.getId())).willReturn(Optional.of(햄버거세트));
+        given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
+        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
+        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> menuValidator.validate(menuRequest))
+                .withMessage(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
     }
 }

@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 
@@ -30,14 +29,12 @@ public class Menu {
 
     protected Menu() {}
 
-    private Menu(Long id, String name, BigDecimal bigDecimalPrice, Long menuGroupId,
+    protected Menu(Long id, String name, BigDecimal bigDecimalPrice, Long menuGroupId,
                  MenuProducts menuProducts) {
-        Price price = Price.from(bigDecimalPrice);
-        validateMenuProducts(price, menuProducts);
         menuProducts.setUpMenu(this);
         this.id = id;
         this.name = Name.from(name);
-        this.price = price;
+        this.price = Price.from(bigDecimalPrice);
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
@@ -50,12 +47,6 @@ public class Menu {
     public static Menu of(String name, BigDecimal price, Long menuGroupId,
                           MenuProducts menuProducts) {
         return new Menu(null, name, price, menuGroupId, menuProducts);
-    }
-
-    private void validateMenuProducts(Price price, MenuProducts menuProducts) {
-        if(price.compareTo(menuProducts.totalPrice()) > 0) {
-            throw new IllegalArgumentException(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
-        }
     }
 
     public Long getId() {

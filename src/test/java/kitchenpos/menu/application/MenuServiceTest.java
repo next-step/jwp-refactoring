@@ -166,21 +166,6 @@ public class MenuServiceTest {
                 .withMessage(ErrorCode.존재하지_않는_상품.getErrorMessage());
     }
 
-    @DisplayName("메뉴의 가격은 해당 메뉴에 존재하는 메뉴 상품들의 가격의 합보다 클 수 없다.")
-    @Test
-    void createMenuThrowErrorWhenMenuPriceIsBiggerThanMenuProductsPriceSum() {
-        // given
-        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(9500L), 햄버거세트.getId(), 불고기버거상품요청);
-        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
-        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
-        given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(menuRequest))
-                .withMessage(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
-    }
-
     @DisplayName("메뉴 전체 목록을 조회한다.")
     @Test
     void findAllMenus() {
