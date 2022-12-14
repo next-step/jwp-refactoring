@@ -53,7 +53,7 @@ public class OrderService {
     }
 
     private void validateOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
-        if (Objects.isNull(orderLineItems)) {
+        if (Objects.isNull(orderLineItems) || orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("요청정보에 주문정보가 존재하지 않습니다.");
         }
 
