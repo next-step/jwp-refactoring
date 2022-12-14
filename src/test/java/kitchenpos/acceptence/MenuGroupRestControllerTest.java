@@ -43,14 +43,14 @@ class MenuGroupRestControllerTest extends AcceptanceSupport {
     @DisplayName("메뉴 그륩 리스트를 불러온다")
     void getMenuGroupList() {
         // when
-        MenuGroup 메뉴A = 메뉴그룹을_생성한다(크리스마스메뉴).as(MenuGroup.class);
-        MenuGroup 메뉴B = 메뉴그룹을_생성한다(겨울메뉴).as(MenuGroup.class);
+        크리스마스메뉴 = 메뉴그룹을_생성한다(크리스마스메뉴).as(MenuGroup.class);
+        겨울메뉴 = 메뉴그룹을_생성한다(겨울메뉴).as(MenuGroup.class);
 
         ExtractableResponse<Response> response = 메뉴그룹_리스트를_조회해온다();
 
         // then
         상태값을_비교한다(response.statusCode(), HttpStatus.OK);
-        메뉴그륩_리스트를_비교한다(response, Arrays.asList(메뉴A.getId(), 메뉴B.getId()));
+        메뉴그륩_리스트를_비교한다(response, Arrays.asList(크리스마스메뉴.getId(), 겨울메뉴.getId()));
     }
 
     public static ExtractableResponse<Response> 메뉴그룹을_생성한다(MenuGroup menuGroup) {

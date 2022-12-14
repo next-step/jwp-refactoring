@@ -30,8 +30,6 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable secondTable;
-
     @Test
     @DisplayName("주문 테이블 등록 할 수 있다.")
     void createTable() {
