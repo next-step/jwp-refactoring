@@ -25,10 +25,14 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, long quantity, Product product, Menu menu) {
+    public MenuProduct(Long seq, long quantity, Product product) {
         this.seq = seq;
         this.quantity = quantity;
-        this.menu = menu;
+        this.product = product;
+    }
+
+    public MenuProduct(long quantity, Product product) {
+        this.quantity = quantity;
         this.product = product;
     }
 
@@ -54,6 +58,10 @@ public class MenuProduct {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     public void setMenu(final Menu menu) {
