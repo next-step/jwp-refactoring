@@ -24,10 +24,10 @@ public class ProductTest extends JpaEntityTest {
         final Product product = new Product("후라이드", new BigDecimal(10_000));
 
         // when
-        productRepository.save(product);
+        final Product savedProduct = productRepository.save(product);
 
         // then
-        assertThat(product).isNotNull();
+        assertThat(savedProduct).isNotNull();
     }
 
     @DisplayName("상품 생성 테스트")
