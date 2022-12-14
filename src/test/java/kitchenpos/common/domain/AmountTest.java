@@ -39,7 +39,7 @@ class AmountTest {
     @DisplayName("금액(10)은 금액(1)보다 크다.")
     @Test
     void isLessThan() {
-        assertThat(ten.isGatherThan(one)).isTrue();
+        assertThat(ten.isGreaterThan(one)).isTrue();
     }
 
     @DisplayName("Amount(10)과 Amount(10)은 동등하다.")

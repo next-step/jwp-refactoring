@@ -42,7 +42,7 @@ public class Menu {
 
     private void validateAmount(List<MenuProduct> menuProducts) {
         Amount amount = calculateAmount(menuProducts);
-        if (price.toAmount().isGatherThan(amount)) {
+        if (price.toAmount().isGreaterThan(amount)) {
             throw new IllegalArgumentException("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
         }
     }

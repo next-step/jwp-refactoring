@@ -27,7 +27,7 @@ public class Amount implements Comparable<Amount> {
         return new Amount(this.amount.add(amount.amount));
     }
 
-    public boolean isGatherThan(Amount other) {
+    public boolean isGreaterThan(Amount other) {
         return this.compareTo(other) > 0;
     }
 
