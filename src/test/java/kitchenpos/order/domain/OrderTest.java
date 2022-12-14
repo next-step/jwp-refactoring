@@ -35,25 +35,11 @@ class OrderTest {
         뿌링클_세트_주문메뉴 = OrderMenu.of(뿌링클_세트);
     }
 
-    @DisplayName("등록되지 않은 주문 테이블로 주문을 생성할 수 없다.")
-    @Test
-    void 등록되지않은_주문_테이블_주문_생성() {
-        assertThatThrownBy(() -> new Order(null, OrderStatus.COOKING)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("빈 주문 테이블로 주문을 생성할 수 없다.")
-    @Test
-    void 빈_주문_테이블_주문_생성() {
-        OrderTable 빈_주문_테이블 = new OrderTable(0, true);
-
-        assertThatThrownBy(() -> new Order(빈_주문_테이블, OrderStatus.COOKING)).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 상품을 추가한다.")
     @Test
     void 주문_상품_추가() {
-        Order 주문 = new Order(주문테이블, OrderStatus.COOKING);
-        OrderLineItem 뿌링클_세트_주문 = new OrderLineItem(주문, 뿌링클_세트_주문메뉴, 1L);
+        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
+        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
 
         주문.order(Collections.singletonList(뿌링클_세트_주문));
 
@@ -63,8 +49,8 @@ class OrderTest {
     @DisplayName("이미 포함된 주문 상품은 추가되지 않는다.")
     @Test
     void 기주문한_주문_상품_추가() {
-        Order 주문 = new Order(주문테이블, OrderStatus.COOKING);
-        OrderLineItem 뿌링클_세트_주문 = new OrderLineItem(주문, 뿌링클_세트_주문메뉴, 1L);
+        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
+        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
 
         주문.order(Collections.singletonList(뿌링클_세트_주문));
         주문.order(Collections.singletonList(뿌링클_세트_주문));
@@ -76,15 +62,19 @@ class OrderTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중_식사중_주문_확인(OrderStatus orderStatus) {
-        Order 주문 = new Order(주문테이블, orderStatus);
+        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
+        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
+        주문.changeOrderStatus(orderStatus);
 
         assertThatThrownBy(주문::checkOngoingOrderTable).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("완료된 주문인지 확인한다.")
+    @DisplayName("완료된 주문은 상태를 변경할 수 없다.")
     @Test
-    void 완료_주문_확인() {
-        Order 주문 = new Order(주문테이블, OrderStatus.COMPLETION);
+    void 완료된_주문_상태_변경() {
+        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
+        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL)).isInstanceOf(IllegalArgumentException.class);
     }

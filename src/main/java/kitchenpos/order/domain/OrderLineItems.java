@@ -16,6 +16,14 @@ public class OrderLineItems {
 
     }
 
+    private OrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+        return new OrderLineItems(orderLineItems);
+    }
+
     public void addOrderLineItem(Order order, OrderLineItem orderLineItem) {
         if (!hasOrderLineItem(orderLineItem)) {
             orderLineItems.add(orderLineItem);

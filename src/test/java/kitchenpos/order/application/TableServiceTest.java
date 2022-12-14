@@ -86,10 +86,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블 빈자리 여부를 변경한다.")
     @Test
     void 주문테이블_빈자리_여부_변경() {
+        Order 완료된_주문 = Order.of(주문테이블1.getId(), null);
+        완료된_주문.changeOrderStatus(OrderStatus.COMPLETION);
         // given
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .thenReturn(Collections.singletonList(new Order(주문테이블1, OrderStatus.COMPLETION)));
+                .thenReturn(Collections.singletonList(완료된_주문));
         when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문테이블1);
 
         OrderTableRequest request = new OrderTableRequest(0, true);
@@ -129,10 +131,12 @@ class TableServiceTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중_식사중인_주문테이블_빈자리_여부_변경(OrderStatus orderStatus) {
+        Order 주문 = Order.of(주문테이블1.getId(), null);
+        주문.changeOrderStatus(orderStatus);
         // given
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .thenReturn(Collections.singletonList(new Order(주문테이블1, orderStatus)));
+                .thenReturn(Collections.singletonList(주문));
 
         assertThatThrownBy(() ->
             tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))

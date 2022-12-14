@@ -20,16 +20,6 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<OrderMenu> menus) {
-        Order order = new Order(orderTable, orderStatus);
-        List<OrderLineItem> items = orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
-                .collect(toList());
-        order.order(items);
-
-        return order;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
     }

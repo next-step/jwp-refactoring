@@ -24,7 +24,7 @@ class OrderLineItemsTest {
         Product 뿌링클 = new Product("뿌링클", BigDecimal.valueOf(18000));
         Product 치즈볼 = new Product("치즈볼", BigDecimal.valueOf(4000));
         OrderTable 주문테이블 = new OrderTable(1, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
+        주문 = Order.of(주문테이블.getId(), null);
 
         뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
                 new MenuProduct(뿌링클_세트, 치즈볼, 2L)));

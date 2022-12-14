@@ -48,7 +48,6 @@ class OrderTableTest {
     @Test
     void 빈_테이블_변경() {
         OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, OrderStatus.COMPLETION);
 
         주문_테이블.changeEmpty(true);
 

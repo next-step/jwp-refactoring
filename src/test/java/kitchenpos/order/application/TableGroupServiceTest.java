@@ -136,7 +136,7 @@ class TableGroupServiceTest {
         when(tableGroupRepository.findById(단체_테이블.getId())).thenReturn(Optional.of(단체_테이블));
         when(orderTableRepository.findAllByTableGroupId(any(Long.class))).thenReturn(주문_테이블_목록.getOrderTables());
         when(orderRepository.findAllByOrderTableIdIn(주문_테이블_목록.getOrderTableIds()))
-                .thenReturn(Arrays.asList(new Order(주문테이블1, OrderStatus.COMPLETION), new Order(주문테이블2, OrderStatus.COMPLETION)));
+                .thenReturn(Arrays.asList(Order.of(주문테이블1.getId(), null), Order.of(주문테이블2.getId(), null)));
 
         tableGroupService.ungroup(단체_테이블.getId());
 
@@ -156,10 +156,14 @@ class TableGroupServiceTest {
     @DisplayName("조리중이거나 식사중인 테이블은 단체 지정을 해제할 수 없다.")
     @Test
     void 조리중_식사중인_테이블_단체_지정_해제() {
+        Order 주문1 = Order.of(주문테이블1.getId(), null);
+        Order 주문2 = Order.of(주문테이블2.getId(), null);
+        주문1.changeOrderStatus(OrderStatus.COOKING);
+        주문2.changeOrderStatus(OrderStatus.MEAL);
         when(tableGroupRepository.findById(any(Long.class))).thenReturn(Optional.of(단체_테이블));
         when(orderTableRepository.findAllByTableGroupId(any(Long.class))).thenReturn(주문_테이블_목록.getOrderTables());
         when(orderRepository.findAllByOrderTableIdIn(주문_테이블_목록.getOrderTableIds()))
-                .thenReturn(Arrays.asList(new Order(주문테이블1, OrderStatus.COMPLETION), new Order(주문테이블2, OrderStatus.MEAL)));
+                .thenReturn(Arrays.asList(주문1, 주문2));
 
         assertThatThrownBy(
                 () -> tableGroupService.ungroup(단체_테이블.getId())

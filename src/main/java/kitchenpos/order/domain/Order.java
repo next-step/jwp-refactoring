@@ -17,8 +17,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -26,26 +25,22 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private final OrderLineItems orderLineItems = new OrderLineItems();
+    private OrderLineItems orderLineItems;
 
     protected Order() {
 
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        validate(orderTable);
-
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
+    private Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = orderLineItems;
     }
 
-    private void validate(OrderTable orderTable) {
-        if (Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(OrderTableError.NOT_FOUND);
-        }
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(OrderTableError.CANNOT_EMPTY);
-        }
+    public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(null, orderTableId, orderLineItems);
     }
 
     public void order(List<OrderLineItem> orderLineItems) {
@@ -78,8 +73,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -92,9 +87,5 @@ public class Order {
 
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public Long getOrderTableId() {
-        return orderTable.getId();
     }
 }

@@ -51,25 +51,26 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         주문테이블 = new OrderTable(2, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
 
         MenuGroup 뼈치킨 = new MenuGroup("뼈치킨");
         뿌링클_세트1 = new Menu("뼈치킨 세트1", BigDecimal.valueOf(43000), 뼈치킨);
         뿌링클_세트2 = new Menu("뼈치킨 세트2", BigDecimal.valueOf(50000), 뼈치킨);
 
         ReflectionTestUtils.setField(주문테이블, "id", 1L);
-        ReflectionTestUtils.setField(주문, "id", 1L);
         ReflectionTestUtils.setField(뼈치킨, "id", 1L);
         ReflectionTestUtils.setField(뿌링클_세트1, "id", 1L);
         ReflectionTestUtils.setField(뿌링클_세트2, "id", 2L);
 
         OrderMenu 뿌링클_세트1_주문메뉴 = OrderMenu.of(뿌링클_세트1);
         OrderMenu 뿌링클_세트2_주문메뉴 = OrderMenu.of(뿌링클_세트2);
-        주문_메뉴1 = new OrderLineItem(주문, 뿌링클_세트1_주문메뉴, 1L);
-        주문_메뉴2 = new OrderLineItem(주문, 뿌링클_세트2_주문메뉴, 1L);
+        주문_메뉴1 = OrderLineItem.of(뿌링클_세트1_주문메뉴, 1L);
+        주문_메뉴2 = OrderLineItem.of(뿌링클_세트2_주문메뉴, 1L);
+        ReflectionTestUtils.setField(주문_메뉴1, "seq", 1L);
+        ReflectionTestUtils.setField(주문_메뉴2, "seq", 2L);
 
         List<OrderLineItem> 주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
-        주문.order(주문_메뉴_목록);
+        주문 = Order.of(주문테이블.getId(), OrderLineItems.of(주문_메뉴_목록));
+        ReflectionTestUtils.setField(주문, "id", 1L);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -149,7 +150,6 @@ class OrderServiceTest {
     @Test
     void 주문_상태_변경() {
         when(orderRepository.findById(주문.getId())).thenReturn(Optional.of(주문));
-        when(orderRepository.save(주문)).thenReturn(주문);
 
         orderService.changeOrderStatus(주문.getId(), OrderStatus.COMPLETION);
 

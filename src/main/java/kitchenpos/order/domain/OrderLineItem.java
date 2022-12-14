@@ -46,6 +46,17 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    private OrderLineItem(Long seq, Order order, OrderMenu menu, long quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(OrderMenu menu, long quantity) {
+        return new OrderLineItem(null, null, menu, quantity);
+    }
+
     public void updateOrder(Order order) {
         this.order = order;
     }

@@ -27,9 +27,8 @@ public class OrderLineItemRequest {
                 .collect(toList());
     }
 
-    public OrderLineItem toOrderLineItem(Order order, List<OrderMenu> menus) {
-        OrderMenu target = menus.stream().filter(menu -> menu.getId().equals(menuId)).findFirst().get();
-        return new OrderLineItem(order, target, quantity);
+    public OrderLineItem toOrderLineItem(OrderMenu menu) {
+        return OrderLineItem.of(menu, quantity);
     }
 
     public Long getMenuId() {
