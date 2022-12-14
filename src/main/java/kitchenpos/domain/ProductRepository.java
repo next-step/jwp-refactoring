@@ -2,5 +2,5 @@ package kitchenpos.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends JpaRepository<Product2, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 }

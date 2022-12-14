@@ -12,8 +12,8 @@ import kitchenpos.exception.InvalidMoneyValueException;
 @Embeddable
 public class Money {
 
+	public static final Money ZERO = Money.valueOf(0);
 	private static final int SCALE = 0;
-	private static final RoundingMode ROUNDING_MODE = RoundingMode.FLOOR;
 
 	private BigDecimal value;
 
@@ -26,7 +26,7 @@ public class Money {
 
 	public static Money valueOf(BigDecimal value) {
 		validate(value);
-		return new Money(value.setScale(SCALE, ROUNDING_MODE));
+		return new Money(value.setScale(SCALE, RoundingMode.FLOOR));
 	}
 
 	public static Money valueOf(int value) {
@@ -44,6 +44,26 @@ public class Money {
 		return value.compareTo(otherMoney.value) == 0;
 	}
 
+	public BigInteger toBigInteger() {
+		return value.toBigInteger();
+	}
+
+	public Money add(Money money) {
+		return add(money.value);
+	}
+
+	private Money add(BigDecimal other) {
+		return Money.valueOf(value.add(other));
+	}
+
+	public BigDecimal multiply(BigDecimal other) {
+		return value.multiply(other);
+	}
+
+	public BigDecimal toBigDecimal() {
+		return value;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -59,9 +79,5 @@ public class Money {
 	@Override
 	public int hashCode() {
 		return Objects.hash(value);
-	}
-
-	public BigInteger toBigInteger() {
-		return value.toBigInteger();
 	}
 }

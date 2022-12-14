@@ -1,33 +1,58 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "product")
 public class Product {
-    private Long id;
-    private String name;
-    private BigDecimal price;
 
-    public Long getId() {
-        return id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "price"))
+    private Money price;
+
+    protected Product() {
     }
 
-    public void setId(final Long id) {
+    public Product(Long id, String name, Money price) {
         this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public Product(Long id, String name, int price) {
+        this(id, name, Money.valueOf(price));
+    }
+
+    public Product(String name, Money price) {
+        this(null, name, price);
+    }
+
+	public Product(String name, int price) {
+        this(name, Money.valueOf(price));
+	}
+
+	public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
+    public Money getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 }

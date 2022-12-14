@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품;
+import static kitchenpos.fixture.ProductFixture.상품;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ class MenuAcceptanceTest extends AcceptanceTest<Menu> {
 	/**
 	 * Feature: 메뉴 관리 기능
 	 * Background
-	 *   When 상품 등록을 요청하면
-	 *   Then 상품 등록에 성공한다
+	 *   When 상품목록 등록을 요청하면
+	 *   Then 상품목록 등록에 성공한다
 	 */
 	@BeforeEach
 	void setup() {

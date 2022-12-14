@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴;
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴가격;
 import static kitchenpos.acceptance.OrderTableAcceptanceTest.주문_테이블;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품;
+import static kitchenpos.fixture.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;

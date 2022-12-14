@@ -21,14 +21,14 @@ public class ObjectMapperConfig {
 	public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
 		return Jackson2ObjectMapperBuilder.json()
 				.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-				.modules(getMoneyModule());
+				.modules(getModule());
 	}
 
-	private List<Module> getMoneyModule() {
-		return Arrays.asList(new JavaTimeModule(), getMoneySerializerModule());
+	private List<Module> getModule() {
+		return Arrays.asList(new JavaTimeModule(), getMoneyModule());
 	}
 
-	private static SimpleModule getMoneySerializerModule() {
+	private static SimpleModule getMoneyModule() {
 		SimpleModule module = new SimpleModule();
 		module.addSerializer(Money.class, new MoneySerializer());
 		return module;

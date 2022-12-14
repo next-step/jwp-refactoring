@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import static kitchenpos.application.MenuGroupServiceTest.createMenuGroup;
-import static kitchenpos.application.ProductServiceTest.createProducts;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -11,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
@@ -19,18 +17,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.fixture.ProductFixture;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -42,18 +41,19 @@ class MenuServiceTest {
 	@Mock
 	MenuProductDao menuProductDao;
 	@Mock
-	ProductDao productDao;
+	ProductService productService;
 
-	@InjectMocks
 	MenuService menuService;
 
-	private Menu menu;
-	private MenuGroup menuGroup;
-	private List<Product> products;
+	Menu menu;
+	MenuGroup menuGroup;
+	List<Product> products;
 
 	@BeforeEach
 	void setUp() {
-		products = createProducts(1000, 2000, 3000);
+		menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productService);
+
+		products = ProductFixture.상품목록(3);
 		menuGroup = createMenuGroup();
 		menu = createMenu(products, menuGroup);
 	}
@@ -63,7 +63,8 @@ class MenuServiceTest {
 	void testCreateMenu() {
 		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
 		products.forEach(
-			product -> when(productDao.findById(product.getId())).thenReturn(Optional.of(product))
+			product -> when(productService.findById(product.getId()))
+				.thenReturn(product)
 		);
 		when(menuDao.save(menu)).thenReturn(menu);
 		menu.getMenuProducts().forEach(
@@ -93,12 +94,12 @@ class MenuServiceTest {
 	}
 
 	@Test
-	@DisplayName("메뉴의 가격이 상품 가격 합보다 클 경우 등록 실패")
+	@DisplayName("메뉴의 가격이 상품목록 가격 합보다 클 경우 등록 실패")
 	void testCreateMenuWhenMenuPriceGreaterThanSumOfProductsPrice() {
 		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
 		products.forEach(
-			product -> when(productDao.findById(product.getId()))
-				.thenReturn(Optional.of(product)));
+			product -> when(productService.findById(product.getId()))
+				.thenReturn(product));
 		menu.setPrice(menu.getPrice().add(BigDecimal.ONE));
 
 		assertThatThrownBy(() -> menuService.create(menu))
@@ -109,10 +110,10 @@ class MenuServiceTest {
 	@DisplayName("상품이 존재하지 않을경우 등록실패")
 	void testCreateMenuWhenProductNotExists() {
 		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-		when(productDao.findById(anyLong())).thenReturn(Optional.empty());
+		when(productService.findById(anyLong())).thenThrow(EntityNotFoundException.class);
 
 		assertThatThrownBy(() -> menuService.create(menu))
-			.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(EntityNotFoundException.class);
 	}
 
 	@Test
@@ -135,10 +136,10 @@ class MenuServiceTest {
 
 		menu.setId(1L);
 		menu.setName("식빵");
-		BigDecimal price = products.stream()
+		Money price = products.stream()
 			.map(Product::getPrice)
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-		menu.setPrice(price);
+			.reduce(Money.ZERO, Money::add);
+		menu.setPrice(price.toBigDecimal());
 		menu.setMenuProducts(createMenuProducts(products));
 		menu.setMenuGroupId(menuGroup.getId());
 

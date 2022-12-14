@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
-import java.math.BigDecimal;
+import static kitchenpos.fixture.ProductFixture.상품;
+
 import java.util.List;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
 
-@DisplayName("상품 관리")
+@DisplayName("상품목록 관리")
 class ProductAcceptanceTest extends AcceptanceTest<Product> {
 
 	static final String REQUEST_PATH = "/api/products";
@@ -24,7 +25,7 @@ class ProductAcceptanceTest extends AcceptanceTest<Product> {
 	Long 상품_아이디;
 
 	/**
-	 * Feature: 상품 관리 기능
+	 * Feature: 상품목록 관리 기능
 	 * Background
 	 *   When 가격이 0원 이상인 상품을 등록을 요청하면
 	 *   Then 상품이 등록에 성공한다
@@ -38,9 +39,9 @@ class ProductAcceptanceTest extends AcceptanceTest<Product> {
 	}
 
 	/**
-	 * Scenario: 상품 관리
-	 * When 상품 목록을 조회하면
-	 * Then 상품 목록이 조회된다.
+	 * Scenario: 상품목록 관리
+	 * When 상품목록 목록을 조회하면
+	 * Then 상품목록 목록이 조회된다.
 	 */
 	@Test
 	void 상품_관리() {
@@ -49,25 +50,17 @@ class ProductAcceptanceTest extends AcceptanceTest<Product> {
 	}
 
 	/**
-	 * Scenario: 상품 등록 실패
+	 * Scenario: 상품목록 등록 실패
 	 * When 가격이 0원 미만인 상품을 등록 요청하면
-	 * Then 상품 등록에 실패한다
+	 * Then 상품목록 등록에 실패한다
 	 */
 	@Test
 	void 상품_등록_실패() {
-		int 상품가격 = -1;
-		Product 상품 = 상품(상품명, 상품가격);
+		Product 상품 = 상품(상품명, null);
 
 		ExtractableResponse<Response> 등록_요청_응답 = 등록_요청(상품);
 
 		등록_실패함(등록_요청_응답);
-	}
-
-	public static Product 상품(String name, int price) {
-		Product product = new Product();
-		product.setName(name);
-		product.setPrice(BigDecimal.valueOf(price));
-		return product;
 	}
 
 	public List<Product> 상품_등록되어_있음(List<Product> 상품_목록) {

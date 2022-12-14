@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product2;
+import kitchenpos.domain.Product;
 
 @RestController
 public class ProductRestController {
@@ -21,14 +21,14 @@ public class ProductRestController {
     }
 
     @PostMapping("/api/products")
-    public ResponseEntity<Product2> create(@RequestBody final Product2 product) {
-        final Product2 created = productService.create(product);
+    public ResponseEntity<Product> create(@RequestBody final Product product) {
+        final Product created = productService.create(product);
         final URI uri = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/products")
-    public ResponseEntity<List<Product2>> list() {
+    public ResponseEntity<List<Product>> list() {
         return ResponseEntity.ok().body(productService.list());
     }
 }
