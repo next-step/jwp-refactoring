@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -44,7 +43,7 @@ public class MenuRestControllerTest extends ControllerTest {
     @Test
     public void returnMenu() throws Exception {
         Menu menu = Menu.builder().menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
-        MenuResponse menuResponse =  MenuResponse.of(Menu.builder()
+        MenuResponse menuResponse = MenuResponse.of(Menu.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
                 .menuGroup(MenuGroup.builder().build())
@@ -54,8 +53,8 @@ public class MenuRestControllerTest extends ControllerTest {
         doReturn(menuResponse).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                .content(mapper.writeValueAsString(menu))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(menu))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(menuResponse.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(menuResponse.getName())))
                 .andExpect(jsonPath("$.price", is(menuResponse.getPrice().intValue())))
@@ -69,8 +68,8 @@ public class MenuRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                .content(mapper.writeValueAsString(menu))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(menu))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

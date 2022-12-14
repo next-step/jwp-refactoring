@@ -7,7 +7,8 @@ public class OrderTableRequest {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTableRequest() {}
+    public OrderTableRequest() {
+    }
 
     public OrderTable toOrderTable() {
         return OrderTable.builder()

@@ -17,7 +17,8 @@ public class MenuProduct {
     @Column
     private long quantity;
 
-    protected MenuProduct(){}
+    protected MenuProduct() {
+    }
 
     private MenuProduct(MenuProductBuilder builder) {
         this.seq = builder.seq;
@@ -43,7 +44,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        if(Objects.isNull(product)){
+        if (Objects.isNull(product)) {
             return null;
         }
         return product.getId();
@@ -53,7 +54,7 @@ public class MenuProduct {
         return quantity;
     }
 
-    public static MenuProductBuilder builder(){
+    public static MenuProductBuilder builder() {
         return new MenuProductBuilder();
     }
 

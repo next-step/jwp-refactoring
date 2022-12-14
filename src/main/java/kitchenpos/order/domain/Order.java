@@ -20,9 +20,10 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected Order(){}
+    protected Order() {
+    }
 
-    private Order(OrderBuilder builder){
+    private Order(OrderBuilder builder) {
         validateOrderTable(builder.orderTable);
         this.id = builder.id;
         this.orderTable = builder.orderTable;
@@ -30,8 +31,8 @@ public class Order extends BaseEntity {
         this.orderLineItems = builder.orderLineItems;
     }
 
-    private void validateOrderTable(OrderTable orderTable){
-        if(Objects.isNull(orderTable) || orderTable.isEmpty()) {
+    private void validateOrderTable(OrderTable orderTable) {
+        if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
@@ -44,7 +45,7 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTable(){
+    public OrderTable getOrderTable() {
         return orderTable;
     }
 
@@ -64,12 +65,12 @@ public class Order extends BaseEntity {
     }
 
     public void validateComplete() {
-        if(orderStatus.equals(OrderStatus.MEAL) || orderStatus.equals(OrderStatus.COOKING)){
+        if (orderStatus.equals(OrderStatus.MEAL) || orderStatus.equals(OrderStatus.COOKING)) {
             throw new IllegalArgumentException();
         }
     }
 
-    public static OrderBuilder builder(){
+    public static OrderBuilder builder() {
         return new OrderBuilder();
     }
 
@@ -99,7 +100,7 @@ public class Order extends BaseEntity {
             return this;
         }
 
-        public Order build(){
+        public Order build() {
             return new Order(this);
         }
     }

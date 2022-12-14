@@ -43,8 +43,8 @@ public class ProductRestControllerTest extends ControllerTest {
         doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                .content(mapper.writeValueAsString(new ProductRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(product.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(product.getName())))
                 .andExpect(jsonPath("$.price", is(product.getPrice().intValue())))
@@ -57,8 +57,8 @@ public class ProductRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                .content(mapper.writeValueAsString(new ProductRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

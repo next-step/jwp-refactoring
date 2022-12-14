@@ -17,7 +17,8 @@ public class OrderLineItem {
     @Column
     private long quantity;
 
-    protected OrderLineItem(){}
+    protected OrderLineItem() {
+    }
 
     private OrderLineItem(OrderLineItemBuilder builder) {
         this.seq = builder.seq;
@@ -76,7 +77,7 @@ public class OrderLineItem {
             return this;
         }
 
-        public OrderLineItem build(){
+        public OrderLineItem build() {
             return new OrderLineItem(this);
         }
     }

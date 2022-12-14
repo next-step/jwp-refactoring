@@ -15,11 +15,11 @@ public class MenuProducts {
     protected MenuProducts() {
     }
 
-    protected MenuProducts(List<MenuProduct> menuProducts){
+    protected MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuProducts of(List<MenuProduct> menuProducts){
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
 
@@ -27,7 +27,7 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public BigDecimal getSumOfMenuPrice(){
+    public BigDecimal getSumOfMenuPrice() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));

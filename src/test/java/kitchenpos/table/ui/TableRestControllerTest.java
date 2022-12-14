@@ -43,8 +43,8 @@ public class TableRestControllerTest extends ControllerTest {
         doReturn(orderTable).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                .content(mapper.writeValueAsString(new OrderTableRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(orderTable.getId().intValue())))
                 .andExpect(jsonPath("$.tableGroupId", is(orderTable.getTableGroupId().intValue())))
                 .andExpect(jsonPath("$.numberOfGuests", is(orderTable.getNumberOfGuests())))
@@ -58,8 +58,8 @@ public class TableRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                .content(mapper.writeValueAsString(new OrderTableRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

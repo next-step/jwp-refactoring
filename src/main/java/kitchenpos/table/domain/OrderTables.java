@@ -30,18 +30,18 @@ public class OrderTables {
         orderTables.stream().forEach(orderTable -> this.orderTables.add(orderTable));
     }
 
-    private void validateTables(List<OrderTable> orderTables){
+    private void validateTables(List<OrderTable> orderTables) {
         validateTableSize(orderTables);
         validateTableStatus(orderTables);
     }
 
-    private void validateTableSize(List<OrderTable> orderTables){
+    private void validateTableSize(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void validateTableStatus(List<OrderTable> orderTables){
+    private void validateTableStatus(List<OrderTable> orderTables) {
         boolean isUse = orderTables.stream().anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId()));
         if (isUse) {
             throw new IllegalArgumentException();

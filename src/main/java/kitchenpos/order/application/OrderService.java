@@ -3,22 +3,17 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.order.persistence.OrderLineItemRepository;
-import kitchenpos.table.persistence.OrderTableRepository;
+import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.persistence.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,9 +44,9 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    private List<Menu> findAllMenuByIds(List<Long> menuIds){
+    private List<Menu> findAllMenuByIds(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
-        if(menuIds.size() != menus.size()) {
+        if (menuIds.size() != menus.size()) {
             throw new IllegalArgumentException();
         }
         return menus;

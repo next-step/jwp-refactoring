@@ -1,7 +1,5 @@
 package kitchenpos.menu.application;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -13,7 +11,6 @@ import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.persistence.ProductRepository;
 import net.jqwik.api.Arbitraries;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,7 +63,7 @@ public class MenuServiceTest {
                 .build();
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
         doReturn(Arrays.asList(Product.builder()
-                        .id(1l)
+                .id(1l)
                 .build())).when(productRepository).findAllById(anyList());
         doReturn(menu).when(menuRepository).save(any(Menu.class));
 

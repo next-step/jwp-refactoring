@@ -12,9 +12,10 @@ public class MenuGroup {
     private Long id;
     private String name;
 
-    protected MenuGroup(){}
+    protected MenuGroup() {
+    }
 
-    private MenuGroup(MenuGroupBuilder builder){
+    private MenuGroup(MenuGroupBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
     }
@@ -27,17 +28,17 @@ public class MenuGroup {
         private Long id;
         private String name;
 
-        public MenuGroupBuilder id(Long id){
+        public MenuGroupBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public MenuGroupBuilder name(String name){
+        public MenuGroupBuilder name(String name) {
             this.name = name;
             return this;
         }
 
-        public MenuGroup build(){
+        public MenuGroup build() {
             return new MenuGroup(this);
         }
     }

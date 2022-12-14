@@ -7,7 +7,6 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.ui.TableGroupRestController;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,8 +44,8 @@ public class TableGroupRestControllerTest extends ControllerTest {
         doReturn(tableGroup).when(tableGroupService).create(any(TableGroupRequest.class));
 
         webMvc.perform(post("/api/table-groups")
-                .content(mapper.writeValueAsString(new TableGroup()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(TableGroup.builder().build()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(tableGroup.getId().intValue())))
                 .andExpect(status().isCreated());
     }
@@ -57,8 +56,8 @@ public class TableGroupRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(tableGroupService).create(any(TableGroupRequest.class));
 
         webMvc.perform(post("/api/table-groups")
-                .content(mapper.writeValueAsString(new TableGroup()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(TableGroup.builder().build()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 

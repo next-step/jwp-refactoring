@@ -6,9 +6,10 @@ public class MenuGroupRequest {
 
     private String name;
 
-    public MenuGroupRequest(){}
+    public MenuGroupRequest() {
+    }
 
-    public MenuGroupRequest(String name){
+    public MenuGroupRequest(String name) {
         this.name = name;
     }
 
@@ -16,7 +17,7 @@ public class MenuGroupRequest {
         return name;
     }
 
-    public MenuGroup toMenuGroup(){
+    public MenuGroup toMenuGroup() {
         return MenuGroup.builder()
                 .name(name)
                 .build();

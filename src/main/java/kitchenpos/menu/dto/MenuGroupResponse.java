@@ -7,7 +7,8 @@ public class MenuGroupResponse {
     private String name;
     private Long id;
 
-    public MenuGroupResponse(){}
+    public MenuGroupResponse() {
+    }
 
     private MenuGroupResponse(final Long id, final String name) {
         this.id = id;

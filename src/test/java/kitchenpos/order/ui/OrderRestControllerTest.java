@@ -56,8 +56,8 @@ public class OrderRestControllerTest extends ControllerTest {
                 .build())).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
-                .content(mapper.writeValueAsString(orderRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(orderRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is((int) orderId)))
                 .andExpect(jsonPath("$.orderLineItems", hasSize(1)))
                 .andExpect(status().isCreated());
@@ -69,8 +69,8 @@ public class OrderRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
-                .content(mapper.writeValueAsString(new OrderRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new OrderRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
