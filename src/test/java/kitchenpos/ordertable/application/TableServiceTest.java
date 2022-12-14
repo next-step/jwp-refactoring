@@ -90,7 +90,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
-        List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(firstTable.getId(), orderStatus)).willReturn(true);
 

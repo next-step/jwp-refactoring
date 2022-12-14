@@ -60,7 +60,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
         두마리치킨세트주문 = new OrderLineItem(null, 두마리치킨세트.getId(), 1);
-        주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(두마리치킨세트주문));
+        주문 = new Order(null, 주문테이블, null, null, Arrays.asList(두마리치킨세트주문));
     }
 
     @Test
@@ -87,11 +87,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 주문_상태를_수정할_수_있다() {
         // given
-        String expectedOrderStatus = OrderStatus.MEAL.name();
+        OrderStatus expectedOrderStatus = OrderStatus.MEAL;
         주문 = 주문_생성_요청(주문).as(Order.class);
         Order 업데이트된_주문 = new Order(
                 주문.getId(),
-                주문.getOrderTableId(),
+                주문.getOrderTable(),
                 expectedOrderStatus,
                 주문.getOrderedTime(),
                 주문.getOrderLineItems()
@@ -149,7 +149,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 주문_상태_수정됨(ExtractableResponse<Response> response, String expect) {
+    private void 주문_상태_수정됨(ExtractableResponse<Response> response, OrderStatus expect) {
         String result = response.jsonPath().getString("orderStatus");
 
         assertAll(

@@ -120,7 +120,7 @@ public class TableGroupServiceTest {
 
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_그룹을_해제할_수_없다() {
-        List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), orderStatus)).willReturn(true);
 
