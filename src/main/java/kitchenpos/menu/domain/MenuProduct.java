@@ -16,7 +16,7 @@ import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
-    public static final String ERROR_MESSAGE_MENU_PRODUCT_PRODUCT_IS_NULL = "상품은 필수입니다.";
+    private static final String ERROR_MESSAGE_MENU_PRODUCT_PRODUCT_IS_NULL = "상품은 필수입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

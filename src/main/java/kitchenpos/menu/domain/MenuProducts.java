@@ -13,7 +13,8 @@ import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class MenuProducts {
-    public static final String ERROR_MESSAGE_MENU_PRODUCTS_IS_EMPTY = "메뉴 상품 목록은 필수입니다.";
+    private static final String ERROR_MESSAGE_MENU_PRODUCTS_IS_EMPTY = "메뉴 상품 목록은 필수입니다.";
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private List<MenuProduct> products = new ArrayList<>();
 
