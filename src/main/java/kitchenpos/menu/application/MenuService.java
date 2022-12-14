@@ -41,9 +41,8 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+        menuGroupRepository.findById(menu.getMenuGroupId())
+                .orElseThrow(IllegalArgumentException::new);
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
 
@@ -60,12 +59,7 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(menu);
 
-        final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
-        }
         savedMenu.setMenuProducts(savedMenuProducts);
 
         return savedMenu;
@@ -73,11 +67,6 @@ public class MenuService {
 
     public List<Menu> list() {
         final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
-
         return menus;
     }
 }
