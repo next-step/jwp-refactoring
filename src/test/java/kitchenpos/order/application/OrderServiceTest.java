@@ -155,18 +155,29 @@ public class OrderServiceTest {
 
     @Test
     void 등록되지_않은_주문_상태를_변경할_수_없다() {
-        given(orderRepository.findById(주문.getId())).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), new Order()))
+        Order 변경할_주문 = new Order(
+                주문.getId(),
+                주문.getOrderTableId(),
+                OrderStatus.MEAL.name(),
+                주문.getOrderedTime(),
+                주문.getOrderLineItems()
+        );
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 변경할_주문))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 계산_완료된_주문은_상태를_변경할_수_없다() {
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), new Order()))
+        Order 변경할_주문 = new Order(
+                주문.getId(),
+                주문.getOrderTableId(),
+                OrderStatus.MEAL.name(),
+                주문.getOrderedTime(),
+                주문.getOrderLineItems()
+        );
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 변경할_주문))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

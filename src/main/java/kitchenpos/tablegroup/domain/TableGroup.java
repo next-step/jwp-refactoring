@@ -18,7 +18,7 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
     private List<OrderTable> orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {

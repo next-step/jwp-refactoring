@@ -19,7 +19,7 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {

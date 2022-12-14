@@ -19,7 +19,7 @@ public class OrderLineItem {
     private Order order;
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     public OrderLineItem(Long seq, Long menuId, long quantity) {

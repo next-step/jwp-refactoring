@@ -22,7 +22,7 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Long seq, long quantity, Product product, Menu menu) {

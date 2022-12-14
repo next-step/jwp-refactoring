@@ -84,7 +84,7 @@ public class TableServiceTest {
         firstTable.setTableGroup(개발자_단체);
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), firstTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,7 +94,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(firstTable.getId(), orderStatus)).willReturn(true);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), firstTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,7 +123,7 @@ public class TableServiceTest {
         firstTable.setEmpty(true);
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(firstTable.getId(), new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(firstTable.getId(), firstTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
