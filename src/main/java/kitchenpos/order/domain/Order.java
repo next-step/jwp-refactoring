@@ -20,8 +20,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+    @Enumerated
+    private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;

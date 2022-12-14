@@ -115,3 +115,5 @@
 * [x] 도메인을 Entity화
 * [x] Service에서 DAO대신 Repository로 사용으로 변경
 * [x] 종속성 관계 추가
+* [x] OrderStatus enum 추가
+* [ ] 코드 리팩토링

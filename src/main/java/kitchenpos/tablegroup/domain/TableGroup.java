@@ -9,11 +9,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import kitchenpos.ordertable.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
+
 @Entity
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreatedDate
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
     private List<OrderTable> orderTables;
