@@ -12,7 +12,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 
 @Entity
-@Table(name = "TABLE_GROUP")
+@Table(name = "table_group")
 public class TableGroup {
 
     @Id

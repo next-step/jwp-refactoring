@@ -63,10 +63,10 @@ public class MenuGroupServiceTest {
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(식사, 요리, 안주));
 
         // when
-        List<MenuGroupResponse> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> 메뉴그룹_목록 = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).hasSize(3);
-        assertThat(menuGroups).containsAll(MenuGroupResponseTest.메뉴그룹_응답_객체들_생성(식사, 요리, 안주));
+        assertThat(메뉴그룹_목록).hasSize(3);
+        assertThat(메뉴그룹_목록).containsAll(MenuGroupResponseTest.메뉴그룹_응답_객체들_생성(식사, 요리, 안주));
     }
 }

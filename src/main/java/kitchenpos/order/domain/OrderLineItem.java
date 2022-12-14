@@ -13,7 +13,7 @@ import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 
 @Entity
-@Table(name = "ORDER_LINE_ITEM")
+@Table(name = "order_line_item")
 public class OrderLineItem {
 
     @Id

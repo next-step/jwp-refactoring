@@ -78,13 +78,13 @@ public class MenuServiceTest {
         when(productRepository.findById(any())).thenReturn(Optional.of(소머리국밥));
         when(menuRepository.save(any(Menu.class))).thenReturn(소머리국밥_메뉴);
         MenuProductRequest productRequest = 메뉴상품_요청_객체_생성(소머리국밥.getId(), 1L);
-        MenuRequest menuRequest = 메뉴_요청_객체_생성(소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue(), 식사_메뉴그룹.getId(), Arrays.asList(productRequest));
+        MenuRequest 메뉴_요청_객체_생성 = 메뉴_요청_객체_생성(소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue(), 식사_메뉴그룹.getId(), Arrays.asList(productRequest));
 
         // when
-        MenuResponse menuResponse = menuService.create(menuRequest);
+        MenuResponse 메뉴 = menuService.create(메뉴_요청_객체_생성);
 
         // then
-        assertThat(menuResponse.getId()).isEqualTo(소머리국밥_메뉴.getId());
+        assertThat(메뉴.getId()).isEqualTo(소머리국밥_메뉴.getId());
     }
 
     @Test
@@ -94,10 +94,10 @@ public class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(Arrays.asList(미역국_메뉴, 소머리국밥_메뉴));
 
         // when
-        List<MenuResponse> menus = menuService.list();
+        List<MenuResponse> 메뉴_목록 = menuService.list();
 
         // then
-        assertThat(menus).hasSize(2);
-        assertThat(menus).containsAll(메뉴_응답_객체들_생성(미역국_메뉴, 소머리국밥_메뉴));
+        assertThat(메뉴_목록).hasSize(2);
+        assertThat(메뉴_목록).containsAll(메뉴_응답_객체들_생성(미역국_메뉴, 소머리국밥_메뉴));
     }
 }

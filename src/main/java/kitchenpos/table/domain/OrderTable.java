@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
-@Table(name = "ORDER_TABLE")
+@Table(name = "order_table")
 public class OrderTable {
 
     @Id

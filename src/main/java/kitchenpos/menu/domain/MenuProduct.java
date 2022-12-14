@@ -14,7 +14,7 @@ import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity
-@Table(name = "MENU_PRODUCT")
+@Table(name = "menu_product")
 public class MenuProduct {
 
     @Id

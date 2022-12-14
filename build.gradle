@@ -21,6 +21,7 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured'
+    implementation 'com.google.guava:guava:31.1-jre'
 }
 
 test {
