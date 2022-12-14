@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class OrderTables {
+    private static final int MIN_TABLE_SIZE = 2;
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
@@ -35,7 +36,7 @@ public class OrderTables {
     }
 
     private void validateTableSize(List<OrderTable> orderTables){
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException();
         }
     }

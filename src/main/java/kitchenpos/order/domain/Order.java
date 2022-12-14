@@ -63,14 +63,14 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
     }
 
-    public static OrderBuilder builder(){
-        return new OrderBuilder();
-    }
-
     public void validateComplete() {
         if(orderStatus.equals(OrderStatus.MEAL) || orderStatus.equals(OrderStatus.COOKING)){
             throw new IllegalArgumentException();
         }
+    }
+
+    public static OrderBuilder builder(){
+        return new OrderBuilder();
     }
 
     public static class OrderBuilder {

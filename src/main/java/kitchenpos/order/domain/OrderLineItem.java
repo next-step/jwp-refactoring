@@ -26,6 +26,26 @@ public class OrderLineItem {
         this.quantity = builder.quantity;
     }
 
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getOrderId() {
+        return Objects.isNull(order) ? null : order.getId();
+    }
+
+    public Long getMenuId() {
+        return Objects.isNull(menu) ? null : menu.getId();
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(final long quantity) {
+        this.quantity = quantity;
+    }
+
     public static OrderLineItemBuilder builder() {
         return new OrderLineItemBuilder();
     }
@@ -59,37 +79,5 @@ public class OrderLineItem {
         public OrderLineItem build(){
             return new OrderLineItem(this);
         }
-    }
-
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getOrderId() {
-        return Objects.isNull(order) ? null : order.getId();
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Long getMenuId() {
-        return Objects.isNull(menu) ? null : menu.getId();
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }
