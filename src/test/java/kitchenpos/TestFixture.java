@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class testFixture {
+public class TestFixture {
 
     protected static ExtractableResponse<Response> post(String uri, Object requestBody) {
         return RestAssured

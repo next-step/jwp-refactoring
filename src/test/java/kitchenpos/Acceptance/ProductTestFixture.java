@@ -5,10 +5,10 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
-import kitchenpos.testFixture;
+import kitchenpos.TestFixture;
 import org.assertj.core.api.Assertions;
 
-public class ProductTestFixture extends testFixture {
+public class ProductTestFixture extends TestFixture {
 
     public static final String PRODUCT_BASE_URI = "/api/products";
 
