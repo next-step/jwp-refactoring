@@ -148,9 +148,10 @@ PUT /api/orders/{orderId}/order-status
 
 ## 서비스 리팩터링 요구 사항
 
-- [ ] Spring Data JPA 사용
+- [X] Spring Data JPA 사용
   - spring.jpa.hibernate.ddl-auto=validate
-- [ ] 스키마 확인하여 엔티티 설계
+- [X] 스키마 확인하여 엔티티 설계
+  - [X] Product 상품 설계
 - [ ] 비즈니스 로직을 도메인으로 이동하여 단위 테스트 작성
 - [ ] 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리
 

@@ -1,8 +1,12 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.ui.ProductRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,14 +43,14 @@ public class ProductRestControllerTest {
 
     @BeforeEach
     public void setUp() {
-        후라이드치킨 = Product.of(1L, "후라이드치킨", new BigDecimal(16_000));
-        양념치킨 = Product.of(2L, "양념치킨", new BigDecimal(17_000));
+        후라이드치킨 = new Product(1L, "후라이드치킨", new Price(new BigDecimal(16_000)));
+        양념치킨 = new Product(2L, "양념치킨", new Price(new BigDecimal(17_000)));
     }
 
     @DisplayName("상품 등록에 실패한다.")
     @Test
     void 상품_등록에_실패한다() throws Exception {
-        given(productService.create(any(Product.class))).willThrow(IllegalArgumentException.class);
+        given(productService.create(any(ProductRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/products")
                         .content(objectMapper.writeValueAsString(후라이드치킨))
@@ -57,21 +61,21 @@ public class ProductRestControllerTest {
     @DisplayName("상품 등록에 성공한다.")
     @Test
     void 상품_등록에_성공한다() throws Exception {
-        given(productService.create(any(Product.class))).willReturn(양념치킨);
+        given(productService.create(any(ProductRequest.class))).willReturn(new ProductResponse(양념치킨));
 
         webMvc.perform(post("/api/products")
-                        .content(objectMapper.writeValueAsString(양념치킨))
+                        .content(objectMapper.writeValueAsString(new ProductRequest("양념치킨", BigDecimal.valueOf(17_000))))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(양념치킨.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(양념치킨.getName())))
-                .andExpect(jsonPath("$.price", is(양념치킨.getPrice().intValue())));
+                .andExpect(jsonPath("$.price", is(양념치킨.getPrice().value().intValue())));
     }
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void 상품_목록을_조회한다() throws Exception {
-        given(productService.list()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+        given(productService.list()).willReturn(Arrays.asList(new ProductResponse(후라이드치킨), new ProductResponse(양념치킨)));
 
         webMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())

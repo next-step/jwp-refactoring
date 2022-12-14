@@ -1,7 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,15 +18,17 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("상품 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -32,39 +38,39 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨_상품 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000L));
-        양념치킨_상품 = Product.of(2L, "양념치킨", BigDecimal.valueOf(16_000L));
-        간장치킨_상품 = Product.of(3L, "간장치킨", BigDecimal.valueOf(17_000L));
+        후라이드치킨_상품 = new Product(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16_000L)));
+        양념치킨_상품 = new Product(2L, "양념치킨", new Price(BigDecimal.valueOf(16_000L)));
+        간장치킨_상품 = new Product(3L, "간장치킨", new Price(BigDecimal.valueOf(17_000L)));
     }
 
     @DisplayName("상품의 가격은 반드시 존재해야 한다.")
     @Test
     void 상품의_가격은_반드시_존재해야_한다() {
         // given
-        후라이드치킨_상품.setPrice(null);
+        ProductRequest 햄버거 = new ProductRequest("햄버거", null);
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(후라이드치킨_상품));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(햄버거));
     }
 
     @DisplayName("상품의 가격은 0원 이상이어야 한다.")
     @Test
     void 상품의_가격은_0원_이상이어야_한다() {
         // given
-        후라이드치킨_상품.setPrice(new BigDecimal(-1));
+        ProductRequest 햄버거 = new ProductRequest("햄버거", BigDecimal.valueOf(-1));
 
         // when, then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(후라이드치킨_상품));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(햄버거));
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void 상품을_생성한다() {
         // given
-        when(productDao.save(후라이드치킨_상품)).thenReturn(후라이드치킨_상품);
+        when(productRepository.save(any(Product.class))).thenReturn(후라이드치킨_상품);
 
         // when
-        Product product = productService.create(후라이드치킨_상품);
+        ProductResponse product = productService.create(new ProductRequest("후라이드치킨", BigDecimal.valueOf(16_000)));
 
         // then
         assertAll(() -> {
@@ -78,15 +84,12 @@ public class ProductServiceTest {
     @Test
     void 상품을_조회한다() {
         // given
-        when(productDao.findAll()).thenReturn(Arrays.asList(양념치킨_상품, 간장치킨_상품));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(양념치킨_상품, 간장치킨_상품));
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
         // then
-        assertAll(() -> {
-            assertThat(products).hasSize(2);
-            assertThat(products).containsExactly(양념치킨_상품, 간장치킨_상품);
-        });
+        assertThat(products).hasSize(2);
     }
 }

@@ -5,7 +5,8 @@ import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,11 +56,11 @@ public class MenuRestControllerTest {
     void setUp() {
         한마리메뉴_메뉴그룹 = MenuGroup.of(1L, "한마리메뉴");
 
-        후라이드치킨_상품 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000L));
-        콜라_상품 = Product.of(2L, "콜라", BigDecimal.valueOf(2_000L));
+        후라이드치킨_상품 = new Product(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16_000L)));
+        콜라_상품 = new Product(2L, "콜라", new Price(BigDecimal.valueOf(2_000L)));
 
-        후라이드치킨_메뉴 = Menu.of(1L, "후라이드치킨", 후라이드치킨_상품.getPrice(), 한마리메뉴_메뉴그룹.getId());
-        콜라_메뉴 = Menu.of(2L, "콜라", 콜라_상품.getPrice(), 한마리메뉴_메뉴그룹.getId());
+        후라이드치킨_메뉴 = Menu.of(1L, "후라이드치킨", 후라이드치킨_상품.getPrice().value(), 한마리메뉴_메뉴그룹.getId());
+        콜라_메뉴 = Menu.of(2L, "콜라", 콜라_상품.getPrice().value(), 한마리메뉴_메뉴그룹.getId());
 
         후라이드치킨_메뉴상품 = MenuProduct.of(1L, 후라이드치킨_메뉴.getId(), 후라이드치킨_상품.getId(), 1L);
         콜라_메뉴상품 = MenuProduct.of(2L, 콜라_메뉴.getId(), 콜라_상품.getId(), 1L);
