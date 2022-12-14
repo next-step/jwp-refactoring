@@ -3,6 +3,8 @@ package kitchenpos.table.domain;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
+import kitchenpos.table.exception.OrderTablesException;
+import kitchenpos.table.exception.OrderTablesExceptionType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +22,8 @@ public class TableGroupTest {
         TableGroup tableGroup = TableGroup.builder().build();
 
         assertThatThrownBy(() -> tableGroup.addOrderTables(Collections.EMPTY_LIST))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTablesException.class)
+                .hasMessageContaining("추가할 테이블이 없습니다");
     }
 
     @DisplayName("테이블그룹에 테이블을 추가할경우 테이블이 없는경우 예외발생")
@@ -29,7 +32,8 @@ public class TableGroupTest {
         TableGroup tableGroup = TableGroup.builder().build();
 
         assertThatThrownBy(() -> tableGroup.addOrderTables(null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTablesException.class)
+                .hasMessageContaining("추가할 테이블이 없습니다");
     }
 
     @DisplayName("테이블그룹에 테이블을 추가할경우 추가할 테이블이 2개 미만인경우 예외발생")
@@ -40,8 +44,10 @@ public class TableGroupTest {
                 .orderTables(OrderTables.of(Arrays.asList(OrderTable.builder().build())))
                 .build();
 
-        assertThatThrownBy(() -> tableGroup.addOrderTables(null))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroup.addOrderTables(Arrays.asList(OrderTable.builder().build())))
+                .isInstanceOf(OrderTablesException.class)
+                .hasMessageContaining("테이블 개수가 부족합니다");
+
     }
 
     @DisplayName("테이블그룹에 테이블을 추가할경우 추가할 테이블이 공석이 아니면 예외발생")
