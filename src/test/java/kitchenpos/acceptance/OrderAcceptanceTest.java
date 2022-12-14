@@ -16,6 +16,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -43,9 +44,9 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
 
         // when
@@ -93,9 +94,9 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     void orderFailTest2() throws Exception {
         // given
         OrderTable 테이블 = 테이블_생성(2, false);
-        Menu 등록되지_않은_메뉴 = new Menu("등록되지 않은 메뉴", new BigDecimal(12000), 1L, Arrays.asList(
-                new MenuProduct(1L, 1), new MenuProduct(2L, 1)
-        ));
+        MenuResponse 등록되지_않은_메뉴 = MenuResponse.of(new Menu("등록되지 않은 메뉴", new BigDecimal(12000), new MenuGroup(), Arrays.asList(
+                new MenuProduct(new Product(), 1), new MenuProduct(new Product(), 1)
+        )));
 
         // when & then
         assertThatThrownBy(
@@ -120,9 +121,9 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
 
         // when & then
@@ -156,9 +157,9 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
         ResultActions 주문_요청_결과 = 주문_요청(테이블, 메뉴1);
         Order 최초_주문 = getObjectByResponse(주문_요청_결과, Order.class);
@@ -202,9 +203,9 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         Product 상품1 = 상품_등록("상품1",1000);
         Product 상품2 = 상품_등록("상품2",2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
 
         ResultActions 주문_요청_결과 = 주문_요청(테이블, 메뉴1);

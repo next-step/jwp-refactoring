@@ -38,7 +38,7 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
         Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
-                new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
+                new MenuProduct(상품1, 1), new MenuProduct(상품2, 2)
         );
 
         // when
@@ -88,7 +88,7 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
         Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
-                new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
+                new MenuProduct(상품1, 1), new MenuProduct(상품2, 2)
         );
 
         // when & then
@@ -116,7 +116,7 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
         Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
-                new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
+                new MenuProduct(상품1, 1), new MenuProduct(상품2, 2)
         );
 
         // when & then
@@ -144,7 +144,7 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
         Product 상품2 = 상품_등록("상품2", 2000);
 
         List<MenuProduct> 구성상품들 = Arrays.asList(
-                new MenuProduct(상품1.getId(), 1), new MenuProduct(상품2.getId(), 2)
+                new MenuProduct(상품1, 1), new MenuProduct(상품2, 2)
         );
 
         // when & then
@@ -169,13 +169,13 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         메뉴_등록_요청("메뉴 1", 10000, 메뉴그룹, Arrays.asList(
-                new MenuProduct(상품1.getId(), 5), new MenuProduct(상품2.getId(), 5)
+                new MenuProduct(상품1, 5), new MenuProduct(상품2, 5)
         ));
         메뉴_등록_요청("메뉴 2", 15000, 메뉴그룹, Arrays.asList(
-                new MenuProduct(상품1.getId(), 10), new MenuProduct(상품2.getId(), 7)
+                new MenuProduct(상품1, 10), new MenuProduct(상품2, 7)
         ));
         메뉴_등록_요청("메뉴 3", 7000, 메뉴그룹, Arrays.asList(
-                new MenuProduct(상품1.getId(), 5), new MenuProduct(상품2.getId(), 3)
+                new MenuProduct(상품1, 5), new MenuProduct(상품2, 3)
         ));
 
         // when

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -21,6 +22,9 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -121,14 +125,18 @@ public class MockMvcAcceptanceTest {
         return getObjectByResponse(response, Product.class);
     }
 
-    Menu 메뉴_등록(String menuName, Integer price, MenuGroup group, List<MenuProduct> products) throws Exception {
-        Menu menu = new Menu(menuName, new BigDecimal(price), group.getId(), products);
-        return getObjectByResponse(mockPost("/api/menus", menu), Menu.class);
+    MenuResponse 메뉴_등록(String menuName, Integer price, MenuGroup group, List<MenuProduct> products) throws Exception {
+        ResultActions response = 메뉴_등록_요청(menuName, price, group, products);
+        return getObjectByResponse(response, MenuResponse.class);
     }
 
     ResultActions 메뉴_등록_요청(String menuName, Integer price, MenuGroup group, List<MenuProduct> products) throws Exception {
-        Menu menu = new Menu(menuName, new BigDecimal(price), group.getId(), products);
-        return mockPost("/api/menus", menu);
+        List<MenuProductRequest> menuProductRequests = products.stream()
+                .map(
+                        menuProduct -> new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity())
+                ).collect(Collectors.toList());
+        MenuRequest menuRequest = new MenuRequest(menuName, new BigDecimal(price), group.getId(), menuProductRequests);
+        return mockPost("/api/menus", menuRequest);
     }
 
     ResultActions 메뉴_전체_조회() throws Exception {
@@ -147,13 +155,13 @@ public class MockMvcAcceptanceTest {
         return mockPost("/api/menu-groups", new MenuGroup(name));
     }
 
-    ResultActions 주문_요청(OrderTable orderTable, Menu menu) throws Exception {
+    ResultActions 주문_요청(OrderTable orderTable, MenuResponse menu) throws Exception {
         Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
                 , Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
         return mockPost("/api/orders", order);
     }
 
-    Order 주문_생성(OrderTable orderTable, Menu menu) throws Exception {
+    Order 주문_생성(OrderTable orderTable, MenuResponse menu) throws Exception {
         return getObjectByResponse(주문_요청(orderTable, menu), Order.class);
     }
 }

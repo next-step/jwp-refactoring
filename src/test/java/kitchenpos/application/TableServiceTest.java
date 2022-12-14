@@ -16,6 +16,8 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 class TableServiceTest {
 
     @Autowired
-    OrderDao orderDao;
-
-    @Autowired
     OrderTableDao orderTableDao;
 
+    @Autowired
     TableService tableService;
 
     @Autowired
@@ -49,11 +49,6 @@ class TableServiceTest {
 
     @Autowired
     OrderService orderService;
-
-    @BeforeEach
-    void beforeEach(){
-        tableService = new TableService(orderDao, orderTableDao);
-    }
 
     @Test
     @DisplayName("테이블 생성 테스트")
@@ -107,9 +102,9 @@ class TableServiceTest {
         Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
         Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
-        Menu menu1 = menuService.create(new Menu("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
-                new MenuProduct(product1.getId(), 1),
-                new MenuProduct(product2.getId(), 1)
+        Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
+                new MenuProductRequest(product1.getId(), 1),
+                new MenuProductRequest(product2.getId(), 1)
         )));
         orderService.create(new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
                 , Arrays.asList(

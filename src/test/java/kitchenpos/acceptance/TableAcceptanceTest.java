@@ -7,12 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
-import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -105,9 +105,9 @@ public class TableAcceptanceTest extends MockMvcAcceptanceTest {
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
         주문_생성(비어있지_않은_테이블_1, 메뉴1);
         주문_생성(비어있지_않은_테이블_2, 메뉴1);

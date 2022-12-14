@@ -12,6 +12,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,9 +155,9 @@ public class TableGroupAcceptanceTest extends MockMvcAcceptanceTest {
         Product product1 = 상품_등록("상품1", 1000);
         Product product2 = 상품_등록("상품2", 2000);
         MenuGroup group1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, group1, Arrays.asList(
-                new MenuProduct(product1.getId(), 1),
-                new MenuProduct(product2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, group1, Arrays.asList(
+                new MenuProduct(product1, 1),
+                new MenuProduct(product2, 1)
         ));
 
         // when & then
