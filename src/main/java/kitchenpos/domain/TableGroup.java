@@ -4,15 +4,28 @@ import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_TABLES_COUNT
 import static kitchenpos.exception.ErrorCode.ORDER_TABLES_MUST_BE_AT_LEAST_TWO;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import kitchenpos.exception.KitchenposException;
 import org.springframework.util.CollectionUtils;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tableGroupId")
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     protected TableGroup() {
     }

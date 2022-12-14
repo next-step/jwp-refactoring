@@ -4,18 +4,31 @@ import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import kitchenpos.exception.KitchenposException;
 import org.springframework.util.CollectionUtils;
 
+@Entity
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderId")
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {
     }
