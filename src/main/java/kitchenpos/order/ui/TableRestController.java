@@ -3,7 +3,6 @@ package kitchenpos.order.ui;
 import kitchenpos.order.applicaiton.OrderTableService;
 import kitchenpos.order.domain.OrderEmpty;
 import kitchenpos.order.domain.OrderGuests;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +12,10 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-public class OrderTableRestController {
+public class TableRestController {
     private final OrderTableService orderTableService;
 
-    public OrderTableRestController(final OrderTableService orderTableService) {
+    public TableRestController(final OrderTableService orderTableService) {
         this.orderTableService = orderTableService;
     }
 
