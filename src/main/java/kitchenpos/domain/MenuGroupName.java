@@ -7,16 +7,16 @@ import java.util.Objects;
 
 import static kitchenpos.utils.Message.INVALID_NAME_EMPTY;
 
-public class ProductName {
+public class MenuGroupName {
     private String name;
 
-    private ProductName(String name) {
+    private MenuGroupName(String name) {
         this.name = name;
     }
 
-    public static ProductName from(String name) {
+    public static MenuGroupName from(String name) {
         checkNotNull(name);
-        return new ProductName(name);
+        return new MenuGroupName(name);
     }
 
     private static void checkNotNull(String name) {
@@ -39,7 +39,7 @@ public class ProductName {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ProductName that = (ProductName) o;
+        MenuGroupName that = (MenuGroupName) o;
         return name.equals(that.name);
     }
 
