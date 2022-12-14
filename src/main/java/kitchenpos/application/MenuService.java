@@ -41,7 +41,7 @@ public class MenuService {
     public MenuResponse create(final Menu menu) {
         menu.validatePrice();
         existsMenuGroupById(menu.getMenuGroupId());
-        validatePriceGreaterThanSum(menu.getPrice(), menu.getMenuProducts());
+        menu.validatePriceGreaterThanSum(getSumPriceFromMenuProducts(menu.getMenuProducts()));
 
         final Menu savedMenu = menuDao.save(menu);
         final List<MenuProduct> savedMenuProducts = saveMenuProducts(savedMenu.getId(), menu.getMenuProducts());
@@ -72,7 +72,7 @@ public class MenuService {
         }
     }
 
-    private void validatePriceGreaterThanSum(BigDecimal price, List<MenuProduct> menuProducts){
+    private BigDecimal getSumPriceFromMenuProducts(List<MenuProduct> menuProducts) {
         BigDecimal sum = BigDecimal.ZERO;
 
         for (final MenuProduct menuProduct : menuProducts) {
@@ -81,9 +81,7 @@ public class MenuService {
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
-        if (price.compareTo(sum) > 0) {
-            throw new KitchenposException(ErrorCode.PRICE_GREATER_THAN_SUM);
-        }
+        return sum;
     }
 
     private List<MenuProduct> saveMenuProducts(Long menuId, List<MenuProduct> menuProducts){

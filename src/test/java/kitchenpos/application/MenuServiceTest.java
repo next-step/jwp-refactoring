@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.exception.ErrorCode.PRICE_CAN_NOT_BE_MINUS;
-import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL;
+import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -83,7 +82,7 @@ class MenuServiceTest {
                 () -> menuService.create(메뉴)
         )
                 .isInstanceOf(KitchenposException.class)
-                .hasMessageContaining(PRICE_CAN_NOT_BE_MINUS.getDetail());
+                .hasMessageContaining(PRICE_IS_NULL_OR_MINUS.getDetail());
     }
 
     @ParameterizedTest
@@ -95,7 +94,7 @@ class MenuServiceTest {
                 () -> menuService.create(메뉴)
         )
                 .isInstanceOf(KitchenposException.class)
-                .hasMessageContaining(PRICE_IS_NULL.getDetail());
+                .hasMessageContaining(PRICE_IS_NULL_OR_MINUS.getDetail());
     }
 
     @Test

@@ -20,8 +20,7 @@ public enum ErrorCode {
     NOT_BEEN_UNGROUP(HttpStatus.BAD_REQUEST, "좌석 그룹이 해제되지 않았습니다."),
     PEOPLE_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "인원 수가 0 보다 작을 수 없습니다."),
     TABLE_IS_EMPTY(HttpStatus.BAD_REQUEST, "좌석이 공석입니다."),
-    PRICE_IS_NULL(HttpStatus.BAD_REQUEST, "가격을 입력하세요."),
-    PRICE_CAN_NOT_BE_MINUS(HttpStatus.BAD_REQUEST, "가격은 양수만 입력하세요."),
+    PRICE_IS_NULL_OR_MINUS(HttpStatus.BAD_REQUEST, "가격은 양수만 입력하세요."),
     ORDER_TABLES_MUST_BE_AT_LEAST_TWO(
             HttpStatus.BAD_REQUEST, "좌석 그룹으로 지정하려면 좌석의 개수가 2개 이상이어야 합니다."),
     NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES(
