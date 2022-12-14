@@ -15,8 +15,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -34,9 +35,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private Product 순살치킨;
     private Product 후라이드치킨;
     private MenuGroup 치킨;
-    private MenuProduct 순살치킨상품;
-    private MenuProduct 후라이드치킨상품;
-    private Menu 두마리치킨세트;
+    private MenuProductRequest 순살치킨상품;
+    private MenuProductRequest 후라이드치킨상품;
+    private MenuResponse 두마리치킨세트_응답;
     private Order 주문;
     private OrderTable 주문테이블;
     private OrderLineItem 두마리치킨세트주문;
@@ -47,18 +48,18 @@ class OrderAcceptanceTest extends AcceptanceTest {
         순살치킨 = 상품_생성_요청(new Product(null, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
         후라이드치킨 = 상품_생성_요청(new Product(null, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(null, "치킨")).as(MenuGroup.class);
-        순살치킨상품 = new MenuProduct(null, 1L, 순살치킨);
-        후라이드치킨상품 = new MenuProduct(null, 1L, 후라이드치킨);
-        두마리치킨세트 = 메뉴_생성_요청(new Menu(
-                null,
+        순살치킨상품 = MenuProductRequest.of(순살치킨.getId(), 1L);
+        후라이드치킨상품 = MenuProductRequest.of(후라이드치킨.getId(), 1L);
+        두마리치킨세트_응답 = 메뉴_생성_요청(MenuRequest.of(
                 "두마리치킨세트",
                 BigDecimal.valueOf(38_000L),
-                치킨
-        )).as(Menu.class);
+                치킨.getId(),
+                Arrays.asList(순살치킨상품, 후라이드치킨상품)
+        )).as(MenuResponse.class);
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
                 .as(OrderTable.class);
-        두마리치킨세트주문 = new OrderLineItem(null, 두마리치킨세트.getId(), 1);
+        두마리치킨세트주문 = new OrderLineItem(null, 두마리치킨세트_응답.getId(), 1);
         주문 = new Order(null, 주문테이블, null, null, Arrays.asList(두마리치킨세트주문));
     }
 
