@@ -74,9 +74,9 @@ public class ProductRestControllerTest extends AcceptanceSupport {
         assertThat(statusCode).isEqualTo(created.value());
     }
 
-    private void 상품_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> createId) {
+    private void 상품_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> getId) {
         List<Product> result = response.jsonPath().getList(".", Product.class);
         List<Long> responseId = result.stream().map(Product::getId).collect(Collectors.toList());
-        assertThat(responseId).containsAll(createId);
+        assertThat(responseId).containsAll(getId);
     }
 }
