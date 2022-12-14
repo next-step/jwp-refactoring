@@ -20,7 +20,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order(){}
+    protected Order(){}
 
     private Order(OrderBuilder builder){
         validateOrderTable(builder.orderTable);

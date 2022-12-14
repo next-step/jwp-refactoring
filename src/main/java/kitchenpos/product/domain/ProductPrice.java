@@ -10,7 +10,7 @@ public class ProductPrice {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public ProductPrice() {
+    protected ProductPrice() {
     }
 
     private ProductPrice(BigDecimal price) {

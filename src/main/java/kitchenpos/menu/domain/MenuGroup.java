@@ -12,7 +12,7 @@ public class MenuGroup {
     private Long id;
     private String name;
 
-    public MenuGroup(){}
+    protected MenuGroup(){}
 
     private MenuGroup(MenuGroupBuilder builder){
         this.id = builder.id;

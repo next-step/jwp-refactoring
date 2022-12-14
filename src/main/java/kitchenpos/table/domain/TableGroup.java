@@ -14,7 +14,7 @@ public class TableGroup extends BaseEntity {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     private TableGroup(TableGroupBuilder builder) {

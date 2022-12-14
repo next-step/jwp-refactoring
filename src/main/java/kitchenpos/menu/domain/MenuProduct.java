@@ -17,7 +17,7 @@ public class MenuProduct {
     @Column
     private long quantity;
 
-    public MenuProduct(){}
+    protected MenuProduct(){}
 
     private MenuProduct(MenuProductBuilder builder) {
         this.seq = builder.seq;
