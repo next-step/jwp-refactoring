@@ -63,13 +63,13 @@ public class OrderServiceTest {
     void setUp() {
         치킨 = new Product(1L, "치킨", BigDecimal.valueOf(20_000));
         스파게티 = new Product(2L, "스파게티", BigDecimal.valueOf(10_000));
-        치킨_두마리 = new MenuProduct(1L, 1L, 1L, 10);
-        스파게티_이인분 = new MenuProduct(2L, 1L, 2L, 10);
+        치킨_두마리 = new MenuProduct(1L, 1L, 10);
+        스파게티_이인분 = new MenuProduct(2L, 2L, 10);
         치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(13_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
 
-        주문_테이블 = new OrderTable(1L, null, 0, false);
+        주문_테이블 = new OrderTable(1L, 0, false);
         주문 = new Order(1L, 주문_테이블.getId(), null, null, new ArrayList<>());
-        주문_항목 = new OrderLineItem(1L, null, 치킨_스파게티_더블세트_메뉴.getId(), 1);
+        주문_항목 = new OrderLineItem(1L, 치킨_스파게티_더블세트_메뉴.getId(), 1);
         주문.setOrderLineItems(Collections.singletonList(주문_항목));
 
         menuIds = 주문.getOrderLineItems()
