@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import static kitchenpos.exception.ErrorCode.PRICE_CAN_NOT_BE_MINUS;
 import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL;
 
 import java.math.BigDecimal;
@@ -33,16 +32,18 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void validatePriceNull(){
-        if(Objects.isNull(price)){
+    public void validatePrice() {
+        if(validatePriceNull() || validatePriceLessThanZero()){
             throw new KitchenposException(PRICE_IS_NULL);
         }
     }
 
-    public void validatePriceLessThanZero(){
-        if (this.price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new KitchenposException(PRICE_CAN_NOT_BE_MINUS);
-        }
+    public boolean validatePriceNull(){
+        return Objects.isNull(price);
+    }
+
+    public boolean validatePriceLessThanZero(){
+        return this.price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public Long getId() {

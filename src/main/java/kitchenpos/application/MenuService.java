@@ -39,8 +39,7 @@ public class MenuService {
     }
 
     public MenuResponse create(final Menu menu) {
-        menu.validatePriceNull();
-        menu.validatePriceLessThanZero();
+        menu.validatePrice();
         existsMenuGroupById(menu.getMenuGroupId());
         validatePriceGreaterThanSum(menu.getPrice(), menu.getMenuProducts());
 
