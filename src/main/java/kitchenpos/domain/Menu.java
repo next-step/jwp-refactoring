@@ -11,11 +11,22 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        validMinusPrice(price);
+        return new Menu(name, price, menuGroupId, menuProducts);
+    }
+
+    private static void validMinusPrice(BigDecimal price) {
+        if (price.intValue() < 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 0 이상이어야 합니다");
+        }
     }
 
     public Menu() {
@@ -77,5 +88,11 @@ public class Menu {
     @Override
     public int hashCode() {
         return Objects.hash(name, price, menuGroupId, menuProducts);
+    }
+
+    public void setIdToMenuProducts() {
+        for (final MenuProduct menuProduct : menuProducts) {
+            menuProduct.setMenuId(this.id);
+        }
     }
 }

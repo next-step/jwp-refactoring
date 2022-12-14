@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹;
-import static kitchenpos.application.MenuProductTest.메뉴_상품;
-import static kitchenpos.application.MenuServiceTest.메뉴;
-import static kitchenpos.application.ProductTest.상품;
+import static kitchenpos.domain.MenuProductTest.메뉴_상품;
+import static kitchenpos.domain.MenuTest.메뉴;
+import static kitchenpos.domain.ProductTest.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
