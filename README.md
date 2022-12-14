@@ -73,3 +73,100 @@
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
+
+---
+
+🚀 1단계 - 테스트를 통한 코드 보호
+<details>
+<summary> </summary>
+
+#### 요구사항1
+- kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md에 작성한다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
+- https://dooray.com/htmls/guides/markdown_ko_KR.html
+
+#### 요구사항2
+- 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다.   
+- 모든 Business Object에 대한 테스트 코드를 작성한다. `@SpringBootTest`를 이용한 통합 테스트 코드 또는 `@ExtendWith(MockitoExtension.class)`를 이용한 단위 테스트 코드를 작성한다.
+- https://www.baeldung.com/spring-boot-testing
+- https://www.baeldung.com/spring-boot-testresttemplate
+
+#### 프로그래밍 요구 사항
+Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
+  * 무분별한 setter 메서드 사용
+  * 객체 간에 상호 참조하는 경우 무한 루프에 빠질 가능성
+  * Lombok 사용상 주의점(Pitfall)   
+
+이번 과정에서는 Lombok 없이 미션을 진행해 본다.
+
+#### 힌트
+`http` 디렉터리의 `.http` 파일(HTTP client)을 보고 어떤 요청을 받는지 참고한다.
+  * https://jojoldu.tistory.com/266
+
+```
+###
+POST {{host}}/api/menu-groups
+Content-Type: application/json
+
+{
+  "name": "추천메뉴"
+}
+
+###
+GET {{host}}/api/menus-groups
+
+###
+```
+
+- `src/main/resources/db/migration` 디렉터리의 `.sql` 파일을 보고 어떤 관계로 이루어져 있는지 참고한다.
+```
+id BIGINT(20) NOT NULL AUTO_INCREMENT,
+order_table_id BIGINT(20) NOT NULL,
+order_status VARCHAR(255) NOT NULL,
+ordered_time DATETIME NOT NULL,
+PRIMARY KEY (id)
+```
+
+```
+### 상품
+
+* 상품을 등록할 수 있다.
+* 상품의 가격이 올바르지 않으면 등록할 수 없다.
+    * 상품의 가격은 0 원 이상이어야 한다.
+* 상품의 목록을 조회할 수 있다.
+```
+
+**Business Object Test**
+```
+@ExtendWith(MockitoExtension.class)
+public class BoTest {
+    @Mock
+    private Dao dao;
+
+    @InjectMocks
+    private Bo bo;
+
+    @Test
+    public void test() {
+        given(dao.findById(anyLong()))
+                .willReturn(new Object());
+    }
+}
+```
+
+**Controller Test**
+```
+@WebMvcTest
+public class ControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @Test
+    public void test() {
+        webMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+}
+```
+</details>
