@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.order.domain.Order;
+import kitchenpos.ordertable.domain.OrderTables;
 
 @Entity
 public class TableGroup {
@@ -28,8 +29,9 @@ public class TableGroup {
         return new TableGroup(null);
     }
 
-    public void ungroup(List<Order> orders) {
+    public void ungroup(List<Order> orders, OrderTables orderTables) {
         orders.forEach(Order::validateIfNotCompletionOrder);
+        orderTables.ungroupOrderTables();
     }
 
     public Long getId() {
