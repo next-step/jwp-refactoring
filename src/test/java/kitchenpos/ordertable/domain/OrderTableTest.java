@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import static java.util.Collections.emptyList;
 import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
@@ -101,7 +103,7 @@ public class OrderTableTest {
         OrderTable 주문테이블A = generateOrderTable(4, true);
 
         // when
-        주문테이블A.changeEmpty(false);
+        주문테이블A.changeEmpty(false, emptyList());
 
         // then
         assertThat(주문테이블A.isEmpty()).isFalse();
