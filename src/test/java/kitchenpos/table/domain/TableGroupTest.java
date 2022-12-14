@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.OrderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -81,7 +82,8 @@ public class TableGroupTest {
                 .build();
 
         assertThatThrownBy(() -> tableGroup.ungroup(orders))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다");
     }
 
     @DisplayName("테이블그룹에 테이블을 해제할경우 주문이 조리중이면 예외발생")
@@ -94,7 +96,8 @@ public class TableGroupTest {
                 .build();
 
         assertThatThrownBy(() -> tableGroup.ungroup(orders))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다");
     }
 
 }

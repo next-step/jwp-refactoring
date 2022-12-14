@@ -27,7 +27,7 @@ public class TableGroup extends BaseEntity {
     }
 
     public void ungroup(List<Order> orders) {
-        orders.forEach(Order::validateComplete);
+        orders.forEach(Order::validateBeforeCompleteStatus);
         orderTables.ungroup();
     }
 

@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.OrderException;
+import kitchenpos.order.exception.OrderExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,8 @@ public class OrderTest {
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
         assertThatThrownBy(() -> Order.builder().build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문테이블이 존재하지 않습니다");
     }
 
     @DisplayName("주문을 생성할 경우 주문테이블이 공석이면 예외발생")
@@ -29,7 +32,8 @@ public class OrderTest {
         assertThatThrownBy(() -> Order.builder()
                 .orderTable(orderTable)
                 .build())
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문테이블이 존재하지 않습니다");
     }
 
     @DisplayName("주문에 주문항목을 추가할경우 주문에서 확인할 수 있음")
@@ -52,7 +56,8 @@ public class OrderTest {
         Order order = Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COMPLETION).build();
 
         assertThatThrownBy(() ->  order.changeOrderStatus(OrderStatus.COOKING))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("계산이 완료된 주문은 상태를 변경할 수 없습니다");
     }
 
     @DisplayName("주문상태를 수정할경우 주문상태가 변경")

@@ -8,6 +8,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderLineItemRepository;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -95,7 +96,8 @@ public class OrderServiceTest {
                 .when(menuRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> orderService.create(order))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("주문테이블이 존재하지 않습니다");
     }
 
     @DisplayName("주문을 추가할 경우 주문을 반환")
@@ -157,7 +159,8 @@ public class OrderServiceTest {
         doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("계산이 완료된 주문은 상태를 변경할 수 없습니다");
     }
 
     @DisplayName("주문상태를 수정할 경우 수정된 주문반환")

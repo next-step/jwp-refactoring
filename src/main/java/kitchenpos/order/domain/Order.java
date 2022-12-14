@@ -1,12 +1,15 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
+import kitchenpos.order.exception.OrderException;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static kitchenpos.order.exception.OrderExceptionType.*;
 
 @Entity
 @Table(name = "orders")
@@ -33,7 +36,7 @@ public class Order extends BaseEntity {
 
     private void validateOrderTable(OrderTable orderTable) {
         if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new OrderException(EMPTY_ORDER_TABLE);
         }
     }
 
@@ -58,15 +61,19 @@ public class Order extends BaseEntity {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
-        }
+        validateCompleteStatus();
         this.orderStatus = orderStatus;
     }
 
-    public void validateComplete() {
+    private void validateCompleteStatus(){
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new OrderException(COMPLETE_ORDER_STATUS);
+        }
+    }
+
+    public void validateBeforeCompleteStatus() {
         if (orderStatus.equals(OrderStatus.MEAL) || orderStatus.equals(OrderStatus.COOKING)) {
-            throw new IllegalArgumentException();
+            throw new OrderException(BEFORE_COMPLETE_ORDER_STATUS);
         }
     }
 

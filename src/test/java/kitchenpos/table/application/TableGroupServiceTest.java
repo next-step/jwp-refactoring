@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
@@ -90,8 +91,12 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 추가할 경우 테이블그룹 반환")
     @Test
     public void returnTableGroup() {
-        OrderTable orderTable1 = OrderTable.builder().id(1l).empty(true).build();
-        OrderTable orderTable2 = OrderTable.builder().id(2l).empty(true).build();
+        OrderTable orderTable1 = OrderTable.builder()
+                .tableGroup(TableGroup.builder().build())
+                .id(1l).empty(true).build();
+        OrderTable orderTable2 = OrderTable.builder()
+                .tableGroup(TableGroup.builder().build())
+                .id(2l).empty(true).build();
         doReturn(Arrays.asList(orderTable1, orderTable2))
                 .when(orderTableRepository)
                 .findAllById(anyList());
@@ -125,7 +130,8 @@ public class TableGroupServiceTest {
                 .findAllByOrderTableIn(anyList());
 
         assertThatThrownBy(() -> tableGroupService.ungroup(15l))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다");
     }
 }
 

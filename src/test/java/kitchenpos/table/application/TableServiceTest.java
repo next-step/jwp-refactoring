@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -101,15 +102,18 @@ public class TableServiceTest {
                 .findAllByOrderTable(orderTable);
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class)
+                .hasMessageContaining("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다");
     }
 
     @DisplayName("주문테이블의 공석여부를 수정하면 수정된 테이블정보을 반환")
     @Test
     public void returnOrderTableWithEmpty() {
         OrderTableRequest orderTable = new OrderTableRequest();
-        OrderTable savedTable = OrderTable.builder().empty(true).build();
-        doReturn(Optional.ofNullable(savedTable)).when(orderTableRepository).findById(orderTable.getId());
+        orderTable.setId(13l);
+        OrderTable savedTable = OrderTable.builder()
+                .empty(true).build();
+        doReturn(Optional.ofNullable(savedTable)).when(orderTableRepository).findById(anyLong());
         doReturn(savedTable).when(orderTableRepository).save(savedTable);
 
         assertThat(tableService.changeEmpty(orderTable.getId(), orderTable).isEmpty()).isFalse();
@@ -157,6 +161,7 @@ public class TableServiceTest {
         orderTable.setNumberOfGuests(15);
         OrderTable findTable = OrderTable.builder()
                 .numberOfGuests(5)
+                .tableGroup(TableGroup.builder().build())
                 .build();
         doReturn(Optional.ofNullable(findTable)).when(orderTableRepository).findById(orderTable.getId());
         doReturn(findTable).when(orderTableRepository).save(findTable);

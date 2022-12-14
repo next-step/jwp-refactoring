@@ -31,7 +31,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return Objects.isNull(tableGroup) ? null : tableGroup.getId();
+        return tableGroup == null ? null : tableGroup.getId();
     }
 
     public int getNumberOfGuests() {
@@ -58,7 +58,7 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty, List<Order> orders) {
         validateTableGroup();
-        orders.forEach(Order::validateComplete);
+        orders.forEach(Order::validateBeforeCompleteStatus);
         this.empty = empty;
     }
 
