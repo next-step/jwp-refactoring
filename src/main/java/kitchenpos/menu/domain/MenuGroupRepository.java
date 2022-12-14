@@ -2,7 +2,10 @@ package kitchenpos.menu.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MenuGroupRepository extends JpaRepository<MenuGroup, Long> {
+import java.util.Optional;
 
-    boolean existsById(Long id);
+public interface MenuGroupRepository extends JpaRepository<MenuGroup, Long> {
+    @Override
+    Optional<MenuGroup> findById(Long aLong);
+
 }

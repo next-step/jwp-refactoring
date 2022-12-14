@@ -70,7 +70,7 @@ public class MenuService {
     }
 
     private void validateExistMenuGroup(MenuRequest request) {
-        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
+        if (!menuGroupRepository.findById(request.getMenuGroupId()).isPresent()) {
             throw new NotFoundMenuGroupException();
         }
     }
