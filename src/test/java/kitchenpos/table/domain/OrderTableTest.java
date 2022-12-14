@@ -65,6 +65,7 @@ public class OrderTableTest {
         orderTable.changeEmpty(true, orders);
 
         assertThat(orderTable.isEmpty()).isTrue();
+
     }
 
     @DisplayName("손님수를 수정할경우 손님수가 음수면 예외발생")
