@@ -44,7 +44,7 @@ public class MenuValidator {
     private void validateMenuProducts(MenuRequest menuRequest) {
         Price price = Price.from(menuRequest.getPrice());
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(menuRequest.getMenuProductRequests()));
-        if(price.compareTo(menuProducts.totalPrice()) > 0) {
+        if(price.compareTo(calculateTotalPrice(menuProducts.findMenuProducts())) > 0) {
             throw new IllegalArgumentException(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
         }
     }
@@ -61,5 +61,16 @@ public class MenuValidator {
     private Product findProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_상품.getErrorMessage()));
+    }
+
+    private Price calculateTotalPrice(List<MenuProduct> menuProducts) {
+        Price totalPrice = Price.ZERO_PRICE;
+        for(MenuProduct menuProduct: menuProducts) {
+            Product product = findProductById(menuProduct.getProductId());
+            Price menuProductPrice = product.getPrice()
+                    .multiply(menuProduct.getQuantity());
+            totalPrice = totalPrice.add(menuProductPrice);
+        }
+        return totalPrice;
     }
 }

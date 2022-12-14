@@ -14,17 +14,17 @@ public class MenuProductResponse {
 
     private MenuProductResponse() {}
 
-    private MenuProductResponse(Long seq, Menu menu, Product product, Quantity quantity) {
+    private MenuProductResponse(Long seq, Menu menu, Long productId, Quantity quantity) {
         this.seq = seq;
         this.menuId = menu.getId();
-        this.productId = product.getId();
+        this.productId = productId;
         this.quantity = quantity.value();
     }
 
     public static MenuProductResponse from(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(),
                 menuProduct.getMenu(),
-                menuProduct.getProduct(),
+                menuProduct.getProductId(),
                 menuProduct.getQuantity());
     }
 

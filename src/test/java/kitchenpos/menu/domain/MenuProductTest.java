@@ -43,7 +43,7 @@ public class MenuProductTest {
 
         // then
         assertAll(
-                () -> assertThat(menuProduct.getProduct()).isEqualTo(감자튀김),
+                () -> assertThat(menuProduct.getProductId()).isEqualTo(감자튀김.getId()),
                 () -> assertThat(menuProduct.getQuantity()).isEqualTo(Quantity.from(quantity))
         );
     }

@@ -16,7 +16,7 @@ public class MenuProductRequest {
     }
 
     public MenuProduct toMenuProduct(Product product) {
-        return MenuProduct.of(product, quantity);
+        return MenuProduct.of(product.getId(), quantity);
     }
 
     public Long getProductId() {
