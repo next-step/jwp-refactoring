@@ -1,23 +1,22 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.BaseEntity;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
     private OrderStatus orderStatus;
-    private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
@@ -28,7 +27,6 @@ public class Order {
         this.id = builder.id;
         this.orderTable = builder.orderTable;
         this.orderStatus = builder.orderStatus;
-        this.orderedTime = builder.orderedTime;
         this.orderLineItems = builder.orderLineItems;
     }
 
@@ -39,7 +37,7 @@ public class Order {
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> this.orderLineItems.add(orderLineItem));
+        this.orderLineItems.addAll(orderLineItems);
     }
 
     public Long getId() {
@@ -79,8 +77,7 @@ public class Order {
         private Long id;
         private OrderTable orderTable;
         private OrderStatus orderStatus;
-        private LocalDateTime orderedTime;
-        private List<OrderLineItem> orderLineItems = new ArrayList<>();
+        private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
         public OrderBuilder id(Long id) {
             this.id = id;
@@ -94,11 +91,6 @@ public class Order {
 
         public OrderBuilder orderStatus(OrderStatus orderStatus) {
             this.orderStatus = orderStatus;
-            return this;
-        }
-
-        public OrderBuilder orderedTime(LocalDateTime orderedTime) {
-            this.orderedTime = orderedTime;
             return this;
         }
 

@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 
 import javax.persistence.*;
 import java.util.List;
@@ -44,7 +43,7 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void validateGuests(int numberOfGuests){
+    private void validateGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
@@ -63,8 +62,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    private void validateTableGroup(){
-        if(Objects.nonNull(tableGroup)){
+    private void validateTableGroup() {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
     }
