@@ -1,5 +1,7 @@
 package kitchenpos.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,22 +13,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.acceptance.ProductAcceptanceStep.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("상품 관련 인수 테스트")
 class ProductAcceptanceTest extends AcceptanceTest {
-
-    private Product 버팔로윙;
-    private Product 치킨텐더;
+    private Product 허니콤보;
+    private Product 레드윙;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        버팔로윙 = Product.of(1L, "버팔로윙", BigDecimal.valueOf(6_500));
-        치킨텐더 = Product.of(2L, "치킨텐더", BigDecimal.valueOf(5_900));
+        허니콤보 = Product.of(1L, "허니콤보", BigDecimal.valueOf(6500));
+        레드윙 = Product.of(2L, "레드윙", BigDecimal.valueOf(5900));
     }
 
     /**
@@ -36,7 +38,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품을 생성한다.")
     @Test
     void create() {
-        ExtractableResponse<Response> response = 상품_생성_요청(버팔로윙);
+        ExtractableResponse<Response> response = 상품_생성_요청(허니콤보);
 
         상품_생성됨(response);
     }
@@ -78,8 +80,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() {
-        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(버팔로윙);
-        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(치킨텐더);
+        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(허니콤보);
+        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(레드윙);
 
         ExtractableResponse<Response> listResponse = 상품_목록_조회_요청();
 
