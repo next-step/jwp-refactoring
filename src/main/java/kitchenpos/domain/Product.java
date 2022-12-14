@@ -33,7 +33,7 @@ public class Product {
     }
 
     public Product(Long id, String name, int price) {
-        this(id, name, Money.valueOf(price));
+        this(id, name, Money.wons(price));
     }
 
     public Product(String name, Money price) {
@@ -41,7 +41,7 @@ public class Product {
     }
 
 	public Product(String name, int price) {
-        this(name, Money.valueOf(price));
+        this(name, Money.wons(price));
 	}
 
 	public Long getId() {
