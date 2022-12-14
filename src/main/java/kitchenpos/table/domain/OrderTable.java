@@ -40,32 +40,33 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(boolean empty, boolean existsOrderStatusComplete) {
+        validateOrderStatusComplete(existsOrderStatusComplete);
         validateTableGroupNull();
         this.empty = empty;
     }
 
     private void validateTableGroupNull() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정된 테이블입니다.");
         }
     }
 
+    private void validateOrderStatusComplete(boolean exists){
+        if(exists){
+            throw new IllegalArgumentException("이미 계산이 완료되었습니다.");
+        }
+    }
+
+
     public void changeNumberOfGuests(int numberOfGuests) {
-        vaildateNumberOfGuestsMinSize(numberOfGuests);
-        validateNumberOfGuestsNotEmpty();
+        validateChangeNumberOfGuestsNotEmpty();
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
-    private void vaildateNumberOfGuestsMinSize(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateNumberOfGuestsNotEmpty() {
+    private void validateChangeNumberOfGuestsNotEmpty() {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("빈 테이블 입니다.");
         }
     }
 

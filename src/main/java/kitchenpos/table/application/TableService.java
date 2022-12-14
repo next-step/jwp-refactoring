@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -18,15 +19,15 @@ public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableService(final OrderTableRepository orderTableRepository, final OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
         this.orderRepository = orderRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = orderTableRequest.toOrderTable();
-        return OrderTableResponse.from(orderTableRepository.save(orderTable));
+        OrderTable orderTable = orderTableRepository.save(orderTableRequest.toOrderTable());
+        return OrderTableResponse.from(orderTable);
     }
 
     public List<OrderTableResponse> list() {
@@ -38,16 +39,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
-        validateOrderStatusComplete(orderTable);
-        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        OrderTable orderTable = findOrderTableById(orderTableId);
+        boolean completedOrderTable = existsOrderByOrderTableIdAndOrderStatusIn(orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        orderTable.changeEmpty(orderTableRequest.isEmpty(), completedOrderTable);
         return OrderTableResponse.from(orderTable);
-    }
-
-    private void validateOrderStatusComplete(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Transactional
@@ -55,5 +50,13 @@ public class TableService {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(orderTable);
+    }
+
+    private OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
+    }
+
+    private boolean existsOrderByOrderTableIdAndOrderStatusIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
+        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
     }
 }

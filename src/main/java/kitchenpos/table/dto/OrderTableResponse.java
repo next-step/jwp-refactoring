@@ -10,7 +10,7 @@ public class OrderTableResponse {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTableResponse() {}
+    private OrderTableResponse() {}
 
     public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
