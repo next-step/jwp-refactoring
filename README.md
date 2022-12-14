@@ -118,9 +118,9 @@
 * [x] OrderStatus enum 추가
 * [ ] Request, Response TDO 적용
   * [x] Main
-  * [ ] MainGroup
+  * [x] MenuGroup
+  * [x] Product
   * [ ] Order
   * [ ] TableGroup
   * [ ] orderLineItem
-  * [ ] Product
 * [ ] 코드 리팩토링
