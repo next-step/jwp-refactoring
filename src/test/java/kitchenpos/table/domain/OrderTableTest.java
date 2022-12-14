@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
+import kitchenpos.table.exception.OrderTableException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,9 @@ public class OrderTableTest {
         List<Order> orders = Arrays.asList(order);
 
         assertThatThrownBy(() -> orderTable.changeEmpty(true, orders))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class)
+                .hasMessageContaining("사용중인 테이블그룹이 존재합니다");
+
     }
 
     @DisplayName("공석여부를 수정할경우 값이 변경")
@@ -77,7 +80,8 @@ public class OrderTableTest {
         OrderTable orderTable = OrderTable.builder().build();
 
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class)
+                .hasMessageContaining("손님수는 0명이상 이어야합니다");
     }
 
     @DisplayName("손님수를 수정할경우 테이블이 공석이면 예외발생")
@@ -86,7 +90,8 @@ public class OrderTableTest {
         OrderTable orderTable = OrderTable.builder().empty(true).build();
 
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class)
+                .hasMessageContaining("테이블이 공석입니다");
     }
 
     @DisplayName("손님수를 수정할경우 값이 변경")

@@ -8,6 +8,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.OrderTableException;
 import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
@@ -87,7 +88,10 @@ public class TableServiceTest {
                 .findById(orderTable.getId());
         doReturn(orders).when(orderRepository)
                 .findAllByOrderTable(orderTable);
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
+                .isInstanceOf(OrderTableException.class)
+                .hasMessageContaining("사용중인 테이블그룹이 존재합니다");
     }
 
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
@@ -151,7 +155,8 @@ public class TableServiceTest {
         doReturn(Optional.ofNullable(OrderTable.builder().empty(true).build())).when(orderTableRepository).findById(anyLong());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class)
+                .hasMessageContaining("테이블이 공석입니다");
     }
 
     @DisplayName("주문테이블의 손님수를 수정할 경우 수정된 테이블을 반환")

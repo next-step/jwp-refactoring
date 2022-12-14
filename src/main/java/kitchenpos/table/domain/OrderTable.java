@@ -1,10 +1,13 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.table.exception.OrderTableException;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
+import static kitchenpos.table.exception.OrderTableExceptionType.*;
 
 @Entity
 public class OrderTable {
@@ -45,10 +48,10 @@ public class OrderTable {
 
     private void validateGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException(NEGATIVE_NUMBER_OF_GEUEST);
         }
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException(EMPTY_TABLE);
         }
     }
 
@@ -64,7 +67,7 @@ public class OrderTable {
 
     private void validateTableGroup() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException(USING_TABLE_GROUP);
         }
     }
 
