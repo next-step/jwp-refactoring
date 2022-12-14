@@ -3,7 +3,6 @@ package kitchenpos.product.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
@@ -32,31 +31,26 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private ProductRequest 양념치킨_요청;
-    private ProductRequest 후라이드치킨_요청;
-
     private Product 양념치킨;
     private Product 후라이드치킨;
 
     @BeforeEach
     void setUp() {
-        양념치킨_요청 = ProductRequest.of("양념치킨", BigDecimal.valueOf(2_000));
-        후라이드치킨_요청 = ProductRequest.of("후라이드치킨", BigDecimal.valueOf(18_000));
-
         양념치킨 = new Product("양념치킨", BigDecimal.valueOf(2_000));
         후라이드치킨 = new Product("후라이드치킨", BigDecimal.valueOf(18_000));
     }
 
     @Test
     void 상품을_등록_할_수_있다() {
-        given(productRepository.save(any())).willReturn(양념치킨_요청);
+        ProductRequest request = ProductRequest.of("양념치킨", BigDecimal.valueOf(2_000));
+        given(productRepository.save(양념치킨)).willReturn(양념치킨);
 
-        ProductResponse savedProduct = productService.create(양념치킨_요청);
+        ProductResponse response = productService.create(request);
 
         assertAll(
-                () -> assertThat(savedProduct.getId()).isNotNull(),
-                () -> assertThat(savedProduct.getName()).isEqualTo(양념치킨_요청.getName()),
-                () -> assertThat(savedProduct.getPrice()).isEqualTo(양념치킨_요청.getPrice())
+                () -> assertThat(response.getId()).isEqualTo(양념치킨.getId()),
+                () -> assertThat(response.getName()).isEqualTo(양념치킨.getName()),
+                () -> assertThat(response.getPrice()).isEqualTo(양념치킨.getPrice())
         );
     }
 
