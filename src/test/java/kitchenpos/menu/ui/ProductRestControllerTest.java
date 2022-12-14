@@ -1,9 +1,8 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.ControllerTest;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
-import kitchenpos.ui.ProductRestController;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
