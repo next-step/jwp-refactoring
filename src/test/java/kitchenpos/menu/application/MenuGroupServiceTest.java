@@ -28,13 +28,13 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
     @Mock
-    private MenuGroupRepository menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @DisplayName("메뉴그룹 추가할 경우 추가된 메뉴그룹정보를 반환")
     @Test
     public void returnMenuGroup() {
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest(Arbitraries.strings().ofMinLength(1).ofMaxLength(10).sample());
-        doReturn(menuGroupRequest.toMenuGroup()).when(menuGroupDao).save(any(MenuGroup.class));
+        doReturn(menuGroupRequest.toMenuGroup()).when(menuGroupRepository).save(any(MenuGroup.class));
 
         assertThat(menuGroupService.create(menuGroupRequest).getName()).isEqualTo(menuGroupRequest.getName());
     }
@@ -49,7 +49,7 @@ public class MenuGroupServiceTest {
                 .giveMeBuilder(MenuGroup.class)
                 .set("id", Arbitraries.longs().between(1, 5))
                 .sampleList(5);
-        doReturn(mockMenuGroups).when(menuGroupDao).findAll();
+        doReturn(mockMenuGroups).when(menuGroupRepository).findAll();
 
         List<MenuGroupResponse> menuGroups = menuGroupService.list();
 

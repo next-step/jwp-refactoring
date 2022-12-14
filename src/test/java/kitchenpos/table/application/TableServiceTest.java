@@ -33,9 +33,9 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
     @Mock
-    private OrderRepository orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
@@ -43,7 +43,7 @@ public class TableServiceTest {
         OrderTable orderTable = OrderTable.builder()
                 .tableGroup(TableGroup.builder().id(443l).build())
                 .build();
-        doReturn(orderTable).when(orderTableDao).save(any(OrderTable.class));
+        doReturn(orderTable).when(orderTableRepository).save(any(OrderTable.class));
 
         assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(443l);
     }
@@ -57,7 +57,7 @@ public class TableServiceTest {
                 .tableGroup(TableGroup.builder().id(443l).build())
                 .empty(true)
                 .build(), 100);
-        doReturn(orderTables).when(orderTableDao).findAll();
+        doReturn(orderTables).when(orderTableRepository).findAll();
 
         List<OrderTableResponse> returnedTables = tableService.list();
         assertAll(() -> assertThat(returnedTables).hasSize(100), () -> assertThat(returnedTables.stream().map(OrderTableResponse::getId)).allMatch(id -> id == 13l), () -> assertThat(returnedTables.stream().map(OrderTableResponse::isEmpty)).allMatch(empty -> empty));
@@ -67,7 +67,7 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
         OrderTable orderTable = OrderTable.builder().build();
-        doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
+        doReturn(Optional.empty()).when(orderTableRepository).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
     }
@@ -82,9 +82,9 @@ public class TableServiceTest {
                 .tableGroup(TableGroup.builder().id(13l).build())
                 .build();
         doReturn(Optional.ofNullable(orderTable))
-                .when(orderTableDao)
+                .when(orderTableRepository)
                 .findById(orderTable.getId());
-        doReturn(orders).when(orderDao)
+        doReturn(orders).when(orderRepository)
                 .findAllByOrderTable(orderTable);
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
     }
@@ -96,8 +96,8 @@ public class TableServiceTest {
                 .orderTable(OrderTable.builder().build())
                 .orderStatus(OrderStatus.COOKING).build(), 5);
         OrderTable orderTable = OrderTable.builder().build();
-        doReturn(Optional.ofNullable(orderTable)).when(orderTableDao).findById(orderTable.getId());
-        doReturn(orders).when(orderDao)
+        doReturn(Optional.ofNullable(orderTable)).when(orderTableRepository).findById(orderTable.getId());
+        doReturn(orders).when(orderRepository)
                 .findAllByOrderTable(orderTable);
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
@@ -109,8 +109,8 @@ public class TableServiceTest {
     public void returnOrderTableWithEmpty() {
         OrderTableRequest orderTable = new OrderTableRequest();
         OrderTable savedTable = OrderTable.builder().empty(true).build();
-        doReturn(Optional.ofNullable(savedTable)).when(orderTableDao).findById(orderTable.getId());
-        doReturn(savedTable).when(orderTableDao).save(savedTable);
+        doReturn(Optional.ofNullable(savedTable)).when(orderTableRepository).findById(orderTable.getId());
+        doReturn(savedTable).when(orderTableRepository).save(savedTable);
 
         assertThat(tableService.changeEmpty(orderTable.getId(), orderTable).isEmpty()).isFalse();
     }
@@ -131,7 +131,7 @@ public class TableServiceTest {
         OrderTableRequest orderTable = new OrderTableRequest();
         orderTable.setNumberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample());
 
-        doReturn(Optional.empty()).when(orderTableDao).findById(orderTable.getId());
+        doReturn(Optional.empty()).when(orderTableRepository).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -144,7 +144,7 @@ public class TableServiceTest {
         orderTable.setId(1l);
         orderTable.setNumberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample());
 
-        doReturn(Optional.ofNullable(OrderTable.builder().empty(true).build())).when(orderTableDao).findById(anyLong());
+        doReturn(Optional.ofNullable(OrderTable.builder().empty(true).build())).when(orderTableRepository).findById(anyLong());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -158,8 +158,8 @@ public class TableServiceTest {
         OrderTable findTable = OrderTable.builder()
                 .numberOfGuests(5)
                 .build();
-        doReturn(Optional.ofNullable(findTable)).when(orderTableDao).findById(orderTable.getId());
-        doReturn(findTable).when(orderTableDao).save(findTable);
+        doReturn(Optional.ofNullable(findTable)).when(orderTableRepository).findById(orderTable.getId());
+        doReturn(findTable).when(orderTableRepository).save(findTable);
 
         assertThat(tableService.changeNumberOfGuests(orderTable.getId(), orderTable).getNumberOfGuests()).isEqualTo(15);
 

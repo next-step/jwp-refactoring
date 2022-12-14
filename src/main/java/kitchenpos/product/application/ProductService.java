@@ -11,19 +11,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private final ProductRepository productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductRepository productDao) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
-        return ProductResponse.of(productDao.save(productRequest.toProduct()));
+        return ProductResponse.of(productRepository.save(productRequest.toProduct()));
     }
 
     public List<ProductResponse> list() {
-        return productDao.findAll().stream()
+        return productRepository.findAll().stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }

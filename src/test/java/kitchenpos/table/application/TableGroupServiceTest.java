@@ -35,7 +35,7 @@ public class TableGroupServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupRepository tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @Mock
     private OrderRepository orderRepository;
 
@@ -104,7 +104,7 @@ public class TableGroupServiceTest {
     @Test
     public void throwsExceptionWhenTableGroupIsNull() {
         doReturn(Optional.empty())
-                .when(tableGroupDao)
+                .when(tableGroupRepository)
                 .findById(anyLong());
         assertThatThrownBy(() -> tableGroupService.ungroup(13l))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -118,7 +118,7 @@ public class TableGroupServiceTest {
                 .orderTables(OrderTables.of(Arrays.asList(OrderTable.builder().build())))
                 .build();
         doReturn(Optional.ofNullable(tableGroup))
-                .when(tableGroupDao)
+                .when(tableGroupRepository)
                 .findById(anyLong());
         doReturn(orders)
                 .when(orderRepository)

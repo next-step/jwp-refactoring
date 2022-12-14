@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +34,7 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
     @Mock
-    private ProductRepository productDao;
-    public static FixtureMonkey fixtureMonkey;
-    public static FixtureMonkey builderFixtureMonkey;
-
-    @BeforeAll
-    public static void setup() {
-        builderFixtureMonkey = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build();
-        fixtureMonkey = FixtureMonkey.create();
-    }
+    private ProductRepository productRepository;
 
     @DisplayName("상품가격이 없는경우 예외발생")
     @Test
@@ -72,7 +63,7 @@ public class ProductServiceTest {
                 .price(ProductPrice.of(BigDecimal.valueOf(1500)))
                 .id(id)
                 .build();
-        doReturn(mockProduct).when(productDao).save(any(Product.class));
+        doReturn(mockProduct).when(productRepository).save(any(Product.class));
 
         ProductResponse savedProduct = productService.create(productRequest);
 
@@ -82,12 +73,12 @@ public class ProductServiceTest {
     @DisplayName("상품목록을 조회할 경우 저장된 상품목록반환")
     @Test
     public void returnProducts() {
-        List<Product> mockProducts = builderFixtureMonkey
-                .giveMeBuilder(Product.class)
-                .set("id", Arbitraries.longs().between(1, 5))
-                .set("price", ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
-                .sampleList(5);
-        doReturn(mockProducts).when(productDao).findAll();
+        Product product = Product.builder()
+                .id(1l)
+                .price(ProductPrice.of(BigDecimal.valueOf(1000)))
+                .build();
+        List<Product> mockProducts = Arrays.asList(product);
+        doReturn(mockProducts).when(productRepository).findAll();
 
         List<ProductResponse> products = productService.list();
 
