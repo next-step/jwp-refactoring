@@ -1,5 +1,10 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
+import static kitchenpos.exception.ErrorCode.NOT_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.NOT_EXISTS_TABLE;
+import static kitchenpos.exception.ErrorCode.PEOPLE_LESS_THAN_ZERO;
+import static kitchenpos.exception.ErrorCode.TABLE_IS_EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -15,6 +20,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.KitchenposException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,7 +88,9 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_EXISTS_TABLE.getDetail());
     }
 
     @Test
@@ -91,7 +99,9 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(공석_변경_요청.getId(), 공석_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_BEEN_UNGROUP.getDetail());
     }
 
     @Test
@@ -101,7 +111,9 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_COMPLETION_STATUS.getDetail());
     }
 
     @Test
@@ -120,7 +132,9 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(PEOPLE_LESS_THAN_ZERO.getDetail());
     }
 
     @Test
@@ -129,7 +143,9 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_EXISTS_TABLE.getDetail());
     }
 
     @Test
@@ -138,6 +154,8 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(TABLE_IS_EMPTY.getDetail());
     }
 }

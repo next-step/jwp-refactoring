@@ -1,9 +1,13 @@
 package kitchenpos.domain;
 
+import static kitchenpos.exception.ErrorCode.PRICE_CAN_NOT_BE_MINUS;
+import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import kitchenpos.exception.KitchenposException;
 
 public class Menu {
     private Long id;
@@ -31,13 +35,13 @@ public class Menu {
 
     public void validatePriceNull(){
         if(Objects.isNull(price)){
-            throw new IllegalArgumentException();
+            throw new KitchenposException(PRICE_IS_NULL);
         }
     }
 
     public void validatePriceLessThanZero(){
         if (this.price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(PRICE_CAN_NOT_BE_MINUS);
         }
     }
 

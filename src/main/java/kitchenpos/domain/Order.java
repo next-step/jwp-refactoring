@@ -1,9 +1,13 @@
 package kitchenpos.domain;
 
+import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.exception.KitchenposException;
 import org.springframework.util.CollectionUtils;
 
 public class Order {
@@ -32,7 +36,7 @@ public class Order {
 
     public void validateNullOrderLineItems() {
         if(CollectionUtils.isEmpty(orderLineItems)){
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_EXISTS_ORDER_LINE_ITEMS);
         }
     }
 
@@ -88,7 +92,7 @@ public class Order {
 
     public void isCompletionOrderStatus() {
         if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(ALREADY_COMPLETION_STATUS);
         }
     }
 }

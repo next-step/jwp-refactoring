@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.PRICE_CAN_NOT_BE_MINUS;
+import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,6 +22,8 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.exception.ErrorCode;
+import kitchenpos.exception.KitchenposException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +81,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(PRICE_CAN_NOT_BE_MINUS.getDetail());
     }
 
     @ParameterizedTest
@@ -87,7 +93,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(PRICE_IS_NULL.getDetail());
     }
 
     @Test
@@ -96,7 +104,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(ErrorCode.NOT_EXISTS_MENU_GROUP.getDetail());
     }
 
     @Test
@@ -106,7 +116,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(ErrorCode.NOT_FOUND_PRODUCT.getDetail());
     }
 
     @Test
@@ -117,7 +129,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(ErrorCode.PRICE_GREATER_THAN_SUM.getDetail());
     }
 
     @Test
@@ -130,7 +144,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(ErrorCode.PRICE_GREATER_THAN_SUM.getDetail());
     }
 
     @Test

@@ -1,5 +1,9 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
+import static kitchenpos.exception.ErrorCode.NOT_FOUND_ORDER;
+import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +16,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.KitchenposException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +73,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Order findById(final Long orderId) {
-        return orderDao.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        return orderDao.findById(orderId).orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER));
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
@@ -86,7 +91,7 @@ public class OrderService {
 
     private void validateOrderLineItems(Order order){
         if (order.getOrderLineItemsSize() != menuDao.countByIdIn(order.getMenuIds())) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT);
         }
     }
 
@@ -101,7 +106,7 @@ public class OrderService {
 
     private void validateEmptyTrue(OrderTable orderTable){
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(CAN_NOT_ORDER);
         }
     }
 }

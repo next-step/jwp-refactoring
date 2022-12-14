@@ -1,6 +1,9 @@
 package kitchenpos.domain;
 
+import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
+
 import java.util.Objects;
+import kitchenpos.exception.KitchenposException;
 
 public class OrderTable {
     private Long id;
@@ -58,7 +61,7 @@ public class OrderTable {
 
     public void validateTableGroupId() {
         if (Objects.nonNull(this.tableGroupId)) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_BEEN_UNGROUP);
         }
     }
 }

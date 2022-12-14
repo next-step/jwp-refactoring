@@ -1,11 +1,17 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.NOT_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.NOT_EXISTS_TABLE;
+import static kitchenpos.exception.ErrorCode.PEOPLE_LESS_THAN_ZERO;
+import static kitchenpos.exception.ErrorCode.TABLE_IS_EMPTY;
+
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.KitchenposException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +45,7 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public OrderTable findById(Long orderTableId){
-        return orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableDao.findById(orderTableId).orElseThrow(() -> new KitchenposException(NOT_EXISTS_TABLE));
     }
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
@@ -68,19 +74,19 @@ public class TableService {
     private void validateOrderStatus(Long orderTableId) {
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_COMPLETION_STATUS);
         }
     }
 
     private void validateNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(PEOPLE_LESS_THAN_ZERO);
         }
     }
 
     private void validateEmptyTrue(OrderTable savedOrderTable){
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(TABLE_IS_EMPTY);
         }
     }
 }

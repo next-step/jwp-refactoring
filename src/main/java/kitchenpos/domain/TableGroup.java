@@ -1,8 +1,12 @@
 package kitchenpos.domain;
 
+import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES;
+import static kitchenpos.exception.ErrorCode.ORDER_TABLES_MUST_BE_AT_LEAST_TWO;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.exception.KitchenposException;
 import org.springframework.util.CollectionUtils;
 
 public class TableGroup {
@@ -19,6 +23,12 @@ public class TableGroup {
     }
 
     public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
@@ -55,7 +65,7 @@ public class TableGroup {
 
     public void validateOrderTables() {
         if (isOrderTablesEmpty() || isLessThanTwo()) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(ORDER_TABLES_MUST_BE_AT_LEAST_TWO);
         }
     }
 
@@ -69,7 +79,7 @@ public class TableGroup {
 
     public void validateOrderTablesSize(int savedOrderTablesSize) {
         if (this.orderTables.size() != savedOrderTablesSize) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES);
         }
     }
 }

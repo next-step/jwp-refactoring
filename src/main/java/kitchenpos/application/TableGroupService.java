@@ -1,5 +1,8 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.NOT_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP;
+
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
@@ -7,6 +10,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.KitchenposException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +67,7 @@ public class TableGroupService {
     private void validateOrderTables(List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+                throw new KitchenposException(TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP);
             }
         }
     }
@@ -85,7 +89,7 @@ public class TableGroupService {
     private void validateOrderStatus(List<Long> orderTableIds){
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_COMPLETION_STATUS);
         }
     }
 }

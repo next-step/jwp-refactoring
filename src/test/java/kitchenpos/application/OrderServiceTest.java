@@ -1,5 +1,9 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
+import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
+import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,6 +27,8 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.ErrorCode;
+import kitchenpos.exception.KitchenposException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +83,9 @@ class OrderServiceTest {
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_EXISTS_ORDER_LINE_ITEMS.getDetail());
     }
 
     @Test
@@ -86,7 +94,9 @@ class OrderServiceTest {
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT.getDetail());
     }
 
     @Test
@@ -97,7 +107,9 @@ class OrderServiceTest {
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(CAN_NOT_ORDER.getDetail());
     }
 
     @Test
@@ -130,7 +142,9 @@ class OrderServiceTest {
 
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(anyLong(), 주문_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(ErrorCode.NOT_FOUND_ORDER.getDetail());
     }
 
     @Test
@@ -139,6 +153,8 @@ class OrderServiceTest {
 
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(anyLong(), 주문_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(ALREADY_COMPLETION_STATUS.getDetail());
     }
 }

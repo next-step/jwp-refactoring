@@ -1,7 +1,10 @@
 package kitchenpos.domain;
 
+import static kitchenpos.exception.ErrorCode.PRICE_NOT_EXISTS_OR_LESS_THAN_ZERO;
+
 import java.math.BigDecimal;
 import java.util.Objects;
+import kitchenpos.exception.KitchenposException;
 
 public class Product {
     private Long id;
@@ -48,7 +51,7 @@ public class Product {
 
     public void validatePrice() {
         if (isPriceNull(this.price) || isLessThanZero()) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(PRICE_NOT_EXISTS_OR_LESS_THAN_ZERO);
         }
     }
 
