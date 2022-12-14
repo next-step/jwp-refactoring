@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.application.TableServiceTest.두_명의_방문객;
-import static kitchenpos.application.TableServiceTest.빈_상태;
+import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
+import static kitchenpos.domain.OrderTableTest.빈_상태;
 import static kitchenpos.application.TableServiceTest.주문_테이블;
-import static kitchenpos.application.TableGroupServiceTest.단체_지정;
+import static kitchenpos.domain.TableGroupTest.단체_지정;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
