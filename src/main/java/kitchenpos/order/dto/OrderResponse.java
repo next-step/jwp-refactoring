@@ -4,6 +4,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -36,15 +37,20 @@ public class OrderResponse {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public List<OrderLineItemResponse> getOrderLineItems() {
-        return orderLineItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderResponse that = (OrderResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && orderStatus == that.orderStatus && Objects.equals(orderLineItems, that.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTableId, orderStatus, orderLineItems);
     }
 }

@@ -1,11 +1,16 @@
 package kitchenpos.order.applicaiton;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -23,31 +28,28 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
+    public OrderResponse create(final OrderRequest orderRequest) {
+        OrderTable orderTable = orderTableService.findOrderTable(orderRequest.getOrderTableId());
+        List<Menu> menus = menuRepository.findAllById(orderRequest.findAllMenuIds());
+        Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING, menus);
+        order.checkValidOrder(menus.size());
 
-        order.checkOrderLineItemNotEmpty();
-        order.checkItemCountValid(menuRepository.countByIdIn(order.getMenuIds()));
-
-        final OrderTable orderTable = orderTableService.findOrderTable(order.getOrderTableId());
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        order.prepareNewOrder(orderTable);
-        return orderRepository.save(order);
+        return OrderResponse.of(orderRepository.save(order));
     }
 
-    public List<Order> list() {
-        return orderRepository.findAll();
+    public List<OrderResponse> list() {
+        return orderRepository.findAll()
+                .stream().map(OrderResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.throwIfCompleted();
-        savedOrder.changeOrderStatus(order.getOrderStatus());
-        return savedOrder;
+        savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
+        return OrderResponse.of(savedOrder);
     }
 }

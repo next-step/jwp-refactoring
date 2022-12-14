@@ -26,6 +26,10 @@ public class OrderLineItemRequest {
                 .collect(toList());
     }
 
+    public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
+        return new OrderLineItemRequest(orderLineItem.getMenuId(), orderLineItem.getQuantity());
+    }
+
     public OrderLineItem toOrderLineItem(Order order, List<Menu> menus) {
         Menu target = menus.stream().filter(menu -> menu.getId().equals(menuId)).findFirst().get();
         return OrderLineItem.of(order, target, quantity);

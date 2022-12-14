@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import org.aspectj.weaver.ast.Or;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -26,6 +24,9 @@ public class Order {
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems;
+
+    protected Order() {
+    }
 
     private Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
@@ -68,24 +69,28 @@ public class Order {
         orderLineItem.setOrder(this);
     }
 
-    public void checkOrderLineItemNotEmpty() {
+    public void addOrderLineItems(List<OrderLineItem> items) {
+        items.forEach(this::addOrderLineItem);
+    }
+
+    public void checkValidOrder(int menuCount) {
+        checkOrderLineItemNotEmpty();
+        checkItemCountValid(menuCount);
+        checkOrderTableIsNotEmpty();
+    }
+    private void checkOrderLineItemNotEmpty() {
         this.orderLineItems.checkNotEmpty();
     }
 
-    public List<Long> getMenuIds() {
-        return this.orderLineItems.getMenuIds();
-    }
-
-    public void checkItemCountValid(int menuCount) {
+    private void checkItemCountValid(int menuCount) {
         if (this.orderLineItems.count() != menuCount) {
             throw new IllegalArgumentException();
         }
     }
-
-    public void prepareNewOrder(OrderTable orderTable) {
-        this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
+    private void checkOrderTableIsNotEmpty() {
+        if(this.orderTable.isEmpty()){
+            throw new IllegalArgumentException();
+        }
     }
 
     public void throwIfCompleted() {
@@ -98,15 +103,7 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return this.orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems.getOrderLineItems();
-    }
-
-    public void order(List<OrderLineItem> items) {
-        this.orderLineItems.addItems(items);
     }
 }

@@ -30,22 +30,6 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("주문 항목과 메뉴의 갯수가 일치해야 함")
-    void checkItemCountValid() {
-        assertThatThrownBy(() -> order.checkItemCountValid(2));
-    }
-
-    @Test
-    @DisplayName("새로운 주문을 생성할 때 orderTable과 status가 바르게 설정됨")
-    void prepareNewOrder() {
-        order.prepareNewOrder(orderTable);
-
-        assertThat(ReflectionTestUtils.getField(order, "orderTable")).isEqualTo(orderTable);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(order.getOrderedTime()).isNotNull();
-    }
-
-    @Test
     @DisplayName("주문의 상태가 완료일 경우 exception을 발생시킴")
     void checkCompleted() {
         order.changeOrderStatus(OrderStatus.COMPLETION);

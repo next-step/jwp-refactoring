@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -15,7 +16,8 @@ public class OrderRequest {
     private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
-    public OrderRequest() {}
+    public OrderRequest() {
+    }
 
     public OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
@@ -23,12 +25,21 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
+    public static OrderRequest of(Long orderTableId) {
+        return new OrderRequest(orderTableId, OrderStatus.COOKING, new ArrayList<>());
+    }
+
+    public static OrderRequest of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        List<OrderLineItemRequest> collect = orderLineItems.stream().map(OrderLineItemRequest::of).collect(toList());
+        return new OrderRequest(orderTableId, OrderStatus.COOKING, collect);
+    }
+
     public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<Menu> menus) {
         Order order = Order.of(orderTable, orderStatus);
         List<OrderLineItem> items = orderLineItems.stream()
                 .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
                 .collect(toList());
-        order.order(items);
+        order.addOrderLineItems(items);
 
         return order;
     }
