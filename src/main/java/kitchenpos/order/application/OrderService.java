@@ -28,8 +28,7 @@ public class OrderService {
     public OrderResponse create(OrderRequest request) {
         Order order = request.toEntity();
         order.checkOrderLineItems();
-        orderValidator.validateMenu(order);
-        orderValidator.validateTable(order);
+        orderValidator.validate(order);
         Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }

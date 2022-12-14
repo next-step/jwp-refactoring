@@ -20,14 +20,19 @@ public class OrderValidator {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void validateMenu(Order order) {
+    public void validate(Order order) {
+        validateMenu(order);
+        validateTable(order);
+    }
+
+    private void validateMenu(Order order) {
         List<Long> assignedMenus = order.findMenus();
         if (menuRepository.countByIdIn(assignedMenus) != assignedMenus.size()) {
             throw new IllegalArgumentException(MENU_NOT_EXIST);
         }
     }
 
-    public void validateTable(Order order) {
+    private void validateTable(Order order) {
         OrderTable table = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_TABLE));
 
