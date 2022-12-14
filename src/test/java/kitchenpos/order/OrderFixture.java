@@ -45,7 +45,7 @@ public class OrderFixture {
             .given().log().all()
             .body(order)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/api/orders/" + orderId + "/order-status")
+            .when().put("/api/orders/" + orderId + "/order-status")
             .then().log().all()
             .extract();
     }
