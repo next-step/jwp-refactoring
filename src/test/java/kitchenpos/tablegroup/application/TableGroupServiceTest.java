@@ -8,14 +8,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.ordertable.dao.OrderTableDao;
-import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.tablegroup.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,16 +26,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderTableDao orderTableDaoo;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -58,7 +53,7 @@ public class TableGroupServiceTest {
     void 테이블_그룹을_등록할_수_있다() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
         given(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).willReturn(orderTables);
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
 
@@ -127,7 +122,7 @@ public class TableGroupServiceTest {
     void 주문_상태가_조리_또는_식사중이면_테이블_그룹을_해제할_수_없다() {
         List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), orderStatus)).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L), orderStatus)).willReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class);

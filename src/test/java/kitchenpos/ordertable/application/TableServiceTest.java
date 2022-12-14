@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -27,9 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderDao orderDao;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -96,7 +92,7 @@ public class TableServiceTest {
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
         List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(firstTable.getId(), orderStatus)).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(firstTable.getId(), orderStatus)).willReturn(true);
 
         assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
