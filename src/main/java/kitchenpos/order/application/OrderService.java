@@ -1,11 +1,15 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -38,28 +42,29 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    public OrderResponse create(final OrderRequest request) {
+        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
+        Order order = new Order();
         order.setOrderTableId(orderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
@@ -68,41 +73,44 @@ public class OrderService {
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
+            savedOrderLineItems.add(orderLineItemDao.save(new OrderLineItem(orderId, orderLineItem.getMenuId(), orderLineItem.getQuantity())));
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);
 
-        return savedOrder;
+        return OrderResponse.from(savedOrder);
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderDao.findAll();
+
+
+    public List<OrderResponse> list() {
+        List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
             order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
-        return orders;
+        return orders.stream()
+                .map(OrderResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderDao.findById(orderId)
+    public OrderResponse changeOrderStatus(Long orderId, OrderRequest order) {
+        Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
+        OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
         savedOrder.setOrderStatus(orderStatus.name());
 
         orderDao.save(savedOrder);
 
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-        return savedOrder;
+        return OrderResponse.from(savedOrder);
     }
 }
