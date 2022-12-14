@@ -11,11 +11,13 @@ import java.util.List;
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "table_group_id")
     private Long id;
     private LocalDateTime createdDate;
     @Embedded
     private OrderTables orderTables;
+
+    protected TableGroup() {
+    }
 
     private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
@@ -54,7 +56,7 @@ public class TableGroup {
     }
 
     public void addOrderTable(OrderTable orderTable) {
-        orderTable.setTableGroup(this);
+        orderTable.assignTableGroup(this);
         this.orderTables.addTable(orderTable);
     }
 
@@ -66,9 +68,9 @@ public class TableGroup {
         return this.orderTables.getTableIds();
     }
 
-    public void throwIfOrderTableSizeWrong(int savedOrderTableSize) {
-        if (this.orderTables.size() != savedOrderTableSize) {
-            throw new IllegalArgumentException();
-        }
+
+    public void group() {
+        this.orderTables.group(this);
+
     }
 }

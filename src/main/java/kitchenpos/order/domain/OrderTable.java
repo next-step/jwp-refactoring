@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
-import javax.persistence.criteria.Order;
-import java.nio.file.Path;
 import java.util.Objects;
 
 @Entity
@@ -49,7 +47,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(final TableGroup tableGroup) {
+    public void assignTableGroup(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

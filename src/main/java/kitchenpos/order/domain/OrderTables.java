@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -21,7 +20,7 @@ public class OrderTables {
         this.orderTables = new ArrayList<>(orderTables);
     }
 
-    public static OrderTables ofSaved(List<OrderTable> savedOrderTables) {
+    public static OrderTables toBeGrouped(List<OrderTable> savedOrderTables) {
         long countOfOrderTableCanBeAddedToTableGroup = savedOrderTables.stream()
                 .filter(OrderTable::canBeAddedToTableGroup)
                 .count();
@@ -29,16 +28,9 @@ public class OrderTables {
         if (savedOrderTables.size() != countOfOrderTableCanBeAddedToTableGroup) {
             throw new IllegalArgumentException();
         }
-        return new OrderTables(savedOrderTables);
-    }
 
-    /**
-     * Todo. 프론트의 요구사항이 도메인에 침투되어 있는 경우.. 없어져야 함
-     */
-    private void validateOrderTables(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+
+        return new OrderTables(savedOrderTables);
     }
 
     public static OrderTables of(List<OrderTable> orderTables) {
@@ -67,7 +59,14 @@ public class OrderTables {
     }
 
     public void unGroup() {
-        this.orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+        this.orderTables.forEach(orderTable -> orderTable.assignTableGroup(null));
         this.orderTables.clear();
+    }
+
+    public void group(TableGroup tableGroup) {
+        this.orderTables.forEach(savedOrderTable -> {
+            savedOrderTable.setEmpty(false);
+            savedOrderTable.assignTableGroup(tableGroup);
+        });
     }
 }

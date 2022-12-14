@@ -29,14 +29,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTableResponse 비어있지_않은_주문_테이블1;
+    private OrderTableResponse 비어있지_않은_주문_테이블2;
     private OrderTableResponse 빈_주문_테이블1;
     private OrderTableResponse 빈_주문_테이블2;
+
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
         비어있지_않은_주문_테이블1 = 주문_테이블_생성(2, false).as(OrderTableResponse.class);
+        비어있지_않은_주문_테이블2 = 주문_테이블_생성(2, false).as(OrderTableResponse.class);
         빈_주문_테이블1 = 주문_테이블_생성(0, true).as(OrderTableResponse.class);
         빈_주문_테이블2 = 주문_테이블_생성(0, true).as(OrderTableResponse.class);
     }
@@ -50,36 +53,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void createTableGroupWithNullOrderTable() {
         // when
         ExtractableResponse<Response> response = 단체_지정(Arrays.asList(-1L, -2L));
-
-        // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
-    }
-
-    /**
-     * When 비어있는 주문 테이블 목록을 포함한 테이블 그룹을 등록 요청하면
-     * Then 테이블 그룹을 생성할 수 없다.
-     */
-    @DisplayName("비어있는 주문 테이블 목록을 포함한 테이블 그룹을 등록한다.")
-    @Test
-    void createTableGroupWithEmptyOrderTables() {
-        // when
-        ExtractableResponse<Response> response = 단체_지정(Collections.emptyList());
-
-        // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
-    }
-
-    /**
-     * Given 주문 테이블을 생성하고
-     * When 2보다 작은 크기의 주문 테이블 목록을 포함한 테이블 그룹을 등록 요청하면
-     * Then 테이블 그룹을 생성할 수 없다.
-     */
-    @DisplayName("2보다 작은 크기의 주문 테이블 목록을 포함한 테이블 그룹을 등록한다.")
-    @Test
-    void createTableGroupWithOrderTablesLessThenTwo() {
-        // when
-        ExtractableResponse<Response> response =
-                단체_지정(Arrays.asList(빈_주문_테이블1.getId()));
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -184,7 +157,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 단체_지정(List<Long> orderTables) {
-        TableGroupRequest request = new TableGroupRequest(orderTables);
+        TableGroupRequest request = TableGroupRequest.of(orderTables);
 
         return RestAssured.given().log().all()
                 .body(request)
