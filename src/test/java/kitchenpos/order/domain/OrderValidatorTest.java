@@ -2,12 +2,10 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.Arrays;
-import java.util.Optional;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +19,7 @@ class OrderValidatorTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private PlaceOrderValidator placeOrderValidator;
 
     @InjectMocks
     private OrderValidator orderValidator;
@@ -42,7 +40,9 @@ class OrderValidatorTest {
     @Test
     void validateTable() {
         Order order = new Order(1000L);
-        given(orderTableRepository.findById(1000L)).willReturn(Optional.empty());
+        doThrow(new IllegalArgumentException("존재하지 않는 테이블입니다."))
+                .when(placeOrderValidator)
+                .validateTableEmpty(1000L);
 
         assertThatThrownBy(() -> orderValidator.validate(order))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -53,8 +53,9 @@ class OrderValidatorTest {
     @Test
     void validateTableEmpty() {
         Order order = new Order(1L);
-        OrderTable orderTable = new OrderTable(0, true);
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
+        doThrow(new IllegalArgumentException("이용중이지 않은 테이블에서는 주문 할 수 없습니다."))
+                .when(placeOrderValidator)
+                .validateTableEmpty(1L);
 
         assertThatThrownBy(() -> orderValidator.validate(order))
                 .isInstanceOf(IllegalArgumentException.class)
