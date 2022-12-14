@@ -7,7 +7,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 
 @Entity
@@ -17,18 +19,19 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts;
 
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
@@ -56,12 +59,12 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

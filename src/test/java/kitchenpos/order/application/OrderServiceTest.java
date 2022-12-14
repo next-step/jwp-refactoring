@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -54,6 +55,7 @@ public class OrderServiceTest {
     private MenuProduct 치킨_두마리;
     private MenuProduct 스파게티_이인분;
     private Menu 치킨_스파게티_더블세트_메뉴;
+    private MenuGroup 양식;
     private OrderTable 주문_테이블;
     private OrderLineItem 주문_항목;
     private Order 주문;
@@ -63,9 +65,9 @@ public class OrderServiceTest {
     void setUp() {
         치킨 = new Product(1L, "치킨", BigDecimal.valueOf(20_000));
         스파게티 = new Product(2L, "스파게티", BigDecimal.valueOf(10_000));
-        치킨_두마리 = new MenuProduct(1L, 1L, 10);
-        스파게티_이인분 = new MenuProduct(2L, 2L, 10);
-        치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(13_000), 1L, Arrays.asList(치킨_두마리, 스파게티_이인분));
+        치킨_두마리 = new MenuProduct(1L, 2L, 치킨, 치킨_스파게티_더블세트_메뉴);
+        스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티, 치킨_스파게티_더블세트_메뉴);
+        치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(13_000), 양식, Arrays.asList(치킨_두마리, 스파게티_이인분));
 
         주문_테이블 = new OrderTable(1L, 0, false);
         주문 = new Order(1L, 주문_테이블.getId(), null, null, new ArrayList<>());
@@ -83,7 +85,6 @@ public class OrderServiceTest {
         given(menuRepository.countByIdIn(menuIds)).willReturn(menuIds.size());
         given(orderTableRepository.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderRepository.save(주문)).willReturn(주문);
-        given(orderLineItemRepository.save(주문_항목)).willReturn(주문_항목);
 
         Order savedOrder = orderService.create(주문);
 
