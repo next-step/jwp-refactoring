@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu.fixture;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MenuGroupAcceptance {
+public class MenuGroupTestFixture {
     public static ExtractableResponse<Response> 메뉴그룹_생성_요청(String name) {
         MenuGroup menuGroupRequest = new MenuGroup(name);
         return RestAssured

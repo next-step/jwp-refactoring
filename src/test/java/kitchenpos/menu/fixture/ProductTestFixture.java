@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu.fixture;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProductAcceptance {
+public class ProductTestFixture {
     public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
         Product productRequest = new Product(name, price);
         return RestAssured.given().log().all()

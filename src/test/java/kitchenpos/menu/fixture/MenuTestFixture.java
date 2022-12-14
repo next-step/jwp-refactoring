@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu.fixture;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MenuAcceptance {
+public class MenuTestFixture {
     public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menuRequest = new Menu(name, price, menuGroupId, menuProducts);
         return RestAssured

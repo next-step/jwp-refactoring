@@ -5,43 +5,21 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.*;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.acceptance.MenuAcceptance.*;
-import static kitchenpos.menu.acceptance.MenuAcceptance.메뉴_조회됨;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성됨;
-import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성_요청;
-import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성됨;
-import static kitchenpos.order.acceptance.OrderAcceptance.*;
-import static kitchenpos.order.acceptance.OrderTableAcceptance.*;
+import static kitchenpos.menu.fixture.MenuTestFixture.*;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성_요청;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성됨;
+import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성_요청;
+import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성됨;
+import static kitchenpos.order.fixture.OrderTableTestFixture.*;
+import static kitchenpos.order.fixture.OrderTestFixture.*;
 
 @DisplayName("주문 관련 기능 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
-    private Menu 후라이드치킨;
-    private OrderTable 주문테이블;
-
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        // 메뉴 생성
-        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
-        MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
-        후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
-                new BigDecimal(18_000),
-                메뉴그룹.getId(),
-                Lists.newArrayList(new MenuProduct(상품.getId(), 1))).as(Menu.class);
-
-        // 주문테이블 생성
-        주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTable.class);
-    }
-
     /**
      * Given : 주문테이블과 메뉴가 생성되어 있다.
      * When : 주문 생성을 요청한다.
@@ -50,6 +28,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 생성 인수 테스트")
     @Test
     void creatOrder() {
+        // given : 주문테이블 및 메뉴 생성
+        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
+        Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
+                new BigDecimal(18_000),
+                메뉴그룹.getId(),
+                Lists.newArrayList(new MenuProduct(상품.getId(), 1))).as(Menu.class);
+        OrderTable 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTable.class);
+
         // when
         ExtractableResponse<Response> response = 주문_생성_요청(주문테이블, 후라이드치킨);
 
@@ -60,13 +47,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     /**
      * Given : 주문테이블과 메뉴가 생성되어 있다.
      * When : 빈 테이블에서 주문 생성을 요청한다.
-     * Then : 주문이 실패한다..
+     * Then : 주문이 실패한다.
      */
     @DisplayName("주문 생성시 빈테이블 예외 인수 테스트")
     @Test
     void creatOrderExceptionByEmptyTable() {
-        // given
-        주문테이블 = 주문테이블_빈테이블_여부_수정_요청(주문테이블.getId(), true).as(OrderTable.class);
+        // given : 주문테이블 및 메뉴 생성
+        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
+        Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
+                new BigDecimal(18_000),
+                메뉴그룹.getId(),
+                Lists.newArrayList(new MenuProduct(상품.getId(), 1))).as(Menu.class);
+        OrderTable 주문테이블 = 주문테이블_생성_요청(2, true).as(OrderTable.class);
 
         // when
         ExtractableResponse<Response> response = 주문_생성_요청(주문테이블, 후라이드치킨);
@@ -84,6 +77,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findOrders() {
         // given
+        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
+        Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
+                new BigDecimal(18_000),
+                메뉴그룹.getId(),
+                Lists.newArrayList(new MenuProduct(상품.getId(), 1))).as(Menu.class);
+        OrderTable 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTable.class);
         주문_생성_요청(주문테이블, 후라이드치킨);
 
         // when
@@ -102,6 +102,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
         // given
+        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
+        Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
+                new BigDecimal(18_000),
+                메뉴그룹.getId(),
+                Lists.newArrayList(new MenuProduct(상품.getId(), 1))).as(Menu.class);
+        OrderTable 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTable.class);
         Order 주문 = 주문_생성_요청(주문테이블, 후라이드치킨).as(Order.class);
 
         // when
@@ -120,6 +127,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatusException_이미완료된_주문() {
         // given
+        Product 상품 = 상품_생성_요청("후라이드", new BigDecimal(18_000)).as(Product.class);
+        MenuGroup 메뉴그룹 = 메뉴그룹_생성_요청("한마리치킨").as(MenuGroup.class);
+        Menu 후라이드치킨 = 메뉴_생성_요청("후라이드치킨",
+                new BigDecimal(18_000),
+                메뉴그룹.getId(),
+                Lists.newArrayList(new MenuProduct(상품.getId(), 1))).as(Menu.class);
+        OrderTable 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTable.class);
         Order 주문 = 주문_생성_요청(주문테이블, 후라이드치킨).as(Order.class);
         주문_상태_수정_요청(주문.getId(), "COMPLETION");
 
@@ -132,14 +146,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     /**
      * Scenario : 주문을 성공적으로 생성
-     *
+     * <p>
      * Given : 상품이 등록되어 있음
      * And : 메뉴그룹이 등록되어 있음
      * When : 메뉴를 생성한다.
      * Then : 메뉴가 생성된다.
      * And : 메뉴 목록을 조회한다.
      * And : 메뉴 목록이 조회된다.
-     *
+     * <p>
      * Given : 빈 테이블을 생성한다.
      * And : 빈 테이블이 생성됨
      * And : 빈 테이블을 주문 가능한 테이블 상태로 변경(empty --> false)

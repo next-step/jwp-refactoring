@@ -5,28 +5,14 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.order.acceptance.OrderTableAcceptance.주문테이블_생성_요청;
-import static kitchenpos.order.acceptance.TableGroupAcceptance.*;
+import static kitchenpos.order.fixture.OrderTableTestFixture.주문테이블_생성_요청;
+import static kitchenpos.order.fixture.TableGroupTestFixture.*;
 
 @DisplayName("테이블그룹(단체) 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
-
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
-        주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
-    }
-
     /**
      * Given : 단체로 지정할 주문테이블이 2개 이상 존재한다.
      * When : 단체테이블로 지정 요청한다.
@@ -35,6 +21,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 테이블 생성 요청 인수 테스트")
     @Test
     void createTableGroup() {
+        // given
+        OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
+        OrderTable 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
+
         // when
         ExtractableResponse<Response> response = 단체테이블_생성_요청(주문테이블1, 주문테이블2);
 
@@ -51,6 +41,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroupExceptionNotEmptyTable() {
         // given
+        OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
         OrderTable 주문테이블3 = 주문테이블_생성_요청(4, false).as(OrderTable.class);
 
         // when
@@ -69,6 +60,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupTables() {
         // given
+        OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
+        OrderTable 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
         TableGroup tableGroup = 단체테이블_생성_요청(주문테이블1, 주문테이블2).as(TableGroup.class);
 
         // when

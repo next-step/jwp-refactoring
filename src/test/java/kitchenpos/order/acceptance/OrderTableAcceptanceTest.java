@@ -6,11 +6,10 @@ import kitchenpos.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.order.acceptance.OrderTableAcceptance.*;
+import static kitchenpos.order.fixture.OrderTableTestFixture.*;
 
 @DisplayName("주문테이블 관련 기능 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
-
     /**
      * When : 주문 테이블을 생성 요청하면
      * Then : 주문 테이블이 생성된다

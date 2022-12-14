@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.acceptance.MenuAcceptance.*;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성됨;
-import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성_요청;
-import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성됨;
+import static kitchenpos.menu.fixture.MenuTestFixture.*;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성_요청;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성됨;
+import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성_요청;
+import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성됨;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -99,7 +99,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     /**
      * Scenario : 메뉴를 생성
-     *
      * Given : 상품이 등록되어 있음
      * And : 메뉴그룹이 등록되어 있음
      * When : 메뉴를 생성한다.
@@ -122,11 +121,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> createMenuResponse = 메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
-        // And
+        // and
         메뉴_생성됨(createMenuResponse);
-        // And
+        // and
         ExtractableResponse<Response> menuListResponse = 메뉴_조회_요청();
-        // And
+        // and
         메뉴_조회됨(menuListResponse);
     }
 }

@@ -7,7 +7,7 @@ import kitchenpos.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.*;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.*;
 
 @DisplayName("메뉴그룹 관련 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {

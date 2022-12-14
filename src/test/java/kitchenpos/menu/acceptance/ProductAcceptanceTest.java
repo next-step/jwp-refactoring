@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.acceptance.ProductAcceptance.*;
+import static kitchenpos.menu.fixture.ProductTestFixture.*;
 
 @DisplayName("상품 관련 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {

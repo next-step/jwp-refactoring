@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.order.fixture;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TableGroupAcceptance {
+public class TableGroupTestFixture {
     public static ExtractableResponse<Response> 단체테이블_해체_요청(Long tableGroupId) {
         return RestAssured
                 .given().log().all()

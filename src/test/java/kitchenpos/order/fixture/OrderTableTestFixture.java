@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.order.fixture;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderTableAcceptance {
+public class OrderTableTestFixture {
     public static ExtractableResponse<Response> 주문테이블_손님수_수정_요청(Long orderTableId, int numberOfGuests) {
         OrderTable orderTableRequest = new OrderTable();
         orderTableRequest.setNumberOfGuests(numberOfGuests);
