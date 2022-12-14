@@ -26,9 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class MenuServiceTest {
     @Autowired
-    MenuProductDao menuProductDao;
-
-    @Autowired
     MenuDao menuDao;
 
     @Autowired
@@ -43,7 +40,7 @@ class MenuServiceTest {
     MenuGroup menuGroup;
     @BeforeEach
     void beforeEach(){
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuDao, menuGroupDao, productDao);
 
         천원 = productDao.save(new Product(101L, "1번 상품", new BigDecimal(1000)));
         이천원 = productDao.save(new Product(102L, "2번 상품", new BigDecimal(2000)));

@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +27,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
-    private List<MenuProduct> menuProducts;
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
@@ -36,7 +37,17 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+
+        for (MenuProduct menuProduct : menuProducts) {
+            addMenuProduct(menuProduct);
+        }
+
+        validatePrice();
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct){
+        this.menuProducts.add(menuProduct);
+        menuProduct.setMenu(this);
     }
 
     public Long getId() {
@@ -67,11 +78,22 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     public MenuGroup getMenuGroup() {
         return menuGroup;
+    }
+
+    public void validatePrice() {
+        if(price == null || price.compareTo(BigDecimal.ZERO) < 0){
+            throw new IllegalArgumentException();
+        }
+
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }
