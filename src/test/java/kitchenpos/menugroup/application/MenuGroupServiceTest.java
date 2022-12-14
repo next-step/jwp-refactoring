@@ -8,6 +8,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +41,7 @@ public class MenuGroupServiceTest {
     void 메뉴_그룹을_등록할_수_있다() {
         given(menuGroupRepository.save(any())).willReturn(치킨);
 
-        MenuGroup savedProduct = menuGroupService.create(치킨);
+        MenuGroupResponse savedProduct = menuGroupService.create(MenuGroupRequest.of(치킨.getName()));
 
         assertAll(
                 () -> assertThat(savedProduct.getId()).isNotNull(),
@@ -52,9 +54,13 @@ public class MenuGroupServiceTest {
     void 메뉴_그룹_목록_조회할_수_있다() {
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(치킨, 스파게티));
 
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
-        assertThat(menuGroups).hasSize(2);
-        assertThat(menuGroups).contains(치킨, 스파게티);
+        assertAll(
+                () -> assertThat(menuGroups).hasSize(2),
+                () -> assertThat(menuGroups.stream().map(MenuGroupResponse::getId))
+                        .contains(치킨.getId(), 스파게티.getId())
+        );
+
     }
 }
