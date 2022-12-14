@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-import static kitchenpos.application.OrderServiceTest.주문;
+import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
+import static kitchenpos.domain.OrderTableTest.비어있지_않은_상태;
+import static kitchenpos.domain.OrderTableTest.빈_상태;
+import static kitchenpos.domain.OrderTableTest.한_명의_방문객;
+import static kitchenpos.domain.OrderTest.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -20,11 +24,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @SpringBootTest
 @DisplayName("주문 테이블 테스트")
 public class TableServiceTest {
-
-    public static final boolean 빈_상태 = true;
-    public static final boolean 비어있지_않은_상태 = false;
-    public static final int 두_명의_방문객 = 2;
-    public static final int 한_명의_방문객 = 1;
 
     @Autowired
     private TableService tableService;

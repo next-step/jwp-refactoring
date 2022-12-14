@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.application.OrderServiceTest.주문;
-import static kitchenpos.application.TableServiceTest.두_명의_방문객;
-import static kitchenpos.application.TableServiceTest.비어있지_않은_상태;
-import static kitchenpos.application.TableServiceTest.빈_상태;
 import static kitchenpos.application.TableServiceTest.주문_테이블;
-import static kitchenpos.application.TableServiceTest.한_명의_방문객;
+import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
+import static kitchenpos.domain.OrderTableTest.비어있지_않은_상태;
+import static kitchenpos.domain.OrderTableTest.빈_상태;
+import static kitchenpos.domain.OrderTableTest.한_명의_방문객;
+import static kitchenpos.domain.OrderTest.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
