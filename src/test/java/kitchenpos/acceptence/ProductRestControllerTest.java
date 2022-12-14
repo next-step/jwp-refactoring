@@ -3,6 +3,7 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class ProductRestControllerTest extends AcceptanceSupport {
 
     }
 
-    public static ExtractableResponse<Response> 상품을_등록한다(Product product) {
+    public ExtractableResponse<Response> 상품을_등록한다(Product product) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,9 +74,9 @@ public class ProductRestControllerTest extends AcceptanceSupport {
         assertThat(statusCode).isEqualTo(created.value());
     }
 
-    private void 상품_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> getId) {
+    private void 상품_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> createId) {
         List<Product> result = response.jsonPath().getList(".", Product.class);
         List<Long> responseId = result.stream().map(Product::getId).collect(Collectors.toList());
-        assertThat(responseId).containsAll(getId);
+        assertThat(responseId).containsAll(createId);
     }
 }
