@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.ExceptionMessage;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -38,6 +39,6 @@ public class ProductService {
 
     public Product findById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_PRODUCT.getMessage()));
     }
 }

@@ -1,16 +1,17 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Price;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "Menu")
+    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
     public MenuProducts() {
@@ -21,10 +22,23 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public List<MenuProduct> getValue() {
-        return menuProducts;
+    public Price getProductPriceSum() {
+        Price totalPrice = new Price(BigDecimal.ZERO);
+        for (MenuProduct menuProduct : menuProducts) {
+            Price price = menuProduct.getProduct()
+                    .getPrice();
+            Quantity quantity = menuProduct.getQuantity();
+            totalPrice = totalPrice.add(
+                    price.multiplyQuantity(quantity));
+        }
+        return totalPrice;
     }
 
-    public void add(List<Product> products) {
+    public boolean isEmpty() {
+        return menuProducts.isEmpty();
+    }
+
+    public List<MenuProduct> getValue() {
+        return menuProducts;
     }
 }

@@ -1,9 +1,9 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -53,8 +53,8 @@ public class OrderServiceTest {
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
-        when(menuDao.countByIdIn(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())))
-                .thenReturn((long) 주문.getOrderLineItems().size());
+        when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
+                .thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(주문테이블));
         when(orderDao.save(주문)).thenReturn(주문);
         for(final OrderLineItem orderLineItem : 주문.getOrderLineItems()) {
@@ -91,8 +91,8 @@ public class OrderServiceTest {
         Order 주문 = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
-        when(menuDao.countByIdIn(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())))
-                .thenReturn(0L);
+        when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
+                .thenReturn(0);
 
         //when
         //then
@@ -108,8 +108,8 @@ public class OrderServiceTest {
         Order 주문 = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
-        when(menuDao.countByIdIn(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())))
-                .thenReturn((long) 주문.getOrderLineItems().size());
+        when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
+                .thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(null));
 
         //when
@@ -127,8 +127,8 @@ public class OrderServiceTest {
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(),
                 Arrays.asList(주문항목1, 주문항목2));
 
-        when(menuDao.countByIdIn(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())))
-                .thenReturn((long) 주문.getOrderLineItems().size());
+        when(menuRepository.findAllById(주문.getOrderLineItems().stream().map(OrderLineItem::getMenuId).collect(Collectors.toList())).size())
+                .thenReturn(주문.getOrderLineItems().size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.ofNullable(주문테이블));
 
         //when

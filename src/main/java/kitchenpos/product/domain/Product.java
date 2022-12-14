@@ -1,9 +1,6 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.ExceptionMessage;
-
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +8,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     @Embedded
     private Price price;

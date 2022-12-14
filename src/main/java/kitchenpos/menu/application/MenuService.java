@@ -1,13 +1,11 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +18,7 @@ import java.util.stream.Collectors;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-
     private final MenuGroupService menuGroupService;
-
     private final ProductService productService;
 
     public MenuService(
@@ -37,29 +33,21 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-
-        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-
         final BigDecimal price = menuRequest.getPrice();
-        Menu menu = new Menu(menuRequest.getName(), new Price(price), menuGroup);
-
-        List<Product> products = menuRequest.getProductIds().stream().map(id -> productService.findById(id)).collect(Collectors.toList());
-        menu.addMenuProducts(products);
-
-//        BigDecimal sum = BigDecimal.ZERO;
-//        for (final MenuProduct menuProduct : menuProducts) {
-//            final Product product = productService.findById(menuProduct.getProductId())
-//                    .orElseThrow(IllegalArgumentException::new);
-//            sum = sum.add(product.getPrice().getValue().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-//        }
-//
-//        if (price.compareTo(sum) > 0) {
-//            throw new IllegalArgumentException();
-//        }
-
+        final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
+        final List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
+                .stream()
+                .map(this::getMenuProduct)
+                .collect(Collectors.toList());
+        final Menu menu = new Menu(menuRequest.getName(), new Price(price), menuGroup, new MenuProducts(menuProducts));
         final Menu savedMenu = menuRepository.save(menu);
-
         return MenuResponse.of(savedMenu);
+    }
+
+    private MenuProduct getMenuProduct(MenuProductRequest menuProductRequest) {
+        final Long productId = menuProductRequest.getProductId();
+        final Long quantity = menuProductRequest.getQuantity();
+        return new MenuProduct(productService.findById(productId), new Quantity(quantity));
     }
 
     public List<MenuResponse> list() {

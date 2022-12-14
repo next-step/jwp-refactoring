@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.ExceptionMessage;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 
@@ -12,29 +13,35 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     @Embedded
     private Price price;
     @ManyToOne
-    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {}
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(name, price, menuGroup, menuProducts);
         this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup) {
-        this.id = id;
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException(ExceptionMessage.EMPTY_MENU_PRODUCTS.getMessage());
+        }
+        final Price productTotalSum = menuProducts.getProductPriceSum();
+        if (!price.lessOrEqualThan(productTotalSum)) {
+            throw new IllegalArgumentException(ExceptionMessage.MENU_PRICE_LESS_PRODUCT_PRICE_SUM.getMessage());
+        }
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
@@ -51,9 +58,5 @@ public class Menu {
     }
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public void addMenuProducts(List<Product> products) {
-        menuProducts.add(products);
     }
 }

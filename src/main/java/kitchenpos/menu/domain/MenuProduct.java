@@ -10,18 +10,17 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "menu_id")
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
     @Embedded
     private Quantity quantity;
 
     public MenuProduct() {}
 
-    public MenuProduct(Long seq, Product product, Quantity quantity) {
-        this.seq = seq;
+    public MenuProduct(Product product, Quantity quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -32,6 +31,7 @@ public class MenuProduct {
         this.product = product;
         this.quantity = quantity;
     }
+
     public Long getSeq() {
         return seq;
     }
