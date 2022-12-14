@@ -35,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @SpringBootTest
 public class OrderServiceTest {
 
+    public static final OrderStatus 조리_상태 = OrderStatus.COOKING;
     private static final OrderStatus 식사_상태 = OrderStatus.MEAL;
     private static final OrderStatus 계산_완료_상태 = OrderStatus.COMPLETION;
 
@@ -202,9 +203,9 @@ public class OrderServiceTest {
                 .getOrderLineItems()).contains(주문_항목);
     }
 
-    @DisplayName("상태 변경 성공")
+    @DisplayName("상태 변경 성공 - 조리 상태에서 식사 상태")
     @Test
-    void 상태_변경_성공() {
+    void 상태_변경_성공_조리_상태에서_식사_상태() {
         //given:
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
@@ -216,14 +217,38 @@ public class OrderServiceTest {
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                조리_상태.name(),
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
 
-        final Order 계산_완료_주문 = 생성된_주문.changeStatus(계산_완료_상태);
+        final Order 계산_완료_주문 = 생성된_주문.changeStatus(식사_상태);
 
         //when,then:
-        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 계산_완료_주문).isStatus(계산_완료_상태)).isTrue();
+        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 계산_완료_주문).isStatus(식사_상태)).isTrue();
+    }
+
+    @DisplayName("상태 변경 성공 - 식사 상태에서 계산 완료 상태")
+    @Test
+    void 상태_변경_성공_식사_상태에서_계산_완료_상태() {
+        //given:
+        final Menu 저장된_메뉴 = menuService.create(
+                메뉴("자메이카 통다리 1인 세트",
+                        BigDecimal.ONE,
+                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        Arrays.asList(
+                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
+                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+
+        final Order 생성된_주문 = orderService.create(주문(
+                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
+                조리_상태.name(),
+                LocalDateTime.now(),
+                Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
+
+        final Order 계산_완료_주문 = 생성된_주문.changeStatus(식사_상태);
+
+        //when,then:
+        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 계산_완료_주문).isStatus(식사_상태)).isTrue();
     }
 
     @DisplayName("상태 변경 예외 - 주문이 존재하지 않는 경우")
