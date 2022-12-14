@@ -57,12 +57,15 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException();
-        }
+        validateChangeOrderStatusIsNotCompletion();
         this.orderStatus = orderStatus;
     }
 
+    private void validateChangeOrderStatusIsNotCompletion() {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+            throw new IllegalArgumentException("이미 계산이 완료된 주문입니다.");
+        }
+    }
 
     public Long getId() {
         return id;

@@ -14,7 +14,7 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
-    public OrderResponse() {}
+    private OrderResponse() {}
 
     public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
         this.id = id;

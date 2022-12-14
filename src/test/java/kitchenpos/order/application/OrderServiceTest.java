@@ -5,8 +5,8 @@ import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
 import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.order.domain.OrderLineItemTest.주문_항목_생성;
 import static kitchenpos.order.domain.OrderTest.주문_생성;
-import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_생성_요청_객체_생성;
-import static kitchenpos.order.dto.OrderRequestTest.주문_생성_요청_객체_생성;
+import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_요청_객체_생성;
+import static kitchenpos.order.dto.OrderRequestTest.주문_요청_객체_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static kitchenpos.table.domain.OrderTableTest.주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,11 +91,11 @@ class OrderServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
         when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
-        OrderLineItemRequest orderLineItemRequest = 주문_항목_생성_요청_객체_생성(미역국_메뉴.getId(), 2L);
-        OrderRequest 주문_생성_요청_객체 = 주문_생성_요청_객체_생성(주문_테이블.getId(), null, Arrays.asList(orderLineItemRequest));
+        OrderLineItemRequest 주문_항목_요청_객체 = 주문_항목_요청_객체_생성(미역국_메뉴.getId(), 2L);
+        OrderRequest 주문_요청_객체 = 주문_요청_객체_생성(주문_테이블.getId(), null, Arrays.asList(주문_항목_요청_객체));
 
         // when
-        OrderResponse 주문_생성_결과 = orderService.create(주문_생성_요청_객체);
+        OrderResponse 주문_생성_결과 = orderService.create(주문_요청_객체);
 
         // then
         assertThat(주문_생성_결과.getId()).isEqualTo(주문.getId());
@@ -119,12 +119,12 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
-        OrderRequest 주문_생성_요청_객체 = 주문_생성_요청_객체_생성(null, OrderStatus.MEAL, null);
+        OrderRequest 주문_요청_객체 = 주문_요청_객체_생성(null, OrderStatus.MEAL, null);
 
         // when
-        OrderResponse 주문_상태_변경_결과 = orderService.changeOrderStatus(주문.getId(), 주문_생성_요청_객체);
+        OrderResponse 주문_상태_변경_결과 = orderService.changeOrderStatus(주문.getId(), 주문_요청_객체);
 
         // then
-        assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(주문_생성_요청_객체.getOrderStatus());
+        assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(주문_요청_객체.getOrderStatus());
     }
 }

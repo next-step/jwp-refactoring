@@ -25,17 +25,42 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+    }
+
+    @Transactional
+    public OrderResponse create(final OrderRequest orderRequest) {
+        List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItemRequests());
+        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        Order order = orderRepository.save(new Order.Builder()
+                .orderTable(orderTable)
+                .orderLineItems(orderLineItems)
+                .build());
+        return OrderResponse.from(order);
+    }
+
+    public List<OrderResponse> list() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(OrderResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public OrderResponse changeOrderStatus(Long orderId, OrderRequest orderRequest) {
+        Order order = findOrderById(orderId);
+        order.changeOrderStatus(orderRequest.getOrderStatus());
+        return OrderResponse.from(order);
     }
 
     private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         Set<Menu> menuSet = new HashSet<>();
         for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
+            Menu menu = findMenuById(orderLineItemRequest.getMenuId());
             orderLineItems.add(new OrderLineItem.Builder()
                     .menu(menu)
                     .quantity(orderLineItemRequest.getQuantity())
@@ -52,29 +77,11 @@ public class OrderService {
         }
     }
 
-    @Transactional
-    public OrderResponse create(OrderRequest orderRequest) {
-        List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItemRequests());
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
-
-        Order order = new Order.Builder()
-                .orderTable(orderTable)
-                .orderLineItems(orderLineItems)
-                .build();
-        return OrderResponse.from(orderRepository.save(order));
+    public Order findOrderById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
     }
 
-    public List<OrderResponse> list() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream()
-                .map(OrderResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public OrderResponse changeOrderStatus(Long orderId, OrderRequest orderRequest) {
-        Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
-        order.changeOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.from(order);
+    public Menu findMenuById(Long id) {
+        return menuRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다."));
     }
 }

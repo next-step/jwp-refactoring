@@ -3,7 +3,7 @@ package kitchenpos.order.acceptance;
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
 import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
 import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
-import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_생성_요청_객체_생성;
+import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_요청_객체_생성;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +19,7 @@ import java.util.Map;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -36,7 +36,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private ProductResponse 소머리국밥;
     private ProductResponse 순대국밥;
-    private MenuGroup 식사;
+    private MenuGroupResponse 식사;
     private MenuResponse 소머리국밥_메뉴;
     private MenuResponse 순대국밥_메뉴;
 
@@ -49,7 +49,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         소머리국밥 = 상품_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000)).as(ProductResponse.class);
         순대국밥 = 상품_등록되어_있음("순대국밥", BigDecimal.valueOf(7000)).as(ProductResponse.class);
-        식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroup.class);
+        식사 = 메뉴그룹_등록되어_있음("식사").as(MenuGroupResponse.class);
 
         MenuProductRequest 소머리국밥_메뉴상품 = 메뉴상품_요청_객체_생성(소머리국밥.getId(), 1L);
         소머리국밥_메뉴 = 메뉴_등록되어_있음("소머리국밥", BigDecimal.valueOf(8000), 식사.getId(), Arrays.asList(소머리국밥_메뉴상품)).as(MenuResponse.class);
@@ -66,7 +66,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문을 등록할 수 있다.")
     void name() {
         // when
-        OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
+        OrderLineItemRequest 주문_항목 = 주문_항목_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
         ExtractableResponse<Response> response = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목));
 
         // then
@@ -77,7 +77,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 목록을 조회할 수 있다.")
     void list() {
         // given
-        OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
+        OrderLineItemRequest 주문_항목 = 주문_항목_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
         주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목));
 
         // when
@@ -91,11 +91,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        OrderLineItemRequest 주문_항목 = 주문_항목_생성_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
+        OrderLineItemRequest 주문_항목 = 주문_항목_요청_객체_생성(소머리국밥_메뉴.getId(), 2L);
         OrderResponse 주문 = 주문_등록_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목)).as(OrderResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId() , OrderStatus.MEAL.name());
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), OrderStatus.MEAL.name());
 
         // then
         주문_상태_변경됨(response);
