@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -44,7 +44,7 @@ class OrderAcceptanceTestUtils {
         return Arrays.stream(menus)
                 .map(menu -> {
                     OrderLineItem orderLineItem = new OrderLineItem();
-                    orderLineItem.setMenuId(menu.getId());
+                    orderLineItem.setMenuId(menu.id());
                     orderLineItem.setQuantity(1L);
                     return orderLineItem;
                 })

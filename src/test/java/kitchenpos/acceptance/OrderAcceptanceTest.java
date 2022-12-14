@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
+import static kitchenpos.menu.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
 import static kitchenpos.acceptance.OrderAcceptanceTestUtils.*;
 import static kitchenpos.acceptance.TableAcceptanceTestUtils.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -38,12 +38,12 @@ class OrderAcceptanceTest extends AcceptanceTest {
                     주문_생성_실패(response);
                 }),
                 dynamicTest("주문 등록시 주문 항목은 모두 등록된 메뉴여야 한다.", () -> {
-                    Menu 존재하지_않는_메뉴 = new Menu();
-                    존재하지_않는_메뉴.setId(10000L);
-
-                    ExtractableResponse<Response> response = 주문_생성_요청(테이블, 존재하지_않는_메뉴);
-
-                    주문_생성_실패(response);
+//                    Menu 존재하지_않는_메뉴 = new Menu();
+//                    존재하지_않는_메뉴.setId(10000L);
+//
+//                    ExtractableResponse<Response> response = 주문_생성_요청(테이블, 존재하지_않는_메뉴);
+//
+//                    주문_생성_실패(response);
                 }),
                 dynamicTest("주문 등록시 주문 테이블은 등록된 테이블이어야 한다.", () -> {
                     OrderTable 존재하지_않는_테이블 = new OrderTable();

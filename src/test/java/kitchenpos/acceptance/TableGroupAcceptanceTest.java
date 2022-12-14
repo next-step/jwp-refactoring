@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
+import static kitchenpos.menu.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
 import static kitchenpos.acceptance.OrderAcceptanceTestUtils.주문_등록되어_있음;
 import static kitchenpos.acceptance.TableAcceptanceTestUtils.*;
 import static kitchenpos.acceptance.TableGroupAcceptanceTestUtils.*;

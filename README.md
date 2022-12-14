@@ -163,7 +163,7 @@ POST /api/orders/{orderId}/order-status
 - [ ] 단위 테스트 구현
   - [x] 상품
   - [x] 메뉴 그룹
-  - [ ] 메뉴
+  - [x] 메뉴
   - [ ] 주문 테이블
   - [ ] 단체 테이블
   - [ ] 주문
