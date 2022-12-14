@@ -59,6 +59,7 @@ public class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(0), 15l, Collections.EMPTY_LIST);
         Menu menu = Menu.builder().id(15l)
                 .price(BigDecimal.valueOf(1000))
+                .menuGroup(MenuGroup.builder().build())
                 .menuProducts(MenuProducts.of(menuProducts))
                 .build();
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());

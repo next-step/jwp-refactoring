@@ -42,11 +42,13 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 생성된 메뉴를 응답")
     @Test
     public void returnMenu() throws Exception {
-        Menu menu = Menu.builder().menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
+        Menu menu = Menu.builder()
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
         MenuResponse menuResponse = MenuResponse.of(Menu.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .menuGroup(MenuGroup.builder().build())
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
                 .menuProducts(MenuProducts.of(new ManagedList<>()))
                 .price(BigDecimal.valueOf(15000))
                 .build());
@@ -64,7 +66,10 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 메뉴생성 실패응답")
     @Test
     public void throwsExceptionWhenMenuCreate() throws Exception {
-        Menu menu = Menu.builder().menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
+        Menu menu = Menu.builder()
+                .menuProducts(MenuProducts.of(Collections.EMPTY_LIST))
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .price(BigDecimal.valueOf(1000)).build();
         doThrow(new IllegalArgumentException()).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")

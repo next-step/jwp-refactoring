@@ -30,9 +30,6 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        if (Objects.isNull(menuGroup)) {
-            return null;
-        }
         return menuGroup.getId();
     }
 
