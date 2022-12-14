@@ -28,14 +28,14 @@ public class MenuGroupTestFixture extends TestFixture {
         created(response);
     }
 
-    public static void 메뉴_그룹_조회_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> productResponses) {
+    public static void 메뉴_그룹_조회_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> menuGroupResponses) {
         List<Long> actualIds = response.jsonPath()
                 .getList(".", MenuGroup.class)
                 .stream()
                 .map(MenuGroup::getId)
                 .collect(Collectors.toList());
 
-        List<Long> expectIds = productResponses.stream()
+        List<Long> expectIds = menuGroupResponses.stream()
                 .map(r -> r.as(MenuGroup.class))
                 .collect(Collectors.toList())
                 .stream()
