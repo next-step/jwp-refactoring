@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.dto;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableResponse {
     private Long id;
@@ -19,16 +18,12 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse from(OrderTable orderTable) {
-        Long id = orderTable.getId();
-        int numberOfGuests = orderTable.getNumberOfGuests();
-        boolean empty = orderTable.isEmpty();
-        TableGroup tableGroup = orderTable.getTableGroup();
-
-        if (tableGroup == null) {
-            return new OrderTableResponse(id, null, numberOfGuests, empty);
-        }
-
-        return new OrderTableResponse(id, tableGroup.getId(), numberOfGuests, empty);
+        return new OrderTableResponse(
+                orderTable.getId(),
+                orderTable.getTableGroupId(),
+                orderTable.getNumberOfGuests(),
+                orderTable.isEmpty()
+        );
     }
 
     public Long getId() {

@@ -15,4 +15,9 @@ public class TestOrderFactory {
         orderTable.updateEmpty(true, Arrays.asList(order));
         return order;
     }
+
+    public static Order createMealOrder() {
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
+        return new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
+    }
 }

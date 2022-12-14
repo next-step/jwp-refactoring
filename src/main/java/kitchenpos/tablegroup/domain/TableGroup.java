@@ -3,7 +3,10 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.tablegroup.event.TableGroupEventPublisher;
+import kitchenpos.tablegroup.event.TableUnGroupEventPublisher;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,32 +15,30 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
     protected TableGroup() {}
 
-    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
-        orderTables.validateGroup();
+    public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this(createdDate, orderTables);
+    public TableGroup(Long id, LocalDateTime createdDate) {
+        this(createdDate);
         this.id = id;
     }
 
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::validateOrderStatusShouldComplete);
-        orderTables.ungroup();
+    public void setOrderTableIds(List<Long> orderTablesIds) {
+        registerEvent(new TableGroupEventPublisher(id, orderTablesIds));
+    }
+
+    public void ungroup() {
+        registerEvent(new TableUnGroupEventPublisher(id));
     }
 
     public Long getId() {
@@ -46,17 +47,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
-
-    public List<Long> getOrderTableIds() {
-        return orderTables.get()
-                .stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
     }
 
     @Override

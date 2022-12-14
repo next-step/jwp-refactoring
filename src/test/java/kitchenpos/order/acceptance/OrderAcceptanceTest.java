@@ -22,8 +22,10 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +61,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private MenuRequest 불고기정식;
     private MenuResponse 불고기정식응답;
     private Order 주문;
+    private OrderTableResponse 생성된_주문테이블;
     private OrderTable 주문테이블;
     private OrderLineItem 불고기정식주문;
     private OrderLineItemRequest 불고기정식주문요청;
@@ -85,8 +88,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(불고기상품, 김치상품, 공기밥상품)
         )).as(MenuResponse.class);
 
-        주문테이블 = 주문테이블_생성_요청(OrderTableRequest.of(0, false))
-                .as(OrderTable.class);
+        생성된_주문테이블 = 주문테이블_생성_요청(OrderTableRequest.of(0, false))
+                .as(OrderTableResponse.class);
+        주문테이블 = new OrderTable(생성된_주문테이블.getId(), new NumberOfGuests(0), 생성된_주문테이블.isEmpty());
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식메뉴);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));

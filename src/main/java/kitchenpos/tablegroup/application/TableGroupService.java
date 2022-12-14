@@ -9,6 +9,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
+import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,31 +22,36 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
+    private final TableGroupValidator tableGroupValidator;
 
     public TableGroupService(
             OrderTableRepository orderTableRepository,
             TableGroupRepository tableGroupRepository,
-            OrderRepository orderRepository
+            OrderRepository orderRepository,
+            TableGroupValidator tableGroupValidator
     ) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
         this.orderRepository = orderRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
-        List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
+        tableGroupValidator.validateCreateTableGroup(request);
+//        List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
 
-        TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup(savedOrderTables));
+        TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup());
+        savedTableGroup.setOrderTableIds(request.getOrderTableIds());
         return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByTableIds(tableGroup.getOrderTableIds());
+        tableGroupValidator.validateUnGroup(tableGroup);
 
-        tableGroup.ungroup(orders);
+        tableGroup.ungroup();
         tableGroupRepository.save(tableGroup);
     }
 

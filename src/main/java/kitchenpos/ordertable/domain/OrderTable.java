@@ -2,7 +2,6 @@ package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,10 +15,7 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     protected OrderTable() {}
 
@@ -52,29 +48,29 @@ public class OrderTable {
     }
 
     private void validateHasTableGroup() {
-        if (tableGroup != null) {
+        if (tableGroupId != null) {
             throw new IllegalArgumentException(ErrorCode.ALREADY_TABLE_GROUP.getMessage());
         }
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public boolean hasTableGroup() {
-        return tableGroup != null;
+        return tableGroupId != null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {

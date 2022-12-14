@@ -18,25 +18,7 @@ public class OrderTables {
     protected OrderTables() {}
 
     public OrderTables(List<OrderTable> orderTables) {
-        validate(orderTables);
         this.orderTables = new ArrayList<>(orderTables);
-    }
-
-    private void validate(List<OrderTable> orderTables) {
-        validateIsEmpty(orderTables);
-        validateMinimumSize(orderTables);
-    }
-
-    private void validateIsEmpty(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables)) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_IS_EMPTY.getMessage());
-        }
-    }
-
-    private void validateMinimumSize(List<OrderTable> orderTables) {
-        if (orderTables.size() < MINIMUM_SIZE) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_MINIMUM_IS_TWO.getMessage());
-        }
     }
 
     public void validateGroup() {
