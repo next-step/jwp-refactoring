@@ -1,4 +1,4 @@
-package kitchenpos.core;
+package kitchenpos.table.dto;
 
 public class EmptyRequest {
 

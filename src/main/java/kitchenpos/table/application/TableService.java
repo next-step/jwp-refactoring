@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
 
-import kitchenpos.core.EmptyRequest;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -36,12 +35,12 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(Long orderTableId, EmptyRequest request) {
+    public OrderTableResponse changeEmpty(Long orderTableId, boolean isEmpty) {
         OrderTable orderTable = findById(orderTableId);
         if (hasUncompletedOrder(orderTableId)) {
             throw new IllegalArgumentException();
         }
-        orderTable.changeEmpty(request.isEmpty());
+        orderTable.changeEmpty(isEmpty);
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 

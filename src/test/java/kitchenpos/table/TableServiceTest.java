@@ -1,7 +1,6 @@
 package kitchenpos.table;
 
 import kitchenpos.common.ServiceTest;
-import kitchenpos.core.EmptyRequest;
 import kitchenpos.order.OrderTableServiceTestSupport;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
@@ -14,7 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TableServiceTest extends ServiceTest {
 
@@ -45,9 +45,8 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("테이블의 비움 여부를 변경한다.")
     @Test
     void changeEmpty() {
-        EmptyRequest request = new EmptyRequest(false);
 
-        OrderTableResponse response = service.changeEmpty(테이블.getId(), request);
+        OrderTableResponse response = service.changeEmpty(테이블.getId(), false);
 
         assertThat(response.isEmpty()).isFalse();
     }
@@ -58,7 +57,7 @@ class TableServiceTest extends ServiceTest {
         orderTableServiceTestSupport.강정치킨_주문하기(테이블);
 
         assertThatThrownBy(() -> {
-            service.changeEmpty(테이블.getId(), new EmptyRequest(true));
+            service.changeEmpty(테이블.getId(), true);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 

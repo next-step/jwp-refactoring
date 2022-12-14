@@ -1,8 +1,7 @@
 package kitchenpos.table.ui;
 
-import kitchenpos.core.EmptyRequest;
+import kitchenpos.table.dto.EmptyRequest;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.NumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -40,7 +39,7 @@ public class TableRestController {
             @RequestBody EmptyRequest request
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId, request));
+                .body(tableService.changeEmpty(orderTableId, request.isEmpty()));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")

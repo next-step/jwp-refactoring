@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.core.Empty;
-
 import javax.persistence.*;
 
 @Entity
@@ -9,17 +7,20 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "order_table_to_table_group"))
     private TableGroup tableGroup;
+
     @Embedded
     private NumberOfGuests numberOfGuests;
-    @Embedded
-    private Empty empty;
+
+    @Column(nullable = false)
+    private boolean empty;
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-        this.empty = new Empty(empty);
+        this.empty = empty;
     }
 
     protected OrderTable() {
@@ -27,7 +28,7 @@ public class OrderTable {
 
     public void bindTo(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-        this.empty = new Empty(false);
+        this.empty = false;
     }
 
     public void unbind() {
@@ -39,18 +40,18 @@ public class OrderTable {
     }
 
     public boolean isEmpty() {
-        return empty.isTrue();
+        return empty;
     }
 
     public void changeEmpty(boolean empty) {
         if (isGrouped()) {
             throw new IllegalArgumentException();
         }
-        this.empty = new Empty(empty);
+        this.empty = empty;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        if (isEmpty()) {
+        if (empty) {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
