@@ -1,12 +1,9 @@
 package kitchenpos.order.validator;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -90,7 +87,7 @@ class OrderValidatorTest {
         // when & then
         assertThatThrownBy(() -> orderValidator.validateCreateOrder(request, Arrays.asList(menu)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
+                .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY_STATUS.getMessage());
     }
 
     @DisplayName("주문 생성시 주문항목이 비어있다면 예외가 발생한다.")

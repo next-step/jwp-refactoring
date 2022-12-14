@@ -44,9 +44,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-
-    @Mock
     private MenuRepository menuRepository;
 
     @Mock

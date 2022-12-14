@@ -1,17 +1,11 @@
 package kitchenpos.ordertable.validator;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.fixture.TestOrderFactory;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,14 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @DisplayName("주문테이블 Validator 테스트")
@@ -99,6 +89,6 @@ class OrderTableValidatorTest {
         // when & then
         assertThatThrownBy(() -> orderTableValidator.validateUpdateNumberOfGuests(orderTable))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
+                .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY_STATUS.getMessage());
     }
 }

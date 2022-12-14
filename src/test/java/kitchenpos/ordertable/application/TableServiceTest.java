@@ -36,9 +36,6 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableValidator orderTableValidator;
 
     @InjectMocks

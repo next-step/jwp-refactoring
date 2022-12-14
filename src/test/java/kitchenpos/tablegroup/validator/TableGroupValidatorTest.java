@@ -108,7 +108,7 @@ class TableGroupValidatorTest {
         // when & then
         assertThatThrownBy(() -> tableGroupValidator.validateCreateTableGroup(request))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_TABLES_IS_NOT_EMPTY.getMessage());
+                .hasMessageContaining(ErrorCode.NOT_EMPTY_STATUS_IN_ORDER_TABLES.getMessage());
     }
 
     @DisplayName("단체 그룹 등록시 테이블이 다른 단체 그룹에 등록되어 있다면 예외가 발생한다.")

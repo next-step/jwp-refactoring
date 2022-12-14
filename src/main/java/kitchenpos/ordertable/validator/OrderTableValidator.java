@@ -1,14 +1,9 @@
 package kitchenpos.ordertable.validator;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,7 +34,7 @@ public class OrderTableValidator {
 
     public void validateUpdateNumberOfGuests(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_EMPTY_STATUS.getMessage());
         }
     }
 }

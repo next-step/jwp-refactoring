@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +23,7 @@ class OrderTablesTest {
         // when & then
         assertThatThrownBy(() -> orderTables.validateGroup())
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_TABLES_IS_NOT_EMPTY.getMessage());
+                .hasMessageContaining(ErrorCode.NOT_EMPTY_STATUS_IN_ORDER_TABLES.getMessage());
     }
 
     @DisplayName("단체 지정할 수 있는지 확인할 때, 이미 단체지정 되어 있다면 예외가 발생한다.")

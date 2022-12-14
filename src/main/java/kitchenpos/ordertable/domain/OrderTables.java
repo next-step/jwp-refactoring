@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.constant.ErrorCode;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class OrderTables {
                 .anyMatch(orderTable -> !orderTable.isEmpty());
 
         if (hasNotEmpty) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_IS_NOT_EMPTY.getMessage());
+            throw new IllegalArgumentException(ErrorCode.NOT_EMPTY_STATUS_IN_ORDER_TABLES.getMessage());
         }
     }
 

@@ -37,12 +37,6 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private TableGroupValidator tableGroupValidator;
 
     @InjectMocks
