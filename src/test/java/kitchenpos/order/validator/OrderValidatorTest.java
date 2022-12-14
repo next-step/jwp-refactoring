@@ -1,18 +1,16 @@
 package kitchenpos.order.validator;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.fixture.TestOrderFactory;
-import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.domain.Order;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.fixture.TestMenuFactory;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,14 +18,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -38,9 +35,6 @@ class OrderValidatorTest {
     private OrderValidator orderValidator;
 
     @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @DisplayName("주문 생성시 정상적으로 유효성 검사가 성공 된다")
@@ -48,6 +42,7 @@ class OrderValidatorTest {
     void validateCreateOrder() {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), false);
+        Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(10_000), 1L, new ArrayList<>());
         OrderRequest request = OrderRequest.of(
                 orderTable.getId(),
                 Arrays.asList(OrderLineItemRequest.of(1L, 1L))
@@ -56,13 +51,14 @@ class OrderValidatorTest {
         when(orderTableRepository.findById(request.getOrderTableId())).thenReturn(Optional.of(orderTable));
 
         // when & then
-        assertDoesNotThrow(() -> orderValidator.validateCreateOrder(request));
+        assertDoesNotThrow(() -> orderValidator.validateCreateOrder(request, Arrays.asList(menu)));
     }
 
     @DisplayName("주문 생성시 주문 테이블 정보가 존재하지 않을 경우 예외가 발생한다.")
     @Test
     void validateNotExistOrderTable() {
         // given
+        Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(10_000), 1L, new ArrayList<>());
         OrderRequest request = OrderRequest.of(
                 1L,
                 Arrays.asList(OrderLineItemRequest.of(1L, 1L))
@@ -71,7 +67,7 @@ class OrderValidatorTest {
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> orderValidator.validateCreateOrder(request))
+        assertThatThrownBy(() -> orderValidator.validateCreateOrder(request, Arrays.asList(menu)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage());
     }
@@ -81,6 +77,7 @@ class OrderValidatorTest {
     void validateEmptyOrderTable() {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), true);
+        Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(10_000), 1L, new ArrayList<>());
         OrderRequest request = OrderRequest.of(
                 orderTable.getId(),
                 Arrays.asList(OrderLineItemRequest.of(1L, 1L))
@@ -89,7 +86,7 @@ class OrderValidatorTest {
         when(orderTableRepository.findById(request.getOrderTableId())).thenReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatThrownBy(() -> orderValidator.validateCreateOrder(request))
+        assertThatThrownBy(() -> orderValidator.validateCreateOrder(request, Arrays.asList(menu)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
     }
@@ -99,12 +96,13 @@ class OrderValidatorTest {
     void validateEmptyOrderLineItems() {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), false);
+        Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(10_000), 1L, new ArrayList<>());
         OrderRequest request = OrderRequest.of(orderTable.getId(), new ArrayList<>());
 
         when(orderTableRepository.findById(request.getOrderTableId())).thenReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatThrownBy(() -> orderValidator.validateCreateOrder(request))
+        assertThatThrownBy(() -> orderValidator.validateCreateOrder(request, Arrays.asList(menu)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.ORDER_LINE_ITEMS_IS_EMPTY.getMessage());
     }

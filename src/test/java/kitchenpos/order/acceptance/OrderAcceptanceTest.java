@@ -54,18 +54,12 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 불고기;
     private ProductResponse 김치;
     private ProductResponse 공기밥;
-    private MenuGroup 한식;
     private MenuGroupResponse 생성된_한식;
-    private Menu 불고기정식메뉴;
     private MenuProductRequest 불고기상품;
     private MenuProductRequest 김치상품;
     private MenuProductRequest 공기밥상품;
-    private MenuRequest 불고기정식;
     private MenuResponse 불고기정식응답;
-    private Order 주문;
     private OrderTableResponse 생성된_주문테이블;
-    private OrderTable 주문테이블;
-    private OrderLineItem 불고기정식주문;
     private OrderLineItemRequest 불고기정식주문요청;
 
     @BeforeEach
@@ -76,26 +70,20 @@ class OrderAcceptanceTest extends AcceptanceTest {
         공기밥 = 상품_생성_요청(ProductRequest.of("공기밥", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
 
         생성된_한식 = 메뉴그룹_생성_요청(MenuGroupRequest.of("한식")).as(MenuGroupResponse.class);
-        한식 = new MenuGroup(생성된_한식.getId(), new Name(생성된_한식.getName()));
 
         불고기상품 = MenuProductRequest.of(불고기.getId(), 1L);
         김치상품 = MenuProductRequest.of(김치.getId(), 1L);
         공기밥상품 = MenuProductRequest.of(공기밥.getId(), 1L);
 
-        불고기정식메뉴 = TestMenuFactory.create("불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), new ArrayList<>());
         불고기정식응답 = 메뉴_생성_요청(MenuRequest.of(
-                불고기정식메뉴.getName().value(),
-                불고기정식메뉴.getPrice().value(),
-                불고기정식메뉴.getMenuGroupId(),
+                "불고기정식",
+                BigDecimal.valueOf(12_000L),
+                생성된_한식.getId(),
                 Arrays.asList(불고기상품, 김치상품, 공기밥상품)
         )).as(MenuResponse.class);
 
         생성된_주문테이블 = 주문테이블_생성_요청(OrderTableRequest.of(0, false))
                 .as(OrderTableResponse.class);
-        주문테이블 = new OrderTable(생성된_주문테이블.getId(), new NumberOfGuests(0), 생성된_주문테이블.isEmpty());
-        불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식메뉴);
-        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
-        주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식응답.getId(), 1L);
     }
 
@@ -103,7 +91,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createOrder() {
         // when
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
+        OrderRequest request = OrderRequest.of(생성된_주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         ExtractableResponse<Response> response = 주문_생성_요청(request);
 
         // then
@@ -114,7 +102,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void findAllOrder() {
         // given
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
+        OrderRequest request = OrderRequest.of(생성된_주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
 
         // when
@@ -129,7 +117,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void updateOrderStatus() {
         // given
         OrderStatus expectedOrderStatus = OrderStatus.MEAL;
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
+        OrderRequest request = OrderRequest.of(생성된_주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
         UpdateOrderStatusRequest updateRequest = UpdateOrderStatusRequest.of(OrderStatus.MEAL.name());
 

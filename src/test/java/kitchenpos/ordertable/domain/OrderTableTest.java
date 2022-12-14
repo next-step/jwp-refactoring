@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +22,7 @@ class OrderTableTest {
         // given
         boolean expectEmpty = true;
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.COMPLETION, new ArrayList<>());
 
         // when
         orderTable.updateEmpty(expectEmpty, Arrays.asList(order));
@@ -34,7 +36,7 @@ class OrderTableTest {
     void updateEmptyNotCompletionException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.MEAL, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.MEAL, new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> orderTable.updateEmpty(true, Arrays.asList(order)))

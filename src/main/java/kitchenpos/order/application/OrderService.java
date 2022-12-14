@@ -2,8 +2,12 @@ package kitchenpos.order.application;
 
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -13,6 +17,7 @@ import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -43,22 +48,24 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        orderValidator.validateCreateOrder(request);
+        List<Menu> menus = menuRepository.findAllById(request.findAllMenuIds());
+        orderValidator.validateCreateOrder(request, menus);
 
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        Order savedOrder = orderRepository.save(request.createOrder(request.getOrderTableId(), menus));
+        List<OrderLineItem> orderLineItems = findAllOrderLineItem(request.getOrderLineItems(), menus);
+        Order savedOrder = orderRepository.save(request.createOrder(request.getOrderTableId(), orderLineItems));
         return OrderResponse.from(savedOrder);
     }
 
-    private List<Menu> findAllMenuById(List<Long> menuIds) {
-        return menuIds.stream()
-                .map(this::findMenuById)
+    private List<OrderLineItem> findAllOrderLineItem(List<OrderLineItemRequest> orderLineItems, List<Menu> menus) {
+        return orderLineItems.stream()
+                .map(orderLineItem -> {
+                    Menu findMenu = menus.stream()
+                            .filter(menu -> Objects.equals(menu.getId(), orderLineItem.getMenuId()))
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage()));
+                    return orderLineItem.createOrderLineItem(findMenu);
+                })
                 .collect(Collectors.toList());
-    }
-
-    private Menu findMenuById(Long id) {
-        return menuRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage()));
     }
 
     public List<OrderResponse> findAll() {
@@ -73,11 +80,6 @@ public class OrderService {
         Order savedOrder = findOrderById(orderId);
         savedOrder.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.from(orderRepository.save(savedOrder));
-    }
-
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage()));
     }
 
     private Order findOrderById(Long id) {

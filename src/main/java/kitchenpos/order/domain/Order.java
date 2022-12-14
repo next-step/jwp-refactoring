@@ -29,11 +29,14 @@ public class Order {
     public Order(
             Long orderTableId,
             OrderStatus orderStatus,
-            LocalDateTime orderedTime
+            LocalDateTime orderedTime,
+            OrderLineItems orderLineItems
     ) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+        orderLineItems.setOrder(this);
     }
 
     public Order(
@@ -43,9 +46,8 @@ public class Order {
             LocalDateTime orderedTime,
             OrderLineItems orderLineItems
     ) {
-        this(orderTableId, orderStatus, orderedTime);
+        this(orderTableId, orderStatus, orderedTime, orderLineItems);
         this.id = id;
-        this.orderLineItems = orderLineItems;
     }
 
     public void validateOrderStatusShouldComplete() {
@@ -87,11 +89,6 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.get();
-    }
-
-    public void setOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-        orderLineItems.setOrder(this);
     }
 
     @Override

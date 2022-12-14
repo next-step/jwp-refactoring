@@ -12,7 +12,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup extends AbstractAggregateRoot<TableGroup> {

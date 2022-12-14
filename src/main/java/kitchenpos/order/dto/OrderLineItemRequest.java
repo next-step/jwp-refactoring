@@ -29,12 +29,7 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
-    public OrderLineItem createOrderLineItem(List<Menu> menus) {
-        Menu menu = menus.stream()
-                .filter(item -> item.getId().equals(menuId))
-                .findFirst()
-                .get();
-
+    public OrderLineItem createOrderLineItem(Menu menu) {
         return new OrderLineItem(new Quantity(quantity), menu);
     }
 }

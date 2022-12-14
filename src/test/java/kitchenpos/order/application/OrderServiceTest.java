@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.fixture.TestMenuFactory;
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.MenuProduct;
@@ -90,8 +91,7 @@ class OrderServiceTest {
 
         주문테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식);
-        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
-        주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));
+        주문 = TestOrderFactory.create(주문테이블.getId(), OrderStatus.COOKING, Arrays.asList(불고기정식주문));
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식.getMenuGroupId(), 1L);
     }
 
@@ -99,7 +99,7 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         // given
-        when(menuRepository.findById(불고기정식.getId())).thenReturn(Optional.ofNullable(불고기정식));
+        when(menuRepository.findAllById(Arrays.asList(불고기정식.getId()))).thenReturn(Arrays.asList(불고기정식));
         when(orderRepository.save(주문)).thenReturn(주문);
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
 
@@ -111,18 +111,6 @@ class OrderServiceTest {
                 () -> assertThat(result.getId()).isEqualTo(주문.getId()),
                 () -> assertThat(result.getOrderStatus()).isEqualTo(주문.getOrderStatus().name())
         );
-    }
-
-    @DisplayName("주문메뉴가 존재하지 않으면 예외가 발생한다.")
-    @Test
-    void notExistOrderLineItemsException() {
-        // given
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
-        when(menuRepository.findById(불고기정식.getId())).thenReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 조회할 수 있다.")

@@ -2,7 +2,6 @@ package kitchenpos.menu.validator;
 
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.fixture.TestMenuProductFactory;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -68,6 +67,7 @@ class MenuValidatorTest {
 
         when(menuGroupRepository.existsById(any())).thenReturn(false);
 
+        // when & then
         assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuRequest, menuProducts))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.MENU_GROUP_IS_NOT_EXIST.getMessage());
@@ -89,6 +89,7 @@ class MenuValidatorTest {
 
         when(menuGroupRepository.existsById(any())).thenReturn(true);
 
+        // when & then
         assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuRequest, menuProducts))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.PRODUCT_IS_NOT_EXIST.getMessage());
@@ -108,6 +109,7 @@ class MenuValidatorTest {
 
         when(menuGroupRepository.existsById(any())).thenReturn(true);
 
+        // when & then
         assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuRequest, menuProducts))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.MENU_PRODUCT_IS_EMPTY.getMessage());
@@ -128,6 +130,7 @@ class MenuValidatorTest {
 
         when(menuGroupRepository.existsById(any())).thenReturn(true);
 
+        // when & then
         assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuRequest, menuProducts))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.MENU_PRICE_SHOULD_NOT_OVER_TOTAL_PRICE.getMessage());

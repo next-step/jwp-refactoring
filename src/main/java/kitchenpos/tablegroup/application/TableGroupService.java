@@ -20,19 +20,13 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
     private final TableGroupValidator tableGroupValidator;
 
     public TableGroupService(
-            OrderTableRepository orderTableRepository,
             TableGroupRepository tableGroupRepository,
-            OrderRepository orderRepository,
             TableGroupValidator tableGroupValidator
     ) {
-        this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.orderRepository = orderRepository;
         this.tableGroupValidator = tableGroupValidator;
     }
 

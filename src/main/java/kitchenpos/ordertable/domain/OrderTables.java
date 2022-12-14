@@ -10,8 +10,6 @@ import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    private static final int MINIMUM_SIZE = 2;
-
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 

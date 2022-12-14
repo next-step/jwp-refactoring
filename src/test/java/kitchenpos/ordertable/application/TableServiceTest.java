@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +85,7 @@ class TableServiceTest {
         // given
         boolean expectedEmpty = false;
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.COMPLETION, new ArrayList<>());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(expectedEmpty);
 
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
@@ -135,7 +137,7 @@ class TableServiceTest {
     void updateWrongOrderStatusEmptyException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.MEAL, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.MEAL, new ArrayList<>());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable.isEmpty());
 
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));

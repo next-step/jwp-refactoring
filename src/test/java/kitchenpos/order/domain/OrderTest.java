@@ -4,6 +4,7 @@ import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +31,7 @@ class OrderTest {
     void statusShouldCompleteException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.MEAL, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.MEAL, new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> order.validateOrderStatusShouldComplete())
@@ -42,7 +44,7 @@ class OrderTest {
     void updateOrderStatus() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.COOKING, new ArrayList<>());
 
         // when
         order.updateOrderStatus(OrderStatus.MEAL);
@@ -56,7 +58,7 @@ class OrderTest {
     void updateOrderStatusException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.COMPLETION, new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> order.updateOrderStatus(OrderStatus.MEAL))

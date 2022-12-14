@@ -1,6 +1,7 @@
 package kitchenpos.order.validator;
 
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -24,9 +25,10 @@ public class OrderValidator {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void validateCreateOrder(OrderRequest orderRequest) {
+    public void validateCreateOrder(OrderRequest orderRequest, List<Menu> menus) {
         validateOrderTable(orderRequest.getOrderTableId());
         validateOrderLineItems(orderRequest.getOrderLineItems());
+        validateMenus(orderRequest.getOrderLineItems(), menus);
     }
 
     private void validateOrderTable(Long id) {
@@ -41,6 +43,12 @@ public class OrderValidator {
     private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException(ErrorCode.ORDER_LINE_ITEMS_IS_EMPTY.getMessage());
+        }
+    }
+
+    private void validateMenus(List<OrderLineItemRequest> orderLineItems, List<Menu> menus) {
+        if (orderLineItems.size() != menus.size()) {
+            throw new IllegalArgumentException(ErrorCode.MENU_IS_NOT_EXIST.getMessage());
         }
     }
 }

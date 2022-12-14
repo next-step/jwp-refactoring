@@ -5,6 +5,7 @@ import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.fixture.TestMenuFactory;
+import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -37,7 +38,7 @@ class OrderLineItemsTest {
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
 
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
+        Order order = TestOrderFactory.create(orderTable.getId(), OrderStatus.COOKING, new ArrayList<>());
 
         // when
         orderLineItems.setOrder(order);
