@@ -12,15 +12,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,9 +38,6 @@ class MenuServiceTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
@@ -65,8 +61,8 @@ class MenuServiceTest {
         양념치킨_두마리_세트 = new Menu(1L, "양념치킨_두마리_세트", BigDecimal.valueOf(40_000), 양식);
         스파게티_이인분_세트 = new Menu(2L, "양념치킨_두마리_세트", BigDecimal.valueOf(40_000), 양식);
 
-        치킨_두마리 = new MenuProduct(1L, 2L, 양념치킨);
-        스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티);
+        치킨_두마리 = new MenuProduct(1L, 2L, 양념치킨_두마리_세트, 양념치킨);
+        스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티_이인분_세트, 스파게티);
 
         양념치킨_두마리_세트.setMenuProducts(Arrays.asList(치킨_두마리));
         스파게티_이인분_세트.setMenuProducts(Arrays.asList(스파게티_이인분));
@@ -79,17 +75,16 @@ class MenuServiceTest {
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
         MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of(양념치킨.getName(), 양념치킨.getPrice(), 양식.getId(), menuProductRequests);
-
         given(menuGroupRepository.findById(치킨_스파게티_더블세트_메뉴.getMenuGroupId())).willReturn(Optional.of(양식));
         given(productRepository.findById(치킨_두마리.getProduct().getId())).willReturn(Optional.of(양념치킨));
         given(productRepository.findById(스파게티_이인분.getProduct().getId())).willReturn(Optional.of(스파게티));
         given(menuRepository.save(any())).willReturn(양념치킨_두마리_세트);
 
-        MenuResponse savedMenu = menuService.create(치킨_스파게티_더블세트_메뉴);
+        MenuResponse result = menuService.create(치킨_스파게티_더블세트_메뉴);
 
         assertAll(
-                () -> assertThat(savedMenu.getName()).isEqualTo(양념치킨_두마리_세트.getName()),
-                () -> assertThat(savedMenu.getPrice()).isEqualTo(양념치킨_두마리_세트.getPrice())
+                () -> assertThat(result.getName()).isEqualTo(양념치킨_두마리_세트.getName()),
+                () -> assertThat(result.getPrice()).isEqualTo(양념치킨_두마리_세트.getPrice())
         );
     }
 
