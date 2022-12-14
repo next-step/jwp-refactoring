@@ -47,9 +47,6 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private ProductRepository productRepository;
-
-    @Mock
     private MenuValidator menuValidator;
 
     @InjectMocks
@@ -93,9 +90,6 @@ public class MenuServiceTest {
     void createMenu() {
         // given
         MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), 불고기버거세트.getPrice(), 햄버거세트.getId(), 불고기버거상품요청);
-        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
-        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
-        given(productRepository.findById(불고기버거.getId())).willReturn(Optional.of(불고기버거));
         given(menuRepository.save(menuRequest.toMenu(MenuProducts.from(Arrays.asList(감자튀김상품, 콜라상품, 불고기버거상품))))).willReturn(불고기버거세트);
 
         // when
@@ -148,22 +142,6 @@ public class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> menuService.create(menuRequest))
                 .withMessage(ErrorCode.메뉴_상품은_비어있을_수_없음.getErrorMessage());
-    }
-
-    @DisplayName("존재하지 않는 상품이 메뉴에 존재하면 해당 메뉴를 생성할 수 없다.")
-    @Test
-    void createMenuThrowErrorWhenMenuProductIsNotExists() {
-        // given
-        Long notExistsMenuProductId = 10L;
-        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
-        menuProductRequests.add(generateMenuProductRequest(notExistsMenuProductId, 1L));
-        MenuRequest menuRequest = generateMenuRequest(불고기버거세트.getName(), BigDecimal.valueOf(3000L), 햄버거세트.getId(), menuProductRequests);
-        given(productRepository.findById(notExistsMenuProductId)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(menuRequest))
-                .withMessage(ErrorCode.존재하지_않는_상품.getErrorMessage());
     }
 
     @DisplayName("메뉴 전체 목록을 조회한다.")
