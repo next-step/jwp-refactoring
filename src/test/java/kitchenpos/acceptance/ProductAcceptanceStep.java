@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class ProductStep {
-    private ProductStep() {
+public class ProductAcceptanceStep {
+    private ProductAcceptanceStep() {
     }
 
     public static ExtractableResponse<Response> 상품_등록되어_있음(Product product) {

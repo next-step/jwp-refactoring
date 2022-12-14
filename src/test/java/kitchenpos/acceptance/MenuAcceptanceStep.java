@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
 import org.springframework.http.MediaType;
 
-public class MenuStep {
-    private MenuStep() {
+public class MenuAcceptanceStep {
+    private MenuAcceptanceStep() {
     }
 
     public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {

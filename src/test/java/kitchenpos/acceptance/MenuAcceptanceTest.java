@@ -15,9 +15,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.acceptance.MenuGroupStep.메뉴_그룹_등록되어_있음;
-import static kitchenpos.acceptance.MenuStep.*;
-import static kitchenpos.acceptance.ProductStep.상품_등록되어_있음;
+import static kitchenpos.acceptance.MenuGroupAcceptanceStep.메뉴_그룹_등록되어_있음;
+import static kitchenpos.acceptance.MenuAcceptanceStep.*;
+import static kitchenpos.acceptance.ProductAcceptanceStep.상품_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

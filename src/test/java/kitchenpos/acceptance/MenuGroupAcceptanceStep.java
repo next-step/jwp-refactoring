@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
 import org.springframework.http.MediaType;
 
-public class MenuGroupStep {
-    private MenuGroupStep() {
+public class MenuGroupAcceptanceStep {
+    private MenuGroupAcceptanceStep() {
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
