@@ -25,13 +25,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강정치킨 = new Product();
-        강정치킨.setName("강정치킨");
-        강정치킨.setPrice(BigDecimal.valueOf(17000));
-
-        양념치킨 = new Product();
-        양념치킨.setName("양념치킨");
-        양념치킨.setPrice(BigDecimal.valueOf(19000));
+        강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17000));
+        양념치킨 = new Product("양념치킨", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품을 생성한다.")

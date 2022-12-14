@@ -33,9 +33,7 @@ class ProductServiceTest {
     @Test
     void create() {
         //given
-        Product 강정치킨 = new Product();
-        강정치킨.setName("강정치킨");
-        강정치킨.setPrice(BigDecimal.valueOf(17000));
+        Product 강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
         given(productDao.save(any())).willReturn(강정치킨);
 
         //when
@@ -43,6 +41,7 @@ class ProductServiceTest {
 
         //then
         assertAll(
+                () -> assertThat(actual.getId()).isNotNull(),
                 () -> assertThat(actual.getName()).isEqualTo(강정치킨.getName()),
                 () -> assertThat(actual.getPrice()).isEqualTo(강정치킨.getPrice())
         );
@@ -66,9 +65,7 @@ class ProductServiceTest {
     @ValueSource(longs = {-1, -100, -1000})
     void productPriceZero(long price) {
         //given
-        Product 강정치킨 = new Product();
-        강정치킨.setName("강정치킨");
-        강정치킨.setPrice(BigDecimal.valueOf(price));
+        Product 강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(price));
 
         //when & then
         assertThatThrownBy(() -> productService.create(강정치킨))
@@ -80,13 +77,8 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        Product 강정치킨 = new Product();
-        강정치킨.setName("강정치킨");
-        강정치킨.setPrice(BigDecimal.valueOf(17000));
-
-        Product 양념치킨 = new Product();
-        양념치킨.setName("양념치킨");
-        양념치킨.setPrice(BigDecimal.valueOf(19000));
+        Product 강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
+        Product 양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(19000));
 
         given(productDao.findAll()).willReturn(Arrays.asList(강정치킨, 양념치킨));
 
