@@ -9,13 +9,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
@@ -32,9 +31,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     private Product 후라이드치킨;
     private Product 콜라;
     private MenuGroup 치킨;
-    private MenuProduct 후라이드치킨상품;
-    private MenuProduct 콜라상품;
-    private Menu 치킨콜라세트;
+    private MenuProductRequest 후라이드치킨상품;
+    private MenuProductRequest 콜라상품;
+    private MenuRequest 치킨콜라세트;
 
     @BeforeEach
     public void setUp() {
@@ -43,10 +42,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
         콜라 = 상품_생성_요청(new Product(2L, "콜라", BigDecimal.valueOf(1_800))).as(Product.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
 
-        치킨콜라세트 = new Menu(1L, "치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨);
-        후라이드치킨상품 = new MenuProduct(null, 1L, 후라이드치킨);
-        콜라상품 = new MenuProduct(null, 1L, 콜라);
-        치킨콜라세트.setMenuProducts(Arrays.asList(후라이드치킨상품, 콜라상품));
+        후라이드치킨상품 = MenuProductRequest.of(후라이드치킨.getId(), 1L);
+        콜라상품 = MenuProductRequest.of(콜라.getId(), 1L);
+        치킨콜라세트 = MenuRequest.of("치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨.getId(), Arrays.asList(후라이드치킨상품, 콜라상품));
     }
 
     @Test
@@ -61,20 +59,20 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void 메뉴_목록을_조회한다() {
         // given
-        치킨콜라세트 = 메뉴_생성_요청(치킨콜라세트).as(Menu.class);
+        MenuResponse 치킨콜라세트_응답 = 메뉴_생성_요청(치킨콜라세트).as(MenuResponse.class);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
         // then
-        메뉴_목록_응답됨(response, Arrays.asList(치킨콜라세트.getId()));
+        메뉴_목록_응답됨(response, Arrays.asList(치킨콜라세트_응답.getId()));
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
+                .body(request)
                 .when().post("/api/menus")
                 .then().log().all()
                 .extract();

@@ -117,7 +117,7 @@
 * [x] 종속성 관계 추가
 * [x] OrderStatus enum 추가
 * [ ] Request, Response TDO 적용
-  * [x] Main
+  * [x] Menu
   * [x] MenuGroup
   * [x] Product
   * [x] Order
