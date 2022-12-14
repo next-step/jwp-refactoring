@@ -53,7 +53,7 @@ class MenuGroupRestControllerTest extends AcceptanceSupport {
         메뉴그륩_리스트를_비교한다(response, Arrays.asList(메뉴A.getId(), 메뉴B.getId()));
     }
 
-    private ExtractableResponse<Response> 메뉴그룹을_생성한다(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴그룹을_생성한다(MenuGroup menuGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
