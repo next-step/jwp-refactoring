@@ -1,7 +1,5 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
-import static kitchenpos.acceptance.OrderAcceptanceTestUtils.주문_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,18 +9,19 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-class TableAcceptanceTestUtils {
+public class TableAcceptanceTestUtils {
     private static final String TABLE_PATH = "/api/tables";
 
     private TableAcceptanceTestUtils() {}
 
-    public static OrderTable 주문이_들어간_테이블() {
-        OrderTable 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(null, 2, false);
-        주문_등록되어_있음(주문이_들어간_테이블, 메뉴_면류_짜장면());
+    public static OrderTableResponse 주문이_들어간_테이블() {
+        OrderTableResponse 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(2, false);
+//        주문_등록되어_있음(주문이_들어간_테이블, 메뉴_면류_짜장면());
         return 주문이_들어간_테이블;
     }
 
@@ -33,48 +32,36 @@ class TableAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(int numberOfGuests, boolean empty) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(new OrderTableRequest(numberOfGuests, empty))
                 .when().post(TABLE_PATH)
                 .then().log().all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 주문_테이블_빈_테이블_수정_요청(Long orderTableId) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
-
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
                 .when().put(TABLE_PATH + "/{orderTableId}/empty", orderTableId)
                 .then().log().all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 주문_테이블_손님_수_수정_요청(Long orderTableId, int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(new OrderTableRequest(numberOfGuests, false))
                 .when().put(TABLE_PATH + "/{orderTableId}/number-of-guests", orderTableId)
                 .then().log().all()
                 .extract();
     }
 
-    public static OrderTable 주문_테이블_등록되어_있음(Long tableGroupId, int numberOfGuests, boolean empty) {
-        ExtractableResponse<Response> response = 주문_테이블_생성_요청(tableGroupId, numberOfGuests, empty);
+    public static OrderTableResponse 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(numberOfGuests, empty);
         주문_테이블_생성됨(response);
-        return response.as(OrderTable.class);
+        return response.as(OrderTableResponse.class);
     }
 
     public static void 주문_테이블_생성됨(ExtractableResponse<Response> response) {
@@ -93,7 +80,7 @@ class TableAcceptanceTestUtils {
     }
 
     public static void 테이블_손님_수_검증(ExtractableResponse<Response> response, int expect) {
-        OrderTable changeTable = response.as(OrderTable.class);
+        OrderTableResponse changeTable = response.as(OrderTableResponse.class);
         assertThat(changeTable.getNumberOfGuests()).isEqualTo(expect);
     }
 
@@ -106,7 +93,7 @@ class TableAcceptanceTestUtils {
     }
 
     public static void 비어있는_주문_테이블_검증(ExtractableResponse<Response> response) {
-        OrderTable changeTable = response.as(OrderTable.class);
+        OrderTableResponse changeTable = response.as(OrderTableResponse.class);
         assertTrue(changeTable.isEmpty());
     }
 
@@ -114,11 +101,11 @@ class TableAcceptanceTestUtils {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 주문_테이블_목록_포함됨(ExtractableResponse<Response> response, OrderTable... orderTables) {
+    public static void 주문_테이블_목록_포함됨(ExtractableResponse<Response> response, OrderTableResponse... orderTableResponses) {
         List<Long> actualIds = response.jsonPath()
                 .getList("id", Long.class);
-        List<Long> expectIds = Arrays.stream(orderTables)
-                .map(OrderTable::getId)
+        List<Long> expectIds = Arrays.stream(orderTableResponses)
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(actualIds).containsExactlyElementsOf(expectIds);

@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static kitchenpos.domain.OrderLineItemTestFixture.*;
-import static kitchenpos.domain.OrderTableTestFixture.orderTable;
+import static kitchenpos.table.domain.OrderTableTestFixture.orderTable;
 import static kitchenpos.domain.OrderTestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -12,12 +12,12 @@ import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class OrderServiceTest {
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -51,7 +51,7 @@ class OrderServiceTest {
     @DisplayName("주문 등록시 주문 항목은 필수이다.")
     void createOrderByOrderLineItemIsNull() {
         // given
-        Order order = order(1L, 주문테이블.getId(), Collections.emptyList(), OrderStatus.COOKING.name());
+        Order order = order(1L, 주문테이블.id(), Collections.emptyList(), OrderStatus.COOKING.name());
 
         // when & then
         assertThatIllegalArgumentException()
@@ -66,7 +66,7 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(
                 Arrays.asList(짜장면_1그릇.getMenuId(), 짬뽕_2그릇.getMenuId(), 탕수육_1그릇.getMenuId())))
                 .willReturn(2L);
-        Order order = order(1L, 주문테이블.getId(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇, 탕수육_1그릇), OrderStatus.COOKING.name());
+        Order order = order(1L, 주문테이블.id(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇, 탕수육_1그릇), OrderStatus.COOKING.name());
 
         // when & then
         assertThatIllegalArgumentException()
@@ -79,8 +79,8 @@ class OrderServiceTest {
         // given
         given(menuRepository.countByIdIn(Arrays.asList(짜장면_1그릇.getMenuId(), 짬뽕_2그릇.getMenuId())))
                 .willReturn(2L);
-        given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.empty());
-        Order order = order(1L, 주문테이블.getId(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
+        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.empty());
+        Order order = order(1L, 주문테이블.id(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
 
         // when & then
         assertThatIllegalArgumentException()
@@ -94,8 +94,8 @@ class OrderServiceTest {
         OrderTable emptyTable = orderTable(2L, null, 0, true);
         given(menuRepository.countByIdIn(Arrays.asList(짜장면_1그릇.getMenuId(), 짬뽕_2그릇.getMenuId())))
                 .willReturn(2L);
-        given(orderTableDao.findById(emptyTable.getId())).willReturn(Optional.of(emptyTable));
-        Order order = order(1L, emptyTable.getId(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
+        given(orderTableRepository.findById(emptyTable.id())).willReturn(Optional.of(emptyTable));
+        Order order = order(1L, emptyTable.id(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
 
         // when & then
         assertThatIllegalArgumentException()
@@ -108,8 +108,8 @@ class OrderServiceTest {
         // given
         given(menuRepository.countByIdIn(Arrays.asList(짜장면_1그릇.getMenuId(), 짬뽕_2그릇.getMenuId())))
                 .willReturn(2L);
-        given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        Order order = order(1L, 주문테이블.getId(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
+        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(주문테이블));
+        Order order = order(1L, 주문테이블.id(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
         given(orderDao.save(order)).willReturn(order);
 
         // when
@@ -127,11 +127,11 @@ class OrderServiceTest {
     void updateOrderStatusByNoneOrdered() {
         // given
         Order changeOrderStatusRequest = changeOrderStatusRequest(OrderStatus.MEAL.name());
-        given(orderDao.findById(주문테이블.getId())).willReturn(Optional.empty());
+        given(orderDao.findById(주문테이블.id())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(주문테이블.getId(), changeOrderStatusRequest));
+                .isThrownBy(() -> orderService.changeOrderStatus(주문테이블.id(), changeOrderStatusRequest));
     }
 
     @Test
@@ -139,7 +139,7 @@ class OrderServiceTest {
     void updateOrderStatusByOrderStatusIsNotEqualToCompleted() {
         // given
         Order changeOrderStatusRequest = changeOrderStatusRequest(OrderStatus.MEAL.name());
-        Order order = order(2L, 주문테이블.getId(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COMPLETION.name());
+        Order order = order(2L, 주문테이블.id(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COMPLETION.name());
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
         // when & then
@@ -152,7 +152,7 @@ class OrderServiceTest {
     void updateOrderStatus() {
         // given
         Order changeOrderStatusRequest = changeOrderStatusRequest(OrderStatus.MEAL.name());
-        Order order = order(1L, 주문테이블.getId(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
+        Order order = order(1L, 주문테이블.id(), Arrays.asList(짜장면_1그릇, 짬뽕_2그릇), OrderStatus.COOKING.name());
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
         // when

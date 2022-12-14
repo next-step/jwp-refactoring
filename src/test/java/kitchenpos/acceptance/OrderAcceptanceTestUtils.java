@@ -13,11 +13,11 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-class OrderAcceptanceTestUtils {
+public class OrderAcceptanceTestUtils {
     private static final String ORDER_PATH = "/api/orders";
 
     private OrderAcceptanceTestUtils() {}
@@ -30,7 +30,7 @@ class OrderAcceptanceTestUtils {
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, Menu... menus) {
-        Order order = order(null, orderTable.getId(), toOrderLineItems(menus), OrderStatus.COOKING.name());
+        Order order = order(null, orderTable.id(), toOrderLineItems(menus), OrderStatus.COOKING.name());
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -29,7 +29,7 @@ class TableGroupTest {
     @DisplayName("단체 테이블 생성시 모두 비어있는 테이블이어야 한다.")
     void createTableGroupByNotEmptyTable() {
         // when & then
-        assertThatThrownBy(() -> TableGroup.from(Arrays.asList(비어있는_테이블, 주문테이블)))
+        assertThatThrownBy(() -> TableGroup.from(Arrays.asList(비어있는_테이블2, 주문테이블2)))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("모두 비어있는 테이블이어야 합니다.");
     }
