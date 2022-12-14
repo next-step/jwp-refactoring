@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 @DisplayName("주문 일급 컬렉션 테스트")
 class OrdersTest {
 
-    private OrderValidator orderValidator = orderTableId -> {};
     private OrderTable orderTable = OrderTable.of(1L, 10, false);
     private Order order1 =
             Order.of(1L, orderTable.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));

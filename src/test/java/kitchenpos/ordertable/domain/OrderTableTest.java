@@ -1,14 +1,13 @@
 package kitchenpos.ordertable.domain;
 
 import java.util.Arrays;
-import kitchenpos.order.domain.OrderValidator;
-import kitchenpos.ordertable.exception.CannotChangeEmptyException;
-import kitchenpos.ordertable.exception.CannotChangeNumberOfGuestsException;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.ordertable.exception.InvalidNumberOfGuestsSize;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.exception.CannotChangeEmptyException;
+import kitchenpos.ordertable.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.ordertable.exception.InvalidNumberOfGuestsSize;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("주문 테이블 테스트")
 class OrderTableTest {
-
-    private OrderValidator orderValidator = orderTableId -> {};
 
     @DisplayName("id가 같은 두 객체는 동등하다.")
     @Test
@@ -49,30 +46,6 @@ class OrderTableTest {
                 .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED);
     }
 
-    @DisplayName("주문 테이블의 주문 상태가 조리이면 주문 테이블의 empty 변경 시 예외가 발생한다.")
-    @Test
-    void changeEmptyException2() {
-        OrderTable 조리상태_주문_테이블 = OrderTable.of(10, false);
-        Order.of(조리상태_주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
-
-        boolean empty = !조리상태_주문_테이블.isEmpty();
-        Assertions.assertThatThrownBy(() -> 조리상태_주문_테이블.changeEmpty(empty))
-                .isInstanceOf(CannotChangeEmptyException.class)
-                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
-    }
-
-    @DisplayName("주문 테이블의 주문 상태가 식사이면 주문 테이블의 empty 변경 시 예외가 발생한다.")
-    @Test
-    void changeEmptyException3() {
-        OrderTable 식사상태_주문_테이블 = OrderTable.of(10, false);
-        Order 주문 = Order.of(식사상태_주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문.changeOrderStatus(OrderStatus.MEAL);
-
-        boolean empty = !식사상태_주문_테이블.isEmpty();
-        Assertions.assertThatThrownBy(() -> 식사상태_주문_테이블.changeEmpty(empty))
-                .isInstanceOf(CannotChangeEmptyException.class)
-                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
-    }
 
     @DisplayName("주문 테이블의 empty 상태가 변경된다.")
     @Test

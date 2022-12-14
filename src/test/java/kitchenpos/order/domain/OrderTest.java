@@ -3,9 +3,8 @@ package kitchenpos.order.domain;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.order.exception.EmptyOrderLineItemException;
-import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.order.exception.EmptyOrderLineItemException;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -47,16 +46,5 @@ class OrderTest {
         Assertions.assertThatThrownBy(() -> Order.of(orderTable.getId(), orderLineItems))
                 .isInstanceOf(EmptyOrderLineItemException.class)
                 .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_LINE_ITEM);
-    }
-
-    @DisplayName("주문 테이블이 empty 이면 주문 생성 시 예외가 발생한다.")
-    @Test
-    void createException2() {
-        OrderTable orderTable = OrderTable.of(10, true);
-        List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(1L, 2));
-
-        Assertions.assertThatThrownBy(() -> Order.of(orderTable.getId(), orderLineItems))
-                .isInstanceOf(EmptyOrderTableException.class)
-                .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_TABLE);
     }
 }

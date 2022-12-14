@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Column;
@@ -14,13 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.ordertable.exception.CannotChangeEmptyException;
 import kitchenpos.ordertable.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -32,9 +28,6 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
-
-    @Embedded
-    private Orders orders = Orders.createEmpty();
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -103,24 +96,11 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-
         if (Objects.nonNull(this.getTableGroupId())) {
             throw new CannotChangeEmptyException(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED);
         }
 
-        if (orders.anyMatchedIn(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new CannotChangeEmptyException(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
-        }
-
         this.empty = empty;
-    }
-
-    public Orders getOrders() {
-        return orders;
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
     }
 
     public void registerTableGroup(TableGroup tableGroup) {

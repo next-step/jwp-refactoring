@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -10,25 +11,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.EmptyOrderLineItemException;
 import kitchenpos.order.exception.EmptyOrderTableException;
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.exception.OrderStatusChangeException;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +51,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -95,7 +97,6 @@ class OrderServiceTest {
     @Test
     void create() {
         when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
         when(orderRepository.save(any())).thenReturn(주문);
 
         OrderResponse result = orderService.create(주문요청);
@@ -112,8 +113,8 @@ class OrderServiceTest {
     @Test
     void createException() {
         Assertions.assertThatThrownBy(() -> orderService.create(주문항목_없는_주문요청))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageStartingWith(ExceptionMessage.ORDER_TABLE_NOT_FOUND);
+                .isInstanceOf(EmptyOrderLineItemException.class)
+                .hasMessageStartingWith(ExceptionMessage.EMPTY_ORDER_LINE_ITEM);
     }
 
     @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문 생성 시 예외가 발생한다.")
@@ -129,8 +130,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
+        doThrow(new EntityNotFoundException(ExceptionMessage.ORDER_TABLE_NOT_FOUND))
+                .when(orderValidator).checkOrderTableIsNotEmpty(any());
 
         Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
                 .isInstanceOf(EntityNotFoundException.class)
@@ -140,8 +141,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        when(menuRepository.findById(any())).thenReturn(Optional.of(후라이드치킨));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
+        doThrow(new EmptyOrderTableException(ExceptionMessage.EMPTY_ORDER_TABLE))
+                .when(orderValidator).checkOrderTableIsNotEmpty(any());
 
         Assertions.assertThatThrownBy(() -> orderService.create(비어있는_주문_테이블_주문요청))
                 .isInstanceOf(EmptyOrderTableException.class)

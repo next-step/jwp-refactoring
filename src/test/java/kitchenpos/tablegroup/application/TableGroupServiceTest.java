@@ -3,26 +3,25 @@ package kitchenpos.tablegroup.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.ordertable.exception.CannotGroupOrderTablesException;
-import kitchenpos.ordertable.exception.CannotUnGroupOrderTablesException;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.exception.CannotGroupOrderTablesException;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +40,9 @@ class TableGroupServiceTest {
 
     @Mock
     private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -138,6 +140,7 @@ class TableGroupServiceTest {
         OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L, 주문_테이블_목록);
+        doNothing().when(orderValidator).checkUnGroupable(anyList());
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
 
         tableGroupService.ungroup(1L);
@@ -146,44 +149,5 @@ class TableGroupServiceTest {
                 () -> assertThat(주문_테이블1.isGrouping()).isTrue(),
                 () -> assertThat(주문_테이블2.isGrouping()).isTrue()
         );
-    }
-
-    @DisplayName("단체 지정된 주문 테이블들의 상태가 조리면 단체 지정을 취소할 수 없다.")
-    @Test
-    void ungroupException2() {
-        OrderTable 주문_테이블1 = OrderTable.of(1L, 3, true);
-        OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
-        TableGroup.of(1L, 주문_테이블_목록);
-
-        Order.of(주문_테이블1.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
-        Order.of(주문_테이블2.getId(), Arrays.asList(OrderLineItem.of(2L, 2)));
-
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
-
-        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(CannotUnGroupOrderTablesException.class)
-                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
-    }
-
-    @DisplayName("단체 지정된 주문 테이블들의 상태가 식사면 단체 지정을 취소할 수 없다.")
-    @Test
-    void ungroupException3() {
-        OrderTable 주문_테이블1 = OrderTable.of(1L, 3, true);
-        OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
-        TableGroup.of(1L, 주문_테이블_목록);
-
-        Order 주문1 = Order.of(주문_테이블1.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
-        Order 주문2 = Order.of(주문_테이블2.getId(), Arrays.asList(OrderLineItem.of(2L, 2)));
-
-        주문1.changeOrderStatus(OrderStatus.MEAL);
-        주문2.changeOrderStatus(OrderStatus.MEAL);
-
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
-
-        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(CannotUnGroupOrderTablesException.class)
-                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
     }
 }

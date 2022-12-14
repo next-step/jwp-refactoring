@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -20,11 +21,15 @@ public class TableGroupService {
 
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderValidator orderValidator;
 
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderTableRepository orderTableRepository,
+                             TableGroupRepository tableGroupRepository,
+                             OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -37,6 +42,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         OrderTables orderTables = OrderTables.from(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        orderValidator.checkUnGroupable(orderTables.getOrderTableIds());
         orderTables.unGroup();
     }
 

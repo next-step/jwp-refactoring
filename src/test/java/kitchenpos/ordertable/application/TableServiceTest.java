@@ -3,6 +3,7 @@ package kitchenpos.ordertable.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -10,9 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -34,6 +33,9 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -96,24 +98,11 @@ class TableServiceTest {
                 .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_TABLE_GROUPED);
     }
 
-    @DisplayName("주문 상태가 조리이면 주문 테이블의 빈 상태를 변경할 수 없다.")
+    @DisplayName("주문 상태가 조리 또는 식사이면 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException3() {
-        Order.of(비어있지않은_주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
-
-        boolean empty = 비어있지않은_주문_테이블.isEmpty();
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
-                .isInstanceOf(CannotChangeEmptyException.class)
-                .hasMessageStartingWith(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL);
-    }
-
-    @DisplayName("주문 상태가 식사이면 주문 테이블의 빈 상태를 변경할 수 없다.")
-    @Test
-    void changeEmptyException4() {
-        Order 주문 = Order.of(비어있지않은_주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문.changeOrderStatus(OrderStatus.MEAL);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        doThrow(new CannotChangeEmptyException(ExceptionMessage.CAN_NOT_CHANGE_EMPTY_WHEN_COOKING_OR_MEAL))
+                .when(orderValidator).checkEmptyChangeable(any());
 
         boolean empty = 비어있지않은_주문_테이블.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))

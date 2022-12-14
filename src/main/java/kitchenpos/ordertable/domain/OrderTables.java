@@ -1,16 +1,14 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.ordertable.exception.CannotGroupOrderTablesException;
-import kitchenpos.ordertable.exception.CannotUnGroupOrderTablesException;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.exception.CannotGroupOrderTablesException;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {
@@ -43,20 +41,7 @@ public class OrderTables {
     }
 
     public void unGroup() {
-        checkAllUnGroupableOrderStatus();
         orderTables.forEach(OrderTable::unGroup);
-    }
-
-    private void checkAllUnGroupableOrderStatus() {
-        if (anyMatchedBy(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new CannotUnGroupOrderTablesException(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
-        }
-    }
-
-    private boolean anyMatchedBy(List<OrderStatus> orderStatuses) {
-        return orderTables.stream()
-                .map(OrderTable::getOrders)
-                .anyMatch(it -> it.anyMatchedIn(orderStatuses));
     }
 
     private void checkOrderTableSizeGreaterThanMinSize() {
@@ -79,5 +64,11 @@ public class OrderTables {
         if (alreadyRegistered) {
             throw new CannotGroupOrderTablesException(ExceptionMessage.ALREADY_GROUPED_ORDER_TABLE_EXIST);
         }
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 }
