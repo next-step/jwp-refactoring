@@ -6,7 +6,7 @@ import kitchenpos.common.exception.InvalidParameterException;
 
 @Embeddable
 public class NumberOfGuests {
-    @Column(nullable = false)
+    @Column(name = "number_of_guests", nullable = false)
     private int count;
 
     protected NumberOfGuests() {}
