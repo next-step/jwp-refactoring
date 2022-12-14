@@ -15,4 +15,9 @@ public class ExceptionAdvice {
     public ResponseEntity<String> handleInvalidParameterException(InvalidParameterException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
