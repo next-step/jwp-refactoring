@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
+import kitchenpos.testFixture;
 import org.assertj.core.api.Assertions;
 
 public class ProductTestFixture extends testFixture {
@@ -28,13 +29,20 @@ public class ProductTestFixture extends testFixture {
     }
 
     public static void 상품_조회_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> productResponses) {
-        List<Product> actual = response.jsonPath()
-                .getList(".", Product.class);
-        List<Product> expect = productResponses.stream()
-                .map(r -> r.as(Product.class))
+        List<Long> actualIds = response.jsonPath()
+                .getList(".", Product.class)
+                .stream()
+                .map(Product::getId)
                 .collect(Collectors.toList());
 
-        Assertions.assertThat(actual).containsAll(expect);
+        List<Long> expectIds = productResponses.stream()
+                .map(r -> r.as(Product.class))
+                .collect(Collectors.toList())
+                .stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
+
+        Assertions.assertThat(actualIds).containsAll(expectIds);
     }
 
 }
