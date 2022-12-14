@@ -6,8 +6,11 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupCreateValidator;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.TableGroupUnGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -20,47 +23,29 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final OrderRepository orderRepository;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderRepository orderRepository) {
+    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository,
+            final OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
         this.orderRepository = orderRepository;
     }
 
     @Transactional
-    public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
-        validateOrderTablesSameSize(orderTableIds, savedOrderTables);
-
+        TableGroupCreateValidator.validate(orderTableIds, savedOrderTables);
         TableGroup tableGroup = tableGroupRepository.save(tableGroupRequest.toTableGroup(savedOrderTables));
-        changeOrderTablesEmpty(savedOrderTables);
         return TableGroupResponse.from(tableGroup);
-    }
-
-    private void validateOrderTablesSameSize(List<Long> orderTableIds, List<OrderTable> orderTables) {
-        if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void changeOrderTablesEmpty(List<OrderTable> orderTables) {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setEmpty(false);
-        }
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        validateOrderStatusComplete(orderTables);
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.unTableGroup();
-        }
-    }
-
-    private void validateOrderStatusComplete(List<OrderTable> orderTables) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        List<OrderTable> orderTableList = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        boolean completedOrderTable = orderRepository.existsByOrderTableInAndOrderStatusIn(orderTableList,
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        TableGroupUnGroupValidator.validate(completedOrderTable);
+        OrderTables orderTables = OrderTables.from(orderTableList);
+        orderTables.unTableGroup();
     }
 }

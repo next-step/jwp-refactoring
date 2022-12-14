@@ -12,7 +12,7 @@ public class TableGroupResponse {
     private LocalDateTime createdDate;
     private List<OrderTableResponse> orderTables;
 
-    public TableGroupResponse() {}
+    private TableGroupResponse() {}
 
     public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
         this.id = id;
@@ -39,6 +39,4 @@ public class TableGroupResponse {
     public List<OrderTableResponse> getOrderTables() {
         return orderTables;
     }
-
-
 }

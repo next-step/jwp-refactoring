@@ -2,7 +2,6 @@ package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "TABLE_GROUP")
@@ -28,24 +26,19 @@ public class TableGroup {
     protected TableGroup() {}
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
-        validateOrderTableMinSize(orderTables);
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables = OrderTables.from(orderTables);
-
-        setOrderTablesTableGourp(orderTables);
+        setOrderTablesTableGourp();
+        changeOrderTablesIsNotEmpty();
     }
 
-    private void validateOrderTableMinSize(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+    private void setOrderTablesTableGourp() {
+        orderTables.setTableGroup(this);
     }
 
-    private void setOrderTablesTableGourp(List<OrderTable> orderTables) {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(this);
-        }
+    private void changeOrderTablesIsNotEmpty() {
+        orderTables.changeIsNotEmpty();
     }
 
     public Long getId() {

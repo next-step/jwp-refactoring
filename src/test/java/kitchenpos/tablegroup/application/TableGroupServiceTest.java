@@ -59,6 +59,8 @@ class TableGroupServiceTest {
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(단체);
         주문_테이블_1.setTableGroup(null);
         주문_테이블_2.setTableGroup(null);
+        주문_테이블_1.setEmpty(true);
+        주문_테이블_2.setEmpty(true);
         TableGroupRequest 단체_지정_생성_요청_객체 = 단체_지정_생성_요청_객체_생성(주문_테이블_1.tableGroupId(), 주문_테이블_2.tableGroupId());
 
         // when

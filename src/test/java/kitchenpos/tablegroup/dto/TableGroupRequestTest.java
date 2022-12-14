@@ -22,5 +22,4 @@ public class TableGroupRequestTest {
                 .orderTables(orderTables)
                 .build();
     }
-
 }

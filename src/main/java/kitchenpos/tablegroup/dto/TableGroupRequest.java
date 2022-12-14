@@ -9,7 +9,7 @@ public class TableGroupRequest {
 
     private List<OrderTableDto> orderTables;
 
-    public TableGroupRequest() {}
+    private TableGroupRequest() {}
 
     public TableGroupRequest(List<OrderTableDto> orderTables) {
         this.orderTables = orderTables;
@@ -64,7 +64,7 @@ public class TableGroupRequest {
 
             private Long id;
 
-            public Builder id(Long orderTables) {
+            public Builder id(Long id) {
                 this.id = id;
                 return this;
             }
