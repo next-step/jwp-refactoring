@@ -43,9 +43,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
         콜라 = 상품_생성_요청(new Product(2L, "콜라", BigDecimal.valueOf(1_800))).as(Product.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
 
-        치킨콜라세트 = new Menu(1L, "치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨, new ArrayList<>());
-        후라이드치킨상품 = new MenuProduct(null, 1L, 후라이드치킨, 치킨콜라세트);
-        콜라상품 = new MenuProduct(null, 1L, 콜라, 치킨콜라세트);
+        치킨콜라세트 = new Menu(1L, "치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨);
+        후라이드치킨상품 = new MenuProduct(null, 1L, 후라이드치킨);
+        콜라상품 = new MenuProduct(null, 1L, 콜라);
         치킨콜라세트.setMenuProducts(Arrays.asList(후라이드치킨상품, 콜라상품));
     }
 

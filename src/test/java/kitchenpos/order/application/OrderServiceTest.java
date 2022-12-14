@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -67,9 +66,9 @@ public class OrderServiceTest {
     void setUp() {
         치킨 = new Product(1L, "치킨", BigDecimal.valueOf(20_000));
         스파게티 = new Product(2L, "스파게티", BigDecimal.valueOf(10_000));
-        치킨_두마리 = new MenuProduct(1L, 2L, 치킨, 치킨_스파게티_더블세트_메뉴);
-        스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티, 치킨_스파게티_더블세트_메뉴);
-        치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(13_000), 양식, Arrays.asList(치킨_두마리, 스파게티_이인분));
+        치킨_두마리 = new MenuProduct(1L, 2L, 치킨);
+        스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티);
+        치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new BigDecimal(13_000), 양식);
 
         주문_테이블 = new OrderTable(1L, 0, false);
         주문 = new Order(1L, 주문_테이블, null, null, new ArrayList<>());
@@ -136,7 +135,6 @@ public class OrderServiceTest {
     @Test
     void 주문_목록을_조회할_수_있다() {
         given(orderRepository.findAll()).willReturn(Collections.singletonList(주문));
-        //given(orderLineItemRepository.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목));
 
         List<OrderResponse> orders = orderService.list();
 

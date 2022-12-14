@@ -47,14 +47,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
         순살치킨 = 상품_생성_요청(new Product(null, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
         후라이드치킨 = 상품_생성_요청(new Product(null, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(null, "치킨")).as(MenuGroup.class);
-        순살치킨상품 = new MenuProduct(null, 1L, 순살치킨, 두마리치킨세트);
-        후라이드치킨상품 = new MenuProduct(null, 1L, 후라이드치킨, 두마리치킨세트);
+        순살치킨상품 = new MenuProduct(null, 1L, 순살치킨);
+        후라이드치킨상품 = new MenuProduct(null, 1L, 후라이드치킨);
         두마리치킨세트 = 메뉴_생성_요청(new Menu(
                 null,
                 "두마리치킨세트",
                 BigDecimal.valueOf(38_000L),
-                치킨,
-                Arrays.asList(순살치킨상품, 후라이드치킨상품)
+                치킨
         )).as(Menu.class);
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))

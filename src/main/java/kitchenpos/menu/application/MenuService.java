@@ -7,9 +7,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -36,35 +39,34 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+    public MenuResponse create(final MenuRequest request) {
+        final BigDecimal price = request.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        menuGroupRepository.findById(menu.getMenuGroup().getId())
+        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        List<MenuProductRequest> menuProductRequests = request.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProduct().getId())
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        for (final MenuProductRequest menuProductrequest : menuProductRequests) {
+            final Product product = productRepository.findById(menuProductrequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+
+            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
+            menuProducts.add(menuProductrequest.createMenuProduct(product));
         }
 
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
 
-        final Menu savedMenu = menuRepository.save(menu);
-
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return savedMenu;
+        final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, menuProducts));
+        return MenuResponse.of(savedMenu);
     }
 
     public List<MenuResponse> list() {

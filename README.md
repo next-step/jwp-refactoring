@@ -116,4 +116,11 @@
 * [x] Service에서 DAO대신 Repository로 사용으로 변경
 * [x] 종속성 관계 추가
 * [x] OrderStatus enum 추가
+* [ ] Request, Response TDO 적용
+  * [x] Main
+  * [ ] MainGroup
+  * [ ] Order
+  * [ ] TableGroup
+  * [ ] orderLineItem
+  * [ ] Product
 * [ ] 코드 리팩토링
