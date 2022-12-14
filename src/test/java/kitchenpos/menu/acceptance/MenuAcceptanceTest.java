@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_요청_생성;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.menu.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +34,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        양식 = 메뉴_그룹_요청_생성("양식").as(MenuGroupResponse.class);
+        양식 = 메뉴_그룹_생성_요청("양식").as(MenuGroupResponse.class);
         스테이크 = 상품_생성_요청("스테이크", new BigDecimal(25000)).as(ProductResponse.class);
         스파게티 = 상품_생성_요청("스파게티", new BigDecimal(18000)).as(ProductResponse.class);
         에이드 = 상품_생성_요청("에이드", new BigDecimal(3500)).as(ProductResponse.class);

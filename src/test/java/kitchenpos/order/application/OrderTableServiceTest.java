@@ -2,6 +2,8 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.applicaiton.OrderTableService;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,12 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,20 +30,27 @@ public class OrderTableServiceTest {
     @InjectMocks
     private OrderTableService orderTableService;
     private OrderTable orderTable;
+    private OrderTableRequest orderTableRequest;
+
+    private List<OrderStatus> orderInProgressStatus;
 
     @BeforeEach
     void setUp() {
         orderTable = OrderTable.of(1L, null, 4, false);
+        orderTableRequest = OrderTableRequest.of(orderTable.getNumberOfGuests(),orderTable.isEmpty());
+        orderInProgressStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
     }
 
     @Test
     @DisplayName("주문 테이블 생성")
     public void createOrderTable() {
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
-        OrderTable createdOrderTable = orderTableService.create(orderTable);
 
-        assertThat(createdOrderTable.getId()).isEqualTo(orderTable.getId());
+        given(orderTableRepository.save(any())).willReturn(orderTable);
+
+        OrderTableResponse response = orderTableService.create(orderTableRequest);
+
+        assertThat(response.getId()).isEqualTo(orderTable.getId());
     }
 
     @Test
@@ -48,7 +58,7 @@ public class OrderTableServiceTest {
     public void queryOrderTable() {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable));
 
-        assertThat(orderTableService.list()).contains(orderTable);
+        assertThat(orderTableService.list()).contains(OrderTableResponse.of(orderTable));
     }
 
     @Test
@@ -56,7 +66,7 @@ public class OrderTableServiceTest {
     public void throwExceptionWhenOrderTableIsNotExist() {
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderTableService.changeEmpty(1L, orderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(1L, OrderEmpty.of(false)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -68,7 +78,7 @@ public class OrderTableServiceTest {
 
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), OrderEmpty.of(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -79,9 +89,9 @@ public class OrderTableServiceTest {
 
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+                orderInProgressStatus)).willReturn(true);
 
-        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), OrderEmpty.of(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -92,9 +102,9 @@ public class OrderTableServiceTest {
 
         given(orderTableRepository.findById(emptyOrderTable.getId())).willReturn(Optional.of(emptyOrderTable));
         given(orderRepository.existsByOrderTableAndOrderStatusIn(emptyOrderTable,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+                orderInProgressStatus)).willReturn(false);
 
-        assertThat(orderTableService.changeEmpty(orderTable.getId(), emptyOrderTable).isEmpty()).isEqualTo(
+        assertThat(orderTableService.changeEmpty(orderTable.getId(), OrderEmpty.of(true)).isEmpty()).isEqualTo(
                 emptyOrderTable.isEmpty());
     }
 
@@ -109,7 +119,7 @@ public class OrderTableServiceTest {
     @DisplayName("고객 수 변경 시 존재하지 않는 주문 테이블이면 Exception")
     public void throwExceptionWhenTryToChangeNumberOfGuestsOrderTableIsNotExist() {
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.empty());
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, OrderGuests.of(10))).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -118,7 +128,7 @@ public class OrderTableServiceTest {
     public void throwExceptionWhenTryToChangeNumberOfGuestsOrderTableIsEmpty() {
         OrderTable emptyOrderTable = OrderTable.of(1L, null, 4, true);
         given(orderTableRepository.findById(emptyOrderTable.getId())).willReturn(Optional.of(emptyOrderTable));
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, emptyOrderTable)).isInstanceOf(
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(1L, OrderGuests.of(10))).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -127,7 +137,7 @@ public class OrderTableServiceTest {
     public void changeNumberOfGuests() {
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
-        assertThat(orderTableService.changeNumberOfGuests(1L, orderTable).getNumberOfGuests())
+        assertThat(orderTableService.changeNumberOfGuests(1L, OrderGuests.of(10)).getNumberOfGuests())
                 .isEqualTo(orderTable.getNumberOfGuests());
     }
 }

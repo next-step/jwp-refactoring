@@ -63,7 +63,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹 아이디가 존재하지 않으면 exception이 발생함")
     void throwExceptionWhenMenuGroupIdNotExist() {
 
-        given(menuGroupRepository.existsById(anyLong())).willReturn(false);
+//        given(menuGroupRepository.existsById(anyLong())).willReturn(false);
 
         assertThatThrownBy(() -> service.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -72,7 +72,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹이 가진 상품의 아이디가 존재하지 않으면 exception이 발생함")
     void throwExceptionWhenIdOfProductContainedByMenuGroupNotExist() {
 
-        given(menuGroupRepository.existsById(menuId)).willReturn(true);
+//        given(menuGroupRepository.existsById(menuId)).willReturn(true);
 
         assertThatThrownBy(() -> service.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -81,7 +81,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격은 각 상품의 합보다 클 수 없다")
     void menuPriceCanNotBeBiggerThanSumOfProductPriceMultipliedByQuantity() {
 
-        given(menuGroupRepository.existsById(menuGroupId)).willReturn(true);
+//        given(menuGroupRepository.existsById(menuGroupId)).willReturn(true);
 
         assertThatThrownBy(() -> service.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -90,14 +90,12 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 조회하고, 메뉴 상품을 가지고 있다")
     void menuHasMenuProducts() {
-        Menu menu = getMenu(8000);
-        List<MenuProduct> menuProducts = getTwoMenuProducts(menu, 3, 5);
+        Menu menu = getMenuWithTwoMenuProduct(8000, 5, 3);
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(menu));
 
         List<MenuResponse> list = service.list();
 
-        menu.setMenuProducts(menuProducts);
         assertThat(list).isEqualTo(Arrays.asList(MenuResponse.of(menu)));
     }
 

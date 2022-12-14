@@ -46,7 +46,7 @@ public class TableGroupService {
 
     private void throwIfSomeOrderInProgress(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTable_IdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableIds, Order.orderStatusInProgress)) {
             throw new IllegalArgumentException();
         }
     }

@@ -19,6 +19,9 @@ public class OrderLineItem {
     private Menu menu;
     private long quantity;
 
+    protected OrderLineItem(){}
+
+
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;
         this.order = order;
@@ -34,11 +37,31 @@ public class OrderLineItem {
         return new OrderLineItem(seq, order, menu, quantity);
     }
 
+    public static OrderLineItem of(Order order, Menu target, long quantity) {
+        return new OrderLineItem(null, order, target, quantity);
+    }
+
     public void setOrder(final Order order) {
         this.order = order;
     }
 
     public Menu getMenu() {
         return menu;
+    }
+
+    public long getQuantity() {
+        return this.quantity;
+    }
+
+    public Long getSeq() {
+        return this.seq;
+    }
+
+    public Long getOrderId() {
+        return this.order.getId();
+    }
+
+    public Long getMenuId() {
+        return this.menu.getId();
     }
 }

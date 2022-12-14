@@ -116,7 +116,7 @@ public class TableGroupServiceTest {
 
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(tableGroup.getOrderTables());
         given(orderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+                Order.orderStatusInProgress)).willReturn(true);
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(
                 IllegalArgumentException.class);
     }
@@ -132,7 +132,7 @@ public class TableGroupServiceTest {
                 Arrays.asList(orderTable1, orderTable2)
         );
         given(orderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+                Order.orderStatusInProgress)).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
         assertThat(orderTable1.getTableGroup()).isNull();

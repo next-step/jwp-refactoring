@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class MenuProducts {
     @Transient
     private Menu menu;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts(){
 
@@ -40,7 +41,7 @@ public class MenuProducts {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return Collections.unmodifiableList(menuProducts);
+        return this.menuProducts;
     }
 
     public BigDecimal getSum() {
@@ -48,6 +49,6 @@ public class MenuProducts {
                 .stream()
                 .map(MenuProduct::getPrice)
                 .reduce(BigDecimal::add)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElse(BigDecimal.ZERO);
     }
 }

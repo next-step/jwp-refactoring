@@ -32,6 +32,9 @@ public class OrderLineItems {
     public void addItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
+    public void addItems(List<OrderLineItem> orderLineItems){
+        orderLineItems.forEach(this::addItem);
+    }
 
     public void checkNotEmpty() {
         if (CollectionUtils.isEmpty(orderLineItems)) {
@@ -48,5 +51,9 @@ public class OrderLineItems {
 
     public int count() {
         return this.orderLineItems.size();
+    }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        return this.orderLineItems;
     }
 }

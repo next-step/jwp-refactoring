@@ -24,7 +24,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_요청_생성("양식");
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청("양식");
 
         // then
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
@@ -38,7 +38,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuWithNullName() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_요청_생성(null);
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(null);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -53,8 +53,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        메뉴_그룹_요청_생성("양식");
-        메뉴_그룹_요청_생성("중식");
+        메뉴_그룹_생성_요청("양식");
+        메뉴_그룹_생성_요청("중식");
 
         // when
         ExtractableResponse<Response> response = 몌뉴_그룹_목록_조회_요청();
@@ -63,7 +63,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getList(".", MenuGroupResponse.class)).hasSize(2);
     }
     
-    public static ExtractableResponse<Response> 메뉴_그룹_요청_생성(String name) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
         MenuGroupRequest request = MenuGroupRequest.of(name);
 
         return RestAssured.given().log().all()

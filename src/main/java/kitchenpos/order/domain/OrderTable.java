@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Order;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -8,7 +9,6 @@ import java.util.Objects;
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_table_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,6 +31,10 @@ public class OrderTable {
 
     public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    }
+
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, null, numberOfGuests, empty);
     }
 
     public Long getId() {

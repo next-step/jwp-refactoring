@@ -41,14 +41,14 @@ class OrderTest {
         order.prepareNewOrder(orderTable);
 
         assertThat(ReflectionTestUtils.getField(order, "orderTable")).isEqualTo(orderTable);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(order.getOrderedTime()).isNotNull();
     }
 
     @Test
     @DisplayName("주문의 상태가 완료일 경우 exception을 발생시킴")
     void checkCompleted() {
-        order.changeOrderStatus(OrderStatus.COMPLETION.name());
+        order.changeOrderStatus(OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> order.throwIfCompleted()).isInstanceOf(IllegalArgumentException.class);
     }
@@ -56,8 +56,8 @@ class OrderTest {
     @Test
     @DisplayName("주문의 상태가 변경됨")
     void changeOrderStatus() {
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
 
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 }

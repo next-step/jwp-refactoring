@@ -112,7 +112,7 @@ public class OrderServiceTest {
         given(orderRepository.save(order)).willReturn(order);
 
         Order createdOrder = orderService.create(order);
-        assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
