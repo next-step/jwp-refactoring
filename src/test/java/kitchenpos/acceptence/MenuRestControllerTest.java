@@ -22,7 +22,7 @@ import static kitchenpos.acceptence.MenuGroupRestControllerTest.메뉴그룹을_
 import static kitchenpos.acceptence.ProductRestControllerTest.상품을_등록한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MenuRestControllerTest  extends AcceptanceSupport {
+class MenuRestControllerTest  extends AcceptanceSupport {
     private Product 후라이드치킨;
     private Product 제로콜라;
     private MenuGroup 치킨;

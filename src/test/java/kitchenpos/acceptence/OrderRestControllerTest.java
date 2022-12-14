@@ -21,7 +21,7 @@ import static kitchenpos.acceptence.ProductRestControllerTest.상품을_등록�
 import static kitchenpos.acceptence.TableRestControllerTest.주문테이블을_생성한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderRestControllerTest extends AcceptanceSupport {
+class OrderRestControllerTest extends AcceptanceSupport {
     private Product 후라이드치킨;
     private Product 제로콜라;
     private MenuGroup 치킨;

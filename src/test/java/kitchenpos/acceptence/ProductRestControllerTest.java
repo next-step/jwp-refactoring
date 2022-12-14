@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProductRestControllerTest extends AcceptanceSupport {
+class ProductRestControllerTest extends AcceptanceSupport {
     private Product 스테이크;
     private Product 감튀;
 
