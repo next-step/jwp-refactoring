@@ -72,11 +72,18 @@ public class Order {
     }
 
     public Order changeStatus(OrderStatus orderStatus) {
+        validChangableStatus(this.orderStatus);
         return new Order(this.id,
                 this.orderTableId,
                 orderStatus.name(),
                 this.orderedTime,
                 this.orderLineItems);
+    }
+
+    private void validChangableStatus(String orderStatus) {
+        if (orderStatus.equals(OrderStatus.COMPLETION.name())) {
+            throw new IllegalArgumentException("계산 완료 된 주문은 주문 상태를 변경할 수 없습니다");
+        }
     }
 
     @Override

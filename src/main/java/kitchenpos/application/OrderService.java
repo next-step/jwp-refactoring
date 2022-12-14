@@ -15,7 +15,6 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,17 +91,12 @@ public class OrderService {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+        final Order changedStatusOrder = savedOrder.changeStatus(OrderStatus.valueOf(order.getOrderStatus()));
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        orderDao.save(changedStatusOrder);
 
-        orderDao.save(savedOrder);
+        changedStatusOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
+        return changedStatusOrder;
     }
 }

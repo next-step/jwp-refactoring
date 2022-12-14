@@ -17,16 +17,16 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹;
-import static kitchenpos.application.MenuProductTest.메뉴_상품;
-import static kitchenpos.application.MenuServiceTest.메뉴;
-import static kitchenpos.application.TableServiceTest.두_명의_방문객;
-import static kitchenpos.application.TableServiceTest.비어있지_않은_상태;
-import static kitchenpos.application.TableServiceTest.빈_상태;
 import static kitchenpos.application.TableServiceTest.주문_테이블;
-import static kitchenpos.application.ProductTest.상품;
+import static kitchenpos.domain.MenuProductTest.메뉴_상품;
+import static kitchenpos.domain.MenuTest.메뉴;
+import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
+import static kitchenpos.domain.OrderTableTest.비어있지_않은_상태;
+import static kitchenpos.domain.OrderTableTest.빈_상태;
+import static kitchenpos.domain.OrderTest.주문;
+import static kitchenpos.domain.ProductTest.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -299,8 +299,4 @@ public class OrderServiceTest {
                 orderService.changeOrderStatus(계산_완료_주문.getId(), 계산_완료_주문.changeStatus(식사_상태)));
     }
 
-    public static Order 주문(Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-            List<OrderLineItem> orderLineItemList) {
-        return new Order(orderTableId, orderStatus, orderedTime, orderLineItemList);
-    }
 }
