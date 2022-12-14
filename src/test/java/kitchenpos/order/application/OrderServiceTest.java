@@ -18,6 +18,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -56,6 +57,9 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderValidator orderValidator;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -86,7 +90,7 @@ class OrderServiceTest {
 
         주문테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
+        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
         주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식.getMenuGroupId(), 1L);
     }
@@ -96,7 +100,6 @@ class OrderServiceTest {
     void createOrder() {
         // given
         when(menuRepository.findById(불고기정식.getId())).thenReturn(Optional.ofNullable(불고기정식));
-        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(주문)).thenReturn(주문);
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
 
@@ -110,62 +113,12 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문메뉴가 비어있으면 예외가 발생한다.")
-    @Test
-    void emptyOrderLineItemsException() {
-        // given
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), new ArrayList<>());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문메뉴가 존재하지 않으면 예외가 발생한다.")
     @Test
     void notExistOrderLineItemsException() {
         // given
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
         when(menuRepository.findById(불고기정식.getId())).thenReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블이 존재하지 않으면 예외가 발생한다.")
-    @Test
-    void notExistOrderTableException() {
-        // given
-        List<Long> menuIds = 주문.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .collect(Collectors.toList());
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
-
-        when(menuRepository.findById(불고기정식.getId())).thenReturn(Optional.ofNullable(불고기정식));
-        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블이 비어있다면 예외가 발생한다.")
-    @Test
-    void emptyOrderTableException() {
-        // given
-        Order order = new Order(주문테이블, OrderStatus.COMPLETION, LocalDateTime.now());
-        주문테이블.updateEmpty(true, Arrays.asList(order));
-        List<Long> menuIds = 주문.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .collect(Collectors.toList());
-        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(불고기정식주문요청));
-        when(menuRepository.findById(불고기정식.getId())).thenReturn(Optional.ofNullable(불고기정식));
-        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
 
         // when & then
         assertThatThrownBy(() -> orderService.create(request))

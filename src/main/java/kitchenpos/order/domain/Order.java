@@ -6,7 +6,6 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,39 +22,30 @@ public class Order {
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     protected Order() {}
 
     public Order(
-            OrderTable orderTable,
+            Long orderTableId,
             OrderStatus orderStatus,
             LocalDateTime orderedTime
     ) {
-        validate(orderTable);
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
     public Order(
             Long id,
-            OrderTable orderTable,
+            Long orderTableId,
             OrderStatus orderStatus,
             LocalDateTime orderedTime,
             OrderLineItems orderLineItems
     ) {
-        this(orderTable, orderStatus, orderedTime);
+        this(orderTableId, orderStatus, orderedTime);
         this.id = id;
         this.orderLineItems = orderLineItems;
-    }
-
-    private void validate(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
-        }
     }
 
     public void validateOrderStatusShouldComplete() {
@@ -68,8 +58,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -128,7 +118,7 @@ public class Order {
                 ", orderStatus=" + orderStatus +
                 ", orderedTime=" + orderedTime +
                 ", orderLineItems=" + orderLineItems +
-                ", orderTable=" + orderTable +
+                ", orderTableId=" + orderTableId +
                 '}';
     }
 }

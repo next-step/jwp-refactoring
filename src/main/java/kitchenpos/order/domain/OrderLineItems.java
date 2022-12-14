@@ -16,14 +16,7 @@ public class OrderLineItems {
     protected OrderLineItems() {}
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
-        validate(orderLineItems);
         this.orderLineItems = new ArrayList<>(orderLineItems);
-    }
-
-    private void validate(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_LINE_ITEMS_IS_EMPTY.getMessage());
-        }
     }
 
     public void setOrder(Order order) {

@@ -34,8 +34,8 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order createOrder(OrderTable orderTable, List<Menu> menus) {
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+    public Order createOrder(Long orderTableId, List<Menu> menus) {
+        Order order = new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now());
         List<OrderLineItem> orderLineItems = getOrderLineItems().stream()
                 .map(item -> item.createOrderLineItem(menus))
                 .collect(Collectors.toList());

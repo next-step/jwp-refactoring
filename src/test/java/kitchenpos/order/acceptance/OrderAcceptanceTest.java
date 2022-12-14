@@ -94,7 +94,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .as(OrderTableResponse.class);
         주문테이블 = new OrderTable(생성된_주문테이블.getId(), new NumberOfGuests(0), 생성된_주문테이블.isEmpty());
         불고기정식주문 = new OrderLineItem(new Quantity(1L), 불고기정식메뉴);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now());
+        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
         주문.setOrderLineItems(new OrderLineItems(Arrays.asList(불고기정식주문)));
         불고기정식주문요청 = OrderLineItemRequest.of(불고기정식응답.getId(), 1L);
     }

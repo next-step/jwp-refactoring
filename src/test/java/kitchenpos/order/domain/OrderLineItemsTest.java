@@ -26,15 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderLineItemsTest {
-    @DisplayName("주문 항목이 비어있으면 예외가 발생한다.")
-    @Test
-    void emptyException() {
-        // when & then
-        assertThatThrownBy(() -> new OrderLineItems(new ArrayList<>()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_LINE_ITEMS_IS_EMPTY.getMessage());
-    }
-
     @DisplayName("주문을 설정할 수 있다.")
     @Test
     void setOrder() {
@@ -46,7 +37,7 @@ class OrderLineItemsTest {
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
 
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
 
         // when
         orderLineItems.setOrder(order);

@@ -12,6 +12,7 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,80 +69,15 @@ class TableGroupServiceTest {
         );
     }
 
-//    @DisplayName("단체 지정 시, 주문 테이블이 비어있다면 예외가 발생한다.")
-//    @Test
-//    void emptyOrderTableException() {
-//        // given
-//        TableGroupRequest request = TableGroupRequest.of(new ArrayList<>());
-//
-//        // when & then
-//        assertThatThrownBy(() -> tableGroupService.create(request))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("단체 지정 시, 주문 테이블이 2개보다 작을 경우 예외가 발생한다.")
-//    @Test
-//    void minimumOrderTableException() {
-//        // given
-//        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
-//        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId()));
-//
-//        // when & then
-//        assertThatThrownBy(() -> tableGroupService.create(request))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-
-//    @DisplayName("단체 지정 시, 주문 테이블이 등록되지 않은 경우 예외가 발생한다.")
-//    @Test
-//    void notExistOrderTableException() {
-//        // given
-//        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
-//        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
-//        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
-//
-//        // when & then
-//        assertThatThrownBy(() -> tableGroupService.create(request))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("단체 지정 시, 빈 주문 테이블이 아닌 경우 예외가 발생한다.")
-//    @Test
-//    void notEmptyOrderTableException() {
-//        // given
-//        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), false);
-//        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
-//        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
-//
-//        // when & then
-//        assertThatThrownBy(() -> tableGroupService.create(request))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-
-//    @DisplayName("단체 지정 시, 주문 테이블이 다른 단체에 지정되어 있다면 예외가 발생한다.")
-//    @Test
-//    void alreadyTableGroupException() {
-//        // given
-//        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
-//        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
-//        TableGroup tableGroup = new TableGroup(
-//                LocalDateTime.now(),
-//                new OrderTables(Arrays.asList(orderTable1, orderTable2))
-//        );
-//        orderTable1.setTableGroup(tableGroup);
-//        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
-//
-//        // when & then
-//        assertThatThrownBy(() -> tableGroupService.create(request))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-
     @DisplayName("단체 지정을 해제할 수 있다.")
     @Test
     void unTableGroup() {
         // given
-        Order order1 = TestOrderFactory.createCompleteOrder();
-        Order order2 = TestOrderFactory.createCompleteOrder();
-        List<Long> orderTableIds = Arrays.asList(order1.getOrderTable().getId(), order2.getOrderTable().getId());
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
+        Order order1 = TestOrderFactory.createCompleteOrderWith(orderTable1);
+        Order order2 = TestOrderFactory.createCompleteOrderWith(orderTable2);
+        List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
@@ -152,26 +88,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(order1.getOrderTable().getTableGroupId()).isNull(),
-                () -> assertThat(order2.getOrderTable().getTableGroupId()).isNull()
+                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
+                () -> assertThat(orderTable2.getTableGroupId()).isNull()
         );
     }
-
-//    @DisplayName("주문 테이블이 조리 or 식사 상태라면 단체 지정 해제 시 예외가 발생한다")
-//    @Test
-//    void unTableGroupException() {
-//        // given
-//        Order order1 = TestOrderFactory.createCompleteOrder();
-//        Order order2 = TestOrderFactory.createCompleteOrder();
-//        List<Long> orderTableIds = Arrays.asList(order1.getOrderTable().getId(), order2.getOrderTable().getId());
-//        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
-//        order1.setOrderStatus(OrderStatus.MEAL);
-//
-//        when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
-//        when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(Arrays.asList(order1, order2));
-//
-//        // when & then
-//        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
 }

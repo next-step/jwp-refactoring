@@ -24,24 +24,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderTest {
-    @DisplayName("주문 생성 시, 주문테이블이 비어있다면 예외가 발생한다.")
-    @Test
-    void orderTableEmptyException() {
-        // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
-
-        // when & then
-        assertThatThrownBy(() -> new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.ORDER_TABLE_IS_EMPTY.getMessage());
-    }
-
     @DisplayName("계산완료 상태에 대한 유효성을 확인할 수 있다.")
     @Test
     void statusShouldCompleteException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.MEAL, LocalDateTime.now());
 
         // when & then
         assertThatThrownBy(() -> order.validateOrderStatusShouldComplete())
@@ -54,7 +42,7 @@ class OrderTest {
     void updateOrderStatus() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
 
         // when
         order.updateOrderStatus(OrderStatus.MEAL);
@@ -68,7 +56,7 @@ class OrderTest {
     void updateOrderStatusException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when & then
         assertThatThrownBy(() -> order.updateOrderStatus(OrderStatus.MEAL))

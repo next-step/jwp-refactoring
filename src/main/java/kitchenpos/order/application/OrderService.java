@@ -10,6 +10,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -26,23 +27,26 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             MenuRepository menuRepository,
             OrderTableRepository orderTableRepository,
-            OrderRepository orderRepository
+            OrderRepository orderRepository,
+            OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        OrderTable orderTable = findOrderTableById(request.getOrderTableId());
+        orderValidator.validateCreateOrder(request);
 
-        Order savedOrder = orderRepository.save(request.createOrder(orderTable, menus));
+        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
+        Order savedOrder = orderRepository.save(request.createOrder(request.getOrderTableId(), menus));
         return OrderResponse.from(savedOrder);
     }
 

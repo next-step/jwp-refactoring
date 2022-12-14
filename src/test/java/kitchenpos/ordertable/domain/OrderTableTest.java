@@ -20,7 +20,7 @@ class OrderTableTest {
         // given
         boolean expectEmpty = true;
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
         orderTable.updateEmpty(expectEmpty, Arrays.asList(order));
@@ -34,7 +34,7 @@ class OrderTableTest {
     void updateEmptyNotCompletionException() {
         // given
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
+        Order order = new Order(orderTable.getId(), OrderStatus.MEAL, LocalDateTime.now());
 
         // when & then
         assertThatThrownBy(() -> orderTable.updateEmpty(true, Arrays.asList(order)))
