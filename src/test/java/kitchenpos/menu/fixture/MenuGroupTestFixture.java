@@ -3,7 +3,7 @@ package kitchenpos.menu.fixture;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuGroupTestFixture {
     public static ExtractableResponse<Response> 메뉴그룹_생성_요청(String name) {
-        MenuGroup menuGroupRequest = new MenuGroup(name);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(name);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
