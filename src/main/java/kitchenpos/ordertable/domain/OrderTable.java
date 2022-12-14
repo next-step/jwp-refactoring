@@ -28,6 +28,11 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public Long getId() {
         return id;
     }
