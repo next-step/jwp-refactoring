@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 그룹 관련 인수 테스트")
-class MenuGroupRequestAcceptanceTest extends AcceptanceTest {
+class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     /**
      * When 메뉴 그룹 생성 요청

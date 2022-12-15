@@ -1,5 +1,6 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.exception.BadRequestException;
 import kitchenpos.utils.Validator;
 
 import javax.persistence.Column;
@@ -7,6 +8,7 @@ import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static kitchenpos.utils.Message.INVALID_MENU_PRICE;
 import static kitchenpos.utils.Message.INVALID_PRICE;
 
 
@@ -30,6 +32,12 @@ public class MenuPrice {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public void checkLessOrEqualTotalAmount(BigDecimal amount) {
+        if (price.compareTo(amount) > 0) {
+            throw new BadRequestException(INVALID_MENU_PRICE);
+        }
     }
 
 
