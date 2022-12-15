@@ -40,7 +40,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
+        final List<Order> orders = orderRepository.findAllWithOrderTableAndOrderLineItems();
 
         orders.forEach(order -> order
                 .addLineItems(orderLineItemRepository.findAllByOrderId(order.getId()))

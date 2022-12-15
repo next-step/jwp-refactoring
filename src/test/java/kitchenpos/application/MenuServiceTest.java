@@ -127,7 +127,7 @@ class MenuServiceTest {
                 Collections.singletonList(new MenuProduct(null, 후라이드치킨_상품, 1)));
         Menu 양념치킨 = new Menu("양념치킨", new BigDecimal(16000.00), null,
                 Collections.singletonList(new MenuProduct(null, 양념치킨_상품, 1)));
-        given(menuRepository.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+        given(menuRepository.findAllWithMenuGroupAndMenuProducts()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         List<Menu> menus = menuService.list();
 

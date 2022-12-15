@@ -110,7 +110,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_목록을_조회할_수_있다() {
-        given(orderRepository.findAll()).willReturn(Collections.singletonList(order));
+        given(orderRepository.findAllWithOrderTableAndOrderLineItems()).willReturn(Collections.singletonList(order));
 
         List<Order> orders = orderService.list();
 

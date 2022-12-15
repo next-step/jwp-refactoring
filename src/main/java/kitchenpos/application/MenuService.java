@@ -39,7 +39,7 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<Menu> list() {
-        final List<Menu> menus = menuRepository.findAll();
+        final List<Menu> menus = menuRepository.findAllWithMenuGroupAndMenuProducts();
 
         for (final Menu menu : menus) {
             menu.addMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
