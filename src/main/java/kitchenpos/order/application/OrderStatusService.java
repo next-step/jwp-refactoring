@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import org.springframework.stereotype.Service;
@@ -13,17 +13,17 @@ import java.util.Objects;
 @Service
 public class OrderStatusService {
     public static final String COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE = "주문완료일 경우 주문상태를 변경할 수 없다.";
-    private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
+    private final OrderRepository orderRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
 
-    public OrderStatusService(final OrderDao orderDao, final OrderLineItemDao orderLineItemDao) {
-        this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
+    public OrderStatusService(final OrderRepository orderRepository, final OrderLineItemRepository orderLineItemRepository) {
+        this.orderRepository = orderRepository;
+        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     @Transactional
     public Order changeOrderStatus(final Long orderId, final OrderStatusChangeRequest order) {
-        final Order savedOrder = orderDao.findById(orderId)
+        final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
@@ -33,9 +33,9 @@ public class OrderStatusService {
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
         savedOrder.setOrderStatus(orderStatus.name());
 
-        orderDao.save(savedOrder);
+        orderRepository.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+//        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return savedOrder;
     }

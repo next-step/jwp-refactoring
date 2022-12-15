@@ -8,11 +8,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.dao.OrderTableDao;
@@ -37,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class OrderStatusServiceTest extends ServiceTest {
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
     private OrderTableDao orderTableDao;
@@ -53,7 +49,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private TableGroupDao tableGroupDao;
 
     @Autowired
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Autowired
     private OrderStatusService orderStatusService;
@@ -82,13 +78,13 @@ class OrderStatusServiceTest extends ServiceTest {
 
         createOrder(orderTable1, menu);
 
-        orderStatusService = new OrderStatusService(orderDao, orderLineItemDao);
+        orderStatusService = new OrderStatusService(orderRepository, orderLineItemRepository);
     }
 
     private void createOrder(OrderTable orderTable1, Menu menu) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderDao.save(new Order(orderTable1.getId(), orderLineItems));
+        order = orderRepository.save(new Order(orderTable1.getId(), orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -125,7 +121,7 @@ class OrderStatusServiceTest extends ServiceTest {
     }
 
     private void 주문완료_검증됨() {
-        Order findOrder = orderDao.findById(order.getId()).get();
+        Order findOrder = orderRepository.findById(order.getId()).get();
         assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -7,14 +8,19 @@ import java.util.Objects;
 import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
 
 
+@Entity
+@Table(name = "orders")
 public class Order {
     public static final String ORDER_TABLE_NULL_EXCEPTION_MESSAGE = "주문 테이블이 없습니다.";
     public static final String COMPLETION_CHANGE_EXCEPTION_MESSAGE = "완료일 경우 변경할 수 없습니다.";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
@@ -24,7 +30,11 @@ public class Order {
             throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
         }
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.setOrder(this);
+        }
+        this.orderLineItems.addAll(orderLineItems);
+//        this.orderLineItems = orderLineItems;
         this.orderStatus = OrderStatus.COOKING.name();
         this.orderedTime = LocalDateTime.now();
     }
@@ -68,14 +78,6 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
     public void meal() {
         if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
             throw new IllegalArgumentException(COMPLETION_CHANGE_EXCEPTION_MESSAGE);
@@ -85,5 +87,9 @@ public class Order {
 
     public void complete() {
         this.orderStatus = OrderStatus.COMPLETION.name();
+    }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        return this.orderLineItems.getOrderLineItems();
     }
 }

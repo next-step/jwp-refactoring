@@ -27,7 +27,7 @@ class OrderTest {
     @Test
     void constructor_fail_orderTable() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        orderLineItems.add(new OrderLineItem(null, 1L, 1));
 
         assertThatThrownBy(() -> new Order(null, orderLineItems))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -38,7 +38,7 @@ class OrderTest {
     @Test
     void name() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        orderLineItems.add(new OrderLineItem(null, 1L, 1));
         assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems));
     }
 
@@ -46,7 +46,7 @@ class OrderTest {
     @Test
     void changeMeal_success() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        orderLineItems.add(new OrderLineItem(null, 1L, 1));
         Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
         order.meal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
@@ -56,7 +56,7 @@ class OrderTest {
     @Test
     void changeMeal_fail_completion() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        orderLineItems.add(new OrderLineItem(null, 1L, 1));
         Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
@@ -69,7 +69,7 @@ class OrderTest {
     @Test
     void nameCompletion() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 1));
+        orderLineItems.add(new OrderLineItem(null, 1L, 1));
         Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());

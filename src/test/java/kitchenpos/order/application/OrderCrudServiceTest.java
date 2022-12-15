@@ -5,9 +5,9 @@ import kitchenpos.common.Name;
 import kitchenpos.common.Price;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.*;
-import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -41,10 +41,10 @@ class OrderCrudServiceTest extends ServiceTest {
     private MenuRepository menuRepository;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Autowired
     private OrderTableDao orderTableDao;
@@ -75,7 +75,7 @@ class OrderCrudServiceTest extends ServiceTest {
 
         OrderTable orderTable1 = orderTableDao.save(orderTable);
         orderTableId = orderTable1.getId();
-        orderCrudService = new OrderCrudService(menuRepository, orderDao, orderLineItemDao, orderTableDao);
+        orderCrudService = new OrderCrudService(menuRepository, orderRepository, orderLineItemRepository, orderTableDao);
     }
 
     @DisplayName("주문을 생성한다. / 주문 항목이 비어있을 수 없다.")
@@ -94,7 +94,7 @@ class OrderCrudServiceTest extends ServiceTest {
     void create_fail_orderLineItemSize() {
 
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 100L, 1));
+        orderLineItems.add(new OrderLineItem(null, 100L, 1));
 
         assertThatThrownBy(() -> orderCrudService.create(new OrderCreateRequest(1L, orderLineItems)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -105,7 +105,7 @@ class OrderCrudServiceTest extends ServiceTest {
     @Test
     void create_fail_orderTableEmpty() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, menu.getId(), 3));
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 3));
 
         OrderCreateRequest request = new OrderCreateRequest(1L, orderLineItems);
 
@@ -117,7 +117,7 @@ class OrderCrudServiceTest extends ServiceTest {
     @Test
     void create() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, menu.getId(), 3));
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 3));
 
         OrderResponse orderResponse = orderCrudService.create(new OrderCreateRequest(orderTableId, orderLineItems));
 
@@ -134,7 +134,7 @@ class OrderCrudServiceTest extends ServiceTest {
     @Test
     void list() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, menu.getId(), 3));
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), 3));
         orderCrudService.create(new OrderCreateRequest(orderTableId, orderLineItems));
         assertThat(orderCrudService.list()).hasSize(1);
     }

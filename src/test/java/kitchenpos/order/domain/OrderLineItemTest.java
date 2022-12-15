@@ -27,7 +27,7 @@ class OrderLineItemTest {
     @DisplayName("주문 항목을 생성한다. / 메뉴가 없을 수 없다.")
     @Test
     void create_fail_notMenu() {
-        assertThatThrownBy(() -> new OrderLineItem(1L, null, 3))
+        assertThatThrownBy(() -> new OrderLineItem(null, null, 3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_NULL_EXCEPTION_MESSAGE);
     }

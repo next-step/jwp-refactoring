@@ -9,8 +9,8 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.dao.OrderTableDao;
@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class TableServiceTest extends ServiceTest {
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -59,7 +59,7 @@ class TableServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         orderTableId = orderTableDao.save(new OrderTable()).getId();
-        tableService = new TableService(orderDao, orderTableDao);
+        tableService = new TableService(orderRepository, orderTableDao);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -124,7 +124,7 @@ class TableServiceTest extends ServiceTest {
         Order order = createOrder();
         order.setOrderStatus(OrderStatus.COMPLETION.name());
 
-        orderDao.save(order);
+        orderRepository.save(order);
 
         assertThat(tableService.changeEmpty(orderTable.getId()).isEmpty()).isTrue();
     }
@@ -151,7 +151,7 @@ class TableServiceTest extends ServiceTest {
 
         Order order = createOrder();
         order.setOrderStatus(OrderStatus.MEAL.name());
-        orderDao.save(order);
+        orderRepository.save(order);
 
         assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTableId()))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -185,7 +185,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = orderTableDao.save(new OrderTable());
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        return orderDao.save(new Order(orderTable.getId(), orderLineItems));
+        return orderRepository.save(new Order(orderTable.getId(), orderLineItems));
     }
 
     private void 테이블_공석_상태_확인됨() {

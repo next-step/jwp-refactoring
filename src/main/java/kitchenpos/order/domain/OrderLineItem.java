@@ -1,27 +1,33 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class OrderLineItem {
     public static final String MENU_NULL_EXCEPTION_MESSAGE = "메뉴가 없을 수 없습니다.";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
+    private Order order;
     private Long menuId;
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long orderId, Long menuId, int quantity) {
+    public OrderLineItem(Order order, Long menuId, int quantity) {
         validate(menuId);
-        this.orderId = orderId;
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(long seq, long orderId, long menuId, long quantity) {
+    public OrderLineItem(long seq, Order order, long menuId, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -40,14 +46,6 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }
@@ -62,5 +60,9 @@ public class OrderLineItem {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

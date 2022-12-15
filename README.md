@@ -10,6 +10,8 @@
     - [x] 상품 서비스 도메인 로직 이동
     - [ ] 테이블그룹 서비스 도메인 로직 이동
     - [ ] 테이블 서비스 도메인 로직 이동
+- [ ] JPA 사용
+  - [ ] OrderDao -> OrderRepository 변경 
 - [ ] spring.jpa.hibernate.ddl-auto=validate 추가
 - [ ] 무분별한 setter 삭제
 - [ ] indent(인덴트, 들여쓰기) depth를 2를 넘지 않도록 구현한다. 1까지만 허용한다.
@@ -21,6 +23,7 @@
 - [ ] 일급 컬렉션을 쓴다.
 - [ ] 모든 엔티티를 작게 유지한다.
 - [ ] 3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.
+- [ ] OrderLineItems test
 
 ### 이름
 

@@ -9,8 +9,8 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.dao.OrderTableDao;
@@ -38,7 +38,7 @@ class TableGroupServiceTest extends ServiceTest {
     private TableGroupService tableGroupService;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
     private OrderTableDao orderTableDao;
@@ -64,8 +64,8 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroup.setOrderTables(Collections.singletonList(orderTable));
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        order = orderRepository.save(new Order(orderTable.getId(), orderLineItems));
+        tableGroupService = new TableGroupService(orderRepository, orderTableDao, tableGroupDao);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
@@ -143,18 +143,18 @@ class TableGroupServiceTest extends ServiceTest {
 
     private void 주문_식사중_상태_변경() {
         order.setOrderStatus(OrderStatus.MEAL.name());
-        orderDao.save(order);
+        orderRepository.save(order);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
     private void 주문_요리중_상태_변경() {
-        Order order1 = orderDao.findById(order.getId()).get();
+        Order order1 = orderRepository.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     private void 주문_완료_상태_변경() {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderDao.save(order);
+        orderRepository.save(order);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
