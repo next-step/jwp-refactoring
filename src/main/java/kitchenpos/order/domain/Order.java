@@ -15,6 +15,7 @@ import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY
 public class Order {
     public static final String ORDER_TABLE_NULL_EXCEPTION_MESSAGE = "주문 테이블이 없습니다.";
     public static final String COMPLETION_CHANGE_EXCEPTION_MESSAGE = "완료일 경우 변경할 수 없습니다.";
+    public static final String ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "주문 테이블은 비어있을 수 없습니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +37,9 @@ public class Order {
         this.orderTable = orderTable;
         for (OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.setOrder(this);
+        }
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
         this.orderLineItems.addAll(orderLineItems);
 //        this.orderLineItems = orderLineItems;

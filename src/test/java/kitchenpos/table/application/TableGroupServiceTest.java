@@ -134,7 +134,7 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private OrderTable createOrderTable(TableGroup tableGroup) {
-        return orderTableRepository.save(new OrderTable(tableGroup, true));
+        return orderTableRepository.save(new OrderTable(tableGroup, false));
     }
 
     private void 주문_식사중_상태_변경() {
