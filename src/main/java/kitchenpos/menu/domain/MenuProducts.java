@@ -43,7 +43,7 @@ public class MenuProducts {
     }
 
     public void setMenu(final Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
+        menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }
 
     public List<MenuProduct> getMenuProducts() {
