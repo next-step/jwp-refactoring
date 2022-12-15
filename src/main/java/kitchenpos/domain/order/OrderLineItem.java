@@ -18,7 +18,7 @@ public class OrderLineItem {
     @Column(nullable = false)
     private long quantity;
 
-    private OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     private OrderLineItem(Long seq, Long menuId, long quantity) {

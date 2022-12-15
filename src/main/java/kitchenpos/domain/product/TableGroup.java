@@ -1,6 +1,7 @@
 package kitchenpos.domain.product;
 
 import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.order.OrderTables;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,8 +20,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-
-    private TableGroup() {
+    protected TableGroup() {
     }
 
     private TableGroup(Long id, LocalDateTime createdDate) {
@@ -43,28 +43,20 @@ public class TableGroup {
         return new TableGroup(id, OrderTables.from(orderTables));
     }
 
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(null, OrderTables.from(orderTables));
+    }
+
+    public static TableGroup createEmpty() {
+        return new TableGroup();
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 
     @Override
