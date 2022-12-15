@@ -1,11 +1,10 @@
-package kitchenpos.domain;
-
-import kitchenpos.dto.MenuProductRequest;
+package kitchenpos.domain.menu;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Entity
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +20,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private MenuGroup menuGroup;
 
-//    @Embedded
-//    private MenuProducts menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
     private List<MenuProduct> menuProducts;
 
     private Menu() {

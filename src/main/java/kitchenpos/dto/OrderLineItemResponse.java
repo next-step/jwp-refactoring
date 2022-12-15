@@ -1,7 +1,5 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderLineItem;
-
 import java.util.Objects;
 
 public class OrderLineItemResponse {
