@@ -8,7 +8,7 @@ import kitchenpos.ordertable.domain.OrderTables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class TableGroupTest {
+class TableGroupTest {
 
     @DisplayName("이미 단체가 지정된 주문 테이블을 단체 지정하면 에러가 발생한다.")
     @Test

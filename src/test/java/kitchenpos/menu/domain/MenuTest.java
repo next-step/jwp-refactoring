@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class MenuTest {
+class MenuTest {
 
     private Product 하와이안피자;
     private MenuGroup 피자;
