@@ -45,6 +45,7 @@ public class OrderTableTest {
         final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(10), true);
         final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(5), true);
         final TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
+        tableGroup.group();
 
         //when
         //then
@@ -59,6 +60,7 @@ public class OrderTableTest {
         final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(10), true);
         final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(5), true);
         final TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
+        tableGroup.group();
         int newNumberOfGuests = 2;
 
         //when
@@ -87,6 +89,7 @@ public class OrderTableTest {
         final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(10), true);
         final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(5), true);
         final TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
+        tableGroup.group();
 
         //when
         //then
