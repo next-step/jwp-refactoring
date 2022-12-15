@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -103,6 +104,7 @@ class TableGroupServiceTest {
     void createWithException3() {
         // given
         OrderTable orderTable = 그룹_있는_주문테이블_생성(주문테이블(1L, 3L, 10, true));
+        setMenuGroup(테이블그룹(), orderTable);
         TableGroupRequest tableGroup = 테이블그룹요청(주문정보요청목록(Arrays.asList(orderTable, 주문테이블1)));
         when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable.getId(), 주문테이블1.getId()))).thenReturn(
                 Arrays.asList(orderTable, 주문테이블1));

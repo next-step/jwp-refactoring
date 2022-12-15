@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
+import static kitchenpos.fixture.OrderTableTestFixture.setMenuGroup;
 import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,7 +23,7 @@ class OrderTableTest {
 
         // when
         OrderTable orderTable =
-                OrderTable.of(테이블그룹(), expectedNumberOfGuests, expectedIsEmpty);
+                OrderTable.of(expectedNumberOfGuests, expectedIsEmpty);
 
         // then
         assertAll(
@@ -37,7 +38,7 @@ class OrderTableTest {
     void changeNumberOfGuests() {
         // given
         int expectedNumberOfGuests = 20;
-        OrderTable orderTable = OrderTable.of(테이블그룹(), 10, false);
+        OrderTable orderTable = OrderTable.of(10, false);
 
         // when
         orderTable.changeNumberOfGuests(expectedNumberOfGuests);
@@ -50,7 +51,7 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuestsWithException1() {
         // given
-        OrderTable orderTable = OrderTable.of(테이블그룹(), 10, false);
+        OrderTable orderTable = OrderTable.of(10, false);
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
@@ -61,7 +62,7 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuestsWithException2() {
         // given
-        OrderTable orderTable = OrderTable.of(테이블그룹(), 10, true);
+        OrderTable orderTable = OrderTable.of(10, true);
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(20))
@@ -73,7 +74,7 @@ class OrderTableTest {
     void changeEmpty() {
         // given
         boolean expectedIsEmpty = false;
-        OrderTable orderTable = OrderTable.of(null, 10, true);
+        OrderTable orderTable = OrderTable.of(10, true);
 
         // when
         orderTable.changeEmpty(expectedIsEmpty);
@@ -86,7 +87,8 @@ class OrderTableTest {
     @Test
     void changeEmptyWithException1() {
         // given
-        OrderTable orderTable = OrderTable.of(테이블그룹(), 10, true);
+        OrderTable orderTable = OrderTable.of(10, true);
+        setMenuGroup(테이블그룹(), orderTable);
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))
@@ -98,7 +100,7 @@ class OrderTableTest {
     void changeEmptyWithException2() {
         // given
         Order order = Order.of(
-                OrderTable.of(null, 10, false),
+                OrderTable.of(10, false),
                 Collections.singletonList(주문정보(1L, 1))
         );
         order.changeOrderStatus(OrderStatus.MEAL.name());
@@ -113,7 +115,7 @@ class OrderTableTest {
     void changeTableGroup() {
         // given
         TableGroup expectedTableGroup = 테이블그룹();
-        OrderTable orderTable = OrderTable.of(null, 10, true);
+        OrderTable orderTable = OrderTable.of(10, true);
 
         // when
         orderTable.group(expectedTableGroup);

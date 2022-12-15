@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -99,6 +100,7 @@ class OrderTableServiceTest {
     void changeEmptyWithException1() {
         // given
         OrderTable orderTable = 그룹_있는_주문테이블_생성(주문테이블(null, 1L, 10, true));
+        setMenuGroup(테이블그룹(), orderTable);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then

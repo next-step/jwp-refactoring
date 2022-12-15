@@ -1,6 +1,7 @@
 package kitchenpos.fixture;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import org.springframework.util.ReflectionUtils;
 
@@ -9,16 +10,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
-
 public class OrderTableTestFixture {
 
     public static OrderTableRequest 주문테이블(Long id, Long getTableGroupId, int numberOfGuests, boolean empty) {
-        return OrderTableRequest.of(id, getTableGroupId, numberOfGuests, empty);
+        return OrderTableRequest.of(id, numberOfGuests, empty);
     }
 
     public static OrderTableRequest 주문테이블(Long getTableGroupId, int numberOfGuests, boolean empty) {
-        return OrderTableRequest.of(null, getTableGroupId, numberOfGuests, empty);
+        return OrderTableRequest.of(null, numberOfGuests, empty);
     }
 
     public static OrderTableRequest 주문테이블2_요청() {
@@ -30,28 +29,28 @@ public class OrderTableTestFixture {
     }
 
     public static OrderTable 그룹_있는_주문테이블_생성(OrderTableRequest request) {
-        return OrderTable.of(테이블그룹(), request.getNumberOfGuests(), request.isEmpty());
+        return OrderTable.of(request.getNumberOfGuests(), request.isEmpty());
     }
 
     public static OrderTable 그룹_없는_주문테이블_생성(OrderTableRequest request) {
-        return OrderTable.of(null, request.getNumberOfGuests(), request.isEmpty());
+        return OrderTable.of(request.getNumberOfGuests(), request.isEmpty());
     }
 
     public static List<OrderTableRequest> 주문정보요청목록(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(orderTable -> OrderTableRequest.of(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+                .map(orderTable -> OrderTableRequest.of(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
                 .collect(Collectors.toList());
     }
 
     public static List<OrderTable> 주문정보목록(List<OrderTableRequest> orderTables) {
         return orderTables.stream()
-                .map(orderTable -> OrderTable.of(테이블그룹(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+                .map(orderTable -> OrderTable.of(orderTable.getNumberOfGuests(), orderTable.isEmpty()))
                 .collect(Collectors.toList());
     }
 
     public static List<OrderTable> mapToEntityForNoGroup(List<OrderTableRequest> orderTableRequests) {
         return orderTableRequests.stream()
-                .map(orderTableRequest -> OrderTable.of(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty()))
+                .map(orderTableRequest -> OrderTable.of(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty()))
                 .collect(Collectors.toList());
     }
 
@@ -59,6 +58,13 @@ public class OrderTableTestFixture {
         Field idField = Objects.requireNonNull(ReflectionUtils.findField(OrderTable.class, "id"));
         ReflectionUtils.makeAccessible(idField);
         ReflectionUtils.setField(idField, orderTable, id);
+        return orderTable;
+    }
+
+    public static OrderTable setMenuGroup(final TableGroup tableGroup, final OrderTable orderTable) {
+        Field menuGroupField = Objects.requireNonNull(ReflectionUtils.findField(OrderTable.class, "tableGroup"));
+        ReflectionUtils.makeAccessible(menuGroupField);
+        ReflectionUtils.setField(menuGroupField, orderTable, tableGroup);
         return orderTable;
     }
 }

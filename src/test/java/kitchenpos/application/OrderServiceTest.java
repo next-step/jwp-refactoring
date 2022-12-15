@@ -162,7 +162,7 @@ class OrderServiceTest {
     void changeOrderWithException1() {
         // given
         OrderRequest 미등록_주문_요청 = 주문(null,null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        Order 미등록_주문 = Order.of(OrderTable.of(null, 10, false), 주문정보목록(미등록_주문_요청.getOrderLineItemsRequest()));
+        Order 미등록_주문 = Order.of(OrderTable.of(10, false), 주문정보목록(미등록_주문_요청.getOrderLineItemsRequest()));
         when(orderRepository.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then

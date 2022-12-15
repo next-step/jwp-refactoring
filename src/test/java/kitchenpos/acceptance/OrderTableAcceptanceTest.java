@@ -58,7 +58,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         // given
         OrderTableResponse orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTableResponse.class);
         boolean isEmpty = orderTable.isEmpty();
-        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), !orderTable.isEmpty());
+        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), orderTable.getNumberOfGuests(), !orderTable.isEmpty());
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_빈좌석_상태_변경_요청(orderTable.getId(), changeOrderTable);
@@ -73,7 +73,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         // given
         OrderTableResponse orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTableResponse.class);
         int numberOfGuests = 10;
-        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), orderTable.getTableGroupId(), numberOfGuests, orderTable.isEmpty());
+        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), numberOfGuests, orderTable.isEmpty());
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_방문고객_인원_변경_요청(orderTable.getId(), changeOrderTable);

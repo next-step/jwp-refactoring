@@ -27,10 +27,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        TableGroup tableGroup = findTableGroupById(request.getTableGroupId());
-
         OrderTable orderTable =
-                OrderTable.of(tableGroup, request.getNumberOfGuests(), request.isEmpty());
+                OrderTable.of(request.getNumberOfGuests(), request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }

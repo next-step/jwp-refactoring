@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static kitchenpos.fixture.OrderTableTestFixture.*;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -47,6 +48,7 @@ class TableGroupTest {
         // given
         OrderTable 주문테이블1 = 그룹_있는_주문테이블_생성(주문테이블(null, 1L, 10, true));
         OrderTable 주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블(null, null, 20, true));
+        setMenuGroup(테이블그룹(), 주문테이블1);
 
         // when & then
         assertThatThrownBy(() -> TableGroup.of(Arrays.asList(주문테이블1, 주문테이블2)))
