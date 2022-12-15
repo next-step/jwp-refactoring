@@ -40,7 +40,7 @@ public class OrderRequest {
                 .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
                 .collect(toList());
         order.addOrderLineItems(items);
-
+        order.checkValidOrder(menus.size());
         return order;
     }
 

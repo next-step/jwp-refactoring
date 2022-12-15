@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -26,12 +27,8 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
-
         List<Product> allById = productRepository.findAllById(menuRequest.findAllProductIds());
-
-        Menu menu = menuRequest.toMenu(menuGroup, allById);
-        menu.checkPriceValid();
-        return MenuResponse.of(menuRepository.save(menu));
+        return MenuResponse.of(menuRepository.save(menuRequest.toMenu(menuGroup, allById)));
     }
 
     public List<MenuResponse> list() {

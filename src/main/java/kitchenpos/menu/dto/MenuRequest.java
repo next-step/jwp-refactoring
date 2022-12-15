@@ -35,7 +35,7 @@ public class MenuRequest {
                 .map(request -> request.toMenuProducts(menu, products))
                 .collect(toList());
         menu.setMenuProducts(allMenuProducts);
-
+        menu.checkPriceValid();
         return menu;
     }
 

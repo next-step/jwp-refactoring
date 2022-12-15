@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -27,14 +28,14 @@ public class OrderService {
         this.orderTableService = orderTableService;
     }
 
+
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableService.findOrderTable(orderRequest.getOrderTableId());
         List<Menu> menus = menuRepository.findAllById(orderRequest.findAllMenuIds());
-        Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING, menus);
-        order.checkValidOrder(menus.size());
-
-        return OrderResponse.of(orderRepository.save(order));
+        return OrderResponse.of(orderRepository.save(
+                orderRequest.toOrder(orderTable, orderRequest.getOrderStatus(), menus)
+        ));
     }
 
     public List<OrderResponse> list() {
@@ -48,7 +49,6 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        savedOrder.throwIfCompleted();
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }

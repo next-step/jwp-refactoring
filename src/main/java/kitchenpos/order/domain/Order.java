@@ -100,6 +100,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        throwIfCompleted();
         this.orderStatus = orderStatus;
     }
 

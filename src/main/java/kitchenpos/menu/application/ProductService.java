@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -24,10 +25,6 @@ public class ProductService {
         return ProductResponse.of(saved);
     }
 
-    public Product findById(final Long productId){
-        return productRepository.findById(productId)
-                .orElseThrow(IllegalArgumentException::new);
-    }
 
     public List<ProductResponse> list() {
         List<Product> all = productRepository.findAll();
