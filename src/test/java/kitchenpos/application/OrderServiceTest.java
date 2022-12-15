@@ -21,6 +21,7 @@ import static kitchenpos.application.MenuServiceTest.generateMenu;
 import static kitchenpos.application.TableServiceTest.generateOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,6 +105,16 @@ class OrderServiceTest {
     @Test
     @DisplayName("새로운 주문 추가 : 존재하지 않는 주문 테이블로 요청할 수 없다.")
     void orderTest4() {
+        given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
+        given(orderTableDao.findById(any(Long.class))).willReturn(Optional.of(generateOrderTable(1L, 0, true)));
+
+        assertThatThrownBy(() -> orderService.create(주문))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("새로운 주문 추가 : 실제로 존재하는 메뉴로만 요청할 수 있다.")
+    void orderTest5() {
         given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(1L);
 
         assertThatThrownBy(() -> orderService.create(주문))
@@ -112,7 +123,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문 현황을 수정할 수 있다.")
-    void orderTest5() {
+    void orderTest6() {
         given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
         given(orderDao.save(주문)).willReturn(주문);
         given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문항목1, 주문항목2));
@@ -125,7 +136,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문 현황 수정 : 존재하지 않는 주문으로 요청할 수 없다.")
-    void orderTest6() {
+    void orderTest7() {
         Order 변경할_주문_현황 = generateOrder(OrderStatus.COMPLETION.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 변경할_주문_현황))
@@ -134,7 +145,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문 현황 수정 : 완료된 상태의 주문 현황은 수정할 수 없다.")
-    void orderTest7() {
+    void orderTest8() {
         Order 변경할_주문_현황 = generateOrder(OrderStatus.COMPLETION.name());
         주문.setOrderStatus(변경할_주문_현황.getOrderStatus());
 

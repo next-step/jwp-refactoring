@@ -10,7 +10,7 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {}
+    private Order() {}
 
     public Order(Long id, Long orderTableId, String orderStatus,
                  LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -28,10 +28,6 @@ public class Order {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getOrderTableId() {
@@ -65,4 +61,5 @@ public class Order {
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
+
 }

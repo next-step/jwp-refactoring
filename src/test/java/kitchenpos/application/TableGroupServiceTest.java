@@ -52,8 +52,8 @@ class TableGroupServiceTest {
     void setUp() {
         메뉴테이블1 = generateOrderTable(1L, 5, true);
         메뉴테이블2 = generateOrderTable(2L, 3, true);
-        메뉴테이블3 = generateOrderTable(3L, 3, false);
-        메뉴테이블4 = generateOrderTable(4L, 1L,3, false);
+        메뉴테이블3 = generateOrderTable(3L, 1L, 3, true);
+        메뉴테이블4 = generateOrderTable(4L, 3, false);
 
         메뉴테이블_아이디들 = Arrays.asList(메뉴테이블1.getId(), 메뉴테이블2.getId());
 
@@ -96,6 +96,15 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 : 다른 테이블 그룹에 속한 주문 테이블로는 요청할 수 없다.")
     void tableGroupTest4() {
+        given(orderTableDao.findAllByIdIn(메뉴테이블_아이디들)).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블3));
+
+        assertThatThrownBy(() -> tableGroupService.create(단체지정))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("단체 지정 : 주문 테이블이 비어있지 않으면 요청할 수 없다.")
+    void tableGroupTest5() {
         given(orderTableDao.findAllByIdIn(메뉴테이블_아이디들)).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블4));
 
         assertThatThrownBy(() -> tableGroupService.create(단체지정))
@@ -104,7 +113,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정을 제거할 수 있다.")
-    void tableGroupTest5() {
+    void tableGroupTest6() {
         given(orderTableDao.findAllByTableGroupId(단체지정.getId())).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(메뉴테이블1.getId(), 메뉴테이블2.getId()),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
@@ -116,7 +125,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정 제거 : 주문 테이블의 상태가 조리중이거나 식사중이면 안된다.")
-    void tableGroupTest6() {
+    void tableGroupTest7() {
         given(orderTableDao.findAllByTableGroupId(단체지정.getId())).willReturn(Arrays.asList(메뉴테이블1, 메뉴테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(메뉴테이블1.getId(), 메뉴테이블2.getId()),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);

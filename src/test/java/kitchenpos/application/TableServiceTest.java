@@ -130,6 +130,8 @@ class TableServiceTest {
     @Test
     @DisplayName("게스트 수 변경 - 존재하지 않는 주문 테이블로 요청할 수 없다.")
     void tableTest8() {
+        given(orderTableDao.findById(메뉴테이블1.getId())).willReturn(Optional.of(generateOrderTable(1L, 5, true)));
+
         OrderTable 변경할_메뉴테이블 = generateOrderTable(null, 5, false);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(메뉴테이블1.getId(), 변경할_메뉴테이블))

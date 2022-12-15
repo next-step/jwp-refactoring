@@ -141,6 +141,10 @@ class MenuServiceTest {
     @Test
     @DisplayName("새로운 메뉴 추가 : 메뉴 가격은 메뉴 상품들의 가격의 합보다 크면 안된다.")
     void menuTest6() {
+        given(menuGroupDao.existsById(메뉴1.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(상품1.getId())).willReturn(Optional.of(상품1));
+        given(productDao.findById(상품2.getId())).willReturn(Optional.of(상품2));
+
         Menu 상품들의_가격의합보다_큰메뉴 = generateMenu(1L, "menu1", 가격(3000), 메뉴그룹.getId(), 메뉴상품들);
 
         assertThatThrownBy(() -> menuService.create(상품들의_가격의합보다_큰메뉴))
