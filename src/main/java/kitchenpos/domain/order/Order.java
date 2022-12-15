@@ -4,9 +4,10 @@ import kitchenpos.exception.BadRequestException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import static kitchenpos.utils.Message.INVALID_CHANGE_ORDER_STATUS;
 
 @Entity
 @Table(name = "orders")
@@ -69,6 +70,13 @@ public class Order {
     }
 
 
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+            throw new BadRequestException(INVALID_CHANGE_ORDER_STATUS);
+        }
+        this.orderStatus = orderStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -85,4 +93,6 @@ public class Order {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
 }

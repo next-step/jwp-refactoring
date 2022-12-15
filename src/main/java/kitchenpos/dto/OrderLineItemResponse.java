@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.order.OrderLineItem;
+
 import java.util.Objects;
 
 public class OrderLineItemResponse {
@@ -34,6 +36,15 @@ public class OrderLineItemResponse {
         return quantity;
     }
 
+    public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
+        return new OrderLineItemResponse(
+                orderLineItem.getSeq(),
+                orderLineItem.getOrderId(),
+                orderLineItem.getMenuId(),
+                orderLineItem.getQuantity()
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,4 +62,6 @@ public class OrderLineItemResponse {
     public int hashCode() {
         return Objects.hash(seq, orderId, menuId, quantity);
     }
+
+
 }
