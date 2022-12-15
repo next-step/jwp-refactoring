@@ -28,8 +28,8 @@ public class TableGroup2 {
     protected TableGroup2() {
     }
 
-    public TableGroup2(LocalDateTime createdDate, List<OrderTable2> orderTables) {
-        this.createdDate = createdDate;
+    public TableGroup2(List<OrderTable2> orderTables) {
+        this.createdDate = LocalDateTime.now();
         addOrderTables(orderTables);
     }
 

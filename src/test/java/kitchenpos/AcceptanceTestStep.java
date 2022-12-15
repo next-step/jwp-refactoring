@@ -3,7 +3,6 @@ package kitchenpos;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
@@ -66,17 +65,8 @@ public abstract class AcceptanceTestStep<Q, P> {
                                     requestBody);
     }
 
-    public void 수정됨(ExtractableResponse<Response> response,
-                       P expected,
-                       Function<P, ?> compareExtractor) {
+    public void 수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-        List<P> actualList = 목록_조회();
-        P actual = actualList.stream()
-            .filter(body -> isEqual(expected, body))
-            .findFirst().get();
-
-        assertThat(isEqual(actual, expected, compareExtractor)).isTrue();
     }
 
     public void 수정_실패함(ExtractableResponse<Response> response) {
@@ -93,15 +83,7 @@ public abstract class AcceptanceTestStep<Q, P> {
 
     public void 삭제_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isNotEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    private boolean isEqual(P actual, P expected, Function<P, ?> compareExtractor) {
-        return compareExtractor.apply(actual).equals(compareExtractor.apply(expected));
-    }
-
-    private boolean isEqual(P expected, P body) {
-        return idExtractor().applyAsLong(expected) == idExtractor().applyAsLong(body);
-    }
+    }ø
 
     protected abstract String getRequestPath();
 

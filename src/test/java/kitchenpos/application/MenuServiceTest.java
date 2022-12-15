@@ -76,7 +76,6 @@ class MenuServiceTest {
 		verify(menuRepository, times(1)).findAll();
 	}
 
-
 	private List<Product> createProducts(int count) {
 		return LongStream.range(0, count)
 			.mapToObj(i -> new Product(i, "product-"+i, 1_000))
