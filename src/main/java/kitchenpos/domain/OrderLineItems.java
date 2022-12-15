@@ -15,6 +15,14 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
+    private OrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderLineItems of(List<OrderLineItem> orderLineItem) {
+        return new OrderLineItems(orderLineItem);
+    }
+
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }

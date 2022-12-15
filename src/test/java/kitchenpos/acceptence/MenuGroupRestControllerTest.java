@@ -25,8 +25,8 @@ class MenuGroupRestControllerTest extends AcceptanceSupport {
     @Override
     public void setUp() {
         super.setUp();
-        크리스마스메뉴 = new MenuGroup(1L, "크리스마스메뉴");
-        겨울메뉴 = new MenuGroup(2L, "겨울메뉴");
+        크리스마스메뉴 = MenuGroup.of("크리스마스메뉴");
+        겨울메뉴 = MenuGroup.of("겨울메뉴");
     }
 
     @Test

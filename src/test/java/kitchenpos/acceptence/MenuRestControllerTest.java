@@ -3,10 +3,7 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +19,7 @@ import static kitchenpos.acceptence.MenuGroupRestControllerTest.메뉴그룹을_
 import static kitchenpos.acceptence.ProductRestControllerTest.상품을_등록한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MenuRestControllerTest  extends AcceptanceSupport {
+class MenuRestControllerTest extends AcceptanceSupport {
     private Product 후라이드치킨;
     private Product 제로콜라;
     private MenuGroup 치킨;
@@ -33,14 +30,15 @@ class MenuRestControllerTest  extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드치킨 = 상품을_등록한다(new Product(1L, "후라이드치킨", BigDecimal.valueOf(3_000))).as(Product.class);
-        제로콜라 = 상품을_등록한다(new Product(2L, "제로콜라", BigDecimal.valueOf(2_000))).as(Product.class);
-        치킨 = 메뉴그룹을_생성한다(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
+        후라이드치킨 = 상품을_등록한다(Product.of(BigDecimal.valueOf(3_000), "후라이드치킨")).as(Product.class);
+        제로콜라 = 상품을_등록한다(Product.of(BigDecimal.valueOf(2_000), "제로콜라")).as(Product.class);
+        치킨 = 메뉴그룹을_생성한다(MenuGroup.of("치킨")).as(MenuGroup.class);
 
-        후라이드_이인분 = new MenuProduct(1L, 1L, 후라이드치킨.getId(), 2);
-        제로콜라_삼인분 = new MenuProduct(1L, 1L, 제로콜라.getId(), 3);
+        후치콜세트 = Menu.of("후치콜세트", Price.from(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분));
 
-        후치콜세트 = new Menu(1L, "후치콜세트", BigDecimal.valueOf(5_000), 치킨.getId(), Arrays.asList(제로콜라_삼인분, 후라이드_이인분));
+        후라이드_이인분 = MenuProduct.of(후치콜세트, 후라이드치킨, 2);
+        제로콜라_삼인분 = MenuProduct.of(후치콜세트, 제로콜라, 3);
+
     }
 
     @Test

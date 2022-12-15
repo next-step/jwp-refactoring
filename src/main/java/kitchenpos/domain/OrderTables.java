@@ -15,6 +15,14 @@ public class OrderTables {
 
     protected OrderTables() {}
 
+    private OrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
+    public static OrderTables from(List<OrderTable> OrderTable) {
+        return new OrderTables(OrderTable);
+    }
+
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }

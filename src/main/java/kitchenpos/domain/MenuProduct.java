@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 
-
 import javax.persistence.*;
 
 @Entity
@@ -22,11 +21,15 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        this.seq = seq;
+
+    private MenuProduct(Menu menu, Product product, long quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public static MenuProduct of(Menu menu, Product product, long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
     public Long getSeq() {

@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,7 @@ class TableGroupRestControllerTest extends AcceptanceSupport {
         주문테이블_이번 = 주문테이블을_생성한다(new OrderTable(null, null, 9, true))
                 .as(OrderTable.class);
 
-        크리스마스파티 = new TableGroup(1L, null, Arrays.asList(주문테이블_일번, 주문테이블_이번));
+        크리스마스파티 = new TableGroup(1L, null, OrderTables.from(Arrays.asList(주문테이블_일번, 주문테이블_이번)));
     }
 
     @Test

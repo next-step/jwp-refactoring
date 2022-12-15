@@ -3,6 +3,7 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ class ProductRestControllerTest extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        스테이크 = new Product(1L, "스테이크", BigDecimal.valueOf(1_000));
-        감튀 = new Product(2L, "감튀", BigDecimal.valueOf(2_000));
+        스테이크 = Product.of(BigDecimal.valueOf(1_000), "스테이크");
+        감튀 = Product.of(BigDecimal.valueOf(2_000), "감튀");
     }
 
     @Test

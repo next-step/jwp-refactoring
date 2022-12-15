@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.type.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,21 +38,23 @@ class OrderRestControllerTest extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드치킨 = 상품을_등록한다(new Product(1L, "후라이드치킨", BigDecimal.valueOf(3_000))).as(Product.class);
-        제로콜라 = 상품을_등록한다(new Product(2L, "제로콜라", BigDecimal.valueOf(2_000))).as(Product.class);
+        후라이드치킨 = 상품을_등록한다(Product.of(BigDecimal.valueOf(3_000), "후라이드치킨")).as(Product.class);
 
-        치킨 = 메뉴그룹을_생성한다(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
+        제로콜라 = 상품을_등록한다(Product.of(BigDecimal.valueOf(2_000), "제로콜라")).as(Product.class);
 
-        후라이드_이인분 = new MenuProduct(1L, 1L, 후라이드치킨.getId(), 2);
-        제로콜라_삼인분 = new MenuProduct(1L, 1L, 제로콜라.getId(), 3);
+        치킨 = 메뉴그룹을_생성한다(MenuGroup.of("치킨")).as(MenuGroup.class);
 
-        후치콜세트 = 메뉴를_생성한다(new Menu(1L, "후치콜세트", BigDecimal.valueOf(5_000), 치킨.getId(), Arrays.asList(제로콜라_삼인분, 후라이드_이인분))).as(Menu.class);
+        후치콜세트 = 메뉴를_생성한다(Menu.of("후치콜세트", Price.from(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분))).as(Menu.class);
+
+        후라이드_이인분 = MenuProduct.of(후치콜세트, 후라이드치킨, 2);
+        제로콜라_삼인분 = MenuProduct.of(후치콜세트, 제로콜라, 3);
+
 
         주문테이블 = 주문테이블을_생성한다(new OrderTable(null, null, 0, false)).as(OrderTable.class);
 
-        주문항목 = new OrderLineItem(null, null, 후치콜세트.getId(), 1);
+        주문항목 = new OrderLineItem(null, null, 후치콜세트, 1);
 
-        주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(주문항목));
+        주문 = Order.of(주문테이블, null, null, Arrays.asList(주문항목));
     }
 
     @Test
@@ -85,9 +86,9 @@ class OrderRestControllerTest extends AcceptanceSupport {
     void updateOrderStatus() {
         // given
         주문 = 주문_생성을_요청한다(주문).as(Order.class);
-        Order 변경한_주문 = new Order(
-                주문.getId(), 주문.getOrderTableId(), OrderStatus.COOKING.name(), 주문.getOrderedTime(), 주문.getOrderLineItems()
-        );
+
+        Order 변경한_주문 = Order.of(주문테이블, 주문.getOrderStatus(), 주문.getOrderedTime(), Arrays.asList(주문항목));
+
 
         // when
         ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), 변경한_주문);

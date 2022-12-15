@@ -59,7 +59,7 @@ class TableRestControllerTest extends AcceptanceSupport {
         // given
         주문테이블_일번 = 주문테이블을_생성한다(주문테이블_일번).as(OrderTable.class);
 
-        OrderTable 변경할_주문테이블 = new OrderTable(주문테이블_일번.getId(), 주문테이블_일번.getTableGroupId(), 주문테이블_일번.getNumberOfGuests(), true);
+        OrderTable 변경할_주문테이블 = new OrderTable(주문테이블_일번.getId(), 주문테이블_일번.getTableGroup(), 주문테이블_일번.getNumberOfGuests(), true);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_상태_변경을_요청한다(주문테이블_일번.getId(), 변경할_주문테이블);
@@ -74,7 +74,7 @@ class TableRestControllerTest extends AcceptanceSupport {
     void changeGuestNumber() {
         // given
         주문테이블_일번 = 주문테이블을_생성한다(주문테이블_일번).as(OrderTable.class);
-        OrderTable 변경할_주문테이블 = new OrderTable(주문테이블_일번.getId(), 주문테이블_일번.getTableGroupId(), 10, true);
+        OrderTable 변경할_주문테이블 = new OrderTable(주문테이블_일번.getId(), 주문테이블_일번.getTableGroup(), 10, true);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_손님수_변경을_요청한다(주문테이블_일번.getId(), 변경할_주문테이블);

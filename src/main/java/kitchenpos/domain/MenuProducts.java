@@ -13,4 +13,8 @@ public class MenuProducts {
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
+
+    public MenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
 }

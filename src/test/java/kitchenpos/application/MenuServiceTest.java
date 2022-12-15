@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.port.MenuPort;
 import kitchenpos.port.MenuGroupPort;
 import kitchenpos.port.MenuProductPort;
@@ -48,10 +49,11 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        스테이크 = new Product(1L, "스테이크", BigDecimal.valueOf(30_000));
-        파스타 = new Product(1L, "파스타", BigDecimal.valueOf(15_000));
 
-        스테이크_이인분 = new MenuProduct(1L, 1L, 스테이크.getId(), 2);
+        스테이크 = Product.of((BigDecimal.valueOf(30_000)), "스테이크");
+        파스타 = Product.of(BigDecimal.valueOf(15_000), "파스타");
+
+        스테이크_이인분 = MenuProduct.of(1L, 1L, 스테이크.getId(), 2);
         파스타_삼인분 = new MenuProduct(1L, 1L, 파스타.getId(), 3);
     }
 

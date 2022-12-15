@@ -22,6 +22,10 @@ public class MenuGroup {
         return new MenuGroup(name);
     }
 
+    public static MenuGroup of(String name) {
+        return new MenuGroup(name);
+    }
+
     public Long getId() {
         return id;
     }
