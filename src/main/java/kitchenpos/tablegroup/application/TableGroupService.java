@@ -39,8 +39,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        OrderTables orderTables = tableGroup.getOrderTables();
-        List<Order> orders = findAllOrderByOrderTableIds(orderTables);
+        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTables());
         tableGroup.ungroup(orders);
     }
 
@@ -60,9 +59,8 @@ public class TableGroupService {
             .orElseThrow(() -> new NotFoundException());
     }
 
-    private List<Order> findAllOrderByOrderTableIds(OrderTables orderTables) {
-        List<Long> orderTableIds = orderTables.getOrderTables()
-            .stream()
+    private List<Order> findAllOrderByOrderTableIds(List<OrderTable> orderTables) {
+        List<Long> orderTableIds = orderTables.stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
         return orderRepository.findAllByOrderTableIdIn(orderTableIds);

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -62,8 +63,8 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
     }
 
     @Override

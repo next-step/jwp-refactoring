@@ -24,7 +24,6 @@ public class TableGroupResponse {
 
     public static TableGroupResponse from(TableGroup tableGroup) {
         List<OrderTableResponse> orderTables = tableGroup.getOrderTables()
-            .getOrderTables()
             .stream()
             .map(OrderTableResponse::from)
             .collect(Collectors.toList());
