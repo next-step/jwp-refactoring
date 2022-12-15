@@ -1,10 +1,11 @@
 package kitchenpos.order.domain;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItem;
+import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,8 @@ public class OrderLineItemsTest {
     private MenuGroup 햄버거단품;
     private Menu 불고기버거단품;
     private Menu 치킨버거단품;
+    private OrderMenu 불고기버거단품주문메뉴;
+    private OrderMenu 치킨버거단품주문메뉴;
     private OrderLineItem 치킨버거단품_주문_항목;
     private OrderLineItem 불고기버거단품_주문_항목;
 
@@ -44,8 +47,10 @@ public class OrderLineItemsTest {
         햄버거단품 = generateMenuGroup(1L, "햄버거단품");
         치킨버거단품 = generateMenu(2L, "치킨버거단품", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(치킨버거상품));
         불고기버거단품 = generateMenu(1L, "불고기버거단품", BigDecimal.valueOf(3500L), 햄버거단품, singletonList(불고기버거상품));
-        치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품, 2);
-        불고기버거단품_주문_항목 = generateOrderLineItem(불고기버거단품, 1);
+        치킨버거단품주문메뉴 = generateOrderMenu(치킨버거단품);
+        불고기버거단품주문메뉴 = generateOrderMenu(불고기버거단품);
+        치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품주문메뉴, 2);
+        불고기버거단품_주문_항목 = generateOrderLineItem(불고기버거단품주문메뉴, 1);
     }
 
     @DisplayName("주문 항목 집합을 생성한다.")

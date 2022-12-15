@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,34 +54,8 @@ public class MenuTest {
         // then
         assertAll(
                 () -> assertThat(불고기버거세트.getName().value()).isEqualTo(name),
-                () -> assertThat(불고기버거세트.getMenuProducts().unmodifiableMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품, 콜라상품)
+                () -> assertThat(불고기버거세트.getMenuProducts().findMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품, 콜라상품)
         );
-    }
-
-    @DisplayName("메뉴 그룹이 존재하지 않으면 메뉴를 생성할 수 없다.")
-    @Test
-    void createMenuThrowErrorWhenMenuGroupIsNotExists() {
-        // given
-        String name = "불고기버거세트";
-        BigDecimal price = BigDecimal.valueOf(8500);
-
-        // when & then
-        assertThatThrownBy(() -> generateMenu(1L, name, price, null, Arrays.asList(감자튀김상품, 불고기버거상품, 콜라상품)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.메뉴_그룹은_비어있을_수_없음.getErrorMessage());
-    }
-
-    @DisplayName("메뉴 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성할 수 없다.")
-    @Test
-    void createMenuThrowErrorWhenMenuPriceIsHigherThanMenuProductsPrice() {
-        // given
-        String name = "불고기버거세트";
-        BigDecimal price = BigDecimal.valueOf(9500);
-
-        // when & then
-        assertThatThrownBy(() -> generateMenu(1L, name, price, 햄버거세트, Arrays.asList(감자튀김상품, 불고기버거상품, 콜라상품)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.메뉴의_가격은_메뉴상품들의_가격의_합보다_클_수_없음.getErrorMessage());
     }
 
     @DisplayName("메뉴 생성 시, 가격이 비어있으면 에러가 발생한다.")

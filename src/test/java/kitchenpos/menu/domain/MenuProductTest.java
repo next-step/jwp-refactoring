@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +43,7 @@ public class MenuProductTest {
 
         // then
         assertAll(
-                () -> assertThat(menuProduct.getProduct()).isEqualTo(감자튀김),
+                () -> assertThat(menuProduct.getProductId()).isEqualTo(감자튀김.getId()),
                 () -> assertThat(menuProduct.getQuantity()).isEqualTo(Quantity.from(quantity))
         );
     }

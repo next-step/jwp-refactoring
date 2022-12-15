@@ -1,11 +1,11 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroupRequest;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroupRequest;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProductRequest;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenuRequest;
 import static kitchenpos.product.domain.ProductTestFixture.generateProductRequest;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.acceptance.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;

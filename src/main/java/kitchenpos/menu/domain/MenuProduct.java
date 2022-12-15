@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -8,9 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -21,31 +20,22 @@ public class MenuProduct {
     @ManyToOne
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
     private Menu menu;
-    @ManyToOne
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_product"))
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct() {}
+    protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    protected MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProduct(seq, menu, product, quantity);
-    }
-
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(null, null, product, quantity);
-    }
-
-    public Price totalPrice() {
-        return product.getPrice().multiply(quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(null, null, productId, quantity);
     }
 
     public void setUpMenu(final Menu menu) {
@@ -60,8 +50,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {

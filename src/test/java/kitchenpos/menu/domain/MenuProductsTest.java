@@ -40,8 +40,8 @@ public class MenuProductsTest {
 
         // then
         assertAll(
-                () -> assertThat(menuProducts.unmodifiableMenuProducts()).hasSize(2),
-                () -> assertThat(menuProducts.unmodifiableMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품)
+                () -> assertThat(menuProducts.findMenuProducts()).hasSize(2),
+                () -> assertThat(menuProducts.findMenuProducts()).containsExactly(감자튀김상품, 불고기버거상품)
         );
     }
 
@@ -52,20 +52,5 @@ public class MenuProductsTest {
         assertThatThrownBy(() -> MenuProducts.from(Collections.emptyList()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.메뉴_상품은_비어있을_수_없음.getErrorMessage());
-    }
-
-    @DisplayName("메뉴 상품 집합 내 메뉴 상품들의 가격의 합을 구할 수 있다.")
-    @Test
-    void findTotalPrice() {
-        // given
-        MenuProducts menuProducts = MenuProducts.from(Arrays.asList(감자튀김상품, 불고기버거상품));
-        Price 감자튀김가격 = 감자튀김상품.getProduct().getPrice();
-        Price 불고기버거가격 = 불고기버거상품.getProduct().getPrice();
-
-        // when
-        Price totalPrice = menuProducts.totalPrice();
-
-        // then
-        assertThat(totalPrice).isEqualTo(감자튀김가격.multiply(감자튀김상품.getQuantity()).add(불고기버거가격.multiply(불고기버거상품.getQuantity())));
     }
 }

@@ -1,23 +1,24 @@
 package kitchenpos.order.domain;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.menu.domain.MenuGroupTestFixture.generateMenuGroup;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
 import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.generateOrderLineItem;
-import static kitchenpos.order.domain.OrderTableTestFixture.generateOrderTable;
+import static kitchenpos.order.domain.OrderMenuTestFixture.generateOrderMenu;
+import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
 import static kitchenpos.order.domain.OrderTestFixture.generateOrder;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,8 @@ public class OrderTest {
     private MenuGroup 햄버거단품;
     private Menu 불고기버거단품;
     private Menu 치킨버거단품;
+    private OrderMenu 불고기버거단품주문메뉴;
+    private OrderMenu 치킨버거단품주문메뉴;
     private OrderLineItem 치킨버거단품_주문_항목;
     private OrderLineItem 불고기버거단품_주문_항목;
     private OrderTable 주문테이블;
@@ -46,8 +49,10 @@ public class OrderTest {
         햄버거단품 = generateMenuGroup(1L, "햄버거단품");
         치킨버거단품 = generateMenu(2L, "치킨버거단품", BigDecimal.valueOf(4000L), 햄버거단품, singletonList(치킨버거상품));
         불고기버거단품 = generateMenu(1L, "불고기버거단품", BigDecimal.valueOf(3500L), 햄버거단품, singletonList(불고기버거상품));
-        치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품, 2);
-        불고기버거단품_주문_항목 = generateOrderLineItem(불고기버거단품, 1);
+        치킨버거단품주문메뉴 = generateOrderMenu(치킨버거단품);
+        불고기버거단품주문메뉴 = generateOrderMenu(불고기버거단품);
+        치킨버거단품_주문_항목 = generateOrderLineItem(치킨버거단품주문메뉴, 2);
+        불고기버거단품_주문_항목 = generateOrderLineItem(불고기버거단품주문메뉴, 1);
         주문테이블 = generateOrderTable(4, false);
     }
 
@@ -58,10 +63,11 @@ public class OrderTest {
         Order order = generateOrder(주문테이블,  OrderLineItems.from(Arrays.asList(치킨버거단품_주문_항목, 불고기버거단품_주문_항목)));
 
         // then
-        assertAll(
-                () -> assertThat(order.getOrderTable()).isEqualTo(주문테이블),
-                () -> assertThat(order.getOrderLineItems().unmodifiableOrderLineItems().stream().map(OrderLineItem::getMenu)).containsExactly(치킨버거단품, 불고기버거단품)
-        );
+        assertThat(order.getOrderLineItems()
+                .unmodifiableOrderLineItems()
+                .stream()
+                .map(OrderLineItem::getOrderMenu))
+                .containsExactly(치킨버거단품주문메뉴, 불고기버거단품주문메뉴);
     }
 
     @DisplayName("주문 테이블이 비어있으면 주문 생성 시 오류가 발생한다.")

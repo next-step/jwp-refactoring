@@ -8,12 +8,12 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,29 +22,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
+            final OrderValidator orderValidator
+            ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        orderValidator.validator(orderRequest);
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findAllOrderLineItemByMenuId(orderLineItemRequests);
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        Order order = Order.of(orderTable, OrderLineItems.from(orderLineItems));
+        Order order = Order.of(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems));
         return OrderResponse.from(orderRepository.save(order));
     }
 
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAll();
         return orders.stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
@@ -52,19 +52,17 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = findOrderById(orderId);
+        Order order = findOrderById(orderId);
         order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(order);
     }
 
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_주문_테이블.getErrorMessage()));
-    }
-
     private List<OrderLineItem> findAllOrderLineItemByMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
-                .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(findMenuById(orderLineItemRequest.getMenuId())))
+                .map(orderLineItemRequest -> {
+                    Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+                    return orderLineItemRequest.toOrderLineItem(OrderMenu.from(menu));
+                })
                 .collect(Collectors.toList());
     }
 

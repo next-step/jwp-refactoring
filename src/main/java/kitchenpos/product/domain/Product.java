@@ -21,16 +21,12 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {}
+    protected Product() {}
 
-    private Product(Long id, String name, BigDecimal price) {
+    protected Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = Name.from(name);
         this.price = Price.from(price);
-    }
-
-    public static Product of(Long id, String name, BigDecimal price) {
-        return new Product(id, name, price);
     }
 
     public static Product of(String name, BigDecimal price) {
