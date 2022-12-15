@@ -1,5 +1,7 @@
 package kitchenpos.menu.dto;
 
+import java.util.List;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
@@ -30,5 +32,16 @@ public class MenuProductRequest {
 
     public MenuProduct toMenuProduct(Product product) {
         return new MenuProduct(product, quantity);
+    }
+
+    public MenuProduct toMenuProduct(List<Product> products) {
+        Product product = findProductByProductId(products);
+        return new MenuProduct(product, quantity);
+    }
+
+    private Product findProductByProductId(List<Product> products) {
+        return products.stream()
+            .filter(product -> product.getId().equals(productId))
+            .findFirst().get();
     }
 }

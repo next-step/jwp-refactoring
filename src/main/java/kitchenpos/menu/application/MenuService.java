@@ -38,11 +38,10 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponse create(final MenuRequest menuRequest) {
+    public MenuResponse create(MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(menuRequest.getMenuProducts()));
-        Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
-        return MenuResponse.from(menu);
+        List<Product> products = findAllProductByIds(menuRequest.getMenuProductIds());
+        return MenuResponse.from(menuRepository.save(menuRequest.toMenu(menuGroup, products)));
     }
 
     public List<MenuResponse> list() {
@@ -60,6 +59,12 @@ public class MenuService {
     private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
             .map(menuProductRequest -> menuProductRequest.toMenuProduct(findProductById(menuProductRequest.getProductId())))
+            .collect(Collectors.toList());
+    }
+
+    private List<Product> findAllProductByIds(List<Long> ids) {
+        return ids.stream()
+            .map(this::findProductById)
             .collect(Collectors.toList());
     }
 

@@ -35,6 +35,12 @@ public class MenuProduct {
         this.quantity = Quantity.from(quantity);
     }
 
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = Quantity.from(quantity);
+    }
+
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
         this.menu = menu;
