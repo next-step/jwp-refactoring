@@ -51,6 +51,9 @@ public class OrderLineItem {
         return quantity;
     }
 
+    public void setup(Order order) {
+        this.order = order;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -68,4 +71,6 @@ public class OrderLineItem {
     public int hashCode() {
         return Objects.hash(seq);
     }
+
+
 }

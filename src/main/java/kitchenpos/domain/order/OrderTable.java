@@ -115,6 +115,10 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -132,4 +136,6 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
 }
