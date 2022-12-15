@@ -1,30 +1,36 @@
 package kitchenpos.menugroup.domain;
 
-public class MenuGroup {
-    private Long id;
-    private String name;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.common.Name;
 
-    public MenuGroup(Long id, String name) {
-        this.id = id;
-        this.name = name;
+@Entity
+public class MenuGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Name name;
+
+    protected MenuGroup() {
     }
 
-    public MenuGroup() {
+    private MenuGroup(String name) {
+        this.name = Name.of(name);
+    }
+
+    public static MenuGroup of(String name) {
+        return new MenuGroup(name);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public Name getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 }
