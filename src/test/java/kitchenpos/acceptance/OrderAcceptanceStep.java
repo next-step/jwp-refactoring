@@ -4,20 +4,21 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.order.Order;
+import kitchenpos.dto.OrderRequest;
 import org.springframework.http.MediaType;
 
 public class OrderAcceptanceStep {
     private OrderAcceptanceStep() {
     }
 
-    public static ExtractableResponse<Response> 주문_등록되어_있음(Order order) {
-        return 주문_생성_요청(order);
+    public static ExtractableResponse<Response> 주문_등록되어_있음(OrderRequest request) {
+        return 주문_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(order)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/orders")
                 .then().log().all()
@@ -33,10 +34,10 @@ public class OrderAcceptanceStep {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, Order order) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, OrderRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(order)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put("/api/orders/{orderId}/order-status", orderId)
                 .then().log().all()

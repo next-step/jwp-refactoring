@@ -97,7 +97,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(메뉴그룹_없는_허니콤보치킨);
 
-        메뉴_생성_실패함(response);
+        메뉴_생성_실패함_서버(response);
 
     }
 
@@ -114,7 +114,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(허니콤보치킨);
 
-        메뉴_생성_실패함(response);
+        메뉴_생성_실패함_서버(response);
 
     }
 
@@ -158,6 +158,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_생성_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 메뉴_생성_실패함_서버(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {

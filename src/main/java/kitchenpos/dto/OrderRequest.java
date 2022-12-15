@@ -16,6 +16,14 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
+    public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(orderTableId, null, orderLineItems);
+    }
+
+    public static OrderRequest from(String orderStatus) {
+        return new OrderRequest(null, orderStatus, null);
+    }
+
 
     public Long getOrderTableId() {
         return orderTableId;
