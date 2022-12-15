@@ -1,12 +1,27 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "table_group")
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
+    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
     private List<OrderTable> orderTables;
 
     private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
@@ -29,7 +44,7 @@ public class TableGroup {
 
     private static void validEmptyTable(List<OrderTable> orderTables) {
         if (notEmpty(orderTables)) {
-            throw new IllegalArgumentException("단체 지정 테이블에 비어 있지 않은 테이블이 포함 되어 있습니다");
+            throw new IllegalArgumentException("단체 지정 주문 테이블에 비어 있지 않은 주문 테이블이 포함 되어 있습니다");
         }
     }
 
@@ -79,5 +94,40 @@ public class TableGroup {
     @Override
     public int hashCode() {
         return Objects.hash(orderTables);
+    }
+
+    public List<Long> tableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
+    public void checkCreatable() {
+        validEmptyTable(this.orderTables);
+        validNonNullTableGroupId();
+    }
+
+    private void validNonNullTableGroupId() {
+        if (checkNullTableGroupId()) {
+            throw new IllegalArgumentException("단체 지정 값이 없는 주문 테이블이 포함되어 있습니다");
+        }
+    }
+
+    private boolean checkNullTableGroupId() {
+        return this.orderTables.stream().anyMatch(it -> Objects.nonNull(it.getTableGroup()));
+    }
+
+    public void updateTableGroup() {
+        this.orderTables.forEach(it -> it.updateGroup(this));
+    }
+
+    public void unGroup() {
+        this.orderTables.forEach(OrderTable::unGroup);
+    }
+
+    public List<Long> orderTableIds() {
+        return this.orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 }

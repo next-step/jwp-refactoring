@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -11,10 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.domain.OrderTest.조리_상태;
 import static kitchenpos.application.TableServiceTest.주문_테이블;
 import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.domain.OrderTableTest.빈_상태;
@@ -36,7 +38,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @DisplayName("생성 성공")
     @Test
@@ -97,10 +99,10 @@ public class TableGroupServiceTest {
     @Test
     void 단체_지정_해제_성공() {
         //given:
-        final TableGroup 단체_지정_테이블 = tableGroupService.create(단체_지정(LocalDateTime.now(), Arrays.asList(
+        final TableGroup 단체_지정_테이블 = tableGroupService.create(단체_지정(LocalDateTime.now(), new ArrayList<>(Arrays.asList(
                 tableService.create(주문_테이블(두_명의_방문객, 빈_상태)),
                 tableService.create(주문_테이블(두_명의_방문객, 빈_상태))
-        )));
+        ))));
         //when,then:
         assertThatNoException().isThrownBy(() -> tableGroupService.ungroup(단체_지정_테이블.getId()));
     }
@@ -112,9 +114,9 @@ public class TableGroupServiceTest {
         final OrderTable 첫_번째_테이블 = tableService.create(주문_테이블(두_명의_방문객, 빈_상태));
         final OrderTable 두_번째_테이블 = tableService.create(주문_테이블(두_명의_방문객, 빈_상태));
 
-        orderDao.save(주문(
-                첫_번째_테이블.getId(),
-                OrderStatus.COOKING.name(),
+        orderRepository.save(주문(
+                첫_번째_테이블,
+                조리_상태,
                 LocalDateTime.now(),
                 Collections.emptyList()));
         //when:
