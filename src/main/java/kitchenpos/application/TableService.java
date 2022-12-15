@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.repository.OrderTableRepository;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,19 +25,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable orderTable =
-                OrderTable.of(request.getNumberOfGuests(), request.isEmpty());
+
+        OrderTable orderTable = request.toEntity();
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
-    }
-
-    private TableGroup findTableGroupById(final Long tableGroupId) {
-        if(Objects.isNull(tableGroupId)) {
-            return null;
-        }
-
-        return tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("테이블 그룹을 찾을 수 없습니다."));
     }
 
     public List<OrderTableResponse> list() {

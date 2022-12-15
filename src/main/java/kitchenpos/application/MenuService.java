@@ -36,7 +36,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("%d에 해당하는 메뉴그룹을 찾을 수 없습니다.", menuGroupId)));
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProductsRequest()));
-        Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
+        Menu menu = request.toEntity(menuGroup, menuProducts);
 
         return MenuResponse.from(menuRepository.save(menu));
     }

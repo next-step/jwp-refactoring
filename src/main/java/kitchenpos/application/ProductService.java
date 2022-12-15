@@ -21,7 +21,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        Product product = Product.of(request.getName(), request.getPrice());
+        Product product = request.toEntity();
         return ProductResponse.from(productRepository.save(product));
     }
 
