@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
@@ -18,6 +19,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableRequest;
@@ -112,10 +115,8 @@ class TableServiceTest {
                 new MenuProductRequest(product1.getId(), 1),
                 new MenuProductRequest(product2.getId(), 1)
         )));
-        orderService.create(new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Arrays.asList(
-                new OrderLineItem(null, menu1.getId(), 1)
-        )));
+        orderService.create(new OrderRequest(orderTable.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(

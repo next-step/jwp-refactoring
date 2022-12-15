@@ -17,6 +17,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableRequest;
@@ -175,8 +177,8 @@ class TableGroupServiceTest {
                 new MenuProductRequest(product1.getId(), 1),
                 new MenuProductRequest(product2.getId(), 1)
         )));
-        orderService.create(new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
 
         // when
@@ -204,8 +206,8 @@ class TableGroupServiceTest {
                 new MenuProductRequest(product1.getId(), 1),
                 new MenuProductRequest(product2.getId(), 1)
         )));
-        orderService.create(new Order(orderTable1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
 
         // when

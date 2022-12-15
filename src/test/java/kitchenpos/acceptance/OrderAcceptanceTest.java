@@ -17,6 +17,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -163,20 +164,20 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
                 new MenuProduct(상품2, 1)
         ));
         ResultActions 주문_요청_결과 = 주문_요청(테이블, 메뉴1);
-        Order 최초_주문 = getObjectByResponse(주문_요청_결과, Order.class);
+        OrderResponse 최초_주문 = getObjectByResponse(주문_요청_결과, OrderResponse.class);
         assertThat(최초_주문.getId()).isNotNull();
         주문_상태_변경됨(최초_주문, OrderStatus.COOKING);
 
         // when
         ResultActions 식사중_상태_변경_요청_결과 = 주문_상태_변경_요청(최초_주문, OrderStatus.MEAL);
-        Order 식사중_주문 = getObjectByResponse(식사중_상태_변경_요청_결과, Order.class);
+        OrderResponse 식사중_주문 = getObjectByResponse(식사중_상태_변경_요청_결과, OrderResponse.class);
 
         // then
         주문_상태_변경됨(식사중_주문, OrderStatus.MEAL);
 
         // when
         ResultActions 계산완료_상태_변경_요청_결과 = 주문_상태_변경_요청(최초_주문, OrderStatus.COMPLETION);
-        Order 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, Order.class);
+        OrderResponse 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, OrderResponse.class);
 
         // then
         주문_상태_변경됨(계산완료_주문, OrderStatus.COMPLETION);
@@ -210,12 +211,12 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         ));
 
         ResultActions 주문_요청_결과 = 주문_요청(테이블, 메뉴1);
-        Order 최초_주문 = getObjectByResponse(주문_요청_결과, Order.class);
+        OrderResponse 최초_주문 = getObjectByResponse(주문_요청_결과, OrderResponse.class);
         assertThat(최초_주문.getId()).isNotNull();
         주문_상태_변경됨(최초_주문, OrderStatus.COOKING);
 
         ResultActions 계산완료_상태_변경_요청_결과 = 주문_상태_변경_요청(최초_주문, OrderStatus.COMPLETION);
-        Order 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, Order.class);
+        OrderResponse 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, OrderResponse.class);
         주문_상태_변경됨(계산완료_주문, OrderStatus.COMPLETION);
 
         // when & then
@@ -224,16 +225,16 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         ).hasCause(new IllegalArgumentException());
     }
 
-    private void 주문_상태_변경됨(Order 최초_주문, OrderStatus orderStatus) {
+    private void 주문_상태_변경됨(OrderResponse 최초_주문, OrderStatus orderStatus) {
         assertThat(최초_주문.getOrderStatus()).isEqualTo(orderStatus.name());
     }
 
-    private ResultActions 주문_상태_변경_요청(Order 최초_주문, OrderStatus orderStatus) throws Exception {
-        return mockPut("/api/orders/{orderId}/order-status", 최초_주문.getId(), new Order(orderStatus.name()));
+    private ResultActions 주문_상태_변경_요청(OrderResponse 최초_주문, OrderStatus orderStatus) throws Exception {
+        return mockPut("/api/orders/{orderId}/order-status", 최초_주문.getId(), new Order(orderStatus));
     }
 
     private ResultActions 주문_메뉴_없이_요청(OrderTableResponse orderTable) throws Exception {
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now()
                 , Collections.emptyList());
         return mockPost("/api/orders", order);
     }

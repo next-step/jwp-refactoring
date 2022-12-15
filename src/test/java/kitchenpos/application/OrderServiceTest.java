@@ -16,6 +16,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,8 +56,8 @@ class OrderServiceTest {
                 new MenuProductRequest(product1.getId(), 1),
                 new MenuProductRequest(product2.getId(), 1)
         )));
-        Order order = new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1)));
+        OrderRequest order = new OrderRequest(orderTable1.getId()
+                , Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1)));
         // when
         Order savedOrder = orderService.create(order);
 
@@ -68,8 +70,8 @@ class OrderServiceTest {
     void createFailTest1(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, false));
-        Order order = new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.emptyList());
+        OrderRequest order = new OrderRequest(orderTable1.getId(), Collections.emptyList());
+
         // when
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(order)
@@ -83,8 +85,9 @@ class OrderServiceTest {
     void createFailTest2(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, false));
-        Order order = new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, 9999L, 1)));
+        OrderRequest order = new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(9999L, 1)));
+
         // when
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(order)
@@ -105,8 +108,9 @@ class OrderServiceTest {
                 new MenuProductRequest(product1.getId(), 1),
                 new MenuProductRequest(product2.getId(), 1)
         )));
-        Order order = new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1)));
+        OrderRequest order = new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1)));
+
         // when
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(order)
@@ -128,14 +132,14 @@ class OrderServiceTest {
                 new MenuProductRequest(product2.getId(), 1)
         )));
 
-        Order order = orderService.create(new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        Order order = orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.MEAL.name()));
+        Order changedOrder = orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.MEAL));
 
         // then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
@@ -151,14 +155,14 @@ class OrderServiceTest {
                 new MenuProductRequest(product2.getId(), 1)
         )));
 
-        Order order = orderService.create(new Order(orderTable1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        Order order = orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION.name()));
+        Order changedOrder = orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION));
 
         // then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     @Test
@@ -174,16 +178,16 @@ class OrderServiceTest {
                 new MenuProductRequest(product2.getId(), 1)
         )));
 
-        Order order = orderService.create(new Order(orderTable1.getId(), null, LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
-        orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION.name()));
+        Order order = orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
+        orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.MEAL.name()))
+                () -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.MEAL))
         );
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COOKING.name()))
+                () -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COOKING))
         );
 
         // then

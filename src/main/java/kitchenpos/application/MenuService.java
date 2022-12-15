@@ -41,7 +41,7 @@ public class MenuService {
     }
 
     private MenuGroup getMenuGroup(MenuRequest menuRequest) {
-        if ( menuRequest.getMenuGroupId() == null || !menuGroupDao.existsById(menuRequest.getMenuGroupId()) ) {
+        if ( menuRequest.getMenuGroupId() == null) {
             throw new IllegalArgumentException();
         }
         return menuGroupDao.findById(menuRequest.getMenuGroupId())

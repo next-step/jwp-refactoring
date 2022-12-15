@@ -22,6 +22,9 @@ import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
@@ -158,12 +161,12 @@ public class MockMvcAcceptanceTest {
     }
 
     ResultActions 주문_요청(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
+        OrderRequest order = new OrderRequest(orderTable.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu.getId(), 1)));
         return mockPost("/api/orders", order);
     }
 
-    Order 주문_생성(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
-        return getObjectByResponse(주문_요청(orderTable, menu), Order.class);
+    OrderResponse 주문_생성(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
+        return getObjectByResponse(주문_요청(orderTable, menu), OrderResponse.class);
     }
 }

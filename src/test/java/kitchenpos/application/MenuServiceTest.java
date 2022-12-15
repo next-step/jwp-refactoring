@@ -20,6 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -49,6 +50,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("메뉴 생성 성공 테스트")
+    @Commit
     void createTest(){
         // given
         MenuRequest menuRequest = new MenuRequest("메뉴1", new BigDecimal(1000), menuGroup.getId(), Arrays.asList(
