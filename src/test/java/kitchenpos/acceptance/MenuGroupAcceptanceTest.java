@@ -12,15 +12,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.BaseAcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
 
-    MenuGroup 후라이드치킨 = new MenuGroup(1L, "후라이드치킨");
-    MenuGroup 양념치킨 = new MenuGroup(2L, "양념치킨");
+    MenuGroupRequest 후라이드치킨 = new MenuGroupRequest("후라이드치킨");
+    MenuGroupRequest 양념치킨 = new MenuGroupRequest("양념치킨");
 
     @Test
     void 메뉴그룹을_생성할_수_있다() throws Exception {
@@ -38,9 +38,9 @@ class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
         메뉴그룹_목록조회_성공(resultActions, 후라이드치킨, 양념치킨);
     }
 
-    private void 메뉴그룹_목록조회_성공(ResultActions resultActions, MenuGroup... menuGroups) throws Exception {
+    private void 메뉴그룹_목록조회_성공(ResultActions resultActions, MenuGroupRequest... menuGroups) throws Exception {
         List<String> names = Arrays.stream(menuGroups)
-                .map(MenuGroup::getName)
+                .map(MenuGroupRequest::getName)
                 .collect(Collectors.toList());
 
         resultActions.andExpect(status().isOk())
@@ -48,19 +48,19 @@ class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("$.[*].name", containsInRelativeOrder(names.toArray())));
     }
 
-    private void 메뉴그룹_등록됨(ResultActions resultActions, MenuGroup menuGroup) throws Exception {
+    private void 메뉴그룹_등록됨(ResultActions resultActions, MenuGroupRequest menuGroup) throws Exception {
         resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(menuGroup.getId()))
+                .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value(menuGroup.getName()));
     }
 
-    private void 메뉴그룹_등록(MenuGroup... menuGroups) throws Exception {
-        for (MenuGroup menuGroup : menuGroups) {
+    private void 메뉴그룹_등록(MenuGroupRequest... menuGroups) throws Exception {
+        for (MenuGroupRequest menuGroup : menuGroups) {
             메뉴그룹_등록(menuGroup);
         }
     }
 
-    private ResultActions 메뉴그룹_등록(MenuGroup menuGroup) throws Exception {
+    private ResultActions 메뉴그룹_등록(MenuGroupRequest menuGroup) throws Exception {
         return mvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuGroup))

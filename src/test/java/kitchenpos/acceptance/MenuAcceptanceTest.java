@@ -10,29 +10,31 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 class MenuAcceptanceTest extends BaseAcceptanceTest {
 
-    Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
-    Product 양념치킨_상품 = new Product(2L, "양념치킨", new BigDecimal(16000.00));
-    MenuProduct 후라이드치킨_메뉴상품 = new MenuProduct(1L, 1L, 1L, 1);
-    MenuProduct 양념치킨_메뉴상품 = new MenuProduct(2L, 1L, 2L, 1);
-    MenuGroup 후라이드치킨_메뉴그룹 = new MenuGroup(1L, "후라이드치킨");
-    MenuGroup 양념치킨_메뉴그룹 = new MenuGroup(2L, "양념치킨");
-    MenuGroup 두마리치킨_메뉴그룹 = new MenuGroup(1L, "두마리치킨");
-    Menu 후라이드치킨_메뉴 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(후라이드치킨_메뉴상품));
-    Menu 두마리치킨_메뉴 = new Menu(1L, "두마리치킨", new BigDecimal(40000.00), 1L, Arrays.asList(후라이드치킨_메뉴상품, 양념치킨_메뉴상품));
+    ProductRequest 후라이드치킨_상품 = new ProductRequest(1L, "후라이드치킨", new BigDecimal(16000.00));
+    ProductRequest 양념치킨_상품 = new ProductRequest(2L, "양념치킨", new BigDecimal(16000.00));
+    MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
+    MenuProductRequest 양념치킨_메뉴상품 = new MenuProductRequest(2L, 1L, 2L, 1);
+    MenuGroupRequest 후라이드치킨_메뉴그룹 = new MenuGroupRequest("후라이드치킨");
+    MenuGroupRequest 양념치킨_메뉴그룹 = new MenuGroupRequest("양념치킨");
+    MenuGroupRequest 두마리치킨_메뉴그룹 = new MenuGroupRequest("두마리치킨");
+    MenuRequest 후라이드치킨_메뉴 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
+            Collections.singletonList(후라이드치킨_메뉴상품));
+    MenuRequest 두마리치킨_메뉴 = new MenuRequest(1L, "두마리치킨", new BigDecimal(40000.00), 1L,
+            Arrays.asList(후라이드치킨_메뉴상품, 양념치킨_메뉴상품));
 
     @Test
     void 메뉴등록시_가격이_0원_미만이면_오류발생() throws Exception {
-        Menu 가격이_0원_미만인_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L, null);
+        MenuRequest 가격이_0원_미만인_메뉴 = new MenuRequest(1L, "잘못된_가격이_측정된_메뉴", new BigDecimal(-1), 1L, null);
 
         ResultActions resultActions = 메뉴_등록(가격이_0원_미만인_메뉴);
 
@@ -41,7 +43,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 메뉴등록시_가격이_null_이면_오류발생() throws Exception {
-        Menu 잘못된_가격이_측정된_메뉴 = new Menu(1L, "잘못된_가격이_측정된_메뉴", null, 1L, null);
+        MenuRequest 잘못된_가격이_측정된_메뉴 = new MenuRequest(1L, "잘못된_가격이_측정된_메뉴", null, 1L, null);
 
         ResultActions resultActions = 메뉴_등록(잘못된_가격이_측정된_메뉴);
 
@@ -61,7 +63,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_메뉴그룹만_지정할_수_있다() throws Exception {
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, null);
+        MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, null);
 
         ResultActions resultActions = 메뉴_등록(후라이드치킨);
 
@@ -70,8 +72,9 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
     void 등록_된_상품만_지정할_수_있다() throws Exception {
-        MenuProduct menuProduct = new MenuProduct(1L, 2L, 1L, 1l);
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal(16000.00), 1L, Collections.singletonList(menuProduct));
+        MenuProductRequest menuProduct = new MenuProductRequest(1L, 2L, 1L, 1l);
+        MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
+                Collections.singletonList(menuProduct));
 
         ResultActions resultActions = 메뉴_등록(후라이드치킨);
 
@@ -105,8 +108,8 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private void 메뉴_목록조회_성공(ResultActions resultActions, Menu menu) throws Exception {
-        MenuProduct menuProducts = menu.getMenuProducts().get(0);
+    private void 메뉴_목록조회_성공(ResultActions resultActions, MenuRequest menu) throws Exception {
+        MenuProductRequest menuProducts = menu.getMenuProductRequests().get(0);
 
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(menu.getId()))
@@ -120,7 +123,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
         ;
     }
 
-    private ResultActions 메뉴_등록(Menu menu) throws Exception {
+    private ResultActions 메뉴_등록(MenuRequest menu) throws Exception {
         return mvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menu))
@@ -128,8 +131,8 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private void 메뉴_등록_성공(ResultActions resultActions, Menu menu) throws Exception {
-        MenuProduct menuProduct = menu.getMenuProducts().get(0);
+    private void 메뉴_등록_성공(ResultActions resultActions, MenuRequest menu) throws Exception {
+        MenuProductRequest menuProduct = menu.getMenuProductRequests().get(0);
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(menu.getId()))
                 .andExpect(jsonPath("name").value(menu.getName()))
@@ -145,13 +148,13 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
         resultActions.andExpect(status().is4xxClientError());
     }
 
-    private void 메뉴그룹_등록(MenuGroup... menuGroups) throws Exception {
-        for (MenuGroup menuGroup : menuGroups) {
+    private void 메뉴그룹_등록(MenuGroupRequest... menuGroups) throws Exception {
+        for (MenuGroupRequest menuGroup : menuGroups) {
             메뉴그룹_등록(menuGroup);
         }
     }
 
-    private ResultActions 메뉴그룹_등록(MenuGroup menuGroup) throws Exception {
+    private ResultActions 메뉴그룹_등록(MenuGroupRequest menuGroup) throws Exception {
         return mvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuGroup))
@@ -159,7 +162,7 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private ResultActions 상품_등록(Product product) throws Exception {
+    private ResultActions 상품_등록(ProductRequest product) throws Exception {
         return mvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(product))
