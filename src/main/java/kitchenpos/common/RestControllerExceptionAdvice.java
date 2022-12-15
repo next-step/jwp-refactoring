@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RestControllerExceptionAdvice {
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity handleException() {
+    public ResponseEntity handleException(Exception exception) {
         return ResponseEntity.badRequest().build();
     }
 }
