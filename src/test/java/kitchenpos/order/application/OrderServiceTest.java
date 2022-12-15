@@ -103,8 +103,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문을 반환")
     @Test
     public void returnOrder() {
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest();
-        orderLineItemRequest.setMenuId(2l);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(2l,3l);
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderTableId(15l);
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
@@ -194,8 +193,7 @@ public class OrderServiceTest {
     private List<OrderLineItemRequest> getOrderLineItems() {
         return IntStream.rangeClosed(1, 20)
                 .mapToObj(value -> {
-                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest();
-                    orderLineItemRequest.setMenuId(Arbitraries.longs().between(1, 100).sample());
+                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(10l,20l);
                     return orderLineItemRequest;
                 })
                 .collect(Collectors.toList());

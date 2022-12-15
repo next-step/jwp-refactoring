@@ -22,12 +22,4 @@ public class MenuProductResponse {
     public static MenuProductResponse of(final MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct);
     }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
 }

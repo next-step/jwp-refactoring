@@ -32,10 +32,6 @@ public class MenuRequest {
         return price;
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProducts;
-    }
-
     public String getName() {
         return name;
     }

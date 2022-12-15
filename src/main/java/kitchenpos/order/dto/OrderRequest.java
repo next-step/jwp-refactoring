@@ -37,7 +37,6 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
     }
 
-
     public Long getOrderTableId() {
         return orderTableId;
     }

@@ -41,7 +41,6 @@ public class MenuResponse {
     public BigDecimal getPrice() {
         return price;
     }
-
 }
 
 
