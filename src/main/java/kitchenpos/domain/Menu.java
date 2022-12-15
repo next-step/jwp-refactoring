@@ -30,7 +30,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -47,31 +47,19 @@ public class Menu {
 
     public void addMenuProduct(MenuProduct menuProduct){
         this.menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
+        menuProduct.changeMenu(this);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -83,17 +71,25 @@ public class Menu {
     }
 
     public void validatePrice() {
-        if(price == null || price.compareTo(BigDecimal.ZERO) < 0){
+        if(isPriceNull() || isPriceLessThanZero()){
             throw new IllegalArgumentException();
         }
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(menuProduct.calculatePrice());
         }
 
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isPriceLessThanZero() {
+        return price.compareTo(BigDecimal.ZERO) < 0;
+    }
+
+    public boolean isPriceNull() {
+        return price == null;
     }
 }

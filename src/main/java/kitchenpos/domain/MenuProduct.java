@@ -26,7 +26,7 @@ public class MenuProduct {
     private Product product;
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Product product, long quantity) {
@@ -48,32 +48,20 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public Menu getMenu() {
         return menu;
     }
 
-    public void setMenu(Menu menu) {
+    public void changeMenu(Menu menu) {
         this.menu = menu;
     }
 
     public Product getProduct() {
         return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public BigDecimal calculatePrice(){

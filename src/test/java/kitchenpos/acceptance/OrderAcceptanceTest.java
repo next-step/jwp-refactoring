@@ -98,7 +98,7 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     void orderFailTest2() throws Exception {
         // given
         OrderTableResponse 테이블 = 테이블_생성(2, false);
-        MenuResponse 등록되지_않은_메뉴 = MenuResponse.of(new Menu("등록되지 않은 메뉴", new BigDecimal(1000), new MenuGroup(), Arrays.asList(
+        MenuResponse 등록되지_않은_메뉴 = MenuResponse.of(new Menu("등록되지 않은 메뉴", new BigDecimal(1000), new MenuGroup("메뉴 그룹"), Arrays.asList(
                 new MenuProduct(new Product("상품1", new BigDecimal(1000)), 1), new MenuProduct(new Product("상품2", new BigDecimal(1000)), 1)
         )));
 

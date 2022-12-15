@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -33,7 +32,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderStatus orderStatus) {
@@ -56,17 +55,11 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
-        orderLineItem.setOrder(this);
+        orderLineItem.changeOrder(this);
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public void validateChangeOrderStatus(){
-        if(!isDinning()){
-            throw new IllegalArgumentException();
-        }
     }
 
     public boolean isDinning(){
@@ -75,10 +68,6 @@ public class Order {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public OrderStatus getOrderStatus() {

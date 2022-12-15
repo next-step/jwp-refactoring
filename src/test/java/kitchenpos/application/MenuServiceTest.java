@@ -116,7 +116,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 메뉴그룹에 분류할 때, 없는 그룹에 등록할 수 없다.")
     void createFailTest4(){
         // given
-        MenuRequest menuRequest = new MenuRequest("메뉴1", new BigDecimal(8001), new MenuGroup().getId(), Arrays.asList(
+        MenuRequest menuRequest = new MenuRequest("메뉴1", new BigDecimal(8001), -1L, Arrays.asList(
                 new MenuProductRequest(천원.getId(), 2),
                 new MenuProductRequest(이천원.getId(), 3)
         ));

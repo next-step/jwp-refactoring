@@ -1,6 +1,7 @@
 package kitchenpos.validate;
 
 import java.util.List;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import org.springframework.stereotype.Component;
@@ -21,5 +22,11 @@ public class OrderValidator {
     private boolean existsMenuIdIsNull(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
                 .anyMatch(orderLineItemRequest -> orderLineItemRequest.getMenuId() == null);
+    }
+
+    public void validateChangeOrderStatus(Order order){
+        if(!order.isDinning()){
+            throw new IllegalArgumentException();
+        }
     }
 }

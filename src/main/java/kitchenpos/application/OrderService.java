@@ -59,7 +59,7 @@ public class OrderService {
     @Transactional
     public Order changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = getOrder(orderId);
-        savedOrder.validateChangeOrderStatus();
+        validator.validateChangeOrderStatus(savedOrder);
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus);

@@ -26,7 +26,7 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(boolean empty) {
@@ -57,10 +57,6 @@ public class OrderTable {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public TableGroup getTableGroup() {

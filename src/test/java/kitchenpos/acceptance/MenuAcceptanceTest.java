@@ -93,7 +93,7 @@ public class MenuAcceptanceTest extends MockMvcAcceptanceTest{
 
         // when & then
         assertThatThrownBy(
-                () -> 메뉴_등록_요청("메뉴 1", 3000, new MenuGroup(), 구성상품들)
+                () -> 메뉴_등록_요청("메뉴 1", 3000, new MenuGroup("없는 메뉴 그룹"), 구성상품들)
         ).hasCause(new IllegalArgumentException());
     }
 
