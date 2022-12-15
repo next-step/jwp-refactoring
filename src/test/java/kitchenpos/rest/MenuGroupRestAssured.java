@@ -9,6 +9,10 @@ import org.springframework.http.MediaType;
 
 public class MenuGroupRestAssured {
 
+    public static ExtractableResponse<Response> 메뉴_그룹_등록됨(MenuGroup menuGroup) {
+        return 메뉴_그룹_등록_요청(menuGroup.getName());
+    }
+
     public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
         return RestAssured
                 .given().log().all()
