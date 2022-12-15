@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+@DisplayName("메뉴 유효성에 대한 테스트")
 @DataJpaTest
 class MenuValidatorTest {
 
