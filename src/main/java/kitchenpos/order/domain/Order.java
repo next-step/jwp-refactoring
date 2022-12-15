@@ -59,7 +59,7 @@ public class Order {
     }
 
     private void validateOrderTableNotEmpty(OrderTable orderTable) {
-        if(orderTable.isEmpty()) {
+        if (orderTable.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_NOT_EMPTY.getErrorMessage());
         }
     }
