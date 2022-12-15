@@ -1,14 +1,31 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "menu")
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private String name;
+    @Column
     private BigDecimal price;
+    @Column(name = "menu_group_id")
     private Long menuGroupId;
+    @OneToMany(mappedBy = "menu",fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts;
 
     private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
@@ -90,9 +107,27 @@ public class Menu {
         return Objects.hash(name, price, menuGroupId, menuProducts);
     }
 
-    public void setIdToMenuProducts() {
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(this.id);
+    public List<Product> productList() {
+        return this.menuProducts.stream().map(MenuProduct::getProduct)
+                .collect(Collectors.toList());
+    }
+
+    public void checkValidPrice() {
+        BigDecimal sum = totalPrice();
+        if (this.price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총 합과 같거나 작아야합니다");
         }
+    }
+
+    private BigDecimal totalPrice() {
+        return BigDecimal.valueOf(this.menuProducts.stream()
+                .map(MenuProduct::totalProductPrice)
+                .mapToInt(BigDecimal::intValue)
+                .sum());
+
+    }
+
+    public void setMenuToMenuProducts() {
+        this.menuProducts.forEach(it -> it.setMenu(this));
     }
 }

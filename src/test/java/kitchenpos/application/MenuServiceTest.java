@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +25,10 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 public class MenuServiceTest {
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Autowired
     private MenuService menuService;
@@ -39,10 +39,10 @@ public class MenuServiceTest {
         //given:
         final Menu 메뉴 = 메뉴("자메이카 통다리 1인 세트",
                 BigDecimal.ONE,
-                menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                 Arrays.asList(
-                        메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                        메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1)));
+                        메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)));
         //when:
         final Menu 저장된_메뉴 = menuService.create(메뉴);
         //then:
@@ -54,10 +54,10 @@ public class MenuServiceTest {
     void 생성_예외_메뉴의_가격이_0보다_작은_경우() {
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(메뉴("자메이카 통다리 1인 세트",
                 BigDecimal.valueOf(-1),
-                menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                 Arrays.asList(
-                        메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                        메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1)))));
+                        메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
     }
 
     @DisplayName("생성 예외 - 메뉴 그룹이 존재하지 않는 경우")
@@ -68,8 +68,8 @@ public class MenuServiceTest {
                 BigDecimal.ONE,
                 메뉴_그룹("추천 메뉴").getId(),
                 Arrays.asList(
-                        메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                        메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1)));
+                        메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)));
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(메뉴));
     }
@@ -79,10 +79,10 @@ public class MenuServiceTest {
     void 생성_예외_상품이_존재하지_않는_경우() {
         final Menu 메뉴 = 메뉴("자메이카 통다리 1인 세트",
                 BigDecimal.ONE,
-                menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                 Arrays.asList(
-                        메뉴_상품(상품("통다리", BigDecimal.ONE).getId(), 5),
-                        메뉴_상품(상품("콜라", BigDecimal.ONE).getId(), 1)));
+                        메뉴_상품(상품("통다리", BigDecimal.ONE), 5),
+                        메뉴_상품(상품("콜라", BigDecimal.ONE), 1)));
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(메뉴));
     }
@@ -94,10 +94,10 @@ public class MenuServiceTest {
         final int expensivePrice = 99999;
         final Menu 메뉴 = 메뉴("자메이카 통다리 1인 세트",
                 BigDecimal.valueOf(expensivePrice),
-                menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                 Arrays.asList(
-                        메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                        메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1)));
+                        메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)));
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(메뉴));
     }
@@ -108,10 +108,10 @@ public class MenuServiceTest {
         //given:
         final Menu 메뉴 = 메뉴("자메이카 통다리 1인 세트",
                 BigDecimal.ONE,
-                menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                 Arrays.asList(
-                        메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                        메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1)));
+                        메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)));
         //when:
         final Menu 저장된_메뉴 = menuService.create(메뉴);
         //then:
