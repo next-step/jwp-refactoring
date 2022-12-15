@@ -1,31 +1,29 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TableGroupService {
+    private static final String ERROR_MESSAGE_ORDER_TABLE_NOT_FOUND_FORMAT = "주문 테이블을 찾을 수 없습니다. ID : %d";
     private static final String ERROR_MESSAGE_NOT_FOUND_GROUP_TABLE = "존재하지 않는 단체 테이블입니다. ID : %d";
 
-    private final OrderDao orderDao;
-    private final TableService tableService;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderDao orderDao, TableService tableService, TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
-        this.tableService = tableService;
+    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
 
@@ -41,13 +39,7 @@ public class TableGroupService {
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
         OrderTables orderTables = tableGroup.orderTables();
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.list()
-                        .stream()
-                        .map(OrderTable::id)
-                        .collect(Collectors.toList()), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        validateCookingAndMeal(orderTables);
         orderTables.ungroup();
     }
 
@@ -58,7 +50,23 @@ public class TableGroupService {
 
     private List<OrderTable> findOrderTable(List<Long> orderTableIds) {
         return orderTableIds.stream()
-                .map(tableService::findById)
+                .map(this::findTableById)
                 .collect(Collectors.toList());
+    }
+
+    private List<Long> findOrderIds(OrderTables orderTables) {
+        return orderTables.list().stream()
+                .map(OrderTable::id)
+                .collect(Collectors.toList());
+    }
+
+    private void validateCookingAndMeal(OrderTables orderTables) {
+        List<Order> orders = orderRepository.findAllByOrderTableIdIn(findOrderIds(orderTables));
+        orders.forEach(Order::validateCookingAndMeal);
+    }
+
+    private OrderTable findTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_ORDER_TABLE_NOT_FOUND_FORMAT, id)));
     }
 }

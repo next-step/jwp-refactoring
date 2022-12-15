@@ -47,7 +47,7 @@ public class OrderTables {
     }
 
     private void validateIsGrouped(List<OrderTable> tables) {
-        tables.forEach(OrderTable::isGrouped);
+        tables.forEach(OrderTable::validateGrouped);
     }
 
     public static OrderTables from(List<OrderTable> tables) {
@@ -59,7 +59,7 @@ public class OrderTables {
     }
 
     public void validAlreadyGroup() {
-        tables.forEach(OrderTable::isGrouped);
+        tables.forEach(OrderTable::validateGrouped);
     }
 
     public void updateTableGroup(TableGroup tableGroup) {

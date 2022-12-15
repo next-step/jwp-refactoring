@@ -1,33 +1,36 @@
 package kitchenpos.menu.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class MenuService {
-    private final MenuRepository menuRepository;
-    private final ProductService productService;
-    private final MenuGroupService menuGroupService;
+    private static final String ERROR_MESSAGE_NOT_FOUND_MENU_GROUP_FORMAT = "메뉴 그룹을 찾을 수 없습니다. ID : %d";
+    private static final String ERROR_MESSAGE_NOT_FOUND_PRODUCT_FORMAT = "상품을 찾을 수 없습니다. ID : %d";
 
-    public MenuService(MenuRepository menuRepository, ProductService productService, MenuGroupService menuGroupService) {
+    private final MenuRepository menuRepository;
+    private final ProductRepository productRepository;
+    private final MenuGroupRepository menuGroupRepository;
+
+    public MenuService(MenuRepository menuRepository, ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
         this.menuRepository = menuRepository;
-        this.productService = productService;
-        this.menuGroupService = menuGroupService;
+        this.productRepository = productRepository;
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
+        MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
         List<MenuProduct> menuProducts = toMenuProduct(request.getMenuProductRequests());
         Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
@@ -39,7 +42,17 @@ public class MenuService {
 
     private List<MenuProduct> toMenuProduct(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
-                .map(request -> MenuProduct.of(productService.findById(request.getProductId()), request.getQuantity()))
+                .map(request -> MenuProduct.of(findProductById(request.getProductId()), request.getQuantity()))
                 .collect(Collectors.toList());
+    }
+
+    private MenuGroup findMenuGroupById(Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_MENU_GROUP_FORMAT, id)));
+    }
+
+    private Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_PRODUCT_FORMAT, id)));
     }
 }
