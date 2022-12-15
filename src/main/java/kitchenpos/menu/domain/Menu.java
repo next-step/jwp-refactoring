@@ -23,7 +23,7 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {}
+    protected Menu() {}
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this(name, price, menuGroup, menuProducts);

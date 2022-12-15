@@ -14,7 +14,7 @@ public class Price {
 
     BigDecimal price;
 
-    public Price() {
+    protected Price() {
         this.price = MINIMUM_PRICE;
     }
 

@@ -14,7 +14,7 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
-    public MenuProducts() {
+    protected MenuProducts() {
         this.menuProducts = new ArrayList<>();
     }
 

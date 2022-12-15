@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,7 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order() {}
+    protected Order() {}
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus,
                  LocalDateTime orderedTime, OrderLineItems orderLineItems) {

@@ -9,7 +9,7 @@ public class Quantity {
 
     private long quantity;
 
-    public Quantity() {}
+    protected Quantity() {}
 
     public Quantity(long quantity) {
         if (quantity <= 0) {

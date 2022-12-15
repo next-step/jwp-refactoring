@@ -13,7 +13,7 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {}
+    protected Product() {}
 
     public Product(Long id, String name, Price price) {
         this.id = id;
