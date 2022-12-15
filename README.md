@@ -100,3 +100,18 @@
 - 연관관계 구현
   - 직접 참조 (객체 참조를 이용한 연관 관계)
   - 간접 참조 (리포지토리를 통한 탐색)
+
+<details>
+<summary>의존성 수정 전/후 결과</summary>
+
+`의존 수정 전`
+![dependency_before](./dependency/dependency_before.png)
+
+`의존 수정 후`
+![dependency_after](./dependency/dependency_after.png)
+
+- Order와 OrderTable 간의 순환참조 제거
+- OrderTable과 TableGroup 간의 순환참조 제거
+
+</details>
+
