@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.order.exception.OrderExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ public class OrderTest {
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 OrderLineItem.builder().seq(1l).build(),
                 OrderLineItem.builder().seq(2l).build()
-                );
+        );
         Order order = Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COMPLETION).build();
 
         order.addOrderLineItems(orderLineItems);
@@ -55,7 +54,7 @@ public class OrderTest {
     public void throwsExceptionWhenStatusIsComplete() {
         Order order = Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COMPLETION).build();
 
-        assertThatThrownBy(() ->  order.changeOrderStatus(OrderStatus.COOKING))
+        assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.COOKING))
                 .isInstanceOf(OrderException.class)
                 .hasMessageContaining("계산이 완료된 주문은 상태를 변경할 수 없습니다");
     }

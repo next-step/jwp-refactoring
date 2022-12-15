@@ -19,6 +19,7 @@ public class Order extends BaseEntity {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();

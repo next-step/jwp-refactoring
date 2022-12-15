@@ -1,7 +1,5 @@
 package kitchenpos.product.ui;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
@@ -17,6 +15,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -39,7 +38,7 @@ public class ProductRestControllerTest extends ControllerTest {
     @DisplayName("상품생성을 요청하면 생성된 상품응답")
     @Test
     public void returnProduct() throws Exception {
-        ProductResponse product = getProduct();
+        ProductResponse product = getProductResponse();
         doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
@@ -65,13 +64,15 @@ public class ProductRestControllerTest extends ControllerTest {
     @DisplayName("상품목록을 요청하면 상품목록을 응답")
     @Test
     public void returnProducts() throws Exception {
-        List<Product> products = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(Product.class)
-                .set("id", Arbitraries.longs().between(1, 5))
-                .set("price", ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
-                .sampleList(Arbitraries.integers().between(1, 50).sample());
+        Product product1 = Product.builder()
+                .id(Arbitraries.longs().between(1, 5).sample())
+                .price(ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
+                .build();
+        Product product2 = Product.builder()
+                .id(Arbitraries.longs().between(1, 5).sample())
+                .price(ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
+                .build();
+        List<Product> products = Arrays.asList(product1, product2);
         doReturn(products).when(productService).list();
 
         webMvc.perform(get("/api/products"))
@@ -79,7 +80,7 @@ public class ProductRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private ProductResponse getProduct() {
+    private ProductResponse getProductResponse() {
         return ProductResponse.of(Product.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
                 .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
