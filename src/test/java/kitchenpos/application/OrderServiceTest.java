@@ -67,7 +67,7 @@ class OrderServiceTest {
     void order4() {
         List<OrderLineItem> orderLineItems = Collections.singletonList(new OrderLineItem(1L, 10L));
         when(menuRepository.countByIdIn(any())).thenReturn(Long.valueOf(orderLineItems.size()));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 0, true)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(0, true)));
 
         assertThatThrownBy(() -> orderService.create(new Order(1L, orderLineItems)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +85,7 @@ class OrderServiceTest {
     @DisplayName("주문상태가 완료인 경우 상태변경할 수 없다")
     @Test
     void order6() {
-        when(orderRepository.findById(any())).thenReturn(Optional.of(new Order(OrderStatus.COMPLETION.name())));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(new Order(OrderStatus.COMPLETION)));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order()))
             .isInstanceOf(IllegalArgumentException.class);

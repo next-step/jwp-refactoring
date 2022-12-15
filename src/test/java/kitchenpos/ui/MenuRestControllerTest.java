@@ -14,20 +14,17 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.IntegrationTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class MenuRestControllerTest {
+class MenuRestControllerTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

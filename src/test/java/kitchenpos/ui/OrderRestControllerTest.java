@@ -14,20 +14,17 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.IntegrationTest;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class OrderRestControllerTest {
+class OrderRestControllerTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -47,7 +44,7 @@ class OrderRestControllerTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.orderTableId").value(order.getOrderTableId()))
+            .andExpect(jsonPath("$.orderTableId").value(order.getOrderTable().getId()))
             .andExpect(jsonPath("$.orderStatus").value(COOKING.name()))
             .andExpect(jsonPath("$.orderedTime").exists())
             .andExpect(jsonPath("$.orderLineItems.length()").value(orderLineItems.size()))
@@ -78,7 +75,7 @@ class OrderRestControllerTest {
     @Test
     void order3() throws Exception {
         Long id = 주문_등록();
-        Order order = new Order(MEAL.name());
+        Order order = new Order(MEAL);
 
         mockMvc.perform(put("/api/orders/" + id + "/order-status")
             .contentType(APPLICATION_JSON)
@@ -87,7 +84,7 @@ class OrderRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(id))
             .andExpect(jsonPath("$.orderTableId").exists())
-            .andExpect(jsonPath("$.orderStatus").value(order.getOrderStatus()))
+            .andExpect(jsonPath("$.orderStatus").value(order.getOrderStatus().name()))
             .andExpect(jsonPath("$.orderedTime").exists());
 
         assertThat(orderRepository.findById(id)).isNotEmpty();

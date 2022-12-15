@@ -11,19 +11,17 @@ import java.io.UnsupportedEncodingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.IntegrationTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.OrderTableRequest;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class TableRestControllerTest {
+class TableRestControllerTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -34,17 +32,16 @@ class TableRestControllerTest {
     @DisplayName("주문테이블을 등록한다")
     @Test
     void table1() throws Exception {
-        OrderTable table = new OrderTable(null, 3, false);
+        OrderTableRequest request = new OrderTableRequest(3, false);
 
         MvcResult result = mockMvc.perform(post("/api/tables")
             .contentType(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(table)))
+            .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.tableGroupId").value(table.getTableGroupId()))
-            .andExpect(jsonPath("$.numberOfGuests").value(table.getNumberOfGuests()))
-            .andExpect(jsonPath("$.empty").value(table.isEmpty()))
+            .andExpect(jsonPath("$.numberOfGuests").value(request.getNumberOfGuests()))
+            .andExpect(jsonPath("$.empty").value(request.isEmpty()))
             .andReturn();
 
         assertThat(orderTableRepository.findById(getId(result))).isNotEmpty();
@@ -57,7 +54,6 @@ class TableRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$..id").exists())
-            .andExpect(jsonPath("$..tableGroupId").exists())
             .andExpect(jsonPath("$..numberOfGuests").exists())
             .andExpect(jsonPath("$..empty").exists())
         ;
@@ -66,7 +62,7 @@ class TableRestControllerTest {
     @DisplayName("빈 테이블 여부를 변경한다")
     @Test
     void table3() throws Exception {
-        OrderTable table = new OrderTable(null, 0, true);
+        OrderTable table = new OrderTable(0, true);
         Long id = 1L;
 
         mockMvc.perform(put("/api/tables/" + id + "/empty")
@@ -83,7 +79,7 @@ class TableRestControllerTest {
     @DisplayName("방문한 손님수를 변경한다")
     @Test
     void table4() throws Exception {
-        OrderTable table = new OrderTable(null, 99, true);
+        OrderTable table = new OrderTable(99, true);
         Long id = 9L;
 
         mockMvc.perform(put("/api/tables/" + id + "/number-of-guests")
