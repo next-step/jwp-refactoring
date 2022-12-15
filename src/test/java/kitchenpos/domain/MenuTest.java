@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MenuTest {
 
+    @DisplayName("메뉴 생성작업을 성공한다.")
     @Test
     void of() {
         // given
@@ -35,7 +36,7 @@ class MenuTest {
         );
     }
 
-    @DisplayName("메뉴상품 생성 할때, 메뉴그룹이 없으면 IllegalArgumentException를 반환한다.")
+    @DisplayName("메뉴 생성 할때, 메뉴그룹이 없으면 IllegalArgumentException를 반환한다.")
     @Test
     void ofWithException1() {
         // given
@@ -48,7 +49,7 @@ class MenuTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴상품 생성 할때, 메뉴그룹이 없으면 IllegalArgumentException를 반환한다.")
+    @DisplayName("메뉴 생성 할때, 메뉴그룹이 없으면 IllegalArgumentException를 반환한다.")
     @Test
     void ofWithException2() {
         // given
