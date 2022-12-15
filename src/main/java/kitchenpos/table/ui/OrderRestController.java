@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;

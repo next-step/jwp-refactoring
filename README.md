@@ -164,6 +164,6 @@ POST /api/orders/{orderId}/order-status
   - [x] 상품
   - [x] 메뉴 그룹
   - [x] 메뉴
-  - [ ] 주문 테이블
-  - [ ] 단체 테이블
+  - [x] 주문 테이블
+  - [x] 단체 테이블
   - [ ] 주문
