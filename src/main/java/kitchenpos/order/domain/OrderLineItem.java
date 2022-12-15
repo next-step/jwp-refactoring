@@ -77,4 +77,14 @@ public class OrderLineItem {
     public long quantityValue() {
         return quantity.value();
     }
+
+    @Override
+    public String toString() {
+        return "OrderLineItem{" +
+                "seq=" + seq +
+                ", order=" + order +
+                ", menu=" + menu +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

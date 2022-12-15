@@ -3,8 +3,6 @@ package kitchenpos.table.domain;
 import kitchenpos.table.dto.OrderTableRequest;
 
 public class OrderTableTestFixture {
-    public static final OrderTableRequest 비어있는_테이블_요청 = orderTableRequest(0, true);
-    public static final OrderTableRequest 주문테이블_요청 = orderTableRequest(2, false);
     public static final OrderTable 비어있는_테이블 = orderTable(1L, null, 0, true);
     public static final OrderTable 비어있는_테이블2 = orderTable(3L, null, 0, true);
     public static final OrderTable 주문테이블 = orderTable(2L, null, 2, false);

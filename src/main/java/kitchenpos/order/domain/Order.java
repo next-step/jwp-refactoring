@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-@Entity
-@Table(name = "orders")
+@Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COMPLETION = "이미 완료된 주문입니다.";
@@ -57,6 +56,10 @@ public class Order {
         return new Order(null, orderTableId, Arrays.asList(orderLineItems));
     }
 
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderLineItems);
+    }
+
     private void validateCompletion() {
         if (orderStatus.isCompletion()) {
             throw new InvalidParameterException(ERROR_MESSAGE_ORDER_STATUS_IS_COMPLETION);
@@ -96,5 +99,16 @@ public class Order {
 
     public OrderLineItems orderLineitems() {
         return orderLineItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderTableId=" + orderTableId +
+                ", orderStatus=" + orderStatus +
+                ", orderedTime=" + orderedTime +
+                ", orderLineItems=" + orderLineItems +
+                '}';
     }
 }

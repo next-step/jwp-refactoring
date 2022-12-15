@@ -12,7 +12,7 @@ public class OrderTestFixture {
     }
 
     public static Order order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTableId, orderLineItems);
+        return Order.of(id, orderTableId, orderLineItems);
     }
 
     public static OrderStatusRequest orderStatusRequest(String orderStatus) {
