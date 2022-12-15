@@ -1,73 +1,70 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    private static final List<OrderStatus> COULD_NOT_CHANGE_EMPTY_STATUSES = Arrays.asList(
+            OrderStatus.MEAL, OrderStatus.COOKING);
+    private final OrderTableRepository orderTableRepository;
+    private final OrderService orderService;
+
+    public TableService(OrderTableRepository orderTableRepository, OrderService orderService) {
+        this.orderTableRepository = orderTableRepository;
+        this.orderService = orderService;
     }
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
-        return orderTableDao.save(orderTable);
+        return orderTableRepository.save(orderTable);
     }
 
     public List<OrderTable> list() {
-        return orderTableDao.findAll();
+        return orderTableRepository.findAll();
     }
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
-        return orderTableDao.save(savedOrderTable);
+        checkNullId(orderTableId);
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다"));
+        orderService.existsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId(), COULD_NOT_CHANGE_EMPTY_STATUSES);
+        savedOrderTable.changeEmpty(true);
+        return savedOrderTable;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        checkNullId(orderTableId);
+        orderTable.checkValidGuestNumber();
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+        final OrderTable changedOrderTable = savedOrderTable.changeNumberOfGuest(orderTable.getNumberOfGuests());
+        return orderTableRepository.save(changedOrderTable);
+    }
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+    private void checkNullId(Long orderTableId) {
+        if (orderTableId == null) {
+            throw new IllegalArgumentException("요청 주문 테이블 id는 null이 아니어야 합니다");
         }
+    }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+    public List<OrderTable> findAllByIdIn(List<Long> tableIds) {
+        return orderTableRepository.findAllByIdIn(tableIds);
+    }
 
-        return orderTableDao.save(savedOrderTable);
+    public OrderTable findByIdNonEmptyTable(Long orderTableId) {
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다"));
+        orderTable.checkEmptyTable();
+        return orderTable;
     }
 }

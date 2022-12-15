@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,9 @@ import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.domain.OrderTableTest.비어있지_않은_상태;
 import static kitchenpos.domain.OrderTableTest.빈_상태;
 import static kitchenpos.domain.OrderTableTest.한_명의_방문객;
+import static kitchenpos.domain.OrderTest.계산_완료_상태;
+import static kitchenpos.domain.OrderTest.식사_상태;
+import static kitchenpos.domain.OrderTest.조리_상태;
 import static kitchenpos.domain.OrderTest.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -29,7 +31,7 @@ public class TableServiceTest {
     private TableService tableService;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @DisplayName("생성 성공")
     @Test
@@ -52,13 +54,14 @@ public class TableServiceTest {
         //given:
         final OrderTable 주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
 
-        orderDao.save(주문(
-                주문_테이블.getId(),
-                OrderStatus.COMPLETION.name(),
+        orderRepository.save(주문(
+                주문_테이블,
+                계산_완료_상태,
                 LocalDateTime.now(),
                 Collections.emptyList()));
+        주문_테이블.changeEmpty(빈_상태);
         //when:
-        final OrderTable 빈_자리_테이블 = tableService.changeEmpty(주문_테이블.getId(), 주문_테이블.changeEmpty(빈_상태));
+        final OrderTable 빈_자리_테이블 = tableService.changeEmpty(주문_테이블.getId(), 주문_테이블);
         //then:
         assertThat(빈_자리_테이블.isEmpty()).isTrue();
     }
@@ -68,9 +71,10 @@ public class TableServiceTest {
     void 빈_테이블_변경_예외_주문_테이블이_존재하지_않는_경우() {
         //given:
         final OrderTable 주문_테이블 = 주문_테이블(2, 빈_상태);
+        주문_테이블.changeEmpty(빈_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블.changeEmpty(빈_상태)));
+                () -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블));
     }
 
     @DisplayName("빈 테이블 변경 예외 - 주문 테이블의 주문 상태가 식사 상태인 경우")
@@ -79,14 +83,15 @@ public class TableServiceTest {
         //given:
         final OrderTable 주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
 
-        orderDao.save(주문(
-                주문_테이블.getId(),
-                OrderStatus.MEAL.name(),
+        orderRepository.save(주문(
+                주문_테이블,
+                식사_상태,
                 LocalDateTime.now(),
                 Collections.emptyList()));
+        주문_테이블.changeEmpty(빈_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블.changeEmpty(빈_상태)));
+                () -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블));
     }
 
     @DisplayName("빈 테이블 변경 예외 - 주문 테이블의 주문 상태가 조리 상태인 경우")
@@ -95,14 +100,15 @@ public class TableServiceTest {
         //given:
         final OrderTable 주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
 
-        orderDao.save(주문(
-                주문_테이블.getId(),
-                OrderStatus.COOKING.name(),
+        orderRepository.save(주문(
+                주문_테이블,
+                조리_상태,
                 LocalDateTime.now(),
                 Collections.emptyList()));
+        주문_테이블.changeEmpty(빈_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블.changeEmpty(빈_상태)));
+                () -> tableService.changeEmpty(주문_테이블.getId(), 주문_테이블));
     }
 
     @DisplayName("방문 손님 수 변경 성공")

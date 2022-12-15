@@ -23,8 +23,8 @@ public class OrderTableTest {
     @DisplayName("빈 테이블 상태 변경 성공")
     @Test
     void 빈_테이블_상태_변경_성공() {
-        final OrderTable 비어있지_않은_테이블 = OrderTable.ofNumberOfGuestsAndEmpty(한_명의_방문객, 빈_상태);
-        final OrderTable 빈_테이블 = 비어있지_않은_테이블.changeEmpty(빈_상태);
-        assertThat(빈_테이블.isEmpty()).isTrue();
+        final OrderTable 비어있지_않은_테이블 = OrderTable.ofNumberOfGuestsAndEmpty(한_명의_방문객, 비어있지_않은_상태);
+        비어있지_않은_테이블.changeEmpty(빈_상태);
+        assertThat(비어있지_않은_테이블.isEmpty()).isTrue();
     }
 }

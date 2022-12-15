@@ -1,26 +1,52 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @JoinColumn(name = "order_table_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderTable orderTable;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
+    @Column(name = "ordered_time")
     private LocalDateTime orderedTime;
+    @JoinColumn(name = "order_id")
+    @OneToMany(fetch = FetchType.LAZY)
     private List<OrderLineItem> orderLineItems;
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+            List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
             List<OrderLineItem> orderLineItems) {
-        this(orderTableId, orderStatus, orderedTime, orderLineItems);
+        this(orderTable, orderStatus, orderedTime, orderLineItems);
         this.id = id;
     }
 
@@ -35,19 +61,19 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(final OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -68,20 +94,16 @@ public class Order {
     }
 
     public boolean isStatus(OrderStatus status) {
-        return this.orderStatus.equals(status.name());
+        return this.orderStatus.equals(status);
     }
 
-    public Order changeStatus(OrderStatus orderStatus) {
-        validChangableStatus(this.orderStatus);
-        return new Order(this.id,
-                this.orderTableId,
-                orderStatus.name(),
-                this.orderedTime,
-                this.orderLineItems);
+    public void changeStatus(OrderStatus orderStatus) {
+        validChangeableStatus();
+        this.orderStatus = orderStatus;
     }
 
-    private void validChangableStatus(String orderStatus) {
-        if (orderStatus.equals(OrderStatus.COMPLETION.name())) {
+    private void validChangeableStatus() {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException("계산 완료 된 주문은 주문 상태를 변경할 수 없습니다");
         }
     }
@@ -95,12 +117,34 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return Objects.equals(orderTableId, order.orderTableId) && Objects.equals(orderStatus,
+        return Objects.equals(orderTable, order.orderTable) && Objects.equals(orderStatus,
                 order.orderStatus) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTableId, orderStatus, orderLineItems);
+        return Objects.hash(orderTable, orderStatus, orderLineItems);
+    }
+
+    public void checkEmptyItems() {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException("주문 아이템이 포함되어야 합니다");
+        }
+    }
+
+    public List<Long> menuIds() {
+        return this.orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public void updateItemOrder() {
+        this.checkEmptyItems();
+        this.orderLineItems.forEach(it -> it.updateOrder(this));
+    }
+
+    public void checkValidOrderTable() {
+        orderTable.checkNullId();
+        orderTable.checkEmptyTable();
     }
 }
