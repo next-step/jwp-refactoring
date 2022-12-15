@@ -3,13 +3,13 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,6 +30,8 @@ import static kitchenpos.domain.MenuProductTest.메뉴_상품;
 import static kitchenpos.domain.MenuTest.메뉴;
 import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.domain.OrderTableTest.비어있지_않은_상태;
+import static kitchenpos.domain.OrderTest.식사_상태;
+import static kitchenpos.domain.OrderTest.조리_상태;
 import static kitchenpos.domain.OrderTest.주문;
 import static kitchenpos.domain.ProductTest.상품;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayName("주문 ui 테스트")
@@ -50,13 +54,13 @@ class OrderRestControllerTest {
     private ObjectMapper mapper;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Autowired
     private MenuService menuService;
@@ -71,14 +75,14 @@ class OrderRestControllerTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
         //when:
@@ -101,14 +105,14 @@ class OrderRestControllerTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 저장된_주문 = orderService.create(주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
         //when:
@@ -119,7 +123,7 @@ class OrderRestControllerTest {
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), Order[].class));
         //then:
-        assertThat(주문_목록).containsExactly(저장된_주문);
+        assertThat(주문_목록).hasSize(1);
     }
 
     @DisplayName("주문 상태 변경 성공")
@@ -129,24 +133,24 @@ class OrderRestControllerTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 저장된_주문 = orderService.create(주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
 
-        final Order 식사_상태_주문 = 저장된_주문.changeStatus(OrderStatus.MEAL);
+        저장된_주문.changeStatus(식사_상태);
         //when:
         final Order 상태_변경된_주문 = mapper.readValue(
-                mockMvc.perform(put("/api/orders/{orderId}/order-status", 식사_상태_주문.getId())
+                mockMvc.perform(put("/api/orders/{orderId}/order-status", 저장된_주문.getId())
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                                .content(mapper.writeValueAsString(식사_상태_주문)))
+                                .content(mapper.writeValueAsString(저장된_주문)))
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), Order.class);

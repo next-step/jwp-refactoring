@@ -1,11 +1,30 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Entity
+@Table(name = "order_line_item")
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+    @Column(name = "menu_id")
     private Long menuId;
+    @Column
     private long quantity;
 
     public OrderLineItem(Long menuId, long quantity) {
@@ -24,12 +43,17 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    @JsonIgnore
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(final Order order) {
+        this.order = order;
+    }
+
+    public void updateOrder(Order order) {
+        this.order = order;
     }
 
     public Long getMenuId() {
@@ -62,6 +86,6 @@ public class OrderLineItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderId, menuId, quantity);
+        return Objects.hash(order, menuId, quantity);
     }
 }

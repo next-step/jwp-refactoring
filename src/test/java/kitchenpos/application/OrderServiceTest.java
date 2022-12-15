@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,9 @@ import static kitchenpos.domain.MenuTest.메뉴;
 import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.domain.OrderTableTest.비어있지_않은_상태;
 import static kitchenpos.domain.OrderTableTest.빈_상태;
+import static kitchenpos.domain.OrderTest.계산_완료_상태;
+import static kitchenpos.domain.OrderTest.식사_상태;
+import static kitchenpos.domain.OrderTest.조리_상태;
 import static kitchenpos.domain.OrderTest.주문;
 import static kitchenpos.domain.ProductTest.상품;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,18 +38,14 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @SpringBootTest
 public class OrderServiceTest {
 
-    public static final OrderStatus 조리_상태 = OrderStatus.COOKING;
-    private static final OrderStatus 식사_상태 = OrderStatus.MEAL;
-    private static final OrderStatus 계산_완료_상태 = OrderStatus.COMPLETION;
+    @Autowired
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
-
-    @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Autowired
     private MenuService menuService;
@@ -61,14 +60,14 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
         //when,then:
@@ -82,14 +81,14 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
         //when:
@@ -103,8 +102,8 @@ public class OrderServiceTest {
     void 생성_예외_주문_항몫을_포함하지_않는_경우() {
         //given:
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Collections.emptyList());
         //when,then:
@@ -118,14 +117,14 @@ public class OrderServiceTest {
         final Menu 저장되지_않은_메뉴 =
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1)));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)));
 
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장되지_않은_메뉴.getId(), 1L)));
         //when,then:
@@ -139,14 +138,14 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 주문 = 주문(
-                주문_테이블(2, 비어있지_않은_상태).getId(),
-                OrderStatus.COOKING.name(),
+                주문_테이블(2, 비어있지_않은_상태),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
         //when,then:
@@ -160,14 +159,14 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 빈_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 빈_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
         //when,then:
@@ -181,16 +180,16 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final OrderLineItem 주문_항목 = new OrderLineItem(저장된_메뉴.getId(), 1L);
 
         final Order 주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(주문_항목));
 
@@ -210,21 +209,21 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 생성된_주문 = orderService.create(주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                조리_상태.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
 
-        final Order 계산_완료_주문 = 생성된_주문.changeStatus(식사_상태);
+        생성된_주문.changeStatus(식사_상태);
 
         //when,then:
-        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 계산_완료_주문).isStatus(식사_상태)).isTrue();
+        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문).isStatus(식사_상태)).isTrue();
     }
 
     @DisplayName("상태 변경 성공 - 식사 상태에서 계산 완료 상태")
@@ -234,21 +233,21 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 생성된_주문 = orderService.create(주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                조리_상태.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
 
-        final Order 계산_완료_주문 = 생성된_주문.changeStatus(식사_상태);
+        생성된_주문.changeStatus(식사_상태);
 
         //when,then:
-        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 계산_완료_주문).isStatus(식사_상태)).isTrue();
+        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문).isStatus(식사_상태)).isTrue();
     }
 
     @DisplayName("상태 변경 예외 - 주문이 존재하지 않는 경우")
@@ -258,20 +257,20 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 생성된_주문 = 주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                OrderStatus.COOKING,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
-
+        생성된_주문.changeStatus(계산_완료_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() ->
-                orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문.changeStatus(계산_완료_상태)));
+                orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문));
     }
 
     @DisplayName("상태 변경 예외 - 주문이 계산 완료 상태인 경우")
@@ -281,22 +280,21 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴("자메이카 통다리 1인 세트",
                         BigDecimal.ONE,
-                        menuGroupDao.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
                         Arrays.asList(
-                                메뉴_상품(productDao.save(상품("통다리", BigDecimal.ONE)).getId(), 5),
-                                메뉴_상품(productDao.save(상품("콜라", BigDecimal.ONE)).getId(), 1))));
+                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
 
         final Order 생성된_주문 = orderService.create(주문(
-                orderTableDao.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)).getId(),
-                OrderStatus.COOKING.name(),
+                orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
+                조리_상태,
                 LocalDateTime.now(),
                 Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
 
-        final Order 계산_완료_주문 = orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문.changeStatus(계산_완료_상태));
-
+        생성된_주문.changeStatus(계산_완료_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() ->
-                orderService.changeOrderStatus(계산_완료_주문.getId(), 계산_완료_주문.changeStatus(식사_상태)));
+                orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문));
     }
 
 }
