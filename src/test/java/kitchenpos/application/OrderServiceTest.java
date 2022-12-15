@@ -1,9 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.type.OrderStatus;
+import kitchenpos.port.MenuPort;
+import kitchenpos.port.OrderPort;
+import kitchenpos.port.OrderLineItemPort;
+import kitchenpos.port.OrderTablePort;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,13 +29,13 @@ class OrderServiceTest {
 
 
     @Mock
-    private MenuDao menuDao;
+    private MenuPort menuDao;
     @Mock
-    private OrderDao orderDao;
+    private OrderPort orderPort;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemPort orderLineItemPort;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTablePort orderTablePort;
     @InjectMocks
     private OrderService orderService;
 
@@ -68,9 +70,9 @@ class OrderServiceTest {
         주문.setOrderLineItems(Arrays.asList(주문_항목));
 
         when(menuDao.countByIdIn(any())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문테이블));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.save(any())).thenReturn(주문_항목);
+        when(orderTablePort.findById(any())).thenReturn(Optional.of(주문테이블));
+        when(orderPort.save(any())).thenReturn(주문);
+        when(orderLineItemPort.save(any())).thenReturn(주문_항목);
 
         Order result = orderService.create(주문);
 
@@ -112,7 +114,7 @@ class OrderServiceTest {
         주문.setOrderLineItems(Arrays.asList(주문_항목));
 
         when(menuDao.countByIdIn(any())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTablePort.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
                 orderService.create(주문)
@@ -127,8 +129,8 @@ class OrderServiceTest {
         OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문.getId(), 후치콜세트.getId(), 1);
         주문.setOrderLineItems(Arrays.asList(주문_항목));
 
-        when(orderDao.findAll()).thenReturn(Collections.singletonList(주문));
-        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(주문_항목));
+        when(orderPort.findAll()).thenReturn(Collections.singletonList(주문));
+        when(orderLineItemPort.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(주문_항목));
 
         List<Order> result = orderService.list();
 
@@ -142,7 +144,7 @@ class OrderServiceTest {
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         Order 주문변경 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
 
-        when(orderDao.findById(주문.getId())).thenReturn(Optional.of(주문));
+        when(orderPort.findById(주문.getId())).thenReturn(Optional.of(주문));
 
         orderService.changeOrderStatus(주문.getId(), 주문변경);
 
@@ -154,7 +156,7 @@ class OrderServiceTest {
     void changeOrderStatusAlreadyMenu() {
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         Order 새로운_주문변경 = new Order(2L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        when(orderDao.findById(주문.getId())).thenReturn(Optional.empty());
+        when(orderPort.findById(주문.getId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
                 orderService.changeOrderStatus(주문.getId(), 새로운_주문변경)
@@ -168,7 +170,7 @@ class OrderServiceTest {
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
         Order 주문변경 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
 
-        when(orderDao.findById(주문.getId())).thenReturn(Optional.of(주문));
+        when(orderPort.findById(주문.getId())).thenReturn(Optional.of(주문));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문변경))
                 .isInstanceOf(IllegalArgumentException.class);

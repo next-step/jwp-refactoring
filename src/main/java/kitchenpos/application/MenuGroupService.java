@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.port.MenuGroupPort;
 import kitchenpos.domain.MenuGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,19 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class MenuGroupService {
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupPort menuGroupPort;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupPort menuGroupPort) {
+        this.menuGroupPort = menuGroupPort;
     }
 
-    @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroupDao.save(menuGroup);
+    public MenuGroupResponse create(final MenuGroupRequest request) {
+        MenuGroup menuGroup = menuGroupPort.save(MenuGroup.from(request.getName()));
+
+        return MenuGroupResponse.from(menuGroup);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroup> list() {
-        return menuGroupDao.findAll();
+        return menuGroupPort.findAll();
     }
 }

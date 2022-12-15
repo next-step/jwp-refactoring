@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.port.OrderPort;
+import kitchenpos.port.OrderTablePort;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderPort orderPort;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTablePort orderTablePort;
 
     @InjectMocks
     private TableService tableService;
@@ -50,7 +50,7 @@ class TableServiceTest {
         OrderTable 주문테이블_일번 = new OrderTable(1L, null, 4, true);
         OrderTable 주문테이블_이번 = new OrderTable(2L, null, 2, true);
 
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(주문테이블_일번, 주문테이블_이번));
+        when(orderTablePort.findAll()).thenReturn(Arrays.asList(주문테이블_일번, 주문테이블_이번));
 
         List<OrderTable> result = tableService.list();
 
@@ -64,8 +64,8 @@ class TableServiceTest {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
         OrderTable 변경할_주문테이블 = new OrderTable(1L, null, 4, true);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문테이블));
-        when(orderTableDao.save(any())).thenReturn(주문테이블);
+        when(orderTablePort.findById(any())).thenReturn(Optional.of(주문테이블));
+        when(orderTablePort.save(any())).thenReturn(주문테이블);
 
         OrderTable changeOrderTable = tableService.changeEmpty(1L, 변경할_주문테이블);
 
@@ -75,7 +75,7 @@ class TableServiceTest {
     @Test
     @DisplayName("등록된 주문 테이블이여야 주문 테아블 상태를 변경 할 수 있다.")
     void isRegisterTable() {
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTablePort.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new OrderTable())
@@ -87,7 +87,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 단체 지정 석에 속해 있지 않아야한다.")
     void changeTableIsNotTableGroup() {
         OrderTable 주문테이블 = new OrderTable(1L, 1L, 4, false);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문테이블));
+        when(orderTablePort.findById(any())).thenReturn(Optional.of(주문테이블));
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new OrderTable())
@@ -99,8 +99,8 @@ class TableServiceTest {
     void changeFailIfStatusCookingAndMeal() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
 
-        when(orderTableDao.findById(1L)).thenReturn(Optional.of(주문테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderTablePort.findById(1L)).thenReturn(Optional.of(주문테이블));
+        when(orderPort.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new OrderTable())
@@ -113,8 +113,8 @@ class TableServiceTest {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
         OrderTable 변경할_주문테이블 = new OrderTable(1L, null, 3, false);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문테이블));
-        when(orderTableDao.save(any())).thenReturn(주문테이블);
+        when(orderTablePort.findById(any())).thenReturn(Optional.of(주문테이블));
+        when(orderTablePort.save(any())).thenReturn(주문테이블);
 
         OrderTable changeOrderTable = tableService.changeNumberOfGuests(주문테이블.getId(), 변경할_주문테이블);
 
@@ -133,7 +133,7 @@ class TableServiceTest {
     @Test
     @DisplayName("등록된 주문 테이블이여아 한다.")
     void alreadyRegisterTable() {
-        when(orderTableDao.findById(1L)).thenReturn(Optional.empty());
+        when(orderTablePort.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
                 tableService.changeNumberOfGuests(1L, new OrderTable())
@@ -146,7 +146,7 @@ class TableServiceTest {
     void tableIsNotEmpty() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 6, true);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문테이블));
+        when(orderTablePort.findById(any())).thenReturn(Optional.of(주문테이블));
 
         assertThatThrownBy(() ->
                 tableService.changeNumberOfGuests(1L, new OrderTable())

@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.port.OrderPort;
+import kitchenpos.port.OrderTablePort;
+import kitchenpos.port.TableGroupPort;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,13 +27,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderPort orderPort;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTablePort orderTablePort;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupPort tableGroupPort;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -55,8 +55,8 @@ class TableGroupServiceTest {
     void createTableGroup() {
         TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블_일번.getId(), 주문테이블_이번.getId()))).thenReturn(주문테이블_리스트);
-        when(tableGroupDao.save(단체지정)).thenReturn(단체지정);
+        when(orderTablePort.findAllByIdIn(Arrays.asList(주문테이블_일번.getId(), 주문테이블_이번.getId()))).thenReturn(주문테이블_리스트);
+        when(tableGroupPort.save(단체지정)).thenReturn(단체지정);
 
         TableGroup savedTableGroup = tableGroupService.create(단체지정);
 
@@ -89,7 +89,7 @@ class TableGroupServiceTest {
     void tableGroupIsOrderTable() {
         TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
 
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Collections.emptyList());
+        when(orderTablePort.findAllByIdIn(anyList())).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(() ->
                 tableGroupService.create(단체지정)
@@ -102,7 +102,7 @@ class TableGroupServiceTest {
         주문테이블_일번.setEmpty(false);
         TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(주문테이블_리스트);
+        when(orderTablePort.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(주문테이블_리스트);
 
         assertThatThrownBy(() ->
                 tableGroupService.create(단체지정)
@@ -112,8 +112,8 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체지정 등록 취소 할 수 있다.")
     void cancelTableGroup() {
-        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(주문테이블_리스트);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).thenReturn(false);
+        when(orderTablePort.findAllByTableGroupId(1L)).thenReturn(주문테이블_리스트);
+        when(orderPort.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).thenReturn(false);
 
         tableGroupService.ungroup(1L);
 
@@ -124,8 +124,8 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("주문 테이블이 이미 조리중이거나 식사중이면 취소가 불가능하다")
     void cancelTableGroupIfCookingAndMealFail() {
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(주문테이블_리스트);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).thenReturn(true);
+        when(orderTablePort.findAllByTableGroupId(any())).thenReturn(주문테이블_리스트);
+        when(orderPort.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).thenReturn(true);
 
         assertThatThrownBy(() ->
                 tableGroupService.ungroup(1L)

@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
+import kitchenpos.port.MenuPort;
+import kitchenpos.port.MenuGroupPort;
+import kitchenpos.port.MenuProductPort;
+import kitchenpos.port.ProductPort;
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,13 +29,13 @@ import static org.mockito.Mockito.when;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuPort menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupPort menuGroupPort;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductPort menuProductPort;
     @Mock
-    private ProductDao productDao;
+    private ProductPort productPort;
 
     @InjectMocks
     private MenuService menuService;
@@ -61,12 +61,12 @@ class MenuServiceTest {
     void createMenu() {
         Menu 스테이크_파스타_빅세트 = new Menu(1L, "스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 1L, Arrays.asList(스테이크_이인분, 파스타_삼인분));
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(스테이크));
-        when(productDao.findById(any())).thenReturn(Optional.of(파스타));
+        when(menuGroupPort.existsById(any())).thenReturn(true);
+        when(productPort.findById(any())).thenReturn(Optional.of(스테이크));
+        when(productPort.findById(any())).thenReturn(Optional.of(파스타));
         when(menuDao.save(any())).thenReturn(스테이크_파스타_빅세트);
-        when(menuProductDao.save(any())).thenReturn(스테이크_이인분);
-        when(menuProductDao.save(any())).thenReturn(파스타_삼인분);
+        when(menuProductPort.save(any())).thenReturn(스테이크_이인분);
+        when(menuProductPort.save(any())).thenReturn(파스타_삼인분);
 
         Menu result = menuService.create(스테이크_파스타_빅세트);
 
@@ -91,7 +91,7 @@ class MenuServiceTest {
     void createMenuPresentMenuGroup() {
         Menu 스테이크_파스타_빅세트 = new Menu(1L, "스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 1L, Arrays.asList(스테이크_이인분, 파스타_삼인분));
 
-        when(menuGroupDao.existsById(any())).thenReturn(false);
+        when(menuGroupPort.existsById(any())).thenReturn(false);
 
         assertThatThrownBy(() ->
                 menuService.create(스테이크_파스타_빅세트)
@@ -103,8 +103,8 @@ class MenuServiceTest {
     void createMenuAllPresent() {
         Menu 스테이크_파스타_빅세트 = new Menu(1L, "스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 1L, Arrays.asList(스테이크_이인분, 파스타_삼인분));
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.empty());
+        when(menuGroupPort.existsById(any())).thenReturn(true);
+        when(productPort.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
                 menuService.create(스테이크_파스타_빅세트)
@@ -116,9 +116,9 @@ class MenuServiceTest {
     void createMenuIsAllProductSumMin() {
         Menu 스테이크_파스타_빅세트 = new Menu(1L, "스테이크_파스타_빅세트", BigDecimal.valueOf(90_000), 1L, Arrays.asList(스테이크_이인분, 파스타_삼인분));
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(스테이크));
-        when(productDao.findById(any())).thenReturn(Optional.of(파스타));
+        when(menuGroupPort.existsById(any())).thenReturn(true);
+        when(productPort.findById(any())).thenReturn(Optional.of(스테이크));
+        when(productPort.findById(any())).thenReturn(Optional.of(파스타));
 
         assertThatThrownBy(() ->
                 menuService.create(스테이크_파스타_빅세트)
