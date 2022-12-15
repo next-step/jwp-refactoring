@@ -1,30 +1,30 @@
 package kitchenpos.domain.menu;
 
 import kitchenpos.exception.BadRequestException;
+import kitchenpos.utils.Validator;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
 import static kitchenpos.utils.Message.INVALID_NAME_EMPTY;
 
+@Embeddable
 public class MenuGroupName {
+    @Column(nullable = false)
     private String name;
+
+    protected MenuGroupName() {
+    }
 
     private MenuGroupName(String name) {
         this.name = name;
     }
 
     public static MenuGroupName from(String name) {
-        checkNotNull(name);
+        Validator.checkNotNull(name, INVALID_NAME_EMPTY);
         return new MenuGroupName(name);
-    }
-
-    private static void checkNotNull(String name) {
-        if (StringUtils.hasText(name)) {
-            return;
-        }
-
-        throw new BadRequestException(INVALID_NAME_EMPTY);
     }
 
     public String getName() {
