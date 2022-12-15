@@ -28,22 +28,6 @@ public class MenuRequest {
         this.menuProducts = menuProducts;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setMenuGroupId(Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
-    public void setMenuProducts(List<MenuProductRequest> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }

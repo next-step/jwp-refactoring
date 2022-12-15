@@ -23,35 +23,11 @@ public class MenuProductResponse {
         return new MenuProductResponse(menuProduct);
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
     public long getQuantity() {
         return quantity;
     }
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
     public void setQuantity(long quantity) {
         this.quantity = quantity;
-    }
-
-    public void setSeq(Long seq) {
-        this.seq = seq;
     }
 }
