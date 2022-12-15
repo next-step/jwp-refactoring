@@ -12,7 +12,7 @@ public class OrderLineItemResponse {
     private Long seq;
     private Long orderId;
     private Long menuId;
-    private long quantity;
+    private Long quantity;
 
     protected OrderLineItemResponse() {}
 
@@ -41,7 +41,7 @@ public class OrderLineItemResponse {
         return menuId;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 }

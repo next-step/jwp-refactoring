@@ -66,13 +66,13 @@ public class MenuService {
         }
 
         final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, menuProducts));
-        return MenuResponse.of(savedMenu);
+        return MenuResponse.from(savedMenu);
     }
 
     public List<MenuResponse> list() {
         return menuRepository.findAll()
                 .stream()
-                .map(MenuResponse::of)
+                .map(MenuResponse::from)
                 .collect(Collectors.toList());
     }
 }

@@ -11,13 +11,12 @@ import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderRequest {
 
-    private long orderTableId;
+    private Long orderTableId;
     private List<OrderLineItemRequest> orderLineItems;
 
-    protected OrderRequest() {
-    }
+    protected OrderRequest() {}
 
-    private OrderRequest(long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
@@ -26,7 +25,7 @@ public class OrderRequest {
         return new OrderRequest(orderTableId, orderLineItems);
     }
 
-    public long getOrderTableId() {
+    public Long getOrderTableId() {
         return orderTableId;
     }
 

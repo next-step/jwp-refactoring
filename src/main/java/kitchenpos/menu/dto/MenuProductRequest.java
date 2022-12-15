@@ -4,8 +4,10 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
 public class MenuProductRequest {
-    private final long productId;
-    private final long quantity;
+    private Long productId;
+    private Long quantity;
+
+    protected MenuProductRequest() {}
 
     private MenuProductRequest(Long productId, Long quantity) {
         this.productId = productId;

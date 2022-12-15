@@ -25,8 +25,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    protected Menu() {
-    }
+    protected Menu() {}
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
@@ -75,11 +74,6 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void addMenuProduct(final MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
     }
 
     public void setMenuProducts(List<MenuProduct> menuProducts) {
