@@ -58,23 +58,6 @@ public class JdbcTemplateOrderTableDao implements OrderTableDao {
         return jdbcTemplate.query(sql, (resultSet, rowNumber) -> toEntity(resultSet));
     }
 
-    @Override
-    public List<OrderTable> findAllByIdIn(final List<Long> ids) {
-        final String sql = "SELECT id, table_group_id, number_of_guests, empty FROM order_table WHERE id IN (:ids)";
-        final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("ids", ids);
-        return jdbcTemplate.query(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
-    }
-
-    @Override
-    public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
-        final String sql = "SELECT id, table_group_id, number_of_guests, empty" +
-                " FROM order_table WHERE table_group_id = (:tableGroupId)";
-        final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("tableGroupId", tableGroupId);
-        return jdbcTemplate.query(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
-    }
-
     private OrderTable select(final Long id) {
         final String sql = "SELECT id, table_group_id, number_of_guests, empty FROM order_table WHERE id = (:id)";
         final SqlParameterSource parameters = new MapSqlParameterSource()

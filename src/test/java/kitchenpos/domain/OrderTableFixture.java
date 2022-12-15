@@ -4,10 +4,6 @@ public class OrderTableFixture {
     private OrderTableFixture() {
     }
 
-    public static OrderTable orderTableParam(Long id) {
-        return new OrderTable(id, null, 0, false);
-    }
-
     public static OrderTable orderTableParam(int numberOfGuests) {
         return new OrderTable(null, null, numberOfGuests, false);
     }
