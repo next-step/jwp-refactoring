@@ -1,6 +1,6 @@
-package kitchenpos.ordertable.dto;
+package kitchenpos.order.dto;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableResponse {
     private Long id;

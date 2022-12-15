@@ -1,7 +1,7 @@
 package kitchenpos.common.domain;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.order.domain.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

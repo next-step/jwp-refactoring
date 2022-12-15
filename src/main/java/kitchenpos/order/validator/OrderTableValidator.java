@@ -1,9 +1,9 @@
-package kitchenpos.ordertable.validator;
+package kitchenpos.order.validator;
 
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

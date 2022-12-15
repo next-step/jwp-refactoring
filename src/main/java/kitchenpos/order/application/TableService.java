@@ -1,13 +1,13 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.order.application;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.dto.UpdateEmptyRequest;
-import kitchenpos.ordertable.dto.UpdateNumberOfGuestsRequest;
-import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.ordertable.validator.OrderTableValidator;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.UpdateEmptyRequest;
+import kitchenpos.order.dto.UpdateNumberOfGuestsRequest;
+import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.order.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

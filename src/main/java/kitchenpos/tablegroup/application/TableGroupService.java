@@ -1,10 +1,6 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -12,9 +8,6 @@ import kitchenpos.tablegroup.repository.TableGroupRepository;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
