@@ -150,7 +150,7 @@ CREATE TABLE order_table (
 | METHOD | URI                              | 설명               |
 |--------|----------------------------------|------------------|
 | POST   | /api/table-groups                | 단체 지정을 생성할 수 있다. |
-| DELETE | /api/table-groups/{tableGroupId} | 단체 지정을 삭제할 수 있다. |
+| DELETE | /api/table-groups/{tableGroupId} | 단체 지정을 해제할 수 있다. |
 ```sql
 CREATE TABLE table_group (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -162,6 +162,8 @@ CREATE TABLE table_group (
   - 단체 지정 생성 요청시 주문 테이블 목록이 요청된다.
   - 주문 테이블은 2개 이상이어야 한다.
   - 등록되지 않은 주문 테이블은 단체지정으로 요청할 수 없다.
+  - 주문 테이블들이 빈 테이블이어야 한다.
+  - 단체 지정된 주문테이블은 단체 지정할 수 없다.
   - 단체 지정시 생성 날짜가 설정된다.
   - 단체 지정이 저장된다.
   - 요청된 주문 테이블의 테이블 그룹이 지정되고 빈 테이블 상태가 `false`로 변경된다.
