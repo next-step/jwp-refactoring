@@ -59,12 +59,15 @@ class MenuServiceTest {
         떡볶이 = new Product(1L, "떡볶이", BigDecimal.valueOf(4500));
         튀김 = new Product(2L, "튀김", BigDecimal.valueOf(2500));
         순대 = new Product(3L, "순대", BigDecimal.valueOf(4000));
+
         떡튀순_상품_떡볶이 = new MenuProduct(1L, 1L, 1L, 1);
         떡튀순_상품_튀김 = new MenuProduct(2L, 1L, 2L, 1);
         떡튀순_상품_순대 = new MenuProduct(3L, 1L, 3L, 1);
-        떡튀순_곱배기_상품_떡볶이 = new MenuProduct(4L, 1L, 1L, 2);
+        떡튀순_곱배기_상품_떡볶이 = new MenuProduct(4L, 2L, 1L, 2);
+
         떡튀순_상품_목록 = Arrays.asList(떡튀순_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
         떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
+
         떡튀순 = new Menu(1L, "떡튀순", BigDecimal.valueOf(10000), 1L, 떡튀순_상품_목록);
         떡튀순_곱배기 = new Menu(2L, "떡튀순_곱배기", BigDecimal.valueOf(10000), 1L, 떡튀순_곱배기_상품_목록);
     }
