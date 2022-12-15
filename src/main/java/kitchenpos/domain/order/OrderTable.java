@@ -91,23 +91,6 @@ public class OrderTable {
         this.empty = false;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OrderTable that = (OrderTable) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     public void unGroup() {
         this.tableGroup = null;
     }
@@ -130,5 +113,23 @@ public class OrderTable {
         }
 
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderTable that = (OrderTable) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

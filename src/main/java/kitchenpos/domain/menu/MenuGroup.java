@@ -1,12 +1,20 @@
 package kitchenpos.domain.menu;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class MenuGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Embedded
     private MenuGroupName name;
 
-    private MenuGroup() {
+    protected MenuGroup() {
     }
 
     private MenuGroup(Long id, MenuGroupName name) {
@@ -46,4 +54,5 @@ public class MenuGroup {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
