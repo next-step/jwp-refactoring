@@ -1,9 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
@@ -60,9 +56,9 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+//        order.setOrderTableId(orderTable.getId());
+//        order.setOrderStatus(OrderStatus.COOKING.name());
+//        order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
 
