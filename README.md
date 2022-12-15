@@ -121,7 +121,6 @@
 
 ## step2
 
--[ ] 단위테스트하기 어려운 코드와 가능한 코드를 분리 후 단위테스트 가능한 코드에 단위테스트 구현
-  -[ ] Spring Data JPA 사용 시 `spring.jpa.hibernate.ddl-auto=validate` 옵션을 필수
-  -[ ] `Flyway` 활용하여 db 형상관리 해보기
-  -[ ] 객체지향 생활체조원칙 준수
+-[x] 단위테스트하기 어려운 코드와 가능한 코드를 분리 후 단위테스트 가능한 코드에 단위테스트 구현
+  -[x] Spring Data JPA 사용 시 `spring.jpa.hibernate.ddl-auto=validate` 옵션을 필수
+  -[x] 객체지향 생활체조원칙 준수

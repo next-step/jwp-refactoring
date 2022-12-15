@@ -1,11 +1,11 @@
 package kitchenpos.domain;
 
+import static javax.persistence.EnumType.*;
 import static javax.persistence.GenerationType.*;
 import static kitchenpos.domain.OrderStatus.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -28,8 +28,10 @@ public class Order {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long id;
-    @Enumerated
+
+    @Enumerated(value = STRING)
     private OrderStatus orderStatus;
+
     private LocalDateTime orderedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -88,17 +90,6 @@ public class Order {
 
     public boolean isProceeding() {
         return orderStatus == COOKING || orderStatus == OrderStatus.MEAL;
-    }
-
-    public void updateOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-        if (Objects.nonNull(orderTable)) {
-            this.orderTable.addOrder(this);
-        }
-    }
-
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
     }
 
     public List<MenuQuantityPair> getMenuQuantityPairs() {

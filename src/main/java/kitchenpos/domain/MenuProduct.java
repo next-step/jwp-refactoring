@@ -3,23 +3,34 @@ package kitchenpos.domain;
 import static javax.persistence.GenerationType.*;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class MenuProduct {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private Long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Long productId, Long quantity) {
-        this.productId = productId;
+    public MenuProduct(Menu menu, Product product, Long quantity) {
+        this.menu = menu;
+        this.product = product;
         this.quantity = quantity;
     }
 
@@ -27,31 +38,15 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public Long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
     }
 }

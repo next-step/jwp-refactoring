@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +31,13 @@ import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.dto.ProductQuantityPair;
 
 class OrderRestControllerTest extends IntegrationTest {
     @Autowired
@@ -48,6 +52,8 @@ class OrderRestControllerTest extends IntegrationTest {
     private MenuRepository menuRepository;
     @Autowired
     private MenuGroupRepository menuGroupRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     private OrderTable orderTable;
     private Menu menu;
@@ -56,8 +62,10 @@ class OrderRestControllerTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         this.orderTable = orderTableRepository.save(new OrderTable(0, true));
+        Product product = productRepository.save(new Product("test", BigDecimal.valueOf(100L)));
+        List<ProductQuantityPair> pairs = Arrays.asList(new ProductQuantityPair(product, 1L));
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("test"));
-        this.menu = menuRepository.save(new Menu("test", BigDecimal.valueOf(100L), menuGroup.getId(), null));
+        this.menu = menuRepository.save(new Menu(BigDecimal.valueOf(10L), "test", menuGroup, pairs));
         orderLineItemRequests.add(new OrderLineItemRequest(this.menu.getId(), 1L));
     }
 

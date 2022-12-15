@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import kitchenpos.dto.MenuGroupRequest;
+
 @Entity
 public class MenuGroup {
     @GeneratedValue(strategy = IDENTITY)
@@ -20,19 +22,16 @@ public class MenuGroup {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
+    public static MenuGroup of(MenuGroupRequest request) {
+        return new MenuGroup(request.getName());
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
 }
