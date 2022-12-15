@@ -4,6 +4,7 @@ import kitchenpos.domain.product.TableGroup;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,6 +39,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, null, numberOfGuests, empty);
+    }
+
     public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
         return new OrderTable(id, null, numberOfGuests, empty);
     }
@@ -55,27 +60,27 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        return Optional.ofNullable(tableGroup)
+                .map(TableGroup::getId)
+                .orElse(null);
     }
 
     public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = Optional.ofNullable(tableGroupId)
+                .map(it -> TableGroup.of(it, LocalDateTime.now()))
+                .orElse(null);
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
 
     public boolean isEmpty() {
         return empty;
     }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public Orders getOrders() {
+        return orders;
     }
 
     @Override
