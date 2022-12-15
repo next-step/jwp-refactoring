@@ -4,20 +4,21 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceStep {
     private MenuGroupAcceptanceStep() {
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
-        return 메뉴_그룹_생성_요청(menuGroup);
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupRequest request) {
+        return 메뉴_그룹_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroupRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(menuGroup)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menu-groups")
                 .then().log().all()

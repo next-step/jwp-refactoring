@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,11 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 관련 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 프리미엄메뉴;
-    private Product 허니콤보;
-    private Menu 허니콤보치킨;
-    private OrderTable 주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
+    private MenuGroupResponse 프리미엄메뉴;
+    private ProductResponse 허니콤보;
+    private MenuResponse 허니콤보치킨;
+    private OrderTableResponse 주문_테이블;
+    private OrderTableResponse 비어있는_주문_테이블;
 
     /**
      * Given 메뉴 그룹 등록되어 있음
@@ -42,16 +43,16 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        프리미엄메뉴 = 메뉴_그룹_등록되어_있음(MenuGroup.of(1L, "프리미엄메뉴")).as(MenuGroup.class);
+        프리미엄메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("프리미엄메뉴")).as(MenuGroupResponse.class);
 
-        허니콤보 = 상품_등록되어_있음(Product.of(1L, "허니콤보", BigDecimal.valueOf(18000))).as(Product.class);
+        허니콤보 = 상품_등록되어_있음(ProductRequest.of("허니콤보", BigDecimal.valueOf(18000))).as(ProductResponse.class);
 
-        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(1L, null, 허니콤보.getId(), 2));
-        허니콤보치킨 = 메뉴_등록되어_있음(Menu.of(1L, "허니콤보치킨", BigDecimal.valueOf(18000), 프리미엄메뉴.getId(), 메뉴상품_목록))
-                .as(Menu.class);
+        List<MenuProductRequest> 메뉴상품_목록 = Arrays.asList(MenuProductRequest.of(허니콤보.getId(), 2));
+        허니콤보치킨 = 메뉴_등록되어_있음(MenuRequest.of( "허니콤보치킨", BigDecimal.valueOf(18000), 프리미엄메뉴.getId(), 메뉴상품_목록))
+                .as(MenuResponse.class);
 
-        주문_테이블 = 주문_테이블_등록되어_있음(OrderTable.of(null, 2, false)).as(OrderTable.class);
-        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTable.of(null, 2, true)).as(OrderTable.class);
+        주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of( 2, false)).as(OrderTableResponse.class);
+        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of( 2, true)).as(OrderTableResponse.class);
 
     }
 
