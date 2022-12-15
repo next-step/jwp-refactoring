@@ -60,7 +60,7 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroup.setOrderTables(Collections.singletonList(orderTable));
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderRepository.save(new Order(orderTable.getId(), orderLineItems));
+        order = orderRepository.save(new Order(orderTable, orderLineItems));
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 

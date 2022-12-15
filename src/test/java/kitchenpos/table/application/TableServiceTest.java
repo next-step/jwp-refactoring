@@ -136,7 +136,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("공석 상태로 변경한다. / 요리중일 경우 변경할 수 없다.")
     @Test
     void empty_fail_cooking() {
-        assertThatThrownBy(() -> tableService.changeEmpty(createOrder().getOrderTableId()))
+        assertThatThrownBy(() -> tableService.changeEmpty(createOrder().getOrderTable().getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -149,7 +149,7 @@ class TableServiceTest extends ServiceTest {
         order.setOrderStatus(OrderStatus.MEAL.name());
         orderRepository.save(order);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTableId()))
+        assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTable().getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -181,7 +181,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = orderTableRepository.save(new OrderTable());
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        return orderRepository.save(new Order(orderTable.getId(), orderLineItems));
+        return orderRepository.save(new Order(orderTable, orderLineItems));
     }
 
     private void 테이블_공석_상태_확인됨() {

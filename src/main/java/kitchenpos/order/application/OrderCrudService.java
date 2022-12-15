@@ -52,7 +52,7 @@ public class OrderCrudService {
             throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
 
-        final Order savedOrder = orderRepository.save(new Order(request.getOrderTableId(), request.toOrderLineItems()));
+        final Order savedOrder = orderRepository.save(new Order(orderTable, request.toOrderLineItems()));
 
 //        final Long orderId = savedOrder.getId();
 //        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();

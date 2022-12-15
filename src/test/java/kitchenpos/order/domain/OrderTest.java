@@ -19,7 +19,7 @@ class OrderTest {
     @DisplayName("주문 항목이 비어있을 수 없다.")
     @Test
     void constructor_fail_orderItem() {
-        assertThatThrownBy(() -> new Order(1L, new ArrayList<>()))
+        assertThatThrownBy(() -> new Order(new OrderTable(), new ArrayList<>()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
     }
@@ -40,7 +40,7 @@ class OrderTest {
     void name() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems));
+        assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, new TableGroup(), 1, true), orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -48,7 +48,7 @@ class OrderTest {
     void changeMeal_success() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems);
+        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true), orderLineItems);
         order.meal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
@@ -58,7 +58,7 @@ class OrderTest {
     void changeMeal_fail_completion() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems);
+        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
         assertThatThrownBy(order::meal)
@@ -71,7 +71,7 @@ class OrderTest {
     void nameCompletion() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems);
+        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }

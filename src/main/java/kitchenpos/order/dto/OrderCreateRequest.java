@@ -16,10 +16,6 @@ public class OrderCreateRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder() {
-        return new Order(this.orderTableId, this.orderLineItems);
-    }
-
     public Long getOrderTableId() {
         return this.orderTableId;
     }

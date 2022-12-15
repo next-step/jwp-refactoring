@@ -19,7 +19,7 @@ public class OrderResponse {
         this.orderLineItems = order.getOrderLineItems();
         this.status = order.getOrderStatus();
         this.orderedTime = order.getOrderedTime();
-        this.orderTableId = order.getOrderTableId();
+        this.orderTableId = order.getOrderTable().getId();
     }
 
     public Long getId() {

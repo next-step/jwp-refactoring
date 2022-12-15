@@ -80,7 +80,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private void createOrder(OrderTable orderTable1, Menu menu) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderRepository.save(new Order(orderTable1.getId(), orderLineItems));
+        order = orderRepository.save(new Order(orderTable1, orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")

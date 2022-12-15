@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,20 +18,22 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
         }
-        if (Objects.isNull(orderTableId)) {
+        if (Objects.isNull(orderTable)) {
             throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
         }
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         for (OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.setOrder(this);
         }
@@ -39,9 +43,9 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    public Order(long id, long orderTableId, String status, LocalDateTime orderedTime) {
+    public Order(long id, OrderTable orderTable, String status, LocalDateTime orderedTime) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = status;
         this.orderedTime = orderedTime;
     }
@@ -52,14 +56,6 @@ public class Order {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public String getOrderStatus() {
@@ -91,5 +87,9 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems.getOrderLineItems();
+    }
+
+    public OrderTable getOrderTable() {
+        return this.orderTable;
     }
 }
