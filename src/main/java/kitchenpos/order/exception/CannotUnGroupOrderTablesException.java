@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.exception;
+package kitchenpos.order.exception;
 
 public class CannotUnGroupOrderTablesException extends RuntimeException {
     public CannotUnGroupOrderTablesException(String message) {

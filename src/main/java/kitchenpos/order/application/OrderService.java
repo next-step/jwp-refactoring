@@ -35,7 +35,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        orderValidator.checkOrderTableIsNotEmpty(request.getOrderTableId());
+        orderValidator.validate(request.getOrderTableId());
         List<OrderLineItem> orderLineItems = toOrderLineItems(request);
         Order order = Order.of(request.getOrderTableId(), orderLineItems);
         return OrderResponse.from(orderRepository.save(order));

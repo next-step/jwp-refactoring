@@ -131,7 +131,7 @@ class OrderServiceTest {
     @Test
     void createException3() {
         doThrow(new EntityNotFoundException(ExceptionMessage.ORDER_TABLE_NOT_FOUND))
-                .when(orderValidator).checkOrderTableIsNotEmpty(any());
+                .when(orderValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
                 .isInstanceOf(EntityNotFoundException.class)
@@ -142,7 +142,7 @@ class OrderServiceTest {
     @Test
     void createException4() {
         doThrow(new EmptyOrderTableException(ExceptionMessage.EMPTY_ORDER_TABLE))
-                .when(orderValidator).checkOrderTableIsNotEmpty(any());
+                .when(orderValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> orderService.create(비어있는_주문_테이블_주문요청))
                 .isInstanceOf(EmptyOrderTableException.class)
