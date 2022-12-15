@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static kitchenpos.utils.Message.EMPTY_ORDER_TABLE;
 import static kitchenpos.utils.Message.INVALID_CHANGE_ORDER_STATUS;
 
 @Entity
@@ -39,6 +40,9 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = OrderLineItems.from(orderLineItems);
+        checkOrderTableIsNotEmpty(orderTable);
+        orderTable.addOrder(this);
+        this.orderLineItems.setup(this);
     }
 
     public static Order of(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -75,6 +79,12 @@ public class Order {
             throw new BadRequestException(INVALID_CHANGE_ORDER_STATUS);
         }
         this.orderStatus = orderStatus;
+    }
+
+    private static void checkOrderTableIsNotEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new BadRequestException(EMPTY_ORDER_TABLE);
+        }
     }
 
     @Override

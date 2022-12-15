@@ -7,6 +7,8 @@ public class Message {
     public static final String INVALID_UNDER_ZERO_GUESTS = "방문한 손님 수는 1명 이상이어야 합니다.";
     public static final String INVALID_EMPTY_LINE_ITEMS = "주문 시 주문항목은 필수값 입니다.";
 
+    public static final String EMPTY_ORDER_TABLE = "주문 시 주문 테이블이 빈 상태여서는 안됩니다.";
+
     public static final String INVALID_MENU_PRICE = "메뉴 가격이 메뉴 상품 금액이하여야 합니다.";
     public static final String INVALID_CHANGE_ORDER_STATUS = "계산 완료된 주문은 상태를 변경할 수 없습니다.";
 

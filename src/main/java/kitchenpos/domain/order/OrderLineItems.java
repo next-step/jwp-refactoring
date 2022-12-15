@@ -39,4 +39,7 @@ public class OrderLineItems {
         return Collections.unmodifiableList(orderLineItems);
     }
 
+    public void setup(Order order) {
+        orderLineItems.forEach(it -> it.setup(order));
+    }
 }

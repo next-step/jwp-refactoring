@@ -21,7 +21,7 @@ class OrderLineItemTest {
     @Test
     void equalsTest2() {
         OrderLineItem orderLineItem1 = OrderLineItem.of(1L, 1L, 2);
-        OrderLineItem orderLineItem2 = OrderLineItem.of(1L, 1L, 2);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(2L, 1L, 2);
 
         Assertions.assertThat(orderLineItem1).isNotEqualTo(orderLineItem2);
     }
