@@ -58,9 +58,10 @@ public class Order {
     }
 
     public void change(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+        if (OrderStatus.COMPLETION == this.orderStatus) {
             throw new IllegalArgumentException(ExceptionMessage.ORDER_COMPLETE.getMessage());
         }
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
