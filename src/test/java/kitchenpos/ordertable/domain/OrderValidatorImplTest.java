@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordertable.domain;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.CannotUnGroupOrderTablesException;
 import kitchenpos.order.exception.EmptyOrderTableException;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.exception.CannotChangeEmptyException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +25,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DisplayName("주문 유효성에 대한 테스트")
 @DataJpaTest
-class OrderValidatorTest {
+class OrderValidatorImplTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -32,7 +34,7 @@ class OrderValidatorTest {
     private OrderRepository orderRepository;
 
     @InjectMocks
-    private OrderValidator orderValidator;
+    private OrderValidatorImpl orderValidator;
 
     @DisplayName("주문 생성 시 주문테이블이 존재하지 않으면 예외가 발생한다.")
     @Test
