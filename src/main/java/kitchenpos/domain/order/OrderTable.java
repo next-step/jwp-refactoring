@@ -1,20 +1,40 @@
 package kitchenpos.domain.order;
 
-import java.util.Objects;
+import kitchenpos.domain.product.TableGroup;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
+
+    @Embedded
+    private Orders orders = Orders.createEmpty();
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+
+    @Column(nullable = false)
     private boolean empty;
 
-    private OrderTable() {
+    protected OrderTable() {
     }
 
     private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.tableGroup = Optional.ofNullable(tableGroupId)
+                .map(it -> TableGroup.of(it, LocalDateTime.now()))
+                .orElse(null);
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
