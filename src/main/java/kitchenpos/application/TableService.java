@@ -92,4 +92,8 @@ public class TableService {
         return orderTableRepository.findById(orderTableId)
             .orElseThrow(EntityNotFoundException::new);
     }
+
+    public List<OrderTable2> findAllById(List<Long> orderTableId) {
+        return orderTableRepository.findAllById(orderTableId);
+    }
 }

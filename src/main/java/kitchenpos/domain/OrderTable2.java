@@ -49,13 +49,13 @@ public class OrderTable2 {
 	}
 
 	public void setTableGroup(TableGroup2 newTableGroup) {
-		if (Objects.isNull(newTableGroup)) {
-			return;
-		}
 		if (Objects.nonNull(tableGroup)) {
 			tableGroup.getOrderTables().remove(this);
 		}
 		tableGroup = newTableGroup;
+		if (Objects.isNull(tableGroup)) {
+			return;
+		}
 		if (!tableGroup.getOrderTables().contains(this)) {
 			tableGroup.getOrderTables().add(this);
 		}

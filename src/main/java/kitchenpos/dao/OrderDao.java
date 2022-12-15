@@ -1,10 +1,11 @@
 package kitchenpos.dao;
 
-import kitchenpos.domain.Order;
-
 import java.util.List;
 import java.util.Optional;
 
+import kitchenpos.domain.Order;
+
+@Deprecated
 public interface OrderDao {
     Order save(Order entity);
 

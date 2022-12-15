@@ -1,14 +1,21 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.CannotCreateGroupTableException.TYPE.HAS_GROUP_TABLE;
+import static kitchenpos.exception.CannotCreateGroupTableException.TYPE.INVALID_TABLE_COUNT;
+import static kitchenpos.exception.CannotCreateGroupTableException.TYPE.NOT_EMPTY_ORDER_TABLE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -18,21 +25,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.TableGroup2;
+import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.exception.CannotCreateGroupTableException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
 	@Mock
-	OrderDao orderDao;
+	TableGroupRepository tableGroupRepository;
+
 	@Mock
-	OrderTableDao orderTableDao;
-	@Mock
-	TableGroupDao tableGroupDao;
+	TableService tableService;
 
 	@InjectMocks
 	TableGroupService tableGroupService;
@@ -42,95 +47,101 @@ class TableGroupServiceTest {
 	@DisplayName("테이블 그룹 생성")
 	void testCreateMenuGroup() {
 		// given
-		List<OrderTable> orderTables = createOrderTables(true);
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(orderTables);
-		when(tableGroupDao.save(any())).thenAnswer(returnsFirstArg());
+		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
+		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+
+		when(tableService.findAllById(anyList())).thenReturn(orderTables);
+		when(tableGroupRepository.save(any(TableGroup2.class))).thenAnswer(returnsFirstArg());
 
 		// when
-		TableGroup tableGroup = createTableGroup(orderTables);
-		tableGroupService.create(tableGroup);
+		TableGroup2 actualTableGroup = tableGroupService.save(orderTableId);
 
 		// then
-		verify(orderTableDao, times(1)).findAllByIdIn(anyList());
-		verify(tableGroupDao, times(1)).save(tableGroup);
-		verify(orderTableDao, times(orderTables.size())).save(any(OrderTable.class));
-
+		verify(tableGroupRepository, times(1)).save(actualTableGroup);
+		assertThat(actualTableGroup.getOrderTables()).containsExactlyElementsOf(orderTables);
 	}
 
 	@Test
 	@DisplayName("두개 미만의 주문 테이블로 테이블 그룹 생성")
 	void testCreateMenuGroupWhenOrderTableSizeBelowThanTwo() {
 		// given
-		List<OrderTable> orderTables = createOrderTables(true);
-		TableGroup tableGroup = createTableGroup(orderTables);
+		List<Long> orderTableId = Lists.newArrayList(1L);
+		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+
+		when(tableService.findAllById(anyList())).thenReturn(orderTables);
 
 		// when
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-			.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> tableGroupService.save(orderTableId))
+			.isInstanceOf(CannotCreateGroupTableException.class)
+				.hasMessage(INVALID_TABLE_COUNT.message);
 	}
 
 	@Test
 	@DisplayName("빈 주문 테이블로 테이블 그룹 생성")
 	void testCreateMenuGroupWhenOrderTableIsEmpty() {
 		// given
-		List<OrderTable> orderTables = createOrderTables(false);
-		TableGroup tableGroup = createTableGroup(orderTables);
+		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
+		List<OrderTable2> orderTables = createOrderTables(orderTableId, false);
+
+		when(tableService.findAllById(anyList())).thenReturn(orderTables);
 
 		// when
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-			.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> tableGroupService.save(orderTableId))
+			.isInstanceOf(CannotCreateGroupTableException.class)
+			.hasMessage(NOT_EMPTY_ORDER_TABLE.message);
+	}
+
+	@Test
+	@DisplayName("이미 테이블 그룹이 존재하는 테이블로 테이블 그룹 생성")
+	void testCreateMenuGroupWhenOrderTableInAnotherGroup() {
+		// given
+		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
+		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+		createTableGroup(orderTables);
+
+		when(tableService.findAllById(anyList())).thenReturn(orderTables);
+
+		// when
+		assertThatThrownBy(() -> tableGroupService.save(orderTableId))
+			.isInstanceOf(CannotCreateGroupTableException.class)
+			.hasMessage(HAS_GROUP_TABLE.message);
 	}
 
 	@Test
 	@DisplayName("테이블 그룹 해제")
 	void testCreateMenuUnGroup() {
 		// given
-		List<OrderTable> orderTables = createOrderTables(true);
-		TableGroup tableGroup = createTableGroup(orderTables);
-		when(orderTableDao.findAllByTableGroupId(any())).thenReturn(orderTables);
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-			.thenReturn(false);
+		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
+		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+		TableGroup2 savedTableGroup = createTableGroup(orderTables);
+
+		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(savedTableGroup));
 
 		// when
-		tableGroupService.ungroup(tableGroup.getId());
+		tableGroupService.ungroup(1L);
 
 		// then
-		verify(orderTableDao, times(orderTables.size())).save(any());
+		assertThat(savedTableGroup.getOrderTables())
+			.filteredOn(OrderTable2::hasTableGroup)
+			.isEmpty();
 	}
-
 	@Test
 	@DisplayName("테이블 그룹 해제시 완료되지 않은 주문이 있을 경우")
 	void testCreateMenuUnGroupWhenOrderStatusNotComplete() {
-		// given
-		List<OrderTable> orderTables = createOrderTables(true);
-		TableGroup tableGroup = createTableGroup(orderTables);
-		when(orderTableDao.findAllByTableGroupId(any())).thenReturn(orderTables);
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
-			.thenReturn(true);
-
-		// when
-		assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-			.isInstanceOf(IllegalArgumentException.class);
-
-		// then
-		verify(orderTableDao, times(0)).save(any());
+		// TODO
 	}
 
-	private TableGroup createTableGroup(List<OrderTable> orderTables) {
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(orderTables);
-		tableGroup.setId(1L);
-		return tableGroup;
+	private TableGroup2 createTableGroup(List<OrderTable2> orderTables) {
+		return new TableGroup2(orderTables);
 	}
 
-	private List<OrderTable> createOrderTables(boolean isEmpty) {
-		return Lists.newArrayList(getOrderTable(1L, isEmpty), getOrderTable(2L, isEmpty));
+	private List<OrderTable2> createOrderTables(List<Long> orderTableIds, boolean isEmpty) {
+		return orderTableIds.stream()
+			.map(id -> getOrderTable(id, 1, isEmpty))
+			.collect(Collectors.toList());
 	}
 
-	private static OrderTable getOrderTable(long id, boolean isEmpty) {
-		OrderTable orderTable = new OrderTable();
-		orderTable.setEmpty(isEmpty);
-		orderTable.setId(id);
-		return orderTable;
+	private static OrderTable2 getOrderTable(long id, int numberOfGuests, boolean isEmpty) {
+		return new OrderTable2(id, numberOfGuests, isEmpty);
 	}
 }

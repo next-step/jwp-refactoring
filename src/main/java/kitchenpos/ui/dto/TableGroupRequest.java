@@ -7,6 +7,9 @@ public class TableGroupRequest {
 
 	private List<OrderTableId> orderTables;
 
+	public List<Long> toOrderTableId() {
+		return orderTables.stream().map(OrderTableId::getId).collect(Collectors.toList());
+	}
 
 	static class OrderTableId {
 		private Long id;

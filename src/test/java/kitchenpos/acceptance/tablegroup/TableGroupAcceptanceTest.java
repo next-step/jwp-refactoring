@@ -96,6 +96,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest2 {
 	 * When 테이블 그룹 해제를 요청하면
 	 * Then 테이블 그룹 해제가 실패한다.
 	 */
+	// TODO
 	// @Test
 	// void 주문_테이블_그룹_해제_실패() {
 	// 	// given
