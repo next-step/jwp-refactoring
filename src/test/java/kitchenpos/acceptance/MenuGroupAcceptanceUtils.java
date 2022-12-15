@@ -11,14 +11,14 @@ import kitchenpos.domain.MenuGroup;
 
 public class MenuGroupAcceptanceUtils {
 
-	private static final String MENU_GROUP_API = "/api/menu-groups";
+	private static final String MENU_GROUP_API_URL = "/api/menu-groups";
 
 	public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
-		return post(MENU_GROUP_API, createRequest(name)).extract();
+		return post(MENU_GROUP_API_URL, createRequest(name)).extract();
 	}
 
 	public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
-		return get(MENU_GROUP_API).extract();
+		return get(MENU_GROUP_API_URL).extract();
 	}
 
 
