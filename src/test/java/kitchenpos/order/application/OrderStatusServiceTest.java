@@ -3,11 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.product.domain.ProductFixture;
@@ -40,7 +36,7 @@ class OrderStatusServiceTest extends ServiceTest {
 
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -59,7 +55,7 @@ class OrderStatusServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
 
-        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("a"));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
 
         OrderTable orderTable1 = orderTableRepository.save(new OrderTable());

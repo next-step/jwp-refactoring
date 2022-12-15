@@ -14,6 +14,7 @@
     - [ ] OrderDao -> OrderRepository 변경
     - [x] OrderTableDao -> OrderTableRepository 변경
     - [x] TableGroupDao -> TableGroupRepository 변경
+    - [x] MenuGroupRepository -> MenuGroupRep
 - [ ] Fixture
   - [ ] TableGroupFixture 
 - [ ] TableGroup 파라미터 DTO 변경 
@@ -26,6 +27,7 @@
 - [ ] 함수(또는 메서드)의 길이가 10라인을 넘어가지 않도록 구현한다.
 - [ ] 배열 대신 컬렉션을 사용한다.
 - [ ] 모든 원시 값과 문자열을 포장한다
+  - [ ] MenuGroup Name 
 - [ ] 일급 컬렉션을 쓴다.
 - [ ] 모든 엔티티를 작게 유지한다.
 - [ ] 3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.

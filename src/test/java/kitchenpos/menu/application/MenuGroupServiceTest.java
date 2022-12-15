@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +19,11 @@ class MenuGroupServiceTest extends ServiceTest {
     private MenuGroupService menuGroupService;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @DisplayName("메뉴 그룹 생성")

@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -44,7 +43,7 @@ class MenuServiceTest extends ServiceTest {
     private MenuRepository menuRepository;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
     private MenuProductRepository menuProductRepository;
@@ -57,11 +56,11 @@ class MenuServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroupId = menuGroupDao.save(new MenuGroup("A")).getId();
+        menuGroupId = menuGroupRepository.save(new MenuGroup("A")).getId();
         Product product = productRepository.save(new Product(new Name("A"), new Price(BigDecimal.valueOf(2))));
         menuProduct = menuProductRepository.save(new MenuProduct(null, product, 1L));
         Menu menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroupId, Arrays.asList(menuProduct)));
-        menuService = new MenuService(menuRepository, menuGroupDao, menuProductRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
     }
 
     @DisplayName("가격을 필수값으로 갖는다.")

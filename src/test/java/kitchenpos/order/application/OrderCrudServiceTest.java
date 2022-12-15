@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
@@ -53,7 +52,7 @@ class OrderCrudServiceTest extends ServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     private Long orderTableId;
     private Menu menu;
@@ -61,7 +60,7 @@ class OrderCrudServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
 
-        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("A"));
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("A"));
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.valueOf(2))), 1L));
         menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup.getId(), menuProducts));

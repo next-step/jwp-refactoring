@@ -2,11 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
@@ -21,18 +17,18 @@ public class MenuService {
     public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
     public static final String MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE = "메뉴 그룹이 존재하지 않습니다.";
     private final MenuRepository menuRepository;
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupRepository menuGroupRepository;
     private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupDao menuGroupDao,
+            final MenuGroupRepository menuGroupRepository,
             final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupDao = menuGroupDao;
+        this.menuGroupRepository = menuGroupRepository;
         this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
@@ -40,7 +36,11 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
 
-        if (!menuGroupDao.existsById(request.getMenuGroupId())) {
+        if (request.getMenuGroupId() == null) {
+            throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
+        }
+
+        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
         }
 
@@ -63,7 +63,6 @@ public class MenuService {
 //        savedMenu.setMenuProducts(savedMenuProducts);
 
         return new MenuResponse(menuRepository.save(menu));
-
     }
 
     public List<Menu> list() {
