@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.common.exception.InvalidParameterException;
 import org.springframework.util.CollectionUtils;
@@ -16,7 +17,8 @@ public class OrderTables {
 
     private static final int TABLES_MIN_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroupId", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> tables = new ArrayList<>();
 
     protected OrderTables() {}
