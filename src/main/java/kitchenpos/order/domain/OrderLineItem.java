@@ -12,9 +12,7 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
-    @Column
+    private Long menuId;
     private long quantity;
 
     protected OrderLineItem() {
@@ -23,7 +21,6 @@ public class OrderLineItem {
     private OrderLineItem(OrderLineItemBuilder builder) {
         this.seq = builder.seq;
         this.order = builder.order;
-        this.menu = builder.menu;
         this.quantity = builder.quantity;
     }
 
@@ -35,16 +32,12 @@ public class OrderLineItem {
         return Objects.isNull(order) ? null : order.getId();
     }
 
-    public Long getMenuId() {
-        return Objects.isNull(menu) ? null : menu.getId();
-    }
-
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public static OrderLineItemBuilder builder() {
