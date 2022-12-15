@@ -6,6 +6,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kitchenpos.common.ErrorMessage.INVALID_MENU_PRODUCT;
 import static kitchenpos.domain.Price.ZERO_PRICE;
 
 @Embeddable
@@ -28,7 +29,7 @@ public class MenuProducts {
 
     private void validateMenuProductsIsEmpty(List<MenuProduct> menuProducts) {
         if (menuProducts.isEmpty()) {
-            throw new IllegalArgumentException("메뉴삼품이 존재하지 않습니다.");
+            throw new IllegalArgumentException(INVALID_MENU_PRODUCT.getMessage());
         }
     }
 

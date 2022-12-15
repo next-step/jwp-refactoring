@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static kitchenpos.common.ErrorMessage.EMPTY_ORDER_TABLE;
+import static kitchenpos.common.ErrorMessage.EMPTY_ORDER_TABLE_LIST;
+
 @Entity(name = "orders")
 public class Order {
     @Id
@@ -42,11 +45,11 @@ public class Order {
 
     private void validateOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문목록이 비어있습니다.");
+            throw new IllegalArgumentException(EMPTY_ORDER_TABLE_LIST.getMessage());
         }
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문테이블이 비어있습니다.");
+            throw new IllegalArgumentException(EMPTY_ORDER_TABLE.getMessage());
         }
     }
 
@@ -64,7 +67,7 @@ public class Order {
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException("이미 주문이 완료된 상태입니다.");
+            throw new IllegalArgumentException(EMPTY_ORDER_TABLE.getMessage());
         }
         this.orderStatus = orderStatus;
     }

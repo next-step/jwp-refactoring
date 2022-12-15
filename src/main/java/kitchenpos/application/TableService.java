@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.common.ErrorMessage.NOT_FOUND_ORDER_TABLE;
+
 @Service
 @Transactional(readOnly = true)
 public class TableService {
@@ -57,6 +59,6 @@ public class TableService {
 
     private OrderTable findById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(orderTableId + "에 대한 주문테이블을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_ORDER_TABLE.getMessage(), orderTableId)));
     }
 }

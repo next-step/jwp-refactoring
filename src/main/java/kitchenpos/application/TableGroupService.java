@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.ErrorMessage;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
@@ -13,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static kitchenpos.common.ErrorMessage.NOT_COMPLETED_ORDER;
+import static kitchenpos.common.ErrorMessage.TABLE_HAVE_ONGOING_ORDER;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,7 +45,7 @@ public class TableGroupService {
 
     private static void validateOrderTable(final int countOfOrderTableRequest, final int countOfOrderTable) {
         if(countOfOrderTableRequest != countOfOrderTable) {
-            throw new IllegalArgumentException("존재하지 않는 주문테이블 정보가 포함되어 있습니다.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER_TABLE_INFO.getMessage());
         }
     }
 
@@ -58,7 +62,7 @@ public class TableGroupService {
                 orderRepository.findAllByOrderStatusInAndOrderTableIdIn(OrderStatus.onGoingOrderStatus(), orderTableIds);
 
         if (!orders.isEmpty()) {
-            throw new IllegalArgumentException("주문상태가 완료되지 않은 주문이 포함되어 있습니다.");
+            throw new IllegalArgumentException(NOT_COMPLETED_ORDER.getMessage());
         }
     }
 
@@ -87,7 +91,7 @@ public class TableGroupService {
     private void validateOrderStatus(final List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("해당 테이블에는 아직 진행중인 주문이 존재합니다.");
+            throw new IllegalArgumentException(TABLE_HAVE_ONGOING_ORDER.getMessage());
         }
     }
 }

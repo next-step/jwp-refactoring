@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.ErrorMessage;
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
@@ -34,7 +35,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         Long menuGroupId = request.getMenuGroupId();
         MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("%d에 해당하는 메뉴그룹을 찾을 수 없습니다.", menuGroupId)));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_MENU_GROUP.getMessage(), menuGroupId)));
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProductsRequest()));
         Menu menu = request.toEntity(menuGroup, menuProducts);
 
@@ -55,6 +56,6 @@ public class MenuService {
 
     private Product findProductById(final Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_PRODUCT.getMessage(), id)));
     }
 }

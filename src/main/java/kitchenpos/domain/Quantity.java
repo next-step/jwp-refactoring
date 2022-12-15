@@ -5,6 +5,8 @@ import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static kitchenpos.common.ErrorMessage.VALIDATION_OF_QUANTITY;
+
 @Embeddable
 public class Quantity {
 
@@ -13,7 +15,8 @@ public class Quantity {
     @Column(nullable = false)
     private long quantity;
 
-    protected Quantity() {}
+    protected Quantity() {
+    }
 
     private Quantity(long quantity) {
         validateQuantityIsSmallerThanZero(quantity);
@@ -25,8 +28,8 @@ public class Quantity {
     }
 
     private void validateQuantityIsSmallerThanZero(long quantity) {
-        if(quantity < ZERO) {
-            throw new IllegalArgumentException("수량은 0보다 작을 수 없습니다.");
+        if (quantity < ZERO) {
+            throw new IllegalArgumentException(VALIDATION_OF_QUANTITY.getMessage());
         }
     }
 

@@ -5,6 +5,9 @@ import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static kitchenpos.common.ErrorMessage.INVALID_PRICE;
+import static kitchenpos.common.ErrorMessage.VALIDATION_OF_PRICE;
+
 @Embeddable
 public class Price implements Comparable<Price> {
 
@@ -27,13 +30,13 @@ public class Price implements Comparable<Price> {
 
     private void validatePriceIsNull(BigDecimal price) {
         if(price == null) {
-            throw new IllegalArgumentException("가격이 존재하지 않습니다.");
+            throw new IllegalArgumentException(INVALID_PRICE.getMessage());
         }
     }
 
     private void validatePriceIsSmallerThanZero(BigDecimal price) {
         if(price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격은 0보다 작을수 없습니다.");
+            throw new IllegalArgumentException(VALIDATION_OF_PRICE.getMessage());
         }
     }
 

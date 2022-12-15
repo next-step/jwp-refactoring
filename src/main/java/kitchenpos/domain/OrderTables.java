@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static kitchenpos.common.ErrorMessage.*;
+
 @Embeddable
 public class OrderTables {
 
@@ -30,12 +32,12 @@ public class OrderTables {
 
     private void validateIsCreatableTableGroup(final List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("그룹을 지정하기 위해서는 주문테이블이 2개 이상 필요합니다.");
+            throw new IllegalArgumentException(NEED_TWO_ORDER_TABLE.getMessage());
         }
 
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException("그룹을 지정하기 위해서는 테이블은 그룹이 지정되어 있거나 테이블이 비어있어야 합니다.");
+                throw new IllegalArgumentException(VALIDATION_OF_GROUP.getMessage());
             }
         }
     }

@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static kitchenpos.common.ErrorMessage.INVALID_MENU_GROUP;
+import static kitchenpos.common.ErrorMessage.MENU_PRICE_LESS_THAN_SUM_OF_PRICE;
+
 @Entity
 public class Menu {
     @Id
@@ -41,13 +44,13 @@ public class Menu {
 
     private void validateMenuGroup(final MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException("메뉴그룹이 존재하지 않습니다.");
+            throw new IllegalArgumentException(INVALID_MENU_GROUP.getMessage());
         }
     }
 
     private void validatePrice(final Price price, final MenuProducts menuProducts) {
         if (price.compareTo(menuProducts.totalPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴 가격이 각 상품 가격의 합보다 작습니다.");
+            throw new IllegalArgumentException(MENU_PRICE_LESS_THAN_SUM_OF_PRICE.getMessage());
         }
     }
 

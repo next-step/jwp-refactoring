@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.ErrorMessage;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
@@ -37,7 +38,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         Long orderTableId = request.getOrderTableId();
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(orderTableId + "에 해당하는 주문테이블을 찾을 수가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_ORDER_TABLE.getMessage(), orderTableId)));
         List<OrderLineItemRequest> requestOrderLineItems = request.getOrderLineItemsRequest();
         validateOrderLineItems(requestOrderLineItems);
         List<OrderLineItem> orderLineItems = mapToOrderLineItems(requestOrderLineItems);
@@ -54,13 +55,13 @@ public class OrderService {
 
     private void validateOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
         if (Objects.isNull(orderLineItems) || orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException("요청정보에 주문정보가 존재하지 않습니다.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER_LINE_ITEM.getMessage());
         }
 
         final List<Long> menuIds = fetchMenuIdsFrom(orderLineItems);
 
         if (orderLineItems.size() != countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("주문정보 중 존재하지 않는 메뉴 정보가 있습니다.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_MENU_INFO.getMessage());
         }
     }
 
@@ -83,7 +84,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException(orderId + "에 대한 주문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_ORDER.getMessage(), orderId)));
 
         savedOrder.changeOrderStatus(order.getOrderStatus());
 
