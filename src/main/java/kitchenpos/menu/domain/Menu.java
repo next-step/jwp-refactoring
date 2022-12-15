@@ -39,10 +39,10 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validateMenuGroupNotEmpty(menuGroup);
+        validatePrice(Price.from(price), menuProducts.totalPrice());
         menuProducts.setMenu(this);
         this.name = Name.from(name);
         this.price = Price.from(price);
-        validatePrice(menuProducts.totalPrice());
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -50,16 +50,16 @@ public class Menu {
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
         MenuProducts menuProducts) {
         validateMenuGroupNotEmpty(menuGroup);
+        validatePrice(Price.from(price), menuProducts.totalPrice());
         menuProducts.setMenu(this);
         this.id = id;
         this.name = Name.from(name);
         this.price = Price.from(price);
-        validatePrice(menuProducts.totalPrice());
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    private void validatePrice(Price totalPrice) {
+    private void validatePrice(Price price, Price totalPrice) {
         if (price.isBiggerThan(totalPrice)) {
             throw new IllegalArgumentException(ErrorCode.MENU_PRICE_MORE_THAN_TOTAL_PRICE.getErrorMessage());
         }
