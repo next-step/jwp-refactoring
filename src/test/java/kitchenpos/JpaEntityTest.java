@@ -1,6 +1,6 @@
 package kitchenpos;
 
-import kitchenpos.utils.DatabaseCleanupByEntity;
+import kitchenpos.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,18 +12,18 @@ import org.springframework.test.context.ActiveProfiles;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
-@Import(DatabaseCleanupByEntity.class)
-public class JpaEntityTest {
+@Import(DatabaseCleanup.class)
+public abstract class JpaEntityTest {
 
     @Autowired
-    private DatabaseCleanupByEntity databaseCleanupByEntity;
+    private DatabaseCleanup databaseCleanup;
 
     @Autowired
     private TestEntityManager entityManager;
 
     @BeforeEach
     void setUp() {
-        databaseCleanupByEntity.execute();
+        databaseCleanup.execute();
     }
 
     protected void flushAndClear() {

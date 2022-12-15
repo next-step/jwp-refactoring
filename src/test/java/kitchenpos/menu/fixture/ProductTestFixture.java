@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductTestFixture {
     public static ExtractableResponse<Response> 상품_생성_요청(String name, Integer price) {
-        ProductRequest productRequest = new ProductRequest(name, new BigDecimal(price));
+        ProductRequest productRequest = new ProductRequest(name, BigDecimal.valueOf(price));
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(productRequest)

@@ -42,4 +42,8 @@ public class Price {
     public int hashCode() {
         return Objects.hash(price);
     }
+
+    public boolean isLarger(BigDecimal comparePrice) {
+        return this.price.compareTo(comparePrice) > ZERO;
+    }
 }

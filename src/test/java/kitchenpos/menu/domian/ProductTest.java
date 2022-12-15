@@ -21,7 +21,7 @@ public class ProductTest extends JpaEntityTest {
     @Test
     void create() {
         // given
-        final Product product = new Product("후라이드", new BigDecimal(10_000));
+        final Product product = new Product("후라이드", BigDecimal.valueOf(10_000));
 
         // when
         final Product savedProduct = productRepository.save(product);
@@ -34,7 +34,7 @@ public class ProductTest extends JpaEntityTest {
     @Test
     void createProductExceptionNegativePrice() {
         // when / then
-        assertThatThrownBy(() -> new Product("후라이드", new BigDecimal(-2_000)))
+        assertThatThrownBy(() -> new Product("후라이드", BigDecimal.valueOf(-2_000)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

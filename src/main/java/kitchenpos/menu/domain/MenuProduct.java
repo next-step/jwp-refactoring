@@ -1,48 +1,62 @@
 package kitchenpos.menu.domain;
 
-public class MenuProduct {
-    private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
+import javax.persistence.*;
+import java.util.Objects;
 
-    public MenuProduct() {
+@Entity
+@Table(name = "menu_product")
+public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq", nullable = false, columnDefinition = "bigint(20)")
+    private Long seq;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
+    private Product product;
+    @Embedded
+    private Quantity quantity;
+
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+    public MenuProduct(Product product, Long quantity) {
+        this.product = product;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Long getQuantity() {
+        return quantity.value();
     }
 
-    public Long getProductId() {
-        return productId;
+    public void addedBy(final Menu menu) {
+        this.menu = menu;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MenuProduct)) return false;
+        MenuProduct that = (MenuProduct) o;
+        return Objects.equals(getMenu(), that.getMenu()) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMenu(), getProduct(), getQuantity());
     }
 }

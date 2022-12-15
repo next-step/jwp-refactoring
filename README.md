@@ -80,7 +80,7 @@
 ### 기능 목록
 - [x] 키친포스 시스템의 요구사항을 작성
   - [x] table create 문 분석 후 각 domain 간 관계를 찾아본다 (가능하면, ERD를 직접 그려볼 것)
-  ![ERD.png](images%2FERD.png)
+  ![ERD.png](images/ERD.png)
   - [x] 각 도메인의 관계를 분석하여, `Bounded Context`를 설정 해 본다.
     - 메뉴
     - 주문
@@ -133,12 +133,12 @@
     - [x] MenuGroup
       - [x] 인수 테스트
       - [x] 도메인 테스트
-    - [ ] Menu
-      - [ ] 인수 테스트
-      - [ ] 도메인 테스트
-    - [ ] MenuProduct
-      - [ ] 인수 테스트
-      - [ ] 도메인 테스트
+    - [x] Menu
+      - [x] 인수 테스트
+      - [x] 도메인 테스트
+    - [x] MenuProduct
+      - [x] 인수 테스트
+      - [x] 도메인 테스트
   - Order
     - [ ] Order
       - [ ] 인수 테스트
