@@ -39,7 +39,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_등록을_등록하면_등록된_상품_정보를_반환한다() {
+    void 상품을_등록하면_등록된_상품_정보를_반환한다() {
         // given
         Product 페퍼로니_등록_요청 = new Product("페퍼로니", new BigDecimal(12_000));
         given(productDao.save(any())).willReturn(페퍼로니);

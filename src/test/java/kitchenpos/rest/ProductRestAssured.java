@@ -11,6 +11,10 @@ import java.math.BigDecimal;
 
 public class ProductRestAssured {
 
+    public static ExtractableResponse<Response> 상품_등록됨(Product product) {
+        return 상품_등록_요청(product.getName(), product.getPrice());
+    }
+
     public static ExtractableResponse<Response> 상품_등록_요청(String name, BigDecimal price) {
         Product body = new Product(name, price);
         return RestAssured
