@@ -8,7 +8,7 @@ public class ProductName {
 
     private String name;
 
-    public ProductName() {
+    protected ProductName() {
     }
 
     public ProductName(String name) {

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.ProductRequest;
@@ -24,9 +24,9 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     ProductRequest 양념치킨_상품 = new ProductRequest(2L, "양념치킨", new BigDecimal(16000.00));
     MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
     MenuProductRequest 양념치킨_메뉴상품 = new MenuProductRequest(2L, 1L, 2L, 1);
-    MenuGroup 후라이드치킨_메뉴그룹 = new MenuGroup(1L, "후라이드치킨");
-    MenuGroup 양념치킨_메뉴그룹 = new MenuGroup(2L, "양념치킨");
-    MenuGroup 두마리치킨_메뉴그룹 = new MenuGroup(1L, "두마리치킨");
+    MenuGroupRequest 후라이드치킨_메뉴그룹 = new MenuGroupRequest("후라이드치킨");
+    MenuGroupRequest 양념치킨_메뉴그룹 = new MenuGroupRequest("양념치킨");
+    MenuGroupRequest 두마리치킨_메뉴그룹 = new MenuGroupRequest("두마리치킨");
     MenuRequest 후라이드치킨_메뉴 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
             Collections.singletonList(후라이드치킨_메뉴상품));
     MenuRequest 두마리치킨_메뉴 = new MenuRequest(1L, "두마리치킨", new BigDecimal(40000.00), 1L,
@@ -116,10 +116,10 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("$.[0].name").value(menu.getName()))
                 .andExpect(jsonPath("$.[0].price").value(menu.getPrice().floatValue()))
                 .andExpect(jsonPath("$.[0].menuGroupId").value(menu.getMenuGroupId()))
-                .andExpect(jsonPath("$.[0].menuProductResponses[0].seq").value(menuProducts.getSeq()))
-                .andExpect(jsonPath("$.[0].menuProductResponses[0].menuId").value(menuProducts.getMenuId()))
-                .andExpect(jsonPath("$.[0].menuProductResponses[0].productId").value(menuProducts.getProductId()))
-                .andExpect(jsonPath("$.[0].menuProductResponses[0].quantity").value(menuProducts.getQuantity()))
+                .andExpect(jsonPath("$.[0].menuProducts[0].seq").value(menuProducts.getSeq()))
+                .andExpect(jsonPath("$.[0].menuProducts[0].menuId").value(menuProducts.getMenuId()))
+                .andExpect(jsonPath("$.[0].menuProducts[0].productId").value(menuProducts.getProductId()))
+                .andExpect(jsonPath("$.[0].menuProducts[0].quantity").value(menuProducts.getQuantity()))
         ;
     }
 
@@ -137,10 +137,10 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("id").value(menu.getId()))
                 .andExpect(jsonPath("name").value(menu.getName()))
                 .andExpect(jsonPath("price").value(menu.getPrice().floatValue()))
-                .andExpect(jsonPath("$.menuProductResponses[0].seq").value(menuProduct.getSeq()))
-                .andExpect(jsonPath("$.menuProductResponses[0].menuId").value(menuProduct.getMenuId()))
-                .andExpect(jsonPath("$.menuProductResponses[0].productId").value(menuProduct.getProductId()))
-                .andExpect(jsonPath("$.menuProductResponses[0].quantity").value(menuProduct.getQuantity()))
+                .andExpect(jsonPath("$.menuProducts[0].seq").value(menuProduct.getSeq()))
+                .andExpect(jsonPath("$.menuProducts[0].menuId").value(menuProduct.getMenuId()))
+                .andExpect(jsonPath("$.menuProducts[0].productId").value(menuProduct.getProductId()))
+                .andExpect(jsonPath("$.menuProducts[0].quantity").value(menuProduct.getQuantity()))
         ;
     }
 
@@ -148,13 +148,13 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
         resultActions.andExpect(status().is4xxClientError());
     }
 
-    private void 메뉴그룹_등록(MenuGroup... menuGroups) throws Exception {
-        for (MenuGroup menuGroup : menuGroups) {
+    private void 메뉴그룹_등록(MenuGroupRequest... menuGroups) throws Exception {
+        for (MenuGroupRequest menuGroup : menuGroups) {
             메뉴그룹_등록(menuGroup);
         }
     }
 
-    private ResultActions 메뉴그룹_등록(MenuGroup menuGroup) throws Exception {
+    private ResultActions 메뉴그룹_등록(MenuGroupRequest menuGroup) throws Exception {
         return mvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuGroup))

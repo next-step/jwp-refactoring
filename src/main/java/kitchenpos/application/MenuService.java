@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MenuService {
 
     private final MenuRepository menuRepository;
@@ -32,12 +33,8 @@ public class MenuService {
     public Menu create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-
-        menu.addMenuProducts(createMenuProducts(menuRequest));
-        menu.validateProductsPrice();
-
-        return menuRepository.save(menu);
+        return menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup,
+                createMenuProducts(menuRequest)));
     }
 
     @Transactional(readOnly = true)

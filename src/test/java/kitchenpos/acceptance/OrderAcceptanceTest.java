@@ -10,9 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.Collections;
 import kitchenpos.BaseAcceptanceTest;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.OrderLineItemRequest;
@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 class OrderAcceptanceTest extends BaseAcceptanceTest {
 
-    MenuGroup 후라이드치킨_메뉴그룹 = new MenuGroup(1L, "후라이드치킨");
+    MenuGroupRequest 후라이드치킨_메뉴그룹 = new MenuGroupRequest("후라이드치킨");
     ProductRequest 후라이드치킨_상품 = new ProductRequest(1L, "후라이드치킨", new BigDecimal(16000.00));
     MenuProductRequest 후라이드치킨_메뉴상품 = new MenuProductRequest(1L, 1L, 1L, 1);
     MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
@@ -217,7 +217,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .andDo(print());
     }
 
-    private ResultActions 메뉴그룹_등록(MenuGroup menuGroup) throws Exception {
+    private ResultActions 메뉴그룹_등록(MenuGroupRequest menuGroup) throws Exception {
         return mvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuGroup))

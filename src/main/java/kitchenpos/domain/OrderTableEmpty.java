@@ -7,7 +7,7 @@ public class OrderTableEmpty {
 
     private boolean empty;
 
-    public OrderTableEmpty() {
+    protected OrderTableEmpty() {
     }
 
     public OrderTableEmpty(boolean empty) {
@@ -20,5 +20,12 @@ public class OrderTableEmpty {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTableEmpty{" +
+                "empty=" + empty +
+                '}';
     }
 }

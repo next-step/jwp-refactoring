@@ -9,7 +9,7 @@ class MenuGroupTest {
 
     @Test
     void 메뉴_그룹_명은_필수로_입력해야_한다() {
-        ThrowingCallable 메뉴_그룹_명_입력_안한_경우 = () -> new MenuGroup(1L, null);
+        ThrowingCallable 메뉴_그룹_명_입력_안한_경우 = () -> new MenuGroup(null);
 
         assertThatIllegalArgumentException().isThrownBy(메뉴_그룹_명_입력_안한_경우);
     }

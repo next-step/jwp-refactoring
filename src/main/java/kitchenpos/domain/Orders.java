@@ -19,19 +19,11 @@ public class Orders {
                 .findAny();
 
         if (findInOrderStatuses.isPresent()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("조리, 식사 상태의 주문이 포함 된 주문 테이블은 상태를 변경할 수 없습니다");
         }
     }
 
     public void addOrder(Order order) {
         orders.add(order);
-    }
-
-    public void findByInOrderStatus(List<String> orderStatuses) {
-        boolean isFindByInOrderStatus = orders.stream()
-                .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
-        if (isFindByInOrderStatus) {
-            throw new IllegalArgumentException();
-        }
     }
 }

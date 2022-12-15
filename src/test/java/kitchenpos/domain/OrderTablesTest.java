@@ -34,7 +34,8 @@ class OrderTablesTest {
     void 이미_단체_지정이_된_주문_테이블이_있을_경우_단체_지정_불가() {
         OrderTables orderTables = new OrderTables();
         OrderTable 이미_단체_지정이_된_주문_테이블 = new OrderTable(1, true);
-        이미_단체_지정이_된_주문_테이블.changeTableGroup(new TableGroup());
+        이미_단체_지정이_된_주문_테이블
+                .changeTableGroup(new TableGroup(Arrays.asList(new OrderTable(1, true), new OrderTable(2, true))));
 
         ThrowingCallable 이미_단체_지정이_된_주문_테이블이_포함_될_경우 = () -> orderTables
                 .validateOrderTableEmptyOrNonNull(Arrays.asList(이미_단체_지정이_된_주문_테이블, new OrderTable(1, true)));

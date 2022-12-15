@@ -36,14 +36,12 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = new MenuName(name);
         this.price = new MenuPrice(price);
         this.menuGroup = menuGroup;
-    }
-
-    public void validateProductsPrice() {
-        price.compareTo(menuProducts.validateProductsPrice());
+        addMenuProducts(menuProducts);
+        validateProductsPrice();
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
@@ -69,5 +67,9 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
+    }
+
+    private void validateProductsPrice() {
+        price.compareTo(menuProducts.validateProductsPrice());
     }
 }

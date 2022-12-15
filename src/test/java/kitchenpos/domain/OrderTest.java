@@ -15,7 +15,7 @@ class OrderTest {
 
     @Test
     void 주문_등록시_주문_수량을_추가할_수_있다() {
-        Order order = new Order(new OrderTable(1, false));
+        Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
 
         ThrowingCallable 주문_수량_추가 = () -> order
                 .addLineItems(Arrays.asList(new OrderLineItem(1L, 1l), new OrderLineItem(2L, 1l)));
@@ -25,7 +25,7 @@ class OrderTest {
 
     @Test
     void 주문_등록시_주문_수량이_비어_있으면_안된다() {
-        Order order = new Order(new OrderTable(1, false));
+        Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
 
         ThrowingCallable 비어있는_주문_수량_추가 = () -> order.addLineItems(Collections.emptyList());
 
@@ -34,20 +34,19 @@ class OrderTest {
 
     @Test
     void 주문_수량_정보에서_관련_메뉴_ID를_가져올_수_있다() {
-        Order order = new Order(new OrderTable(1, false));
-        order.addLineItems(Arrays.asList(new OrderLineItem(1L, 1l), new OrderLineItem(2L, 1l)));
+        Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
 
         List<Long> menuIds = order.makeMenuIds();
 
         assertAll(
-                () -> assertThat(menuIds).hasSize(2),
-                () -> assertThat(menuIds).contains(1L, 2L)
+                () -> assertThat(menuIds).hasSize(1),
+                () -> assertThat(menuIds).contains(1L)
         );
     }
 
     @Test
     void 등록_된_메뉴만_주문_등록을_할_수_있다() {
-        Order order = new Order(new OrderTable(1, false));
+        Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
         order.addLineItems(Arrays.asList(new OrderLineItem(1L, 1l), new OrderLineItem(2L, 1l)));
 
         ThrowingCallable 등록된_메뉴의_갯수가_불일치_할_경우 = () -> order.validateOrderLineItemsSizeAndMenuCount(1);
@@ -57,7 +56,7 @@ class OrderTest {
 
     @Test
     void 이미_완료된_주문은_상태를_변경할_수_없다() {
-        Order order = new Order(new OrderTable(1, false));
+        Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
         order.changeStatus(OrderStatus.COMPLETION.name());
 
         ThrowingCallable 이미_완료된_주문_상태변경_시도 = () -> order.changeStatus(OrderStatus.COMPLETION.name());
@@ -67,7 +66,7 @@ class OrderTest {
 
     @Test
     void 아직_완료지_않은_주문은_상태를_변경할_수_있다() {
-        Order order = new Order(new OrderTable(1, false));
+        Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
 
         ThrowingCallable 아직_완료되지_않은_주문_상태변경_시도 = () -> order.changeStatus(OrderStatus.COMPLETION.name());
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class OrderService {
 
     private final MenuService menuService;
@@ -31,8 +32,7 @@ public class OrderService {
     public Order create(final OrderRequest orderRequest) {
         final OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
 
-        Order order = new Order(orderTable);
-        order.addLineItems(orderRequest.getOrderLineItems());
+        Order order = new Order(orderTable, orderRequest.getOrderLineItems());
         order.validateOrderLineItemsSizeAndMenuCount(menuService.countByIdIn(order.makeMenuIds()));
 
         return orderRepository.save(order);

@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
@@ -12,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
@@ -30,12 +29,15 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public OrderTable findById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "주문 등록시, 등록된 주문 테이블만 지정할 수 있습니다 [orderTableId:" + orderTableId + "]"));
     }
 
     @Transactional(readOnly = true)
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
-        return orderTableRepository.findAllByIdIn(orderTableIds).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findAllByIdIn(orderTableIds)
+                .orElseThrow(() -> new IllegalArgumentException("등록 된 주문 테이블에 대해서만 단체 지정이 가능합니다"));
     }
 
     @Transactional(readOnly = true)
@@ -48,9 +50,6 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        savedOrderTable.validateAlreadyTableGroup();
-        savedOrderTable.validateOrderStatus(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
-
         savedOrderTable.changeEmpty(emptyRequest.isEmpty());
 
         return orderTableRepository.save(savedOrderTable);
@@ -61,8 +60,6 @@ public class TableService {
                                            final OrderTableChangeNumberOfGuestsRequest numberOfGuestsRequest) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        savedOrderTable.validateEmpty();
 
         savedOrderTable.changeNumberOfGuests(numberOfGuestsRequest.getNumberOfGuests());
 

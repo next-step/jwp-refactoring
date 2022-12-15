@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,12 +44,12 @@ class TableGroupServiceTest {
 
     @Test
     void 단체_지정을_등록할_수_있다() {
-        TableGroup tableGroup = new TableGroup();
         given(tableService.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
         given(orderTable.isEmpty()).willReturn(true);
         given(orderTable2.isEmpty()).willReturn(true);
         given(orderTable.getTableGroup()).willReturn(null);
         given(orderTable2.getTableGroup()).willReturn(null);
+        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable, orderTable2));
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
                 Arrays.asList(new OrderTableRequest(1L, 1, true), new OrderTableRequest(2L, 1, true)));
@@ -101,7 +102,7 @@ class TableGroupServiceTest {
     @Test
     void 이미_단체_지정이_된_주문_테이블은_단체_지정이_불가능하다() {
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new TableGroup(Arrays.asList(new OrderTable(1, true), new OrderTable(1, true)));
         given(tableService.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable, orderTable2));
         given(orderTable.isEmpty()).willReturn(true);
         given(orderTable.getTableGroup()).willReturn(tableGroup);
@@ -123,7 +124,7 @@ class TableGroupServiceTest {
     @Test
     void 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우_해제가_불가능하다() {
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(tableGroup.validateOrderStatus(any())).willThrow(IllegalArgumentException.class);
+        doThrow(IllegalArgumentException.class).when(tableGroup).unGroup();
         ThrowingCallable 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우 = () -> tableGroupService.ungroup(1L);
 
         assertThatIllegalArgumentException().isThrownBy(주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우);

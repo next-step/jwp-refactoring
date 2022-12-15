@@ -11,10 +11,11 @@ class OrderTableTest {
 
     @Test
     void 이미_단체_지정이_된_주문_테이블은_수정할_수_없다() {
-        OrderTable orderTable = new OrderTable(1, false);
-        orderTable.changeTableGroup(new TableGroup());
+        OrderTable orderTable = new OrderTable(1, true);
+        OrderTable orderTable2 = new OrderTable(1, true);
+        orderTable.changeTableGroup(new TableGroup(Arrays.asList(orderTable, orderTable2)));
 
-        ThrowingCallable 이미_단체_지정이_된_테이블_수정 = orderTable::validateAlreadyTableGroup;
+        ThrowingCallable 이미_단체_지정이_된_테이블_수정 = () -> orderTable.changeEmpty(true);
 
         assertThatIllegalArgumentException().isThrownBy(이미_단체_지정이_된_테이블_수정);
     }
@@ -22,7 +23,8 @@ class OrderTableTest {
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
         OrderTable orderTable = new OrderTable(1, false);
-        orderTable.addOrder(new Order(new OrderTable(1, false)));
+        orderTable.addOrder(
+                new Order(new OrderTable(1, false), Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 2))));
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_테이블_수정 = () -> orderTable.validateOrderStatus(
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
@@ -44,14 +46,14 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1, false);
         orderTable.changeEmpty(true);
 
-        ThrowingCallable 빈_테이블인_상태에서_방문한_손님_수_수정 = orderTable::validateEmpty;
+        ThrowingCallable 빈_테이블인_상태에서_방문한_손님_수_수정 = () -> orderTable.changeNumberOfGuests(1);
 
         assertThatIllegalArgumentException().isThrownBy(빈_테이블인_상태에서_방문한_손님_수_수정);
     }
 
     @Test
     void 방문한_손님_수_수정시_0명_이하로_수정_할_수_없다() {
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(1, false);
 
         ThrowingCallable 빈_테이블인_상태에서_방문한_손님_수_수정 = () -> orderTable.changeNumberOfGuests(-1);
 

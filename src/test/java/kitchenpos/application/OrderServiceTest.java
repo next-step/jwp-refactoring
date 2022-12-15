@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
@@ -29,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private Order order = new Order(new OrderTable(1, false));
+    private Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1l)));
     @Mock
     private MenuService menuService;
     @Mock
@@ -140,7 +142,7 @@ class OrderServiceTest {
     @Test
     void 이미_완료된_주문의_상태는_변경할_수_없다() {
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
-        given(order.changeStatus(any())).willThrow(IllegalArgumentException.class);
+        doThrow(IllegalArgumentException.class).when(order).changeStatus(any());
 
         ThrowingCallable 이미_완료된_주문의_상태_변경 = () -> orderService
                 .changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING.name()));

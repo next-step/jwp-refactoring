@@ -5,11 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.dto.OrderTableRequest;
@@ -81,8 +86,9 @@ class TableServiceTest {
 
     @Test
     void 이미_단체_지정이_된_주문테이블은_수정할_수_없다() {
+        OrderTable orderTable = new OrderTable(1, false);
+        orderTable.changeTableGroup(new TableGroup(Arrays.asList(new OrderTable(1, true), new OrderTable(1, true))));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTable.validateAlreadyTableGroup()).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 이미_단체_지정이_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);
 
@@ -91,8 +97,9 @@ class TableServiceTest {
 
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
+        OrderTable orderTable = new OrderTable(1, false);
+        orderTable.addOrder(new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1))));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTable.validateOrderStatus(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);
 
@@ -112,7 +119,7 @@ class TableServiceTest {
     @Test
     void 주문_테이블의_방문한_손님수를_0명_이하로_수정할_수_없다() {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTable.changeNumberOfGuests(-1)).willThrow(IllegalArgumentException.class);
+        doThrow(IllegalArgumentException.class).when(orderTable).changeNumberOfGuests(-1);
         numberOfGuestsRequest.setNumberOfGuests(-1);
 
         ThrowingCallable 손님수_0명_이하로_수정 = () -> tableService.changeNumberOfGuests(1L, numberOfGuestsRequest);
@@ -131,8 +138,8 @@ class TableServiceTest {
 
     @Test
     void 빈_테이블은_수정할_수_없다() {
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTable.validateEmpty()).willThrow(IllegalArgumentException.class);
+        OrderTable 빈_주문_테이블 = new OrderTable(1, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_주문_테이블));
 
         ThrowingCallable 빈_테이블_수정 = () -> tableService.changeNumberOfGuests(1L, numberOfGuestsRequest);
 

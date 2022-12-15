@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
@@ -40,44 +41,27 @@ public class OrderTable {
         this.empty = new OrderTableEmpty(empty);
     }
 
-    public Void validateAlreadyTableGroup() {
-        if (Objects.nonNull(getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-        return null;
-    }
-
-    public Void validateOrderStatus(List<String> orderStatuses) {
-        orders.validateOrderStatus(orderStatuses);
-        return null;
-    }
-
-    public void changeEmpty(final boolean empty) {
-        this.empty.changeEmpty(empty);
-    }
-
     public void addOrder(Order order) {
         orders.addOrder(order);
     }
 
-    public Void validateEmpty() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        return null;
+    public void changeEmpty(final boolean empty) {
+        validateAlreadyTableGroup();
+        validateOrderStatus(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
+        this.empty.changeEmpty(empty);
     }
 
-    public Void changeNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        validateEmpty();
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-        return null;
     }
 
     public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
-    public void findByInOrderStatus(List<String> orderStatuses) {
-        orders.findByInOrderStatus(orderStatuses);
+    public void validateOrderStatus(List<String> orderStatuses) {
+        orders.validateOrderStatus(orderStatuses);
     }
 
     public Long getId() {
@@ -101,5 +85,26 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTable{" +
+                "id=" + id +
+                ", numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
+                '}';
+    }
+
+    private void validateEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 주문 테이블 입니다[" + this + "]");
+        }
+    }
+
+    private void validateAlreadyTableGroup() {
+        if (Objects.nonNull(getTableGroup())) {
+            throw new IllegalArgumentException("이미 단체 지정이 된 주문 테이블입니다[" + this + "]");
+        }
     }
 }

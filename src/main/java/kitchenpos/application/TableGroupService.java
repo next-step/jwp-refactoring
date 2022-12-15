@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import java.util.List;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TableGroupService {
 
     private final TableService tableService;
@@ -24,20 +24,15 @@ public class TableGroupService {
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> savedOrderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.validateOrderTableEmptyOrNonNull(savedOrderTables);
-        tableGroup.addAllOrderTables(savedOrderTables);
-        tableGroup.validateOrderTablesSize();
-
-        return tableGroupRepository.save(tableGroup);
+        return tableGroupRepository.save(new TableGroup(savedOrderTables));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "등록 되지 않은 단체 지정은 해제할 수 없습니다[tableGroupId:" + tableGroupId + "]"));
 
-        tableGroup.validateOrderStatus(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         tableGroup.unGroup();
     }
 }

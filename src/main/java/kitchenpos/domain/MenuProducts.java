@@ -13,7 +13,7 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public MenuProducts() {
+    protected MenuProducts() {
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {

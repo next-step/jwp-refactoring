@@ -21,24 +21,16 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    public TableGroup(List<OrderTable> orderTablesParam) {
+        validateOrderTableEmptyOrNonNull(orderTablesParam);
+        addAllOrderTables(orderTablesParam);
+        validateOrderTablesSize();
         this.createdDate = LocalDateTime.now();
     }
 
-    public void addAllOrderTables(List<OrderTable> savedOrderTables) {
-        savedOrderTables.forEach(orderTable -> {
-            orderTable.changeTableGroup(this);
-            orderTable.changeEmpty(false);
-        });
-        orderTables.addAllOrderTables(savedOrderTables);
-    }
-
-    public void validateOrderTableEmptyOrNonNull(List<OrderTable> savedOrderTables) {
-        orderTables.validateOrderTableEmptyOrNonNull(savedOrderTables);
-    }
-
-    public void validateOrderTablesSize() {
-        orderTables.validateOrderTablesSize();
+    public void unGroup() {
+        validateOrderStatus(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        orderTables.unGroup();
     }
 
     public Long getId() {
@@ -53,12 +45,23 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
-    public Void validateOrderStatus(String... orderStatuses) {
-        orderTables.validateOrderStatus(Arrays.asList(orderStatuses));
-        return null;
+    private void addAllOrderTables(List<OrderTable> savedOrderTables) {
+        savedOrderTables.forEach(orderTable -> {
+            orderTable.changeEmpty(false);
+            orderTable.changeTableGroup(this);
+        });
+        orderTables.addAllOrderTables(savedOrderTables);
     }
 
-    public void unGroup() {
-        orderTables.unGroup();
+    private void validateOrderTableEmptyOrNonNull(List<OrderTable> savedOrderTables) {
+        orderTables.validateOrderTableEmptyOrNonNull(savedOrderTables);
+    }
+
+    private void validateOrderTablesSize() {
+        orderTables.validateOrderTablesSize();
+    }
+
+    private void validateOrderStatus(String... orderStatuses) {
+        orderTables.validateOrderStatus(Arrays.asList(orderStatuses));
     }
 }
