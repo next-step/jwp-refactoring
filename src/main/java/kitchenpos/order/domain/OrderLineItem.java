@@ -23,15 +23,14 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Quantity quantity, Menu menu) {
-        this.seq = seq;
+    public OrderLineItem(Quantity quantity, Menu menu) {
         this.quantity = quantity;
         this.menu = menu;
     }
 
-    public OrderLineItem(Quantity quantity, Menu menu) {
-        this.quantity = quantity;
-        this.menu = menu;
+    public OrderLineItem(Long seq, Quantity quantity, Menu menu) {
+        this(quantity, menu);
+        this.seq = seq;
     }
 
     public Long getSeq() {
@@ -42,7 +41,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public void setOrder(final Order order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 

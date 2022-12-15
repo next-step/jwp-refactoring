@@ -17,26 +17,24 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
-    public Menu(Long id, Name name, Price price, MenuGroup menuGroup) {
-        this.id = id;
+    public Menu(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+        menuProducts.setMenu(this);
     }
 
-    public Menu(Name name, Price price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
+    public Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        this(name, price, menuGroupId, menuProducts);
+        this.id = id;
     }
 
     public Long getId() {
@@ -51,29 +49,16 @@ public class Menu {
         return price;
     }
 
-    public void setPrice(final Price price) {
+    public void setPrice(Price price) {
         this.price = price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.get();
-    }
-
-    public void setMenuProducts(MenuProducts menuProducts) {
-        validatePrice(menuProducts.totalMenuPrice());
-
-        this.menuProducts = menuProducts;
-        menuProducts.get().forEach(menuProduct -> menuProduct.setMenu(this));
-    }
-
-    private void validatePrice(Price totalPrice) {
-        if (price.isBiggerThan(totalPrice)) {
-            throw new IllegalArgumentException(ErrorCode.MENU_PRICE_SHOULD_NOT_OVER_TOTAL_PRICE.getMessage());
-        }
     }
 
     @Override
@@ -82,7 +67,7 @@ public class Menu {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", menuGroup=" + menuGroup +
+                ", menuGroupId=" + menuGroupId +
                 ", menuProducts=" + menuProducts +
                 '}';
     }

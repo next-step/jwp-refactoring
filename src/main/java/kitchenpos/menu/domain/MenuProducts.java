@@ -20,15 +20,16 @@ public class MenuProducts {
     }
 
     public Price totalMenuPrice() {
-        Price total = new Price(BigDecimal.ZERO);
-        for (MenuProduct menuProduct : menuProducts) {
-            total = total.add(menuProduct.calculatePrice());
-        }
-
-        return total;
+        return menuProducts.stream()
+                .map(MenuProduct::calculatePrice)
+                .reduce(new Price(BigDecimal.ZERO), Price::add);
     }
 
     public List<MenuProduct> get() {
         return Collections.unmodifiableList(menuProducts);
+    }
+
+    public void setMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 }

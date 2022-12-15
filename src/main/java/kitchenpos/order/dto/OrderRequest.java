@@ -1,11 +1,9 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,14 +32,8 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order createOrder(OrderTable orderTable, List<Menu> menus) {
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
-        List<OrderLineItem> orderLineItems = getOrderLineItems().stream()
-                .map(item -> item.createOrderLineItem(menus))
-                .collect(Collectors.toList());
-
-        order.setOrderLineItems(new OrderLineItems(orderLineItems));
-        return order;
+    public Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(orderLineItems));
     }
 
     public List<Long> findAllMenuIds() {

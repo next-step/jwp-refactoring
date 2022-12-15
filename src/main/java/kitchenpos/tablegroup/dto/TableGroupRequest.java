@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.time.LocalDateTime;
@@ -24,9 +22,7 @@ public class TableGroupRequest {
         return orderTableIds;
     }
 
-    public TableGroup createTableGroup(List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(orderTables));
-        orderTables.forEach(table -> table.setTableGroup(tableGroup));
-        return tableGroup;
+    public TableGroup createTableGroup() {
+        return new TableGroup(LocalDateTime.now());
     }
 }

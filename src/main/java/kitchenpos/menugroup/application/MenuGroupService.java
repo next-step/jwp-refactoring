@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
-    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+    public MenuGroupService(MenuGroupRepository menuGroupRepository) {
         this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
-    public MenuGroupResponse create(final MenuGroupRequest request) {
+    public MenuGroupResponse create(MenuGroupRequest request) {
         return MenuGroupResponse.from(menuGroupRepository.save(request.createMenuGroup()));
     }
 

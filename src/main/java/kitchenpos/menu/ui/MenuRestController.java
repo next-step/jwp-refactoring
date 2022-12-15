@@ -16,23 +16,21 @@ import java.util.List;
 public class MenuRestController {
     private final MenuService menuService;
 
-    public MenuRestController(final MenuService menuService) {
+    public MenuRestController(MenuService menuService) {
         this.menuService = menuService;
     }
 
     @PostMapping("/api/menus")
-    public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest request) {
-        final MenuResponse created = menuService.create(request);
-        final URI uri = URI.create("/api/menus/" + created.getId());
+    public ResponseEntity<MenuResponse> create(@RequestBody MenuRequest request) {
+        MenuResponse created = menuService.create(request);
+        URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created)
-                ;
+                .body(created);
     }
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> findAll() {
         return ResponseEntity.ok()
-                .body(menuService.findAll())
-                ;
+                .body(menuService.findAll());
     }
 }

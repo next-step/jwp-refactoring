@@ -8,16 +8,16 @@ import java.util.List;
 
 public class MenuProductRequest {
     private Long productId;
-    private Long quantity;
+    private long quantity;
 
     protected MenuProductRequest() {}
 
-    private MenuProductRequest(Long productId, Long quantity) {
+    private MenuProductRequest(Long productId, long quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProductRequest of(Long productId, Long quantity) {
+    public static MenuProductRequest of(Long productId, long quantity) {
         return new MenuProductRequest(productId, quantity);
     }
 
@@ -29,19 +29,11 @@ public class MenuProductRequest {
         return productId;
     }
 
-    public Long getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public MenuProduct createMenuProduct(List<Product> products) {
-        Product product = findProduct(products);
+    public MenuProduct createMenuProduct(Product product) {
         return new MenuProduct(new Quantity(quantity), product);
-    }
-
-    private Product findProduct(List<Product> products) {
-        return products.stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .get();
     }
 }

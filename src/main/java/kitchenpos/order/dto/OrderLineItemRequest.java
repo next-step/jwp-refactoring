@@ -8,16 +8,16 @@ import java.util.List;
 
 public class OrderLineItemRequest {
     private Long menuId;
-    private Long quantity;
+    private long quantity;
 
     protected OrderLineItemRequest() {}
 
-    private OrderLineItemRequest(Long menuId, Long quantity) {
+    private OrderLineItemRequest(Long menuId, long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItemRequest of(Long menuId, Long quantity) {
+    public static OrderLineItemRequest of(Long menuId, long quantity) {
         return new OrderLineItemRequest(menuId, quantity);
     }
 
@@ -25,16 +25,11 @@ public class OrderLineItemRequest {
         return menuId;
     }
 
-    public Long getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public OrderLineItem createOrderLineItem(List<Menu> menus) {
-        Menu menu = menus.stream()
-                .filter(item -> item.getId().equals(menuId))
-                .findFirst()
-                .get();
-
+    public OrderLineItem createOrderLineItem(Menu menu) {
         return new OrderLineItem(new Quantity(quantity), menu);
     }
 }
