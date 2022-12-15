@@ -20,8 +20,13 @@ import java.util.stream.Stream;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -31,14 +36,17 @@ import org.springframework.http.MediaType;
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private Menu 짜장_탕수_세트;
-
     @DisplayName("메뉴 기능 통합 테스트")
     @TestFactory
     Stream<DynamicNode> menu() {
-        짜장_탕수_세트 = 짜장_탕수_메뉴();
+        Long 중식_ID = 메뉴그룹_등록됨("중식").getId();
+        Long 짜장면_ID = 상품_등록됨("짜장면", 9000L).getId();
+        Long 탕수육_ID = 상품_등록됨("탕수육", 12000L).getId();
+
         return Stream.of(
                 dynamicTest("메뉴를 등록한다.", () -> {
+                    // given
+                    MenuRequest 짜장_탕수_세트 = 메뉴_생성("짜장_탕수_세트", BigDecimal.valueOf(15000), 중식_ID, 짜장면_ID, 탕수육_ID);
                     // when
                     ExtractableResponse<Response> response = 메뉴_생성_요청(짜장_탕수_세트);
                     // then
@@ -46,35 +54,34 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("가격이 없는 메뉴를 등록할 수 없다.", () -> {
                     // given
-                    짜장_탕수_세트.setPrice(null);
+                    MenuRequest 가격_없는_세트 = 메뉴_생성("짜장_탕수_세트", null, 중식_ID, 짜장면_ID, 탕수육_ID);
                     // when
-                    ExtractableResponse<Response> response = 메뉴_생성_요청(짜장_탕수_세트);
+                    ExtractableResponse<Response> response = 메뉴_생성_요청(가격_없는_세트);
                     // then
                     메뉴_생성_실패됨(response);
                 }),
                 dynamicTest("가격이 0 미만인 메뉴를 등록할 수 없다.", () -> {
                     // given
-                    짜장_탕수_세트.setPrice(BigDecimal.valueOf(-1));
+                    MenuRequest 가격_음수_세트 = 메뉴_생성("짜장_탕수_세트", BigDecimal.valueOf(-1), 중식_ID, 짜장면_ID, 탕수육_ID);
                     // when
-                    ExtractableResponse<Response> response = 메뉴_생성_요청(짜장_탕수_세트);
+                    ExtractableResponse<Response> response = 메뉴_생성_요청(가격_음수_세트);
                     // then
                     메뉴_생성_실패됨(response);
                 }),
                 dynamicTest("메뉴그룹이 없이 메뉴를 등록 할 수 없다.", () -> {
                     // given
-                    짜장_탕수_세트.setMenuGroupId(null);
+                    MenuRequest 메뉴그룹_없는_세트 = 메뉴_생성("짜장_탕수_세트",  BigDecimal.valueOf(15000), null, 짜장면_ID, 탕수육_ID);
                     // when
-                    ExtractableResponse<Response> response = 메뉴_생성_요청(짜장_탕수_세트);
+                    ExtractableResponse<Response> response = 메뉴_생성_요청(메뉴그룹_없는_세트);
                     // then
                     메뉴_생성_실패됨(response);
 
                 }),
                 dynamicTest("등록하려는 메뉴의 메뉴상품이 등록되지 않으면 등록할 수 없다.", () -> {
                     // given
-                    Product 미등록_짬뽕 = 상품_생성("짬뽕", 7000L);
-                    Product 미등록_양장피 = 상품_생성("양장피", 20000L);
-                    MenuGroup 중식 = 메뉴그룹_등록됨("중식");
-                    Menu 신규_메뉴 = 메뉴_생성("미등록_메뉴", 22000L, 중식, 미등록_짬뽕, 미등록_양장피);
+                    Product 미등록_짬뽕 = Product.of("짬뽕", BigDecimal.valueOf(7000));
+                    Product 미등록_양장피 = Product.of("양장피", BigDecimal.valueOf(12000));
+                    MenuRequest 신규_메뉴 = 메뉴_생성("미등록_메뉴", BigDecimal.valueOf(15000), 중식_ID, 미등록_짬뽕.getId(), 미등록_양장피.getId());
                     // when
                     ExtractableResponse<Response> response = 메뉴_생성_요청(신규_메뉴);
                     // then
@@ -82,53 +89,53 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("메뉴의 가격을 메뉴상품의 총금액보다 높게 책정할 수 없다.", () -> {
                     // given
-                    짜장_탕수_세트.setPrice(BigDecimal.valueOf(30000));
+                    MenuRequest 비싼_세트 = 메뉴_생성("짜장_탕수_세트",  BigDecimal.valueOf(30000), 중식_ID, 짜장면_ID, 탕수육_ID);
+
                     // when
-                    ExtractableResponse<Response> response = 메뉴_생성_요청(짜장_탕수_세트);
+                    ExtractableResponse<Response> response = 메뉴_생성_요청(비싼_세트);
                     // then
                     메뉴_생성_실패됨(response);
 
                 }),
                 dynamicTest("메뉴의 목록을 조회할 수 있다.", () -> {
                     // given
-                    짜장_탕수_메뉴_생성();
+                    Long id = 짜장_탕수_세트_생성됨().getId();
                     // when
                     ExtractableResponse<Response> 메뉴_목록 = 메뉴_목록_조회_요청();
                     // then
-                    메뉴_목록_정상_응답됨(메뉴_목록, "짜장_탕수_세트");
+                    메뉴_목록_정상_응답됨(메뉴_목록, id);
                 })
         );
     }
 
-    public static Menu 짜장_탕수_메뉴(){
-        MenuGroup 중식 = 메뉴그룹_등록됨("중식");
-        Product 짜장면 = 상품_등록됨("짜장면", 9000L);
-        Product 탕수육 = 상품_등록됨("탕수육", 12000L);
-        return 메뉴_생성("짜장_탕수_세트", 15000L, 중식, 짜장면, 탕수육);
+    public static MenuResponse 짜장_탕수_세트_생성됨(){
+        Long 중식_ID = 메뉴그룹_등록됨("중식").getId();
+        Long 짜장면_ID = 상품_등록됨("짜장면", 9000L).getId();
+        Long 탕수육_ID = 상품_등록됨("탕수육", 12000L).getId();
+        MenuRequest menuRequest = 메뉴_생성("짜장_탕수_세트", BigDecimal.valueOf(15000), 중식_ID,짜장면_ID, 탕수육_ID );
+        return 메뉴_생성_요청(menuRequest).as(MenuResponse.class);
     }
-    public static Menu 짜장_탕수_메뉴_생성(){
-        return 메뉴_생성_요청(짜장_탕수_메뉴()).as(Menu.class);
+
+    private static MenuProductRequest 메뉴상품_생성(Long productId){
+        return MenuProductRequest.of(productId, 1);
     }
-    private static Menu 메뉴_생성(String name, Long price, MenuGroup menuGroup, Product... products){
-        List<MenuProduct> menuProducts = toMenuProductList(products);
-        return new Menu(null, name, BigDecimal.valueOf(price), menuGroup.getId(), menuProducts);
-    }
-    private static List<MenuProduct> toMenuProductList(Product... products){
-        return Arrays.asList(products)
+
+    private static MenuRequest 메뉴_생성(String name, BigDecimal price, Long menuGroupId, Long... productIds){
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(productIds)
                 .stream()
-                .map(MenuAcceptanceTest::toMenuProduct)
+                .map(it-> 메뉴상품_생성(it))
                 .collect(Collectors.toList());
+        return MenuRequest.of(name, price, menuGroupId, menuProductRequests);
     }
 
-    private static MenuProduct toMenuProduct(Product product){
-        return new MenuProduct(null, null, product.getId(), 1L);
-    }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
+
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
+                .body(menuRequest)
                 .when().post("/api/menus")
                 .then().log().all()
                 .extract();
@@ -146,14 +153,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
     private void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void 메뉴_목록_정상_응답됨(ExtractableResponse<Response> response, String... 메뉴_목록) {
-        List<String> 메뉴_조회_결과_목록 = response.jsonPath()
-                .getList(".", Menu.class)
+    private void 메뉴_목록_정상_응답됨(ExtractableResponse<Response> response, Long... 메뉴_목록) {
+        List<Long> 메뉴_조회_결과_목록 = response.jsonPath()
+                .getList(".", MenuResponse.class)
                 .stream()
-                .map(Menu::getName)
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         assertAll(

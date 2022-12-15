@@ -1,10 +1,7 @@
 package kitchenpos.tablegroup.acceptance;
 
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.짜장_탕수_메뉴_생성;
-import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성됨;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.빈_테이블_생성;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.채워진_테이블_생성;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_생성됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -14,8 +11,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -24,87 +21,75 @@ import org.springframework.http.MediaType;
 
 @DisplayName("주문 테이블 단체지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
-    private OrderTable 빈_주문테이블_A;
-    private OrderTable 빈_주문테이블_B;
-
-    private OrderTable 빈_주문테이블_C;
-    private OrderTable 빈_주문테이블_D;
-    private OrderTable 빈_주문테이블_E;
-    private OrderTable 빈_주문테이블_F;
-    private OrderTable 채워진_주문테이블;
-
     @DisplayName("단체지정 통합 테스트")
     @TestFactory
     Stream<DynamicNode> tableGroup() {
-        빈_주문테이블_A = 빈_테이블_생성();
-        빈_주문테이블_B = 빈_테이블_생성();
-        빈_주문테이블_C = 빈_테이블_생성();
-        빈_주문테이블_D = 빈_테이블_생성();
-        빈_주문테이블_E = 빈_테이블_생성();
-        빈_주문테이블_F = 빈_테이블_생성();
-        채워진_주문테이블 = 채워진_테이블_생성();
-
         return Stream.of(
                 dynamicTest("단체 지정 한다.", () -> {
+                    // given
+                    Long 빈_테이블_A_ID = 테이블_생성됨(2, true).getId();
+                    Long 빈_테이블_B_ID = 테이블_생성됨(2, true).getId();
                     // when
-                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_주문테이블_A, 빈_주문테이블_B));
+                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_A_ID, 빈_테이블_B_ID));
                     // then
                     단체지정_정상_생성됨(response);}),
                 dynamicTest("테이블이 2개 미만이면 단체지정 할 수 없다.", () -> {
+                    // given
+                    Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
                     // when
-                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_주문테이블_C));
+                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_ID));
                     // then
-                    요청_실패됨(response);}),
+                    요청_실패됨_잘못된_요청(response);}),
                 dynamicTest("등록되지 않은 테이블이 있으면 단체지정 할 수 없다.", () -> {
                     // given
-                    OrderTable 미등록_주문테이블 = new OrderTable(1L, null,4,  true );
+                    Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
+                    Long 미등록_주문테이블_ID = Long.MAX_VALUE;
                     // when
-                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_주문테이블_C, 미등록_주문테이블));
+                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_ID, 미등록_주문테이블_ID));
                     // then
-                    요청_실패됨(response);}),
+                    요청_실패됨_엔티티_찾을_수_없음(response);}),
                 dynamicTest("채워진 테이블은 단체지정 할 수 없다.", () -> {
+                    // given
+                    Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
+                    Long 채워진_테이블_ID = 테이블_생성됨(2, false).getId();
                     // when
-                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_주문테이블_C, 채워진_주문테이블));
+                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_ID, 채워진_테이블_ID));
                     // then
-                    요청_실패됨(response);}),
+                    요청_실패됨_잘못된_요청(response);}),
                 dynamicTest("이미 단체지정된 테이블은 단체지정 할 수 없다.", () -> {
+                    // given
+                    Long 빈_테이블_A_ID = 테이블_생성됨(2, true).getId();
+                    Long 빈_테이블_B_ID = 테이블_생성됨(2, true).getId();
+                    단체지정됨(빈_테이블_A_ID, 빈_테이블_B_ID);
                     // when
-                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_주문테이블_A, 채워진_주문테이블));
+                    ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_A_ID, 빈_테이블_B_ID));
                     // then
-                    요청_실패됨(response);}),
+                    요청_실패됨_잘못된_요청(response);}),
                 dynamicTest("단체지정을 취소한다.", () -> {
                     // given
-                    TableGroup 주문테이블_단체_지정 = 단체지정됨(빈_주문테이블_C, 빈_주문테이블_D);
-                    // when
-                    ExtractableResponse<Response> response = 단체지정_해제_요청(주문테이블_단체_지정.getId());
-                    // then
-                    단체지정_정상_해제됨(response);
-                }),
-                dynamicTest("조리, 식사중인 주문이 있는 테이블은 단체지정을 취소할 수 없다.", () -> {
-                    // given
-                    Long 단체지정_ID = 단체지정됨(빈_주문테이블_E, 빈_주문테이블_F).getId();
-                    주문_생성됨(빈_주문테이블_E, 짜장_탕수_메뉴_생성());
+                    Long 빈_테이블_A_ID = 테이블_생성됨(2, true).getId();
+                    Long 빈_테이블_B_ID = 테이블_생성됨(2, true).getId();
+                    Long 단체지정_ID = 단체지정됨(빈_테이블_A_ID, 빈_테이블_B_ID).getId();
                     // when
                     ExtractableResponse<Response> response = 단체지정_해제_요청(단체지정_ID);
                     // then
-                    요청_실패됨(response);
+                    단체지정_정상_해제됨(response);
                 })
-
         );
     }
-    private static TableGroup 단체지정_생성(OrderTable...주문테이블){
-        return new TableGroup(null, Arrays.asList(주문테이블));
+    private static TableGroupRequest 단체지정_생성(Long...주문테이블_ID){
+        return TableGroupRequest.of(Arrays.asList(주문테이블_ID));
     }
-    public static TableGroup 단체지정됨(OrderTable...주문테이블){
-        return 단체지정_요청(단체지정_생성(주문테이블)).as(TableGroup.class);
+    public static TableGroupResponse 단체지정됨(Long...주문테이블_ID){
+        return 단체지정_요청(단체지정_생성(주문테이블_ID)).as(TableGroupResponse.class);
     }
 
 
-    public static ExtractableResponse<Response> 단체지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체지정_요청(TableGroupRequest tableGroupRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(tableGroupRequest)
                 .when().post("/api/table-groups/")
                 .then().log().all()
                 .extract();
@@ -121,8 +106,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 요청_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    private void 요청_실패됨_잘못된_요청(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 요청_실패됨_엔티티_찾을_수_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
 
