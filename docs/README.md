@@ -18,3 +18,15 @@
 * [x] 단위 테스트하기 어려운 코드와 가능한 코드 분리
   * [x] 단위 테스트 구현
 * [x] Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션 필수
+
+### 서비스 리팩터링 리뷰
+
+* [ ] @Transactional 누락 방지를 위해 클래스 레벨에 추가
+* [ ] N+1 을 방지하기
+  * fetch join 혹은 hibernate batch size 를 활용
+* [ ] 생성시 필요한 값은 생성자에서 모두 받을 수 있도록 변경
+* [ ] 반드시 필요한 검증로직이 있다면 비즈니스 로직과 함께 수행되도록 변경
+* [ ] Void 제거
+* [ ] 기본 생성자 protected 사용
+* [ ] 예외 메세지 추가
+* [ ] API 스펙이 변경되지 않도록 유지하기
