@@ -1,12 +1,15 @@
 package kitchenpos.domain.order;
 
 import kitchenpos.domain.product.TableGroup;
+import kitchenpos.exception.BadRequestException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+
+import static kitchenpos.utils.Message.*;
 
 @Entity
 public class OrderTable {
@@ -107,5 +110,25 @@ public class OrderTable {
 
     public void unGroup() {
         this.tableGroup = null;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (Objects.nonNull(this.getTableGroupId())) {
+            throw new BadRequestException(INVALID_CHANGE_TO_EMPTY_GROUPED_TABLE);
+        }
+
+        if (orders.anyMatchedIn(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new BadRequestException(INVALID_CHANGE_TO_EMPTY_ORDER_STATUS);
+        }
+
+        this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        if (this.isEmpty()) {
+            throw new BadRequestException(CAN_NOT_CHANGE_NUMBER_OF_GUESTS);
+        }
+
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 }
