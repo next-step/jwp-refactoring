@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -28,12 +29,14 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected Order() {
-    }
+    protected Order() {}
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public Order(Long id,
+                 OrderTable orderTable,
+                 OrderStatus orderStatus,
+                 LocalDateTime orderedTime,
                  List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
@@ -52,6 +55,16 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         updateOrderLineItems(orderLineItems);
+    }
+
+    public Order(
+            OrderTable orderTable,
+            OrderStatus orderStatus,
+            LocalDateTime orderedTime
+    ) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
     }
 
     public Long getId() {
@@ -96,7 +109,12 @@ public class Order {
     }
     private void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
-        orderLineItems.forEach(item -> item.setOrder(this));
+        orderLineItems.forEach(item -> item.addOrder(this));
+    }
+
+    public void addLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+        orderLineItem.addOrder(this);
     }
 
     @Override
@@ -110,5 +128,10 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+        orderLineItem.addOrder(this);
     }
 }

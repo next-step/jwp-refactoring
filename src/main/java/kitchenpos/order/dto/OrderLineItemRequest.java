@@ -16,6 +16,10 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
+    public static OrderLineItemRequest of(Long menuId, Long quantity) {
+        return new OrderLineItemRequest(menuId, quantity);
+    }
+
     public OrderLineItem createOrderLineItem(List<Menu> menus) {
         Menu menu = menus.stream()
                 .filter(item -> item.getId().equals(menuId))

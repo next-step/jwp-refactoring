@@ -1,6 +1,9 @@
 package kitchenpos.ordertable.dto;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableRequest {
     private int numberOfGuests;
@@ -23,6 +26,12 @@ public class OrderTableRequest {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public TableGroup createTableGroup(List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables.forEach(table -> table.setTableGroup(tableGroup));
+        return tableGroup;
     }
 
     public OrderTable createOrderTable() {
