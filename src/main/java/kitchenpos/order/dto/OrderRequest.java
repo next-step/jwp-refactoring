@@ -22,9 +22,9 @@ public class OrderRequest {
         return new Order(orderTableId);
     }
 
-    public List<OrderLineItem> toOrderLineItems() {
+    public List<Long> toMenuIds() {
         return orderLineItems.stream()
-                .map(OrderLineItemRequest::toOrderLineItem)
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
     }
 
