@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -19,10 +20,8 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order to(OrderRequest orderRequest){
-//        List<OrderLineItem> orderLineItems = orderRequest.orderLineItems.stream()
-//                .map(OrderLineItemRequest::to).collect(Collectors.toList());
-        return new Order(orderRequest.getOrderTableId(),
+    public static Order to(OrderRequest orderRequest, OrderTable orderTable){
+        return new Order(orderTable,
                 OrderStatus.COOKING,
                 LocalDateTime.now());
     }

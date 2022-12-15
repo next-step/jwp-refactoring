@@ -31,6 +31,10 @@ public class MenuService {
         this.productDao = productDao;
     }
 
+    public List<Menu> list() {
+        return menuDao.findAll();
+    }
+
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = getMenuGroup(menuRequest);
@@ -51,14 +55,14 @@ public class MenuService {
     private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            final Product product = productDao.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
+            final Product product = getProduct(menuProductRequest.getProductId());
             menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return menuProducts;
     }
 
-    public List<Menu> list() {
-        return menuDao.findAll();
+    private Product getProduct(Long productId) {
+        return productDao.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

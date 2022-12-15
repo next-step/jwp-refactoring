@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -76,7 +75,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
         this.empty = empty;
     }
 
@@ -86,9 +85,13 @@ public class OrderTable {
     }
 
     public void validateGrouping(){
-        if (!isEmpty() || this.tableGroup != null) {
+        if (!isEmpty() || isGrouping()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isGrouping(){
+        return this.tableGroup != null;
     }
 
     public void upGroup(){

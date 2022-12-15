@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
@@ -35,16 +36,11 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-        validator.validateChangeEmpty(savedOrderTable);
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
+        List<Order> orders = orderDao.findAllByOrderTable(savedOrderTable);
+        validator.validateChangeEmpty(savedOrderTable, orders);
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return savedOrderTable;
     }
@@ -52,12 +48,16 @@ public class TableService {
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
         validator.validateChangeNumberOfGuests(savedOrderTable, numberOfGuests);
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return savedOrderTable;
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

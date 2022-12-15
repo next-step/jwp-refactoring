@@ -18,6 +18,7 @@ import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderStatusRequest;
 import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -136,7 +137,7 @@ class OrderServiceTest {
                 Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.MEAL));
+        Order changedOrder = orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.MEAL.name()));
 
         // then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
@@ -159,7 +160,7 @@ class OrderServiceTest {
                 Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION));
+        Order changedOrder = orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION.name()));
 
         // then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
@@ -180,14 +181,14 @@ class OrderServiceTest {
 
         Order order = orderService.create(new OrderRequest(orderTable1.getId(),
                 Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
-        orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION));
+        orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION.name()));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.MEAL))
+                () -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.MEAL.name()))
         );
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COOKING))
+                () -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COOKING.name()))
         );
 
         // then

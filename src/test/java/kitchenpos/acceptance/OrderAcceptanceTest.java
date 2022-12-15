@@ -17,7 +17,9 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderStatusRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -230,11 +232,11 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     }
 
     private ResultActions 주문_상태_변경_요청(OrderResponse 최초_주문, OrderStatus orderStatus) throws Exception {
-        return mockPut("/api/orders/{orderId}/order-status", 최초_주문.getId(), new Order(orderStatus));
+        return mockPut("/api/orders/{orderId}/order-status", 최초_주문.getId(), new OrderStatusRequest(orderStatus.name()));
     }
 
     private ResultActions 주문_메뉴_없이_요청(OrderTableResponse orderTable) throws Exception {
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now()
+        OrderRequest order = new OrderRequest(orderTable.getId()
                 , Collections.emptyList());
         return mockPost("/api/orders", order);
     }

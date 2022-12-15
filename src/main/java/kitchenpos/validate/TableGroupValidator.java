@@ -2,7 +2,6 @@ package kitchenpos.validate;
 
 import java.util.List;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;

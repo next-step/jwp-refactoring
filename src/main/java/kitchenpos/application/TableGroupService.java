@@ -4,21 +4,15 @@ import java.util.ArrayList;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.validate.TableGroupValidator;
+import kitchenpos.validate.TableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -26,26 +20,29 @@ public class TableGroupService {
     private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
 
-    private final TableGroupValidator validator;
+    private final TableGroupValidator tableGroupValidator;
+    private final TableValidator tableValidator;
 
     public TableGroupService(
             final OrderDao orderDao,
             final OrderTableDao orderTableDao,
             final TableGroupDao tableGroupDao,
-            final TableGroupValidator validator) {
+            final TableGroupValidator tableGroupValidator,
+            final TableValidator tableValidator) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
-        this.validator = validator;
+        this.tableGroupValidator = tableGroupValidator;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         List<TableRequest> tableRequests = tableGroupRequest.getOrderTables();
-        validator.validateRequest(tableRequests);
+        tableGroupValidator.validateRequest(tableRequests);
 
         List<OrderTable> orderTables = getOrderTables(tableRequests);
-        validator.validateCreate(tableRequests, orderTables);
+        tableGroupValidator.validateCreate(tableRequests, orderTables);
 
         final TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(orderTables));
         for (final OrderTable savedOrderTable : orderTables) {
@@ -58,29 +55,32 @@ public class TableGroupService {
     private List<OrderTable> getOrderTables(List<TableRequest> tableRequests) {
         List<OrderTable> orderTables = new ArrayList<>();
         for (TableRequest orderTable : tableRequests) {
-            orderTables.add(orderTableDao.findById(orderTable.getId())
-                    .orElseThrow(IllegalArgumentException::new));
+            orderTables.add(getOrderTable(orderTable));
         }
         return orderTables;
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+        TableGroup tableGroup = getTableGroup(tableGroupId);
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+        for (OrderTable orderTable : orderTables) {
+            tableValidator.validateDinning(orderDao.findAllByOrderTable(orderTable));
         }
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.upGroup();
         }
+    }
+
+    private TableGroup getTableGroup(Long tableGroupId) {
+        return tableGroupDao.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private OrderTable getOrderTable(TableRequest orderTable) {
+        return orderTableDao.findById(orderTable.getId())
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

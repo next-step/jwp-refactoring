@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
@@ -11,66 +10,43 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.validate.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
     private final MenuDao menuDao;
     private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
+
+    private final OrderValidator validator;
 
     public OrderService(
             final MenuDao menuDao,
             final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+            final OrderTableDao orderTableDao,
+            final OrderValidator validator
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
+        this.validator = validator;
     }
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> OrderLineItemRequests = orderRequest.getOrderLineItems();
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
+        final OrderTable orderTable = getOrderTable(orderRequest.getOrderTableId());
 
-        if (CollectionUtils.isEmpty(OrderLineItemRequests)) {
-            throw new IllegalArgumentException();
-        }
+        validator.validateCreate(orderLineItemRequests, orderTable);
 
-        final List<Long> menuIds = OrderLineItemRequests.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
-
-        if (OrderLineItemRequests.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        Order order = OrderRequest.to(orderRequest);
-        for (final OrderLineItemRequest orderLineItemRequest : OrderLineItemRequests) {
-            if(orderLineItemRequest.getMenuId() == null){
-                throw new IllegalArgumentException();
-            }
-            Menu menu = menuDao.findById(orderLineItemRequest.getMenuId())
-                    .orElseThrow(IllegalArgumentException::new);
-
+        Order order = OrderRequest.to(orderRequest, orderTable);
+        for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            Menu menu = getMenu(orderLineItemRequest.getMenuId());
             order.addOrderLineItem(new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity()));
         }
         return orderDao.save(order);
@@ -81,17 +57,28 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+    public Order changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
+        final Order savedOrder = getOrder(orderId);
+        savedOrder.validateChangeOrderStatus();
 
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus().name());
-        savedOrder.setOrderStatus(orderStatus);
+        final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
+        savedOrder.changeOrderStatus(orderStatus);
 
         return savedOrder;
+    }
+
+    private Order getOrder(Long orderId) {
+        return orderDao.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Menu getMenu(Long menuId) {
+        return menuDao.findById(menuId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -27,7 +27,7 @@ public class OrderResponse {
     public static OrderResponse of(Order order) {
         List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
                 .map(OrderLineItemResponse::of).collect(Collectors.toList());
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime(),
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), order.getOrderedTime(),
                 orderLineItemResponses);
     }
 
@@ -35,19 +35,7 @@ public class OrderResponse {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public List<OrderLineItemResponse> getOrderLineItems() {
-        return orderLineItems;
     }
 }

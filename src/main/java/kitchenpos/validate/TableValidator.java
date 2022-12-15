@@ -1,6 +1,7 @@
 package kitchenpos.validate;
 
-import java.util.Objects;
+import java.util.List;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,24 @@ public class TableValidator {
 
     }
 
-    public void validateChangeEmpty(OrderTable table){
-        if (Objects.nonNull(table.getTableGroup())) {
+    public void validateChangeEmpty(OrderTable table, List<Order> orders){
+        validateDinning(orders);
+
+        if (table.isGrouping()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void validateDinning(List<Order> orders){
+        if(hasDinningOrder(orders)){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean hasDinningOrder(List<Order> orders) {
+        return orders.stream()
+                .map(Order::isDinning)
+                .findFirst()
+                .isPresent();
     }
 }
