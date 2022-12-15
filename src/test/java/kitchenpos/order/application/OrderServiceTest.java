@@ -74,7 +74,7 @@ class OrderServiceTest {
         Product 후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(16_000));
 
         List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(후라이드, 2));
-        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴, 메뉴상품_목록);
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품_목록);
 
         주문_테이블 = OrderTable.of(1L, 3, false);
         비어있는_주문_테이블 = OrderTable.of(2L, 2, true);
