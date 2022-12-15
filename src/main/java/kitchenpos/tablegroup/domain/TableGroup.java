@@ -1,8 +1,5 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.event.TableGroupEventPublisher;
 import kitchenpos.tablegroup.event.TableUnGroupEventPublisher;
 import org.springframework.data.annotation.CreatedDate;

@@ -23,19 +23,16 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(
             MenuRepository menuRepository,
-            OrderTableRepository orderTableRepository,
             OrderRepository orderRepository,
             OrderValidator orderValidator
     ) {
-        this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
 

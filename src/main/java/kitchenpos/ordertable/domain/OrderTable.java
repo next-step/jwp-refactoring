@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.constant.ErrorCode;
+import kitchenpos.order.domain.OrderStatus;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,6 +15,8 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     private boolean empty;
     private Long tableGroupId;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     protected OrderTable() {}
 

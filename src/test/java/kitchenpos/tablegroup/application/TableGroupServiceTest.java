@@ -75,7 +75,6 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
-        when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
 
         // when
         tableGroupService.ungroup(tableGroup.getId());

@@ -23,7 +23,6 @@ public class TableService {
     public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.orderTableValidator = orderTableValidator;
-
     }
 
     @Transactional

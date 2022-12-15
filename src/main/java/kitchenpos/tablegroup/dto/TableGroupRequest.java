@@ -26,7 +26,5 @@ public class TableGroupRequest {
 
     public TableGroup createTableGroup() {
         return new TableGroup(LocalDateTime.now());
-//        orderTables.forEach(table -> table.setTableGroup(tableGroup));
-//        return tableGroup;
     }
 }
