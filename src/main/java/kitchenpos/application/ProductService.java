@@ -23,7 +23,8 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        return ProductResponse.of(productRepository.save(new Product(request.getName(), request.getPrice())));
+        Product product = new Product(request.getName(), request.getPrice());
+        return ProductResponse.of(productRepository.save(product));
     }
 
     public List<ProductResponse> list() {

@@ -37,8 +37,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-            .orElseThrow(NotExistIdException::new);
+        MenuGroup menuGroup = findMenuGroup(request.getMenuGroupId());
         List<ProductQuantityPair> productQuantityPairs = makePairs(request.getMenuProducts());
         Menu menu = new Menu(request.getPrice(), request.getName(), menuGroup, productQuantityPairs);
         return MenuResponse.of(menuRepository.save(menu));
@@ -59,6 +58,11 @@ public class MenuService {
 
     private Product findProduct(Long id) {
         return productRepository.findById(id)
+            .orElseThrow(NotExistIdException::new);
+    }
+
+    private MenuGroup findMenuGroup(Long id) {
+        return menuGroupRepository.findById(id)
             .orElseThrow(NotExistIdException::new);
     }
 }

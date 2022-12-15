@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.exception.CannotChangeByOrderStatusException;
 import kitchenpos.exception.ChangeEmptyGroupException;
 import kitchenpos.exception.EmptyTableException;
@@ -41,24 +40,13 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id) {
-        this.id = id;
-    }
-
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable of(OrderTableRequest request) {
-        OrderTable table = new OrderTable();
-        table.numberOfGuests = request.getNumberOfGuests();
-        table.empty = request.isEmpty();
-        return table;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public OrderTable(Order order) {
+        this.orders.add(order);
     }
 
     public Long getId() {
@@ -71,6 +59,10 @@ public class OrderTable {
 
     public Boolean isEmpty() {
         return empty;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public void group(TableGroup tableGroup) {
@@ -108,7 +100,4 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void addOrder(Order order) {
-        this.orders.add(order);
-    }
 }

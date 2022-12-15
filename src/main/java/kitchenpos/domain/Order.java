@@ -72,20 +72,12 @@ public class Order {
         return orderedTime;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
     }
 
     public OrderTable getOrderTable() {
         return orderTable;
-    }
-
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
     }
 
     public boolean isProceeding() {

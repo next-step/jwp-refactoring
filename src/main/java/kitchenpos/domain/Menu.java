@@ -63,10 +63,6 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
-    }
-
     private void validatePrice(BigDecimal price, List<ProductQuantityPair> pairs) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidPriceException();

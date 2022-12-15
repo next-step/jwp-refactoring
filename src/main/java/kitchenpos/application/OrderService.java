@@ -37,8 +37,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-            .orElseThrow(NotExistIdException::new);
+        OrderTable orderTable = findOrderTable(request.getOrderTableId());
         List<Menu> menus = findMenus(request.getMenuIds());
         Order order = orderRepository.save(new Order(orderTable, request.toMenuQuantityPairs(menus)));
         return OrderResponse.of(order);
@@ -52,10 +51,14 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus status) {
-        final Order order = orderRepository.findById(orderId)
-            .orElseThrow(NotExistIdException::new);
+        Order order = findOrder(orderId);
         order.changeStatus(status);
         return OrderResponse.of(order);
+    }
+
+    private Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+            .orElseThrow(NotExistIdException::new);
     }
 
     private List<Menu> findMenus(List<Long> menuIds) {
@@ -64,5 +67,10 @@ public class OrderService {
             throw new MenuFindException();
         }
         return menus;
+    }
+
+    private OrderTable findOrderTable(Long id) {
+        return orderTableRepository.findById(id)
+            .orElseThrow(NotExistIdException::new);
     }
 }

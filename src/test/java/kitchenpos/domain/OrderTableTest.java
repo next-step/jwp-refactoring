@@ -26,8 +26,10 @@ class OrderTableTest {
     @DisplayName("[빈 테이블 상태변경] 주문상태가 요리중, 식사중인 경우 할 수 없다")
     @Test
     void test2() {
-        OrderTable table = new OrderTable(10, false);
-        table.addOrder(new Order(OrderStatus.MEAL));
+        Order order = new Order();
+        order.changeStatus(COOKING);
+        OrderTable table = new OrderTable(order);
+
         assertThatThrownBy(() -> table.changeEmpty(true))
             .isInstanceOf(CannotChangeByOrderStatusException.class);
     }
@@ -68,8 +70,10 @@ class OrderTableTest {
     @DisplayName("[단체지정 해제] 주문 상태가 변경불가일 때 해제할 수 없다")
     @Test
     void test7() {
-        OrderTable table = new OrderTable(10, true);
-        table.addOrder(new Order(COOKING));
+        Order order = new Order();
+        order.changeStatus(COOKING);
+        OrderTable table = new OrderTable(order);
+
         assertThatThrownBy(table::ungroup)
             .isInstanceOf(CannotChangeByOrderStatusException.class);
     }

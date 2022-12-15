@@ -24,7 +24,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable orderTable = orderTableRepository.save(OrderTable.of(request));
+        OrderTable orderTable = orderTableRepository.save(
+            new OrderTable(request.getNumberOfGuests(), request.isEmpty()));
         return OrderTableResponse.of(orderTable);
     }
 
@@ -36,18 +37,21 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final boolean empty) {
-        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(NotExistIdException::new);
+        OrderTable orderTable = findOrderTable(orderTableId);
         orderTable.changeEmpty(empty);
         return OrderTableResponse.of(orderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final Integer numberOfGuests) {
-        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(NotExistIdException::new);
+        OrderTable orderTable = findOrderTable(orderTableId);
         orderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(orderTable);
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(NotExistIdException::new);
     }
 
 }
