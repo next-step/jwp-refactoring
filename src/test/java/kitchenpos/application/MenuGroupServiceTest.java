@@ -26,7 +26,7 @@ class MenuGroupServiceTest {
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
-    void create() {
+    public void create() {
         //given
         MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
         given(menuGroupDao.save(any())).willReturn(추천메뉴);

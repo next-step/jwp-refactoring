@@ -53,7 +53,7 @@ class MenuServiceTest {
     private Menu 후라이드세트;
 
     @BeforeEach
-    void Setup() {
+    public void Setup() {
         후라이드가격 = 15000;
 
         메뉴분류단품 = new MenuGroup(1L, "메뉴분류단품");

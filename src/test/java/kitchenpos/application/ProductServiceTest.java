@@ -31,7 +31,7 @@ class ProductServiceTest {
 
     @DisplayName("상품을 생성할 수 있다.")
     @Test
-    void create() {
+    public void create() {
         //given
         Product 강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
         given(productDao.save(any())).willReturn(강정치킨);

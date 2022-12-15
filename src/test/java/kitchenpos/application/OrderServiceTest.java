@@ -49,7 +49,7 @@ class OrderServiceTest {
     private Order order;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         menu = new Menu(1L, "후라이드한마리", BigDecimal.valueOf(10000), null, null);
         orderTable = new OrderTable(1L, null, 10, false);
         orderLineItem = new OrderLineItem(null, null, 1L, 2);
