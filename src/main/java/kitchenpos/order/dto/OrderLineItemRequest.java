@@ -26,10 +26,6 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
-
     public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
