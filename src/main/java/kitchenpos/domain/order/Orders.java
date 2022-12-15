@@ -39,4 +39,10 @@ public class Orders {
 
         this.orders.add(order);
     }
+
+    public boolean anyMatchedIn(List<OrderStatus> orderStatuses) {
+        return orders.stream().anyMatch(
+                it -> orderStatuses.contains(OrderStatus.valueOf(it.getOrderStatus()))
+        );
+    }
 }

@@ -32,7 +32,7 @@ public class TableGroup {
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
-//        orderTables.registerTableGroup(this);
+        orderTables.registerTableGroup(this);
     }
 
     public static TableGroup of(Long id, LocalDateTime createdDate) {
@@ -53,6 +53,10 @@ public class TableGroup {
 
     public Long getId() {
         return id;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
     public List<OrderTable> getOrderTables() {

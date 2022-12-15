@@ -83,6 +83,11 @@ public class OrderTable {
         return orders;
     }
 
+    public void registerTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -98,5 +103,9 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void unGroup() {
+        this.tableGroup = null;
     }
 }
