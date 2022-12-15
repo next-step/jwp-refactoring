@@ -16,66 +16,85 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTest {
-    private OrderMenu 뿌링클_세트_주문메뉴;
+    private Product 후라이드치킨;
+    private Product 양념치킨;
+    private MenuProduct 후라이드치킨상품;
+    private MenuProduct 양념치킨상품;
+    private MenuGroup 치킨단품;
+    private Menu 후라이드치킨단품;
+    private OrderMenu 후라이드치킨단품주문메뉴;
+    private OrderMenu 양념치킨단품주문메뉴;
+    private Menu 양념치킨단품;
+    private OrderLineItem 후라이드치킨단품_주문항목;
+    private OrderLineItem 양념치킨단품_주문항목;
     private OrderTable 주문테이블;
 
     @BeforeEach
     void setUp() {
-        MenuGroup 뼈치킨 = new MenuGroup("뼈치킨");
-        Menu 뿌링클_세트 = new Menu("뼈치킨 세트", BigDecimal.valueOf(22000), 뼈치킨);
-        Product 뿌링클 = new Product("뿌링클", BigDecimal.valueOf(18000));
-        Product 치즈볼 = new Product("치즈볼", BigDecimal.valueOf(4000));
-        주문테이블 = new OrderTable(1, false);
-
-        뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
-                new MenuProduct(뿌링클_세트, 치즈볼, 2L)));
-
-        뿌링클_세트_주문메뉴 = OrderMenu.of(뿌링클_세트);
+        후라이드치킨 = Product.of(1L, "치킨버거", BigDecimal.valueOf(15000));
+        양념치킨 = Product.of(3L, "불고기버거", BigDecimal.valueOf(16000));
+        양념치킨상품 = MenuProduct.of(양념치킨, 1L);
+        후라이드치킨상품 = MenuProduct.of(후라이드치킨, 1L);
+        치킨단품 = MenuGroup.of(1L, "햄버거단품");
+        후라이드치킨단품 = Menu.of(2L, "후라이드치킨단품", BigDecimal.valueOf(15000), 치킨단품.getId(), Collections.singletonList(후라이드치킨상품));
+        양념치킨단품 = Menu.of(1L, "양념치킨단품", BigDecimal.valueOf(16000), 치킨단품.getId(), Collections.singletonList(양념치킨상품));
+        후라이드치킨단품주문메뉴 = OrderMenu.of(후라이드치킨단품);
+        양념치킨단품주문메뉴 = OrderMenu.of(양념치킨단품);
+        후라이드치킨단품_주문항목 = OrderLineItem.of(후라이드치킨단품주문메뉴, 2);
+        양념치킨단품_주문항목 = OrderLineItem.of(양념치킨단품주문메뉴, 1);
+        주문테이블 = OrderTable.of(1L, null, 5, false);
     }
 
-    @DisplayName("주문 상품을 추가한다.")
+    @DisplayName("주문을 생성한다.")
     @Test
-    void 주문_상품_추가() {
-        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
-        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
+    void 주문_생성() {
+        // when
+        Order order = Order.of(1L, 주문테이블.getId(), OrderLineItems.of(Arrays.asList(후라이드치킨단품_주문항목, 양념치킨단품_주문항목)));
 
-        주문.order(Collections.singletonList(뿌링클_세트_주문));
-
-        assertThat(주문.getOrderLineItems().getOrderLineItems()).hasSize(1);
+        // then
+        assertAll(
+                () -> assertThat(order.getOrderTableId()).isEqualTo(주문테이블.getId()),
+                () -> assertThat(order.getOrderLineItems().getOrderLineItems().stream().map(OrderLineItem::getMenu))
+                        .containsExactly(후라이드치킨단품주문메뉴, 양념치킨단품주문메뉴)
+        );
     }
 
-    @DisplayName("이미 포함된 주문 상품은 추가되지 않는다.")
+    @DisplayName("주문 상태를 변경한다.")
     @Test
-    void 기주문한_주문_상품_추가() {
-        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
-        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
+    void 주문_상태변경() {
+        // given
+        Order order = Order.of(1L, 주문테이블.getId(), OrderLineItems.of(Arrays.asList(후라이드치킨단품_주문항목, 양념치킨단품_주문항목)));
 
-        주문.order(Collections.singletonList(뿌링클_세트_주문));
-        주문.order(Collections.singletonList(뿌링클_세트_주문));
+        // when
+        order.changeOrderStatus(OrderStatus.COMPLETION);
 
-        assertThat(주문.getOrderLineItems().getOrderLineItems()).hasSize(1);
+        // then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
-    @DisplayName("조리중, 식사중인 주문인지 확인한다.")
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 조리중_식사중_주문_확인(OrderStatus orderStatus) {
-        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
-        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
-        주문.changeOrderStatus(orderStatus);
-
-        assertThatThrownBy(주문::checkOngoingOrderTable).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("완료된 주문은 상태를 변경할 수 없다.")
+    @DisplayName("이미 완료된 주문은 상태 변경 시 오류가 발생한다.")
     @Test
-    void 완료된_주문_상태_변경() {
-        OrderLineItem 뿌링클_세트_주문 = OrderLineItem.of(뿌링클_세트_주문메뉴, 1L);
-        Order 주문 = Order.of(주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클_세트_주문)));
-        주문.changeOrderStatus(OrderStatus.COMPLETION);
+    void 완료된주문_상태변경() {
+        // given
+        Order order = Order.of(1L, 주문테이블.getId(), OrderLineItems.of(Arrays.asList(후라이드치킨단품_주문항목, 양념치킨단품_주문항목)));
+        order.changeOrderStatus(OrderStatus.COMPLETION);
 
-        assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL)).isInstanceOf(IllegalArgumentException.class);
+        // when & then
+        assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("완료되지 않은 주문이면 오류가 발생한다.")
+    @Test
+    void 완료되지_않은_주문_체크() {
+        // given
+        Order order = Order.of(1L, 주문테이블.getId(), OrderLineItems.of(Arrays.asList(후라이드치킨단품_주문항목, 양념치킨단품_주문항목)));
+
+        // when & then
+        assertThatThrownBy(order::checkOngoingOrderTable)
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

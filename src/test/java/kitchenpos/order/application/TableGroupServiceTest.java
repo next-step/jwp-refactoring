@@ -1,8 +1,13 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,12 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -37,46 +41,50 @@ class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private TableGroup 단체_테이블;
+    private Product 치킨;
+    private MenuProduct 치킨상품;
+    private MenuGroup 치킨단품;
+    private Menu 후라이드치킨;
+    private OrderLineItemRequest 후라이드치킨주문요청;
+    private Order 주문;
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
     private OrderTable 주문테이블3;
     private OrderTable 주문테이블4;
-    private OrderTables 주문_테이블_목록;
 
     @BeforeEach
     void setUp() {
-        단체_테이블 = TableGroup.of(1L);
-
-        주문테이블1 = new OrderTable(4, true);
-        주문테이블2 = new OrderTable(4, true);
-        주문테이블3 = new OrderTable(2, true);
-        주문테이블4 = new OrderTable(2, true);
-
-        ReflectionTestUtils.setField(단체_테이블, "id", 1L);
-        ReflectionTestUtils.setField(주문테이블1, "id", 1L);
-        ReflectionTestUtils.setField(주문테이블2, "id", 2L);
-        ReflectionTestUtils.setField(주문테이블3, "id", 3L);
-        ReflectionTestUtils.setField(주문테이블4, "id", 4L);
-
-        주문_테이블_목록 = OrderTables.of(Arrays.asList(주문테이블1, 주문테이블2));
-        주문_테이블_목록.group(단체_테이블.getId());
+        치킨 = Product.of(1L, "치킨", BigDecimal.valueOf(15000));
+        치킨상품 = MenuProduct.of(치킨, 1);
+        치킨단품 = MenuGroup.of(1L, "치킨단품");
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(15000), 치킨단품.getId(), Collections.singletonList(치킨상품));
+        후라이드치킨주문요청 = new OrderLineItemRequest(후라이드치킨.getId(), 2);
+        주문테이블1 = OrderTable.of(1L, null, 5, true);
+        주문테이블2 = OrderTable.of(2L, null, 4, false);
+        주문테이블3 = OrderTable.of(3L, null, 5, true);
+        주문테이블4 = OrderTable.of(4L, null, 4, true);
+        주문 = Order.of(주문테이블2.getId(), OrderLineItems.of(Collections.singletonList(후라이드치킨주문요청.toOrderLineItem(OrderMenu.of(후라이드치킨)))));
     }
 
     @DisplayName("단체 지정을 한다.")
     @Test
     void 단체_지정() {
         // given
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(주문테이블3.getId(), 주문테이블4.getId()));
+        TableGroup 단체 = TableGroup.of(1L);
         when(orderTableRepository.findById(주문테이블3.getId())).thenReturn(Optional.of(주문테이블3));
         when(orderTableRepository.findById(주문테이블4.getId())).thenReturn(Optional.of(주문테이블4));
-        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(단체_테이블);
+        when(tableGroupRepository.save(any())).thenReturn(단체);
 
-        TableGroupResponse response =
-                tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블3.getId(), 주문테이블4.getId())));
+        // when
+        TableGroupResponse saveTableGroup = tableGroupService.create(tableGroupRequest);
 
+        // then
         assertAll(
-                () -> assertThat(단체_테이블.getId()).isEqualTo(response.getId()),
-                () -> assertThat(주문_테이블_목록.getOrderTables().size()).isEqualTo(response.getOrderTables().size())
+                () -> assertThat(주문테이블3.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블4.getTableGroupId()).isEqualTo(saveTableGroup.getId()),
+                () -> assertThat(주문테이블3.isEmpty()).isFalse(),
+                () -> assertThat(주문테이블4.isEmpty()).isFalse()
         );
     }
 
@@ -118,55 +126,46 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정된 테이블은 단체 지정을 할 수 없다.")
     @Test
     void 이미_단체_지정된_테이블_단체_지정() {
-        ReflectionTestUtils.setField(주문테이블1, "empty", true);
-        ReflectionTestUtils.setField(주문테이블2, "empty", true);
-
-        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        // given
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(주문테이블2.getId(), 주문테이블3.getId()));
         when(orderTableRepository.findById(주문테이블2.getId())).thenReturn(Optional.of(주문테이블2));
-        when(tableGroupRepository.save(any())).thenReturn(TableGroup.of(1L));
+        when(orderTableRepository.findById(주문테이블3.getId())).thenReturn(Optional.of(주문테이블3));
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(TableGroup.of(1L));
 
-        assertThatThrownBy(
-                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
-        ).isInstanceOf(IllegalArgumentException.class);
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @DisplayName("단체 지정을 해제한다.")
     @Test
     void 단체_지정_해제() {
-        when(tableGroupRepository.findById(단체_테이블.getId())).thenReturn(Optional.of(단체_테이블));
-        when(orderTableRepository.findAllByTableGroupId(any(Long.class))).thenReturn(주문_테이블_목록.getOrderTables());
-        when(orderRepository.findAllByOrderTableIdIn(주문_테이블_목록.getOrderTableIds()))
-                .thenReturn(Arrays.asList(Order.of(주문테이블1.getId(), null), Order.of(주문테이블2.getId(), null)));
+        // given
+        TableGroup 단체 = TableGroup.of(1L);
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
+        when(tableGroupRepository.findById(단체.getId())).thenReturn(Optional.of(단체));
+        when(orderTableRepository.findAllByTableGroupId(단체.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        when(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).thenReturn(Collections.singletonList(주문));
 
-        tableGroupService.ungroup(단체_테이블.getId());
+        // when
+        tableGroupService.ungroup(단체.getId());
 
-        assertThat(주문_테이블_목록.getOrderTables().stream().allMatch(orderTable -> orderTable.getTableGroupId() == null)).isTrue();
-    }
-
-    @DisplayName("등록된 테이블이 아니면 단체 지정을 해제할 수 없다.")
-    @Test
-    void 등록되지_않은_테이블_단체_지정_해제() {
-        when(tableGroupRepository.findById(단체_테이블.getId())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체_테이블.getId())
-        ).isInstanceOf(EntityNotFoundException.class);
+        // then
+        assertAll(
+                () -> assertThat(주문테이블1.getTableGroupId()).isNull(),
+                () -> assertThat(주문테이블2.getTableGroupId()).isNull()
+        );
     }
 
     @DisplayName("조리중이거나 식사중인 테이블은 단체 지정을 해제할 수 없다.")
     @Test
     void 조리중_식사중인_테이블_단체_지정_해제() {
-        Order 주문1 = Order.of(주문테이블1.getId(), null);
-        Order 주문2 = Order.of(주문테이블2.getId(), null);
-        주문1.changeOrderStatus(OrderStatus.COOKING);
-        주문2.changeOrderStatus(OrderStatus.MEAL);
-        when(tableGroupRepository.findById(any(Long.class))).thenReturn(Optional.of(단체_테이블));
-        when(orderTableRepository.findAllByTableGroupId(any(Long.class))).thenReturn(주문_테이블_목록.getOrderTables());
-        when(orderRepository.findAllByOrderTableIdIn(주문_테이블_목록.getOrderTableIds()))
-                .thenReturn(Arrays.asList(주문1, 주문2));
+        // given
+        TableGroup 단체 = TableGroup.of(1L);
+        when(tableGroupRepository.findById(단체.getId())).thenReturn(Optional.of(단체));
+        when(orderTableRepository.findAllByTableGroupId(단체.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        when(orderRepository.findAllByOrderTableIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).thenReturn(Collections.singletonList(주문));
 
-        assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체_테이블.getId())
-        ).isInstanceOf(IllegalArgumentException.class);
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체.getId()));
     }
 }

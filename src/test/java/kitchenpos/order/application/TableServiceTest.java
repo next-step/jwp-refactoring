@@ -1,8 +1,13 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,10 +17,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import kitchenpos.order.application.TableService;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,19 +43,25 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private TableGroup 단체테이블;
+    private Product 후라이드치킨;
+    private MenuProduct 후라이드치킨상품;
+    private MenuGroup 치킨단품;
+    private Menu 후라이드치킨단품;
+    private OrderLineItemRequest 후라이드치킨세트주문요청;
+    private Order 주문;
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
 
     @BeforeEach
     void setUp() {
-        단체테이블 = new TableGroup();
-        주문테이블1 = new OrderTable(2, false);
-        주문테이블2 = new OrderTable(3, false);
-
-        ReflectionTestUtils.setField(단체테이블, "id", 1L);
-        ReflectionTestUtils.setField(주문테이블1, "id", 1L);
-        ReflectionTestUtils.setField(주문테이블2, "id", 2L);
+        후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(15000));
+        후라이드치킨상품 = MenuProduct.of(후라이드치킨, 1L);
+        치킨단품 = MenuGroup.of(1L, "치킨단품");
+        후라이드치킨단품 = Menu.of(1L, "후라이드치킨세트", BigDecimal.valueOf(15000), 치킨단품.getId(), Collections.singletonList(후라이드치킨상품));
+        후라이드치킨세트주문요청 = new OrderLineItemRequest(후라이드치킨단품.getId(), 2);
+        주문테이블1 = OrderTable.of(1L, null, 5, false);
+        주문테이블2 = OrderTable.of(2L, null, 4, false);
+        주문 = Order.of(1L, 주문테이블2.getId(), OrderLineItems.of(Collections.singletonList(후라이드치킨세트주문요청.toOrderLineItem(OrderMenu.of( 후라이드치킨단품)))));
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -86,18 +97,19 @@ class TableServiceTest {
     @DisplayName("주문 테이블 빈자리 여부를 변경한다.")
     @Test
     void 주문테이블_빈자리_여부_변경() {
-        Order 완료된_주문 = Order.of(주문테이블1.getId(), null);
-        완료된_주문.changeOrderStatus(OrderStatus.COMPLETION);
         // given
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
+        boolean isEmpty = 주문테이블1.isEmpty();
+        int numberOfGuests = 주문테이블1.getNumberOfGuests();
+        OrderTableRequest changeOrderTableRequest = new OrderTableRequest(numberOfGuests, !isEmpty);
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-        when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
-                .thenReturn(Collections.singletonList(완료된_주문));
-        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(주문테이블1);
+        when(orderRepository.findAllByOrderTableId(주문테이블1.getId())).thenReturn(Collections.singletonList(주문));
 
-        OrderTableRequest request = new OrderTableRequest(0, true);
-        OrderTableResponse response = tableService.changeEmpty(주문테이블1.getId(), request);
+        // when
+        OrderTableResponse resultOrderTable = tableService.changeEmpty(주문테이블1.getId(), changeOrderTableRequest);
 
-        assertThat(response.isEmpty()).isTrue();
+        // then
+        assertThat(resultOrderTable.isEmpty()).isEqualTo(!isEmpty);
     }
 
     @DisplayName("등록되지 않은 주문 테이블은 빈자리 여부를 변경할 수 없다.")
@@ -114,10 +126,11 @@ class TableServiceTest {
     @Test
     void 단체_주문테이블_빈자리_여부_변경() {
         // given
+        TableGroup tableGroup = TableGroup.of(1L);
         ReflectionTestUtils.setField(주문테이블1, "empty", true);
         ReflectionTestUtils.setField(주문테이블2, "empty", true);
         OrderTables orderTables = OrderTables.of(Arrays.asList(주문테이블1, 주문테이블2));
-        orderTables.group(단체테이블.getId());
+        orderTables.group(tableGroup.getId());
 
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(any())).thenReturn(Collections.emptyList());
@@ -131,15 +144,14 @@ class TableServiceTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중_식사중인_주문테이블_빈자리_여부_변경(OrderStatus orderStatus) {
-        Order 주문 = Order.of(주문테이블1.getId(), null);
-        주문.changeOrderStatus(orderStatus);
+        OrderTableRequest changeOrderTableRequest = new OrderTableRequest(3, true);
         // given
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(주문테이블1.getId()))
                 .thenReturn(Collections.singletonList(주문));
 
         assertThatThrownBy(() ->
-            tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
+            tableService.changeEmpty(주문테이블1.getId(), changeOrderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

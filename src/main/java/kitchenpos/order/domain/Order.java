@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -25,18 +24,26 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems;
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
 
     }
 
     private Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        if (orderTableId == null) {
+            throw new IllegalArgumentException(OrderTableError.NOT_FOUND);
+        }
+        orderLineItems.updateOrder(this);
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(id, orderTableId, orderLineItems);
     }
 
     public static Order of(Long orderTableId, OrderLineItems orderLineItems) {

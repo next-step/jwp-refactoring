@@ -18,30 +18,40 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MenuGroup menuGroup;
+    @Column(nullable = false)
+    private Long menuGroupId;
 
     @Embedded
-    private final MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts;
 
     protected Menu() {
 
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        if (menuGroup == null) {
-            throw new IllegalArgumentException(MenuError.REQUIRED_MENU_GROUP);
-        }
-
+    private Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        this.id = id;
         this.name = name;
         this.price = Price.of(price);
-        this.menuGroup = menuGroup;
-    }
-
-    public void validatePrice() {
         if (price.compareTo(menuProducts.getTotalPrice()) > 0) {
             throw new IllegalArgumentException(MenuError.INVALID_PRICE);
         }
+        if (menuGroupId == null) {
+            throw new IllegalArgumentException(MenuError.REQUIRED_MENU_GROUP);
+        }
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroupId, MenuProducts.of(menuProducts));
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(null, name, price, menuGroup.getId(), menuProducts);
     }
 
     public Long getId() {
@@ -56,12 +66,12 @@ public class Menu {
         return price.getPrice();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
     }
 
     @Override
@@ -69,12 +79,12 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
 
     public void create(List<MenuProduct> menuProducts) {

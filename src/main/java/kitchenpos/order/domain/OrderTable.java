@@ -26,6 +26,17 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    }
+
     public void checkHasTableGroup() {
         if (hasTableGroup()) {
             throw new IllegalArgumentException(OrderTableError.HAS_GROUP);

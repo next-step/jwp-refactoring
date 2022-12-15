@@ -7,13 +7,23 @@ import java.util.List;
 
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
 
+    private MenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
+        return new MenuProducts(menuProducts);
+    }
+
     public BigDecimal getTotalPrice() {
         BigDecimal totalPrice = BigDecimal.ZERO;
-        menuProducts.forEach(menuProduct -> totalPrice.add(menuProduct.getPrice()));
+        for (MenuProduct menuProduct : menuProducts) {
+            totalPrice = totalPrice.add(menuProduct.getPrice());
+        }
 
         return totalPrice;
     }

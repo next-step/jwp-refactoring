@@ -7,52 +7,36 @@ import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderLineItemTest {
-    private OrderMenu 뿌링클_세트_주문메뉴;
-    private Order 주문;
+    private Product 후라이드치킨;
+    private MenuProduct 치킨상품;
+    private MenuGroup 치킨단품;
+    private Menu 후라이드치킨단품;
 
     @BeforeEach
     void setUp() {
-        MenuGroup 뼈치킨 = new MenuGroup("뼈치킨");
-        Menu 뿌링클_세트 = new Menu("뼈치킨 세트", BigDecimal.valueOf(26000), 뼈치킨);
-        Product 뿌링클 = new Product("뿌링클", BigDecimal.valueOf(18000));
-        Product 치즈볼 = new Product("치즈볼", BigDecimal.valueOf(4000));
-        OrderTable 주문테이블 = new OrderTable(1, false);
-        주문 = Order.of(주문테이블.getId(), null);
-
-        뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
-                new MenuProduct(뿌링클_세트, 치즈볼, 2L)));
-
-        뿌링클_세트_주문메뉴 = OrderMenu.of(뿌링클_세트);
+        후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(15000));
+        치킨상품 = MenuProduct.of(후라이드치킨, 1);
+        치킨단품 = MenuGroup.of(1L, "치킨단품");
+        후라이드치킨단품 = Menu.of(1L, "후라이드치킨단품", BigDecimal.valueOf(15000), 치킨단품.getId(), Collections.singletonList(치킨상품));
     }
 
-    @DisplayName("등록되지 않은 주문으로 주문 상품을 생성할 수 없다.")
+    @DisplayName("주문 항목을 생성한다.")
     @Test
-    void 등록되지_않은_주문으로_주문_상품_생성() {
-        assertThatThrownBy(() -> new OrderLineItem(null, 뿌링클_세트_주문메뉴, 1L))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+    void 주문_항목_생성() {
+        OrderMenu orderMenu = OrderMenu.of(후라이드치킨단품);
+        OrderLineItem orderLineItem = OrderLineItem.of(orderMenu, 1);
 
-    @DisplayName("등록되지 않은 메뉴로 주문 상품을 생성할 수 없다.")
-    @Test
-    void 등록되지_않은_메뉴로_주문_상품_생성() {
-        assertThatThrownBy(() -> new OrderLineItem(주문, null, 1L))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("음수 수량으로 주문 상품을 생성할 수 없다.")
-    @ParameterizedTest
-    @ValueSource(ints = { -1, -5, -10, -15 })
-    void 음수_수량_주문_상품_생성(long quantity) {
-        assertThatThrownBy(() -> new OrderLineItem(주문, 뿌링클_세트_주문메뉴, quantity))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertAll(
+                () -> assertThat(orderLineItem.getMenu()).isEqualTo(orderMenu),
+                () -> assertThat(orderLineItem.getQuantity()).isEqualTo(1)
+        );
     }
 }

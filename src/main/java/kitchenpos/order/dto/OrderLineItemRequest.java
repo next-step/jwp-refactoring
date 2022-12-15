@@ -27,6 +27,10 @@ public class OrderLineItemRequest {
                 .collect(toList());
     }
 
+    public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
+        return new OrderLineItemRequest(orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+    }
+
     public OrderLineItem toOrderLineItem(OrderMenu menu) {
         return OrderLineItem.of(menu, quantity);
     }

@@ -10,26 +10,29 @@ public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
-    private MenuGroupResponse menuGroup;
-    private List<MenuProductResponse> menuProducts;
+    private Long menuGroupId;
+    private List<MenuProductResponse> menuProductResponses;
 
     public MenuResponse() {}
 
-    public MenuResponse(Menu menu) {
-        this.id = menu.getId();
-        this.name = menu.getName();
-        this.price = menu.getPrice();
-        this.menuGroup = MenuGroupResponse.of(menu.getMenuGroup());
-        this.menuProducts = MenuProductResponse.list(menu.getMenuProducts().getMenuProducts());
+    private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProductResponses) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProductResponses = menuProductResponses;
     }
 
     public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu);
+        List<MenuProductResponse> menuProductResponses = menu.getMenuProducts().stream()
+                .map(MenuProductResponse::of)
+                .collect(Collectors.toList());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProductResponses);
     }
 
     public static List<MenuResponse> list(List<Menu> menus) {
         return menus.stream()
-                .map(MenuResponse::new)
+                .map(MenuResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -45,11 +48,11 @@ public class MenuResponse {
         return price;
     }
 
-    public MenuGroupResponse getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
-    public List<MenuProductResponse> getMenuProducts() {
-        return menuProducts;
+    public List<MenuProductResponse> getMenuProductResponses() {
+        return menuProductResponses;
     }
 }
