@@ -57,8 +57,8 @@ class TableGroupServiceTest {
     void setUp() {
         주문_테이블1 = OrderTable.of(1L, 2, true);
         주문_테이블2 = OrderTable.of(2L, 2, true);
-        주문_테이블3 = OrderTable.of(1L, 2, true);
-        주문_테이블4 = OrderTable.of(2L, 2, true);
+        주문_테이블3 = OrderTable.of(1L, 2, false);
+        주문_테이블4 = OrderTable.of(2L, 2, false);
 
         단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
     }
@@ -66,14 +66,14 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 할 수 있다.")
     @Test
     void create() {
-        when(orderTableRepository.findById(주문_테이블1.getId())).thenReturn(Optional.of(주문_테이블3));
-        when(orderTableRepository.findById(주문_테이블2.getId())).thenReturn(Optional.of(주문_테이블3));
-        when(tableGroupRepository.save(any())).thenReturn(TableGroup.from(Arrays.asList(주문_테이블1, 주문_테이블2)));
+        when(orderTableRepository.findById(주문_테이블1.getId())).thenReturn(Optional.of(주문_테이블1));
+        when(orderTableRepository.findById(주문_테이블2.getId())).thenReturn(Optional.of(주문_테이블2));
+        when(tableGroupRepository.save(any())).thenReturn(TableGroup.createEmpty());
 
         TableGroupResponse result = tableGroupService.create(단체지정요청);
 
         assertThat(result.getOrderTables()).containsExactly(
-                OrderTableResponse.from(주문_테이블1), OrderTableResponse.from(주문_테이블2)
+                OrderTableResponse.from(주문_테이블3), OrderTableResponse.from(주문_테이블4)
         );
     }
 
@@ -139,15 +139,15 @@ class TableGroupServiceTest {
         OrderTable 주문_테이블1 = OrderTable.of(1L, 3, true);
         OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
-        TableGroup.of(1L, 주문_테이블_목록);
+        TableGroup.of(1L);
         doNothing().when(orderValidator).checkUnGroupable(anyList());
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
 
         tableGroupService.ungroup(1L);
 
         assertAll(
-                () -> assertThat(주문_테이블1.isGrouping()).isTrue(),
-                () -> assertThat(주문_테이블2.isGrouping()).isTrue()
+                () -> assertThat(주문_테이블1.isGrouping()).isFalse(),
+                () -> assertThat(주문_테이블2.isGrouping()).isFalse()
         );
     }
 }

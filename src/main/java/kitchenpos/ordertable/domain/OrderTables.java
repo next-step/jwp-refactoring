@@ -4,22 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.ordertable.exception.CannotGroupOrderTablesException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
-@Embeddable
 public class OrderTables {
 
     private static final int MIN_ORDER_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
-
-    protected OrderTables() {
-    }
 
     private OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
@@ -37,7 +30,7 @@ public class OrderTables {
         checkOrderTableSizeGreaterThanMinSize();
         checkAllOrderTablesAreEmpty();
         checkAllOrderTablesNotYetRegisteredTableGroup();
-        orderTables.forEach(it -> it.registerTableGroup(tableGroup));
+        orderTables.forEach(it -> it.registerTableGroup(tableGroup.getId()));
     }
 
     public void unGroup() {

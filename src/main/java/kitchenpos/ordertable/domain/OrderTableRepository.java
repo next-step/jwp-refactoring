@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
 
-    @Query("SELECT o FROM OrderTable o WHERE o.tableGroup.id = :tableGroupId")
+    @Query("SELECT o FROM OrderTable o WHERE o.tableGroupId = :tableGroupId")
     List<OrderTable> findAllByTableGroupId(@Param("tableGroupId") Long tableGroupId);
 }

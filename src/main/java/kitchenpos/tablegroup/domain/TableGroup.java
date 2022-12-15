@@ -1,16 +1,12 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
 
 @Entity
 public class TableGroup {
@@ -22,38 +18,24 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
     protected TableGroup() {
     }
 
-    private TableGroup(Long id, LocalDateTime createdDate) {
+    private TableGroup(Long id) {
         this.id = id;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    private TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    private TableGroup(Long id, OrderTables orderTables) {
-        this.id = id;
-        this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
-        orderTables.registerTableGroup(this);
-    }
-
-    public static TableGroup of(Long id, LocalDateTime createdDate) {
-        return new TableGroup(id, createdDate);
-    }
-
-    public static TableGroup of(Long id, List<OrderTable> orderTables) {
-        return new TableGroup(id, OrderTables.from(orderTables));
-    }
-
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(null, OrderTables.from(orderTables));
+    public static TableGroup of(Long id) {
+        return new TableGroup(id);
     }
 
     public static TableGroup createEmpty() {
-        return new TableGroup();
+        return new TableGroup(LocalDateTime.now());
     }
 
     public Long getId() {
@@ -62,10 +44,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
     }
 
     @Override

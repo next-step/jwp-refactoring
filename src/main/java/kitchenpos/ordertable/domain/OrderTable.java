@@ -1,22 +1,15 @@
 package kitchenpos.ordertable.domain;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.ordertable.exception.CannotChangeEmptyException;
 import kitchenpos.ordertable.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -25,9 +18,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -40,9 +31,7 @@ public class OrderTable {
 
     private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = Optional.ofNullable(tableGroupId)
-                .map(it -> TableGroup.of(it, LocalDateTime.now()))
-                .orElse(null);
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
@@ -68,15 +57,11 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return Optional.ofNullable(tableGroup)
-                .map(TableGroup::getId)
-                .orElse(null);
+        return tableGroupId;
     }
 
     public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroup = Optional.ofNullable(tableGroupId)
-                .map(it -> TableGroup.of(it, LocalDateTime.now()))
-                .orElse(null);
+        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -103,17 +88,17 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void registerTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void registerTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public boolean isGrouping() {
-        return this.tableGroup == null;
+        return this.tableGroupId != null;
     }
 
     @Override

@@ -1,7 +1,8 @@
 package kitchenpos.tablegroup.application;
 
-import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -10,8 +11,6 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ExceptionMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +33,10 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> savedOrderTables = findOrderTablesByIds(request);
-        TableGroup saveTableGroup = tableGroupRepository.save(TableGroup.from(savedOrderTables));
-        return TableGroupResponse.from(saveTableGroup);
+        final OrderTables savedOrderTables = findOrderTablesByIds(request);
+        TableGroup saveTableGroup = tableGroupRepository.save(TableGroup.createEmpty());
+        savedOrderTables.registerTableGroup(saveTableGroup);
+        return TableGroupResponse.of(saveTableGroup, savedOrderTables);
     }
 
     @Transactional
@@ -46,11 +46,13 @@ public class TableGroupService {
         orderTables.unGroup();
     }
 
-    private List<OrderTable> findOrderTablesByIds(TableGroupRequest request) {
-        return request.getOrderTableIds()
-                .stream()
-                .map(this::findOrderTableById)
-                .collect(Collectors.toList());
+    private OrderTables findOrderTablesByIds(TableGroupRequest request) {
+        return OrderTables.from(
+                request.getOrderTableIds()
+                        .stream()
+                        .map(this::findOrderTableById)
+                        .collect(Collectors.toList())
+        );
     }
 
     private OrderTable findOrderTableById(Long id) {
