@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.exception.CannotChangeByOrderStatusException;
 import kitchenpos.exception.ChangeEmptyGroupException;
+import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.GroupTableException;
 import kitchenpos.exception.InvalidNumberOfGuestsException;
 

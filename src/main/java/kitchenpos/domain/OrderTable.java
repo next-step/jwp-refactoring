@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.exception.CannotChangeByOrderStatusException;
 import kitchenpos.exception.ChangeEmptyGroupException;
+import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.GroupTableException;
 import kitchenpos.exception.InvalidNumberOfGuestsException;
 
@@ -34,6 +35,10 @@ public class OrderTable {
     private Orders orders = new Orders();
 
     public OrderTable() {
+    }
+
+    public OrderTable(Boolean empty) {
+        this.empty = empty;
     }
 
     public OrderTable(Long id) {
@@ -72,7 +77,6 @@ public class OrderTable {
         if (!this.empty || Objects.nonNull(this.tableGroup)) {
             throw new GroupTableException();
         }
-
         this.tableGroup = tableGroup;
         this.empty = false;
     }
@@ -84,23 +88,13 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void setEmpty(Boolean empty) {
-        this.empty = empty;
-    }
-
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public void changeEmpty(Boolean empty) {
         if (Objects.nonNull(tableGroup)) {
             throw new ChangeEmptyGroupException();
         }
-
         if (orders.hasCannotChangeOrder()) {
             throw new CannotChangeByOrderStatusException();
         }
-
         this.empty = empty;
     }
 

@@ -20,6 +20,7 @@ import kitchenpos.IntegrationTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 
 class TableRestControllerTest extends IntegrationTest {
     @Autowired
@@ -31,7 +32,64 @@ class TableRestControllerTest extends IntegrationTest {
 
     @DisplayName("주문테이블을 등록한다")
     @Test
-    void table1() throws Exception {
+    void test1() throws Exception {
+        Long id = 주문테이블_등록();
+        assertThat(orderTableRepository.findById(id)).isNotEmpty();
+    }
+
+    @DisplayName("전체 주문테이블을 조회한다")
+    @Test
+    void test2() throws Exception {
+        주문테이블_등록();
+
+        mockMvc.perform(get("/api/tables"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$..id").exists())
+            .andExpect(jsonPath("$..numberOfGuests").exists())
+            .andExpect(jsonPath("$..empty").exists())
+        ;
+    }
+
+    @DisplayName("빈 테이블 여부를 변경한다")
+    @Test
+    void test3() throws Exception {
+        OrderTableRequest request = new OrderTableRequest(false);
+        Long id = 주문테이블_등록();
+
+        mockMvc.perform(put("/api/tables/" + id + "/empty")
+            .contentType(APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id))
+            .andExpect(jsonPath("$.empty").value(request.isEmpty()));
+
+        assertThat(findById(id).isEmpty()).isEqualTo(request.isEmpty());
+    }
+
+    @DisplayName("방문한 손님수를 변경한다")
+    @Test
+    void test4() throws Exception {
+        OrderTableRequest request = new OrderTableRequest(99);
+        Long id = 주문테이블_등록();
+
+        mockMvc.perform(put("/api/tables/" + id + "/number-of-guests")
+            .contentType(APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(id))
+            .andExpect(jsonPath("$.numberOfGuests").value(request.getNumberOfGuests()));
+
+        assertThat(findById(id).getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
+    }
+
+    private OrderTable findById(Long id) {
+        return orderTableRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    private Long 주문테이블_등록() throws Exception {
         OrderTableRequest request = new OrderTableRequest(3, false);
 
         MvcResult result = mockMvc.perform(post("/api/tables")
@@ -44,64 +102,14 @@ class TableRestControllerTest extends IntegrationTest {
             .andExpect(jsonPath("$.empty").value(request.isEmpty()))
             .andReturn();
 
-        assertThat(orderTableRepository.findById(getId(result))).isNotEmpty();
-    }
-
-    @DisplayName("전체 주문테이블을 조회한다")
-    @Test
-    void table2() throws Exception {
-        mockMvc.perform(get("/api/tables"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$..id").exists())
-            .andExpect(jsonPath("$..numberOfGuests").exists())
-            .andExpect(jsonPath("$..empty").exists())
-        ;
-    }
-
-    @DisplayName("빈 테이블 여부를 변경한다")
-    @Test
-    void table3() throws Exception {
-        OrderTable table = new OrderTable(0, true);
-        Long id = 1L;
-
-        mockMvc.perform(put("/api/tables/" + id + "/empty")
-            .contentType(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(table)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(id))
-            .andExpect(jsonPath("$.empty").value(table.isEmpty()));
-
-        assertThat(findById(id).isEmpty()).isEqualTo(table.isEmpty());
-    }
-
-    @DisplayName("방문한 손님수를 변경한다")
-    @Test
-    void table4() throws Exception {
-        OrderTable table = new OrderTable(99, true);
-        Long id = 9L;
-
-        mockMvc.perform(put("/api/tables/" + id + "/number-of-guests")
-            .contentType(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(table)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(id))
-            .andExpect(jsonPath("$.numberOfGuests").value(99));
-
-        assertThat(findById(id).getNumberOfGuests()).isEqualTo(table.getNumberOfGuests());
-    }
-
-    private OrderTable findById(Long id) {
-        return orderTableRepository.findById(id).orElseThrow(RuntimeException::new);
+        return getId(result);
     }
 
     private Long getId(MvcResult result) throws
         com.fasterxml.jackson.core.JsonProcessingException,
         UnsupportedEncodingException {
         String response = result.getResponse().getContentAsString();
-        return objectMapper.readValue(response, OrderTable.class).getId();
+        return objectMapper.readValue(response, OrderTableResponse.class).getId();
     }
 
 }

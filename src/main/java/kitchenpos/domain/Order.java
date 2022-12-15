@@ -1,11 +1,13 @@
 package kitchenpos.domain;
 
 import static javax.persistence.GenerationType.*;
+import static kitchenpos.domain.OrderStatus.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -14,7 +16,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+
+import kitchenpos.dto.MenuQuantityPair;
+import kitchenpos.exception.AtLeastOneOrderLineItemException;
+import kitchenpos.exception.CannotChangeOrderStatusException;
+import kitchenpos.exception.NotEmptyTableException;
 
 @Table(name = "orders")
 @Entity
@@ -30,19 +36,30 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    @Transient
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTable = new OrderTable(orderTableId);
-        this.orderLineItems = orderLineItems;
-    }
-
     public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public Order(OrderTable orderTable, List<MenuQuantityPair> menuQuantityPairs) {
+        if (!orderTable.isEmpty()) {
+            throw new NotEmptyTableException();
+        }
+        if (menuQuantityPairs.size() == 0) {
+            throw new AtLeastOneOrderLineItemException();
+        }
+        for (MenuQuantityPair menuQuantityPair : menuQuantityPairs) {
+            this.orderLineItems.add(
+                new OrderLineItem(this, menuQuantityPair.getMenu(), menuQuantityPair.getQuantity()));
+        }
+        this.orderTable = orderTable;
+        this.orderStatus = COOKING;
+        this.orderedTime = LocalDateTime.now();
     }
 
     public OrderStatus getOrderStatus() {
@@ -57,18 +74,6 @@ public class Order {
         this.id = id;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void setOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
     public Long getId() {
         return id;
     }
@@ -77,12 +82,12 @@ public class Order {
         return orderTable;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
-    public boolean cannotChange() {
-        return orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL;
+    public boolean isProceeding() {
+        return orderStatus == COOKING || orderStatus == OrderStatus.MEAL;
     }
 
     public void updateOrderTable(OrderTable orderTable) {
@@ -90,5 +95,20 @@ public class Order {
         if (Objects.nonNull(orderTable)) {
             this.orderTable.addOrder(this);
         }
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public List<MenuQuantityPair> getMenuQuantityPairs() {
+        return this.orderLineItems.getMenuQuantityPairs();
+    }
+
+    public void changeStatus(OrderStatus status) {
+        if (this.orderStatus == COMPLETION) {
+            throw new CannotChangeOrderStatusException();
+        }
+        this.orderStatus = status;
     }
 }

@@ -1,8 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.exception;
 
 import static kitchenpos.exception.ErrorMessage.*;
-
-import kitchenpos.exception.BadRequestException;
 
 public class EmptyTableException extends BadRequestException {
 

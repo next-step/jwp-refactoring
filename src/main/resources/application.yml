@@ -1,5 +1,6 @@
 logging.level:
-  org.springframework.jdbc.core: TRACE
+  org.springframework.jdbc.core: trace
+  org.hibernate.type.descriptor.sql: trace
 spring:
   h2.console.enabled: true
   #  jpa:
@@ -11,3 +12,9 @@ spring:
         show_sql: true
         format_sql: true
     open-in-view: false
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
