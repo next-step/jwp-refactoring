@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
-import kitchenpos.acceptance.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -120,8 +120,11 @@ class TableAcceptanceTest extends AcceptanceTest {
                     비어있는_테이블로_수정_실패(response);
                 }),
                 dynamicTest("주문 테이블을 비어있는 테이블로 수정한다.", () -> {
+                    // given
+                    OrderTableResponse 주문이_완료된_테이블 = 주문이_완료된_테이블();
+
                     // when
-                    ExtractableResponse<Response> response = 주문_테이블_빈_테이블_수정_요청(비어있는_테이블.getId());
+                    ExtractableResponse<Response> response = 주문_테이블_빈_테이블_수정_요청(주문이_완료된_테이블.getId());
 
                     // then
                     비어있는_테이블로_수정됨(response);

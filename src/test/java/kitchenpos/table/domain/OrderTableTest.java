@@ -50,7 +50,7 @@ class OrderTableTest {
         OrderTable actual = OrderTable.of(null, 1L, 3, false);
 
         // when & then
-        assertThatThrownBy(actual::isGrouped)
+        assertThatThrownBy(actual::validateGrouped)
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("단체 테이블이 존재합니다.");
     }

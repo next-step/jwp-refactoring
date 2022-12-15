@@ -1,5 +1,8 @@
 package kitchenpos.table.acceptance;
 
+import static kitchenpos.menu.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
+import static kitchenpos.order.acceptance.OrderAcceptanceTestUtils.주문_등록되어_있음;
+import static kitchenpos.order.domain.OrderLineItemTestFixture.orderLineItemRequest;
 import static kitchenpos.table.acceptance.TableAcceptanceTestUtils.*;
 import static kitchenpos.table.acceptance.TableGroupAcceptanceTestUtils.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -9,7 +12,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
-import kitchenpos.acceptance.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -83,15 +86,15 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                     // then
                     단체_테이블_생성_실패(response);
                 }),
-//                dynamicTest("단체 테이블 해제시 조리 중이거나 식사중인 테이블은 해제할 수 없다.", () -> {
-//                    주문_등록되어_있음(테이블, 메뉴_면류_짜장면());
-//
-//                    // when
-//                    ExtractableResponse<Response> response = 단체_테이블_해제_요청(단체테이블.id());
-//
-//                    // then
-//                    단체_테이블_해제_실패(response);
-//                }),
+                dynamicTest("단체 테이블 해제시 조리 중이거나 식사중인 테이블은 해제할 수 없다.", () -> {
+                    주문_등록되어_있음(테이블.getId(), Collections.singletonList(orderLineItemRequest(메뉴_면류_짜장면().getId(), 1L)));
+
+                    // when
+                    ExtractableResponse<Response> response = 단체_테이블_해제_요청(단체테이블.getId());
+
+                    // then
+                    단체_테이블_해제_실패(response);
+                }),
                 dynamicTest("단체 테이블을 해제한다.", () -> {
                     TableGroupResponse 단체테이블2 = 단체_테이블_등록되어_있음(테이블3.getId(), 테이블4.getId());
 

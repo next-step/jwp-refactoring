@@ -1,18 +1,24 @@
 package kitchenpos.table.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static kitchenpos.order.acceptance.OrderAcceptanceTestUtils.주문_등록되어_있음;
+import static kitchenpos.order.acceptance.OrderAcceptanceTestUtils.주문_상태_수정_요청;
+import static kitchenpos.order.domain.OrderLineItemTestFixture.짜장면_1그릇_주문_항목;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TableAcceptanceTestUtils {
     private static final String TABLE_PATH = "/api/tables";
@@ -21,7 +27,14 @@ public class TableAcceptanceTestUtils {
 
     public static OrderTableResponse 주문이_들어간_테이블() {
         OrderTableResponse 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(2, false);
-//        주문_등록되어_있음(주문이_들어간_테이블, 메뉴_면류_짜장면());
+        주문_등록되어_있음(주문이_들어간_테이블.getId(), 짜장면_1그릇_주문_항목());
+        return 주문이_들어간_테이블;
+    }
+
+    public static OrderTableResponse 주문이_완료된_테이블() {
+        OrderTableResponse 주문이_들어간_테이블 = 주문_테이블_등록되어_있음(2, false);
+        OrderResponse 주문 = 주문_등록되어_있음(주문이_들어간_테이블.getId(), 짜장면_1그릇_주문_항목());
+        주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);
         return 주문이_들어간_테이블;
     }
 

@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.order.domain.OrderLineItemTestFixture.짬뽕2_탕수육_주문_항목;
+import static kitchenpos.order.domain.OrderTestFixture.order;
 import static kitchenpos.table.domain.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,12 +9,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -30,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -102,23 +106,24 @@ class TableServiceTest {
     @DisplayName("빈 테이블로 수정시 주문 상태가 조리 중 또는 식사 중이면 안된다.")
     void updateEmptyTableByOrderStatusIsCookingOrMeal() {
         // given
+        Order order = order(1L, 주문테이블.id(), Collections.singletonList(짬뽕2_탕수육_주문_항목));
         given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .willReturn(true);
+        given(orderRepository.findByOrderTableId(주문테이블.id())).willReturn(Optional.of(order));
 
         // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(주문테이블.id()));
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블.id()))
+                .isInstanceOf(InvalidParameterException.class)
+                .hasMessage("주문 상태가 조리 중 입니다.");
     }
 
     @Test
     @DisplayName("주문 테이블을 빈 테이블로 수정한다.")
     void updateEmptyTable() {
         // given
+        Order order = order(1L, 주문테이블.id(), Collections.singletonList(짬뽕2_탕수육_주문_항목));
         given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.findByOrderTableId(주문테이블.id())).willReturn(Optional.of(order));
+        order.changeStatus(OrderStatus.COMPLETION);
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(주문테이블.id());
