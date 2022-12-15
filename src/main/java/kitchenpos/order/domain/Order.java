@@ -38,8 +38,8 @@ public class Order {
 
     public Order(OrderTable orderTable) {
         validateOrderTable(orderTable);
+        changeOrderStatus(OrderStatus.COOKING);
         this.orderTable = orderTable;
-        orderStatus = OrderStatus.COOKING;
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
@@ -54,6 +54,9 @@ public class Order {
     }
 
     private void validateOrderStatus() {
+        if (this.orderStatus == null) {
+            return;
+        }
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException("이미 주문이 완료되었습니다.");
         }
