@@ -1,9 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
@@ -37,7 +34,7 @@ public class TableGroupService {
         List<OrderTableRequest> orderTablesRequest = request.getOrderTables();
         List<OrderTable> orderTables = findOrderTables(orderTablesRequest);
         validateOrderTable(orderTables.size(), request.getOrderTables().size());
-        TableGroup tableGroup = TableGroup.of(orderTables);
+        TableGroup tableGroup = TableGroup.of(OrderTables.from(orderTables));
 
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
     }

@@ -1,6 +1,7 @@
 package kitchenpos.fixture;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
@@ -15,9 +16,7 @@ public class TableGroupTestFixture {
     }
 
     public static TableGroup 테이블그룹() {
-        return TableGroup.of(Arrays.asList(
-                OrderTable.of(10, true),
-                OrderTable.of(10, true)
-        ));
+        OrderTables orderTables = OrderTables.from(Arrays.asList(OrderTable.of(10, true), OrderTable.of(10, true)));
+        return TableGroup.of(orderTables);
     }
 }

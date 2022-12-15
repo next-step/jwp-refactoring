@@ -1,12 +1,11 @@
 package kitchenpos.domain;
 
-import org.hibernate.annotations.BatchSize;
-import org.springframework.util.CollectionUtils;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -14,41 +13,19 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @BatchSize(size = 5)
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    private OrderTables orderTables;
 
-    private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        validateOrderTables(orderTables);
+    private TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
         this.createdDate = createdDate;
         this.orderTables = orderTables;
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.changeEmpty(false);
-            orderTable.group(this);
-        }
+        orderTables.group(this);
     }
 
     public TableGroup() {
     }
 
-    public static TableGroup of(List<OrderTable> orderTables) {
+    public static TableGroup of(OrderTables orderTables) {
         return new TableGroup(LocalDateTime.now(), orderTables);
-    }
-
-    private void validateOrderTables(final List<OrderTable> orderTables) {
-        validateIsCreatableTableGroup(orderTables);
-    }
-
-    private void validateIsCreatableTableGroup(final List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("그룹을 지정하기 위해서는 주문테이블이 2개 이상 필요합니다.");
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException("그룹을 지정하기 위해서는 테이블은 그룹이 지정되어 있거나 테이블이 비어있어야 합니다.");
-            }
-        }
     }
 
     public Long getId() {
@@ -60,6 +37,6 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.value();
     }
 }
