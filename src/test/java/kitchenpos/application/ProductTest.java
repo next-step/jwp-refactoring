@@ -15,8 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @Transactional
 @SpringBootTest
 @DisplayName("상품 테스트")
-public
-class ProductTest {
+public class ProductTest {
 
     @Autowired
     private ProductService productService;

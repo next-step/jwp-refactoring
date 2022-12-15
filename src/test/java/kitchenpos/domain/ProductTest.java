@@ -37,6 +37,9 @@ public class ProductTest {
         assertThatIllegalArgumentException().isThrownBy(() -> Product.of(name, price));
     }
 
+    public static Product 상품(String name) {
+        return 상품(name, BigDecimal.ONE);
+    }
     public static Product 상품(String name, BigDecimal price) {
         return Product.of(name, price);
     }
