@@ -1,33 +1,24 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
 
 public class MenuGroupAcceptanceUtils {
 
+	private static final String MENU_GROUP_API = "/api/menu-groups";
+
 	public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
-		return RestAssured.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(createRequest(name))
-			.when()
-			.post("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		return post(MENU_GROUP_API, createRequest(name)).extract();
 	}
 
 	public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
-		return RestAssured.given().log().all()
-			.when()
-			.get("/api/menu-groups")
-			.then().log().all()
-			.extract();
+		return get(MENU_GROUP_API).extract();
 	}
 
 

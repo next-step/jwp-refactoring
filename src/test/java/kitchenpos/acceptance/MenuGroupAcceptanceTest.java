@@ -20,13 +20,13 @@ class MenuGroupAcceptanceTest extends AcceptanceTest{
 	@Test
 	void createMenuGroupTest() {
 		// given
-		String name = "순살치킨";
+		String name = "한마리메뉴";
 
 		// when
 		ExtractableResponse<Response> 메뉴_그룹_등록_요청 = 메뉴_그룹_등록_요청(name);
 
 		// then
-		메뉴_그룹_등록_됨(메뉴_그룹_등록_요청, "순살치킨");
+		메뉴_그룹_등록_됨(메뉴_그룹_등록_요청, "한마리메뉴");
 	}
 
 	/**
@@ -38,7 +38,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest{
 	@Test
 	void listMenuGroupTest() {
 		// given
-		메뉴_그룹_등록_요청("순살치킨");
+		메뉴_그룹_등록_요청("한마리메뉴");
 
 		// when
 		ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청 = 메뉴_그룹_목록_조회_요청();

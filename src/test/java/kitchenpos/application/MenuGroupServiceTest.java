@@ -27,7 +27,7 @@ class MenuGroupServiceTest {
 	@Test
 	void createMenuGroupTest() {
 		// given
-		MenuGroup menuGroup = 메뉴_그룹("순살치킨");
+		MenuGroup menuGroup = 메뉴_그룹("한마리메뉴");
 
 		// when
 		menuGroupService.create(menuGroup);
