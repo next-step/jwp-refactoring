@@ -16,7 +16,7 @@ public class ProductRequest {
         this.price = price;
     }
 
-    public static Product of(String name, BigDecimal price) {
+    public static ProductRequest of(String name, BigDecimal price) {
         return new ProductRequest(name, price);
     }
 
@@ -26,5 +26,9 @@ public class ProductRequest {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public Product toProduct() {
+        return Product.of(name, price);
     }
 }
