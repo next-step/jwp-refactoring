@@ -112,12 +112,12 @@ CREATE TABLE orders (
 
   
 ### 주문 테이블(order table) - _매장에서 주문이 발생하는 영역_
-| METHOD | URI                                         | 설명              |
-|--------|---------------------------------------------|-----------------|
-| POST   | /api/tables                                 | 주문 테이블 생성 요청    |
-| GET    | /api/tables                                 | 주문 테이블 목록 조회 요청 |
-| PUT    | /api/tables/{orderTableId}/empty            | 메뉴 생성 요청        |
-| PUT    | /api/tables/{orderTableId}/number-of-guests | 메뉴 생성 요청        |
+| METHOD | URI                                         | 설명                    |
+|--------|---------------------------------------------|-----------------------|
+| POST   | /api/tables                                 | 주문 테이블 생성 요청          |
+| GET    | /api/tables                                 | 주문 테이블 목록 조회 요청       |
+| PUT    | /api/tables/{orderTableId}/empty            | 주문 테이블 상태 변경 요청       |
+| PUT    | /api/tables/{orderTableId}/number-of-guests | 주문 테이블 방문한 손님 수 변경 요청 |
 
 ```sql
 CREATE TABLE order_table (
