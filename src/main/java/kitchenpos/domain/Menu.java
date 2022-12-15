@@ -2,33 +2,48 @@ package kitchenpos.domain;
 
 import kitchenpos.dto.MenuProductRequest;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Embedded
     private MenuName name;
-    private BigDecimal price;
-    private Long menuGroupId;
+
+    @Embedded
+    private MenuPrice price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
+    private MenuGroup menuGroup;
+
+//    @Embedded
+//    private MenuProducts menuProducts;
     private List<MenuProduct> menuProducts;
 
     private Menu() {
     }
 
-    private Menu(Long id, MenuName name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.name = MenuName.from(name);
+        this.price = MenuPrice.from(price);
+        this.menuGroup = menuGroup;
+        this.menuProducts = MenuProducts.from(menuProducts);
+        this.price.checkLessOrEqualTotalAmount(this.menuProducts.totalAmount());
+        this.menuProducts.setup(this);
     }
 
-    public static Menu of(String id, BigDecimal name, Long price, List<MenuProductRequest> menuGroupId) {
-        return new Menu(id, MenuName.from(name), price, menuGroupId, null);
+    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(id, MenuName.from(name), price, menuGroupId, menuProducts);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {
