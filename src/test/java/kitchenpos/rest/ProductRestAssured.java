@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 public class ProductRestAssured {
 
-    public static ExtractableResponse<Response> 상품_등록(String name, BigDecimal price) {
+    public static ExtractableResponse<Response> 상품_등록_요청(String name, BigDecimal price) {
         Product body = new Product(name, price);
         return RestAssured
                 .given().log().all()
@@ -22,7 +22,7 @@ public class ProductRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 상품_목록_조회() {
+    public static ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

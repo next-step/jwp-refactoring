@@ -23,7 +23,7 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
         BigDecimal 피자_가격 = BigDecimal.valueOf(12_000);
 
         // when
-        ExtractableResponse<Response> response = ProductRestAssured.상품_등록(피자_이름, 피자_가격);
+        ExtractableResponse<Response> response = ProductRestAssured.상품_등록_요청(피자_이름, 피자_가격);
 
         // then
         신규_상품_등록됨(response, 피자_이름, 피자_가격);
@@ -32,10 +32,10 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void 등록된_상품_목록_조회_요청시_요청에_성공한다() {
         // given
-        ProductRestAssured.상품_등록("페퍼로니", BigDecimal.valueOf(12_000));
+        ProductRestAssured.상품_등록_요청("페퍼로니", BigDecimal.valueOf(12_000));
 
         // when
-        ExtractableResponse<Response> response = ProductRestAssured.상품_목록_조회();
+        ExtractableResponse<Response> response = ProductRestAssured.상품_목록_조회_요청();
 
         // then
         상품_목록_조회됨(response);

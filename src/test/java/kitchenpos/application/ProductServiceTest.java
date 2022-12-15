@@ -39,7 +39,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 신규_상품_정보가_주어진_경우_상품_등록시_상품_정보를_반환한다() {
+    void 상품_등록을_등록하면_등록된_상품_정보를_반환한다() {
         // given
         Product 페퍼로니_등록_요청 = new Product("페퍼로니", new BigDecimal(12_000));
         given(productDao.save(any())).willReturn(페퍼로니);
@@ -52,7 +52,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_가격이_누락되어_주어진_경우_상품_등록시_예외처리되어_등록에_실패한다() {
+    void 상품_등록시_상품_가격이_누락된경우_예외처리되어_등록에_실패한다() {
         // given
         Product 가격_누락된_페퍼로니_등록_요청 = new Product("페퍼로니", null);
 
@@ -61,7 +61,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_가격이_0원_미만으로_주어진_경우_상품_등록시_예외처리되어_등록에_실패한다() {
+    void 상품_등록시_상품_가격이_0원_미만인경우_예외처리되어_등록에_실패한다() {
         // given
         Product 잘못된_가격_페퍼로니_등록_요청 = new Product("페퍼로니", BigDecimal.valueOf(-1));
 
@@ -70,7 +70,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_목록_조회_요청시_등록된_상품_목록을_반환한다() {
+    void 상품_목록_조회시_등록된_상품_목록을_반환한다() {
         // given
         given(productDao.findAll()).willReturn(Arrays.asList(페퍼로니));
 
