@@ -6,12 +6,21 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public Long getId() {
-        return id;
+    private OrderTable() {}
+
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getTableGroupId() {
@@ -37,4 +46,5 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
 }
