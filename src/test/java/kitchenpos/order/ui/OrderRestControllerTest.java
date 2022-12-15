@@ -47,8 +47,7 @@ public class OrderRestControllerTest extends ControllerTest {
         long orderTableId = 13;
         long orderId = 7;
         OrderRequest orderRequest = new OrderRequest(orderTableId, OrderStatus.COOKING, Arrays.asList(new OrderLineItemRequest(menuId, quantity)));
-        Menu menu = Menu.builder().price(BigDecimal.valueOf(1000)).id(menuId).build();
-        OrderLineItem orderLineItem = OrderLineItem.builder().menu(menu).build();
+        OrderLineItem orderLineItem = OrderLineItem.builder().menuId(menuId).build();
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(OrderResponse.of(Order.builder().id(orderId)
                 .orderLineItems(Arrays.asList(orderLineItem))

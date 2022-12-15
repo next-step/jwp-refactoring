@@ -128,9 +128,11 @@ public class OrderServiceTest {
     @DisplayName("주문목록을 조회할경우 주문목록 반환")
     @Test
     public void returnOrders() {
-        List<Order> orders = getOrders(Order.builder().id(150l)
+        Order order = Order.builder().id(150l)
                 .orderTable(OrderTable.builder().build())
-                .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build())).build(), 30);
+                .orderLineItems(Arrays.asList(OrderLineItem.builder().menuId(15l).build()))
+                .build();
+        List<Order> orders = getOrders(order, 30);
         doReturn(orders)
                 .when(orderRepository).findAll();
 

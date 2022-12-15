@@ -21,6 +21,7 @@ public class OrderLineItem {
     private OrderLineItem(OrderLineItemBuilder builder) {
         this.seq = builder.seq;
         this.order = builder.order;
+        this.menuId = builder.menuId;
         this.quantity = builder.quantity;
     }
 
@@ -47,7 +48,7 @@ public class OrderLineItem {
     public static class OrderLineItemBuilder {
         private Long seq;
         private Order order;
-        private Menu menu;
+        private Long menuId;
         private long quantity;
 
         public OrderLineItemBuilder seq(Long seq) {
@@ -60,8 +61,8 @@ public class OrderLineItem {
             return this;
         }
 
-        public OrderLineItemBuilder menu(Menu menu) {
-            this.menu = menu;
+        public OrderLineItemBuilder menuId(Long menuId) {
+            this.menuId = menuId;
             return this;
         }
 

@@ -34,11 +34,11 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public OrderLineItem toOrderLineItem(Order order, List<Menu> menus) {
+    public OrderLineItem toOrderLineItem(Order order) {
         return OrderLineItem.builder()
                 .order(order)
+                .menuId(menuId)
                 .quantity(quantity)
-                .menu(menus.stream().filter(menu -> menu.getId().equals(menuId)).findFirst().get())
                 .build();
     }
 }

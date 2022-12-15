@@ -53,7 +53,7 @@ public class OrderRequest {
                 .build();
         List<OrderLineItem> newOrderLineItems = orderLineItems.stream()
                 .filter(request -> menus.stream().anyMatch(menu -> menu.getId().equals(request.getMenuId())))
-                .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
+                .map(request -> request.toOrderLineItem(order))
                 .collect(toList());
         order.addOrderLineItems(newOrderLineItems);
         return order;
