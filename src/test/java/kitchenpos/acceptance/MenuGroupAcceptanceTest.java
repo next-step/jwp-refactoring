@@ -2,7 +2,7 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 그룹 관련 인수 테스트")
-class MenuGroupAcceptanceTest extends AcceptanceTest {
+class MenuGroupRequestAcceptanceTest extends AcceptanceTest {
 
     /**
      * When 메뉴 그룹 생성 요청
@@ -25,7 +25,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
-        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(MenuGroup.of(1L, "프리미엄 치킨"));
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(MenuGroupRequest.from("프리미엄 치킨"));
 
         메뉴_그룹_생성됨(response);
     }
@@ -39,8 +39,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
-        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MenuGroup.of(1L, "프리미엄 치킨"));
-        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MenuGroup.of(2L, "스탠다드 치킨"));
+        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("프리미엄 치킨"));
+        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("스탠다드 치킨"));
 
         ExtractableResponse<Response> listResponse = 메뉴_그룹_목록_조회_요청();
 
@@ -59,14 +59,14 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     private void 메뉴_그룹_목록에_등록된_메뉴_그룹_포함됨(ExtractableResponse<Response> listResponse,
                                          List<ExtractableResponse<Response>> createResponses) {
 
-        List<MenuGroup> menuGroups = listResponse.jsonPath().getList(".", MenuGroup.class);
-        List<MenuGroup> createdMenuGroups = createResponses.stream()
-                .map(it -> it.as(MenuGroup.class))
+        List<MenuGroupRequest> MenuGroupRequests = listResponse.jsonPath().getList(".", MenuGroupRequest.class);
+        List<MenuGroupRequest> createdMenuGroupRequests = createResponses.stream()
+                .map(it -> it.as(MenuGroupRequest.class))
                 .collect(Collectors.toList());
 
         assertAll(
-                () -> assertThat(menuGroups).hasSize(2),
-                () -> assertThat(menuGroups).containsAll(createdMenuGroups)
+                () -> assertThat(MenuGroupRequests).hasSize(2),
+                () -> assertThat(MenuGroupRequests).containsAll(createdMenuGroupRequests)
         );
     }
 }
