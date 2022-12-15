@@ -130,5 +130,4 @@ public class MenuServiceTest {
                         .build())
                 .collect(Collectors.toList());
     }
-
 }
