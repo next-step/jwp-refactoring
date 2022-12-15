@@ -28,7 +28,7 @@ public class Order {
     public Order(final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable, orderLineItems);
         this.orderTable = orderTable;
-        this.orderTable.주문(this);
+        this.orderTable.addOrder(this);
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;

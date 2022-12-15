@@ -93,7 +93,7 @@ public class OrderTable {
         return orders;
     }
 
-    public void 주문(final Order order) {
+    public void addOrder(final Order order) {
         this.orders.add(order);
     }
 
