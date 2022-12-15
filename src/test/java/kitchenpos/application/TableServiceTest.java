@@ -18,6 +18,9 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,21 +59,21 @@ class TableServiceTest {
         // given
 
         // when
-        OrderTable orderTable = tableService.create(new OrderTable(0, true));
+        OrderTable orderTable = tableService.create(new OrderTableRequest(0, true));
 
         // then
         assertThat(orderTable.getId()).isNotNull();
-        assertThat(orderTable.getTableGroupId()).isNull();
+        assertThat(orderTable.getTableGroup()).isNull();
     }
 
     @Test
     @DisplayName("테이블 상태변경 : empty false -> true")
     void changeEmptyTest(){
         // given
-        OrderTable orderTable = tableService.create(new OrderTable(false));
+        OrderTable orderTable = tableService.create(new OrderTableRequest(false));
 
         // when
-        OrderTable emptyTable = tableService.changeEmpty(orderTable.getId(), new OrderTable(true));
+        OrderTable emptyTable = tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true));
 
         // then
         assertThat(emptyTable.isEmpty()).isTrue();
@@ -83,11 +86,14 @@ class TableServiceTest {
         OrderTable orderTable1 = orderTableDao.save(new OrderTable(2, true));
         OrderTable orderTable2 = orderTableDao.save(new OrderTable(3, true));
         tableGroupService.create(
-                new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2)));
+                new TableGroupRequest(
+                        Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
+                )
+        );
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(orderTable1.getId(), new OrderTable(true))
+                () -> tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest(true))
         );
 
         // then
@@ -97,7 +103,7 @@ class TableServiceTest {
     @DisplayName("주문이 조리 상태면 테이블 상태를 empty 로 변경 할 수 없습니다.")
     void changeEmptyFailTest2(){
         // given
-        OrderTable orderTable = tableService.create(new OrderTable(2, false));
+        OrderTable orderTable = tableService.create(new OrderTableRequest(2, false));
 
         Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
         Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
@@ -113,7 +119,7 @@ class TableServiceTest {
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(orderTable.getId(), new OrderTable(true))
+                () -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true))
         );
 
         // then
@@ -123,10 +129,10 @@ class TableServiceTest {
     @DisplayName("테이블 인원 수 변경 테스트")
     void changeNumberOfGuestsTest(){
         // given
-        OrderTable orderTable = tableService.create(new OrderTable(0, false));
+        OrderTable orderTable = tableService.create(new OrderTableRequest(0, false));
 
         // when
-        OrderTable table = tableService.changeNumberOfGuests(orderTable.getId(), new OrderTable(2));
+        OrderTable table = tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(2));
 
         // then
         assertThat(table.getNumberOfGuests()).isEqualTo(2);
@@ -136,11 +142,11 @@ class TableServiceTest {
     @DisplayName("인원 수 변경 시, 음수로 변경 할 수 없다.")
     void changeNumberOfGuestsFailTest(){
         // given
-        OrderTable orderTable = tableService.create(new OrderTable(0, false));
+        OrderTable orderTable = tableService.create(new OrderTableRequest(0, false));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), new OrderTable(-2))
+                () -> tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(-2))
         );
 
         // then
@@ -150,11 +156,11 @@ class TableServiceTest {
     @DisplayName("비어있는 테이블의 인원 수는 변경할 수 없다.")
     void changeNumberOfGuestsFail2Test(){
         // given
-        OrderTable orderTable = tableService.create(new OrderTable(0, true));
+        OrderTable orderTable = tableService.create(new OrderTableRequest(0, true));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), new OrderTable(2))
+                () -> tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(2))
         );
 
         // then

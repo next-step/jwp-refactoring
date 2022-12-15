@@ -13,18 +13,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -102,22 +104,22 @@ public class MockMvcAcceptanceTest {
         return mockDelete("/api/table-groups/{tableGroupId}", id);
     }
 
-    ResultActions 테이블_그룹_생성_요청(OrderTable... tables) throws Exception {
-        return mockPost("/api/table-groups", new TableGroup(Arrays.asList(tables)));
+    ResultActions 테이블_그룹_생성_요청(TableRequest... tables) throws Exception {
+        return mockPost("/api/table-groups", new TableGroupRequest(Arrays.asList(tables)));
     }
 
     ResultActions 테이블_생성_요청(int person, boolean empty) throws Exception {
-        return mockPost("/api/tables", new OrderTable(person, empty));
+        return mockPost("/api/tables", new OrderTableRequest(person, empty));
     }
 
-    OrderTable 테이블_생성(int person, boolean empty) throws Exception {
+    OrderTableResponse 테이블_생성(int person, boolean empty) throws Exception {
         ResultActions 테이블_생성_결과 = 테이블_생성_요청(person, empty);
-        return getObjectByResponse(테이블_생성_결과, OrderTable.class);
+        return getObjectByResponse(테이블_생성_결과, OrderTableResponse.class);
     }
 
-    TableGroup 테이블_그룹_생성(OrderTable... tables) throws Exception {
+    TableGroupResponse 테이블_그룹_생성(TableRequest... tables) throws Exception {
         ResultActions 테이블_그룹_생성_결과 = 테이블_그룹_생성_요청(tables);
-        return getObjectByResponse(테이블_그룹_생성_결과, TableGroup.class);
+        return getObjectByResponse(테이블_그룹_생성_결과, TableGroupResponse.class);
     }
 
     Product 상품_등록(String name, Integer price) throws Exception {
@@ -155,13 +157,13 @@ public class MockMvcAcceptanceTest {
         return mockPost("/api/menu-groups", new MenuGroup(name));
     }
 
-    ResultActions 주문_요청(OrderTable orderTable, MenuResponse menu) throws Exception {
+    ResultActions 주문_요청(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
         Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
                 , Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
         return mockPost("/api/orders", order);
     }
 
-    Order 주문_생성(OrderTable orderTable, MenuResponse menu) throws Exception {
+    Order 주문_생성(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
         return getObjectByResponse(주문_요청(orderTable, menu), Order.class);
     }
 }
