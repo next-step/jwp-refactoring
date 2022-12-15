@@ -56,12 +56,6 @@ public class MenuService {
             .orElseThrow(() -> new NotFoundException());
     }
 
-    private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
-            .map(menuProductRequest -> menuProductRequest.toMenuProduct(findProductById(menuProductRequest.getProductId())))
-            .collect(Collectors.toList());
-    }
-
     private List<Product> findAllProductByIds(List<Long> ids) {
         return ids.stream()
             .map(this::findProductById)

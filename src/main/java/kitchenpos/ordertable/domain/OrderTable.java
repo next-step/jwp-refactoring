@@ -39,12 +39,6 @@ public class OrderTable {
         this.empty = Empty.from(empty);
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
-        this.empty = Empty.from(empty);
-    }
-
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
