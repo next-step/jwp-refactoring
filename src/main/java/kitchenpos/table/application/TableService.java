@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.ExceptionMessage;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -19,11 +20,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
 
-    private final OrderService orderService;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -50,7 +51,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, boolean empty) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        final Order order = orderService.findOrderByOrderTableId(orderTableId);
+        final Order order = findOrderByOrderTableId(orderTableId);
         order.checkCookingOrMeal();
         savedOrderTable.changeEmpty(empty);
         return OrderTableResponse.of(savedOrderTable);
@@ -64,4 +65,14 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
+    public Order findOrderByOrderTableId(Long orderTableId) {
+        OrderTable orderTable = findById(orderTableId);
+        return orderRepository.findOrderByOrderTable(orderTable)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_ORDER_TABLE.getMessage()));
+    }
+    public List<Order> findOrderByOrderTableIds(List<Long> orderTableIds) {
+        return orderTableIds.stream()
+                .map(this::findOrderByOrderTableId)
+                .collect(Collectors.toList());
+    }
 }

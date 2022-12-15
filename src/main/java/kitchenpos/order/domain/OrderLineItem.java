@@ -28,6 +28,11 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public OrderLineItem(Menu menu, Quantity quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -44,4 +49,7 @@ public class OrderLineItem {
         return quantity;
     }
 
+    public void updateOrder(Order order) {
+        this.order = order;
+    }
 }

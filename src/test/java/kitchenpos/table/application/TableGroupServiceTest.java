@@ -1,7 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
 public class TableGroupServiceTest {
 
     @Mock
-    private OrderService orderService;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -44,8 +45,8 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderService, orderTableRepository);
-        tableGroupService = new TableGroupService(orderService, tableService, tableGroupRepository);
+        tableService = new TableService(orderRepository, orderTableRepository);
+        tableGroupService = new TableGroupService(tableService, tableGroupRepository);
     }
 
     @DisplayName("테이블그룹 생성 테스트")
@@ -176,8 +177,10 @@ public class TableGroupServiceTest {
         final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
         테이블그룹.group();
 
-        final Order 주문1 = new Order(1L, 주문테이블1.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList());
-        final Order 주문2 = new Order(2L, 주문테이블2.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList());
+        final Order 주문1 = new Order(1L, 주문테이블1, OrderStatus.COMPLETION, LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList()));
+        final Order 주문2 = new Order(2L, 주문테이블2, OrderStatus.COMPLETION, LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList()));
 
         List<Long> ids = orderTables.stream()
                 .map(OrderTable::getId)
@@ -185,7 +188,7 @@ public class TableGroupServiceTest {
 
         when(tableGroupRepository.findById(테이블그룹.getId()))
                 .thenReturn(Optional.ofNullable(테이블그룹));
-        when(orderService.findOrderByOrderTableIds(ids))
+        when(tableService.findOrderByOrderTableIds(ids))
                 .thenReturn(Arrays.asList(주문1, 주문2));
 
         //when
@@ -199,7 +202,7 @@ public class TableGroupServiceTest {
     @DisplayName("조리중이거나 식사중인 테이블을 테이블그룹에서 해제할 경우 오류발생 테스트")
     @ParameterizedTest
     @ValueSource(strings = {"COOKING", "MEAL"})
-    void createTableGroupContainCookingOrMealTableExceptionTest(String orderStatus) {
+    void createTableGroupContainCookingOrMealTableExceptionTest(OrderStatus orderStatus) {
         //given
         final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(4), true);
         final OrderTable 주문테이블2 = new OrderTable(2L, null, new NumberOfGuests(4), true);
@@ -207,8 +210,10 @@ public class TableGroupServiceTest {
         final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
         테이블그룹.group();
 
-        final Order 주문1 = new Order(1L, 주문테이블1.getId(), orderStatus, LocalDateTime.now(), Arrays.asList());
-        final Order 주문2 = new Order(2L, 주문테이블2.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList());
+        final Order 주문1 = new Order(1L, 주문테이블1, orderStatus, LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList()));
+        final Order 주문2 = new Order(2L, 주문테이블2, OrderStatus.COMPLETION, LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList()));
 
         List<Long> ids = orderTables.stream()
                 .map(OrderTable::getId)
@@ -216,7 +221,7 @@ public class TableGroupServiceTest {
 
         when(tableGroupRepository.findById(테이블그룹.getId()))
                 .thenReturn(Optional.ofNullable(테이블그룹));
-        when(orderService.findOrderByOrderTableIds(ids))
+        when(tableService.findOrderByOrderTableIds(ids))
                 .thenReturn(Arrays.asList(주문1, 주문2));
 
         //when

@@ -19,13 +19,10 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableGroupService {
 
-    private final OrderService orderService;
-    private final TableService tableService;
+        private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderService orderService, final TableService tableService,
-                             final TableGroupRepository tableGroupRepository) {
-        this.orderService = orderService;
+    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -48,7 +45,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findById(tableGroupId);
-        final List<Order> orders = orderService.findOrderByOrderTableIds(tableGroup.getOrderTableIds());
+        final List<Order> orders = tableService.findOrderByOrderTableIds(tableGroup.getOrderTableIds());
         tableGroup.ungroup(orders);
         tableGroupRepository.save(tableGroup);
     }
