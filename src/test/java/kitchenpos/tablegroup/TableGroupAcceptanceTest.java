@@ -1,8 +1,10 @@
 package kitchenpos.tablegroup;
 
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+
+import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -12,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static kitchenpos.menu.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
@@ -25,14 +29,14 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 주문이_들어간_테이블;
-    private OrderTable 테이블1;
-    private OrderTable 테이블2;
-    private OrderTable 테이블3;
-    private OrderTable 테이블4;
+    private OrderTableResponse 주문이_들어간_테이블;
+    private OrderTableResponse 테이블1;
+    private OrderTableResponse 테이블2;
+    private OrderTableResponse 테이블3;
+    private OrderTableResponse 테이블4;
 
-    private TableGroup 단체_지정1;
-    private TableGroup 단체_지정2;
+    private TableGroupResponse 단체_지정1;
+    private TableGroupResponse 단체_지정2;
 
     @DisplayName("단체 지정 관련 기능 테스트")
     @TestFactory
@@ -46,36 +50,33 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     테이블4 = 테이블_등록됨(true, 0);
                 }),
                 dynamicTest("단체 지정을 등록한다.", () -> {
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블1, 테이블2);
+                    ResponseEntity<TableGroupResponse> response = 단체_지정_생성_요청(테이블1, 테이블2);
 
                     단체_지정_생성됨(response);
                     단체_지정1 = response.getBody();
                 }),
                 dynamicTest("주문이 들어간 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(주문이_들어간_테이블, 테이블3);
+                    ResponseEntity<TableGroupResponse> response = 단체_지정_생성_요청(주문이_들어간_테이블, 테이블3);
 
                     단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("1개의 테이블로 단체 지정을 등록한다.", () -> {
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4);
+                    ResponseEntity<TableGroupResponse> response = 단체_지정_생성_요청(테이블4);
 
                     단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("존재하지 않는 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                    OrderTable 존재하지_않는_테이블 = new OrderTable();
-                    존재하지_않는_테이블.setId(Long.MAX_VALUE);
-
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4, 존재하지_않는_테이블);
+                    ResponseEntity<TableGroupResponse> response = 단체_지정_생성_요청(테이블4.getId(), Long.MAX_VALUE);
 
                     단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("다른 단체 지정에 포함된 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4, 테이블1);
+                    ResponseEntity<TableGroupResponse> response = 단체_지정_생성_요청(테이블4, 테이블1);
 
                     단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("단체 지정을 등록한다.", () -> {
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블3, 테이블4);
+                    ResponseEntity<TableGroupResponse> response = 단체_지정_생성_요청(테이블3, 테이블4);
 
                     단체_지정_생성됨(response);
                     단체_지정2 = response.getBody();
@@ -95,28 +96,43 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static TableGroup 단체_지정_등록됨(OrderTable... orderTables) {
+    public static TableGroupResponse 단체_지정_등록됨(OrderTableResponse... orderTables) {
         return 단체_지정_생성_요청(orderTables).getBody();
     }
 
-    public static ResponseEntity<TableGroup> 단체_지정_생성_요청(OrderTable... orderTables) {
-        Map<String, Object> request = new HashMap<>();
-        request.put("orderTables", Arrays.asList(orderTables));
-        return restTemplate().postForEntity("/api/table-groups", request, TableGroup.class);
+
+
+    public static ResponseEntity<TableGroupResponse> 단체_지정_생성_요청(OrderTableResponse... orderTables) {
+        return 단체_지정_생성_요청(Arrays.stream(orderTables)
+                                         .map(OrderTableResponse::getId)
+                                         .collect(Collectors.toList()));
     }
 
-    public static ResponseEntity<Void> 단체_지정_해지_요청(TableGroup tableGroup) {
+    public static ResponseEntity<TableGroupResponse> 단체_지정_생성_요청(Long... orderTableIds) {
+        return 단체_지정_생성_요청(Arrays.stream(orderTableIds)
+                .collect(Collectors.toList()));
+    }
+
+    public static ResponseEntity<TableGroupResponse> 단체_지정_생성_요청(List<Long> ids) {
+        Map<String, Object> request = new HashMap<>();
+        request.put("orderTables", ids.stream()
+                .map(OrderTableIdRequest::new)
+                .collect(Collectors.toList()));
+        return restTemplate().postForEntity("/api/table-groups", request, TableGroupResponse.class);
+    }
+
+    public static ResponseEntity<Void> 단체_지정_해지_요청(TableGroupResponse tableGroup) {
         Map<String, Long> urlVariables = new HashMap<>();
         urlVariables.put("tableGroupId", tableGroup.getId());
         return restTemplate().exchange("/api/table-groups/{tableGroupId}", HttpMethod.DELETE,
                                        null, Void.class, urlVariables);
     }
 
-    public static void 단체_지정_생성됨(ResponseEntity<TableGroup> response) {
+    public static void 단체_지정_생성됨(ResponseEntity<TableGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
-    public static void 단체_지정_생성_실패됨(ResponseEntity<TableGroup> response) {
+    public static void 단체_지정_생성_실패됨(ResponseEntity<TableGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
