@@ -21,14 +21,6 @@ public class MenuProductResponse {
         );
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public ProductResponse getProductResponse() {
-        return productResponse;
-    }
-
     public long getQuantity() {
         return quantity;
     }
