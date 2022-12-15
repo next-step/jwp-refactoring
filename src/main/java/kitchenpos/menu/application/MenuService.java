@@ -2,40 +2,39 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
     private final MenuRepository menuRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository,
-                       MenuRepository menuRepository) {
-        this.menuGroupRepository = menuGroupRepository;
+    public MenuService(ProductRepository productRepository,
+                       MenuRepository menuRepository,
+                       MenuValidator menuValidator) {
         this.productRepository = productRepository;
         this.menuRepository = menuRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
+        menuValidator.validate(request);
         List<MenuProduct> menuProducts = toMenuProducts(request);
-        Menu menu = request.toMenu(menuGroup.getId(), menuProducts);
+        Menu menu = request.toMenu(request.getMenuGroupId(), menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
     }
 
@@ -49,7 +48,7 @@ public class MenuService {
     private List<MenuProduct> toMenuProducts(MenuRequest request) {
         return request.getMenuProducts()
                 .stream()
-                .map(it -> MenuProduct.of(findProductById(it.getProductId()), it.getQuantity()))
+                .map(it -> MenuProduct.of(findProductById(it.getProductId()).getId(), it.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -58,8 +57,4 @@ public class MenuService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
     }
 
-    private MenuGroup findMenuGroupById(Long id) {
-        return menuGroupRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.MENU_GROUP_NOT_FOUND));
-    }
 }

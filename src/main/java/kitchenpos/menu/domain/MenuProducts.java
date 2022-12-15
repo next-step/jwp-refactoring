@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -26,12 +25,6 @@ public class MenuProducts {
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
-    }
-
-    public BigDecimal totalAmount() {
-        return menuProducts.stream()
-                .map(MenuProduct::amount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public void setup(Menu menu) {

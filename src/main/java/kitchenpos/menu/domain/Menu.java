@@ -36,7 +36,6 @@ public class Menu {
         this.price = MenuPrice.from(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = MenuProducts.from(menuProducts);
-        this.price.checkLessOrEqualTotalAmount(this.menuProducts.totalAmount());
         this.menuProducts.setup(this);
     }
 
