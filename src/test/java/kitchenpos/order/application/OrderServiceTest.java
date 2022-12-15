@@ -105,6 +105,7 @@ public class OrderServiceTest {
     public void returnOrder() {
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest();
         orderLineItemRequest.setMenuId(2l);
+        orderLineItemRequest.setQuantity(3l);
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderTableId(15l);
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));

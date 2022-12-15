@@ -4,12 +4,14 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.persistence.ProductRepository;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
@@ -56,8 +58,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.builder().product(Product.builder().id(1l).build()).menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build());
-        MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(0), 15l, Collections.EMPTY_LIST);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(1l,3);
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.builder().product(Product.builder().id(1l).price(ProductPrice.of(BigDecimal.valueOf(1000))).build()).menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build());
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(menuProductRequest);
+
+        MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(0), 15l, menuProductRequests);
         Menu menu = Menu.builder().id(15l)
                 .price(BigDecimal.valueOf(1000))
                 .menuGroup(MenuGroup.builder().build())
@@ -66,6 +71,7 @@ public class MenuServiceTest {
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
         doReturn(Arrays.asList(Product.builder()
                 .id(1l)
+                        .price(ProductPrice.of(BigDecimal.valueOf(1000)))
                 .build())).when(productRepository).findAllById(anyList());
         doReturn(menu).when(menuRepository).save(any(Menu.class));
 
@@ -77,9 +83,10 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
     @Test
     public void throwsExceptionWhenMenuPriceGreater() {
-        MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(15000), 15l, Collections.EMPTY_LIST);
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(new MenuProductRequest(1l,3));
+        MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(15000), 15l, menuProductRequests);
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
-        doReturn(Arrays.asList(Product.builder()
+        doReturn(Arrays.asList(Product.builder().price(ProductPrice.of(BigDecimal.valueOf(1000))).id(1l)
                 .build())).when(productRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> menuService.create(menuRequest))

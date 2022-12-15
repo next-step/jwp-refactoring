@@ -8,12 +8,16 @@ import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuProductRepository;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.ProductException;
 import kitchenpos.product.persistence.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static kitchenpos.product.exception.ProductExceptionType.NONE_EXISTS_PRODUCT;
 
 @Service
 public class MenuService {
@@ -38,7 +42,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
-        List<Product> menuProducts = productRepository.findAllById(menuRequest.getMenuProductIds());
+        List<Product> menuProducts = findAllProductByIds(menuRequest.getMenuProductIds());
         Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);
     }
@@ -48,5 +52,13 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private List<Product> findAllProductByIds(List<Long> productIds) {
+        List<Product> products = productRepository.findAllById(productIds);
+        if (productIds.size() != products.size()) {
+            throw new ProductException(NONE_EXISTS_PRODUCT);
+        }
+        return products;
     }
 }
