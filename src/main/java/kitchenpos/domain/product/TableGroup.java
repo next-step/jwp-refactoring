@@ -2,14 +2,23 @@ package kitchenpos.domain.product;
 
 import kitchenpos.domain.order.OrderTable;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+
+    @Embedded
+    private OrderTables orderTables;
+
 
     private TableGroup() {
     }
@@ -19,10 +28,11 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    private TableGroup(Long id, List<OrderTable> orderTables) {
+    private TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
+//        orderTables.registerTableGroup(this);
     }
 
     public static TableGroup of(Long id, LocalDateTime createdDate) {
@@ -30,7 +40,7 @@ public class TableGroup {
     }
 
     public static TableGroup of(Long id, List<OrderTable> orderTables) {
-        return new TableGroup(id, orderTables);
+        return new TableGroup(id, OrderTables.from(orderTables));
     }
 
     public Long getId() {
@@ -50,7 +60,7 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
     public void setOrderTables(final List<OrderTable> orderTables) {
