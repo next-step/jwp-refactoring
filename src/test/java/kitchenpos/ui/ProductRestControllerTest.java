@@ -18,8 +18,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 class ProductRestControllerTest extends IntegrationTest {
     @Autowired
@@ -31,38 +32,44 @@ class ProductRestControllerTest extends IntegrationTest {
 
     @DisplayName("상품을 등록한다")
     @Test
-    void products1() throws Exception {
-        Product product = new Product("강정치킨", BigDecimal.valueOf(17_000));
-
-        MvcResult result = mockMvc.perform(post("/api/products")
-            .contentType(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(product)))
-            .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value(product.getName()))
-            .andExpect(jsonPath("$.price").value(product.getPrice().intValue()))
-            .andReturn();
-
-        assertThat(productRepository.findById(getId(result))).isNotEmpty();
+    void test1() throws Exception {
+        Long id = 상품_등록();
+        assertThat(productRepository.findById(id)).isNotEmpty();
     }
 
     @DisplayName("전체 상품을 조회한다")
     @Test
     void products2() throws Exception {
+        상품_등록();
+
         mockMvc.perform(get("/api/products"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$..id").exists())
             .andExpect(jsonPath("$..name").exists())
-            .andExpect(jsonPath("$..price").exists())
-        ;
+            .andExpect(jsonPath("$..price").exists());
+    }
+
+    private Long 상품_등록() throws Exception {
+        ProductRequest request = new ProductRequest("강정치킨", BigDecimal.valueOf(17_000));
+
+        MvcResult result = mockMvc.perform(post("/api/products")
+            .contentType(APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.name").value(request.getName()))
+            .andExpect(jsonPath("$.price").value(request.getPrice().intValue()))
+            .andReturn();
+
+        return getId(result);
     }
 
     private Long getId(MvcResult result) throws
         com.fasterxml.jackson.core.JsonProcessingException,
         UnsupportedEncodingException {
         String response = result.getResponse().getContentAsString();
-        return objectMapper.readValue(response, Product.class).getId();
+        return objectMapper.readValue(response, ProductResponse.class).getId();
     }
 }

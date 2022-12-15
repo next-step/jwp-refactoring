@@ -5,6 +5,7 @@ public class ErrorMessage {
     private ErrorMessage() {
     }
 
+    public static final String INVALID_PRICE = "가격 값이 없거나 0 미만입니다";
     public static final String CANNOT_CHANGE_STATUS = "완료일 때 주문상태를 변경할 수 없습니다";
     public static final String MENU_NOT_FOUND = "등록된 메뉴 id 로만 주문할 수 있습니다";
     public static final String ORDER_LINE_ITEM_COUNT = "최소 1개 이상의 주문항목을 주문할 수 있습니다";
