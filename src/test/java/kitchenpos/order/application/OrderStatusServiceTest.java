@@ -11,10 +11,10 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.product.domain.ProductFixture;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
 
     @Autowired
@@ -46,7 +46,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private MenuRepository menuRepository;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Autowired
     private OrderLineItemRepository orderLineItemRepository;
@@ -62,19 +62,19 @@ class OrderStatusServiceTest extends ServiceTest {
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
 
-        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
-        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
+        OrderTable orderTable1 = orderTableRepository.save(new OrderTable());
+        OrderTable orderTable2 = orderTableRepository.save(new OrderTable());
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(orderTable1);
         orderTables.add(orderTable2);
 
-        TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
 
-        orderTable1.setTableGroupId(tableGroup.getId());
-        orderTable2.setTableGroupId(tableGroup.getId());
-        orderTableDao.save(orderTable1);
-        orderTableDao.save(orderTable2);
+        orderTable1.setTableGroup(tableGroup);
+        orderTable2.setTableGroup(tableGroup);
+        orderTableRepository.save(orderTable1);
+        orderTableRepository.save(orderTable2);
 
         createOrder(orderTable1, menu);
 

@@ -13,10 +13,10 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.ProductFixture;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,20 +46,20 @@ class TableServiceTest extends ServiceTest {
     private MenuGroupDao menuGroupDao;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
     private TableService tableService;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     private Long orderTableId;
 
     @BeforeEach
     void setUp() {
-        orderTableId = orderTableDao.save(new OrderTable()).getId();
-        tableService = new TableService(orderRepository, orderTableDao);
+        orderTableId = orderTableRepository.save(new OrderTable()).getId();
+        tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -67,7 +67,7 @@ class TableServiceTest extends ServiceTest {
     void create() {
         OrderTable orderTable = tableService.create(new OrderTable());
         assertAll(
-                () -> assertThat(orderTable.getTableGroupId()).isNull(),
+                () -> assertThat(orderTable.getTableGroup()).isNull(),
                 () -> assertThat(orderTable.getNumberOfGuests()).isZero(),
                 () -> assertThat(orderTable.isEmpty()).isFalse()
         );
@@ -76,10 +76,10 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("손님수를 변경한다.")
     @Test
     void changeNumberOfGuests_success() {
-        OrderTable orderTable = orderTableDao.findById(orderTableId).get();
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).get();
         assertThat(orderTable.getNumberOfGuests()).isNotEqualTo(1);
         orderTable.setEmpty(false);
-        orderTableDao.save(orderTable);
+        orderTableRepository.save(orderTable);
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(1);
         assertThat(tableService.changeNumberOfGuests(orderTableId, changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(1);
     }
@@ -118,8 +118,8 @@ class TableServiceTest extends ServiceTest {
     void empty_success() {
 
         OrderTable orderTable = createOrderTable();
-        orderTable.setTableGroupId(null);
-        orderTableDao.save(orderTable);
+        orderTable.setTableGroup(null);
+        orderTableRepository.save(orderTable);
 
         Order order = createOrder();
         order.setOrderStatus(OrderStatus.COMPLETION.name());
@@ -165,35 +165,35 @@ class TableServiceTest extends ServiceTest {
     }
 
     private OrderTable createOrderTable() {
-        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
-        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
+        OrderTable orderTable1 = orderTableRepository.save(new OrderTable());
+        OrderTable orderTable2 = orderTableRepository.save(new OrderTable());
 
         List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable1, orderTable2));
 
-        TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.setTableGroupId(tableGroup.getId());
+        savedOrderTable.setTableGroup(tableGroup);
 
-        return orderTableDao.save(savedOrderTable);
+        return orderTableRepository.save(savedOrderTable);
     }
 
     private Order createOrder() {
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
-        OrderTable orderTable = orderTableDao.save(new OrderTable());
+        OrderTable orderTable = orderTableRepository.save(new OrderTable());
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
         return orderRepository.save(new Order(orderTable.getId(), orderLineItems));
     }
 
     private void 테이블_공석_상태_확인됨() {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         savedOrderTable.setEmpty(true);
-        orderTableDao.save(savedOrderTable);
+        orderTableRepository.save(savedOrderTable);
 
         assertThat(savedOrderTable.isEmpty()).isTrue();
     }

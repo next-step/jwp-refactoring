@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ class OrderTest {
     void name() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems));
+        assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -47,7 +48,7 @@ class OrderTest {
     void changeMeal_success() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
+        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems);
         order.meal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
@@ -57,7 +58,7 @@ class OrderTest {
     void changeMeal_fail_completion() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
+        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
         assertThatThrownBy(order::meal)
@@ -70,7 +71,7 @@ class OrderTest {
     void nameCompletion() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
-        Order order = new Order(new OrderTable(1L, 1L, 1, true).getId(), orderLineItems);
+        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, true).getId(), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }

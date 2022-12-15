@@ -13,10 +13,10 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.ProductFixture;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,10 +41,10 @@ class TableGroupServiceTest extends ServiceTest {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -59,13 +59,13 @@ class TableGroupServiceTest extends ServiceTest {
     void setUp() {
         MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
-        tableGroup = tableGroupDao.save(new TableGroup());
+        tableGroup = tableGroupRepository.save(new TableGroup());
         OrderTable orderTable = createOrderTable(tableGroup);
         tableGroup.setOrderTables(Collections.singletonList(orderTable));
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
         order = orderRepository.save(new Order(orderTable.getId(), orderLineItems));
-        tableGroupService = new TableGroupService(orderRepository, orderTableDao, tableGroupDao);
+        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
@@ -87,7 +87,7 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("테이블 그룹을 생성한다. / 주문 테이블이 비어있을 수 없다.")
     @Test
     void create_fail_orderTableEmpty() {
-        TableGroup failTableGroup = tableGroupDao.save(new TableGroup());
+        TableGroup failTableGroup = tableGroupRepository.save(new TableGroup());
         assertThatThrownBy(() -> tableGroupService.create(failTableGroup))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
@@ -133,12 +133,12 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private OrderTable makeNullTableGroup(OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-        return orderTableDao.save(orderTable);
+        orderTable.setTableGroup(null);
+        return orderTableRepository.save(orderTable);
     }
 
     private OrderTable createOrderTable(TableGroup tableGroup) {
-        return orderTableDao.save(new OrderTable(tableGroup.getId(), true));
+        return orderTableRepository.save(new OrderTable(tableGroup, true));
     }
 
     private void 주문_식사중_상태_변경() {
@@ -160,15 +160,15 @@ class TableGroupServiceTest extends ServiceTest {
 
     private void 테이블_그룹_존재_검증(TableGroup tableGroup) {
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
-            assertThat(find.getTableGroupId()).isNotNull();
+            OrderTable find = orderTableRepository.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
+            assertThat(find.getTableGroup()).isNotNull();
         }
     }
 
     private void 테이블_그룹_해제_검증됨(TableGroup tableGroup) {
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
-            assertThat(find.getTableGroupId()).isNull();
+            OrderTable find = orderTableRepository.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
+            assertThat(find.getTableGroup()).isNull();
         }
     }
 }

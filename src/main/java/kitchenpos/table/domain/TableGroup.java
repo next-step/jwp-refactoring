@@ -2,17 +2,23 @@ package kitchenpos.table.domain;
 
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class TableGroup {
     public static final String ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "주문 테이블이 비어있을 수 없다.";
     public static final String ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE = "주문 테이블의 갯수가 2보다 작을 수 없다.";
     public static final int MINIMUM_SIZE = 2;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
         this.createdDate = LocalDateTime.now();
@@ -26,7 +32,7 @@ public class TableGroup {
             throw new IllegalArgumentException(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
         }
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
+        this.orderTables.addAll(orderTables);
     }
 
     public TableGroup(long id, LocalDateTime createdDate) {
@@ -51,10 +57,10 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return this.orderTables.getOrderTables();
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void setOrderTables(List<OrderTable> orderTables) {
+        this.orderTables.addAll(orderTables);
     }
 }

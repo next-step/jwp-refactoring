@@ -12,10 +12,10 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,10 +47,10 @@ class OrderCrudServiceTest extends ServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Autowired
     private MenuGroupDao menuGroupDao;
@@ -69,13 +69,13 @@ class OrderCrudServiceTest extends ServiceTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable());
         orderTables.add(new OrderTable());
-        TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
-        OrderTable orderTable = orderTableDao.save(new OrderTable());
-        orderTable.setTableGroupId(tableGroup.getId());
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable());
+        orderTable.setTableGroup(tableGroup);
 
-        OrderTable orderTable1 = orderTableDao.save(orderTable);
+        OrderTable orderTable1 = orderTableRepository.save(orderTable);
         orderTableId = orderTable1.getId();
-        orderCrudService = new OrderCrudService(menuRepository, orderRepository, orderLineItemRepository, orderTableDao);
+        orderCrudService = new OrderCrudService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 생성한다. / 주문 항목이 비어있을 수 없다.")
