@@ -89,7 +89,7 @@ public class TableGroupService {
 
     private void validateOrderStatus(final List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("해당 테이블에는 아직 진행중인 주문이 존재합니다.");
         }
     }

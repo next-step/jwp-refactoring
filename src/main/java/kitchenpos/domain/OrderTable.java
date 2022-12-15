@@ -79,8 +79,8 @@ public class OrderTable {
         return orders.stream().anyMatch(order -> isNotCompleted(order.getOrderStatus()));
     }
 
-    private boolean isNotCompleted(final String orderStatus) {
-        return orderStatus.equals(OrderStatus.COOKING.name()) || orderStatus.equals(OrderStatus.MEAL.name());
+    private boolean isNotCompleted(final OrderStatus orderStatus) {
+        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
     }
 
     public TableGroup getTableGroup() {

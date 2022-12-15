@@ -16,7 +16,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @JsonIgnore
     @OneToMany(mappedBy = "order")
@@ -25,7 +26,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(final OrderTable orderTable, final String orderStatus, final List<OrderLineItem> orderLineItems) {
+    public Order(final OrderTable orderTable, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable, orderLineItems);
         this.orderTable = orderTable;
         this.orderTable.addOrder(this);
@@ -36,7 +37,7 @@ public class Order {
     }
 
     public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, OrderStatus.COOKING.name(), orderLineItems);
+        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
     }
 
     private void validateOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
@@ -57,12 +58,12 @@ public class Order {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("이미 주문이 완료된 상태입니다.");
         }
         this.orderStatus = orderStatus;

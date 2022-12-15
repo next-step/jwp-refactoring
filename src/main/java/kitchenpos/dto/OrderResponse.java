@@ -2,7 +2,10 @@ package kitchenpos.dto;
 
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -11,11 +14,12 @@ import java.util.stream.Collectors;
 public class OrderResponse {
     private Long id;
     private final Long orderTableId;
-    private final String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private final OrderStatus orderStatus;
     private final LocalDateTime orderedTime;
     private final List<OrderLineItemResponse> orderLineItemsResponse;
 
-    private OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
                           List<OrderLineItemResponse> orderLineItemsResponse) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -47,7 +51,7 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

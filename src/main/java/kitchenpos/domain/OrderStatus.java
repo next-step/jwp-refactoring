@@ -6,7 +6,7 @@ import java.util.List;
 public enum OrderStatus {
     COOKING, MEAL, COMPLETION;
 
-    public static List<String> onGoingOrderStatus() {
-        return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+    public static List<OrderStatus> onGoingOrderStatus() {
+        return Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
     }
 }

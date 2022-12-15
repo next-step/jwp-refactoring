@@ -103,7 +103,7 @@ class OrderTableTest {
                 OrderTable.of(10, false),
                 Collections.singletonList(주문정보(1L, 1))
         );
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
 
         // when & then
         assertThatThrownBy(() -> order.getOrderTable().changeEmpty(true))

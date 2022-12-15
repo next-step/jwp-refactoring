@@ -147,7 +147,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        주문2.changeOrderStatus(OrderStatus.MEAL.name());
+        주문2.changeOrderStatus(OrderStatus.MEAL);
         when(orderRepository.findById(주문2.getId())).thenReturn(Optional.of(주문2));
 
         // when
@@ -173,7 +173,7 @@ class OrderServiceTest {
     @Test
     void changeOrderWithException2() {
         // given
-        주문2.changeOrderStatus(OrderStatus.COMPLETION.name());
+        주문2.changeOrderStatus(OrderStatus.COMPLETION);
         when(orderRepository.findById(주문2.getId())).thenReturn(Optional.of(주문2));
 
         // when & then

@@ -40,7 +40,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         // given
-        String expectedOrderStatus = OrderStatus.COMPLETION.name();
+        OrderStatus expectedOrderStatus = OrderStatus.COMPLETION;
         MenuRequest 짜장면_탕수육_1인_메뉴_세트_요청 = 짜장면_탕수육_1인_메뉴_세트_요청();
         MenuRequest 짬뽕_탕수육_1인_메뉴_세트_요청 = 짬뽕_탕수육_1인_메뉴_세트_요청();
         Menu 짜장면_탕수육_1인_메뉴_세트 = 메뉴세트(짜장면_탕수육_1인_메뉴_세트_요청, 1L);

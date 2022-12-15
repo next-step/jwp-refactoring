@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import org.springframework.http.HttpStatus;
@@ -65,12 +66,12 @@ public class OrderAcceptanceStep {
         assertThat(resultOrderIds).containsAll(expectedOrderIds);
     }
 
-    public static void 주문_상태_변경됨(ExtractableResponse<Response> response, String expectOrderStatus) {
+    public static void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus expectOrderStatus) {
         String actualOrderStatus = response.jsonPath().getString("orderStatus");
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(actualOrderStatus).isEqualTo(expectOrderStatus)
+                () -> assertThat(actualOrderStatus).isEqualTo(expectOrderStatus.name())
         );
     }
 }

@@ -108,7 +108,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 OrderTable.of(10, false),
                 Collections.singletonList(짜장면_탕수육_1인_메뉴_세트주문)
         );
-        order.changeOrderStatus(OrderStatus.COMPLETION.name());
+        order.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when
         ExtractableResponse<Response> response = 주문_상태_변경_요청(orderResponse.getId(), order);
