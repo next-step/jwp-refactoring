@@ -17,10 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -83,6 +86,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 })
         );
     }
+
     public static OrderResponse 주문_생성됨(Long orderTableId, Long... menuIds){
         return 주문_생성_요청(orderTableId, menuIds).as(OrderResponse.class);
     }

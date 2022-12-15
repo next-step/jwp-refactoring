@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,8 +13,6 @@ import javax.persistence.ManyToOne;
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.menugroup.domain.MenuGroup;
-import org.flywaydb.core.api.ErrorCode;
 
 @Entity
 public class Menu {
@@ -35,18 +31,18 @@ public class Menu {
     public Menu() {
     }
 
-    private Menu(String name, Price price, MenuGroup menuGroup) {
+    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = Name.of(name);
         this.price = price;
         this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
-    public static Menu of(String name, BigDecimal priceInput, MenuGroup menuGroup, List<MenuProduct> menuProductsInput){
+    public static Menu of(String name, BigDecimal priceInput, MenuGroup menuGroup, MenuProducts menuProducts){
         Price price = Price.of(priceInput);
-        Menu menu = new Menu(name, price, menuGroup);
-        MenuProducts menuProducts = MenuProducts.of(menuProductsInput);
+        Menu menu = new Menu(name, price, menuGroup, menuProducts);
         validatePrice(price, menuProducts);
-        menu.addMenuProducts(menuProducts);
+        menu.menuProducts.updateMenu(menu);
         return menu;
     }
 

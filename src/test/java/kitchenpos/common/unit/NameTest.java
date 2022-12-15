@@ -3,10 +3,8 @@ package kitchenpos.common.unit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.math.BigDecimal;
 import kitchenpos.common.Name;
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

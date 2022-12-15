@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import kitchenpos.common.Price;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

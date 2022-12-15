@@ -4,6 +4,10 @@ import java.util.stream.Collectors;
 import kitchenpos.common.Empty;
 import kitchenpos.common.GuestCount;
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.ErrorMessage;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -16,11 +20,11 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderService orderService, OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -40,19 +44,25 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final boolean empty) {
-        OrderTable saved = orderTableRepository.findById(orderTableId).orElseThrow(
-                ()->new EntityNotFoundException("주문테이블", orderTableId)
-        );
+        OrderTable saved = findOrderTableById(orderTableId);
+        boolean isAllFinished = orderService.isAllOrderFinished(orderTableId);
+        if(!isAllFinished){
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED);
+        }
         saved.updateEmptyStatus(Empty.of(empty));
         return OrderTableResponse.of(saved);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int guestCounts) {
-        OrderTable saved = orderTableRepository.findById(orderTableId).orElseThrow(
-                ()->new EntityNotFoundException("주문테이블", orderTableId)
-        );
+        OrderTable saved = findOrderTableById(orderTableId);
         saved.updateNumberOfGuest(GuestCount.of(guestCounts));
         return OrderTableResponse.of(saved);
+    }
+
+    public OrderTable findOrderTableById(Long orderTableId){
+        return orderTableRepository.findById(orderTableId).orElseThrow(
+                ()->new EntityNotFoundException("주문테이블", orderTableId)
+        );
     }
 }

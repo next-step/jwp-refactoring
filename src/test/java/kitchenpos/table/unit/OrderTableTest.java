@@ -11,31 +11,21 @@ import kitchenpos.common.GuestCount;
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("주문테이블 관련 단위테스트")
 public class OrderTableTest {
-    private OrderLineItems 주문상품;
-    @BeforeEach
-    void setUp() {
-        MenuGroup 중식 = MenuGroup.of("중식");
-        Product 짜장면 = Product.of("짜장면", BigDecimal.valueOf(6000));
-        Product 군만두 = Product.of("군만두", BigDecimal.valueOf(2000));
-        MenuProduct 짜장면_1개 = MenuProduct.of(짜장면, 1);
-        MenuProduct 군만두_2개 = MenuProduct.of(군만두, 2);
-        Menu 짜장세트 = Menu.of("짜장세트", BigDecimal.valueOf(6000), 중식, Arrays.asList(짜장면_1개, 군만두_2개));
-        주문상품 = OrderLineItems.of(Arrays.asList(OrderLineItem.of(짜장세트, 1)));
-    }
 
     @DisplayName("주문테이블을 생성할 수 있다.")
     @Test
@@ -93,18 +83,6 @@ public class OrderTableTest {
         assertThatThrownBy(() ->빈_테이블_A.updateEmptyStatus(Empty.of(false)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED );
-    }
-
-    @DisplayName("주문이 끝나지 않았을때 비움상태를 변경하면 예외가 발생한다.")
-    @Test
-    void updateEmptyStatus_when_order_status_not_complete_exception() {
-        // given
-        OrderTable 채워진_테이블 = OrderTable.of(2, false);
-        Order.of(채워진_테이블, 주문상품);
-        // when - then
-        assertThatThrownBy(() ->채워진_테이블.updateEmptyStatus(Empty.of(true)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED);
     }
 
 }

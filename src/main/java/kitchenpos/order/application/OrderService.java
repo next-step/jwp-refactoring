@@ -8,6 +8,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -29,18 +30,15 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -57,8 +55,6 @@ public class OrderService {
         return OrderResponse.of(saved);
     }
 
-
-
     public List<OrderResponse> list() {
         return orderRepository.findAll()
                 .stream()
@@ -68,11 +64,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
-        Order order = orderRepository.findById(orderId).orElseThrow(
-                ()->new EntityNotFoundException("주문", orderId)
-        );
+        Order order = findOrderById(orderId);
         order.updateOrderStatus(OrderStatus.valueOf(orderStatus));
-
         return OrderResponse.of(order);
     }
     private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
@@ -80,6 +73,17 @@ public class OrderService {
                 ()->new EntityNotFoundException("메뉴", orderLineItemRequest.getMenuId())
         );
         return OrderLineItem.of(menu, orderLineItemRequest.getQuantity());
+    }
+
+    public boolean isAllOrderFinished(final Long orderTableId){
+        List<Order> orders = orderRepository.findOrdersByOrderTableId(orderTableId);
+        return Orders.of(orders).isAllFinished();
+    }
+
+    private Order findOrderById(Long orderId){
+        return orderRepository.findById(orderId).orElseThrow(
+                ()->new EntityNotFoundException("주문", orderId)
+        );
     }
 
 }

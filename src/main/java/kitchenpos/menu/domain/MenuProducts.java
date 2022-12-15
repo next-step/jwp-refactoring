@@ -13,13 +13,14 @@ import kitchenpos.common.Price;
 public class MenuProducts {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private final List<MenuProduct> menuProducts;
 
     private MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = Collections.unmodifiableList(menuProducts);
     }
 
     protected MenuProducts() {
+        this.menuProducts = new ArrayList<>();
 
     }
 
@@ -40,9 +41,13 @@ public class MenuProducts {
     }
 
     public void updateMenuProductsMenu(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
+
     }
     public int getSize(){
         return menuProducts.size();
+    }
+
+    public void updateMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
     }
 }

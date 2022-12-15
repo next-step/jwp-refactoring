@@ -4,7 +4,7 @@ package kitchenpos.table.acceptance;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.짜장_탕수_세트_생성됨;
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성됨;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.단체지정됨;
+import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.단체지정됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +43,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
                     // then
                     주문테이블_정상_생성됨(response);
                 }),
-
                 dynamicTest("채워진 테이블을 등록한다.", () -> {
                     // when
                     ExtractableResponse<Response> response = 주문테이블_생성_요청(채워진_테이블_입력);
@@ -66,7 +65,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> response = 주문테이블_비움_상태_변경_요청(빈_테이블_A_ID, false);
                     // then
                     요청_실패됨(response);
-
                 }),
                 dynamicTest("요리중이거나 식사중인 테이블의 비움 상태를 변경할 수 없다.", () -> {
                     // given

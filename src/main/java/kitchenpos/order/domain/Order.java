@@ -32,7 +32,7 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems = OrderLineItems.of(new ArrayList<>());
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -47,8 +47,7 @@ public class Order {
     public static Order of(OrderTable orderTable, OrderLineItems orderLineItems){
         validateOrderTableEmpty(orderTable);
         Order order = new Order(orderTable, orderLineItems);
-        order.getOrderTable().addOrder(order);
-        order.getOrderLineItems().updateOrder(order);
+        order.orderLineItems.updateOrder(order);
 
         return order;
     }

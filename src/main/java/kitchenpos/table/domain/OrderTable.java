@@ -16,7 +16,6 @@ import kitchenpos.common.Empty;
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -31,9 +30,6 @@ public class OrderTable {
     private GuestCount guestCount;
     @Embedded
     private Empty empty;
-
-    @Embedded
-    private Orders orders = Orders.of(new ArrayList<>());
 
     protected OrderTable() {
     }
@@ -63,17 +59,10 @@ public class OrderTable {
         return empty;
     }
 
-    public Orders getOrders() {
-        return orders;
-    }
-
     public void updateEmptyStatus(Empty empty) {
         validateTableGroup();
-        validateOrderStatus();
         this.empty = empty;
     }
-
-
     public void updateNumberOfGuest(GuestCount guestCounts) {
         validateTableEmpty();
         this.guestCount = guestCounts;
@@ -83,13 +72,6 @@ public class OrderTable {
             throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED);
         }
     }
-
-    private void validateOrderStatus() {
-        if(!this.orders.isAllFinished()){
-            throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED);
-        }
-    }
-
 
     private void validateTableEmpty() {
         if(this.empty.value()){
@@ -106,10 +88,6 @@ public class OrderTable {
 
     public void updateGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
     }
 
     public boolean isEmpty(){

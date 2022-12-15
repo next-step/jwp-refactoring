@@ -11,8 +11,9 @@ import kitchenpos.common.Name;
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ public class MenuTest {
     @Test
     void createMenu() {
         // when
-        Menu 짜장세트 = Menu.of("짜장세트", BigDecimal.valueOf(6000), 중식, Arrays.asList(짜장면_1개, 군만두_2개));
+        Menu 짜장세트 = Menu.of("짜장세트", BigDecimal.valueOf(6000), 중식, MenuProducts.of(Arrays.asList(짜장면_1개, 군만두_2개)));
         // then
         assertAll(
                 ()->assertThat(짜장세트.getMenuGroup().getName()).isEqualTo(Name.of("중식")),
@@ -39,7 +40,7 @@ public class MenuTest {
     @Test
     void createMenu_price_exception() {
         // when - then
-        assertThatThrownBy(() -> Menu.of("짜장세트", BigDecimal.valueOf(15000), 중식, Arrays.asList(짜장면_1개, 군만두_2개)))
+        assertThatThrownBy(() -> Menu.of("짜장세트", BigDecimal.valueOf(15000), 중식, MenuProducts.of(Arrays.asList(짜장면_1개, 군만두_2개))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.PRICE_HIGHER_THAN_MENU_PRODUCTS_TOTAL_PRICES);
     }

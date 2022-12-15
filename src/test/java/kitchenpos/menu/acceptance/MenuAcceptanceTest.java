@@ -2,9 +2,8 @@ package kitchenpos.menu.acceptance;
 
 
 
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록됨;
+import static kitchenpos.menu.acceptance.ProductAcceptanceTest.상품_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -19,14 +18,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

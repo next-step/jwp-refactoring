@@ -1,12 +1,12 @@
 package kitchenpos.table.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {
@@ -14,13 +14,14 @@ public class OrderTables {
 
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    private final List<OrderTable> orderTables;
 
     protected OrderTables() {
+        this.orderTables = new ArrayList<>();
     }
 
     private OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        this.orderTables = Collections.unmodifiableList(orderTables);
     }
 
     public static OrderTables of(List<OrderTable> orderTables) {
@@ -31,13 +32,8 @@ public class OrderTables {
         return orderTables;
     }
 
-    public void groupChange(TableGroup tableGroup) {
+    public void updateGroup(TableGroup tableGroup) {
         this.orderTables.forEach(it->it.updateGroup(tableGroup));
-    }
-
-    public boolean isAllFinished(){
-        return this.orderTables.stream()
-                .allMatch(it->it.getOrders().isAllFinished());
     }
 
     public boolean isAllEmpty() {
