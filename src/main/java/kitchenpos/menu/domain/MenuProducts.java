@@ -8,7 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable

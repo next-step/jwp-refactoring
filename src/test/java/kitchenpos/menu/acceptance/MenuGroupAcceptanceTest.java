@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
-import kitchenpos.acceptance.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

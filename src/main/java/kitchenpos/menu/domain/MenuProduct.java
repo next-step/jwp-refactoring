@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Quantity;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity

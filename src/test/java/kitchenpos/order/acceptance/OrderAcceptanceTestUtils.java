@@ -1,21 +1,21 @@
-package kitchenpos.acceptance;
-
-import static kitchenpos.domain.OrderTestFixture.order;
-import static org.assertj.core.api.Assertions.assertThat;
+package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
+import static kitchenpos.order.domain.OrderTestFixture.orderRequest;
+import static kitchenpos.order.domain.OrderTestFixture.orderStatusRequest;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderAcceptanceTestUtils {
     private static final String ORDER_PATH = "/api/orders";
@@ -29,43 +29,28 @@ public class OrderAcceptanceTestUtils {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, Menu... menus) {
-        Order order = order(null, orderTable.id(), toOrderLineItems(menus), OrderStatus.COOKING.name());
-
+    public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(orderRequest(orderTableId, orderLineItems))
                 .when().post(ORDER_PATH)
                 .then().log().all()
                 .extract();
     }
 
-    private static List<OrderLineItem> toOrderLineItems(Menu[] menus) {
-        return Arrays.stream(menus)
-                .map(menu -> {
-                    OrderLineItem orderLineItem = new OrderLineItem();
-                    orderLineItem.setMenuId(menu.id());
-                    orderLineItem.setQuantity(1L);
-                    return orderLineItem;
-                })
-                .collect(Collectors.toList());
-    }
-
     public static ExtractableResponse<Response> 주문_상태_수정_요청(Long orderId, OrderStatus orderStatus) {
-        Order changeOrderStatus = order(null, null, null, orderStatus.name());
-
-        return RestAssured.given().log().all()
+                return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(changeOrderStatus)
+                .body(orderStatusRequest(orderStatus.name()))
                 .when().put(ORDER_PATH + "/{orderId}/order-status", orderId)
                 .then().log().all()
                 .extract();
     }
 
-    public static Order 주문_등록되어_있음(OrderTable orderTable, Menu... menus) {
-        ExtractableResponse<Response> response = 주문_생성_요청(orderTable, menus);
+    public static OrderResponse 주문_등록되어_있음(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        ExtractableResponse<Response> response = 주문_생성_요청(orderTableId, orderLineItems);
         주문_생성됨(response);
-        return response.as(Order.class);
+        return response.as(OrderResponse.class);
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {
@@ -94,11 +79,11 @@ public class OrderAcceptanceTestUtils {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 주문_목록_포함됨(ExtractableResponse<Response> response, Order... orders) {
+    public static void 주문_목록_포함됨(ExtractableResponse<Response> response, OrderResponse... orderResponses) {
         List<Long> actual = response.jsonPath()
                 .getList("id", Long.class);
-        List<Long> expect = Arrays.stream(orders)
-                .map(Order::getId)
+        List<Long> expect = Arrays.stream(orderResponses)
+                .map(OrderResponse::getId)
                 .collect(Collectors.toList());
         assertThat(actual).containsExactlyElementsOf(expect);
     }

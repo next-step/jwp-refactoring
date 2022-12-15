@@ -10,11 +10,11 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class MenuAcceptanceTestUtils {
 
     private MenuAcceptanceTestUtils() {}
 
-    public static Menu 메뉴_면류_짜장면() {
+    public static MenuResponse 메뉴_면류_짜장면() {
         ProductResponse 짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000));
         MenuGroupResponse 면류 = 메뉴_그룹_등록되어_있음("면류");
         MenuProduct 짜장면_1그릇 = MenuProduct.of(Product.of("짜장면", BigDecimal.valueOf(7000)), 1L);
@@ -48,10 +48,10 @@ public class MenuAcceptanceTestUtils {
                 .extract();
     }
 
-    public static Menu 메뉴_등록되어_있음(String name, Long menuGroupId, BigDecimal price, List<MenuProductRequest> menuProducts) {
+    public static MenuResponse 메뉴_등록되어_있음(String name, Long menuGroupId, BigDecimal price, List<MenuProductRequest> menuProducts) {
         ExtractableResponse<Response> response = 메뉴_생성_요청(name, menuGroupId, price, menuProducts);
         메뉴_생성됨(response);
-        return response.as(Menu.class);
+        return response.as(MenuResponse.class);
     }
 
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {

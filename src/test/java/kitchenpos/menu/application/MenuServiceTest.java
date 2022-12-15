@@ -12,13 +12,16 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,9 +35,9 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private ProductService productService;
+    private ProductRepository productRepository;
     @Mock
-    private MenuGroupService menuGroupService;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -43,7 +46,8 @@ class MenuServiceTest {
     void createMenuByPriceIsNull() {
         // given
         MenuRequest 짜장1 = menuRequest("짜장1", null, 1L, 짜장면_1그릇_요청);
-        given(productService.findById(짜장면_1그릇_요청.getProductId())).willReturn(짜장면);
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(면류));
+        given(productRepository.findById(짜장면_1그릇_요청.getProductId())).willReturn(Optional.of(짜장면));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(짜장1))
@@ -56,7 +60,8 @@ class MenuServiceTest {
     void createMenuByPriceLessThanZero() {
         // given
         MenuRequest 짜장1 = menuRequest("짜장1", BigDecimal.valueOf(-2_000L), 1L, 짜장면_1그릇_요청);
-        given(productService.findById(짜장면_1그릇_요청.getProductId())).willReturn(짜장면);
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(면류));
+        given(productRepository.findById(짜장면_1그릇_요청.getProductId())).willReturn(Optional.of(짜장면));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(짜장1))
@@ -68,14 +73,12 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹에 속해있지 않은 메뉴를 등록한다.")
     void createMenuByMenuGroupNotExist() {
         // given
-        MenuRequest 탕수육소1 = menuRequest("탕수육소1", BigDecimal.valueOf(18_000L), 3L, 탕수육_소_1그릇_요청);
-        given(menuGroupService.findById(3L)).willReturn(null);
-        given(productService.findById(탕수육_소_1그릇_요청.getProductId())).willReturn(탕수육_소);
+        MenuRequest 탕수육소1 = menuRequest("탕수육소1", BigDecimal.valueOf(18_000L), 2L, 탕수육_소_1그릇_요청);
 
         // when & then
         assertThatThrownBy(() -> menuService.create(탕수육소1))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("메뉴 그룹은 필수입니다.");
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("메뉴 그룹을 찾을 수 없습니다. ID : 2");
     }
 
     @Test
@@ -83,13 +86,13 @@ class MenuServiceTest {
     void createMenuByNotCreateProduct() {
         // given
         MenuRequest 탕수육소1 = menuRequest("탕수육소1", BigDecimal.valueOf(18_000L), 3L, 탕수육_소_1그릇_요청);
-        given(menuGroupService.findById(3L)).willReturn(요리류);
-        given(productService.findById(탕수육_소_1그릇_요청.getProductId())).willReturn(null);
+        given(menuGroupRepository.findById(3L)).willReturn(Optional.of(요리류));
+        given(productRepository.findById(탕수육_소_1그릇_요청.getProductId())).willReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> menuService.create(탕수육소1))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("상품은 필수입니다.");
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("상품을 찾을 수 없습니다. ID : 2");
     }
 
     @Test
@@ -97,9 +100,9 @@ class MenuServiceTest {
     void createMenuByNotMoreThanProductsSum() {
         // given
         MenuRequest 짜장1_짬뽕2_요청 = menuRequest("짜장1_짬뽕2_요청", BigDecimal.valueOf(25_000L), 1L, 짜장면_1그릇_요청, 짬뽕_2그릇_요청);
-        given(productService.findById(짜장면_1그릇_요청.getProductId())).willReturn(짜장면);
-        given(productService.findById(짬뽕_2그릇_요청.getProductId())).willReturn(짬뽕);
-        given(menuGroupService.findById(1L)).willReturn(면류);
+        given(productRepository.findById(짜장면_1그릇_요청.getProductId())).willReturn(Optional.of(짜장면));
+        given(productRepository.findById(짬뽕_2그릇_요청.getProductId())).willReturn(Optional.of(짬뽕));
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(면류));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(짜장1_짬뽕2_요청))
@@ -113,9 +116,9 @@ class MenuServiceTest {
         // given
         Menu 짜장1_짬뽕2 = menu(1L, "짜장1_짬뽕2", BigDecimal.valueOf(23_000L), 면류, 짜장면_1그릇, 짬뽕_2그릇);
         MenuRequest 짜장1_짬뽕2_요청 = menuRequest("짜장1_짬뽕2_요청", BigDecimal.valueOf(23_000L), 1L, 짜장면_1그릇_요청, 짬뽕_2그릇_요청);
-        given(productService.findById(짜장면_1그릇_요청.getProductId())).willReturn(짜장면);
-        given(productService.findById(짬뽕_2그릇_요청.getProductId())).willReturn(짬뽕);
-        given(menuGroupService.findById(1L)).willReturn(면류);
+        given(productRepository.findById(짜장면_1그릇_요청.getProductId())).willReturn(Optional.of(짜장면));
+        given(productRepository.findById(짬뽕_2그릇_요청.getProductId())).willReturn(Optional.of(짬뽕));
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(면류));
         given(menuRepository.save(any())).willReturn(짜장1_짬뽕2);
 
         // when
