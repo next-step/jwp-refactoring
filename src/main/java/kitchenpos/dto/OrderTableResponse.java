@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.order.OrderTable;
+
 import java.util.Objects;
 
 public class OrderTableResponse {
@@ -34,6 +36,15 @@ public class OrderTableResponse {
         return empty;
     }
 
+    public static OrderTableResponse from(OrderTable orderTable) {
+        return new OrderTableResponse(
+                orderTable.getId(),
+                orderTable.getTableGroupId(),
+                orderTable.getNumberOfGuests(),
+                orderTable.isEmpty()
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,4 +62,6 @@ public class OrderTableResponse {
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
+
+
 }
