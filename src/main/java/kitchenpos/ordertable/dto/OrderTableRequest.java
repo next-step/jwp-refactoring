@@ -8,7 +8,7 @@ public class OrderTableRequest {
 
     protected OrderTableRequest() {}
 
-    private OrderTableRequest(int numberOfGuests, boolean empty) {
+    public OrderTableRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }

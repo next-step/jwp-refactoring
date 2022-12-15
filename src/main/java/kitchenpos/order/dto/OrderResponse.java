@@ -10,7 +10,7 @@ public class OrderResponse {
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemResponse> orderLineItems;
 
     protected OrderResponse() {
     }
@@ -20,7 +20,7 @@ public class OrderResponse {
             Long orderTableId,
             String orderStatus,
             LocalDateTime orderedTime,
-            List<OrderLineItem> orderLineItems
+            List<OrderLineItemResponse> orderLineItems
     ) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -35,7 +35,7 @@ public class OrderResponse {
                 order.getOrderTable().getId(),
                 order.getOrderStatus().name(),
                 order.getOrderedTime(),
-                order.getOrderLineItems()
+                OrderLineItemResponse.list(order.getOrderLineItems())
         );
     }
 
@@ -55,7 +55,7 @@ public class OrderResponse {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
 }

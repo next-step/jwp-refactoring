@@ -121,6 +121,10 @@
   * [x] MenuGroup
   * [x] Product
   * [x] Order
-  * [ ] TableGroup
-  * [ ] orderLineItem
+  * [x] TableGroup
+  * [x] orderLineItem
 * [ ] 코드 리팩토링
+  * [ ] 변수명
+    * test code의 request, result값
+    * 현실성 있는 데이터로 변경
+  * [ ] 인덴트

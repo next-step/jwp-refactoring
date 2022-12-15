@@ -39,7 +39,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        updateOrderLineItems(orderLineItems);
     }
 
     public Order(
@@ -51,7 +51,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        updateOrderLineItems(orderLineItems);
     }
 
     public Long getId() {
@@ -91,7 +91,12 @@ public class Order {
     }
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+
         this.orderLineItems = orderLineItems;
+    }
+    private void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = orderLineItems;
+        orderLineItems.forEach(item -> item.setOrder(this));
     }
 
     @Override
