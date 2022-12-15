@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
+    @BatchSize(size = 5)
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
