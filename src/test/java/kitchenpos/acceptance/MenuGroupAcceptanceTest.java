@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -59,14 +60,14 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     private void 메뉴_그룹_목록에_등록된_메뉴_그룹_포함됨(ExtractableResponse<Response> listResponse,
                                          List<ExtractableResponse<Response>> createResponses) {
 
-        List<MenuGroupRequest> MenuGroupRequests = listResponse.jsonPath().getList(".", MenuGroupRequest.class);
-        List<MenuGroupRequest> createdMenuGroupRequests = createResponses.stream()
-                .map(it -> it.as(MenuGroupRequest.class))
+        List<MenuGroupResponse> menuGroups = listResponse.jsonPath().getList(".", MenuGroupResponse.class);
+        List<MenuGroupResponse> createdMenuGroups = createResponses.stream()
+                .map(it -> it.as(MenuGroupResponse.class))
                 .collect(Collectors.toList());
 
         assertAll(
-                () -> assertThat(MenuGroupRequests).hasSize(2),
-                () -> assertThat(MenuGroupRequests).containsAll(createdMenuGroupRequests)
+                () -> assertThat(menuGroups).hasSize(2),
+                () -> assertThat(menuGroups).containsAll(createdMenuGroups)
         );
     }
 }
