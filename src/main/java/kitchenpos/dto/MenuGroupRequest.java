@@ -1,7 +1,5 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.MenuGroup;
-
 public class MenuGroupRequest {
     private String name;
 

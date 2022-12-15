@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.domain.product.ProductName;
 import kitchenpos.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

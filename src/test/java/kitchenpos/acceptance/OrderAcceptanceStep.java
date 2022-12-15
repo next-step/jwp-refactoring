@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
+import kitchenpos.domain.order.Order;
 import org.springframework.http.MediaType;
 
 public class OrderAcceptanceStep {

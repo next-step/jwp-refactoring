@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menu;
 
 import kitchenpos.exception.BadRequestException;
 import org.springframework.util.StringUtils;
@@ -7,16 +7,16 @@ import java.util.Objects;
 
 import static kitchenpos.utils.Message.INVALID_NAME_EMPTY;
 
-public class MenuGroupName {
+public class MenuName {
     private String name;
 
-    private MenuGroupName(String name) {
+    private MenuName(String name) {
         this.name = name;
     }
 
-    public static MenuGroupName from(String name) {
+    public static MenuName from(String name) {
         checkNotNull(name);
-        return new MenuGroupName(name);
+        return new MenuName(name);
     }
 
     private static void checkNotNull(String name) {
@@ -39,8 +39,8 @@ public class MenuGroupName {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuGroupName that = (MenuGroupName) o;
-        return name.equals(that.name);
+        MenuName menuName = (MenuName) o;
+        return name.equals(menuName.name);
     }
 
     @Override

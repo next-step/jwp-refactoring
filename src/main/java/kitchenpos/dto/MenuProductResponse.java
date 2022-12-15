@@ -1,7 +1,5 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.MenuProduct;
-
 import java.util.Objects;
 
 public class MenuProductResponse {

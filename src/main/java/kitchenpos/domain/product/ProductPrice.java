@@ -1,4 +1,5 @@
-package kitchenpos.domain;
+package kitchenpos.domain.product;
+
 
 import kitchenpos.utils.Validator;
 
@@ -9,29 +10,27 @@ import java.util.Objects;
 
 import static kitchenpos.utils.Message.INVALID_PRICE;
 
-
 @Embeddable
-public class MenuPrice {
+public class ProductPrice {
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal price;
 
-    protected MenuPrice() {
+    protected ProductPrice() {
     }
 
-    private MenuPrice(BigDecimal price) {
+    private ProductPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public static MenuPrice from(BigDecimal price) {
+    public static ProductPrice from(BigDecimal price) {
         Validator.checkPriceOverZero(price, INVALID_PRICE);
-        return new MenuPrice(price);
+        return new ProductPrice(price);
     }
 
     public BigDecimal getPrice() {
         return price;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -41,8 +40,8 @@ public class MenuPrice {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuPrice menuPrice = (MenuPrice) o;
-        return price.equals(menuPrice.price);
+        ProductPrice that = (ProductPrice) o;
+        return price.equals(that.price);
     }
 
     @Override

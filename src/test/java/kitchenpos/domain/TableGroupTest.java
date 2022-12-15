@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.product.TableGroup;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
