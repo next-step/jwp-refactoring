@@ -83,7 +83,7 @@ public abstract class AcceptanceTestStep<Q, P> {
 
     public void 삭제_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isNotEqualTo(HttpStatus.NO_CONTENT.value());
-    }ø
+    }
 
     protected abstract String getRequestPath();
 

@@ -6,16 +6,16 @@ import kitchenpos.ui.dto.OrderTableResponse;
 public class OrderTableFixture {
 
 	public static OrderTableRequest 주문_테이블() {
-		return new OrderTableRequest(0, false);
+		return new OrderTableRequest(0, true);
 	}
 
 	public static OrderTableResponse 주문_테이블(long id) {
-		return new OrderTableResponse(id, 0, false);
+		return new OrderTableResponse(id, 0, true);
 	}
 
 	public static OrderTableRequest 주문_불가_테이블(OrderTableResponse orderTableResponse) {
 		return 주문_테이블(orderTableResponse.getNumberOfGuests(),
-									  null);
+									  false);
 	}
 
 	public static OrderTableRequest 주문_테이블(int numberOfGuests) {

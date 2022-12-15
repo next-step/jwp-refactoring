@@ -7,6 +7,7 @@ public class TableGroupRequest {
 
 	private List<OrderTableId> orderTables;
 
+
 	static class OrderTableId {
 		private Long id;
 

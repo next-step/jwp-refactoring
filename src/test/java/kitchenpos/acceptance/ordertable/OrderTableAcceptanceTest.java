@@ -33,23 +33,31 @@ class OrderTableAcceptanceTest extends AcceptanceTest2 {
 	}
 
 	/**
-	 * Scenario: 주문 테이블 관리
+	 * Given 수정할 테이블이 주문 불가 테이블이고
 	 * When 주문 테이블을 주문 불가 테이블로 수정을 요청하면
 	 * Then 주문 테이블 수정에 성공한다
+	 */
+	@Test
+	void 주문_테이블_주문_불가로_수정() {
+		// given
+		OrderTableRequest 주문_불가_테이블 = OrderTableFixture.주문_불가_테이블(주문_테이블);
+		// when
+		ExtractableResponse<Response> 수정_요청_응답 = step.빈_주문_테이블_수정_요청(주문_테이블.getId(), 주문_불가_테이블);
+		// then
+		테이블_수정됨(수정_요청_응답);
+	}
+
+	/**
+	 * Given 수정할 손님의 수가 10명 이고
 	 * When 주문 테이블의 손님 수 수정을 요청하면
 	 * Then 주문 테이블 손님 수 수정에 성공한다
 	 */
 	@Test
-	void 주문_테이블_관리() {
+	void 주문_테이블_손님_수_수정() {
+		// given
+		OrderTableRequest 수정된_주문_테이블 = OrderTableFixture.주문_테이블(10);
 		// when
-		OrderTableRequest 주문_불가_테이블 = OrderTableFixture.주문_불가_테이블(주문_테이블);
-		ExtractableResponse<Response> 수정_요청_응답 = step.빈_주문_테이블_수정_요청(주문_테이블.getId(), 주문_불가_테이블);
-		// then
-		테이블_수정됨(수정_요청_응답);
-
-		// when
-		OrderTableRequest 수정된_주문_테이블 = OrderTableFixture.주문_테이블(1);
-		수정_요청_응답 = step.손님_수_수정_요청(주문_테이블.getId(), 수정된_주문_테이블);
+		ExtractableResponse<Response> 수정_요청_응답 = step.손님_수_수정_요청(주문_테이블.getId(), 수정된_주문_테이블);
 		// then
 		테이블_수정됨(수정_요청_응답);
 	}
@@ -105,6 +113,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest2 {
 	 * When 주문 테이블을 빈 테이블로 수정 요청할 경우
 	 * Then 주문 테이블 수정에 실패한다
 	 */
+	// TODO
 	// @Test
 	// void 주문_테이블이_그룹_테이블에_존재함() {
 	// 	// given
@@ -128,6 +137,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest2 {
 	 * When 주문 테이블을 빈 테이블로 변경 요청할 경우
 	 * Then 주문 테이블 수정에 실패한다
 	 */
+	// TODO
 	// @Test
 	// void 주문_상태가_조리중_이거나_식사중임() {
 	// 	// given

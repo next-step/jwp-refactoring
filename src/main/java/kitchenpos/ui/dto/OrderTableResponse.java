@@ -1,5 +1,10 @@
 package kitchenpos.ui.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import kitchenpos.domain.OrderTable2;
+
 public class OrderTableResponse {
 
 	private Long id;
@@ -13,6 +18,14 @@ public class OrderTableResponse {
 		this.id = id;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
+	}
+
+	public OrderTableResponse(OrderTable2 orderTable) {
+		this(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+	}
+
+	public static List<OrderTableResponse> of(List<OrderTable2> orderTables) {
+		return orderTables.stream().map(OrderTableResponse::new).collect(Collectors.toList());
 	}
 
 	public Long getId() {
