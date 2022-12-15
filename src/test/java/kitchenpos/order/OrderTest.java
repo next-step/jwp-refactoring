@@ -44,7 +44,7 @@ public class OrderTest {
     @Test
     void createOrderEmptyOrderTableExceptionTest() {
         //given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(10), true);
+        final OrderTable orderTable = new OrderTable(new NumberOfGuests(10), true);
         //when
         //then
         assertThatThrownBy(() -> new Order(orderTable, OrderStatus.COMPLETION, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2))))
@@ -56,7 +56,7 @@ public class OrderTest {
     @ValueSource(strings = {"COOKING","MEAL"})
     void checkCookingOrMealExceptionTest(OrderStatus orderStatus) {
         //given
-        Order order = new Order(orderTable, orderStatus, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final Order order = new Order(orderTable, orderStatus, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
         //when
         //then
         assertThatThrownBy(() -> order.checkCookingOrMeal())
@@ -72,7 +72,7 @@ public class OrderTest {
         if(changeOrderStatus == OrderStatus.COOKING) {
             orderStatus = OrderStatus.MEAL;
         }
-        Order order = new Order(orderTable, orderStatus, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final Order order = new Order(orderTable, orderStatus, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
         //when
         order.change(changeOrderStatus);
         //then
@@ -85,7 +85,7 @@ public class OrderTest {
     @ValueSource(strings = {"COOKING","MEAL"})
     void changeOrderStatusCompleteExceptionTest(OrderStatus changeOrderStatus) {
         //given
-        Order order = new Order(orderTable, OrderStatus.COMPLETION, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final Order order = new Order(orderTable, OrderStatus.COMPLETION, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
 
         //when
         //then

@@ -94,8 +94,8 @@ public class OrderServiceTest {
                 .willReturn(주문);
 
         //when
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
-        OrderResponse result = orderService.create(new OrderRequest(1L, orderLineItemRequests));
+        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final OrderResponse result = orderService.create(new OrderRequest(1L, orderLineItemRequests));
 
         //then
         orderCheck(result, 주문);
@@ -127,18 +127,16 @@ public class OrderServiceTest {
     @Test
     void createOrderWithNotExistMenuExceptionTest() {
         //given
-        OrderLineItem 주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-        OrderLineItem 주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
-        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
-        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final OrderLineItem 주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
+        final OrderLineItem 주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
+        final OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
 
         when(menuRepository.findById(라볶이세트.getId()))
                 .thenReturn(Optional.ofNullable(null));
 
-
         //when
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        //then
+        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
         assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, orderLineItemRequests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -152,7 +150,7 @@ public class OrderServiceTest {
         when(orderTableRepository.findById(주문테이블.getId()))
                 .thenReturn(Optional.ofNullable(null));
 
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
 
         //when
         //then
@@ -164,14 +162,14 @@ public class OrderServiceTest {
     @Test
     void createOrderWithEmptyOrderTableExceptionTest() {
         //given
-        OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), true);
+        final OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), true);
 
         when(menuRepository.findById(라볶이세트.getId()))
                 .thenReturn(Optional.ofNullable(라볶이세트));
         when(orderTableRepository.findById(주문테이블.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블));
 
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
 
         //when
         //then
@@ -183,17 +181,17 @@ public class OrderServiceTest {
     @Test
     void retrieveOrdersTest() {
         //given
-        OrderLineItem 주문항목3 = new OrderLineItem(3L, null, 라볶이세트, new Quantity(2));
-        Order 추가주문 = new Order(2L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(),
+        final OrderLineItem 주문항목3 = new OrderLineItem(3L, null, 라볶이세트, new Quantity(2));
+        final Order 추가주문 = new Order(2L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(),
                 new OrderLineItems(Arrays.asList(주문항목3)));
-        List<Order> orders = Arrays.asList(주문, 추가주문);
-        Map<Long, Order> orderMap = orders.stream()
+        final List<Order> orders = Arrays.asList(주문, 추가주문);
+        final Map<Long, Order> orderMap = orders.stream()
                 .collect(Collectors.toMap(Order::getId, order -> order));
         when(orderRepository.findAll())
                 .thenReturn(Arrays.asList(주문, 추가주문));
 
         //when
-        List<OrderResponse> result = orderService.list();
+        final List<OrderResponse> result = orderService.list();
 
         //then
         for (OrderResponse orderResponse : result) {
@@ -209,7 +207,7 @@ public class OrderServiceTest {
                 .thenReturn(Optional.ofNullable(주문));
 
         //when
-        OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);
+        final OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);
 
         //then
         assertThat(result.getOrderStatus())
@@ -233,7 +231,7 @@ public class OrderServiceTest {
     @Test
     void changeCompleteOrderStatusExceptionTest() {
         //given
-        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION, LocalDateTime.now(),
+        final Order 주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION, LocalDateTime.now(),
                 new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
 
         when(orderRepository.findById(주문.getId()))
