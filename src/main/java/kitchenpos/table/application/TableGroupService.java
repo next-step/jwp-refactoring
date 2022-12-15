@@ -1,9 +1,11 @@
 package kitchenpos.table.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -39,10 +41,13 @@ public class TableGroupService {
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
         OrderTables orderTables = tableGroup.orderTables();
-//        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-//                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                orderTables.list()
+                        .stream()
+                        .map(OrderTable::id)
+                        .collect(Collectors.toList()), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
         orderTables.ungroup();
     }
 

@@ -141,8 +141,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 테이블 해제시 조리 중이거나 식사중인 테이블은 해제할 수 없다.")
     void ungroupTableByOrderStatusCookingOrMeal() {
         // given
-        OrderTable orderTable = orderTable(1L, null, 4, false);
-        OrderTable orderTable2 = orderTable(2L, null, 3, false);
+        OrderTable orderTable = orderTable(1L, null, 4, true);
+        OrderTable orderTable2 = orderTable(2L, null, 3, true);
         TableGroup tableGroup = tableGroup(1L, Arrays.asList(orderTable, orderTable2));
         given(tableGroupRepository.findById(tableGroup.id())).willReturn(Optional.of(tableGroup));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable.id(), orderTable2.id()),
@@ -150,7 +150,8 @@ class TableGroupServiceTest {
                 .willReturn(true);
 
         // when
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.id()));
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.id()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -161,9 +162,9 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = orderTable(2L, null, 3, true);
         TableGroup tableGroup = tableGroup(1L, Arrays.asList(orderTable, orderTable2));
         given(tableGroupRepository.findById(tableGroup.id())).willReturn(Optional.of(tableGroup));
-//        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable.id(), orderTable2.id()),
-//                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-//                .willReturn(false);
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable.id(), orderTable2.id()),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+                .willReturn(false);
 
         // when
         tableGroupService.ungroup(tableGroup.id());
