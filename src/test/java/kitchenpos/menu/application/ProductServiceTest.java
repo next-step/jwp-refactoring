@@ -55,7 +55,7 @@ class ProductServiceTest {
         // then
         assertAll(
                 () -> assertThat(상품_등록.getName()).isEqualTo(강정치킨.getName()),
-                () -> assertThat(상품_등록.getPrice()).isEqualTo(강정치킨.getPrice())
+                () -> assertThat(상품_등록.getPrice()).isEqualTo(강정치킨.getPrice().getPrice())
         );
     }
 
@@ -80,9 +80,9 @@ class ProductServiceTest {
         assertAll(
                 () -> assertThat(상품목록).hasSize(2),
                 () -> assertThat(상품목록.get(0).getName()).isEqualTo(강정치킨.getName()),
-                () -> assertThat(상품목록.get(0).getPrice()).isEqualTo(강정치킨.getPrice()),
+                () -> assertThat(상품목록.get(0).getPrice()).isEqualTo(강정치킨.getPrice().getPrice()),
                 () -> assertThat(상품목록.get(1).getName()).isEqualTo(후라이드치킨.getName()),
-                () -> assertThat(상품목록.get(1).getPrice()).isEqualTo(후라이드치킨.getPrice())
+                () -> assertThat(상품목록.get(1).getPrice()).isEqualTo(후라이드치킨.getPrice().getPrice())
         );
     }
 

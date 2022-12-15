@@ -24,7 +24,7 @@ class PriceTest {
         Price price = Price.of(BigDecimal.valueOf(10_000));
 
         // when && then
-        Assertions.assertThatThrownBy(() -> price.validateTotalPrice(BigDecimal.valueOf(9000)))
+        Assertions.assertThatThrownBy(() -> price.validateTotalPrice(Price.of(BigDecimal.valueOf(9000))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -33,6 +33,7 @@ public class ProductService {
 
     public List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProducts) {
         List<MenuProduct> menuProductList = new ArrayList<>();
+
         for (MenuProductRequest menuProductRequest : menuProducts) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);

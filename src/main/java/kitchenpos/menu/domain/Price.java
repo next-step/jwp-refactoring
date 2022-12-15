@@ -26,13 +26,22 @@ public class Price {
         }
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void validateTotalPrice(BigDecimal totalPrice) {
-        if (price.compareTo(totalPrice) > 0) {
+    public void validateTotalPrice(Price totalPrice) {
+        if (price.compareTo(totalPrice.price) > 0) {
             throw new IllegalArgumentException("메뉴의 가격이 메뉴 상품 가격의 합보다 클 수 없습니다.");
         }
+    }
+
+    public Price multiply(Long quantity) {
+        BigDecimal result = price.multiply(BigDecimal.valueOf(quantity));
+        return Price.of(result);
+    }
+
+    public Price add(Price other) {
+        return Price.of(price.add(other.price));
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }

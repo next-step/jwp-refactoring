@@ -22,10 +22,10 @@ public class MenuProducts {
         }
     }
 
-    public BigDecimal totalPrice() {
+    public Price totalPrice() {
         return menuProducts.stream()
-                .map(menuProduct -> menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(MenuProduct::getTotalPrice)
+                .reduce(Price.of(BigDecimal.ZERO), Price::add);
     }
 
     public List<MenuProduct> getMenuProducts() {
