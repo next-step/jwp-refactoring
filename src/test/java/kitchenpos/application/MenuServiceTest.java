@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.port.MenuPort;
 import kitchenpos.port.MenuGroupPort;
 import kitchenpos.port.MenuProductPort;
 import kitchenpos.port.ProductPort;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,23 +46,27 @@ class MenuServiceTest {
     private MenuProduct 스테이크_이인분;
     private MenuProduct 파스타_삼인분;
 
+    private Menu 스테이크_파스타_빅세트;
+
+    private MenuGroup 스피빅그륩;
+
 
     @BeforeEach
     void setUp() {
 
         스테이크 = Product.of((BigDecimal.valueOf(30_000)), "스테이크");
         파스타 = Product.of(BigDecimal.valueOf(15_000), "파스타");
+        스피빅그륩 = MenuGroup.from("피자");
+        스테이크_파스타_빅세트 = Menu.of("스테이크_파스타_빅세트", Price.from(BigDecimal.valueOf(45_000)), 스피빅그륩, Arrays.asList(스테이크_이인분, 파스타_삼인분));
 
-        스테이크_이인분 = MenuProduct.of(1L, 1L, 스테이크.getId(), 2);
-        파스타_삼인분 = new MenuProduct(1L, 1L, 파스타.getId(), 3);
+        스테이크_이인분 = MenuProduct.of(스테이크_파스타_빅세트, 파스타, 2);
+        파스타_삼인분 = MenuProduct.of(스테이크_파스타_빅세트, 파스타, 3);
     }
 
 
     @Test
     @DisplayName("메뉴를 생성할 수 있다")
     void createMenu() {
-        Menu 스테이크_파스타_빅세트 = new Menu(1L, "스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 1L, Arrays.asList(스테이크_이인분, 파스타_삼인분));
-
         when(menuGroupPort.existsById(any())).thenReturn(true);
         when(productPort.findById(any())).thenReturn(Optional.of(스테이크));
         when(productPort.findById(any())).thenReturn(Optional.of(파스타));
@@ -70,7 +74,11 @@ class MenuServiceTest {
         when(menuProductPort.save(any())).thenReturn(스테이크_이인분);
         when(menuProductPort.save(any())).thenReturn(파스타_삼인분);
 
-        Menu result = menuService.create(스테이크_파스타_빅세트);
+        List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
+        MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", Price.from(BigDecimal.valueOf(3_000)), 스피빅그륩.getId(), productRequest);
+
+
+        Menu result = menuService.create(request);
 
         assertThat(result.getId()).isEqualTo(스테이크_파스타_빅세트.getId());
         assertThat(result.getName()).isEqualTo(스테이크_파스타_빅세트.getName());

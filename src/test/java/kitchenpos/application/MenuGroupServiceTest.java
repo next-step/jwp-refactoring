@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.port.MenuGroupPort;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +30,10 @@ class MenuGroupServiceTest {
     @Test
     @DisplayName("메뉴 그륩을 등록한다")
     void createMenuGroup() {
-        MenuGroup 피자 = new MenuGroup(1L, "피자");
+        MenuGroup 피자 = MenuGroup.from("피자");
         when(menuGroupPort.save(any())).thenReturn(피자);
 
-        MenuGroup result = menuGroupService.create(피자);
+        MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest("피자"));
 
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("피자");
@@ -40,8 +42,8 @@ class MenuGroupServiceTest {
     @Test
     @DisplayName("메뉴 그륩 리스트를 받아온다")
     void getMenuGroupList() {
-        MenuGroup 피자 = new MenuGroup(1L, "피자");
-        MenuGroup 치킨 = new MenuGroup(2L, "치킨");
+        MenuGroup 피자 = MenuGroup.from("피자");
+        MenuGroup 치킨 = MenuGroup.from("치킨");
 
 
         when(menuGroupPort.findAll()).thenReturn(Arrays.asList(피자, 치킨));
