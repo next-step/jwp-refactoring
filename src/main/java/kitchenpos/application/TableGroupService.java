@@ -49,8 +49,9 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(), OrderStatus.ungroupAble())) {
-            throw new IllegalArgumentException("단체 지정을 해제할 수 없는 주문 상태입니다.");
+        orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(), OrderStatus.cantUngroup());
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(), OrderStatus.cantUngroup())) {
+            throw new IllegalArgumentException("변경할 수 없는 주문 상태입니다.");
         }
         orderTables.ungroup();
     }
