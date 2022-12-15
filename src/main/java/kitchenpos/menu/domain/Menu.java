@@ -21,7 +21,10 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-    private Long menuGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -46,15 +49,15 @@ public class Menu {
         }
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts.addAll(menuProducts);
     }
 
-    public Menu(long id, Name name, Price price, long menuGroupId) {
+    public Menu(long id, Name name, Price price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
     public Long getId() {
@@ -63,14 +66,6 @@ public class Menu {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public String getName() {
