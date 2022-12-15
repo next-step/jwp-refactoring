@@ -112,6 +112,18 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("주문 테이블이 비어 있으면 에러가 발생한다.")
+    @Test
+    void createOrderTableEmpty() {
+        //given
+        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable(1L, null, 0, true)));
+
+        //when & then
+        assertThatThrownBy(() -> orderService.create(order))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 
     @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
