@@ -49,7 +49,7 @@ public class MenuProduct {
     }
 
     public Price totalPrice() {
-        return product.getPrice().multiply(quantity);
+        return product.calPrice(quantity);
     }
 
     public Long getSeq() {
