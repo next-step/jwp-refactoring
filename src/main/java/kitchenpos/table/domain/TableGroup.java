@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -30,6 +31,11 @@ public class TableGroup {
         }
         if (orderTables.size() < MINIMUM_SIZE) {
             throw new IllegalArgumentException(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
+        }
+        for (final OrderTable savedOrderTable : orderTables) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+                throw new IllegalArgumentException();
+            }
         }
         this.createdDate = LocalDateTime.now();
         this.orderTables.addAll(orderTables);
