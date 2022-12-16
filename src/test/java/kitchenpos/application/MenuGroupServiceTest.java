@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,6 @@ public class MenuGroupServiceTest {
     }
 
     public static MenuGroup 메뉴_그룹(String name) {
-        return MenuGroup.from(name);
+        return MenuGroup.from(Name.from(name));
     }
 }

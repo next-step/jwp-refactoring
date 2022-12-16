@@ -15,22 +15,15 @@ public class MenuGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String name;
+    private Name name;
 
-    private MenuGroup(String name) {
+    private MenuGroup(Name name) {
 
         this.name = name;
     }
 
-    public static MenuGroup from(String name) {
-        validEmptyName(name);
+    public static MenuGroup from(Name name) {
         return new MenuGroup(name);
-    }
-
-    private static void validEmptyName(String name) {
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("이름은 빈 값이 아니어야 합니다");
-        }
     }
 
     public MenuGroup() {
@@ -40,16 +33,8 @@ public class MenuGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public Name getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override
