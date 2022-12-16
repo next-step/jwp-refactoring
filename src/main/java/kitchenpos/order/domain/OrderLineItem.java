@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 @Table(name = "order_line_item")
@@ -24,19 +23,18 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Embedded
+    private OrderMenu orderMenu;
 
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, Order order, OrderMenu orderMenu, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.orderMenu = orderMenu;
         this.quantity = Quantity.from(quantity);
     }
 
@@ -48,8 +46,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public OrderMenu getOrderMenu() {
+        return orderMenu;
     }
 
     public Quantity getQuantity() {
@@ -65,7 +63,7 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return menu.getId();
+        return orderMenu.getMenuId();
     }
 
     public void setOrder(Order order) {
@@ -76,7 +74,7 @@ public class OrderLineItem {
 
         private Long seq;
         private Order order;
-        private Menu menu;
+        private OrderMenu orderMenu;
         private long quantity;
 
         public Builder seq(Long seq) {
@@ -89,8 +87,8 @@ public class OrderLineItem {
             return this;
         }
 
-        public Builder menu(Menu menu) {
-            this.menu = menu;
+        public Builder orderMenu(OrderMenu orderMenu) {
+            this.orderMenu = orderMenu;
             return this;
         }
 
@@ -100,7 +98,7 @@ public class OrderLineItem {
         }
 
         public OrderLineItem build() {
-            return new OrderLineItem(seq, order, menu, quantity);
+            return new OrderLineItem(seq, order, orderMenu, quantity);
         }
     }
 }

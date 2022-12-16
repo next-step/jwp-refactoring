@@ -39,20 +39,12 @@ public class Order {
     public Order() {}
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrderTableNotEmpty(orderTable);
-
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = OrderLineItems.from(orderLineItems);
         this.orderLineItems.setOrder(this);
-    }
-
-    private void validateOrderTableNotEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

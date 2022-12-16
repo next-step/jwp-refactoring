@@ -1,5 +1,9 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
+
 public class OrderLineItemRequest {
 
     private Long menuId;
@@ -11,6 +15,19 @@ public class OrderLineItemRequest {
     public OrderLineItemRequest(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public OrderLineItem toOrderLineItem(Menu menu) {
+        OrderMenu orderMenu = new OrderMenu.Builder()
+                .menuId(menu.getId())
+                .menuName(menu.getNameValue())
+                .menuPrice(menu.getPriceValue())
+                .build();
+
+        return new OrderLineItem.Builder()
+                .orderMenu(orderMenu)
+                .quantity(this.quantity)
+                .build();
     }
 
     public Long getMenuId() {

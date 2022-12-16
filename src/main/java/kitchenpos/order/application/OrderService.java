@@ -1,20 +1,18 @@
 package kitchenpos.order.application;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +33,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItemRequests());
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        OrderValidator.validateCreateOrder(orderTable, orderLineItems);
         Order order = orderRepository.save(new Order.Builder()
                 .orderTable(orderTable)
                 .orderLineItems(orderLineItems)
@@ -57,23 +56,19 @@ public class OrderService {
     }
 
     private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        Set<Menu> menuSet = new HashSet<>();
-        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(new OrderLineItem.Builder()
-                    .menu(menu)
-                    .quantity(orderLineItemRequest.getQuantity())
-                    .build());
-            menuSet.add(menu);
-        }
-        validateOrderLineItemsSizeEqualsMenuSize(orderLineItems, menuSet);
-        return orderLineItems;
+        validateNotDuplicatedMenuIds(orderLineItemRequests);
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(findMenuById(orderLineItemRequest.getMenuId())))
+                .collect(Collectors.toList());
     }
 
-    private void validateOrderLineItemsSizeEqualsMenuSize(List<OrderLineItem> orderLineItems, Set<Menu> menuSet) {
-        if (orderLineItems.size() != menuSet.size()) {
-            throw new IllegalArgumentException();
+    private void validateNotDuplicatedMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
+        boolean duplicatedMenuIds = orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .distinct()
+                .count() != orderLineItemRequests.size();
+        if (duplicatedMenuIds) {
+            throw new IllegalArgumentException("메뉴가 중복되었습니다.");
         }
     }
 
