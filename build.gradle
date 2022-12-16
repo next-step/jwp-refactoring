@@ -13,11 +13,17 @@ repositories {
 }
 
 dependencies {
+    // spring
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // db
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
+
+    // test
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

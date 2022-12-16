@@ -10,6 +10,21 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
+    public Order() {
+
+    }
+
+    // 신규 주문 등록용
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+    }
+
+    // 주문 상태 변경용
+    public Order(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus.name();
+    }
+
     public Long getId() {
         return id;
     }
