@@ -28,7 +28,7 @@ public class OrderValidatorTest {
     void create_order_line_items_is_empty() {
         // given
         Long orderTableId = 1L;
-        Order order = orderParam(orderTableId, Collections.emptyList());
+        Order order = savedOrder(1L, orderTableId, Collections.emptyList());
         long menuCount = 0;
         OrderTable orderTable = savedOrderTable(orderTableId, false);
 
@@ -42,9 +42,9 @@ public class OrderValidatorTest {
     void create_order_line_items_not_exists() {
         // given
         Long orderTableId = 1L;
-        Order order = orderParam(orderTableId, Arrays.asList(
-            orderLineItemParam(1L, 1),
-            orderLineItemParam(2L, 2))
+        Order order = savedOrder(1L, orderTableId, Arrays.asList(
+            generateOrderLineItem(1L, 1L),
+            generateOrderLineItem(2L, 2L))
         );
         long menuCount = 1;
         OrderTable orderTable = savedOrderTable(orderTableId, false);
@@ -59,9 +59,9 @@ public class OrderValidatorTest {
     void create_order_table_is_empty() {
         // given
         Long orderTableId = 1L;
-        Order order = orderParam(1L, Arrays.asList(
-            orderLineItemParam(1L, 1),
-            orderLineItemParam(2L, 2))
+        Order order = savedOrder(1L, orderTableId, Arrays.asList(
+            generateOrderLineItem(1L, 1L),
+            generateOrderLineItem(2L, 2L))
         );
         long menuCount = 2;
         OrderTable orderTable = savedOrderTable(orderTableId, true);

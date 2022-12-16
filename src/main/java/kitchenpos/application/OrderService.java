@@ -1,16 +1,21 @@
 package kitchenpos.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 
 @Service
 public class OrderService {
@@ -32,15 +37,31 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
+    public OrderResponse create(final OrderRequest orderRequest) {
+        final Order order = generateOrder(orderRequest);
         final OrderLineItems orderLineItems = new OrderLineItems(order.getOrderLineItems());
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블 ID 입니다."));
         final long menuCount = menuRepository.countByIdIn(orderLineItems.toMenuIds());
 
         orderValidator.validateSave(order, orderTable, menuCount);
+        return OrderResponse.from(orderRepository.save(order));
+    }
 
-        return orderRepository.save(order);
+    private Order generateOrder(OrderRequest orderRequest) {
+        return Order.generate(
+            orderRequest.getOrderTableId(),
+            orderRequest.getOrderLineItems().stream()
+                .map(this::generateOrderLineItem)
+                .collect(Collectors.toList())
+        );
+    }
+
+    private OrderLineItem generateOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
+        return OrderLineItem.generate(
+            orderLineItemRequest.getMenuId(),
+            orderLineItemRequest.getQuantity()
+        );
     }
 
     public List<Order> list() {

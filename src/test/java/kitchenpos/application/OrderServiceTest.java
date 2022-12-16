@@ -4,6 +4,7 @@ import static kitchenpos.domain.OrderFixture.*;
 import static kitchenpos.domain.OrderLineItemFixture.*;
 import static kitchenpos.domain.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
@@ -27,6 +28,8 @@ import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -50,14 +53,14 @@ class OrderServiceTest {
         Long orderTableId = 1L;
         Long menuId1 = 1L;
         Long menuId2 = 2L;
-        Order order = orderParam(orderTableId, Arrays.asList(
-            orderLineItemParam(menuId1, 1),
-            orderLineItemParam(menuId2, 2))
+        OrderRequest orderRequest = orderRequest(orderTableId, Arrays.asList(
+            orderLineItemRequest(menuId1, 1L),
+            orderLineItemRequest(menuId2, 2L))
         );
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -68,12 +71,9 @@ class OrderServiceTest {
         Long orderTableId = 1L;
         Long menuId1 = 1L;
         Long menuId2 = 2L;
-        OrderLineItem orderLineItem1 = orderLineItemParam(menuId1, 1);
-        OrderLineItem orderLineItem2 = orderLineItemParam(menuId2, 2);
-
-        Order order = orderParam(orderTableId, Arrays.asList(
-            orderLineItem1,
-            orderLineItem2
+        OrderRequest order = orderRequest(orderTableId, Arrays.asList(
+            orderLineItemRequest(menuId1, 1),
+            orderLineItemRequest(menuId2, 2)
         ));
         OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L);
         OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L);
@@ -83,17 +83,21 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(menuCount);
         OrderTable orderTable = savedOrderTable(orderTableId, false);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.save(order)).willReturn(savedOrder);
-        doNothing().when(orderValidator).validateSave(order, orderTable, menuCount);
+        given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
+        doNothing().when(orderValidator).validateSave(any(Order.class), any(OrderTable.class), anyLong());
 
         // when
-        Order actual = orderService.create(order);
+        OrderResponse actual = orderService.create(order);
 
         // then
-        assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId());
-        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(actual.getOrderedTime()).isNotNull();
-        assertThat(actual.getOrderLineItems()).containsExactly(savedOrderLineItem1, savedOrderLineItem2);
+        assertAll(
+            () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
+            () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+            () -> assertThat(actual.getOrderedTime()).isNotNull(),
+            () -> assertThat(actual.getOrderLineItems()).hasSize(2),
+            () -> assertThat(actual.getOrderLineItems().get(0).getSeq()).isEqualTo(1L),
+            () -> assertThat(actual.getOrderLineItems().get(1).getSeq()).isEqualTo(2L)
+        );
     }
 
     @DisplayName("주문 목록 조회 API")
@@ -119,7 +123,7 @@ class OrderServiceTest {
     void changeOrderStatus_save_order_not_exists(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
-        Order order = orderParam(orderStatus);
+        Order order = orderRequest(orderStatus);
         given(orderRepository.findById(orderId)).willReturn(Optional.empty());
 
         // when, then
@@ -133,7 +137,7 @@ class OrderServiceTest {
     void changeOrderStatus_save_order_already_completion(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
-        Order order = orderParam(orderStatus);
+        Order order = orderRequest(orderStatus);
         given(orderRepository.findById(orderId)).willReturn(
             Optional.of(savedOrder(orderId, OrderStatus.COMPLETION)));
 
@@ -148,7 +152,7 @@ class OrderServiceTest {
     void changeOrderStatus(OrderStatus orderStatus) {
         // given
         Long orderId = 1L;
-        Order order = orderParam(orderStatus);
+        Order order = orderRequest(orderStatus);
         List<OrderLineItem> savedOrderLineItems = Collections.singletonList(savedOrderLineItem(1L));
         Order savedOrder = savedOrder(orderId, OrderStatus.COOKING, savedOrderLineItems);
         given(orderRepository.findById(orderId)).willReturn(Optional.of(savedOrder));

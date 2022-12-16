@@ -21,6 +21,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public static OrderLineItem generate(Long menuId, long quantity) {
+        return new OrderLineItem(null, menuId, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }

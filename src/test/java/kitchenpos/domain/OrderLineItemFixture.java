@@ -1,10 +1,16 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.OrderLineItemRequest;
+
 public class OrderLineItemFixture {
     private OrderLineItemFixture() {
     }
 
-    public static OrderLineItem orderLineItemParam(long menuId, int quantity) {
+    public static OrderLineItemRequest orderLineItemRequest(Long menuId, long quantity) {
+        return new OrderLineItemRequest(menuId, quantity);
+    }
+
+    public static OrderLineItem generateOrderLineItem(long menuId, long quantity) {
         return new OrderLineItem(null, menuId, quantity);
     }
 

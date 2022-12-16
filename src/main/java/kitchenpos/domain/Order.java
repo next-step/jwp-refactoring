@@ -28,7 +28,7 @@ public class Order {
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus = OrderStatus.COOKING;
+    private OrderStatus orderStatus;
 
     @CreatedDate
     private LocalDateTime orderedTime;
@@ -46,6 +46,10 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order generate(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, OrderStatus.COOKING, null, orderLineItems);
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
