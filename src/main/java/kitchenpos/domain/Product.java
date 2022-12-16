@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -16,11 +15,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String name;
+    private Name name;
     @Column
-    private BigDecimal price;
+    private Price price;
 
-    private Product(String name, BigDecimal price) {
+    private Product(Name name, Price price) {
         this.name = name;
         this.price = price;
     }
@@ -28,46 +27,20 @@ public class Product {
     public Product() {
     }
 
-    public static Product of(String name, BigDecimal price) {
-        validNameLength(name);
-        validMinusPrice(price);
+    public static Product of(Name name, Price price) {
         return new Product(name, price);
-    }
-
-    private static void validNameLength(String name) {
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("이름은 빈 값이 아니어야 합니다");
-        }
-    }
-
-    private static void validMinusPrice(BigDecimal price) {
-        if (price.intValue() < 0) {
-            throw new IllegalArgumentException("가격은 0이상 이어야 합니다");
-        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     @Override

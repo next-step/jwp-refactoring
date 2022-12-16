@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -16,11 +18,12 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
+    @Transactional(isolation = READ_COMMITTED)
     public Product create(final Product request) {
         return productRepository.save(Product.of(request.getName(), request.getPrice()));
     }
 
+    @Transactional(readOnly = true)
     public List<Product> list() {
         return productRepository.findAll();
     }
