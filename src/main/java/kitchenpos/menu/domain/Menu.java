@@ -37,6 +37,7 @@ public class Menu {
     }
 
     public static Menu of(Name name, Price price, Long menuGroupId, MenuProductBag menuProducts) {
+        checkValidPrice(price, menuProducts);
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
@@ -85,19 +86,19 @@ public class Menu {
         return this.menuProducts.productList();
     }
 
-    public void checkValidPrice() {
-        Price sum = totalPrice();
-        if (this.price.moreThan(sum)) {
+    private static void checkValidPrice(Price price, MenuProductBag menuProducts) {
+        Price sum = totalPrice(menuProducts);
+        if (price.moreThan(sum)) {
             throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총 합과 같거나 작아야합니다");
         }
     }
 
-    private Price totalPrice() {
-        return this.menuProducts.totalPrice();
+    private static Price totalPrice(MenuProductBag menuProducts) {
+        return menuProducts.totalPrice();
 
     }
 
-    public void setMenuToMenuProducts() {
+    public void updateMenuToMenuProducts() {
         this.menuProducts.setMenuToMenuProducts(this);
     }
 }

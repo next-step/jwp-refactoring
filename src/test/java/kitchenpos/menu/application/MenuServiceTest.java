@@ -96,14 +96,14 @@ public class MenuServiceTest {
     void 생성_예외_메뉴의_가격이_상품_목록의_가격_합보다_큰_경우() {
         //given:
         final int expensivePrice = 99999;
-        final Menu 메뉴 = 메뉴(Name.from("자메이카 통다리 1인 세트"),
-                Price.from(BigDecimal.valueOf(expensivePrice)),
-                menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
-                MenuProductBag.from(Arrays.asList(
-                        메뉴_상품(productRepository.save(상품_통다리()), 5),
-                        메뉴_상품(productRepository.save(상품_콜라()), 1))));
         //when,then:
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(메뉴));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(
+                메뉴(Name.from("자메이카 통다리 1인 세트"),
+                        Price.from(BigDecimal.valueOf(expensivePrice)),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
+                        MenuProductBag.from(Arrays.asList(
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1))))));
     }
 
     @DisplayName("목록 조회 성공")

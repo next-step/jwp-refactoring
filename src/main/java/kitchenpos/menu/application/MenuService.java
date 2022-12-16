@@ -22,11 +22,12 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        menuGroupService.existsById(menu.getMenuGroupId());
-        productService.existProducts(menu.productList());
-        menu.checkValidPrice();
-        menu.setMenuToMenuProducts();
+    public Menu create(final Menu requestMenu) {
+        menuGroupService.existsById(requestMenu.getMenuGroupId());
+        productService.existProducts(requestMenu.productList());
+        final Menu menu = Menu.of(requestMenu.getName(), requestMenu.getPrice(), requestMenu.getMenuGroupId(),
+                requestMenu.getMenuProducts());
+        menu.updateMenuToMenuProducts();
         return menuRepository.save(menu);
     }
 
