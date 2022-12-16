@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.ui.dto.ProductRequest;
+import kitchenpos.ui.dto.ProductResponse;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,17 +22,21 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
+    public ProductResponse create(ProductRequest productRequest) {
+        return new ProductResponse(create(productRequest.toProduct()));
+    }
+
+    @Transactional
+    public Product create(Product product) {
         return productRepository.save(product);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        return ProductResponse.of(productRepository.findAll());
     }
 
-    public Product findById(Long productId) {
-        return productRepository.findById(productId)
-            .orElseThrow(EntityNotFoundException::new);
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 
     public List<Product> findAllById(List<Long> productsId) {

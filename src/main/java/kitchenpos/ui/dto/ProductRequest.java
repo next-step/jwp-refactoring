@@ -1,5 +1,7 @@
 package kitchenpos.ui.dto;
 
+import kitchenpos.domain.Product;
+
 public class ProductRequest {
 
 	private String name;
@@ -19,5 +21,9 @@ public class ProductRequest {
 
 	public Long getPrice() {
 		return price;
+	}
+
+	public Product toProduct() {
+		return new Product(name, price);
 	}
 }

@@ -52,7 +52,7 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(expectedProducts);
 
         // when
-        List<Product> actualProducts = productService.list();
+        List<Product> actualProducts = productService.findAll();
 
         // then
         assertThat(actualProducts).containsExactlyInAnyOrderElementsOf(expectedProducts);

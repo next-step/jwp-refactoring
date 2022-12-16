@@ -35,7 +35,7 @@ class MenuGroupServiceTest {
 	@Test
 	@DisplayName("메뉴 목록 조회")
 	void testMenuLst() {
-		menuGroupService.list();
+		menuGroupService.findAll();
 
 		verify(menuGroupRepository, times(1)).findAll();
 	}
