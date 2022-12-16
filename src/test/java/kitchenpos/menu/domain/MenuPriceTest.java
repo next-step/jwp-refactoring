@@ -16,7 +16,7 @@ public class MenuPriceTest {
     @Test
     public void throwsExceptionWhenNullAmount() {
         assertThatThrownBy(() -> MenuPrice.of(null))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴가격이 0보다작으면 예외발생")
