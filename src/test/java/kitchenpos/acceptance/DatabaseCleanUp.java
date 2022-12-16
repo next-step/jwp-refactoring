@@ -34,7 +34,7 @@ public class DatabaseCleanUp implements InitializingBean {
 		try {
 			metaData = dataSource.getConnection().getMetaData();
 			String[] types = {"TABLE"};
-			ResultSet resultSet = metaData.getTables(null, null, "%", types);
+			ResultSet resultSet = metaData.getTables(null, "test", "%", types);
 			while (resultSet.next()) {
 				tableNames.add(resultSet.getString(3));
 			}
