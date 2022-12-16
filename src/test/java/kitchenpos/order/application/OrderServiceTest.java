@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -21,6 +21,8 @@ import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,9 +37,11 @@ class OrderServiceTest {
     @Mock
     private OrderValidator orderValidator;
     @Mock
-    private MenuService menuService;
-    @Mock
     private OrderRepository orderRepository;
+    @Mock
+    private MenuRepository menuRepository;
+    @Mock
+    private OrderTableRepository orderTableRepository;
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
@@ -45,7 +49,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuService, orderRepository, orderLineItemRepository, orderValidator);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
     }
 
     @Test
@@ -53,7 +57,6 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(menuService.countByIdIn(any())).willReturn(2L);
         given(orderRepository.save(any())).willReturn(order);
 
         Order order = orderService.create(orderRequest);
@@ -75,7 +78,9 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(menuService.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1, false)));
+        orderValidator = new OrderValidator(orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
 
         ThrowingCallable 없는_메뉴가_포함된_주문시도 = () -> orderService.create(orderRequest);
 
@@ -87,6 +92,9 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
+        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
+        orderValidator = new OrderValidator(orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
 
         ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(orderRequest);
 
@@ -98,6 +106,9 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1, true)));
+        orderValidator = new OrderValidator(orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
 
         ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(orderRequest);
 

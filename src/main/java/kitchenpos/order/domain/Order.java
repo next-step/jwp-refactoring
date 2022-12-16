@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.order.validator.OrderValidator;
 
 @Entity
 @Table(name = "orders")
@@ -47,10 +48,6 @@ public class Order {
         orderLineItems.addOrderLineItems(orderLineItemsParam);
     }
 
-    public List<Long> makeMenuIds() {
-        return orderLineItems.makeMenuIds();
-    }
-
     public void validateOrderLineItemsSizeAndMenuCount(long menuCount) {
         orderLineItems.validateOrderLineItemsSizeAndMenuCount(menuCount);
     }
@@ -58,6 +55,20 @@ public class Order {
     public void changeStatus(String orderStatusParam) {
         validateOrderStatus();
         this.orderStatus = OrderStatus.valueOf(orderStatusParam);
+    }
+
+    private void validateOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), getOrderStatus())) {
+            throw new IllegalArgumentException("완료 상태의 주문은 상태를 변경할 수 없습니다.");
+        }
+    }
+
+    public void validateCreation(OrderValidator orderValidator) {
+        orderValidator.validateCreation(this);
+    }
+
+    public List<Long> makeMenuIds() {
+        return orderLineItems.makeMenuIds();
     }
 
     public Long getId() {
@@ -78,11 +89,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
-    }
-
-    private void validateOrderStatus() {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), getOrderStatus())) {
-            throw new IllegalArgumentException("완료 상태의 주문은 상태를 변경할 수 없습니다.");
-        }
     }
 }

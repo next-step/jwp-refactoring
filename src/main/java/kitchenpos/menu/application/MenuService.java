@@ -50,11 +50,6 @@ public class MenuService {
         return menus;
     }
 
-    @Transactional(readOnly = true)
-    public long countByIdIn(List<Long> makeMenuIds) {
-        return menuRepository.countByIdIn(makeMenuIds);
-    }
-
     private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
         return menuRequest.getMenuProductRequests().stream()
                 .map(menuProductRequest -> {

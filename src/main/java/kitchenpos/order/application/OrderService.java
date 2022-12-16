@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -15,15 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class OrderService {
 
-    private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(MenuService menuService, OrderRepository orderRepository,
+    public OrderService(OrderRepository orderRepository,
                         OrderLineItemRepository orderLineItemRepository,
                         OrderValidator orderValidator) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderValidator = orderValidator;
@@ -32,8 +29,7 @@ public class OrderService {
     @Transactional
     public Order create(final OrderRequest orderRequest) {
         Order order = new Order(orderRequest.getOrderTableId(), orderRequest.getOrderLineItems());
-        orderValidator.validateOrderTable(order);
-        order.validateOrderLineItemsSizeAndMenuCount(menuService.countByIdIn(order.makeMenuIds()));
+        order.validateCreation(orderValidator);
 
         return orderRepository.save(order);
     }
