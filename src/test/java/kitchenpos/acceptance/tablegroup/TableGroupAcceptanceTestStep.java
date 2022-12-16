@@ -10,8 +10,8 @@ import kitchenpos.ui.dto.TableGroupResponse;
 
 public class TableGroupAcceptanceTestStep extends AcceptanceTestStep<TableGroupRequest, TableGroupResponse> {
 
-	static final String GROUP_REQUEST_PATH = "/api/table-groups";
-	static final String UNGROUP_REQUEST_PATH = "/api/table-groups/{tableGroupId}";
+	private static final String GROUP_REQUEST_PATH = "/api/table-groups";
+	private static final String UNGROUP_REQUEST_PATH = "/api/table-groups/{tableGroupId}";
 
 	public TableGroupAcceptanceTestStep() {
 		super(TableGroupResponse.class);

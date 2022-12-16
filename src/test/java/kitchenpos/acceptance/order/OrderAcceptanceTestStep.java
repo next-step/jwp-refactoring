@@ -15,8 +15,8 @@ import kitchenpos.ui.dto.OrderTableResponse;
 
 public class OrderAcceptanceTestStep extends AcceptanceTestStep<OrderRequest, OrderResponse> {
 
-	static final String REQUEST_PATH = "/api/orders";
-	static final String ORDER_STATUS_REQUEST_PATH = "/api/orders/{orderId}/order-status";
+	private static final String REQUEST_PATH = "/api/orders";
+	private static final String ORDER_STATUS_REQUEST_PATH = "/api/orders/{orderId}/order-status";
 
 	public OrderAcceptanceTestStep() {
 		super(OrderResponse.class);

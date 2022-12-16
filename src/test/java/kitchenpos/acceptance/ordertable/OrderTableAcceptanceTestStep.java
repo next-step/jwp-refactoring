@@ -10,10 +10,9 @@ import kitchenpos.ui.dto.OrderTableResponse;
 
 public class OrderTableAcceptanceTestStep extends AcceptanceTestStep<OrderTableRequest, OrderTableResponse> {
 
-	static final String TABLES_REQUEST_PATH = "/api/tables";
-	static final String EMPTY_REQUEST_PATH = "/api/tables/{orderTableId}/empty";
-	static final String NUMBER_OF_GUESTS_REQUEST_PATH = "/api/tables/{orderTableId}/number-of-guests";
-
+	private static final String TABLES_REQUEST_PATH = "/api/tables";
+	private static final String EMPTY_REQUEST_PATH = "/api/tables/{orderTableId}/empty";
+	private static final String NUMBER_OF_GUESTS_REQUEST_PATH = "/api/tables/{orderTableId}/number-of-guests";
 
 	public OrderTableAcceptanceTestStep() {
 		super(OrderTableResponse.class);

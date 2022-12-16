@@ -8,7 +8,7 @@ import kitchenpos.ui.dto.MenuResponse;
 
 public class MenuAcceptanceTestStep extends AcceptanceTestStep<MenuRequest, MenuResponse> {
 
-	static final String REQUEST_PATH = "/api/menus";
+	private static final String REQUEST_PATH = "/api/menus";
 
 	public MenuAcceptanceTestStep() {
 		super(MenuResponse.class);

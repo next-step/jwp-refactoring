@@ -8,7 +8,7 @@ import kitchenpos.ui.dto.ProductResponse;
 
 public class ProductAcceptanceTestStep extends AcceptanceTestStep<ProductRequest, ProductResponse> {
 
-	static final String REQUEST_PATH = "/api/products";
+	private static final String REQUEST_PATH = "/api/products";
 
 	public ProductAcceptanceTestStep() {
 		super(ProductResponse.class);

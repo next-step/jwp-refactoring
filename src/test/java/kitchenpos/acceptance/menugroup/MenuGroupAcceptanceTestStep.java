@@ -8,7 +8,7 @@ import kitchenpos.ui.dto.MenuGroupResponse;
 
 public class MenuGroupAcceptanceTestStep extends AcceptanceTestStep<MenuGroupRequest, MenuGroupResponse> {
 
-	static final String REQUEST_PATH = "/api/menu-groups";
+	private static final String REQUEST_PATH = "/api/menu-groups";
 
 	public MenuGroupAcceptanceTestStep() {
 		super(MenuGroupResponse.class);
