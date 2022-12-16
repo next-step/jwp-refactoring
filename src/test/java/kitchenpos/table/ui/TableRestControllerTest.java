@@ -7,6 +7,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.OrderTableException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,6 +61,18 @@ public class TableRestControllerTest extends ControllerTest {
         webMvc.perform(post("/api/tables")
                         .content(mapper.writeValueAsString(new OrderTableRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("주문테이블생성중 테이블그룹이 사용중이면 실패응답")
+    @Test
+    public void throwsExceptionWhenTableGroupUsing() throws Exception {
+        doThrow(new OrderTableException("테이블 그룹이 이미 존재합니다")).when(tableService).create(any(OrderTableRequest.class));
+
+        webMvc.perform(post("/api/tables")
+                .content(mapper.writeValueAsString(new OrderTableRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("테이블 그룹이 이미 존재합니다")))
                 .andExpect(status().isBadRequest());
     }
 

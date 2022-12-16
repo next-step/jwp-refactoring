@@ -9,6 +9,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.OrderException;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,6 +72,18 @@ public class OrderRestControllerTest extends ControllerTest {
         webMvc.perform(post("/api/orders")
                         .content(mapper.writeValueAsString(new OrderRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("주문생성중 주문테이블이 없으면 실패응답")
+    @Test
+    public void throwsExceptionWhenNoneOrderTable() throws Exception {
+        doThrow(new OrderException("주문테이블이 없습니다")).when(orderService).create(any(OrderRequest.class));
+
+        webMvc.perform(post("/api/orders")
+                .content(mapper.writeValueAsString(new OrderRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("주문테이블이 없습니다")))
                 .andExpect(status().isBadRequest());
     }
 
