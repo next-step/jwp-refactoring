@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성_요청;
 import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성됨;
 import static kitchenpos.menu.fixture.MenuTestFixture.*;
-import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성_요청;
-import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성됨;
+import static kitchenpos.product.fixture.ProductTestFixture.상품_생성_요청;
+import static kitchenpos.product.fixture.ProductTestFixture.상품_생성됨;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {

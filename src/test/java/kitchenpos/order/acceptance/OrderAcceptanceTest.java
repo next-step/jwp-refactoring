@@ -6,10 +6,10 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +19,9 @@ import java.math.BigDecimal;
 import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성_요청;
 import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성됨;
 import static kitchenpos.menu.fixture.MenuTestFixture.*;
-import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성_요청;
-import static kitchenpos.menu.fixture.ProductTestFixture.상품_생성됨;
-import static kitchenpos.order.fixture.OrderTableTestFixture.*;
+import static kitchenpos.product.fixture.ProductTestFixture.상품_생성_요청;
+import static kitchenpos.product.fixture.ProductTestFixture.상품_생성됨;
+import static kitchenpos.table.fixture.OrderTableTestFixture.*;
 import static kitchenpos.order.fixture.OrderTestFixture.*;
 
 @DisplayName("주문 관련 기능 인수 테스트")
