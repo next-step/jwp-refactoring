@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto;
 
-import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.OrderTable;
 
 public class OrderTableRequest {
 
@@ -23,8 +23,8 @@ public class OrderTableRequest {
 		return empty;
 	}
 
-	public OrderTable2 toOrderTable() {
-		return new OrderTable2(numberOfGuests, empty);
+	public OrderTable toOrderTable() {
+		return new OrderTable(numberOfGuests, empty);
 	}
 
 }

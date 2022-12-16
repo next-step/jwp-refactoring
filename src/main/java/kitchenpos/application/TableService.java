@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.exception.AlreadyJoinedTableGroupException;
 import kitchenpos.exception.EntityNotFoundException;
@@ -16,28 +14,22 @@ import kitchenpos.ui.dto.OrderTableResponse;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao,
-                        final OrderTableDao orderTableDao,
-                        OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(OrderTableRequest request) {
-        OrderTable2 orderTable = request.toOrderTable();
+        OrderTable orderTable = request.toOrderTable();
         orderTable = orderTableRepository.save(orderTable);
 
         return new OrderTableResponse(orderTable);
     }
 
     @Transactional
-    public OrderTable2 create(final OrderTable2 orderTable) {
+    public OrderTable create(final OrderTable orderTable) {
         orderTable.detachTableGroup();
         return orderTableRepository.save(orderTable);
     }
@@ -46,7 +38,7 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.findAll());
     }
 
-    public List<OrderTable2> findAll() {
+    public List<OrderTable> findAll() {
         return orderTableRepository.findAll();
     }
 
@@ -56,18 +48,14 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable2 changeEmpty(Long orderTableId, OrderTable2 orderTable) {
-        final OrderTable2 savedOrderTable = findById(orderTableId);
+    public OrderTable changeEmpty(Long orderTableId, OrderTable orderTable) {
+        final OrderTable savedOrderTable = findById(orderTableId);
 
         if (savedOrderTable.hasTableGroup()) {
             throw new AlreadyJoinedTableGroupException();
         }
 
-        // TODO check orderStatus is complete
-        // if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-        //         orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-        //     throw new IllegalArgumentException();
-        // }
+        savedOrderTable.validateChangeEmpty();
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
@@ -80,20 +68,20 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable2 changeNumberOfGuests(Long orderTableId, OrderTable2 orderTable) {
-        final OrderTable2 savedOrderTable = findById(orderTableId);
+    public OrderTable changeNumberOfGuests(Long orderTableId, OrderTable orderTable) {
+        final OrderTable savedOrderTable = findById(orderTableId);
 
         savedOrderTable.changeNumberOfGuests(orderTable);
 
-        return orderTable;
+        return savedOrderTable;
     }
 
-    public OrderTable2 findById(Long orderTableId) {
+    public OrderTable findById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
             .orElseThrow(EntityNotFoundException::new);
     }
 
-    public List<OrderTable2> findAllById(List<Long> orderTableId) {
+    public List<OrderTable> findAllById(List<Long> orderTableId) {
         return orderTableRepository.findAllById(orderTableId);
     }
 }

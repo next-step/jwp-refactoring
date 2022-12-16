@@ -9,7 +9,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.ui.dto.OrderRequest;
 import kitchenpos.ui.dto.OrderResponse;
 import kitchenpos.ui.dto.OrderStatusRequest;
@@ -38,7 +38,7 @@ public class OrderService {
 
 	@Transactional
 	public OrderResponse create(OrderRequest request) {
-		OrderTable2 orderTable = tableService.findById(request.getOrderTableId());
+		OrderTable orderTable = tableService.findById(request.getOrderTableId());
 		List<Menu> menus = getMenus(request);
 		Order order = request.toOrder(orderTable, menus);
 

@@ -20,7 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.InvalidNumberOfGuestsException;
@@ -35,65 +35,64 @@ class TableServiceTest {
 	TableService tableService;
 
 	@Test
-	@DisplayName("주문 테이블 생성")
+	@DisplayName("주문 테이블 생성 성공")
 	void testCreateTable() {
-		OrderTable2 orderTable = createOrderTable();
+		OrderTable orderTable = createOrderTable();
 		when(orderTableRepository.save(orderTable)).thenAnswer(returnsFirstArg());
 
-		OrderTable2 createdOrderTable = tableService.create(orderTable);
+		OrderTable createdOrderTable = tableService.create(orderTable);
 
 		verify(orderTableRepository, times(1)).save(orderTable);
 		assertThat(createdOrderTable).isEqualTo(orderTable);
 	}
 
 	@Test
-	@DisplayName("주문 테이블 목록 조회")
+	@DisplayName("주문 테이블 목록 조회 성공")
 	void testListOrderTable() {
-		List<OrderTable2> orderTables = createOrderTables();
+		List<OrderTable> orderTables = createOrderTables();
 		when(orderTableRepository.findAll()).thenReturn(orderTables);
 
-		List<OrderTable2> savedOrderTables = tableService.findAll();
+		List<OrderTable> savedOrderTables = tableService.findAll();
 
 		verify(orderTableRepository, times(1)).findAll();
 		assertThat(savedOrderTables).containsExactlyElementsOf(orderTables);
 	}
 
 	@Test
-	@DisplayName("빈 테이블로 변경")
+	@DisplayName("빈 테이블로 변경 성공")
 	void changeEmpty() {
-		OrderTable2 previousOrderTable = createOrderTable(1L, false);
-		OrderTable2 emptyOrderTable = createOrderTable(2L, true);
+		OrderTable previousOrderTable = createOrderTable(1L, false);
+		OrderTable emptyOrderTable = createOrderTable(2L, true);
 
-		// TODO check meal is complete
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(previousOrderTable));
 		when(orderTableRepository.save(any())).thenAnswer(returnsFirstArg());
 
-		OrderTable2 actualOrderTable = tableService.changeEmpty(emptyOrderTable.getId(), emptyOrderTable);
+		OrderTable actualOrderTable = tableService.changeEmpty(emptyOrderTable.getId(), emptyOrderTable);
 
 		verify(orderTableRepository, times(1)).save(previousOrderTable);
 		assertThat(actualOrderTable.isEmpty()).isTrue();
 	}
 
 	@Test
-	@DisplayName("주문 테이블의 손님 수 변경")
+	@DisplayName("주문 테이블의 손님 수 변경 성공")
 	void testChangeNumberOfGuests() {
 		long orderTableId = 1L;
-		OrderTable2 previousOrderTable = createOrderTable(orderTableId, true);
-		OrderTable2 expectedOrderTable = createOrderTable(orderTableId, 10, true);
+		OrderTable previousOrderTable = createOrderTable(orderTableId, true);
+		OrderTable expectedOrderTable = createOrderTable(orderTableId, 10, true);
 
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(previousOrderTable));
 
-		OrderTable2 actualOrderTable = tableService.changeNumberOfGuests(orderTableId, expectedOrderTable);
+		OrderTable actualOrderTable = tableService.changeNumberOfGuests(orderTableId, expectedOrderTable);
 
 		assertThat(actualOrderTable.getNumberOfGuests()).isEqualTo(expectedOrderTable.getNumberOfGuests());
 	}
 
 	@Test
-	@DisplayName("주문 테이블의 손님 수를 0 미만으로 변경")
+	@DisplayName("주문 테이블의 손님 수를 0 미만으로 변경시 실패")
 	void testChangeNumberOfGuestsBelowThanZero() {
 		long orderTableId = 1L;
-		OrderTable2 previousOrderTable = createOrderTable(orderTableId, true);
-		OrderTable2 expectedOrderTable = createOrderTable(orderTableId, -1, true);
+		OrderTable previousOrderTable = createOrderTable(orderTableId, true);
+		OrderTable expectedOrderTable = createOrderTable(orderTableId, -1, true);
 
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(previousOrderTable));
 
@@ -105,7 +104,7 @@ class TableServiceTest {
 	@DisplayName("주문 테이블의 손님 수 변경시 주문 테이블이 존재하지 않음")
 	void testChangeNumberOfGuestsWithNotExistsTableId() {
 		long orderTableId = 1L;
-		OrderTable2 expectedOrderTable = createOrderTable(orderTableId, -1, true);
+		OrderTable expectedOrderTable = createOrderTable(orderTableId, -1, true);
 
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -113,13 +112,7 @@ class TableServiceTest {
 			.isInstanceOf(EntityNotFoundException.class);
 	}
 
-	// TODO
-	@Test
-	@DisplayName("주문 테이블의 손님 수 변경시 주문이 완료되지 않음")
-	void testChangeEmptyWhenOrderStatusNotCompletion() {
-	}
-
-	private List<OrderTable2> createOrderTables() {
+	private List<OrderTable> createOrderTables() {
 		return Lists.newArrayList(
 			createOrderTable(1L, false),
 			createOrderTable(2L, false),
@@ -127,15 +120,15 @@ class TableServiceTest {
 		);
 	}
 
-	private OrderTable2 createOrderTable(long id, int numberOfGuests, boolean empty) {
-		return new OrderTable2(id,numberOfGuests, empty);
+	private OrderTable createOrderTable(long id, int numberOfGuests, boolean empty) {
+		return new OrderTable(id, numberOfGuests, empty);
 	}
 
-	private OrderTable2 createOrderTable(long id, boolean empty) {
-		return new OrderTable2(id,1, empty);
+	private OrderTable createOrderTable(long id, boolean empty) {
+		return new OrderTable(id, 1, empty);
 	}
 
-	private OrderTable2 createOrderTable() {
+	private OrderTable createOrderTable() {
 		return createOrderTable(1L, false);
 	}
 }

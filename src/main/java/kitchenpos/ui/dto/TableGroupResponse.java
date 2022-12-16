@@ -2,7 +2,7 @@ package kitchenpos.ui.dto;
 
 import java.util.List;
 
-import kitchenpos.domain.TableGroup2;
+import kitchenpos.domain.TableGroup;
 
 public class TableGroupResponse {
 
@@ -17,7 +17,7 @@ public class TableGroupResponse {
 		this.orderTables = orderTables;
 	}
 
-	public TableGroupResponse(TableGroup2 tableGroup) {
+	public TableGroupResponse(TableGroup tableGroup) {
 		this(tableGroup.getId(), OrderTableResponse.of(tableGroup.getOrderTables()));
 	}
 

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.exception.EntityNotFoundException;
 
 public class OrderRequest {
@@ -25,7 +25,7 @@ public class OrderRequest {
 			.collect(Collectors.toList());
 	}
 
-	public Order toOrder(OrderTable2 orderTable, List<Menu> menus) {
+	public Order toOrder(OrderTable orderTable, List<Menu> menus) {
 		return new Order(orderTable, getMenusWithQuantity(menus));
 	}
 

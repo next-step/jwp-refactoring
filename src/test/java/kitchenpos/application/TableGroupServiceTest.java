@@ -25,8 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.OrderTable2;
-import kitchenpos.domain.TableGroup2;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.exception.CannotCreateGroupTableException;
 
@@ -48,13 +48,13 @@ class TableGroupServiceTest {
 	void testCreateMenuGroup() {
 		// given
 		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
-		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+		List<OrderTable> orderTables = createOrderTables(orderTableId, true);
 
 		when(tableService.findAllById(anyList())).thenReturn(orderTables);
-		when(tableGroupRepository.save(any(TableGroup2.class))).thenAnswer(returnsFirstArg());
+		when(tableGroupRepository.save(any(TableGroup.class))).thenAnswer(returnsFirstArg());
 
 		// when
-		TableGroup2 actualTableGroup = tableGroupService.save(orderTableId);
+		TableGroup actualTableGroup = tableGroupService.save(orderTableId);
 
 		// then
 		verify(tableGroupRepository, times(1)).save(actualTableGroup);
@@ -66,7 +66,7 @@ class TableGroupServiceTest {
 	void testCreateMenuGroupWhenOrderTableSizeBelowThanTwo() {
 		// given
 		List<Long> orderTableId = Lists.newArrayList(1L);
-		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+		List<OrderTable> orderTables = createOrderTables(orderTableId, true);
 
 		when(tableService.findAllById(anyList())).thenReturn(orderTables);
 
@@ -81,7 +81,7 @@ class TableGroupServiceTest {
 	void testCreateMenuGroupWhenOrderTableIsEmpty() {
 		// given
 		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
-		List<OrderTable2> orderTables = createOrderTables(orderTableId, false);
+		List<OrderTable> orderTables = createOrderTables(orderTableId, false);
 
 		when(tableService.findAllById(anyList())).thenReturn(orderTables);
 
@@ -96,7 +96,7 @@ class TableGroupServiceTest {
 	void testCreateMenuGroupWhenOrderTableInAnotherGroup() {
 		// given
 		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
-		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
+		List<OrderTable> orderTables = createOrderTables(orderTableId, true);
 		createTableGroup(orderTables);
 
 		when(tableService.findAllById(anyList())).thenReturn(orderTables);
@@ -112,8 +112,8 @@ class TableGroupServiceTest {
 	void testCreateMenuUnGroup() {
 		// given
 		List<Long> orderTableId = Lists.newArrayList(1L, 2L, 3L);
-		List<OrderTable2> orderTables = createOrderTables(orderTableId, true);
-		TableGroup2 savedTableGroup = createTableGroup(orderTables);
+		List<OrderTable> orderTables = createOrderTables(orderTableId, true);
+		TableGroup savedTableGroup = createTableGroup(orderTables);
 
 		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(savedTableGroup));
 
@@ -122,7 +122,7 @@ class TableGroupServiceTest {
 
 		// then
 		assertThat(savedTableGroup.getOrderTables())
-			.filteredOn(OrderTable2::hasTableGroup)
+			.filteredOn(OrderTable::hasTableGroup)
 			.isEmpty();
 	}
 	@Test
@@ -131,17 +131,17 @@ class TableGroupServiceTest {
 		// TODO
 	}
 
-	private TableGroup2 createTableGroup(List<OrderTable2> orderTables) {
-		return new TableGroup2(orderTables);
+	private TableGroup createTableGroup(List<OrderTable> orderTables) {
+		return new TableGroup(orderTables);
 	}
 
-	private List<OrderTable2> createOrderTables(List<Long> orderTableIds, boolean isEmpty) {
+	private List<OrderTable> createOrderTables(List<Long> orderTableIds, boolean isEmpty) {
 		return orderTableIds.stream()
 			.map(id -> getOrderTable(id, 1, isEmpty))
 			.collect(Collectors.toList());
 	}
 
-	private static OrderTable2 getOrderTable(long id, int numberOfGuests, boolean isEmpty) {
-		return new OrderTable2(id, numberOfGuests, isEmpty);
+	private static OrderTable getOrderTable(long id, int numberOfGuests, boolean isEmpty) {
+		return new OrderTable(id, numberOfGuests, isEmpty);
 	}
 }

@@ -12,7 +12,7 @@ import kitchenpos.AcceptanceTest2;
 import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
 import kitchenpos.acceptance.menugroup.MenuGroupFixture;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
-import kitchenpos.fixture.ProductFixture;
+import kitchenpos.acceptance.product.ProductFixture;
 import kitchenpos.ui.dto.MenuGroupResponse;
 import kitchenpos.ui.dto.MenuRequest;
 import kitchenpos.ui.dto.ProductRequest;

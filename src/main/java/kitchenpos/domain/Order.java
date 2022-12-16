@@ -33,7 +33,7 @@ public class Order {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_table_id")
-    private OrderTable2 orderTable;
+    private OrderTable orderTable;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -46,13 +46,13 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus, OrderTable2 orderTable, Map<Menu, Integer> menus) {
+    public Order(OrderStatus orderStatus, OrderTable orderTable, Map<Menu, Integer> menus) {
         this.orderStatus = orderStatus;
         setOrderTable(orderTable);
         addOrderLineItems(OrderLineItem.of(this, menus));
     }
 
-    public Order(OrderTable2 orderTable, Map<Menu, Integer> menus) {
+    public Order(OrderTable orderTable, Map<Menu, Integer> menus) {
         this(OrderStatus.COOKING, orderTable, menus);
     }
 
@@ -64,7 +64,7 @@ public class Order {
         return orderStatus;
     }
 
-    private void setOrderTable(OrderTable2 newOrderTable) {
+    private void setOrderTable(OrderTable newOrderTable) {
         this.orderTable = newOrderTable;
     }
 
@@ -104,7 +104,7 @@ public class Order {
         orderStatus = toStatus;
     }
 
-    private boolean isCompleted() {
+    public boolean isCompleted() {
         return orderStatus == OrderStatus.COMPLETION;
     }
 }

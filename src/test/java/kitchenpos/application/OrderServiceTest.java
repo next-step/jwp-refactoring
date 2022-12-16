@@ -28,7 +28,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.exception.CannotChangeOrderStatusException;
 
@@ -124,8 +124,8 @@ class OrderServiceTest {
 						Lists.newArrayList(new Product("product", 1_000L)));
 	}
 
-	private static OrderTable2 createOrderTable2() {
-		return new OrderTable2(10, true);
+	private static OrderTable createOrderTable2() {
+		return new OrderTable(10, true);
 	}
 
 }

@@ -1,6 +1,6 @@
 package kitchenpos.acceptance.product;
 
-import static kitchenpos.fixture.ProductFixture.상품2;
+import static kitchenpos.acceptance.product.ProductFixture.상품2;
 
 import java.util.List;
 

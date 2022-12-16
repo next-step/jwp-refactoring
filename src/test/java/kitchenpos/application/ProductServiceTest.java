@@ -16,10 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.acceptance.product.ProductFixture;
 import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
-import kitchenpos.fixture.ProductFixture;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
