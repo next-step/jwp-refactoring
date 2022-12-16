@@ -94,7 +94,7 @@ class OrderValidatorImplTest {
         when(orderRepository.findAllByOrderTableIdIn(anyList())).thenReturn(
                 Arrays.asList(Order.of(1L, 주문항목1), Order.of(2L, 주문항목2)));
 
-        Assertions.assertThatThrownBy(() -> orderValidator.checkUnGroupable(Arrays.asList(1L, 2L)))
+        Assertions.assertThatThrownBy(() -> orderValidator.checkCanBeUngrouped(Arrays.asList(1L, 2L)))
                 .isInstanceOf(CannotUnGroupOrderTablesException.class)
                 .hasMessageStartingWith(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
     }
@@ -109,7 +109,7 @@ class OrderValidatorImplTest {
         when(orderRepository.findAllByOrderTableIdIn(anyList())).thenReturn(
                 Arrays.asList(주문, Order.of(2L, 주문항목2)));
 
-        Assertions.assertThatThrownBy(() -> orderValidator.checkUnGroupable(Arrays.asList(1L, 2L)))
+        Assertions.assertThatThrownBy(() -> orderValidator.checkCanBeUngrouped(Arrays.asList(1L, 2L)))
                 .isInstanceOf(CannotUnGroupOrderTablesException.class)
                 .hasMessageStartingWith(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);
     }

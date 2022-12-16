@@ -42,7 +42,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         OrderTables orderTables = OrderTables.from(orderTableRepository.findAllByTableGroupId(tableGroupId));
-        orderValidator.checkUnGroupable(orderTables.getOrderTableIds());
+        orderValidator.checkCanBeUngrouped(orderTables.getOrderTableIds());
         orderTables.unGroup();
     }
 

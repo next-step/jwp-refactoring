@@ -47,7 +47,7 @@ public class OrderValidatorImpl implements OrderValidator {
     }
 
     @Override
-    public void checkUnGroupable(List<Long> orderTableIds) {
+    public void checkCanBeUngrouped(List<Long> orderTableIds) {
         Orders orders = Orders.from(orderRepository.findAllByOrderTableIdIn(orderTableIds));
         if (orders.anyMatchedIn(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new CannotUnGroupOrderTablesException(ExceptionMessage.CAN_NOT_UN_GROUP_ORDER_TABLES);

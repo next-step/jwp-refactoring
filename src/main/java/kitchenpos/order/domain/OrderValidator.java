@@ -5,5 +5,5 @@ import java.util.List;
 public interface OrderValidator {
     void validate(Long orderTableId);
     void checkEmptyChangeable(Long orderTableId);
-    void checkUnGroupable(List<Long> orderTableIds);
+    void checkCanBeUngrouped(List<Long> orderTableIds);
 }

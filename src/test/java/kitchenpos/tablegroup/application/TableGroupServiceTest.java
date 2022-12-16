@@ -140,7 +140,7 @@ class TableGroupServiceTest {
         OrderTable 주문_테이블2 = OrderTable.of(2L, 3, true);
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블1, 주문_테이블2);
         TableGroup.of(1L);
-        doNothing().when(orderValidator).checkUnGroupable(anyList());
+        doNothing().when(orderValidator).checkCanBeUngrouped(anyList());
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_목록);
 
         tableGroupService.ungroup(1L);
