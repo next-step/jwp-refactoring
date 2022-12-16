@@ -1,20 +1,47 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
-public class OrderTable {
+import kitchenpos.domain.OrderTable;
+
+public class OrderTableRequest {
 
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    public OrderTableRequest() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableRequest(Long id) {
+        this(id, null, 0, false);
+    }
+
+    public OrderTableRequest(int numberOfGuest) {
+        this(null, null, numberOfGuest, false);
+    }
+
+    public OrderTableRequest(boolean empty) {
+        this(null, null, 0, empty);
+    }
+
+    public OrderTableRequest(Long tableGroupId, int numberOfGuest, boolean empty) {
+        this(null, tableGroupId, numberOfGuest, empty);
+    }
+
+    public OrderTableRequest(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public OrderTable toOrderTable() {
+        return new OrderTable(
+            id,
+            tableGroupId,
+            numberOfGuests,
+            empty
+        );
     }
 
     public Long getId() {

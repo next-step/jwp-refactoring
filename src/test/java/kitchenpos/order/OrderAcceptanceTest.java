@@ -18,20 +18,21 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    OrderTable 일번테이블;
+    OrderTableResponse 일번테이블;
     OrderLineItemRequest 주문항목;
 
     /*
@@ -59,7 +60,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setup() throws SQLException {
         super.setUp();
-        일번테이블 = 주문_테이블_추가(new OrderTable()).as(OrderTable.class);
+        일번테이블 = 주문_테이블_추가(new OrderTableRequest()).as(OrderTableResponse.class);
 
         MenuGroupResponse 추천_메뉴 = 메뉴_그룹_등록("추천 메뉴").as(MenuGroupResponse.class);
         Product 강정치킨 = 상품_등록("강정치킨", new BigDecimal(17_000)).as(Product.class);

@@ -11,7 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -37,25 +37,27 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //when
-        List<OrderTable> orderTables = 주문_테이블_목록_조회().jsonPath().getList(".", OrderTable.class);
+        List<OrderTableResponse> orderTables = 주문_테이블_목록_조회().jsonPath()
+            .getList(".", OrderTableResponse.class);
         //then
         assertThat(orderTables)
             .hasSize(1)
-            .extracting(OrderTable::getNumberOfGuests, OrderTable::isEmpty)
+            .extracting(OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty)
             .containsExactly(tuple(
                 0,
                 false
             ));
 
         //when
-        OrderTable numberOfGuestChanged = 주문_테이블의_방문한_손님_수_변경(orderTables.get(0).getId(), 10)
-            .as(OrderTable.class);
+        OrderTableResponse numberOfGuestChanged = 주문_테이블의_방문한_손님_수_변경(orderTables.get(0).getId(),
+            10)
+            .as(OrderTableResponse.class);
         //then
         assertThat(numberOfGuestChanged.getNumberOfGuests()).isEqualTo(10);
 
         //when
-        OrderTable empty = 주문_테이블_빈_테이블_상태_변경(orderTables.get(0).getId(), true)
-            .as(OrderTable.class);
+        OrderTableResponse empty = 주문_테이블_빈_테이블_상태_변경(orderTables.get(0).getId(), true)
+            .as(OrderTableResponse.class);
         //then
         assertThat(empty.isEmpty()).isTrue();
     }

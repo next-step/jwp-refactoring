@@ -4,15 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 public class TableGroupFixture {
 
-    public static ExtractableResponse<Response> 단체_지정(List<OrderTable> orderTAbles) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTAbles);
+    public static ExtractableResponse<Response> 단체_지정(List<Long> orderTableIds) {
+        TableGroupRequest tableGroup = new TableGroupRequest(orderTableIds);
 
         return RestAssured
             .given().log().all()

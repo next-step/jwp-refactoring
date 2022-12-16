@@ -3,21 +3,18 @@ package kitchenpos.table;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블_추가(Long tableGroupId, int numberOfGuest,
         boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuest);
-        orderTable.setEmpty(empty);
+        OrderTableRequest orderTable = new OrderTableRequest(tableGroupId, numberOfGuest, empty);
         return 주문_테이블_추가(orderTable);
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_추가(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_추가(OrderTableRequest orderTable) {
         return RestAssured
             .given().log().all()
             .body(orderTable)
@@ -39,8 +36,7 @@ public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블_빈_테이블_상태_변경(Long orderTableId,
         boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
+        OrderTableRequest orderTable = new OrderTableRequest(empty);
 
         return RestAssured
             .given().log().all()
@@ -53,8 +49,7 @@ public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블의_방문한_손님_수_변경(Long orderTableId,
         int numberOfGuest) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuest);
+        OrderTableRequest orderTable = new OrderTableRequest(numberOfGuest);
 
         return RestAssured
             .given().log().all()

@@ -9,17 +9,17 @@ import io.restassured.response.Response;
 import java.sql.SQLException;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 일번;
-    private OrderTable 이번;
-    private OrderTable 삼번;
+    private Long 일번;
+    private Long 이번;
+    private Long 삼번;
 
     /*
     Feature: 단체 지정하고 해제 합니다.
@@ -38,9 +38,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() throws SQLException {
         super.setUp();
-        일번 = 주문_테이블_추가(null, 0, true).as(OrderTable.class);
-        이번 = 주문_테이블_추가(null, 0, true).as(OrderTable.class);
-        삼번 = 주문_테이블_추가(null, 0, true).as(OrderTable.class);
+        일번 = 주문_테이블_추가(null, 0, true).as(OrderTableResponse.class).getId();
+        이번 = 주문_테이블_추가(null, 0, true).as(OrderTableResponse.class).getId();
+        삼번 = 주문_테이블_추가(null, 0, true).as(OrderTableResponse.class).getId();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
             .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         //when
-        TableGroup tableGroup = groupResponseOneAndTwo.as(TableGroup.class);
+        TableGroupResponse tableGroup = groupResponseOneAndTwo.as(TableGroupResponse.class);
         ExtractableResponse<Response> ungroupResponse = TableGroupFixture
             .단체_지정_해제(tableGroup.getId());
         //then
