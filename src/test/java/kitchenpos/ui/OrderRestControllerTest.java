@@ -5,10 +5,14 @@ import kitchenpos.application.MenuService;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.MenuProductBag;
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItemBag;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,18 +77,18 @@ class OrderRestControllerTest {
     void 생성_성공() throws Exception {
         //given:
         final Menu 저장된_메뉴 = menuService.create(
-                메뉴("자메이카 통다리 1인 세트",
-                        BigDecimal.ONE,
+                메뉴(Name.from("자메이카 통다리 1인 세트"),
+                        Price.from(BigDecimal.ONE),
                         menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
-                        Arrays.asList(
+                        MenuProductBag.from(Arrays.asList(
                                 메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
                 조리_상태,
                 LocalDateTime.now(),
-                Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)));
+                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
         //when:
         final Order 저장된_주문 = mapper.readValue(
                 mockMvc.perform(post("/api/orders")
@@ -103,18 +107,18 @@ class OrderRestControllerTest {
     void 목록_조회_성공() throws Exception {
         //given:
         final Menu 저장된_메뉴 = menuService.create(
-                메뉴("자메이카 통다리 1인 세트",
-                        BigDecimal.ONE,
+                메뉴(Name.from("자메이카 통다리 1인 세트"),
+                        Price.from(BigDecimal.ONE),
                         menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
-                        Arrays.asList(
+                        MenuProductBag.from(Arrays.asList(
                                 메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
 
         final Order 저장된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
                 조리_상태,
                 LocalDateTime.now(),
-                Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
+                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
         //when:
         final List<Order> 주문_목록 = Arrays.asList(mapper.readValue(
                 mockMvc.perform(get("/api/orders")
@@ -131,18 +135,18 @@ class OrderRestControllerTest {
     void 주문_상태_변경_성공() throws Exception {
         //given:
         final Menu 저장된_메뉴 = menuService.create(
-                메뉴("자메이카 통다리 1인 세트",
-                        BigDecimal.ONE,
+                메뉴(Name.from("자메이카 통다리 1인 세트"),
+                        Price.from(BigDecimal.ONE),
                         menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
-                        Arrays.asList(
+                        MenuProductBag.from(Arrays.asList(
                                 메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
+                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
 
         final Order 저장된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
                 조리_상태,
                 LocalDateTime.now(),
-                Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
+                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
 
         저장된_주문.changeStatus(식사_상태);
         //when:

@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -19,7 +21,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    @Transactional
+    @Transactional(isolation = READ_COMMITTED)
     public Order create(final Order order) {
         order.checkValidOrderTable();
         order.updateItemOrder();
@@ -28,11 +30,12 @@ public class OrderService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<Order> list() {
         return orderRepository.findAll();
     }
 
-    @Transactional
+    @Transactional(isolation = READ_COMMITTED)
     public Order changeOrderStatus(final Long orderId, final Order order) {
         checkedNullId(orderId);
         final Order savedOrder = orderRepository.findById(orderId)
@@ -42,7 +45,7 @@ public class OrderService {
     }
 
     private void checkedNullId(Long orderId) {
-        if(orderId == null) {
+        if (orderId == null) {
             throw new IllegalArgumentException("요청 주문 id는 null 이 아니어야 합니다");
         }
     }
