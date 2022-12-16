@@ -3,7 +3,7 @@ package kitchenpos.ui.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct2;
 
 public class MenuResponse {
@@ -22,13 +22,13 @@ public class MenuResponse {
 		this.menuProducts = menuProducts;
 	}
 
-	public static List<MenuResponse> of(List<Menu2> menus) {
+	public static List<MenuResponse> of(List<Menu> menus) {
 		return menus.stream()
 			.map(MenuResponse::of)
 			.collect(Collectors.toList());
 	}
 
-	public static MenuResponse of(Menu2 menu) {
+	public static MenuResponse of(Menu menu) {
 		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().longValue(),
 								menu.getMenuGroup().getName(),
 								MenuProductResponse.of(menu.getMenuProducts()));

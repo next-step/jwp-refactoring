@@ -19,9 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
 import kitchenpos.exception.InvalidMenuPriceException;
 
@@ -34,7 +35,7 @@ class MenuServiceTest {
 	@InjectMocks
 	MenuService menuService;
 
-	Menu2 menu;
+	Menu menu;
 	MenuGroup menuGroup;
 	List<Product> products;
 
@@ -42,11 +43,11 @@ class MenuServiceTest {
 	void setUp() {
 		products = createProducts(3);
 		menuGroup = new MenuGroup("menu-group");
-		menu = new Menu2("menu", 3_000L, menuGroup, products);
+		menu = new Menu("menu", 3_000L, menuGroup, products);
 	}
 
 	@Test
-	@DisplayName("메뉴 생성")
+	@DisplayName("메뉴 생성 성공")
 	void testCreateMenu() {
 		when(menuRepository.save(menu)).thenReturn(menu);
 
@@ -58,18 +59,25 @@ class MenuServiceTest {
 	@Test
 	@DisplayName("메뉴의 가격이 상품목록 가격 합보다 클 경우 등록 실패")
 	void testCreateMenuWhenMenuPriceGreaterThanSumOfProductsPrice() {
-		Menu2 invalidMenu = new Menu2(menu.getName(), 100_000L, menuGroup, products);
+		Money invalidMenuPrice = sumProductsPrice(products).minus(1);
+		Menu invalidMenu = new Menu(menu.getName(), invalidMenuPrice.longValue(), menuGroup, products);
 
 		assertThatThrownBy(() -> menuService.create(invalidMenu))
 			.isInstanceOf(InvalidMenuPriceException.class);
 	}
 
+	private Money sumProductsPrice(List<Product> products) {
+		return products.stream()
+			.map(Product::getPrice)
+			.reduce(Money.ZERO, Money::add);
+	}
+
 	@Test
-	@DisplayName("메뉴 목록 조회")
+	@DisplayName("메뉴 목록 조회 성공")
 	void testGetMenuList() {
 		when(menuRepository.findAll()).thenReturn(Lists.newArrayList(menu));
 
-		List<Menu2> menus = menuService.findAll();
+		List<Menu> menus = menuService.findAll();
 
 		assertThat(menus).isNotEmpty();
 		assertThat(menus).containsExactly(menu);

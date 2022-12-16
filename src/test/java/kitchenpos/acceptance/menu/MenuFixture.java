@@ -1,4 +1,4 @@
-package kitchenpos.fixture;
+package kitchenpos.acceptance.menu;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +11,7 @@ import kitchenpos.ui.dto.ProductResponse;
 public class MenuFixture {
 
 	private static final String 메뉴명 = "메뉴 1";
+	public static final long 메뉴가격 = 10_000L;
 
 	public static MenuRequest 메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {
 		Long productsPrice = products.stream()
@@ -25,6 +26,10 @@ public class MenuFixture {
 	}
 
 	public static MenuResponse 메뉴(long id) {
-		return new MenuResponse(id, 메뉴명, 10_000L, "menuGroup", Collections.emptyList());
+		return new MenuResponse(id, 메뉴명, 메뉴가격, "menuGroup", Collections.emptyList());
+	}
+
+	public static MenuRequest 유효하지_않은_가격_메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {
+		return 메뉴(products, menuGroup, 메뉴가격 - 1);
 	}
 }

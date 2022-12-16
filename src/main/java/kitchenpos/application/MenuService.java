@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
@@ -31,12 +31,12 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
-        Menu2 menu = toMenu(menuRequest);
+        Menu menu = toMenu(menuRequest);
         return create(menu);
     }
 
     @Transactional
-    public MenuResponse create(Menu2 menu) {
+    public MenuResponse create(Menu menu) {
         menu.validatePrice();
         return MenuResponse.of(menuRepository.save(menu));
     }
@@ -45,11 +45,11 @@ public class MenuService {
         return MenuResponse.of(findAll());
     }
 
-    public List<Menu2> findAll() {
+    public List<Menu> findAll() {
         return menuRepository.findAll();
     }
 
-    private Menu2 toMenu(MenuRequest menuRequest) {
+    private Menu toMenu(MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
         List<Product> products = productService.findAllById(menuRequest.toProductsId());
@@ -68,7 +68,7 @@ public class MenuService {
             ));
     }
 
-    public List<Menu2> findAllById(List<Long> idList) {
+    public List<Menu> findAllById(List<Long> idList) {
         return menuRepository.findAllById(idList);
     }
 }

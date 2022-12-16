@@ -23,7 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order2;
 import kitchenpos.domain.OrderRepository;
@@ -111,17 +111,17 @@ class OrderServiceTest {
 		return new Order2(createOrderTable2(), createMenus(3));
 	}
 
-	private static Map<Menu2, Integer> createMenus(int count) {
+	private static Map<Menu, Integer> createMenus(int count) {
 		return LongStream.range(0, count)
 			.mapToObj(i -> createMenu())
 			.collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
 	}
 
-	private static Menu2 createMenu() {
-		return new Menu2("menu",
-						 10_000L,
-						 new MenuGroup("menu-group"),
-						 Lists.newArrayList(new Product("product", 1_000L)));
+	private static Menu createMenu() {
+		return new Menu("menu",
+						10_000L,
+						new MenuGroup("menu-group"),
+						Lists.newArrayList(new Product("product", 1_000L)));
 	}
 
 	private static OrderTable2 createOrderTable2() {

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order2;
 import kitchenpos.domain.OrderTable2;
 import kitchenpos.exception.EntityNotFoundException;
@@ -25,18 +25,18 @@ public class OrderRequest {
 			.collect(Collectors.toList());
 	}
 
-	public Order2 toOrder(OrderTable2 orderTable, List<Menu2> menus) {
+	public Order2 toOrder(OrderTable2 orderTable, List<Menu> menus) {
 		return new Order2(orderTable, getMenusWithQuantity(menus));
 	}
 
-	private Map<Menu2, Integer> getMenusWithQuantity(List<Menu2> menus) {
+	private Map<Menu, Integer> getMenusWithQuantity(List<Menu> menus) {
 		return orderLineItems.stream()
 			.collect(Collectors.toMap(
 				orderLineItem -> getMenu(menus, orderLineItem.getMenuId()),
 				OrderLineItemRequest::getQuantity, Integer::sum));
 	}
 
-	private Menu2 getMenu(List<Menu2> menus, Long menuId) {
+	private Menu getMenu(List<Menu> menus, Long menuId) {
 		return menus.stream().filter(menu -> menu.getId().equals(menuId))
 			.findAny()
 			.orElseThrow(EntityNotFoundException::new);

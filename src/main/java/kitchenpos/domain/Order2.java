@@ -46,13 +46,13 @@ public class Order2 {
     protected Order2() {
     }
 
-    public Order2(OrderStatus orderStatus, OrderTable2 orderTable, Map<Menu2, Integer> menus) {
+    public Order2(OrderStatus orderStatus, OrderTable2 orderTable, Map<Menu, Integer> menus) {
         this.orderStatus = orderStatus;
         setOrderTable(orderTable);
         addOrderLineItems(OrderLineItem2.of(this, menus));
     }
 
-    public Order2(OrderTable2 orderTable, Map<Menu2, Integer> menus) {
+    public Order2(OrderTable2 orderTable, Map<Menu, Integer> menus) {
         this(OrderStatus.COOKING, orderTable, menus);
     }
 

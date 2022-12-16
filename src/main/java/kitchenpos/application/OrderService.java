@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order2;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
@@ -39,7 +39,7 @@ public class OrderService {
 	@Transactional
 	public OrderResponse create(OrderRequest request) {
 		OrderTable2 orderTable = tableService.findById(request.getOrderTableId());
-		List<Menu2> menus = getMenus(request);
+		List<Menu> menus = getMenus(request);
 		Order2 order = request.toOrder(orderTable, menus);
 
 		return new OrderResponse(create(order));
@@ -52,7 +52,7 @@ public class OrderService {
 		return orderRepository.save(order);
 	}
 
-	private List<Menu2> getMenus(OrderRequest request) {
+	private List<Menu> getMenus(OrderRequest request) {
 		return menuService.findAllById(request.menuIdList());
 	}
 

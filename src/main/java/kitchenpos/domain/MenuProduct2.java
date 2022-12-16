@@ -21,7 +21,7 @@ public class MenuProduct2 {
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "menu_id")
-	private Menu2 menu;
+	private Menu menu;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "product_id")
@@ -32,7 +32,7 @@ public class MenuProduct2 {
 	protected MenuProduct2() {
 	}
 
-	public MenuProduct2(Menu2 menu, Product product, long quantity) {
+	public MenuProduct2(Menu menu, Product product, long quantity) {
 		setMenu(menu);
 		setProduct(product);
 		this.quantity = quantity;
@@ -46,7 +46,7 @@ public class MenuProduct2 {
 		return quantity;
 	}
 
-	public void setMenu(Menu2 newMenu) {
+	public void setMenu(Menu newMenu) {
 		if (Objects.nonNull(menu)) {
 			menu.getMenuProducts().remove(this);
 		}

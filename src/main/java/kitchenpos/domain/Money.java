@@ -68,6 +68,14 @@ public class Money {
 		return Money.valueOf(value.multiply(BigDecimal.valueOf(quantity)));
 	}
 
+	public Money minus(int other) {
+		return minus(Money.valueOf(other));
+	}
+
+	private Money minus(Money other) {
+		return Money.valueOf(value.subtract(other.value));
+	}
+
 	public boolean isGreaterThan(Money other) {
 		return value.compareTo(other.value) > 0;
 	}

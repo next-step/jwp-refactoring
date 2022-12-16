@@ -28,20 +28,20 @@ public class OrderLineItem2 {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_id")
-    private Menu2 menu;
+    private Menu menu;
 
     private Integer quantity;
 
     protected OrderLineItem2() {
     }
 
-    public OrderLineItem2(Order2 order, Menu2 menu, Integer quantity) {
+    public OrderLineItem2(Order2 order, Menu menu, Integer quantity) {
         setOrder(order);
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static List<OrderLineItem2> of(Order2 order, Map<Menu2, Integer> menus) {
+    public static List<OrderLineItem2> of(Order2 order, Map<Menu, Integer> menus) {
         return menus.entrySet()
             .stream()
             .map(entry -> new OrderLineItem2(order, entry.getKey(), entry.getValue()))

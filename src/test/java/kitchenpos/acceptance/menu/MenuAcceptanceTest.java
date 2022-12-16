@@ -11,7 +11,6 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
 import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
-import kitchenpos.fixture.MenuFixture;
 import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.ProductFixture;
 import kitchenpos.ui.dto.MenuGroupResponse;
@@ -25,8 +24,6 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	MenuAcceptanceTestStep step = new MenuAcceptanceTestStep();
 	MenuGroupAcceptanceTestStep menuGroups = new MenuGroupAcceptanceTestStep();
 	ProductAcceptanceTestStep products = new ProductAcceptanceTestStep();
-
-	long 메뉴가격 = 10_000;
 
 	List<ProductResponse> 상품목록;
 
@@ -65,27 +62,31 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	}
 
 	/**
-	 * Scenario: 메뉴 등록 실패
 	 * When 메뉴 그룹이 존재하지 않을 경우
-	 * Than 메뉴 등록에 실패한다
-	 * When 메뉴 가격이 상품의 가격 합보다 크면
 	 * Than 메뉴 등록에 실패한다
 	 */
 	@Test
-	void 메뉴_등록_실패() {
-		// when
+	void 메뉴_그룹이_존재하지_않을_경우() {
+		// given
 		MenuGroupResponse 존재하지_않는_메뉴_그룹 = MenuGroupFixture.메뉴그룹2(1L, "존재하지 않는 메뉴 그룹");
 		MenuRequest 메뉴 = MenuFixture.메뉴(상품목록, 존재하지_않는_메뉴_그룹);
-
+		// when
 		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴);
 		// then
 		step.등록_실패함(등록_요청_응답);
+	}
 
-		// when
+	/**
+	 * When 메뉴의 가격이 상품의 가격의 합보다 작으면
+	 * Than 메뉴 등록에 실패한다
+	 */
+	@Test
+	void 상품가격이_메뉴가격의_합보다_작음() {
+		// given
 		MenuGroupResponse 메뉴_그룹 = 메뉴_그룹_등록되어_있음();
-		long 유효하지_않은_메뉴_가격 = 메뉴가격 * 2;
-		메뉴 = MenuFixture.메뉴(상품목록, 메뉴_그룹, 유효하지_않은_메뉴_가격);
-		등록_요청_응답 = step.등록_요청(메뉴);
+		MenuRequest 메뉴 = MenuFixture.유효하지_않은_가격_메뉴(상품목록, 메뉴_그룹);
+		// when
+		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴);
 		// then
 		step.등록_실패함(등록_요청_응답);
 	}

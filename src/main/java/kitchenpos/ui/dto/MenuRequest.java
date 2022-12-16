@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Menu2;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 
@@ -41,8 +41,8 @@ public class MenuRequest {
 		return menuProducts;
 	}
 
-	public Menu2 toMenu(MenuGroup menuGroup, Map<Product, Integer> productsCount) {
-		return new Menu2(name, price, menuGroup, productsCount);
+	public Menu toMenu(MenuGroup menuGroup, Map<Product, Integer> productsCount) {
+		return new Menu(name, price, menuGroup, productsCount);
 	}
 
 	public List<Long> toProductsId() {
