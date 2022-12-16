@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -72,12 +73,12 @@ public class OrderService {
     }
 
     private List<OrderLineItem> toOrderLineItems(OrderRequest request) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItemRequest : request.getOrderLineItems()) {
-            Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(orderLineItemRequest.toOrderLineItem(menu));
-        }
-        return orderLineItems;
+
+        return request.getOrderLineItems().stream()
+                .map(orderLineItemRequest -> {
+                    Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+                    return orderLineItemRequest.toOrderLineItem(menu);
+                }).collect(Collectors.toList());
     }
 
     private Menu findMenuById(Long menuId) {
