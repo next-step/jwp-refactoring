@@ -1,11 +1,12 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.exception.OrderTableError;
 import kitchenpos.exception.TableGroupError;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,11 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
-import javax.persistence.*;
+import kitchenpos.order.domain.Order;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
 
