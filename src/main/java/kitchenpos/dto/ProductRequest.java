@@ -2,23 +2,44 @@ package kitchenpos.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
+
 public class ProductRequest {
-    private String name;
-    private BigDecimal price;
+    private Name name;
+    private Price price;
 
     public ProductRequest() {
     }
 
-    public ProductRequest(String name, BigDecimal price) {
+    public ProductRequest(Name name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
+    }
+
+    @JsonGetter("name")
+    public String name() {
+        return name.value();
+    }
+
+    @JsonGetter("price")
+    public BigDecimal price() {
+        return price.value();
+    }
+
+    @JsonSetter("price")
+    public void setPrice(BigDecimal price) {
+        this.price = new Price(price);
     }
 }

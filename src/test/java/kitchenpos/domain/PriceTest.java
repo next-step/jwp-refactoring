@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import static java.math.BigDecimal.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,16 +11,16 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.exception.InvalidPriceException;
 
-class ProductTest {
+class PriceTest {
 
-    @DisplayName("[상품 등록] 가격이 없거나 0 미만인 경우 등록할 수 없다")
+    @DisplayName("[가격] 가격은 널값이거나 0이하일 수 없다")
     @Test
     void test1() {
-        assertThatThrownBy(() -> new Product("test", null))
+        assertThatThrownBy(() -> new Price(null))
             .isInstanceOf(InvalidPriceException.class);
-        assertThatThrownBy(() -> new Product("test", BigDecimal.valueOf(-100)))
+        assertThatThrownBy(() -> new Price(BigDecimal.valueOf(-10L)))
             .isInstanceOf(InvalidPriceException.class);
-        assertDoesNotThrow(() -> new Product("test", BigDecimal.valueOf(99)));
-
+        assertDoesNotThrow(() -> new Price(BigDecimal.valueOf(10L)));
+        assertDoesNotThrow(() -> new Price(ZERO));
     }
 }

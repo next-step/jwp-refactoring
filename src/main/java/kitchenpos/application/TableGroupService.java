@@ -17,6 +17,8 @@ import kitchenpos.exception.GroupTableRequestException;
 @Transactional(readOnly = true)
 @Service
 public class TableGroupService {
+    public static final int LEAST_ORDERS_COUNT = 2;
+
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
@@ -46,7 +48,7 @@ public class TableGroupService {
     }
 
     private void validateGroup(List<Long> orderTableIds, List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < LEAST_ORDERS_COUNT
             || orderTables.size() != orderTableIds.size()) {
             throw new GroupTableRequestException();
         }

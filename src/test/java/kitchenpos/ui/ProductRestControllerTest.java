@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.IntegrationTest;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -51,7 +53,7 @@ class ProductRestControllerTest extends IntegrationTest {
     }
 
     private Long 상품_등록() throws Exception {
-        ProductRequest request = new ProductRequest("강정치킨", BigDecimal.valueOf(17_000));
+        ProductRequest request = new ProductRequest(new Name("강정치킨"), new Price(BigDecimal.valueOf(17_000)));
 
         MvcResult result = mockMvc.perform(post("/api/products")
             .contentType(APPLICATION_JSON)
@@ -59,8 +61,8 @@ class ProductRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value(request.getName()))
-            .andExpect(jsonPath("$.price").value(request.getPrice().intValue()))
+            .andExpect(jsonPath("$.name").value(request.getName().value()))
+            .andExpect(jsonPath("$.price").value(request.getPrice().value()))
             .andReturn();
 
         return getId(result);

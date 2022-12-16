@@ -1,15 +1,18 @@
 package kitchenpos.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Name;
 
 public class MenuGroupResponse {
     private Long id;
-    private String name;
+    private Name name;
 
     public MenuGroupResponse() {
     }
 
-    public MenuGroupResponse(Long id, String name) {
+    public MenuGroupResponse(Long id, Name name) {
         this.id = id;
         this.name = name;
     }
@@ -22,7 +25,12 @@ public class MenuGroupResponse {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
+    }
+
+    @JsonGetter("name")
+    public String name() {
+        return name.value();
     }
 }

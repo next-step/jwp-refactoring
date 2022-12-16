@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +27,15 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Name;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.Quantity;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -62,10 +65,11 @@ class OrderRestControllerTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         this.orderTable = orderTableRepository.save(new OrderTable(0, true));
-        Product product = productRepository.save(new Product("test", BigDecimal.valueOf(100L)));
-        List<ProductQuantityPair> pairs = Arrays.asList(new ProductQuantityPair(product, 1L));
-        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("test"));
-        this.menu = menuRepository.save(new Menu(BigDecimal.valueOf(10L), "test", menuGroup, pairs));
+        Product product = productRepository.save(new Product(new Name("test"), new Price(BigDecimal.valueOf(100L))));
+        List<ProductQuantityPair> pairs = Collections.singletonList(new ProductQuantityPair(product, new Quantity(1L)));
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(new Name("test")));
+        this.menu = menuRepository.save(
+            new Menu(new Price(BigDecimal.valueOf(10L)), new Name("test"), menuGroup, pairs));
         orderLineItemRequests.add(new OrderLineItemRequest(this.menu.getId(), 1L));
     }
 

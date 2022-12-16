@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.IntegrationTest;
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.Name;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 
@@ -49,7 +50,7 @@ class MenuGroupRestControllerTest extends IntegrationTest {
     }
 
     private Long 메뉴그룹_등록() throws Exception {
-        MenuGroupRequest request = new MenuGroupRequest("test");
+        MenuGroupRequest request = new MenuGroupRequest(new Name("test"));
 
         MvcResult result = mockMvc.perform(post("/api/menu-groups")
             .contentType(APPLICATION_JSON)
@@ -57,7 +58,7 @@ class MenuGroupRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value(request.getName()))
+            .andExpect(jsonPath("$.name").value(request.getName().value()))
             .andReturn();
 
         return getId(result);

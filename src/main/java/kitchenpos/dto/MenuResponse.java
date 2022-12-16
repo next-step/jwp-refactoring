@@ -3,19 +3,24 @@ package kitchenpos.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 
 public class MenuResponse {
     private Long id;
-    private String name;
-    private BigDecimal price;
+    private Name name;
+    private Price price;
     private Long menuGroupId;
     private List<ProductQuantityPair> menuProducts;
 
     public MenuResponse() {
     }
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
+    public MenuResponse(Long id, Name name, Price price, Long menuGroupId,
         List<ProductQuantityPair> menuProducts) {
         this.id = id;
         this.name = name;
@@ -33,11 +38,11 @@ public class MenuResponse {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
@@ -47,5 +52,20 @@ public class MenuResponse {
 
     public List<ProductQuantityPair> getMenuProducts() {
         return menuProducts;
+    }
+
+    @JsonGetter("name")
+    public String name() {
+        return name.value();
+    }
+
+    @JsonGetter("price")
+    public BigDecimal price() {
+        return price.value();
+    }
+
+    @JsonSetter("price")
+    public void setPrice(BigDecimal price) {
+        this.price = new Price(price);
     }
 }

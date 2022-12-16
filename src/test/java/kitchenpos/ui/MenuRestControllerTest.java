@@ -24,8 +24,11 @@ import kitchenpos.IntegrationTest;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.Quantity;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.ProductIdQuantityPair;
@@ -47,8 +50,8 @@ class MenuRestControllerTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        this.menuGroup = menuGroupRepository.save(new MenuGroup("test"));
-        this.product = productRepository.save(new Product("test", BigDecimal.valueOf(100L)));
+        this.menuGroup = menuGroupRepository.save(new MenuGroup(new Name("test")));
+        this.product = productRepository.save(new Product(new Name("test"), new Price(BigDecimal.valueOf(100L))));
     }
 
     @DisplayName("메뉴를 등록한다")
@@ -75,8 +78,9 @@ class MenuRestControllerTest extends IntegrationTest {
 
     private Long 메뉴_등록() throws Exception {
         List<ProductIdQuantityPair> menuProducts = Collections.singletonList(
-            new ProductIdQuantityPair(this.product.getId(), 2L));
-        MenuRequest request = new MenuRequest("test", BigDecimal.valueOf(100L), menuGroup.getId(), menuProducts);
+            new ProductIdQuantityPair(this.product.getId(), new Quantity(2L)));
+        MenuRequest request = new MenuRequest(new Name("test"), new Price(BigDecimal.valueOf(100L)), menuGroup.getId(),
+            menuProducts);
 
         MvcResult result = mockMvc.perform(post("/api/menus")
             .contentType(APPLICATION_JSON)
@@ -84,8 +88,8 @@ class MenuRestControllerTest extends IntegrationTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value(request.getName()))
-            .andExpect(jsonPath("$.price").value(request.getPrice().intValue()))
+            .andExpect(jsonPath("$.name").value(request.getName().value()))
+            .andExpect(jsonPath("$.price").value(request.getPrice().value()))
             .andExpect(jsonPath("$.menuGroupId").value(request.getMenuGroupId()))
             .andExpect(jsonPath("$.menuProducts.length()").value(menuProducts.size()))
             .andReturn();

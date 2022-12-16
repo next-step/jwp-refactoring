@@ -1,9 +1,10 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Name;
 
 public class OrderLineItemResponse {
-    private String menuName;
+    private Name menuName;
     private Long quantity;
 
     public OrderLineItemResponse() {
@@ -14,7 +15,7 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public String getMenuName() {
+    public Name getMenuName() {
         return menuName;
     }
 

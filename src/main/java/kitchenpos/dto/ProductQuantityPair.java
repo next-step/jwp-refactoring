@@ -1,15 +1,19 @@
 package kitchenpos.dto;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.Quantity;
 
 public class ProductQuantityPair {
     private Product product;
-    private Long quantity;
+    private Quantity quantity;
 
     public ProductQuantityPair() {
     }
 
-    public ProductQuantityPair(Product product, Long quantity) {
+    public ProductQuantityPair(Product product, Quantity quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -18,11 +22,16 @@ public class ProductQuantityPair {
         return product;
     }
 
-    public Long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public Long sumOfPrice() {
-        return this.quantity * product.getPrice().longValue();
+    public Price sumOfPrice() {
+        return product.getPrice().getTotalPrice(quantity);
+    }
+
+    @JsonGetter("quantity")
+    public Long quantity() {
+        return quantity.value();
     }
 }
