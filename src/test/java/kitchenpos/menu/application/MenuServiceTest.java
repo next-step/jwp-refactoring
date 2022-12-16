@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -58,8 +59,8 @@ class MenuServiceTest {
         양식 = new MenuGroup(1L, "양식");
         양념치킨 = new Product(1L, "양념치킨", BigDecimal.valueOf(20_000));
         스파게티 = new Product(2L, "스파게티", BigDecimal.valueOf(10_000));
-        양념치킨_두마리_세트 = new Menu(1L, "양념치킨_두마리_세트", BigDecimal.valueOf(40_000), 양식);
-        스파게티_이인분_세트 = new Menu(2L, "양념치킨_두마리_세트", BigDecimal.valueOf(40_000), 양식);
+        양념치킨_두마리_세트 = new Menu(1L, "양념치킨_두마리_세트", new Price(BigDecimal.valueOf(40_000)), 양식);
+        스파게티_이인분_세트 = new Menu(2L, "양념치킨_두마리_세트", new Price(BigDecimal.valueOf(40_000)), 양식);
 
         치킨_두마리 = new MenuProduct(1L, 2L, 양념치킨_두마리_세트, 양념치킨);
         스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티_이인분_세트, 스파게티);
@@ -84,7 +85,7 @@ class MenuServiceTest {
 
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo(양념치킨_두마리_세트.getName()),
-                () -> assertThat(result.getPrice()).isEqualTo(양념치킨_두마리_세트.getPrice())
+                () -> assertThat(result.getPrice()).isEqualTo(양념치킨_두마리_세트.getPrice().value())
         );
     }
 

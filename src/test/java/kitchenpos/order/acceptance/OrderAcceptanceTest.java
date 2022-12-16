@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -57,13 +58,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
         순살치킨 = 상품_생성_요청(new Product(1L, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
         후라이드치킨 = 상품_생성_요청(new Product(2L, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
-        순살치킨메뉴 = new Menu("순살치킨", BigDecimal.valueOf(12_000L), 치킨);
-        두마리치킨세트메뉴 = new Menu("두마리치킨세트", BigDecimal.valueOf(38_000L), 치킨);
+        순살치킨메뉴 = new Menu("순살치킨", new Price(BigDecimal.valueOf(12_000L)), 치킨);
+        두마리치킨세트메뉴 = new Menu("두마리치킨세트", new Price(BigDecimal.valueOf(38_000L)), 치킨);
         순살치킨상품 = MenuProductRequest.of(순살치킨.getId(), 1L);
         후라이드치킨상품 = MenuProductRequest.of(후라이드치킨.getId(), 1L);
         두마리치킨세트_응답 = 메뉴_생성_요청(MenuRequest.of(
                 두마리치킨세트메뉴.getName(),
-                두마리치킨세트메뉴.getPrice(),
+                두마리치킨세트메뉴.getPrice().value(),
                 두마리치킨세트메뉴.getMenuGroup().getId(),
                 Arrays.asList(순살치킨상품, 후라이드치킨상품)
         )).as(MenuResponse.class);
