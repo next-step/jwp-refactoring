@@ -1,67 +1,57 @@
 package kitchenpos.tablegroup.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.tablegroup.domain.GroupTable;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TableGroupServiceTest {
-    @Mock
-    private TableGroupRepository tableGroupRepository;
-
-    @Mock
-    private TableGroupValidator tableGroupValidator;
-
-    @InjectMocks
+    @Autowired
     private TableGroupService tableGroupService;
+    @Autowired
+    private OrderTableRepository orderTableRepository;
 
-    GroupTable tableA;
-    GroupTable tableB;
+    private OrderTable tableA;
+    private OrderTable tableB;
 
     @BeforeEach
     void setUp() {
-        tableA = new GroupTable(1L, 1L, 0, true);
-        tableB = new GroupTable(1L, 1L, 0, true);
+        tableA = new OrderTable(0, true);
+        tableB = new OrderTable(0, true);
+        orderTableRepository.saveAll(Arrays.asList(tableA, tableB));
     }
 
     @DisplayName("테이블 그룹을 추가할 수 있다.")
     @Test
     void create() {
-        List<Long> tableIds = Arrays.asList(1L, 2L);
-        List<GroupTable> groupTables = Arrays.asList(tableA, tableB);
-        given(tableGroupRepository.save(any())).willReturn(new TableGroup());
-        given(tableGroupValidator.groupingTable(tableIds, null)).willReturn(groupTables);
+        TableGroupResponse actual = tableGroupService.create(Arrays.asList(tableA.getId(), tableB.getId()));
 
-        TableGroupResponse actual = tableGroupService.create(tableIds);
-
-        assertThat(actual.getOrderTables()).hasSize(2);
+        List<OrderTable> groupedTables = orderTableRepository.findAllByTableGroupId(actual.getId());
+        assertAll(
+                () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getCreatedDate()).isNotNull(),
+                () -> assertThat(groupedTables).hasSize(2)
+        );
     }
 
     @DisplayName("테이블 그룹을 해제할 수 있다.")
     @Test
     void ungroup() {
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(new TableGroup()));
+        TableGroupResponse given = tableGroupService.create(Arrays.asList(tableA.getId(), tableB.getId()));
 
-        tableGroupService.ungroup(any());
+        tableGroupService.ungroup(given.getId());
 
-        verify(tableGroupValidator).ungroup(any());
-        verify(tableGroupRepository).deleteById(any());
+        List<OrderTable> groupedTables = orderTableRepository.findAllByTableGroupId(given.getId());
+        assertThat(groupedTables).hasSize(0);
     }
 }
