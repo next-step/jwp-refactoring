@@ -41,10 +41,6 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
     @JsonIgnore // infinite recursion을 피하기 위함
     public Menu getMenu() {
         return menu;
