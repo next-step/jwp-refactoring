@@ -52,14 +52,14 @@ public class Menu {
         return new Menu(name, price, menuGroupId, products);
     }
 
-    public void validate(MenuValidator menuValidator) {
-        menuValidator.validate(this);
-    }
-
     private void validateMenuGroup(Long menuGroupId) {
         if (menuGroupId == null) {
             throw new InvalidParameterException(ERROR_MESSAGE_MENU_GROUP_IS_NULL);
         }
+    }
+
+    public void validate(MenuValidator menuValidator) {
+        menuValidator.validate(this);
     }
 
     public Long id() {

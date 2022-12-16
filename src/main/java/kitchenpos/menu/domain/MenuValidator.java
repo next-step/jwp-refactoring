@@ -23,13 +23,13 @@ public class MenuValidator {
     }
 
     public void validate(Menu menu) {
-        validateExistMenuGroup(menu);
+        validateExistMenuGroup(menu.menuGroupId());
         validateTotalPrice(menu);
     }
 
-    private void validateExistMenuGroup(Menu menu) {
-        if (!menuGroupRepository.existsById(menu.menuGroupId())) {
-            throw new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_MENU_GROUP_FORMAT, menu.menuGroupId()));
+    private void validateExistMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_MENU_GROUP_FORMAT, menuGroupId));
         }
     }
 

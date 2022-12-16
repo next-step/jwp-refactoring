@@ -36,7 +36,6 @@ public class Order {
     private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTableId);
         OrderLineItems items = OrderLineItems.from(orderLineItems);
-        items.updateOrder(this);
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderLineItems = items;

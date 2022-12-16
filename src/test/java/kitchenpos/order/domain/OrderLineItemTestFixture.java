@@ -20,6 +20,6 @@ public class OrderLineItemTestFixture {
     }
 
     public static OrderLineItem orderLineItem(Long seq, OrderMenu menu, long quantity) {
-        return OrderLineItem.of(seq, null, menu, quantity);
+        return OrderLineItem.of(seq, menu, quantity);
     }
 }
