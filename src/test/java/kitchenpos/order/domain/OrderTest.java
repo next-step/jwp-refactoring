@@ -25,6 +25,7 @@ class OrderTest {
     private OrderTable 주문테이블A;
     private OrderTable 주문테이블B;
     private OrderLineItemRequest 하와이안피자세트주문;
+    private OrderMenu 주문메뉴;
 
     @BeforeEach
     void setUp() {
@@ -33,6 +34,7 @@ class OrderTest {
         하와이안피자상품 = new MenuProduct(하와이안피자, 1);
         하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
+        주문메뉴 = OrderMenu.from(하와이안피자세트);
         주문테이블A = new OrderTable(1L, null, 4, true);
         주문테이블B = new OrderTable(1L, null, 4, false);
         하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
@@ -42,7 +44,7 @@ class OrderTest {
     @Test
     void validateOrderTableNotEmptyException() {
         assertThatThrownBy(() -> Order.of(주문테이블A,
-            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트)))))
+            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴)))))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -50,7 +52,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         Order order = Order.of(주문테이블B,
-            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
 
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
@@ -61,7 +63,7 @@ class OrderTest {
     @Test
     void validateOrderStatusCompleteException() {
         Order order = Order.of(주문테이블B,
-            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))

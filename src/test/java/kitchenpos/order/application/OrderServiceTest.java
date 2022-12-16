@@ -17,6 +17,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -60,6 +61,7 @@ public class OrderServiceTest {
     private OrderTable 주문테이블;
     private Order 주문;
     private OrderLineItemRequest 하와이안피자세트주문;
+    private OrderMenu 주문메뉴;
 
     @BeforeEach
     void setUp() {
@@ -75,10 +77,11 @@ public class OrderServiceTest {
 
         하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자,
             MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
+        주문메뉴 = OrderMenu.from(하와이안피자세트);
 
         주문테이블 = new OrderTable(1L, null, 0, false);
         하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
-        주문 = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+        주문 = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
     }
 
     @DisplayName("주문을 생성한다.")
@@ -86,7 +89,7 @@ public class OrderServiceTest {
     void createOrder() {
         // given
         OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
-        Order order = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+        Order order = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
         when(menuRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(하와이안피자세트));
         when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(order)).thenReturn(order);
@@ -169,7 +172,7 @@ public class OrderServiceTest {
     @Test
     void updateOrderStatusCompleteException() {
         // given
-        Order order = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))))
+        Order order = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))))
             .changeOrderStatus(OrderStatus.COMPLETION);
         OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.MEAL, Collections.singletonList(하와이안피자세트주문));
         when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));

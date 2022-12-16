@@ -14,6 +14,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,7 @@ class OrderTableTest {
     private MenuProduct 하와이안피자상품;
     private Menu 하와이안피자세트;
     private OrderLineItem 하와이안피자세트주문;
+    private OrderMenu 주문메뉴;
 
     @BeforeEach
     void setUp() {
@@ -35,7 +37,8 @@ class OrderTableTest {
         하와이안피자상품 = new MenuProduct(하와이안피자, 1);
         하와이안피자세트 = new Menu("하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
-        하와이안피자세트주문 = new OrderLineItem(하와이안피자세트, 1);
+        주문메뉴 = OrderMenu.from(하와이안피자세트);
+        하와이안피자세트주문 = OrderLineItem.of(주문메뉴, 1);
     }
 
     @DisplayName("주문 테이블의 비어있는 상태를 수정한다.")

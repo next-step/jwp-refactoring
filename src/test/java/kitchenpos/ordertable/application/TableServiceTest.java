@@ -16,6 +16,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.repository.OrderRepository;
@@ -53,6 +54,7 @@ public class TableServiceTest {
     private OrderLineItemRequest 하와이안피자세트주문요청;
     private Order 주문;
     private OrderTable 주문테이블;
+    private OrderMenu 주문메뉴;
 
     @BeforeEach
     void setUp() {
@@ -61,9 +63,10 @@ public class TableServiceTest {
         하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트, 하와이안피자, 1L);
         하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
+        주문메뉴 = OrderMenu.from(하와이안피자세트);
         하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
         주문테이블 = new OrderTable(1L, null, 0, false);
-        주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(하와이안피자세트))));
+        주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(주문메뉴))));
     }
 
     @InjectMocks
