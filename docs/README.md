@@ -30,3 +30,17 @@
 * [x] 기본 생성자 protected 사용
 * [x] 예외 메세지 추가
 * [x] API 스펙이 변경되지 않도록 유지하기
+
+### 의존성 리팩터링
+- 시스템을 모듈단위로 분리하기 위해 의존성을 관리해야 한다
+* [ ] 패키지 분리
+  * 상품 - product
+  * 메뉴그룹 - menuGroup
+  * 메뉴 - menu, menuProduct
+  * 주문 - order, orderLineItem
+  * 주문테이블 - orderTable
+  * 단체지정 - tableGroup
+* [ ] 같은 패키지는 객체참조, 서로다른 패키지는 Id + Repository 활용
+  * [ ] 검증 로직의 분리
+  * [ ] 간접참조의 변경사항 발생 시 이벤트 발행 (혹은 DIP 활용)
+* [ ] 조회 단위는 객체참조가 가능한 영역까지만 한다
