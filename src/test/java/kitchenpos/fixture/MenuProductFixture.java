@@ -1,15 +1,13 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Product;
 
 public class MenuProductFixture {
 
-    public static MenuProduct create(Long seq, Long productId, Long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+    public static MenuProduct create(Menu menu, Product product, Long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
 }
