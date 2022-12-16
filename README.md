@@ -34,7 +34,7 @@
 - [ ] OrderLineItems test
 
 - [ ] 테이블 그룹 생성 시 orderTable 의 테이블 그룹은 null 이어야 한다.
-
+- [ ] unGroup 도메인 테스트 수정
 ### 이름
 
 - [x] 이름을 생성한다.

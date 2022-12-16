@@ -72,4 +72,8 @@ public class TableGroup {
     public void setOrderTables(List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
     }
+
+    public void upGroup() {
+        this.orderTables.unGroup();
+    }
 }

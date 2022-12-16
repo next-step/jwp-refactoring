@@ -19,4 +19,10 @@ public class OrderTables {
     public List<OrderTable> getOrderTables() {
         return this.orderTables;
     }
+
+    public void unGroup() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.setTableGroup(null);
+        }
+    }
 }

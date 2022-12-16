@@ -8,16 +8,11 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
 
 @Service
 public class TableGroupService {
@@ -51,9 +46,12 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
 
-        final List<Long> orderTableIds = orderTables.stream()
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);
+
+        final List<OrderTable> findOrderTables = tableGroup.getOrderTables();
+
+        final List<Long> orderTableIds = findOrderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
@@ -62,9 +60,6 @@ public class TableGroupService {
             throw new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE);
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
-            orderTableRepository.save(orderTable);
-        }
+        tableGroup.upGroup();
     }
 }
