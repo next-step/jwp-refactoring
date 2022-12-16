@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableBag;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,12 +18,13 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.application.TableServiceTest.주문_테이블;
 import static kitchenpos.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.domain.OrderTableTest.빈_상태;
-import static kitchenpos.application.TableServiceTest.주문_테이블;
 import static kitchenpos.domain.TableGroupTest.단체_지정;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -49,9 +51,9 @@ class TableGroupRestControllerTest {
     @Test
     void 생성_성공() throws Exception {
         //given:
-        final List<OrderTable> 주문_테이블_목록 = Arrays.asList(
+        final OrderTableBag 주문_테이블_목록 = OrderTableBag.from(Arrays.asList(
                 tableService.create(주문_테이블(두_명의_방문객, 빈_상태)),
-                tableService.create(주문_테이블(두_명의_방문객, 빈_상태)));
+                tableService.create(주문_테이블(두_명의_방문객, 빈_상태))));
 
         final TableGroup 단체_지정_테이블 = 단체_지정(LocalDateTime.now(), 주문_테이블_목록);
         //when:
@@ -64,16 +66,17 @@ class TableGroupRestControllerTest {
                         .andExpect(status().isCreated())
                         .andReturn().getResponse().getContentAsString(), TableGroup.class);
         //then:
-        assertThat(저장된_단체_지정_테이블.getOrderTables()).hasSize(주문_테이블_목록.size());
+        assertThat(저장된_단체_지정_테이블.orderTables().stream().noneMatch(OrderTable::isEmpty)).isTrue();
     }
 
     @DisplayName("단체 지정 해제 성공")
     @Test
     void 단체_지정_해제_성공() {
         //given:
-        final TableGroup 저장된_단체_지정_테이블 = tableGroupService.create(단체_지정(LocalDateTime.now(), Arrays.asList(
-                tableService.create(주문_테이블(두_명의_방문객, 빈_상태)),
-                tableService.create(주문_테이블(두_명의_방문객, 빈_상태)))));
+        final TableGroup 저장된_단체_지정_테이블 = tableGroupService.create(
+                단체_지정(LocalDateTime.now(), OrderTableBag.from(Arrays.asList(
+                        tableService.create(주문_테이블(두_명의_방문객, 빈_상태)),
+                        tableService.create(주문_테이블(두_명의_방문객, 빈_상태))))));
         //when,then:
         assertThatNoException().isThrownBy(() ->
                 mockMvc.perform(delete("/api/table-groups/{tableGroupId}", 저장된_단체_지정_테이블.getId()))
