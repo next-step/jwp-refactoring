@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
 
@@ -16,15 +15,14 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Embedded
+    private OrderMenu menu;
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {}
 
-    private OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    private OrderLineItem(Long seq, Order order, OrderMenu menu, long quantity) {
         validate(menu);
         this.seq = seq;
         this.order = order;
@@ -32,21 +30,21 @@ public class OrderLineItem {
         this.quantity = Quantity.from(quantity);
     }
 
-    private void validate(Menu menu) {
+    private void validate(OrderMenu menu) {
         if (menu == null) {
             throw new InvalidParameterException(ERROR_MESSAGE_ORDER_LINE_ITEM_MENU_IS_NULL);
         }
     }
 
-    private OrderLineItem(Menu menu, long quantity) {
+    private OrderLineItem(OrderMenu menu, long quantity) {
         this(null, null, menu, quantity);
     }
 
-    public static OrderLineItem of(Menu menu, long quantity) {
+    public static OrderLineItem of(OrderMenu menu, long quantity) {
         return new OrderLineItem(menu, quantity);
     }
 
-    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
+    public static OrderLineItem of(Long seq, Order order, OrderMenu menu, long quantity) {
         return new OrderLineItem(seq, order, menu, quantity);
     }
 
@@ -62,7 +60,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu menu() {
+    public OrderMenu menu() {
         return menu;
     }
 
@@ -76,15 +74,5 @@ public class OrderLineItem {
 
     public long quantityValue() {
         return quantity.value();
-    }
-
-    @Override
-    public String toString() {
-        return "OrderLineItem{" +
-                "seq=" + seq +
-                ", order=" + order +
-                ", menu=" + menu +
-                ", quantity=" + quantity +
-                '}';
     }
 }

@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -66,14 +67,15 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_ORDER_TABLE_FORMAT, orderTableId)));
     }
 
-    private Menu findMenu(Long menuId) {
-        return menuRepository.findById(menuId)
+    private OrderMenu findOrderMenu(Long menuId) {
+        Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_MENU_FORMAT, menuId)));
+        return OrderMenu.of(menu.id(), menu.name(), menu.price());
     }
 
     private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> requests) {
         return requests.stream()
-                .map(request -> OrderLineItem.of(findMenu(request.getMenuId()), request.getQuantity()))
+                .map(request -> OrderLineItem.of(findOrderMenu(request.getMenuId()), request.getQuantity()))
                 .collect(Collectors.toList());
     }
 }

@@ -100,15 +100,4 @@ public class Order {
     public OrderLineItems orderLineitems() {
         return orderLineItems;
     }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", orderTableId=" + orderTableId +
-                ", orderStatus=" + orderStatus +
-                ", orderedTime=" + orderedTime +
-                ", orderLineItems=" + orderLineItems +
-                '}';
-    }
 }

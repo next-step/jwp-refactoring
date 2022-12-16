@@ -124,8 +124,8 @@ class OrderServiceTest {
         OrderRequest orderRequest = orderRequest(orderTable.id(), Arrays.asList(orderLineItemRequest, orderLineItemRequest2));
         given(menuRepository.findById(1L)).willReturn(Optional.of(짜장_탕수육_세트));
         given(menuRepository.findById(2L)).willReturn(Optional.of(짬뽕2_탕수육_세트));
-        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_세트, 1L);
-        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_세트, 1L);
+        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_주문_세트, 1L);
+        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_주문_세트, 1L);
         Order order = order(1L, orderTable.id(), Arrays.asList(orderLineItem, orderLineItem2));
         given(orderRepository.save(any())).willReturn(order);
 
@@ -163,8 +163,8 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = orderTable(1L, null, 3, false);
         OrderStatusRequest orderStatusRequest = orderStatusRequest(OrderStatus.MEAL.name());
-        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_세트, 1L);
-        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_세트, 1L);
+        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_주문_세트, 1L);
+        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_주문_세트, 1L);
         Order order = order(1L, orderTable.id(), Arrays.asList(orderLineItem, orderLineItem2));
         given(orderRepository.save(any())).willReturn(order);
         given(orderRepository.findById(order.id())).willReturn(Optional.of(order));
@@ -183,8 +183,8 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = orderTable(1L, null, 3, false);
         OrderStatusRequest orderStatusRequest = orderStatusRequest(OrderStatus.MEAL.name());
-        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_세트, 1L);
-        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_세트, 1L);
+        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_주문_세트, 1L);
+        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_주문_세트, 1L);
         Order order = order(1L, orderTable.id(), Arrays.asList(orderLineItem, orderLineItem2));
         given(orderRepository.save(any())).willReturn(order);
         given(orderRepository.findById(order.id())).willReturn(Optional.of(order));
@@ -202,8 +202,8 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = orderTable(1L, null, 3, false);
         OrderTable orderTable2 = orderTable(2L, null, 3, false);
-        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_세트, 1L);
-        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_세트, 1L);
+        OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_주문_세트, 1L);
+        OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_주문_세트, 1L);
         Order order = order(1L, orderTable.id(), Collections.singletonList(orderLineItem));
         Order order2 = order(2L, orderTable2.id(), Collections.singletonList(orderLineItem2));
         given(orderRepository.findAll()).willReturn(Arrays.asList(order, order2));
