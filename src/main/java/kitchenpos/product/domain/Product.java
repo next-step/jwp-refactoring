@@ -13,32 +13,25 @@ public class Product {
     private Long id;
     @Column(nullable = false, unique = true)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
 
     public Product(String name, BigDecimal price) {
-        validatePrice(price);
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     private Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     public static Product of(Long id, String name, BigDecimal price) {
         return new Product(id, name, price);
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(ProductError.INVALID_PRICE);
-        }
     }
 
     public Long getId() {
@@ -50,7 +43,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     @Override
