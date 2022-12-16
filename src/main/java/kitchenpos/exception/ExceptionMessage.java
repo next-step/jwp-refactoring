@@ -18,6 +18,13 @@ public class ExceptionMessage {
     public static final String INVALID_ORDER_TABLE_SIZE = "주문 테이블이 2개 이상일 때 단체 지정을 할 수 있습니다.";
     public static final String NOT_EMPTY_ORDER_TABLE_EXIST = "빈 테이블이 아닌 주문 테이블이 있이서 단체 지정을 할 수 없습니다.";
     public static final String ALREADY_GROUPED_ORDER_TABLE_EXIST = "이미 단체 지정된 주문 테이블이 있어서 단체 지정을 할 수 없습니다.";
+    public static final String PRODUCT_NOT_FOUND = "상품이 존재하지 않습니다.";
+    public static final String MENU_GROUP_NOT_FOUND = "메뉴그룹이 존재하지 않습니다.";
+    public static final String ORDER_TABLE_NOT_FOUND = "주문테이블이 존재하지 않습니다.";
+    public static final String MENU_NOT_FOUND = "메뉴가 존재하지 않습니다.";
+    public static final String ORDER_NOT_FOUND = "주문이 존재하지 않습니다.";
+    public static final String INVALID_ORDER_MENU_PRICE = "주문한 메뉴의 가격이 유효하지 않습니다.";
+    public static final String INVALID_ORDER_MENU_NAME = "주문한 메뉴 이름은 1자 이상이어야 합니다.";
 
     private ExceptionMessage() {
     }
