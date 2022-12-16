@@ -25,6 +25,9 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -45,22 +48,23 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menuParam = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
+        MenuProductRequest menuProductRequest = menuProductParam(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProductRequest));
 
-        given(menuGroupRepository.existsById(menuParam.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(menuRequest.getMenuGroupId())).willReturn(true);
         List<Product> savedProducts = Collections.singletonList(savedProduct(1L, new BigDecimal(10000)));
 
         given(productRepository.findAllById(anyList())).willReturn(savedProducts);
-        doNothing().when(menuValidator).validate(menuParam, savedProducts, false);
 
-        MenuProduct savedMenuProduct = savedMenuProduct(1L, menuProduct);
-        Menu savedMenu = savedMenu(1L, menuParam.getName(), menuParam.getPrice(), menuParam.getMenuGroupId(),
+        MenuProduct savedMenuProduct = savedMenuProduct(1L, 1L, 2L);
+        Menu savedMenu = savedMenu(1L, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(),
             Collections.singletonList(savedMenuProduct));
-        given(menuRepository.save(menuParam)).willReturn(savedMenu);
+        given(menuRepository.save(any())).willReturn(savedMenu);
+        doNothing().when(menuValidator).validate(savedMenu, savedProducts, false);
+
 
         // when
-        Menu actual = menuService.create(menuParam);
+        MenuResponse actual = menuService.create(menuRequest);
 
         // then
         assertAll(
@@ -68,7 +72,10 @@ class MenuServiceTest {
             () -> assertThat(actual.getName()).isEqualTo(savedMenu.getName()),
             () -> assertThat(actual.getPrice()).isEqualTo(savedMenu.getPrice()),
             () -> assertThat(actual.getMenuGroupId()).isEqualTo(savedMenu.getMenuGroupId()),
-            () -> assertThat(actual.getMenuProducts()).containsExactly(savedMenuProduct)
+            () -> assertThat(actual.getMenuProducts()).hasSize(1),
+            () -> assertThat(actual.getMenuProducts().get(0).getSeq()).isNotNull(),
+            () -> assertThat(actual.getMenuProducts().get(0).getProductId()).isEqualTo(1L),
+            () -> assertThat(actual.getMenuProducts().get(0).getQuantity()).isEqualTo(2L)
         );
     }
 
@@ -84,11 +91,13 @@ class MenuServiceTest {
         given(menuRepository.findAll()).willReturn(Collections.singletonList(savedMenu));
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         // then
-        assertThat(menus).hasSize(1);
-        assertThat(menus.get(0).getName()).isEqualTo(savedMenu.getName());
-        assertThat(menus.get(0).getMenuProducts()).containsExactly(menuProduct1, menuProduct2);
+        assertAll(
+            () -> assertThat(menus).hasSize(1),
+            () -> assertThat(menus.get(0).getName()).isEqualTo(savedMenu.getName()),
+            () -> assertThat(menus.get(0).getMenuProducts()).hasSize(2)
+        );
     }
 }

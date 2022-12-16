@@ -1,12 +1,16 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.MenuProductRequest;
+
 public class MenuProductFixture {
     private MenuProductFixture() {
     }
 
-    public static MenuProduct menuProductParam(Long productId, long quantity) {
-        return new MenuProduct(null, productId, quantity);
+    public static MenuProductRequest menuProductParam(Long productId, long quantity) {
+        return new MenuProductRequest(productId, quantity);
     }
+
+
 
     public static MenuProduct savedMenuProduct(Long id, MenuProduct param) {
         return new MenuProduct(id, param.getProductId(), param.getQuantity());

@@ -12,8 +12,7 @@ public class TableGroupRequest {
             .collect(Collectors.toList());
     }
 
-    protected TableGroupRequest() {
-    }
+    protected TableGroupRequest() {}
 
     public List<OrderTableId> getOrderTables() {
         return orderTables;

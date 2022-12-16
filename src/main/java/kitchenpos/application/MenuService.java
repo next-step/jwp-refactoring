@@ -1,16 +1,19 @@
 package kitchenpos.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroupRepository;
-import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 
 @Service
 public class MenuService {
@@ -32,17 +35,32 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        final MenuProducts menuProducts = new MenuProducts(menu.getMenuProducts());
-        List<Product> products = productRepository.findAllById(menuProducts.toProductIds());
-        boolean menuGroupNotExists = !menuGroupRepository.existsById(menu.getMenuGroupId());
+    public MenuResponse create(final MenuRequest menuRequest) {
+        List<Product> products = productRepository.findAllById(menuRequest.getProductIds());
+        boolean menuGroupNotExists = !menuGroupRepository.existsById(menuRequest.getMenuGroupId());
 
-        menuValidator.validate(menu, products, menuGroupNotExists);
+        Menu savedMenu = menuRepository.save(createMenu(menuRequest));
+        menuValidator.validate(savedMenu, products, menuGroupNotExists);
 
-        return menuRepository.save(menu);
+        return MenuResponse.from(savedMenu);
     }
 
-    public List<Menu> list() {
-        return menuRepository.findAll();
+    private Menu createMenu(MenuRequest menuRequest) {
+        return Menu.generate(
+            menuRequest.getName(),
+            menuRequest.getPrice(),
+            menuRequest.getMenuGroupId(),
+            menuRequest.getMenuProducts().stream()
+                .map(menuProduct -> MenuProduct.generate(
+                    menuProduct.getProductId(),
+                    menuProduct.getQuantity()
+                )).collect(Collectors.toList())
+        );
+    }
+
+    public List<MenuResponse> list() {
+        return menuRepository.findAll().stream()
+            .map(MenuResponse::from)
+            .collect(Collectors.toList());
     }
 }

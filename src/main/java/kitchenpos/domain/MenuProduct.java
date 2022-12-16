@@ -15,12 +15,16 @@ public class MenuProduct {
 
     private long quantity;
 
-    public MenuProduct() {}
+    protected MenuProduct() {}
 
     public MenuProduct(Long seq, Long productId, long quantity) {
         this.seq = seq;
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public static MenuProduct generate(Long productId, long quantity) {
+        return new MenuProduct(null, productId, quantity);
     }
 
     public Long getSeq() {

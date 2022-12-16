@@ -30,9 +30,9 @@ public class MenuValidatorTest {
     @Test
     void validate_price_null() {
         // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", null, 1L, Collections.singletonList(menuProduct));
-        List<Product> products = Arrays.asList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
+        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
+        Menu menu = savedMenu(1L, "후라이드+후라이드", null, 1L, Collections.singletonList(menuProduct));
+        List<Product> products = Collections.singletonList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
         boolean menuGroupNotExists = false;
 
         // when, then
@@ -44,8 +44,8 @@ public class MenuValidatorTest {
     @Test
     void validate_price_zero() {
         // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", BigDecimal.ZERO, 1L, Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
+        Menu menu = savedMenu(1L, "후라이드+후라이드", BigDecimal.ZERO, 1L, Collections.singletonList(menuProduct));
         List<Product> products = Arrays.asList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
         boolean menuGroupNotExists = false;
 
@@ -58,8 +58,8 @@ public class MenuValidatorTest {
     @Test
     void validate_menu_group_not_exists() {
         // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
+        Menu menu = savedMenu(1L, "후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
         List<Product> products = Arrays.asList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
         boolean menuGroupNotExists = true;
 
@@ -72,8 +72,8 @@ public class MenuValidatorTest {
     @Test
     void validate_product_not_exists() {
         // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
+        Menu menu = savedMenu(1L, "후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
         List<Product> products = Collections.emptyList();
         boolean menuGroupNotExists = false;
 
@@ -86,8 +86,8 @@ public class MenuValidatorTest {
     @Test
     void validate_product_price_invalid() {
         // given
-        MenuProduct menuProduct = menuProductParam(1L, 2L);
-        Menu menu = menuParam("후라이드+후라이드", new BigDecimal(22000), 1L, Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
+        Menu menu = savedMenu(1L, "후라이드+후라이드", new BigDecimal(22000), 1L, Collections.singletonList(menuProduct));
         List<Product> products = Collections.singletonList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
         boolean menuGroupNotExists = false;
 

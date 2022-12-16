@@ -4,8 +4,7 @@ public class OrderTableRequest {
     private int numberOfGuests;
     private boolean empty;
 
-    protected OrderTableRequest() {
-    }
+    protected OrderTableRequest() {}
 
     public OrderTableRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;

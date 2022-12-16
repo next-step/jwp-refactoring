@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 public class MenuProducts {
     private final List<MenuProduct> menuProducts;
 
-    public MenuProducts(List<MenuProduct> menuProducts) {
+    private MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public static MenuProducts from(List<MenuProduct> menuProducts) {
+        return new MenuProducts(menuProducts);
     }
 
     public List<Long> toProductIds() {

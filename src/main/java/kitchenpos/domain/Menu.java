@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import kitchenpos.application.MenuValidator;
-
 @Entity
 public class Menu {
     @Id
@@ -27,7 +25,7 @@ public class Menu {
     @JoinColumn(name = "menu_id", nullable = false)
     private List<MenuProduct> menuProducts;
 
-    public Menu() {}
+    protected Menu() {}
 
     public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
@@ -35,6 +33,10 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public static Menu generate(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
     public Long getId() {
