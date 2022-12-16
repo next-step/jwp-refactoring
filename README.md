@@ -93,6 +93,6 @@
         * JPA 구현체인 Spring-Data-Jpa 도입
     3. `Infra Layer`의 보호 아래 `도메인 객체`를 세부적으로 분리 (적극적 기능 리펙터링)
         * 래핑 클래스, 일급 컬렉션 등 활용
-    4. 다시 `Application Layer, Presentation Layer`로 돌아와서, `요청/응답 데이터` 구조 개선 (도메인 객체가 흘러 넘치지 않게)
-    5. 패키지 분리 
+    4. 패키지 분리 
+    5. 다시 `Application Layer, Presentation Layer`로 돌아와서, `요청/응답 데이터` 구조 개선 (도메인 객체가 흘러 넘치지 않게)
 
