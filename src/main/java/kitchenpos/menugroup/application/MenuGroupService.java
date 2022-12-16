@@ -23,13 +23,6 @@ public class MenuGroupService {
     }
 
     @Transactional(readOnly = true)
-    public MenuGroup findById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "메뉴 등록시, 등록되어 있는 메뉴 그룹만 지정할 수 있습니다[menuGroupId:" + menuGroupId + "]"));
-    }
-
-    @Transactional(readOnly = true)
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }

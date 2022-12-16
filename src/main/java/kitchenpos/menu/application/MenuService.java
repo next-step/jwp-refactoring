@@ -7,8 +7,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -19,29 +18,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
     private final MenuProductRepository menuProductRepository;
     private final ProductService productService;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService,
-                       MenuProductRepository menuProductRepository, ProductService productService) {
+    public MenuService(MenuRepository menuRepository,
+                       MenuProductRepository menuProductRepository,
+                       ProductService productService, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
         this.menuProductRepository = menuProductRepository;
         this.productService = productService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-
-        return menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup,
+        menuValidator.validateCreation(menuRequest.getMenuGroupId());
+        return menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(),
                 createMenuProducts(menuRequest)));
     }
 
     @Transactional(readOnly = true)
     public List<Menu> list() {
-        final List<Menu> menus = menuRepository.findAllWithMenuGroupAndMenuProducts();
+        final List<Menu> menus = menuRepository.findAllWithMenuProducts();
 
         for (final Menu menu : menus) {
             menu.addMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
