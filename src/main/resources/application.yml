@@ -8,6 +8,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: false
+        default_batch_fetch_size: 5
     hibernate:
       ddl-auto: validate
 

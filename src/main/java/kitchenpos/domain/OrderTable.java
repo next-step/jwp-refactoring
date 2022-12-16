@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
     @JsonIgnore
-    @BatchSize(size = 5)
     @OneToMany(mappedBy = "orderTable")
     private final List<Order> orders = new ArrayList<>();
     private int numberOfGuests;

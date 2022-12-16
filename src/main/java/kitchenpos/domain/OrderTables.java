@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
@@ -9,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.common.ErrorMessage.*;
+import static kitchenpos.common.ErrorMessage.NEED_TWO_ORDER_TABLE;
+import static kitchenpos.common.ErrorMessage.VALIDATION_OF_GROUP;
 
 @Embeddable
 public class OrderTables {
 
-    @BatchSize(size = 5)
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
