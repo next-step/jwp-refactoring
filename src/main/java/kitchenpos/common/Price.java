@@ -11,8 +11,7 @@ import kitchenpos.exception.ErrorMessage;
 @Embeddable
 public class Price implements Comparable<Price> {
 	private static String PROPERTY_NAME = "가격";
-	private static BigDecimal ZERO_VALUE = BigDecimal.valueOf(0);
-	public static Price ZERO = Price.of(ZERO_VALUE);
+	public static Price ZERO = Price.of(BigDecimal.ZERO);
 
 	@Column(name = "price", nullable = false)
 	private BigDecimal value;
@@ -34,7 +33,7 @@ public class Price implements Comparable<Price> {
 	}
 
 	private void validatePriceIsNegative(BigDecimal price) {
-		if (price.compareTo(ZERO_VALUE) < 0) {
+		if (price.compareTo(BigDecimal.ZERO) < 0) {
 			throw new IllegalArgumentException(ErrorMessage.cannotBeNegative(PROPERTY_NAME));
 		}
 	}
