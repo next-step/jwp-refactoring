@@ -27,10 +27,10 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public BigDecimal getSumOfMenuPrice() {
+    public BigDecimal getSumOfMenuProductPrice() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(menuProduct.getPrice());
         }
         return sum;
     }

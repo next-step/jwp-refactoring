@@ -6,6 +6,7 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.ProductPriceException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,22 +43,34 @@ public class ProductRestControllerTest extends ControllerTest {
         doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(new ProductRequest()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new ProductRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(product.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(product.getName())))
                 .andExpect(jsonPath("$.price", is(product.getPrice().intValue())))
                 .andExpect(status().isCreated());
     }
 
-    @DisplayName("주문생성을 요청하면 주문생성 실패응답")
+    @DisplayName("상품생성을 요청하면 상품생성 실패응답")
     @Test
     public void throwsExceptionWhenProductCreate() throws Exception {
         doThrow(new IllegalArgumentException()).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(new ProductRequest()))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(mapper.writeValueAsString(new ProductRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("상품생성중 상품가격이 0미만이면 실패응답")
+    @Test
+    public void throwsExceptionWhenNegativePrice() throws Exception {
+        doThrow(new ProductPriceException("상품가격은 0이상 이어야합니다")).when(productService).create(any(ProductRequest.class));
+
+        webMvc.perform(post("/api/products")
+                .content(mapper.writeValueAsString(new ProductRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("상품가격은 0이상 이어야합니다")))
                 .andExpect(status().isBadRequest());
     }
 

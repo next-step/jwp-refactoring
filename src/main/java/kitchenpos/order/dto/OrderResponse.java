@@ -39,10 +39,6 @@ public class OrderResponse {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }

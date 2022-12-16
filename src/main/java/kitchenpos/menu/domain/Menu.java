@@ -62,7 +62,7 @@ public class Menu {
     }
 
     private void validateMenuPrice(MenuProducts menuProducts) {
-        if (price.isExceedPrice(menuProducts.getSumOfMenuPrice())) {
+        if (price.isExceedPrice(menuProducts.getSumOfMenuProductPrice())) {
             throw new MenuException(MenuExceptionType.EXCEED_MENU_PRODUCT_PRICE);
         }
     }

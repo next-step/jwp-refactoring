@@ -7,6 +7,7 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.OrderTablesException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,6 +61,19 @@ public class TableGroupRestControllerTest extends ControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @DisplayName("테이블그룹 생성중 테이블개수가 2개 미만이면 실패응답")
+    @Test
+    public void throwsExceptionWhenTableGroupCreateWithLessThen2Table() throws Exception {
+        doThrow(new OrderTablesException("테이블 사이즈는 2개 이상만 허용합니다")).when(tableGroupService).create(any(TableGroupRequest.class));
+
+        webMvc.perform(post("/api/table-groups")
+                .content(mapper.writeValueAsString(TableGroup.builder().build()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("테이블 사이즈는 2개 이상만 허용합니다")))
+                .andExpect(status().isBadRequest());
+    }
+
 
     @DisplayName("테이블그룹 해재를 요청하면 성공응답")
     @Test

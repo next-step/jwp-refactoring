@@ -20,7 +20,7 @@ public class MenuTest {
     @Test
     public void throwsExceptionWhenNullAmount() {
         assertThatThrownBy(() -> Menu.builder().price(null).build())
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴가격이 0보다작으면 예외발생")

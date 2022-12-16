@@ -103,9 +103,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문을 반환")
     @Test
     public void returnOrder() {
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest();
-        orderLineItemRequest.setMenuId(2l);
-        orderLineItemRequest.setQuantity(3l);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(2l,3l);
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderTableId(15l);
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
@@ -129,11 +127,12 @@ public class OrderServiceTest {
     @DisplayName("주문목록을 조회할경우 주문목록 반환")
     @Test
     public void returnOrders() {
-        Order order = Order.builder().id(150l)
+        List<Order> orders = getOrders(Order.builder().id(150l)
                 .orderTable(OrderTable.builder().build())
-                .orderLineItems(Arrays.asList(OrderLineItem.builder().menuId(15l).build()))
-                .build();
-        List<Order> orders = getOrders(order, 30);
+                .orderLineItems(Arrays.asList(OrderLineItem
+                        .builder()
+                        .menuId(1l)
+                        .build())).build(), 30);
         doReturn(orders)
                 .when(orderRepository).findAll();
 
@@ -197,8 +196,7 @@ public class OrderServiceTest {
     private List<OrderLineItemRequest> getOrderLineItems() {
         return IntStream.rangeClosed(1, 20)
                 .mapToObj(value -> {
-                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest();
-                    orderLineItemRequest.setMenuId(Arbitraries.longs().between(1, 100).sample());
+                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(10l,20l);
                     return orderLineItemRequest;
                 })
                 .collect(Collectors.toList());
