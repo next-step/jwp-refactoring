@@ -28,13 +28,9 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         OrderTables orderTables = OrderTables.of(orderTableById(tableGroupRequest.getOrderTables()));
-        List<OrderTableResponse> orderTableResponses = orderTables.getOrderTables()
-                .stream()
-                .map(OrderTableResponse::of)
-                .collect(Collectors.toList());
         final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         orderTables.group(tableGroup.getId());
-        return TableGroupResponse.of(tableGroup, orderTableResponses);
+        return TableGroupResponse.of(tableGroup, orderTables);
     }
 
     private List<OrderTable> orderTableById(List<Long> ids) {

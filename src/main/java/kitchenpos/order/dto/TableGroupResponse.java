@@ -1,8 +1,10 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TableGroupResponse {
     private Long id;
@@ -15,7 +17,11 @@ public class TableGroupResponse {
         this.orderTables = orderTableResponses;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup, List<OrderTableResponse> orderTableResponses) {
+    public static TableGroupResponse of(TableGroup tableGroup, OrderTables orderTables) {
+        List<OrderTableResponse> orderTableResponses = orderTables.getOrderTables()
+                .stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
         return new TableGroupResponse(tableGroup, orderTableResponses);
     }
 
