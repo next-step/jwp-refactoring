@@ -51,7 +51,7 @@ class OrderTableTest {
         // given
         OrderTable orderTable1 = new OrderTable(new NumberOfGuests(4), true);
         OrderTable orderTable2 = new OrderTable(new NumberOfGuests(4), true);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         orderTable1.setTableGroupId(tableGroup.getId());
 
         // when

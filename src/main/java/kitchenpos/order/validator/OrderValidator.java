@@ -3,7 +3,6 @@ package kitchenpos.order.validator;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.domain.OrderTable;
@@ -49,7 +48,7 @@ public class OrderValidator {
     }
 
     public void validateUpdateOrderStatus(Order order) {
-        if (order.getOrderStatus().equals(OrderStatus.COMPLETION)) {
+        if (order.isCompletionOrder()) {
             throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_COMPLETE.getMessage());
         }
     }

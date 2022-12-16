@@ -29,7 +29,7 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public void setMenu(Menu menu) {
+    void setMenu(Menu menu) {
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 }

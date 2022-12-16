@@ -23,6 +23,6 @@ public class TableGroupRequest {
     }
 
     public TableGroup createTableGroup() {
-        return new TableGroup(LocalDateTime.now());
+        return new TableGroup();
     }
 }

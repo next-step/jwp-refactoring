@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,19 +48,18 @@ public class MenuService {
     }
 
     private List<MenuProduct> findAllMenuProducts(List<MenuProductRequest> menuProducts, List<Product> products) {
+        Map<Long, Product> productMaps = convertProductMap(products);
         return menuProducts.stream()
                 .map(menuProductRequest -> {
-                    Product findProduct = findProductByMatchId(menuProductRequest.getProductId(), products);
+                    Product findProduct = productMaps.get(menuProductRequest.getProductId());
                     return menuProductRequest.createMenuProduct(findProduct);
                 })
                 .collect(Collectors.toList());
     }
 
-    private Product findProductByMatchId(Long productId, List<Product> products) {
+    private Map<Long, Product> convertProductMap(List<Product> products) {
         return products.stream()
-                .filter(product -> Objects.equals(product.getId(), productId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.PRODUCT_IS_NOT_EXIST.getMessage()));
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
     }
 
     private List<Product> findAllProductByIds(List<Long> ids) {

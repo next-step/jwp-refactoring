@@ -45,7 +45,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(4), true);
         OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(4), true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
         TableGroupRequest request = TableGroupRequest.of(orderTableIds);
 
         when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
@@ -68,7 +68,7 @@ class TableGroupServiceTest {
         Order order1 = TestOrderFactory.createCompleteOrderWith(orderTable1);
         Order order2 = TestOrderFactory.createCompleteOrderWith(orderTable2);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup();
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
 

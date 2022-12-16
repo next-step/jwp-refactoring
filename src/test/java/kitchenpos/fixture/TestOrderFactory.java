@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TestOrderFactory {
     public static Order create(Long orderTableId, OrderStatus status, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTableId, status, LocalDateTime.now(), new OrderLineItems(orderLineItems));
+        return new Order(orderTableId, status, new OrderLineItems(orderLineItems));
     }
 
     public static Order createCompleteOrder() {
@@ -21,7 +21,6 @@ public class TestOrderFactory {
         Order order = new Order(
                 orderTable.getId(),
                 OrderStatus.COMPLETION,
-                LocalDateTime.now(),
                 new OrderLineItems(new ArrayList<>())
         );
         orderTable.setEmpty(true);
@@ -32,7 +31,6 @@ public class TestOrderFactory {
         Order order = new Order(
                 orderTable.getId(),
                 OrderStatus.COMPLETION,
-                LocalDateTime.now(),
                 new OrderLineItems(new ArrayList<>())
         );
         orderTable.setEmpty(true);
@@ -44,7 +42,6 @@ public class TestOrderFactory {
         return new Order(
                 orderTable.getId(),
                 OrderStatus.MEAL,
-                LocalDateTime.now(),
                 new OrderLineItems(new ArrayList<>())
         );
     }

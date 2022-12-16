@@ -49,7 +49,13 @@ public class TableGroupValidator {
             throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_IS_NOT_EXIST.getMessage());
         }
 
-        orderTables.validateGroup();
+        if (orderTables.isNotEmpty()) {
+            throw new IllegalArgumentException(ErrorCode.NOT_EMPTY_STATUS_IN_ORDER_TABLES.getMessage());
+        }
+
+        if (orderTables.hasGroup()) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_HAS_GROUP_TABLE.getMessage());
+        }
     }
 
     public void validateUnGroup(TableGroup tableGroup) {

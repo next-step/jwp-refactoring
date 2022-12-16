@@ -135,7 +135,7 @@ class TableGroupValidatorTest {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), true);
         Order order = TestOrderFactory.createCompleteOrder();
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         when(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(orderTable));
         when(orderRepository.findAllByOrderTableIdIn(Arrays.asList(orderTable.getId())))
                 .thenReturn(Arrays.asList(order));
@@ -150,7 +150,7 @@ class TableGroupValidatorTest {
         // given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), true);
         Order order = TestOrderFactory.createMealOrder();
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(1L);
         when(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(orderTable));
         when(orderRepository.findAllByOrderTableIdIn(Arrays.asList(orderTable.getId())))
                 .thenReturn(Arrays.asList(order));

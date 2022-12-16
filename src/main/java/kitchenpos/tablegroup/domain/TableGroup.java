@@ -4,12 +4,14 @@ import kitchenpos.tablegroup.event.TableGroupEventPublisher;
 import kitchenpos.tablegroup.event.TableUnGroupEventPublisher;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
@@ -18,14 +20,9 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    protected TableGroup() {}
+    public TableGroup() {}
 
-    public TableGroup(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public TableGroup(Long id, LocalDateTime createdDate) {
-        this(createdDate);
+    public TableGroup(Long id) {
         this.id = id;
     }
 

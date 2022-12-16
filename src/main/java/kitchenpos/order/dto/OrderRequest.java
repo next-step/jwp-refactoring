@@ -33,7 +33,7 @@ public class OrderRequest {
     }
 
     public Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(orderLineItems));
+        return new Order(orderTableId, OrderStatus.COOKING, new OrderLineItems(orderLineItems));
     }
 
     public List<Long> findAllMenuIds() {

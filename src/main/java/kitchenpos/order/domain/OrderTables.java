@@ -18,27 +18,14 @@ public class OrderTables {
         this.orderTables = new ArrayList<>(orderTables);
     }
 
-    public void validateGroup() {
-        validateShouldEmpty();
-        validateHasNotGroup();
-    }
-
-    private void validateShouldEmpty() {
-        boolean hasNotEmpty = orderTables.stream()
+    public boolean isNotEmpty() {
+        return orderTables.stream()
                 .anyMatch(orderTable -> !orderTable.isEmpty());
-
-        if (hasNotEmpty) {
-            throw new IllegalArgumentException(ErrorCode.NOT_EMPTY_STATUS_IN_ORDER_TABLES.getMessage());
-        }
     }
 
-    private void validateHasNotGroup() {
-        boolean hasGroup = orderTables.stream()
+    public boolean hasGroup() {
+        return orderTables.stream()
                 .anyMatch(OrderTable::hasTableGroup);
-
-        if (hasGroup) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLES_HAS_GROUP_TABLE.getMessage());
-        }
     }
 
     public void ungroup() {

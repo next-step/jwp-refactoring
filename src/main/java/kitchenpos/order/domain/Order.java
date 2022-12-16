@@ -2,12 +2,14 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.constant.ErrorCode;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -28,12 +30,10 @@ public class Order {
     public Order(
             Long orderTableId,
             OrderStatus orderStatus,
-            LocalDateTime orderedTime,
             OrderLineItems orderLineItems
     ) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         orderLineItems.setOrder(this);
     }
@@ -42,17 +42,20 @@ public class Order {
             Long id,
             Long orderTableId,
             OrderStatus orderStatus,
-            LocalDateTime orderedTime,
             OrderLineItems orderLineItems
     ) {
-        this(orderTableId, orderStatus, orderedTime, orderLineItems);
+        this(orderTableId, orderStatus, orderLineItems);
         this.id = id;
     }
 
     public void validateOrderStatusShouldComplete() {
-        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
+        if (!isCompletionOrder()) {
             throw new IllegalArgumentException(ErrorCode.ORDER_STATUS_NOT_COMPLETE.getMessage());
         }
+    }
+
+    public boolean isCompletionOrder() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
     }
 
     public Long getId() {
