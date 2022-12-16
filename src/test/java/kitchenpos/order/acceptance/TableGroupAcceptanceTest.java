@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
 
         // when
-        ExtractableResponse<Response> response = 단체테이블_생성_요청(주문테이블1, 주문테이블2);
+        ExtractableResponse<Response> response = 단체테이블_생성_요청(Lists.newArrayList(
+                주문테이블1.getId(),
+                주문테이블2.getId()
+        ));
 
         // then
         단체테이블_생성됨(response);
@@ -45,7 +49,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문테이블3 = 주문테이블_생성_요청(4, false).as(OrderTable.class);
 
         // when
-        ExtractableResponse<Response> response = 단체테이블_생성_요청(주문테이블1, 주문테이블3);
+        ExtractableResponse<Response> response = 단체테이블_생성_요청(Lists.newArrayList(
+                주문테이블1.getId(),
+                주문테이블3.getId()
+        ));
 
         // then
         단체테이블_생성_실패됨(response);
@@ -62,7 +69,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         // given
         OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
         OrderTable 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
-        TableGroup tableGroup = 단체테이블_생성_요청(주문테이블1, 주문테이블2).as(TableGroup.class);
+        TableGroup tableGroup = 단체테이블_생성_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId())).as(TableGroup.class);
 
         // when
         ExtractableResponse<Response> response = 단체테이블_해체_요청(tableGroup.getId());

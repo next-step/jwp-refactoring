@@ -32,4 +32,6 @@ public class OrderRestController {
     public ResponseEntity<Order> changeOrderStatus(@PathVariable final Long orderId, @RequestBody final Order order) {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, order));
     }
+
+    // TODO : ExceptionHandler 정의
 }

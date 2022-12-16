@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -11,8 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderTableTestFixture {
     public static ExtractableResponse<Response> 주문테이블_손님수_수정_요청(Long orderTableId, int numberOfGuests) {
-        OrderTable orderTableRequest = new OrderTable();
-        orderTableRequest.setNumberOfGuests(numberOfGuests);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTableId, numberOfGuests);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -23,8 +24,7 @@ public class OrderTableTestFixture {
     }
 
     public static ExtractableResponse<Response> 주문테이블_빈테이블_여부_수정_요청(Long orderTableId, boolean empty) {
-        OrderTable orderTableRequest = new OrderTable();
-        orderTableRequest.setEmpty(empty);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTableId, empty);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +35,7 @@ public class OrderTableTestFixture {
     }
 
     public static ExtractableResponse<Response> 주문테이블_생성_요청(int numberOfGuest, boolean empty) {
-        OrderTable orderTableRequest = new OrderTable(numberOfGuest, empty);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuest, empty);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -76,7 +76,7 @@ public class OrderTableTestFixture {
     }
 
     public static void 주문테이블_손님수_확인됨(ExtractableResponse<Response> response, int numberOfGuests) {
-        OrderTable orderTable = response.as(OrderTable.class);
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
+        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 }

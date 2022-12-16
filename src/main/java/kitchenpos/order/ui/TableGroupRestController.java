@@ -27,4 +27,6 @@ public class TableGroupRestController {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent().build();
     }
+
+    // TODO : ExceptionHandler 정의
 }

@@ -3,11 +3,11 @@ package kitchenpos.order.fixture;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
-import org.assertj.core.util.Lists;
+import kitchenpos.order.dto.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,8 +20,8 @@ public class TableGroupTestFixture {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 단체테이블_생성_요청(OrderTable mergeSource1, OrderTable mergeSource2) {
-        TableGroup tableGroupRequest = new TableGroup(Lists.newArrayList(mergeSource1, mergeSource2));
+    public static ExtractableResponse<Response> 단체테이블_생성_요청(List<Long> orderTableIds) {
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

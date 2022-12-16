@@ -31,4 +31,6 @@ public class MenuGroupRestController {
     public ResponseEntity<List<MenuGroupResponse>> list() {
         return ResponseEntity.ok().body(menuGroupService.list());
     }
+
+    // TODO : ExceptionHandler 정의
 }
