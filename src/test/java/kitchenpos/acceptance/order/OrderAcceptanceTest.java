@@ -37,7 +37,6 @@ class OrderAcceptanceTest extends AcceptanceTest2 {
 	MenuAcceptanceTestStep menus = new MenuAcceptanceTestStep();
 	OrderTableAcceptanceTestStep orderTables = new OrderTableAcceptanceTestStep();
 
-	long 메뉴가격 = 10_000;
 	OrderTableResponse 주문_테이블;
 	List<ProductResponse> 상품목록;
 	MenuGroupResponse 메뉴그룹;
@@ -54,9 +53,9 @@ class OrderAcceptanceTest extends AcceptanceTest2 {
 	@BeforeEach
 	void setup() {
 		상품목록 = products.등록되어_있음(ProductFixture.상품목록2(3));
-		메뉴그룹 = menuGroups.등록되어_있음(Lists.newArrayList(MenuGroupFixture.메뉴그룹())).get(0);
-		메뉴 = menus.등록되어_있음(Lists.newArrayList(MenuFixture.메뉴(상품목록, 메뉴그룹, 메뉴가격))).get(0);
-		주문_테이블 = orderTables.등록되어_있음(Lists.newArrayList(OrderTableFixture.주문_테이블())).get(0);
+		메뉴그룹 = menuGroups.등록되어_있음(MenuGroupFixture.메뉴그룹());
+		메뉴 = menus.등록되어_있음(MenuFixture.메뉴(상품목록, 메뉴그룹));
+		주문_테이블 = orderTables.등록되어_있음(OrderTableFixture.주문_테이블());
 	}
 
 	/**

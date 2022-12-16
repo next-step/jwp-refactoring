@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.Order2;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable2;
@@ -30,7 +30,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order2 save(Order2 order) {
+	public Order save(Order order) {
 		order.startOrder();
 
 		return orderRepository.save(order);
@@ -40,13 +40,13 @@ public class OrderService {
 	public OrderResponse create(OrderRequest request) {
 		OrderTable2 orderTable = tableService.findById(request.getOrderTableId());
 		List<Menu> menus = getMenus(request);
-		Order2 order = request.toOrder(orderTable, menus);
+		Order order = request.toOrder(orderTable, menus);
 
 		return new OrderResponse(create(order));
 	}
 
 	@Transactional
-	public Order2 create(final Order2 order) {
+	public Order create(final Order order) {
 		order.startOrder();
 
 		return orderRepository.save(order);
@@ -56,7 +56,7 @@ public class OrderService {
 		return menuService.findAllById(request.menuIdList());
 	}
 
-	public List<Order2> findAll() {
+	public List<Order> findAll() {
 		return orderRepository.findAll();
 	}
 
@@ -70,15 +70,15 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order2 changeOrderStatus(Long orderId, OrderStatus toStatus) {
-		Order2 savedOrder = findById(orderId);
+	public Order changeOrderStatus(Long orderId, OrderStatus toStatus) {
+		Order savedOrder = findById(orderId);
 
 		savedOrder.changeOrderStatus(toStatus);
 
 		return savedOrder;
 	}
 
-	private Order2 findById(Long orderId) {
+	private Order findById(Long orderId) {
 		return orderRepository.findById(orderId)
 			.orElseThrow(IllegalArgumentException::new);
 	}

@@ -3,8 +3,8 @@ package kitchenpos.ui.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Order2;
-import kitchenpos.domain.OrderLineItem2;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 
 public class OrderResponse {
 	private Long id;
@@ -20,13 +20,13 @@ public class OrderResponse {
 		this.orderLineItems = orderLineItems;
 	}
 
-	public OrderResponse(Order2 order) {
+	public OrderResponse(Order order) {
 		this(order.getId(),
 			 order.getOrderStatus().name(),
 			 OrderLineItemResponse.of(order.getOrderLineItems()));
 	}
 
-	public static List<OrderResponse> of(List<Order2> orders) {
+	public static List<OrderResponse> of(List<Order> orders) {
 		return orders.stream().map(OrderResponse::new).collect(Collectors.toList());
 	}
 
@@ -42,7 +42,7 @@ public class OrderResponse {
 			this.quantity = quantity;
 		}
 
-		public static List<OrderLineItemResponse> of(List<OrderLineItem2> orderLineItems) {
+		public static List<OrderLineItemResponse> of(List<OrderLineItem> orderLineItems) {
 			return orderLineItems.stream()
 				.map(orderLineItem -> new OrderLineItemResponse(orderLineItem.getMenuName(),
 																orderLineItem.getQuantity()))

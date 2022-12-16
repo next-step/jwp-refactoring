@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Order2;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable2;
@@ -48,11 +48,11 @@ class OrderServiceTest {
 	@DisplayName("주문 생성")
 	void testCreateOrder() {
 		// given
-		Order2 expectedOrder = createOrder();
+		Order expectedOrder = createOrder();
 
-		when(orderRepository.save(any(Order2.class))).thenReturn(expectedOrder);
+		when(orderRepository.save(any(Order.class))).thenReturn(expectedOrder);
 		// when
-		Order2 actualOrder = orderService.create(expectedOrder);
+		Order actualOrder = orderService.create(expectedOrder);
 
 		// then
 		verify(orderRepository, times(1)).save(expectedOrder);
@@ -63,28 +63,28 @@ class OrderServiceTest {
 	@DisplayName("주문 목록 조회 성공")
 	void testListOrder() {
 		// given
-		Order2 expectedOrder1 = createOrder();
-		Order2 expectedOrder2 = createOrder();
-		when(orderRepository.findAll()).thenReturn(Lists.newArrayList(expectedOrder1, expectedOrder2));
+		Order expectedOrder1 = createOrder();
+		Order expectedOrder = createOrder();
+		when(orderRepository.findAll()).thenReturn(Lists.newArrayList(expectedOrder1, expectedOrder));
 
 		// when
-		List<Order2> actualOrders = orderService.findAll();
+		List<Order> actualOrders = orderService.findAll();
 
 		// then
 		verify(orderRepository, times(1)).findAll();
-		assertThat(actualOrders).containsExactlyInAnyOrder(expectedOrder1, expectedOrder2);
+		assertThat(actualOrders).containsExactlyInAnyOrder(expectedOrder1, expectedOrder);
 	}
 
 	@Test
 	@DisplayName("주문 상태 변경 성공")
 	void changeOrderStatus() {
 		// given
-		Order2 beforeOrder = createOrder(OrderStatus.COOKING);
+		Order beforeOrder = createOrder(OrderStatus.COOKING);
 		OrderStatus expectedStatus = OrderStatus.MEAL;
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(beforeOrder));
 
 		// when
-		Order2 actualOrder = orderService.changeOrderStatus(1L, expectedStatus);
+		Order actualOrder = orderService.changeOrderStatus(1L, expectedStatus);
 
 		// then
 		assertThat(actualOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
@@ -94,7 +94,7 @@ class OrderServiceTest {
 	@DisplayName("주문 상태 변경 실패")
 	void failToChangeOrderStatusWhenOrderStatusIsCompletion() {
 		// given
-		Order2 beforeOrder = createOrder(OrderStatus.COMPLETION);
+		Order beforeOrder = createOrder(OrderStatus.COMPLETION);
 		OrderStatus expectedStatus = OrderStatus.COOKING;
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(beforeOrder));
 
@@ -103,12 +103,12 @@ class OrderServiceTest {
 			.isInstanceOf(CannotChangeOrderStatusException.class);
 	}
 
-	private static Order2 createOrder(OrderStatus orderStatus) {
-		return new Order2(orderStatus, createOrderTable2(), createMenus(3));
+	private static Order createOrder(OrderStatus orderStatus) {
+		return new Order(orderStatus, createOrderTable2(), createMenus(3));
 	}
 
-	private static Order2 createOrder() {
-		return new Order2(createOrderTable2(), createMenus(3));
+	private static Order createOrder() {
+		return new Order(createOrderTable2(), createMenus(3));
 	}
 
 	private static Map<Menu, Integer> createMenus(int count) {
