@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블입니다."));
         final boolean orderStatusUnchangeable = orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-            OrderStatus.cantChangeEmpty());
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
 
         tableValidator.validateChangeEmpty(savedOrderTable, orderStatusUnchangeable);
 

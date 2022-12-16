@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -48,11 +49,14 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        validateOrderStatus(orderTables);
+        orderTables.ungroup();
+    }
 
-        orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(), OrderStatus.cantUngroup());
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(), OrderStatus.cantUngroup())) {
+    private void validateOrderStatus(OrderTables orderTables) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(),
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("변경할 수 없는 주문 상태입니다.");
         }
-        orderTables.ungroup();
     }
 }
