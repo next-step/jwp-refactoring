@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -43,6 +44,8 @@ class TableGroupServiceTest {
     private OrderTable orderTable2;
     @Mock
     private Order order;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     private TableGroupService tableGroupService;
     private TableGroupValidator tableGroupValidator;
     private OrderTableValidator orderTableValidator;
@@ -50,7 +53,7 @@ class TableGroupServiceTest {
     @BeforeEach
     void setUp() {
         tableGroupValidator = new TableGroupValidator(orderTableRepository, orderRepository, orderTableValidator);
-        tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidator);
+        tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidator, eventPublisher);
     }
 
     @Test

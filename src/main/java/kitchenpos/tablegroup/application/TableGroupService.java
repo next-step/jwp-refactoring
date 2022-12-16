@@ -2,8 +2,10 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.event.UnGroupEvent;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +15,14 @@ public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
     private final TableGroupValidator tableGroupValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
-                             TableGroupValidator tableGroupValidator) {
+                             TableGroupValidator tableGroupValidator,
+                             ApplicationEventPublisher eventPublisher) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableGroupValidator = tableGroupValidator;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -35,5 +40,6 @@ public class TableGroupService {
 
         tableGroupValidator.validateUngroup(tableGroupId);
         tableGroupRepository.delete(tableGroup);
+        eventPublisher.publishEvent(new UnGroupEvent(tableGroupId));
     }
 }
