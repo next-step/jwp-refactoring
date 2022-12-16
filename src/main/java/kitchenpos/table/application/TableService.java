@@ -6,6 +6,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
+import kitchenpos.table.validator.TableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,13 @@ import java.util.stream.Collectors;
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderRepository orderRepository,
+                        final OrderTableRepository orderTableRepository,
+                        final TableValidator tableValidator
+                        ) {
+        this.tableValidator = tableValidator;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -35,12 +41,12 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        tableValidator.validateTableEmpty(orderTableId);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        List<Order> savedOrders = orderRepository.findAllByOrderTableId(orderTableId);
-        savedOrderTable.changeEmpty(orderTable.isEmpty(),savedOrders);
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     @Transactional

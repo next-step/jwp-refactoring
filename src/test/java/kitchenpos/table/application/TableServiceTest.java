@@ -10,6 +10,7 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.OrderTableException;
 import kitchenpos.table.persistence.OrderTableRepository;
+import kitchenpos.table.validator.TableValidator;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
@@ -38,6 +39,8 @@ public class TableServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private TableValidator tableValidator;
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
@@ -68,7 +71,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
-        OrderTable orderTable = OrderTable.builder().build();
+        OrderTable orderTable = OrderTable.builder().id(1l).build();
+        doNothing().when(tableValidator).validateTableEmpty(anyLong());
         doReturn(Optional.empty()).when(orderTableRepository).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
@@ -77,17 +81,14 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        List<Order> orders = getOrders(Order.builder()
-                .orderTableId(1l)
-                .orderStatus(OrderStatus.COOKING).build(), 5);
+        doNothing().when(tableValidator).validateTableEmpty(anyLong());
         OrderTable orderTable = OrderTable.builder()
+                .id(1l)
                 .tableGroup(TableGroup.builder().id(13l).build())
                 .build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableRepository)
                 .findById(orderTable.getId());
-        doReturn(orders).when(orderRepository)
-                .findAllByOrderTableId(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderTableException.class)
@@ -97,13 +98,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
-        List<Order> orders = getOrders(Order.builder()
-                .orderTableId(1l)
-                .orderStatus(OrderStatus.COOKING).build(), 5);
-        OrderTable orderTable = OrderTable.builder().build();
-        doReturn(Optional.ofNullable(orderTable)).when(orderTableRepository).findById(orderTable.getId());
-        doReturn(orders).when(orderRepository)
-                .findAllByOrderTableId(orderTable.getId());
+        OrderTable orderTable = OrderTable.builder().id(1l).build();
+        doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다")).when(tableValidator).validateTableEmpty(anyLong());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderException.class)

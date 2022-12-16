@@ -4,6 +4,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -12,6 +13,7 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
 import kitchenpos.table.persistence.TableGroupRepository;
+import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -40,6 +43,8 @@ public class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
     @Mock
     private OrderRepository orderRepository;
+    @Mock
+    private TableValidator tableValidator;
 
     @DisplayName("테이블그룹을 추가할 경우 등록안된 테이블이 있으면 예외발생")
     @Test
@@ -98,7 +103,7 @@ public class TableGroupServiceTest {
         OrderTable orderTable2 = OrderTable.builder()
                 .tableGroup(TableGroup.builder().build())
                 .id(2l).empty(true).build();
-        List<OrderTable> orderTables = Arrays.asList(orderTable1,orderTable2);
+        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         doReturn(orderTables)
                 .when(orderTableRepository)
                 .findAllById(anyList());
@@ -126,16 +131,16 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 해제할경우 테이블에 포함된 주문이 조리중이거나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
-        List<Order> orders = Arrays.asList(Order.builder().orderTableId(1l).orderStatus(OrderStatus.COOKING).build());
         TableGroup tableGroup = TableGroup.builder()
                 .orderTables(OrderTables.of(Arrays.asList(OrderTable.builder().build())))
                 .build();
         doReturn(Optional.ofNullable(tableGroup))
                 .when(tableGroupRepository)
                 .findById(anyLong());
-        doReturn(orders)
-                .when(orderRepository)
-                .findAllByOrderTableIdIn(anyList());
+        doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다"))
+                .when(tableValidator)
+                .validateTableUnGroup(anyLong());
+
 
         assertThatThrownBy(() -> tableGroupService.ungroup(15l))
                 .isInstanceOf(OrderException.class)

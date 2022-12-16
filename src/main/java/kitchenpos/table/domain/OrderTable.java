@@ -59,9 +59,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeEmpty(final boolean empty, List<Order> orders) {
+    public void changeEmpty(final boolean empty) {
         validateTableGroup();
-        orders.forEach(Order::validateBeforeCompleteStatus);
         this.empty = empty;
     }
 

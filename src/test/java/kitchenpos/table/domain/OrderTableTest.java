@@ -16,44 +16,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderTableTest {
 
-    @DisplayName("공석여부를 수정할경우 주문이 식사중일 경우 예외발생")
-    @Test
-    public void throwsExceptionWhenStatusIsMeal() {
-        OrderTable orderTable = OrderTable.builder().build();
-        Order order = Order.builder()
-                .orderTableId(1l)
-                .orderStatus(OrderStatus.MEAL).build();
-        List<Order> orders = Arrays.asList(order);
-
-        assertThatThrownBy(() -> orderTable.changeEmpty(true, orders))
-                .isInstanceOf(OrderException.class)
-                .hasMessageContaining("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다");
-    }
-
-    @DisplayName("공석여부를 수정할경우 주문이 조리중일 경우 예외발생")
-    @Test
-    public void throwsExceptionWhenStatusIsCooking() {
-        OrderTable orderTable = OrderTable.builder().build();
-        Order order = Order.builder()
-                .orderTableId(1l)
-                .orderStatus(OrderStatus.COOKING).build();
-        List<Order> orders = Arrays.asList(order);
-
-        assertThatThrownBy(() -> orderTable.changeEmpty(true, orders))
-                .isInstanceOf(OrderException.class)
-                .hasMessageContaining("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다");
-    }
-
     @DisplayName("공석여부를 수정할경우 테이블그룹에 소속되있는경우 예외발생")
     @Test
     public void throwsExceptionWhenHasTableGroup() {
         OrderTable orderTable = OrderTable.builder().tableGroup(TableGroup.builder().build()).build();
-        Order order = Order.builder()
-                .orderTableId(1l)
-                .orderStatus(OrderStatus.COMPLETION).build();
-        List<Order> orders = Arrays.asList(order);
 
-        assertThatThrownBy(() -> orderTable.changeEmpty(true, orders))
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
                 .isInstanceOf(OrderTableException.class)
                 .hasMessageContaining("사용중인 테이블그룹이 존재합니다");
 
@@ -63,12 +31,8 @@ public class OrderTableTest {
     @Test
     public void returnIsEmpty() {
         OrderTable orderTable = OrderTable.builder().build();
-        Order order = Order.builder()
-                .orderTableId(1l)
-                .orderStatus(OrderStatus.COMPLETION).build();
-        List<Order> orders = Arrays.asList(order);
 
-        orderTable.changeEmpty(true, orders);
+        orderTable.changeEmpty(true);
 
         assertThat(orderTable.isEmpty()).isTrue();
 
