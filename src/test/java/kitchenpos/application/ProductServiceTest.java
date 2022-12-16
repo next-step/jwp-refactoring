@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.response.ProductResponse;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

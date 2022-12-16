@@ -46,4 +46,8 @@ public class OrderTableResponse {
     public boolean isEmpty() {
         return empty;
     }
+
+    public OrderTable toEntity(){
+        return new OrderTable(this.id, this.tableGroup, this.numberOfGuests, this.empty);
+    }
 }

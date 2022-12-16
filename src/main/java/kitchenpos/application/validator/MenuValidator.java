@@ -4,7 +4,7 @@ import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.request.MenuRequest;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.exception.KitchenposException;
 

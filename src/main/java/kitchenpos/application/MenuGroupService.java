@@ -3,7 +3,7 @@ package kitchenpos.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.response.MenuGroupResponse;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.MenuGroupRepository;
