@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.exception.InvalidParameterException;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends AbstractAggregateRoot<Order> {
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COMPLETION = "이미 완료된 주문입니다.";
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COOKING = "주문 상태가 조리 중 입니다.";
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_MEAL = "주문 상태가 식사 중 입니다.";

@@ -64,6 +64,6 @@ public class OrderValidator {
     private OrderMenu findOrderMenu(Long menuId) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_MENU_FORMAT, menuId)));
-        return OrderMenu.of(menu);
+        return OrderMenu.of(menu.id(), menu.name(), menu.price());
     }
 }

@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.Menu;
 
 @Embeddable
 public class OrderMenu {
@@ -28,8 +27,8 @@ public class OrderMenu {
         this.price = price;
     }
 
-    public static OrderMenu of(Menu menu) {
-        return new OrderMenu(menu.id(), menu.name(), menu.price());
+    public static OrderMenu of(Long menuId, Name name, Price price) {
+        return new OrderMenu(menuId, name, price);
     }
 
     public Long id() {
