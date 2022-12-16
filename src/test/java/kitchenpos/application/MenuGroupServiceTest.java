@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -26,7 +25,7 @@ class MenuGroupServiceTest {
 	@Test
 	@DisplayName("메뉴 그룹 생성")
 	void testCreateMenuGroup() {
-		MenuGroup menuGroup = 메뉴그룹();
+		MenuGroup menuGroup = createMenuGroup();
 
 		menuGroupService.create(menuGroup);
 
@@ -39,6 +38,10 @@ class MenuGroupServiceTest {
 		menuGroupService.list();
 
 		verify(menuGroupRepository, times(1)).findAll();
+	}
+
+	private MenuGroup createMenuGroup() {
+		return new MenuGroup("menu-group");
 	}
 
 }

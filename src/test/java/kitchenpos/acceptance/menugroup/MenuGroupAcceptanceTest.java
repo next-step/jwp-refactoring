@@ -1,7 +1,5 @@
 package kitchenpos.acceptance.menugroup;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴그룹2;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +20,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest2 {
 	 */
 	@Test
 	void 메뉴_그룹_관리() {
-		MenuGroupRequest 메뉴그룹 = 메뉴그룹2();
+		MenuGroupRequest 메뉴그룹 = MenuGroupFixture.메뉴그룹();
 
 		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴그룹);
 

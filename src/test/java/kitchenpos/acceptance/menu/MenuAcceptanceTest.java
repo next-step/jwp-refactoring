@@ -10,8 +10,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
 import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
+import kitchenpos.acceptance.menugroup.MenuGroupFixture;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
-import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.ProductFixture;
 import kitchenpos.ui.dto.MenuGroupResponse;
 import kitchenpos.ui.dto.MenuRequest;
@@ -68,7 +68,7 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	@Test
 	void 메뉴_그룹이_존재하지_않을_경우() {
 		// given
-		MenuGroupResponse 존재하지_않는_메뉴_그룹 = MenuGroupFixture.메뉴그룹2(1L, "존재하지 않는 메뉴 그룹");
+		MenuGroupResponse 존재하지_않는_메뉴_그룹 = MenuGroupFixture.메뉴그룹(1L, "존재하지 않는 메뉴 그룹");
 		MenuRequest 메뉴 = MenuFixture.메뉴(상품목록, 존재하지_않는_메뉴_그룹);
 		// when
 		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴);
@@ -92,7 +92,7 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	}
 
 	private MenuGroupResponse 메뉴_그룹_등록되어_있음() {
-		ExtractableResponse<Response> 등록_응답 = menuGroups.등록_요청(MenuGroupFixture.메뉴그룹2());
+		ExtractableResponse<Response> 등록_응답 = menuGroups.등록_요청(MenuGroupFixture.메뉴그룹());
 		return menuGroups.등록됨(등록_응답);
 	}
 

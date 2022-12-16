@@ -16,11 +16,11 @@ import kitchenpos.AcceptanceTest2;
 import kitchenpos.acceptance.menu.MenuAcceptanceTestStep;
 import kitchenpos.acceptance.menu.MenuFixture;
 import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
+import kitchenpos.acceptance.menugroup.MenuGroupFixture;
 import kitchenpos.acceptance.ordertable.OrderTableAcceptanceTestStep;
 import kitchenpos.acceptance.ordertable.OrderTableFixture;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.fixture.MenuGroupFixture;
 import kitchenpos.fixture.ProductFixture;
 import kitchenpos.ui.dto.MenuGroupResponse;
 import kitchenpos.ui.dto.MenuResponse;
@@ -54,7 +54,7 @@ class OrderAcceptanceTest extends AcceptanceTest2 {
 	@BeforeEach
 	void setup() {
 		상품목록 = products.등록되어_있음(ProductFixture.상품목록2(3));
-		메뉴그룹 = menuGroups.등록되어_있음(Lists.newArrayList(MenuGroupFixture.메뉴그룹2())).get(0);
+		메뉴그룹 = menuGroups.등록되어_있음(Lists.newArrayList(MenuGroupFixture.메뉴그룹())).get(0);
 		메뉴 = menus.등록되어_있음(Lists.newArrayList(MenuFixture.메뉴(상품목록, 메뉴그룹, 메뉴가격))).get(0);
 		주문_테이블 = orderTables.등록되어_있음(Lists.newArrayList(OrderTableFixture.주문_테이블())).get(0);
 	}
