@@ -43,19 +43,9 @@ class OrderTableTest {
     void updateEmpty() {
         OrderTable orderTable = new OrderTable(4, true);
 
-        orderTable.changeEmpty(false, Collections.emptyList());
+        orderTable.changeEmpty(false);
 
         assertThat(orderTable.isEmpty()).isFalse();
-    }
-
-    @DisplayName("완료되지 않은 주문이 있으면 주문 테이블의 비어있는 상태를 수정 시 에러가 발생한다.")
-    @Test
-    void validateHasTableGroupException() {
-        OrderTable orderTable = new OrderTable(4, false);
-        Order order = Order.of(orderTable, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문)));
-
-        assertThatThrownBy(() -> orderTable.changeEmpty(true, Collections.singletonList(order)))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블의 단체 지정을 해제한다.")
