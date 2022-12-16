@@ -32,11 +32,12 @@ public class ProductAcceptanceUtils {
 	}
 
 	public static void 상품_등록_됨(ExtractableResponse<Response> response, String expectedName, BigDecimal expectedPrice) {
+		Product product = response.as(Product.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			() -> assertThat(response.as(Product.class)).isNotNull(),
-			() -> assertThat(response.as(Product.class).getName()).isEqualTo(expectedName),
-			() -> assertThat(response.as(Product.class).getPrice().intValue()).isEqualTo(expectedPrice.intValue())
+			() -> assertThat(product).isNotNull(),
+			() -> assertThat(product.getName()).isEqualTo(expectedName),
+			() -> assertThat(product.getPrice().intValue()).isEqualTo(expectedPrice.intValue())
 		);
 	}
 
@@ -48,8 +49,8 @@ public class ProductAcceptanceUtils {
 			() -> assertThat(response.jsonPath().getList(".", Product.class)).isNotNull(),
 			() -> assertThat(products)
 				.first()
-				.extracting(Product::getId)
-				.isEqualTo(expectedProduct.getId())
+				.extracting(Product::getName)
+				.isEqualTo(expectedProduct.getName())
 		);
 	}
 

@@ -13,6 +13,10 @@ public class MenuGroupAcceptanceUtils {
 
 	private static final String MENU_GROUP_API_URL = "/api/menu-groups";
 
+	public static MenuGroup 메뉴_그룹_등록_되어_있음(String name) {
+		return 메뉴_그룹_등록_요청(name).as(MenuGroup.class);
+	}
+
 	public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
 		return post(MENU_GROUP_API_URL, createRequest(name)).extract();
 	}
