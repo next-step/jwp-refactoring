@@ -2,10 +2,14 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,8 +56,8 @@ public class OrderRestControllerTest {
         Menu 후라이드치킨_메뉴 = Menu.of(1L, "후라이드치킨", 후라이드치킨_상품.getPrice().value(), 한마리메뉴_메뉴그룹.getId());
         Menu 콜라_메뉴 = Menu.of(2L, "콜라", 콜라_상품.getPrice().value(), 한마리메뉴_메뉴그룹.getId());
 
-        첫번째_주문_테이블 = OrderTable.of(1L, null, 4, false);
-        두번째_주문_테이블 = OrderTable.of(2L, null, 2, false);
+        첫번째_주문_테이블 = new OrderTable(1L, null, 4, false);
+        두번째_주문_테이블 = new OrderTable(2L, null, 2, false);
         첫번째_주문 = Order.of(1L, 첫번째_주문_테이블.getId(), null, null, null);
         두번째_주문 = Order.of(2L, 두번째_주문_테이블.getId(), null, null, null);
         첫번째_주문_항목 = OrderLineItem.of(1L, 첫번째_주문.getId(), 후라이드치킨_메뉴.getId(), 1);

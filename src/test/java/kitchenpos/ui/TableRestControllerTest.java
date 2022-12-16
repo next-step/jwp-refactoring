@@ -1,8 +1,11 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,14 +39,14 @@ public class TableRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        첫번째_주문_테이블 = OrderTable.of(1L, null, 4, false);
-        두번째_주문_테이블 = OrderTable.of(2L, null, 2, true);
+        첫번째_주문_테이블 = new OrderTable(1L, null, 4, false);
+        두번째_주문_테이블 = new OrderTable(2L, null, 2, true);
     }
 
     @DisplayName("주문 테이블 등록에 실패한다.")
     @Test
     void 주문_테이블_등록에_실패한다() throws Exception {
-        given(tableService.create(any(OrderTable.class))).willThrow(IllegalArgumentException.class);
+        given(tableService.create(any(OrderTableRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/tables")
                         .content(objectMapper.writeValueAsString(첫번째_주문_테이블))
@@ -54,7 +57,7 @@ public class TableRestControllerTest {
     @DisplayName("주문 테이블 등록에 성공한다.")
     @Test
     void 주문_테이블_등록에_성공한다() throws Exception {
-        given(tableService.create(any(OrderTable.class))).willReturn(첫번째_주문_테이블);
+        given(tableService.create(any(OrderTableRequest.class))).willReturn(new OrderTableResponse(첫번째_주문_테이블));
 
         webMvc.perform(post("/api/tables")
                         .content(objectMapper.writeValueAsString(첫번째_주문_테이블))

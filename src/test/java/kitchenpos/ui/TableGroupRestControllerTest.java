@@ -2,8 +2,8 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,9 +42,9 @@ public class TableGroupRestControllerTest {
 
     @BeforeEach
     public void setUp() {
-        첫번째_주문_테이블 = OrderTable.of(1L, null, 4, false);
-        두번째_주문_테이블 = OrderTable.of(2L, null, 2, true);
-        우아한형제들_단체그룹 = TableGroup.of(1L, null, Arrays.asList(첫번째_주문_테이블, 두번째_주문_테이블));
+        첫번째_주문_테이블 = new OrderTable(1L, null, 4, false);
+        두번째_주문_테이블 = new OrderTable(2L, null, 2, true);
+        우아한형제들_단체그룹 = new TableGroup(1L, null, Arrays.asList(첫번째_주문_테이블, 두번째_주문_테이블));
     }
 
     @DisplayName("단체 지정 등록에 실패한다.")
