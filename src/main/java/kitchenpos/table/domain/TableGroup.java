@@ -46,6 +46,10 @@ public class TableGroup {
         return orderTableBag;
     }
 
+    public boolean hasSameOrderTableSize(List<OrderTable> orderTables) {
+        return orderTableBag.sameSize(orderTables.size());
+    }
+
     public List<OrderTable> orderTables() {
         return orderTableBag.getOrderTableList();
     }

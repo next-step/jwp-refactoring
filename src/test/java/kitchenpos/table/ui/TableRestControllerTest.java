@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
+import static kitchenpos.order.domain.OrderTableTest.빈_테이블;
 import static kitchenpos.table.application.TableServiceTest.주문_테이블;
 import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.order.domain.OrderTableTest.비어있지_않은_상태;
@@ -53,7 +55,7 @@ class TableRestControllerTest {
     @Test
     void 생성_성공() throws Exception {
         //given:
-        final OrderTable 주문_테이블 = 주문_테이블(두_명의_방문객, 빈_상태);
+        final OrderTable 주문_테이블 = 빈_테이블();
         //when:
         final OrderTable 저장된_주문_테이블 = mapper.readValue(
                 mockMvc.perform(post("/api/tables")
@@ -85,7 +87,7 @@ class TableRestControllerTest {
     @Test
     void 빈_주문_테이블_변경_성공() throws Exception {
         //given:
-        final OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
+        final OrderTable 저장된_주문_테이블 = tableService.create(두_명의_방문객이_존재하는_테이블());
 
         orderRepository.save(주문(
                 저장된_주문_테이블,
@@ -111,7 +113,7 @@ class TableRestControllerTest {
     @Test
     void 방문_손님_수_변경_성공() throws Exception {
         //given:
-        final OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
+        final OrderTable 저장된_주문_테이블 = tableService.create(두_명의_방문객이_존재하는_테이블());
 
         저장된_주문_테이블.changeNumberOfGuest(한_명의_방문객);
         //when:

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹;
+import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_추천_메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,7 +37,7 @@ class MenuGroupRestControllerTest {
     @Test
     void 생성_성공() throws Exception {
         //given:
-        final MenuGroup 메뉴_그룹 = 메뉴_그룹("추천 메뉴");
+        final MenuGroup 메뉴_그룹 = 메뉴_그룹_추천_메뉴();
         //when:
         final MenuGroup 저장된_메뉴_그룹 = mapper.readValue(mockMvc.perform(
                         post("/api/menu-groups")

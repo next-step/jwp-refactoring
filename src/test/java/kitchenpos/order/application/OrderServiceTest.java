@@ -1,17 +1,17 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProductBag;
-import kitchenpos.domain.Name;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemBag;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.domain.Price;
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹;
-import static kitchenpos.table.application.TableServiceTest.주문_테이블;
+import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_추천_메뉴;
 import static kitchenpos.menu.domain.MenuProductTest.메뉴_상품;
 import static kitchenpos.menu.domain.MenuTest.메뉴;
 import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객;
@@ -34,7 +33,9 @@ import static kitchenpos.order.domain.OrderTest.계산_완료_상태;
 import static kitchenpos.order.domain.OrderTest.식사_상태;
 import static kitchenpos.order.domain.OrderTest.조리_상태;
 import static kitchenpos.order.domain.OrderTest.주문;
-import static kitchenpos.product.domain.ProductTest.상품;
+import static kitchenpos.product.domain.ProductTest.상품_콜라;
+import static kitchenpos.product.domain.ProductTest.상품_통다리;
+import static kitchenpos.table.application.TableServiceTest.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -65,10 +66,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
@@ -86,10 +87,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
@@ -122,10 +123,10 @@ public class OrderServiceTest {
         final Menu 저장되지_않은_메뉴 =
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1))));
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
@@ -143,10 +144,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 주문 = 주문(
                 주문_테이블(2, 비어있지_않은_상태),
@@ -164,10 +165,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 빈_상태)),
@@ -185,10 +186,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final OrderLineItem 주문_항목 = new OrderLineItem(저장된_메뉴.getId(), 1L);
 
@@ -214,10 +215,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
@@ -238,10 +239,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
@@ -262,10 +263,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 생성된_주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
@@ -285,10 +286,10 @@ public class OrderServiceTest {
         final Menu 저장된_메뉴 = menuService.create(
                 메뉴(Name.from("자메이카 통다리 1인 세트"),
                         Price.from(BigDecimal.ONE),
-                        menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
+                        menuGroupRepository.save(메뉴_그룹_추천_메뉴()).getId(),
                         MenuProductBag.from(Arrays.asList(
-                                메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                                메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)))));
+                                메뉴_상품(productRepository.save(상품_통다리()), 5),
+                                메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),

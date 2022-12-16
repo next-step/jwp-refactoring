@@ -39,13 +39,13 @@ public class OrderTableBag {
     }
 
     private static void validEmptyTable(List<OrderTable> orderTableList) {
-        if (notEmpty(orderTableList)) {
-            throw new IllegalArgumentException("단체 지정 주문 테이블에 비어 있지 않은 주문 테이블이 포함 되어 있습니다");
+        if (emptyTable(orderTableList)) {
+            throw new IllegalArgumentException("단체 지정 주문 테이블에 비어 있는 주문 테이블이 포함 되어 있습니다");
         }
     }
 
-    private static boolean notEmpty(List<OrderTable> orderTableList) {
-        return orderTableList.stream().anyMatch(it -> !it.isEmpty());
+    private static boolean emptyTable(List<OrderTable> orderTableList) {
+        return orderTableList.stream().anyMatch(OrderTable::isEmpty);
     }
 
     private static void validNonNullTableGroupId(List<OrderTable> orderTableList) {
@@ -74,6 +74,10 @@ public class OrderTableBag {
 
     public List<OrderTable> getOrderTableList() {
         return orderTableList;
+    }
+
+    public boolean sameSize(int target) {
+        return this.orderTableList.size() == target;
     }
 
     @Override

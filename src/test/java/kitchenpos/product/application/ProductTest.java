@@ -33,7 +33,9 @@ public class ProductTest {
     @DisplayName("생성 실패 - 상품의 가격이 음수인 경우")
     @Test
     void create_product_IllegalArgumentException() {
+        //given:
         final int minusPrice = -1;
+        //when, then:
         assertThatIllegalArgumentException().isThrownBy(
                 () -> productService.create(상품("이름", BigDecimal.valueOf(minusPrice))));
     }

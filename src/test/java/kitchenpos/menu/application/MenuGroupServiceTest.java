@@ -1,8 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.domain.Name;
-import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.product.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,10 @@ public class MenuGroupServiceTest {
     @Test
     void 조회_성공() {
         assertThat(menuGroupService.list()).hasSize(4);
+    }
+
+    public static MenuGroup 메뉴_그룹_추천_메뉴() {
+        return 메뉴_그룹("추천 메뉴");
     }
 
     public static MenuGroup 메뉴_그룹(String name) {

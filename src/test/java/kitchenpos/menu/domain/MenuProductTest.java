@@ -13,8 +13,10 @@ public class MenuProductTest {
     @DisplayName("생성 성공")
     @Test
     void 생성_성공() {
+        //given:
         final Product 상품 = 상품("상품");
         final long 수량 = 1;
+        //when, then:
         assertThat(MenuProduct.of(상품, 수량)).isEqualTo(MenuProduct.of(상품, 수량));
     }
 

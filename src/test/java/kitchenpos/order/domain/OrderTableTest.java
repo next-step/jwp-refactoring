@@ -24,12 +24,19 @@ public class OrderTableTest {
     @DisplayName("빈 테이블 상태 변경 성공")
     @Test
     void 빈_테이블_상태_변경_성공() {
+        //given:
         final OrderTable 비어있지_않은_테이블 = OrderTable.ofNumberOfGuestsAndEmpty(한_명의_방문객, 비어있지_않은_상태);
+        //when:
         비어있지_않은_테이블.changeEmpty(빈_상태);
+        //then:
         assertThat(비어있지_않은_테이블.isEmpty()).isTrue();
     }
 
-    public static OrderTable 주문_테이블(int numberOfGuest, boolean empty) {
-        return OrderTable.ofNumberOfGuestsAndEmpty(numberOfGuest, empty);
+    public static OrderTable 빈_테이블() {
+        return OrderTable.ofNumberOfGuestsAndEmpty(0, 빈_상태);
+    }
+
+    public static OrderTable 두_명의_방문객이_존재하는_테이블() {
+        return OrderTable.ofNumberOfGuestsAndEmpty(두_명의_방문객, 비어있지_않은_상태);
     }
 }
