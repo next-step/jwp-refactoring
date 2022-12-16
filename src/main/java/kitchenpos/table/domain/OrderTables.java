@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -11,41 +12,40 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderTables {
 
+	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
+	private final List<OrderTable> orderTables;
 
+	protected OrderTables() {
+		this.orderTables = new ArrayList<>();
+	}
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<OrderTable> orderTables;
+	private OrderTables(List<OrderTable> orderTables) {
+		this.orderTables = Collections.unmodifiableList(orderTables);
+	}
 
-    protected OrderTables() {
-        this.orderTables = new ArrayList<>();
-    }
+	public static OrderTables of(List<OrderTable> orderTables) {
+		return new OrderTables(orderTables);
+	}
 
-    private OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = Collections.unmodifiableList(orderTables);
-    }
+	public List<OrderTable> getOrderTables() {
+		return orderTables;
+	}
 
-    public static OrderTables of(List<OrderTable> orderTables) {
-        return new OrderTables(orderTables);
-    }
+	public void updateGroup(TableGroup tableGroup) {
+		this.orderTables.forEach(it -> it.updateGroup(tableGroup));
+	}
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
+	public boolean isAllEmpty() {
+		return orderTables.stream().allMatch(it -> it.getEmpty().value());
+	}
 
-    public void updateGroup(TableGroup tableGroup) {
-        this.orderTables.forEach(it->it.updateGroup(tableGroup));
-    }
+	public boolean isAnyGrouped() {
+		return orderTables.stream()
+			.anyMatch(it -> Objects.nonNull(it.getTableGroup()));
+	}
 
-    public boolean isAllEmpty() {
-        return orderTables.stream().allMatch(it-> it.getEmpty().value());
-    }
-
-    public boolean isAnyGrouped(){
-        return orderTables.stream()
-                .anyMatch(it-> Objects.nonNull(it.getTableGroup()));
-    }
-    public int getSize(){
-        return orderTables.size();
-    }
+	public int getSize() {
+		return orderTables.size();
+	}
 
 }

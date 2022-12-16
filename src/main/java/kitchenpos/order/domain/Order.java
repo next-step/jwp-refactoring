@@ -1,8 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,79 +14,78 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_order_to_order_table"))
-    private OrderTable orderTable;
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
-    private LocalDateTime orderedTime;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_order_to_order_table"))
+	private OrderTable orderTable;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus;
+	private LocalDateTime orderedTime;
+	@Embedded
+	private OrderLineItems orderLineItems = new OrderLineItems();
 
-    @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+	protected Order() {
+	}
 
-    protected Order() {
-    }
+	private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+		this.orderTable = orderTable;
+		this.orderedTime = LocalDateTime.now();
+		this.orderLineItems = orderLineItems;
+		this.orderStatus = OrderStatus.COOKING;
+	}
 
-    private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-        this.orderStatus = OrderStatus.COOKING;
-    }
+	public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
+		validateOrderTableEmpty(orderTable);
+		Order order = new Order(orderTable, orderLineItems);
+		order.orderLineItems.updateOrder(order);
 
-    public static Order of(OrderTable orderTable, OrderLineItems orderLineItems){
-        validateOrderTableEmpty(orderTable);
-        Order order = new Order(orderTable, orderLineItems);
-        order.orderLineItems.updateOrder(order);
+		return order;
+	}
 
-        return order;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public OrderTable getOrderTable() {
+		return orderTable;
+	}
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
+	public LocalDateTime getOrderedTime() {
+		return orderedTime;
+	}
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
+	public OrderLineItems getOrderLineItems() {
+		return orderLineItems;
+	}
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
-    }
+	private static void validateOrderTableEmpty(OrderTable orderTable) {
+		if (orderTable.isEmpty()) {
+			throw new IllegalArgumentException(ErrorMessage.CANNOT_ORDER_WHEN_TABLE_IS_EMPTY);
+		}
+	}
 
+	private void validateCurrentOrderStatus() {
+		if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
+			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_ORDER_STATUS_WHEN_COMPLETED);
+		}
+	}
 
-    private static void validateOrderTableEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()){
-            throw new IllegalArgumentException(ErrorMessage.CANNOT_ORDER_WHEN_TABLE_IS_EMPTY);
-        }
-    }
-    private void validateCurrentOrderStatus() {
-        if(this.orderStatus.equals(OrderStatus.COMPLETION)){
-            throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_ORDER_STATUS_WHEN_COMPLETED);
-        }
-    }
-
-    public void updateOrderStatus(OrderStatus orderStatus) {
-        validateCurrentOrderStatus();
-        this.orderStatus = orderStatus;
-    }
-
+	public void updateOrderStatus(OrderStatus orderStatus) {
+		validateCurrentOrderStatus();
+		this.orderStatus = orderStatus;
+	}
 
 }

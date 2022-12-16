@@ -4,22 +4,20 @@ import java.util.List;
 
 public class TableGroupRequest {
 
-    private List<Long> orderTableRequests;
+	private List<Long> orderTableRequests;
 
-    public TableGroupRequest() {
-    }
+	protected TableGroupRequest() {}
 
-    private TableGroupRequest(List<Long> orderTableRequests) {
-        this.orderTableRequests = orderTableRequests;
-    }
+	private TableGroupRequest(List<Long> orderTableRequests) {
+		this.orderTableRequests = orderTableRequests;
+	}
 
-    public static TableGroupRequest of(List<Long> orderTableRequests){
-        return new TableGroupRequest(orderTableRequests);
-    }
+	public static TableGroupRequest of(List<Long> orderTableRequests) {
+		return new TableGroupRequest(orderTableRequests);
+	}
 
-    public List<Long> getOrderTableRequests() {
-        return orderTableRequests;
-    }
-
+	public List<Long> getOrderTableRequests() {
+		return orderTableRequests;
+	}
 
 }
