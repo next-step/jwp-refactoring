@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderStatusService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
 
 
 @Entity
@@ -95,5 +96,12 @@ public class Order {
 
     public OrderTable getOrderTable() {
         return this.orderTable;
+    }
+
+    public void changeOrderStatus(String orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+            throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
+        }
+        this.orderStatus = orderStatus;
     }
 }
