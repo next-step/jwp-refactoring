@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductFixture;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductResponse;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -60,7 +61,7 @@ class ProductServiceTest {
         given(productRepository.save(product)).willReturn(ProductFixture.savedProduct(1L, name, price));
 
         // when
-        Product actual = productService.create(product);
+        ProductResponse actual = productService.create(product);
 
         // then
         assertAll(

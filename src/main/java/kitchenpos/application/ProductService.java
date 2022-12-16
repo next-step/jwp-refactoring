@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductResponse;
 
 @Service
 public class ProductService {
@@ -19,13 +19,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
+    public ProductResponse create(final Product product) {
         product.validatePrice();
-
-        return productRepository.save(product);
+        return ProductResponse.of(productRepository.save(product));
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        return productRepository.findAll().stream()
+            .map(ProductResponse::of)
+            .collect(Collectors.toList());
     }
 }
