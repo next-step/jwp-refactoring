@@ -37,8 +37,8 @@ public class Price {
         return Price.of(result);
     }
 
-    public Price add(Price other) {
-        return Price.of(price.add(other.price));
+    public Price add(Price price) {
+        return Price.of(this.price.add(price.price));
     }
 
     public BigDecimal getPrice() {

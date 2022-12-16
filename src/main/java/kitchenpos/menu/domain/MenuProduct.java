@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -24,24 +24,37 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        validateProduct(product);
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        validate(menu, product, quantity);
+
+        updateMenu(menu);
         this.product = product;
         this.quantity = quantity;
     }
 
-    private void validateProduct(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("상품을 등록해주세요.");
+    private void validate(Menu menu, Product product, long quantity) {
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException("메뉴 상품에는 메뉴가 필수값 입니다.");
+        }
+
+        if (Objects.isNull(product)) {
+            throw new IllegalArgumentException("메뉴 상품에는 상품이 필수값 입니다.");
+        }
+
+        if (quantity < 0) {
+            throw new IllegalArgumentException("수량은 1개 이상이여야 합니다.");
         }
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    void updateMenu(Menu menu) {
+        if (this.menu != menu) {
+            this.menu = menu;
+            menu.addMenuProduct(this);
+        }
     }
 
     public Price getTotalPrice() {
-        return product.getPrice().multiply(quantity);
+        return this.product.getPrice().multiply(quantity);
     }
 
     public Long getSeq() {

@@ -45,6 +45,13 @@ public class OrderLineItem {
         }
     }
 
+    void updateOrder(Order order) {
+        if (this.order != order) {
+            this.order = order;
+            order.addOrderLineItem(this);
+        }
+    }
+
     public Long getSeq() {
         return seq;
     }

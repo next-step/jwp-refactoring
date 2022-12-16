@@ -63,7 +63,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-
     public Long getId() {
         return id;
     }

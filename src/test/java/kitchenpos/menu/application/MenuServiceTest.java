@@ -12,9 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ class MenuServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private ProductService productService;
+    private ProductRepository productRepository;
 
     @Mock
     private MenuRepository menuRepository;
@@ -53,12 +55,12 @@ class MenuServiceTest {
 
     @BeforeEach
     void set_up() {
-        상품_후라이드치킨 = ProductFixture.create("후라이드치킨", BigDecimal.valueOf(15_000));
-        메뉴_상품_후라이드_치킨 = MenuProductFixture.create(상품_후라이드치킨, 2L);
-        메뉴_상품_후라이드_치킨_요청 = new MenuProductRequest(상품_후라이드치킨.getId(), 2L);
         메뉴_그룹_치킨 = MenuGroupFixture.create("메뉴 그룹 기본");
+        메뉴_기본 = MenuFixture.create("메뉴 기본", BigDecimal.valueOf(15_000), 메뉴_그룹_치킨);
+        상품_후라이드치킨 = ProductFixture.create("후라이드치킨", BigDecimal.valueOf(15_000));
+        ReflectionTestUtils.setField(상품_후라이드치킨, "id", 1L);
 
-        메뉴_기본 = MenuFixture.create("메뉴 기본", BigDecimal.valueOf(15_000), 메뉴_그룹_치킨, Arrays.asList(메뉴_상품_후라이드_치킨));
+        메뉴_상품_후라이드_치킨_요청 = new MenuProductRequest(1L, 2L);
         메뉴_기본_요청 = new MenuRequest("메뉴 기본", BigDecimal.valueOf(15_000), 메뉴_그룹_치킨.getId(), Arrays.asList(메뉴_상품_후라이드_치킨_요청));
     }
 
@@ -67,7 +69,7 @@ class MenuServiceTest {
     void create() {
         // given
         when(menuGroupService.findById(any())).thenReturn(메뉴_그룹_치킨);
-        when(productService.findMenuProducts(any())).thenReturn(Arrays.asList(메뉴_상품_후라이드_치킨));
+        BDDMockito.given(productRepository.findAllById(Arrays.asList(1L))).willReturn(Arrays.asList(상품_후라이드치킨));
         when(menuRepository.save(any())).thenReturn(메뉴_기본);
 
         // when
@@ -83,10 +85,10 @@ class MenuServiceTest {
     void create_error_menu_price_minus() {
         // given
         MenuRequest 메뉴_가격_이상 = new MenuRequest(
-                "메뉴 기본", BigDecimal.valueOf(-15_000), 메뉴_그룹_치킨.getId(), null
+                "메뉴 기본", BigDecimal.valueOf(-15_000), 메뉴_그룹_치킨.getId(),  Arrays.asList(메뉴_상품_후라이드_치킨_요청)
         );
         when(menuGroupService.findById(any())).thenReturn(메뉴_그룹_치킨);
-        when(productService.findMenuProducts(any())).thenReturn(Arrays.asList(메뉴_상품_후라이드_치킨));
+        when(productRepository.findAllById(Arrays.asList(1L))).thenReturn(Arrays.asList(상품_후라이드치킨));
 
         // when && then
         assertThatThrownBy(() -> menuService.create(메뉴_가격_이상))

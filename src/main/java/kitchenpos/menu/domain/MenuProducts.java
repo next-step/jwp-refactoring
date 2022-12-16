@@ -16,14 +16,15 @@ public class MenuProducts {
     protected MenuProducts() {
     }
 
-    public void add(MenuProduct menuProduct) {
-        if (!menuProducts.contains(menuProduct)) {
-            this.menuProducts.add(menuProduct);
+    public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
+        if(!menuProducts.contains(menuProduct)) {
+            menuProducts.add(menuProduct);
+            menuProduct.updateMenu(menu);
         }
     }
 
     public Price totalPrice() {
-        return menuProducts.stream()
+        return this.menuProducts.stream()
                 .map(MenuProduct::getTotalPrice)
                 .reduce(Price.of(BigDecimal.ZERO), Price::add);
     }

@@ -14,7 +14,7 @@ class MenuTest {
     @Test
     void menu_price_not_negative_number() {
         // given && when && then
-        Assertions.assertThatThrownBy(() -> new Menu("name", BigDecimal.valueOf(-1000), null, null))
+        Assertions.assertThatThrownBy(() -> new Menu("name", BigDecimal.valueOf(-1000), null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -22,11 +22,13 @@ class MenuTest {
     @Test
     void menu_price_less_then_menu_product_sum() {
         // given
-        MenuProduct 후라이드치킨 = new MenuProduct(new Product("후라이드치킨", BigDecimal.valueOf(15_000)), 1);
-        MenuProduct 양념치킨 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(20_000)), 2);
+        MenuGroup menuGroup = new MenuGroup("menuGroup");
+        Menu menu = new Menu("name", BigDecimal.valueOf(1000), menuGroup);
+        MenuProduct 후라이드치킨 = new MenuProduct(menu, new Product("후라이드치킨", BigDecimal.valueOf(15_000)), 1);
+        MenuProduct 양념치킨 = new MenuProduct(menu, new Product("양념치킨", BigDecimal.valueOf(20_000)), 2);
 
         // when && then
-        Assertions.assertThatThrownBy(() -> new Menu("menu", BigDecimal.valueOf(56_000), null, Arrays.asList(후라이드치킨, 양념치킨)))
+        Assertions.assertThatThrownBy(() -> new Menu("menu", BigDecimal.valueOf(56_000), null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

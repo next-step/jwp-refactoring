@@ -32,11 +32,9 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse from(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
-    }
-
-    public boolean isEmpty() {
-        return empty;
+        return new OrderTableResponse(
+                orderTable.getId(), orderTable.getTableGroup(), orderTable.getNumberOfGuests(), orderTable.isEmpty()
+        );
     }
 
     public Long getId() {
@@ -49,6 +47,10 @@ public class OrderTableResponse {
 
     public int getNumberOfGuests() {
         return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
 }

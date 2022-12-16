@@ -9,8 +9,8 @@ import java.util.List;
 
 public class MenuFixture {
 
-    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
     }
 
 }

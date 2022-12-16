@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.fixture.*;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -21,6 +22,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -52,6 +54,7 @@ class OrderServiceTest {
 
     private OrderTable 주문_테이블;
     private Order 주문;
+    private OrderLineItem 주문_메뉴;
 
     private Product 상품;
     private MenuProduct 메뉴상품;
@@ -66,10 +69,16 @@ class OrderServiceTest {
         주문 = OrderFixture.create(주문_테이블);
 
         상품 = ProductFixture.create("상품", BigDecimal.valueOf(1000L));
-        메뉴상품 = MenuProductFixture.create(상품, 2L);
         메뉴그룹 = MenuGroupFixture.create("메뉴그룹");
-        메뉴 = MenuFixture.create("메뉴", BigDecimal.valueOf(1000), 메뉴그룹, Arrays.asList(메뉴상품));
+        메뉴 = MenuFixture.create("메뉴", BigDecimal.valueOf(1000), 메뉴그룹);
+        메뉴상품 = MenuProductFixture.create(메뉴, 상품, 2L);
 
+        ReflectionTestUtils.setField(주문_테이블, "id", 1L);
+        ReflectionTestUtils.setField(주문, "id", 1L);
+        ReflectionTestUtils.setField(메뉴그룹, "id", 1L);
+        ReflectionTestUtils.setField(메뉴, "id", 1L);
+
+        주문_메뉴 = new OrderLineItem(주문, 메뉴, 1);
         OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 1L);
         주문_요청 = new OrderRequest(1L, Arrays.asList(주문_항목_요청));
     }
@@ -78,14 +87,14 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
-        주문.addOrderLineItem(메뉴, 1);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(menuRepository.findById(any())).thenReturn(Optional.of(메뉴));
-        when(menuRepository.countByIdIn(any())).thenReturn(주문.getOrderLineItems().size());
-        when(orderRepository.save(any())).thenReturn(주문);
+        OrderRequest request = new OrderRequest(주문_테이블.getId(), OrderLineItemRequest.list(Arrays.asList(주문_메뉴)));
+
+        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
+        when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
         // when
-        OrderResponse 주문_등록 = orderService.create(주문_요청);
+        OrderResponse 주문_등록 = orderService.create(request);
 
         // then
         assertThat(주문_등록.getOrderLineItems()).hasSize(주문.getOrderLineItems().size());
@@ -103,7 +112,8 @@ class OrderServiceTest {
     @Test
     void create_error_duplicated_order_item() {
         // given
-        when(menuRepository.countByIdIn(any())).thenReturn(100);
+        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴, 메뉴));
 
         // when && then
         assertThatThrownBy(() -> orderService.create(주문_요청))
@@ -114,7 +124,6 @@ class OrderServiceTest {
     @Test
     void create_error_order_table_empty() {
         // given
-        when(menuRepository.countByIdIn(any())).thenReturn(1);
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // when && then
@@ -126,8 +135,9 @@ class OrderServiceTest {
     @Test
     void create_error_order_table_value_empty() {
         // given
-        when(menuRepository.countByIdIn(any())).thenReturn(1);
+        Menu 메뉴 = MenuFixture.create("name", BigDecimal.valueOf(1000), 메뉴그룹);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
         주문_테이블.changeEmptyStatus(true);
 
         // when && then

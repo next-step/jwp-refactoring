@@ -9,7 +9,6 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,16 +37,14 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블 그룹이 등록되어 있다면 테이블의 상태를 변경할 수 없다.");
         }
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(savedOrderTable, OrderStatus.notCompletion())) {
+            throw new IllegalArgumentException("주문 테이블의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.");
         }
 
         savedOrderTable.changeEmptyStatus(request.isEmpty());
@@ -58,13 +55,17 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, OrderTableRequest request) {
-
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
         OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
+        return savedOrderTable;
     }
 }

@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -12,7 +11,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,60 +18,35 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+
     private final OrderRepository orderRepository;
-
     private final OrderTableRepository orderTableRepository;
+    private final MenuRepository menuRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderTableRepository orderTableRepository,
-                        OrderRepository orderRepository) {
-        this.menuRepository = menuRepository;
-        this.orderTableRepository = orderTableRepository;
+    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository,
+                        MenuRepository menuRepository) {
         this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
+        this.menuRepository = menuRepository;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-
-        validateRequest(request);
-
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 없습니다."));
 
-        Order saveOrder = new Order(orderTable);
-        addOrderLineItem(saveOrder, request.getOrderLineItems());
+        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
+        Order saveOrder = request.toOrder(orderTable, menus);
 
         return OrderResponse.from(orderRepository.save(saveOrder));
     }
 
-    private void validateRequest(OrderRequest request) {
-        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 항목이 없으면 주문할 수 없습니다.");
-        }
-
-        List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+    private List<Menu> findAllMenuById(List<Long> menuIds) {
+        List<Menu> menus = menuRepository.findAllById(menuIds);
+        if (menuIds.size() != menus.size()) {
             throw new IllegalArgumentException("주문 항목의 메뉴의 개수가 일치하지 않습니다.");
         }
-    }
-
-
-    private void addOrderLineItem(Order saveOrder, List<OrderLineItemRequest> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 상품 내역이 없습니다.");
-        }
-
-        for (OrderLineItemRequest orderLineItem : orderLineItems) {
-            Menu menu = menuRepository.findById(orderLineItem.getMenuId())
-                    .orElseThrow(() -> new IllegalArgumentException("메뉴가 존재하지 않습니다."));
-
-            saveOrder.addOrderLineItem(menu, orderLineItem.getQuantity());
-        }
+        return menus;
     }
 
     public List<OrderResponse> list() {
@@ -86,7 +59,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(Long orderId, OrderStatusRequest request) {
         Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("요청한 주문 정보가 올바르지 않습니다."));
 
         savedOrder.changeOrderStatus(request.getOrderStatus());
 
