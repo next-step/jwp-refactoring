@@ -2,7 +2,7 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,19 +12,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.acceptance.ProductAcceptanceStep.*;
-import static kitchenpos.domain.ProductTestFixture.createProduct;
+import static kitchenpos.fixture.ProductTestFixture.상품;
 
 @DisplayName("상품 관련 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
-    private Product 짜장면;
-    private Product 단무지;
+    private ProductRequest 짜장면;
+    private ProductRequest 단무지;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        짜장면 = createProduct(1L, "감자튀김", BigDecimal.valueOf(8000L));
-        단무지 = createProduct(2L, "콜라", BigDecimal.valueOf(0L));
+        짜장면 = 상품("짜장면", BigDecimal.valueOf(8000L));
+        단무지 = 상품( "단무지", BigDecimal.valueOf(0L));
     }
 
     @DisplayName("상품을 생성한다.")

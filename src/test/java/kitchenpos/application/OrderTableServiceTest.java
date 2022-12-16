@@ -1,9 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,48 +14,53 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
+import static kitchenpos.fixture.OrderTableTestFixture.*;
+import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("주문 테이블 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class OrderTableServiceTest {
+class OrderTableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
 
+    private OrderTableRequest 주문테이블1_요청;
+    private OrderTableRequest 주문테이블2_요청;
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = createOrderTable(1L, null, 5, false);
-        주문테이블2 = createOrderTable(2L, null, 4, false);
+        주문테이블1_요청 = 주문테이블1_요청();
+        주문테이블2_요청 = 주문테이블1_요청();
+        주문테이블1 = 그룹_없는_주문테이블_생성(주문테이블1_요청);
+        주문테이블2 = 그룹_없는_주문테이블_생성(주문테이블2_요청);
     }
 
     @DisplayName("주문 테이블 생성 작업을 성공한다.")
     @Test
     void create() {
         // given
-        when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
+        when(orderTableRepository.save(any())).thenReturn(주문테이블1);
 
         // when
-        OrderTable orderTable = tableService.create(주문테이블1);
+        OrderTableResponse orderTable = tableService.create(주문테이블1_요청);
 
         // then
-        assertThat(orderTable.getTableGroupId()).isNull();
+        assertThat(orderTable).isNotNull();
     }
 
     @DisplayName("주문 테이블 전체 목록 조회 작업을 성공한다.")
@@ -62,15 +68,15 @@ public class OrderTableServiceTest {
     void list() {
         // given
         List<OrderTable> expected = Arrays.asList(주문테이블1, 주문테이블2);
-        when(orderTableDao.findAll()).thenReturn(expected);
+        when(orderTableRepository.findAll()).thenReturn(expected);
 
         // when
-        List<OrderTable> actual = tableService.list();
+        List<OrderTableResponse> actual = tableService.list();
 
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(expected.size()),
-                () -> assertThat(actual).containsExactly(주문테이블1, 주문테이블2)
+                () -> assertThat(actual).containsExactly(OrderTableResponse.from(주문테이블1), OrderTableResponse.from(주문테이블2))
         );
     }
 
@@ -78,14 +84,12 @@ public class OrderTableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        주문테이블1.setEmpty(true);
-        when(orderTableDao.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-        when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
+        주문테이블1.unGroup();
+        주문테이블1.changeEmpty(true);
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         // when
-        OrderTable orderTable = tableService.changeEmpty(주문테이블1.getId(), 주문테이블1);
+        OrderTableResponse orderTable = tableService.changeEmpty(주문테이블1.getId(), 주문테이블1);
 
         // then
         assertThat(orderTable.isEmpty()).isEqualTo(주문테이블1.isEmpty());
@@ -95,8 +99,9 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyWithException1() {
         // given
-        OrderTable orderTable = createOrderTable(1L, 1L, 10, true);
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        OrderTable orderTable = 그룹_있는_주문테이블_생성(주문테이블(null, 1L, 10, true));
+        setMenuGroup(테이블그룹(), orderTable);
+        when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -107,9 +112,8 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyWithException2() {
         // given
-        when(orderTableDao.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        Order.of(주문테이블1, Collections.singletonList(주문정보(1L, 1)));
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -120,12 +124,12 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsInTable() {
         // given
-        주문테이블1.setNumberOfGuests(10);
-        when(orderTableDao.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-        when(orderTableDao.save(주문테이블1)).thenReturn(주문테이블1);
+        주문테이블1.changeNumberOfGuests(10);
+        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        when(orderTableRepository.save(주문테이블1)).thenReturn(주문테이블1);
 
         // when
-        OrderTable orderTable = tableService.changeNumberOfGuests(주문테이블1.getId(), 주문테이블1);
+        OrderTableResponse orderTable = tableService.changeNumberOfGuests(주문테이블1.getId(), 주문테이블1);
 
         // then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
@@ -135,7 +139,7 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException1() {
         // given
-        OrderTable orderTable = createOrderTable(3L,null, -1, false);
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(주문테이블(null, null, -1, false));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -147,8 +151,8 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsWithException2() {
         // given
-        OrderTable orderTable = createOrderTable(3L, 1L, 10, true);
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        OrderTable orderTable = 그룹_없는_주문테이블_생성(주문테이블(null, 1L, 10, true));
+        when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

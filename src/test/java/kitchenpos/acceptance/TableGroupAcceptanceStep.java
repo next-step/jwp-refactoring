@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -12,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class TableGroupAcceptanceStep {
 
-    public static ExtractableResponse<Response> 지정된_단체(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 지정된_단체(TableGroupRequest tableGroup) {
         return 단체_지정_요청(tableGroup);
     }
 
-    public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_요청(TableGroupRequest tableGroup) {
         return RestAssured
                 .given().log().all()
                 .body(tableGroup)
@@ -43,5 +43,4 @@ public class TableGroupAcceptanceStep {
     public static void 단체_해제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
 }

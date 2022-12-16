@@ -4,26 +4,27 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupTestFixture.메뉴그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuGroupAcceptanceStep {
 
     public static ExtractableResponse<Response> 등록된_메뉴_그룹(Long id, String name) {
-        return 메뉴_그룹_생성_요청(createMenuGroup(id, name));
+        return 메뉴_그룹_생성_요청(메뉴그룹(id, name));
     }
 
-    public static ExtractableResponse<Response> 등록된_메뉴_그룹(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 등록된_메뉴_그룹(MenuGroupRequest menuGroup) {
         return 메뉴_그룹_생성_요청(menuGroup);
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroupRequest menuGroup) {
         return RestAssured
                 .given().log().all()
                 .body(menuGroup)

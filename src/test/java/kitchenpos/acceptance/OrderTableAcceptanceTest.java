@@ -2,7 +2,8 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,19 +12,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.acceptance.OrderTableAcceptanceStep.*;
-import static kitchenpos.domain.OrderTableTestFixture.createOrderTable;
+import static kitchenpos.fixture.OrderTableTestFixture.주문테이블;
 
 @DisplayName("주문 테이블 관련 인수 테스트")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
+    private OrderTableRequest 주문테이블1;
+    private OrderTableRequest 주문테이블2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = createOrderTable(null, 2, false);
-        주문테이블2 = createOrderTable(null, 3, false);
+        주문테이블1 = 주문테이블(null, 2, false);
+        주문테이블2 = 주문테이블(null, 3, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -55,13 +56,12 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTable.class);
+        OrderTableResponse orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTableResponse.class);
         boolean isEmpty = orderTable.isEmpty();
-        OrderTable changeOrderTable = createOrderTable(null, orderTable.getNumberOfGuests(), !isEmpty);
+        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), orderTable.getNumberOfGuests(), !orderTable.isEmpty());
 
         // when
-        ExtractableResponse<Response> response = 주문_테이블_빈좌석_상태_변경_요청(orderTable.getId(),
-                changeOrderTable);
+        ExtractableResponse<Response> response = 주문_테이블_빈좌석_상태_변경_요청(orderTable.getId(), changeOrderTable);
 
         // then
         주문_테이블_빈좌석_여부_변경됨(response, !isEmpty);
@@ -71,9 +71,9 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTable.class);
+        OrderTableResponse orderTable = 등록된_주문_테이블(주문테이블1).as(OrderTableResponse.class);
         int numberOfGuests = 10;
-        OrderTable changeOrderTable = createOrderTable(null, numberOfGuests, orderTable.isEmpty());
+        OrderTableRequest changeOrderTable = OrderTableRequest.of(orderTable.getId(), numberOfGuests, orderTable.isEmpty());
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_방문고객_인원_변경_요청(orderTable.getId(), changeOrderTable);

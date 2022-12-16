@@ -68,3 +68,26 @@
 ### 요구 사항 체크리스트
 - [X] 키친포스 요구사항 작성
 - [X] 키친포스 테스트 코드 작성
+
+## 2단계 - 서비스 리팩터링
+### 요구 사항 체크리스트
+- [X] 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다.
+  - [X] Menu
+  - [X] MenuGroup
+  - [X] MenuProduct
+  - [X] Order
+  - [X] OrderLineItem
+  - [X] OrderStatus
+  - [X] OrderTable
+  - [X] Product
+  - [X] TableGroup
+- [X] JPA로 Migration
+  - [X] Menu
+  - [X] MenuGroup
+  - [X] MenuProduct
+  - [X] Order
+  - [X] OrderLineItem
+  - [X] OrderStatus
+  - [X] OrderTable
+  - [X] Product
+  - [X] TableGroup

@@ -3,7 +3,8 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -14,11 +15,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductAcceptanceStep {
 
-    public static ExtractableResponse<Response> 등록된_상품(Product product) {
+    public static ExtractableResponse<Response> 등록된_상품(ProductRequest product) {
         return 상품_생성_요청(product);
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest product) {
         return RestAssured
                 .given().log().all()
                 .body(product)
@@ -50,8 +51,8 @@ public class ProductAcceptanceStep {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultProductIds = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getId)
+        List<Long> resultProductIds = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultProductIds).containsAll(expectedProductIds);

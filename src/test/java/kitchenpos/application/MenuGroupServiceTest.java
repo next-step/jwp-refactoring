@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,55 +15,59 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.domain.MenuGroupTestFixture.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹;
+import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class MenuGroupServiceTest {
+class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroup 중국집_1인_메뉴_세트;
+    private MenuGroupRequest 중국집1인메뉴세트그룹요청;
+    private MenuGroup 중국집1인메뉴세트그룹;
 
     @BeforeEach
     void setUp() {
-        중국집_1인_메뉴_세트 = createMenuGroup(1L, "중국집_1인_메뉴_세트");
+        중국집1인메뉴세트그룹요청 = 중국집1인메뉴세트그룹요청();
+        중국집1인메뉴세트그룹 = 중국집1인메뉴세트그룹(중국집1인메뉴세트그룹요청);
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
         // given
-        when(menuGroupDao.save(중국집_1인_메뉴_세트)).thenReturn(중국집_1인_메뉴_세트);
+        when(menuGroupRepository.save(any())).thenReturn(중국집1인메뉴세트그룹);
 
         // when
-        MenuGroup saveMenuGroup = menuGroupService.create(중국집_1인_메뉴_세트);
+        MenuGroupResponse saveMenuGroup = menuGroupService.create(중국집1인메뉴세트그룹요청);
 
         // then
-        assertThat(saveMenuGroup.getId()).isNotNull();
+        assertThat(saveMenuGroup).isNotNull();
     }
 
     @DisplayName("메뉴 그룹 전체 목록을 조회한다.")
     @Test
     void list() {
         // given
-        List<MenuGroup> menuGroups = Collections.singletonList(중국집_1인_메뉴_세트);
-        when(menuGroupDao.findAll()).thenReturn(menuGroups);
+        List<MenuGroup> menuGroups = Collections.singletonList(중국집1인메뉴세트그룹);
+        when(menuGroupRepository.findAll()).thenReturn(menuGroups);
 
         // when
-        List<MenuGroup> findMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> findMenuGroups = menuGroupService.list();
 
         // then
         assertAll(
                 () -> assertThat(findMenuGroups).hasSize(menuGroups.size()),
-                () -> assertThat(findMenuGroups).containsExactly(중국집_1인_메뉴_세트)
+                () -> assertThat(findMenuGroups).containsExactly(MenuGroupResponse.from(중국집1인메뉴세트그룹))
         );
     }
 }
