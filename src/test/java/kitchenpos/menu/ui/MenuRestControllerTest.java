@@ -1,20 +1,30 @@
 package kitchenpos.menu.ui;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.ui.MenuRestController;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.MenuExceptionType;
+import kitchenpos.menu.exception.MenuPriceException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -28,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(MenuRestController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 public class MenuRestControllerTest extends ControllerTest {
     @MockBean
     private MenuService menuService;
@@ -35,59 +46,105 @@ public class MenuRestControllerTest extends ControllerTest {
     @DisplayName("메뉴생성을 요청하면 생성된 메뉴를 응답")
     @Test
     public void returnMenu() throws Exception {
-        Menu menu = getMenu();
-        doReturn(menu).when(menuService).create(any(Menu.class));
+        Menu menu = Menu.builder()
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
+        MenuResponse menuResponse = MenuResponse.of(Menu.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .menuProducts(MenuProducts.of(new ManagedList<>()))
+                .price(BigDecimal.valueOf(15000))
+                .build());
+        doReturn(menuResponse).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                        .content(mapper.writeValueAsString(new Menu()))
+                        .content(mapper.writeValueAsString(menu))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(menu.getId().intValue())))
-                .andExpect(jsonPath("$.name", is(menu.getName())))
-                .andExpect(jsonPath("$.price", is(menu.getPrice().intValue())))
-                .andExpect(jsonPath("$.menuGroupId", is(menu.getMenuGroupId().intValue())))
-                .andExpect(jsonPath("$.menuProducts", hasSize(menu.getMenuProducts().size())))
+                .andExpect(jsonPath("$.id", is(menuResponse.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(menuResponse.getName())))
+                .andExpect(jsonPath("$.price", is(menuResponse.getPrice().intValue())))
                 .andExpect(status().isCreated());
     }
 
-    @DisplayName("메뉴생성을 요청하면 메뉴생성 실패응답")
+    @DisplayName("메뉴생성을 요청하면 공통메시지로 실패응답")
     @Test
     public void throwsExceptionWhenMenuCreate() throws Exception {
-        doThrow(new IllegalArgumentException()).when(menuService).create(any(Menu.class));
+        Menu menu = Menu.builder()
+                .menuProducts(MenuProducts.of(Collections.EMPTY_LIST))
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .price(BigDecimal.valueOf(1000)).build();
+        doThrow(new IllegalArgumentException()).when(menuService).create(any(MenuRequest.class));
 
         webMvc.perform(post("/api/menus")
-                        .content(mapper.writeValueAsString(new Menu()))
+                        .content(mapper.writeValueAsString(menu))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("메뉴생성을 요청하면 커스텀메시지로 실패응답")
+    @Test
+    public void throwsCustomExceptionWhenMenuCreate() throws Exception {
+        Menu menu = Menu.builder()
+                .menuProducts(MenuProducts.of(Collections.EMPTY_LIST))
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .price(BigDecimal.valueOf(1000)).build();
+        doThrow(new MenuException("메뉴 생성에 실패했습니다")).when(menuService).create(any(MenuRequest.class));
+
+        webMvc.perform(post("/api/menus")
+                .content(mapper.writeValueAsString(menu))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("메뉴 생성에 실패했습니다")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("메뉴생성중 가격이 0미만일 경우 실패응답")
+    @Test
+    public void throwsCustomExceptionWhenMenuPrice() throws Exception {
+        Menu menu = Menu.builder()
+                .menuProducts(MenuProducts.of(Collections.EMPTY_LIST))
+                .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
+                .price(BigDecimal.valueOf(1000)).build();
+        doThrow(new MenuPriceException("메뉴 가격은 0이상이어야 합니다")).when(menuService).create(any(MenuRequest.class));
+
+        webMvc.perform(post("/api/menus")
+                .content(mapper.writeValueAsString(menu))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("메뉴 가격은 0이상이어야 합니다")))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("메뉴목록을 요청하면 메뉴목록을 응답")
     @Test
     public void returnMenus() throws Exception {
-        List<Menu> menus = FixtureMonkey.create()
-                .giveMeBuilder(Menu.class)
-                .sampleList(Arbitraries.integers().between(1, 50).sample());
+        List<MenuResponse> menus = getMenus();
         doReturn(menus).when(menuService).list();
 
         webMvc.perform(get("/api/menus"))
-                .andExpect(jsonPath("$", hasSize(menus.size())))
                 .andExpect(status().isOk());
     }
 
-    private Menu getMenu() {
-        return FixtureMonkey.create()
-                .giveMeBuilder(Menu.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("price", BigDecimal.valueOf(15000))
-                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .set("menuGroupId", Arbitraries.longs().between(1, 50))
-                .set("menuProducts", getMenuProducts())
-                .sample();
+    private MenuResponse getMenu() {
+        return MenuResponse.of(Menu.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .price(BigDecimal.valueOf(15000))
+                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
+                .menuProducts(MenuProducts.of(getMenuProducts()))
+                .build());
+    }
+
+    private List<MenuResponse> getMenus() {
+        return IntStream.rangeClosed(1, 5)
+                .mapToObj(value -> getMenu())
+                .collect(Collectors.toList());
     }
 
     private List<MenuProduct> getMenuProducts() {
-        return FixtureMonkey.create()
-                .giveMeBuilder(MenuProduct.class)
-                .set("id", Arbitraries.longs().between(1, 20))
-                .sampleList(10);
+        return IntStream.rangeClosed(1, 5)
+                .mapToObj(value -> MenuProduct.builder()
+                        .menu(Menu.builder().price(BigDecimal.valueOf(1500)).build())
+                        .seq(Arbitraries.longs().between(1, 20).sample()).build())
+                .collect(Collectors.toList());
     }
 }

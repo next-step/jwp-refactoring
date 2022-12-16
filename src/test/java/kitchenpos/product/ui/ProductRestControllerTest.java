@@ -1,15 +1,22 @@
 package kitchenpos.product.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
+import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
 import kitchenpos.ControllerTest;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
-import kitchenpos.ui.ProductRestController;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.exception.OrderException;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.ProductPriceException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
@@ -27,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(ProductRestController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 public class ProductRestControllerTest extends ControllerTest {
     @MockBean
     private ProductService productService;
@@ -34,11 +42,11 @@ public class ProductRestControllerTest extends ControllerTest {
     @DisplayName("상품생성을 요청하면 생성된 상품응답")
     @Test
     public void returnProduct() throws Exception {
-        Product product = getProduct();
-        doReturn(product).when(productService).create(any(Product.class));
+        ProductResponse product = getProduct();
+        doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(new Product()))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(product.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(product.getName())))
@@ -46,22 +54,38 @@ public class ProductRestControllerTest extends ControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    @DisplayName("주문생성을 요청하면 주문생성 실패응답")
+    @DisplayName("상품생성을 요청하면 상품생성 실패응답")
     @Test
     public void throwsExceptionWhenProductCreate() throws Exception {
-        doThrow(new IllegalArgumentException()).when(productService).create(any(Product.class));
+        doThrow(new IllegalArgumentException()).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                        .content(mapper.writeValueAsString(new Product()))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("상품생성중 상품가격이 0미만이면 실패응답")
+    @Test
+    public void throwsExceptionWhenNegativePrice() throws Exception {
+        doThrow(new ProductPriceException("상품가격은 0이상 이어야합니다")).when(productService).create(any(ProductRequest.class));
+
+        webMvc.perform(post("/api/products")
+                .content(mapper.writeValueAsString(new ProductRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("상품가격은 0이상 이어야합니다")))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("상품목록을 요청하면 상품목록을 응답")
     @Test
     public void returnProducts() throws Exception {
-        List<Product> products = FixtureMonkey.create()
+        List<Product> products = FixtureMonkey.builder()
+                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
+                .build()
                 .giveMeBuilder(Product.class)
+                .set("id", Arbitraries.longs().between(1, 5))
+                .set("price", ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
                 .sampleList(Arbitraries.integers().between(1, 50).sample());
         doReturn(products).when(productService).list();
 
@@ -70,13 +94,11 @@ public class ProductRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private Product getProduct() {
-        return FixtureMonkey.create()
-                .giveMeBuilder(Product.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .set("price", BigDecimal.valueOf(Arbitraries.integers().greaterOrEqual(5000).sample()))
-                .sample();
+    private ProductResponse getProduct() {
+        return ProductResponse.of(Product.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .price(ProductPrice.of(BigDecimal.valueOf(20000)))
+                .build());
     }
 }
-

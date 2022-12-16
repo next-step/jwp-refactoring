@@ -2,17 +2,23 @@ package kitchenpos.table.ui;
 
 import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.ui.TableRestController;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.OrderTableException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -26,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(TableRestController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 public class TableRestControllerTest extends ControllerTest {
     @MockBean
     private TableService tableService;
@@ -33,11 +40,11 @@ public class TableRestControllerTest extends ControllerTest {
     @DisplayName("주문테이블 생성을 요청하면 생성된 주문테이블응답")
     @Test
     public void returnTable() throws Exception {
-        OrderTable orderTable = getOrderTable();
-        doReturn(orderTable).when(tableService).create(any(OrderTable.class));
+        OrderTableResponse orderTable = getOrderTableResponse();
+        doReturn(orderTable).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                        .content(mapper.writeValueAsString(new OrderTable()))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(orderTable.getId().intValue())))
                 .andExpect(jsonPath("$.tableGroupId", is(orderTable.getTableGroupId().intValue())))
@@ -49,20 +56,31 @@ public class TableRestControllerTest extends ControllerTest {
     @DisplayName("주문테이블생성을 요청하면 주문생성 실패응답")
     @Test
     public void throwsExceptionWhenTableCreate() throws Exception {
-        doThrow(new IllegalArgumentException()).when(tableService).create(any(OrderTable.class));
+        doThrow(new IllegalArgumentException()).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                        .content(mapper.writeValueAsString(new OrderTable()))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("주문테이블생성중 테이블그룹이 사용중이면 실패응답")
+    @Test
+    public void throwsExceptionWhenTableGroupUsing() throws Exception {
+        doThrow(new OrderTableException("테이블 그룹이 이미 존재합니다")).when(tableService).create(any(OrderTableRequest.class));
+
+        webMvc.perform(post("/api/tables")
+                .content(mapper.writeValueAsString(new OrderTableRequest()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", is("테이블 그룹이 이미 존재합니다")))
                 .andExpect(status().isBadRequest());
     }
 
     @DisplayName("주문테이블 목록을 요청하면 주문테이블 목록을 응답")
     @Test
     public void returnTables() throws Exception {
-        List<OrderTable> orderTables = FixtureMonkey.create()
-                .giveMeBuilder(OrderTable.class)
-                .sampleList(Arbitraries.integers().between(1, 50).sample());
+        List<OrderTableResponse> orderTables = getOrderTables(OrderTable.builder().id(13l)
+                .tableGroup(TableGroup.builder().build()).build(), 100);
         doReturn(orderTables).when(tableService).list();
 
         webMvc.perform(get("/api/tables"))
@@ -70,14 +88,19 @@ public class TableRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private OrderTable getOrderTable() {
+    private OrderTableResponse getOrderTableResponse() {
         return FixtureMonkey.create()
-                .giveMeBuilder(OrderTable.class)
+                .giveMeBuilder(OrderTableResponse.class)
                 .set("id", Arbitraries.longs().between(1, 100))
                 .set("tableGroupId", Arbitraries.longs().between(1, 100))
                 .set("numberOfGuests", Arbitraries.integers().between(2, 5))
                 .set("empty", true)
                 .sample();
     }
-}
 
+    private List<OrderTableResponse> getOrderTables(OrderTable orderTable, int size) {
+        return IntStream.rangeClosed(1, size)
+                .mapToObj(value -> OrderTableResponse.of(orderTable))
+                .collect(Collectors.toList());
+    }
+}
