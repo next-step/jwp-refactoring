@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductResponse;
 import kitchenpos.repository.ProductRepository;
