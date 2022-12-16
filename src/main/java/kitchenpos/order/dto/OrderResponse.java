@@ -46,4 +46,24 @@ public class OrderResponse {
     public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
+
+    public Long getOrderTableId() {
+        return orderTableId;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrderLineItems(List<OrderLineItemResponse> orderLineItems) {
+        this.orderLineItems = orderLineItems;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void setOrderTableId(Long orderTableId) {
+        this.orderTableId = orderTableId;
+    }
 }
