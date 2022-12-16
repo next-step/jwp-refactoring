@@ -3,8 +3,8 @@ package kitchenpos.order.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,8 +23,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroup() {
         // given
-        OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
-        OrderTable 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
+        OrderTableResponse 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTableResponse.class);
+        OrderTableResponse 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTableResponse.class);
 
         // when
         ExtractableResponse<Response> response = 단체테이블_생성_요청(Lists.newArrayList(
@@ -45,8 +45,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroupExceptionNotEmptyTable() {
         // given
-        OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
-        OrderTable 주문테이블3 = 주문테이블_생성_요청(4, false).as(OrderTable.class);
+        OrderTableResponse 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTableResponse.class);
+        OrderTableResponse 주문테이블3 = 주문테이블_생성_요청(4, false).as(OrderTableResponse.class);
 
         // when
         ExtractableResponse<Response> response = 단체테이블_생성_요청(Lists.newArrayList(
@@ -67,12 +67,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupTables() {
         // given
-        OrderTable 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTable.class);
-        OrderTable 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTable.class);
-        TableGroup tableGroup = 단체테이블_생성_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId())).as(TableGroup.class);
+        OrderTableResponse 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTableResponse.class);
+        OrderTableResponse 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTableResponse.class);
+        TableGroupResponse tableGroupResponse = 단체테이블_생성_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId())).as(TableGroupResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 단체테이블_해체_요청(tableGroup.getId());
+        ExtractableResponse<Response> response = 단체테이블_해체_요청(tableGroupResponse.getId());
 
         // then
         단체테이블_해체됨(response);

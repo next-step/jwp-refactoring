@@ -7,7 +7,8 @@ import java.util.Objects;
 @Table(name = "order_table")
 public class OrderTable {
     private static final String EXCEPTION_MESSAGE_NUMBER_OF_GUESTS_IS_NOT_NEGATIVE = "가격은 음수일 수 없습니다.";
-    private static final String EXCEPTION_MESSAGE_DO_NOT_CHANGE_EMPTY_TABLE = "빈 테이블은 손님의 수를 변경할 수 없습니다.";
+    private static final String EXCEPTION_MESSAGE_IS_EMPTY_TABLE = "빈 테이블입니다. 요청하신 행위를 실행할 수 없습니다.";
+    private static final String EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE = "빈 테이블이 아닙니다. 요청하신 행위를 실행할 수 없습니다.";
     private static final String EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP = "속해있는 단체 테이블이 있으므로 빈 테이블이 될 수 없습니다.";
     private static final int ZERO = 0;
     @Id
@@ -26,6 +27,8 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
+        // TODO : Order JPA로 만들고, OrderTable -> Order 방향을 설정 후 확인 필요...
+//        validateOrderStatus();
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -47,18 +50,25 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        validateNumberOfGuests(numberOfGuests);
-        validateChangableTable();
+    public void enGroupBy(TableGroup tableGroup) {
+        validateIsNotEmptyTable();
 
+        changeEmpty(false);
+        this.tableGroup = tableGroup;
+    }
+
+    public void unGroupBy() {
+        this.tableGroup = null;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        validateIsEmptyTable();
+        validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
-        }
-
+        validateAlreadyGroup();
         this.empty = empty;
     }
 
@@ -81,9 +91,21 @@ public class OrderTable {
         }
     }
 
-    private void validateChangableTable() {
+    private void validateIsNotEmptyTable() {
+        if (!isEmpty()) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE);
+        }
+    }
+
+    private void validateIsEmptyTable() {
         if (isEmpty()) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_DO_NOT_CHANGE_EMPTY_TABLE);
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_IS_EMPTY_TABLE);
+        }
+    }
+
+    private void validateAlreadyGroup() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
         }
     }
 }

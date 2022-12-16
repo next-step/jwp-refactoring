@@ -1,23 +1,17 @@
 package kitchenpos.order.domain;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.List;
-
-/**
- * CREATE TABLE table_group (
- * id BIGINT(20) NOT NULL AUTO_INCREMENT,
- * created_date DATETIME NOT NULL,
- * PRIMARY KEY (id)
- * );
- */
-
 
 @Entity
 @Table(name = "table_group")
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup extends BaseTime {
+    private static final int GROUP_TABLE_MIN_SIZE = 2;
+    private static final String EXCEPTION_MESSAGE_MIN_GROUP_TABLE = "단체 테이블은 테이블" + GROUP_TABLE_MIN_SIZE + "개 이상 필요로 합니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
@@ -25,12 +19,11 @@ public class TableGroup extends BaseTime {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
-        this.id = id;
-//        this.orderTables = orderTables;
+    public TableGroup(List<OrderTable> orderTables) {
+        enGroup(orderTables);
     }
 
     public Long getId() {
@@ -39,5 +32,32 @@ public class TableGroup extends BaseTime {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.values();
+    }
+
+    private void enGroup(List<OrderTable> orderTables) {
+        validateOrderTables(orderTables);
+        // TODO : 오더테이블의 오더 상태 확인 필요
+//        validateOrderStatus(orderTables);
+        for (OrderTable orderTable : orderTables) {
+            addOrderTable(orderTable);
+        }
+    }
+
+    public void unGroup() {
+        for (OrderTable orderTable : orderTables.values()) {
+            orderTable.unGroupBy();
+        }
+        orderTables.removeAll();
+    }
+
+    private void addOrderTable(OrderTable orderTable) {
+        orderTable.enGroupBy(this);
+        this.orderTables.add(orderTable);
+    }
+
+    private void validateOrderTables(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < GROUP_TABLE_MIN_SIZE) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_MIN_GROUP_TABLE);
+        }
     }
 }

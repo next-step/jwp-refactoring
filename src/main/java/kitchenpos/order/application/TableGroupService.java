@@ -1,11 +1,20 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.NoResultException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -20,62 +29,28 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-//        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-//
-//        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        final List<Long> orderTableIds = orderTables.stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//
-//        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-//
-//        if (orderTables.size() != savedOrderTables.size()) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        for (final OrderTable savedOrderTable : savedOrderTables) {
-//            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-//                throw new IllegalArgumentException();
-//            }
-//        }
-//
-//        tableGroup.setCreatedDate(LocalDateTime.now());
-//
-//        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-//
-//        final Long tableGroupId = savedTableGroup.getId();
-//        for (final OrderTable savedOrderTable : savedOrderTables) {
-//            savedOrderTable.setTableGroupId(tableGroupId);
-//            savedOrderTable.setEmpty(false);
-//            orderTableDao.save(savedOrderTable);
-//        }
-//        savedTableGroup.setOrderTables(savedOrderTables);
-//
-//        return savedTableGroup;
-        return null;
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        final List<OrderTable> orderTables = tableGroupRequest.getOrderTableIds().stream()
+                .map(orderTableId -> orderTableRepository.findById(orderTableId).orElseThrow(NoResultException::new))
+                .collect(Collectors.toList());
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        // TODO : ungroup 도메인으로 로직 이전
-//        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
-//
-//        final List<Long> orderTableIds = orderTables.stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//
-//        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-//                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        for (final OrderTable orderTable : orderTables) {
-//            orderTable.setTableGroupId(null);
-//            orderTableDao.save(orderTable);
-//        }
+        final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(NoResultException::new);
+
+        final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+
+        tableGroup.unGroup();
     }
 }
