@@ -28,17 +28,10 @@ public class Order extends BaseEntity {
     }
 
     private Order(OrderBuilder builder) {
-        validateOrderTable(builder.orderTable);
         this.id = builder.id;
         this.orderTable = builder.orderTable;
         this.orderStatus = builder.orderStatus;
         this.orderLineItems = builder.orderLineItems;
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
-            throw new OrderException(EMPTY_ORDER_TABLE);
-        }
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
