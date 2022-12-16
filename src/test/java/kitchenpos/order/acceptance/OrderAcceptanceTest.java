@@ -34,9 +34,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 	@DisplayName("주문 기능 통합 테스트")
 	@TestFactory
 	Stream<DynamicNode> order() {
-		Long 짜장_탕수_세트_ID = 짜장_탕수_세트_생성됨().getId();
-		Long 채워진_테이블_ID = 테이블_생성됨(2, false).getId();
-		Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
+		Long 짜장_탕수_세트_ID = 짜장_탕수_세트_생성됨();
+		Long 채워진_테이블_ID = 테이블_생성됨(2, false);
+		Long 빈_테이블_ID = 테이블_생성됨(2, true);
 
 		return Stream.of(dynamicTest("주문을 생성한다.", () -> {
 			// when
@@ -62,14 +62,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 			주문_목록_정상_조회됨(response, 짜장_탕수_세트_ID);
 		}), dynamicTest("주문 상태를 변경한다.", () -> {
 			// given
-			Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID).getId();
+			Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID);
 			// when
 			ExtractableResponse<Response> response = 주문상태_변경_요청(생성된_주문_ID, OrderStatus.MEAL);
 			// then
 			주문_정상_변경됨(response, OrderStatus.MEAL);
 		}), dynamicTest("주문상태가 현재 종료되었으면 상태를 변경할 수 없다.", () -> {
 			// given
-			Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID).getId();
+			Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID);
 			주문상태_변경_요청(생성된_주문_ID, OrderStatus.COMPLETION);
 			// when
 			ExtractableResponse<Response> response = 주문상태_변경_요청(생성된_주문_ID, OrderStatus.MEAL);
@@ -78,8 +78,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 		}));
 	}
 
-	public static OrderResponse 주문_생성됨(Long orderTableId, Long... menuIds) {
-		return 주문_생성_요청(orderTableId, menuIds).as(OrderResponse.class);
+	public static Long 주문_생성됨(Long orderTableId, Long... menuIds) {
+		return 주문_생성_요청(orderTableId, menuIds).as(OrderResponse.class).getId();
 	}
 
 	public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, Long... menuIds) {

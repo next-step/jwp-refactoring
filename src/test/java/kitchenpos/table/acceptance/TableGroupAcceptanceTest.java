@@ -30,8 +30,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 		return Stream.of(
 			dynamicTest("단체 지정 한다.", () -> {
 				// given
-				Long 빈_테이블_A_ID = 테이블_생성됨(2, true).getId();
-				Long 빈_테이블_B_ID = 테이블_생성됨(2, true).getId();
+				Long 빈_테이블_A_ID = 테이블_생성됨(2, true);
+				Long 빈_테이블_B_ID = 테이블_생성됨(2, true);
 				// when
 				ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_A_ID, 빈_테이블_B_ID));
 				// then
@@ -39,7 +39,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 			}),
 			dynamicTest("테이블이 2개 미만이면 단체지정 할 수 없다.", () -> {
 				// given
-				Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
+				Long 빈_테이블_ID = 테이블_생성됨(2, true);
 				// when
 				ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_ID));
 				// then
@@ -47,7 +47,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 			}),
 			dynamicTest("등록되지 않은 테이블이 있으면 단체지정 할 수 없다.", () -> {
 				// given
-				Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
+				Long 빈_테이블_ID = 테이블_생성됨(2, true);
 				Long 미등록_주문테이블_ID = Long.MAX_VALUE;
 				// when
 				ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_ID, 미등록_주문테이블_ID));
@@ -56,8 +56,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 			}),
 			dynamicTest("채워진 테이블은 단체지정 할 수 없다.", () -> {
 				// given
-				Long 빈_테이블_ID = 테이블_생성됨(2, true).getId();
-				Long 채워진_테이블_ID = 테이블_생성됨(2, false).getId();
+				Long 빈_테이블_ID = 테이블_생성됨(2, true);
+				Long 채워진_테이블_ID = 테이블_생성됨(2, false);
 				// when
 				ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_ID, 채워진_테이블_ID));
 				// then
@@ -65,8 +65,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 			}),
 			dynamicTest("이미 단체지정된 테이블은 단체지정 할 수 없다.", () -> {
 				// given
-				Long 빈_테이블_A_ID = 테이블_생성됨(2, true).getId();
-				Long 빈_테이블_B_ID = 테이블_생성됨(2, true).getId();
+				Long 빈_테이블_A_ID = 테이블_생성됨(2, true);
+				Long 빈_테이블_B_ID = 테이블_생성됨(2, true);
 				단체지정됨(빈_테이블_A_ID, 빈_테이블_B_ID);
 				// when
 				ExtractableResponse<Response> response = 단체지정_요청(단체지정_생성(빈_테이블_A_ID, 빈_테이블_B_ID));
@@ -75,8 +75,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 			}),
 			dynamicTest("단체지정을 취소한다.", () -> {
 				// given
-				Long 빈_테이블_A_ID = 테이블_생성됨(2, true).getId();
-				Long 빈_테이블_B_ID = 테이블_생성됨(2, true).getId();
+				Long 빈_테이블_A_ID = 테이블_생성됨(2, true);
+				Long 빈_테이블_B_ID = 테이블_생성됨(2, true);
 				Long 단체지정_ID = 단체지정됨(빈_테이블_A_ID, 빈_테이블_B_ID).getId();
 				// when
 				ExtractableResponse<Response> response = 단체지정_해제_요청(단체지정_ID);
