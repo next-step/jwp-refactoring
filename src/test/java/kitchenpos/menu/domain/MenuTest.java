@@ -66,16 +66,6 @@ class MenuTest {
                 .hasMessage("상품은 필수입니다.");
     }
 
-    @DisplayName("메뉴 가격은 메뉴 상품가격의 합계보다 클 수 없다.")
-    @Test
-    void createMenuByNotMoreThanProductsSum() {
-        // when & then
-        assertThatThrownBy(() -> Menu.of("짜장_탕수육_세트", BigDecimal.valueOf(26_000L),
-                세트류.id(), Arrays.asList(짜장면_1그릇, 탕수육_소_1그릇)))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("상품 총 금액이 메뉴의 가격 보다 클 수 없습니다.");
-    }
-
     @DisplayName("메뉴의 상품 목록을 반환한다")
     @Test
     void menuProductsList() {
