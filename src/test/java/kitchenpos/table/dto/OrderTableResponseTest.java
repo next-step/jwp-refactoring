@@ -3,7 +3,8 @@ package kitchenpos.table.dto;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableResponseTest {
 

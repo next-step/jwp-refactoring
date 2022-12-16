@@ -1,5 +1,7 @@
 package kitchenpos.menugroup.domain;
 
+import kitchenpos.menu.domain.MenuGroup;
+
 public class MenuGroupTest {
 
     public static MenuGroup 메뉴그룹_생성(Long id, String name) {

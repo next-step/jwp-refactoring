@@ -3,7 +3,8 @@ package kitchenpos.tablegroup.dto;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableDto;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupRequest.OrderTableDto;
 
 public class TableGroupRequestTest {
 
