@@ -3,14 +3,13 @@ package kitchenpos.menu;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupFixture {
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
+        MenuGroupRequest menuGroup = new MenuGroupRequest(name);
 
         return RestAssured
             .given().log().all()
