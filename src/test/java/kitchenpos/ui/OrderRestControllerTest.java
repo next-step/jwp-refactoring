@@ -70,7 +70,7 @@ class OrderRestControllerTest extends IntegrationTest {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(new Name("test")));
         this.menu = menuRepository.save(
             new Menu(new Price(BigDecimal.valueOf(10L)), new Name("test"), menuGroup, pairs));
-        orderLineItemRequests.add(new OrderLineItemRequest(this.menu.getId(), 1L));
+        orderLineItemRequests.add(new OrderLineItemRequest(this.menu.getId(), new Quantity(1L)));
     }
 
     @DisplayName("주문을 등록한다")

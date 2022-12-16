@@ -19,6 +19,7 @@ import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.Quantity;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.exception.MenuFindException;
@@ -51,7 +52,7 @@ class OrderServiceTest {
         when(menuRepository.findAllById(any())).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(new OrderRequest(
-            Collections.singletonList(new OrderLineItemRequest(1L, 1L)))))
+            Collections.singletonList(new OrderLineItemRequest(1L, new Quantity(1L))))))
             .isInstanceOf(MenuFindException.class);
     }
 

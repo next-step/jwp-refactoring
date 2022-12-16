@@ -23,12 +23,12 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    private Long quantity;
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Menu menu, Long quantity) {
+    public OrderLineItem(Order order, Menu menu, Quantity quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
@@ -38,7 +38,7 @@ public class OrderLineItem {
         return menu;
     }
 
-    public Long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 

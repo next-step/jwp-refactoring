@@ -1,12 +1,13 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Quantity;
 
 public class MenuQuantityPair {
     private Menu menu;
-    private Long quantity;
+    private Quantity quantity;
 
-    public MenuQuantityPair(Menu menu, Long quantity) {
+    public MenuQuantityPair(Menu menu, Quantity quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
@@ -15,7 +16,7 @@ public class MenuQuantityPair {
         return menu;
     }
 
-    public Long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 }
