@@ -84,7 +84,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("계산전 테이블을의 테이블 그룹을 해제하면 실패")
+    @DisplayName("계산전 테이블의 테이블 그룹을 해제하면 실패")
     @Test
     void ungroupWithCookingOrEatingOrder() {
         OrderTableResponse 주문_테이블1 = 테이블_생성을_요청(1, true).as(OrderTableResponse.class);
@@ -102,6 +102,18 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 테이블그룹_해제를_요청(테이블그룹.getId());
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    @DisplayName("테이블 그룹을 해제")
+    @Test
+    void ungroup() {
+        OrderTableResponse 주문_테이블1 = 테이블_생성을_요청(0, true).as(OrderTableResponse.class);
+        OrderTableResponse 주문_테이블2 = 테이블_생성을_요청(0, true).as(OrderTableResponse.class);
+        TableGroupResponse 테이블그룹 = 테이블그룹_생성을_요청(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())).as(TableGroupResponse.class);
+
+        ExtractableResponse<Response> response = 테이블그룹_해제를_요청(테이블그룹.getId());
+
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
     }
 
     public static ExtractableResponse<Response> 테이블그룹_생성을_요청(List<Long> orderTables) {

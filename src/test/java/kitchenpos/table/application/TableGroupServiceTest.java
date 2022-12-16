@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,9 +98,17 @@ public class TableGroupServiceTest {
         OrderTable orderTable2 = OrderTable.builder()
                 .tableGroup(TableGroup.builder().build())
                 .id(2l).empty(true).build();
-        doReturn(Arrays.asList(orderTable1, orderTable2))
+        List<OrderTable> orderTables = Arrays.asList(orderTable1,orderTable2);
+        doReturn(orderTables)
                 .when(orderTableRepository)
                 .findAllById(anyList());
+        doReturn(TableGroup.builder()
+                .id(1l)
+                .orderTables(OrderTables.of(orderTables))
+                .build())
+                .when(tableGroupRepository)
+                .save(any(TableGroup.class));
+
 
         TableGroupResponse tableGroupResponse = tableGroupService.create(new TableGroupRequest(Arrays.asList(1l, 2l)));
         assertThat(tableGroupResponse.getOrderTables().stream().map(OrderTableResponse::getId).collect(Collectors.toList())).containsExactly(1l, 2l);
