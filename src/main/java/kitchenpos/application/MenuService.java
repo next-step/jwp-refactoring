@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static kitchenpos.common.ErrorMessage.INVALID_PRODUCT_ID;
+
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
@@ -52,6 +54,7 @@ public class MenuService {
 
     private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
         List<Product> products = toProduct(menuProductRequests);
+        validateProducts(products, menuProductRequests);
         Map<Long, Product> productIdToProduct = new HashMap<>();
         for (Product product : products) {
             productIdToProduct.put(product.getId(), product);
@@ -60,6 +63,12 @@ public class MenuService {
         return menuProductRequests.stream()
                 .map(menuProductRequest -> menuProductRequest.toMenuProduct(productIdToProduct.get(menuProductRequest.getProductId())))
                 .collect(Collectors.toList());
+    }
+
+    private void validateProducts(final List<Product> products, final List<MenuProductRequest> menuProductRequests) {
+        if (products.size() != menuProductRequests.size()) {
+            throw new IllegalArgumentException(INVALID_PRODUCT_ID.getMessage());
+        }
     }
 
     private List<Product> toProduct(final List<MenuProductRequest> menuProductRequests) {

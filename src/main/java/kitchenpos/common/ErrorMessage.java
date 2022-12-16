@@ -7,6 +7,7 @@ public enum ErrorMessage {
     INVALID_MENU_GROUP("메뉴그룹이 존재하지 않습니다."),
     INVALID_MENU_PRODUCT("메뉴삼품이 존재하지 않습니다."),
     INVALID_ORDER_LINE_ITEM("요청정보에 주문정보가 존재하지 않습니다."),
+    INVALID_PRODUCT_ID("요청정보에 상품정보가 올바르지 않습니다."),
     INVALID_MENU_INFO("주문정보 중 존재하지 않는 메뉴 정보가 있습니다."),
     INVALID_CUSTOMER_NUMBER("고객 수가 올바르지 않습니다."),
     INVALID_PRICE("가격이 존재하지 않습니다."),
