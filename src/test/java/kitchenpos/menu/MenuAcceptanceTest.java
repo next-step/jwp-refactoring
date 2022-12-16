@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus;
 public class MenuAcceptanceTest extends AcceptanceTest {
 
     private MenuResponse 추천메뉴;
-    private Product 강정치킨;
+    private ProductResponse 강정치킨;
     private MenuProductRequest 더블강정치킨;
 
     /*
@@ -54,7 +54,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() throws SQLException {
         super.setUp();
         추천메뉴 = 메뉴_그룹_등록("추천 메뉴").as(MenuResponse.class);
-        강정치킨 = 상품_등록("강정치킨", new BigDecimal(17_000)).as(Product.class);
+        강정치킨 = 상품_등록("강정치킨", new BigDecimal(17_000)).as(ProductResponse.class);
         더블강정치킨 = new MenuProductRequest(강정치킨.getId(), 2L);
     }
 

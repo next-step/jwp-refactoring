@@ -10,7 +10,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductResponse;
 import org.assertj.core.util.BigDecimalComparator;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //when
-        List<Product> products = 상품_목록_조회().jsonPath().getList(".", Product.class);
+        List<ProductResponse> products = 상품_목록_조회().jsonPath().getList(".", ProductResponse.class);
 
         //then
         assertThat(products)
