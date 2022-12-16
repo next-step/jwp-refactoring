@@ -90,4 +90,8 @@ public class Order {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
     }
+
+    public boolean isSameStatus(List<String> orderStatuses) {
+        return orderStatuses.contains(this.orderStatus.name());
+    }
 }

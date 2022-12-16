@@ -1,15 +1,10 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity
 public class TableGroup {
@@ -20,22 +15,8 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
-
-    protected TableGroup() {
-    }
-
-    public TableGroup(List<OrderTable> orderTablesParam) {
-        validateOrderTableEmptyOrNonNull(orderTablesParam);
-        addAllOrderTables(orderTablesParam);
-        validateOrderTablesSize();
+    public TableGroup() {
         this.createdDate = LocalDateTime.now();
-    }
-
-    public void unGroup() {
-        validateOrderStatus(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        orderTables.unGroup();
     }
 
     public Long getId() {
@@ -46,27 +27,4 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
-    }
-
-    private void addAllOrderTables(List<OrderTable> savedOrderTables) {
-        savedOrderTables.forEach(orderTable -> {
-            orderTable.changeEmpty(false);
-            orderTable.changeTableGroup(this);
-        });
-        orderTables.addAllOrderTables(savedOrderTables);
-    }
-
-    private void validateOrderTableEmptyOrNonNull(List<OrderTable> savedOrderTables) {
-        orderTables.validateOrderTableEmptyOrNonNull(savedOrderTables);
-    }
-
-    private void validateOrderTablesSize() {
-        orderTables.validateOrderTablesSize();
-    }
-
-    private void validateOrderStatus(String... orderStatuses) {
-        orderTables.validateOrderStatus(Arrays.asList(orderStatuses));
-    }
 }

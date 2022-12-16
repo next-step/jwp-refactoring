@@ -1,11 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import java.util.List;
-import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
+import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,19 +11,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableGroupService {
 
-    private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(TableService tableService, TableGroupRepository tableGroupRepository) {
-        this.tableService = tableService;
+    public TableGroupService(TableGroupRepository tableGroupRepository,
+                             TableGroupValidator tableGroupValidator) {
         this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> savedOrderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-
-        return tableGroupRepository.save(new TableGroup(savedOrderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        tableGroupValidator.validateCreation(tableGroup.getId(), tableGroupRequest.getOrderTableIds());
+        return tableGroup;
     }
 
     @Transactional
@@ -34,6 +33,7 @@ public class TableGroupService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "등록 되지 않은 단체 지정은 해제할 수 없습니다[tableGroupId:" + tableGroupId + "]"));
 
-        tableGroup.unGroup();
+        tableGroupValidator.validateUngroup(tableGroupId);
+        tableGroupRepository.delete(tableGroup);
     }
 }

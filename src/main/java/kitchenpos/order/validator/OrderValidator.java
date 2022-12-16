@@ -25,7 +25,7 @@ public class OrderValidator {
         order.validateOrderLineItemsSizeAndMenuCount(menuRepository.countByIdIn(order.makeMenuIds()));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     void validateOrderTable(Order order) {
         OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -33,6 +33,5 @@ public class OrderValidator {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 등록시, 주문 테이블은 비어있으면 안됩니다");
         }
-        orderTable.addOrder(order);
     }
 }

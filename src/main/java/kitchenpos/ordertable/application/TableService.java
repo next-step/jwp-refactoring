@@ -6,6 +6,7 @@ import kitchenpos.ordertable.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(OrderTableRepository orderTableRepository,
+                        OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -28,12 +32,6 @@ public class TableService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
-        return orderTableRepository.findAllByIdIn(orderTableIds)
-                .orElseThrow(() -> new IllegalArgumentException("등록 된 주문 테이블에 대해서만 단체 지정이 가능합니다"));
-    }
-
-    @Transactional(readOnly = true)
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
     }
@@ -41,21 +39,23 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableChangeEmptyRequest emptyRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "존재하지 않는 주문 테이블의 비어있음 여부를 수정할 수 없습니다[orderTableId:" + orderTableId + "]"));
 
-        savedOrderTable.changeEmpty(emptyRequest.isEmpty());
+        savedOrderTable.changeEmpty(emptyRequest.isEmpty(), orderTableValidator);
 
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId,
                                            final OrderTableChangeNumberOfGuestsRequest numberOfGuestsRequest) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "존재하지 않는 주문 테이블의 방문한 손님수를 수정할 수 없습니다[orderTableId:" + orderTableId + "]"));
 
         savedOrderTable.changeNumberOfGuests(numberOfGuestsRequest.getNumberOfGuests());
 
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 }

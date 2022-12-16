@@ -5,20 +5,21 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.validator.OrderTableValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,15 +33,22 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
+    private OrderRepository orderRepository;
+    @Mock
+    private TableGroupRepository tableGroupRepository;
+    @Mock
+    private Order order;
     private OrderTable orderTable;
     private TableService tableService;
     private OrderTableChangeEmptyRequest emptyRequest = new OrderTableChangeEmptyRequest(true);
     private OrderTableChangeNumberOfGuestsRequest numberOfGuestsRequest = new OrderTableChangeNumberOfGuestsRequest(1);
 
-
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderTableRepository);
+        orderTable = new OrderTable(1, false);
+        orderTable.changeTableGroupId(1L);
+        OrderTableValidator orderTableValidator = new OrderTableValidator(orderRepository, tableGroupRepository);
+        tableService = new TableService(orderTableRepository, orderTableValidator);
     }
 
     @Test
@@ -67,7 +75,6 @@ class TableServiceTest {
     @Test
     void 주문_테이블의_비어있음_여부를_수정할_수_있다() {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable changeEmptyOrderTable = tableService.changeEmpty(1L, emptyRequest);
 
@@ -86,8 +93,7 @@ class TableServiceTest {
 
     @Test
     void 이미_단체_지정이_된_주문테이블은_수정할_수_없다() {
-        OrderTable orderTable = new OrderTable(1, false);
-        orderTable.changeTableGroup(new TableGroup(Arrays.asList(new OrderTable(1, true), new OrderTable(1, true))));
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(new TableGroup()));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         ThrowingCallable 이미_단체_지정이_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);
@@ -97,10 +103,9 @@ class TableServiceTest {
 
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
-        OrderTable orderTable = new OrderTable(1, false);
-        orderTable.addOrder(new Order(1L, Collections.singletonList(new OrderLineItem(1L, 1))));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-
+        given(orderRepository.findByOrderTableId(any())).willReturn(Collections.singletonList(order));
+        given(order.getOrderStatus()).willReturn(OrderStatus.COOKING.name());
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);
 
         assertThatIllegalArgumentException().isThrownBy(조리_식사_상태의_주문이_포함_된_주문테이블_수정);
@@ -109,7 +114,6 @@ class TableServiceTest {
     @Test
     void 주문_테이블의_방문한_손님수를_수정할_수_있다() {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTableRepository.save(any())).willReturn(orderTable);
 
         OrderTable changeOrderTable = tableService.changeNumberOfGuests(1L, numberOfGuestsRequest);
 
@@ -119,7 +123,6 @@ class TableServiceTest {
     @Test
     void 주문_테이블의_방문한_손님수를_0명_이하로_수정할_수_없다() {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        doThrow(IllegalArgumentException.class).when(orderTable).changeNumberOfGuests(-1);
         numberOfGuestsRequest.setNumberOfGuests(-1);
 
         ThrowingCallable 손님수_0명_이하로_수정 = () -> tableService.changeNumberOfGuests(1L, numberOfGuestsRequest);
