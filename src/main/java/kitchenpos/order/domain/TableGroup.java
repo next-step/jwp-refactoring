@@ -17,7 +17,7 @@ public class TableGroup extends BaseTime {
     @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private final OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }
@@ -45,6 +45,7 @@ public class TableGroup extends BaseTime {
 
     public void unGroup() {
         for (OrderTable orderTable : orderTables.values()) {
+            orderTable.validateOrderStatus();
             orderTable.unGroupBy();
         }
         orderTables.removeAll();

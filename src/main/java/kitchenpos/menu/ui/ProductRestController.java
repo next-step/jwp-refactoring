@@ -31,6 +31,4 @@ public class ProductRestController {
     public ResponseEntity<List<ProductResponse>> list() {
         return ResponseEntity.ok().body(productService.list());
     }
-
-    // TODO : ExceptionHandler 정의
 }

@@ -10,25 +10,30 @@ public class OrderTable {
     private static final String EXCEPTION_MESSAGE_IS_EMPTY_TABLE = "빈 테이블입니다. 요청하신 행위를 실행할 수 없습니다.";
     private static final String EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE = "빈 테이블이 아닙니다. 요청하신 행위를 실행할 수 없습니다.";
     private static final String EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP = "속해있는 단체 테이블이 있으므로 빈 테이블이 될 수 없습니다.";
+    private static final String EXCEPTION_MESSAGE_ALREADY_COOKING_OR_MEAL = "현재 속해있는 테이블의 주문이 요리중이거나, 식사중입니다.";
     private static final int ZERO = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id", columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
     @Column(nullable = false, columnDefinition = "int(11)")
     private int numberOfGuests;
     @Column(nullable = false, columnDefinition = "bit(1)")
     private boolean empty;
+    @OneToOne(mappedBy = "orderTable", cascade = CascadeType.ALL)
+    private Order order;
+
+    public Order getOrder() {
+        return order;
+    }
 
     protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        // TODO : Order JPA로 만들고, OrderTable -> Order 방향을 설정 후 확인 필요...
-//        validateOrderStatus();
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -44,6 +49,10 @@ public class OrderTable {
 
     public int getNumberOfGuests() {
         return numberOfGuests;
+    }
+
+    public void ordered(Order order) {
+        this.order = order;
     }
 
     public boolean isEmpty() {
@@ -74,6 +83,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+        validateOrderStatus();
         validateAlreadyGroup();
         this.empty = empty;
     }
@@ -103,7 +113,7 @@ public class OrderTable {
         }
     }
 
-    private void validateIsEmptyTable() {
+    public void validateIsEmptyTable() {
         if (isEmpty()) {
             throw new IllegalStateException(EXCEPTION_MESSAGE_IS_EMPTY_TABLE);
         }
@@ -112,6 +122,12 @@ public class OrderTable {
     private void validateAlreadyGroup() {
         if (isGrouping()) {
             throw new IllegalStateException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
+        }
+    }
+
+    public void validateOrderStatus() {
+        if (Objects.nonNull(order) && !order.isCooking()) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_COOKING_OR_MEAL);
         }
     }
 }

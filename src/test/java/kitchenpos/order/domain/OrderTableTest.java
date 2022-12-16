@@ -1,12 +1,21 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.JpaEntityTest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.repository.ProductRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.repository.TableGroupRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,6 +26,12 @@ public class OrderTableTest extends JpaEntityTest {
     private OrderTableRepository orderTableRepository;
     @Autowired
     private TableGroupRepository tableGroupRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private MenuRepository menuRepository;
 
     @DisplayName("테이블 생성 테스트")
     @Test
@@ -97,11 +112,26 @@ public class OrderTableTest extends JpaEntityTest {
     @Test
     void changeEmptyException2() {
         // given
-        OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, true));
-        // TODO : 속해있는 주문이 요리 / 식자 상태 중일 경우
+        Menu menu = createMenuFixture("순살후라이드");
+        OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, false));
+        Order order = orderRepository.save(new Order(savedOrderTable, Lists.newArrayList(new OrderLineItem(menu, 2L))));
+        order.updateStatus(OrderStatus.MEAL);
+        flushAndClear();
 
         // when
+        OrderTable orderTable = orderTableRepository.getOne(savedOrderTable.getId());
 
         // then
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private Menu createMenuFixture(String name) {
+        Product product = new Product(name, BigDecimal.valueOf(10_000));
+        productRepository.save(product);
+
+        MenuGroup menuGroup = new MenuGroup("한마리치킨");
+        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup, Lists.newArrayList(new MenuProduct(product, 1L)));
+        return menuRepository.save(menu);
     }
 }

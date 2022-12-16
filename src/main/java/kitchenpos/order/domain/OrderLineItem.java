@@ -1,40 +1,65 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Quantity;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
+@Table(name = "order_line_item")
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq", nullable = false, columnDefinition = "bigint(20)")
     private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
+    private Order order;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
+    private Menu menu;
+    @Embedded
+    private Quantity quantity;
+
+    protected OrderLineItem() {
+    }
+
+    public OrderLineItem(Menu menu, Long quantity) {
+        this.menu = menu;
+        this.quantity = new Quantity(quantity);
+    }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public Long getQuantity() {
+        return quantity.value();
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public void addedBy(Order order) {
+        this.order = order;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderLineItem)) return false;
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
     }
 
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    @Override
+    public int hashCode() {
+        return Objects.hash(order, menu);
     }
 }

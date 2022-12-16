@@ -1,65 +1,101 @@
 package kitchenpos.order.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
+@Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
+    private static final String EXCEPTION_MESSAGE_ALREADY_COMPLETION = "이미 완료된 주문입니다.";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "order_table_id", nullable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    private OrderStatus orderStatus;
+    @Column(nullable = false, columnDefinition = "datetime")
+    @CreatedDate
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        orderTable.validateIsEmptyTable();
+        assignOrderTable(orderTable);
+        this.orderStatus = OrderStatus.COOKING;
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            addOrderLineItem(orderLineItem);
+        }
     }
 
-    public Order(Long id, Long orderTableId) {
-        this.id = id;
-        this.orderTableId = orderTableId;
+    private void assignOrderTable(OrderTable orderTable) {
+        orderTable.ordered(this);
+        this.orderTable = orderTable;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus status() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.values();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    private void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItem.addedBy(this);
+        orderLineItems.add(orderLineItem);
+    }
+
+    public void updateStatus(OrderStatus orderStatus) {
+        isCompletion();
+        this.orderStatus = orderStatus;
+    }
+
+    public void isCompletion() {
+        if (OrderStatus.isCompletion(this.orderStatus)) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_COMPLETION);
+        }
+    }
+
+    public boolean isCooking() {
+        return OrderStatus.isCooking(orderStatus);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+        Order entity = (Order) o;
+        return Objects.equals(orderTable, entity.orderTable) && Objects.equals(orderLineItems, entity.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderTable, orderLineItems);
     }
 }

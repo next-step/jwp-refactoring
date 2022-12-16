@@ -3,20 +3,18 @@ package kitchenpos.order.fixture;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderTable;
-import org.assertj.core.util.Lists;
+import kitchenpos.order.dto.OrderMenuRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderTestFixture {
-    public static ExtractableResponse<Response> 주문_상태_수정_요청(Long orderId, String OrderStatus) {
-        Order orderRequest = new Order();
-        orderRequest.setOrderStatus(OrderStatus);
+    public static ExtractableResponse<Response> 주문_상태_수정_요청(Long orderId, String orderStatus) {
+        OrderRequest orderRequest = new OrderRequest(orderStatus);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -26,11 +24,8 @@ public class OrderTestFixture {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, Menu menu) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menu.getId());
-        Order orderRequest = new Order(orderTable.getId(), Lists.newArrayList(orderLineItem));
-
+    public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderMenuRequest> orderMenuRequests) {
+        OrderRequest orderRequest = new OrderRequest(orderTableId, orderMenuRequests);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -16,11 +16,11 @@ public class Menu {
     private String name;
     @Embedded
     private Price price;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "menu_group_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }

@@ -69,10 +69,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         // given
         OrderTableResponse 주문테이블1 = 주문테이블_생성_요청(4, true).as(OrderTableResponse.class);
         OrderTableResponse 주문테이블2 = 주문테이블_생성_요청(6, true).as(OrderTableResponse.class);
-        TableGroupResponse tableGroupResponse = 단체테이블_생성_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId())).as(TableGroupResponse.class);
+        TableGroupResponse 단체테이블 = 단체테이블_생성_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId())).as(TableGroupResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 단체테이블_해체_요청(tableGroupResponse.getId());
+        ExtractableResponse<Response> response = 단체테이블_해체_요청(단체테이블.getId());
 
         // then
         단체테이블_해체됨(response);
