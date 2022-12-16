@@ -3,9 +3,7 @@ package kitchenpos.menu;
 import static kitchenpos.menu.MenuFixture.메뉴_등록;
 import static kitchenpos.menu.MenuFixture.메뉴_목록_조회;
 import static kitchenpos.menu.MenuGroupFixture.메뉴_그룹_등록;
-import static kitchenpos.menu.MenuGroupFixture.메뉴_그룹_목록_조회;
 import static kitchenpos.product.ProductFixture.상품_등록;
-import static kitchenpos.product.ProductFixture.상품_목록_조회;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -18,19 +16,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 추천메뉴;
+    private MenuResponse 추천메뉴;
     private Product 강정치킨;
-    private MenuProduct 더블강정치킨;
+    private MenuProductRequest 더블강정치킨;
 
     /*
     Feature: 메뉴를 관리 합니다.
@@ -56,13 +53,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() throws SQLException {
         super.setUp();
-        메뉴_그룹_등록("추천 메뉴");
-        추천메뉴 = 메뉴_그룹_목록_조회().jsonPath().getList(".", MenuGroup.class).get(0);
-        상품_등록("강정치킨", new BigDecimal(17_000));
-        강정치킨 = 상품_목록_조회().jsonPath().getList(".", Product.class).get(0);
-        더블강정치킨 = new MenuProduct();
-        더블강정치킨.setProductId(강정치킨.getId());
-        더블강정치킨.setQuantity(2L);
+        추천메뉴 = 메뉴_그룹_등록("추천 메뉴").as(MenuResponse.class);
+        강정치킨 = 상품_등록("강정치킨", new BigDecimal(17_000)).as(Product.class);
+        더블강정치킨 = new MenuProductRequest(강정치킨.getId(), 2L);
     }
 
     @Test
@@ -75,15 +68,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //when
-        List<Menu> menus = 메뉴_목록_조회().jsonPath().getList(".", Menu.class);
+        List<MenuResponse> menus = 메뉴_목록_조회().jsonPath().getList(".", MenuResponse.class);
 
         //then
         assertThat(menus)
             .hasSize(1)
             .extracting(
-                Menu::getName,
-                Menu::getMenuGroupId,
-                Menu::getPrice,
+                MenuResponse::getName,
+                MenuResponse::getMenuGroupId,
+                MenuResponse::getPrice,
                 menu -> menu.getMenuProducts().get(0).getProductId(),
                 menu -> menu.getMenuProducts().get(0).getQuantity()
             )
@@ -139,9 +132,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void 메뉴_추가에_실패_존재_하지_않는_상품() {
         //given
-        MenuProduct 존재하지않는상품 = new MenuProduct();
-        존재하지않는상품.setProductId(-1L);
-        존재하지않는상품.setQuantity(1);
+        MenuProductRequest 존재하지않는상품 = new MenuProductRequest(-1L, 1L);
 
         //when
         ExtractableResponse<Response> noExistProductResponse = 메뉴_등록("강정치킨+강정치킨",
@@ -154,9 +145,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void 메뉴_추가에_실패_수량_없는_메뉴_상품() {
         //given
-        MenuProduct 수량없는상품 = new MenuProduct();
-        수량없는상품.setProductId(강정치킨.getId());
-        수량없는상품.setQuantity(0);
+        MenuProductRequest 수량없는상품 = new MenuProductRequest(강정치킨.getId(), 0);
 
         //when
         ExtractableResponse<Response> noExistProductResponse = 메뉴_등록("강정치킨+강정치킨",

@@ -14,18 +14,17 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -62,19 +61,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         일번테이블 = 주문_테이블_추가(new OrderTable()).as(OrderTable.class);
 
-        MenuGroup 추천_메뉴 = 메뉴_그룹_등록("추천 메뉴").as(MenuGroup.class);
+        MenuGroupResponse 추천_메뉴 = 메뉴_그룹_등록("추천 메뉴").as(MenuGroupResponse.class);
         Product 강정치킨 = 상품_등록("강정치킨", new BigDecimal(17_000)).as(Product.class);
 
-        MenuProduct 더블강정치킨 = new MenuProduct();
-        더블강정치킨.setProductId(강정치킨.getId());
-        더블강정치킨.setQuantity(2L);
-
-        Menu 메뉴 = 메뉴_등록("더블강정치킨", new BigDecimal(19_000), 추천_메뉴.getId(),
-            Collections.singletonList(더블강정치킨))
-            .as(Menu.class);
+        MenuResponse 더블강정치킨 = 메뉴_등록("더블강정치킨", new BigDecimal(19_000), 추천_메뉴.getId(),
+            Collections.singletonList(new MenuProductRequest(강정치킨.getId(), 2L)))
+            .as(MenuResponse.class);
 
         주문항목 = new OrderLineItem();
-        주문항목.setMenuId(메뉴.getId());
+        주문항목.setMenuId(더블강정치킨.getId());
         주문항목.setQuantity(1L);
     }
 

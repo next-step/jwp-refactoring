@@ -1,26 +1,43 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.domain.Menu;
 
-public class Menu {
+public class MenuRequest {
 
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductRequest> menuProducts;
 
-    public Menu() {
+    public MenuRequest() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId,
+        List<MenuProductRequest> menuProducts) {
+        this(null, name, price, menuGroupId, menuProducts);
+    }
+
+    public MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId,
+        List<MenuProductRequest> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public Menu toMenu() {
+        return new Menu(id,
+            name,
+            price,
+            menuGroupId,
+            menuProducts.stream()
+                .map(MenuProductRequest::toMenuProduct)
+                .collect(Collectors.toList()));
     }
 
     public Long getId() {
@@ -55,11 +72,12 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void setMenuProducts(final List<MenuProductRequest> menuProducts) {
         this.menuProducts = menuProducts;
     }
+
 }
