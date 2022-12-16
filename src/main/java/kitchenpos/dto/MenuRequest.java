@@ -24,7 +24,7 @@ public class MenuRequest {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public Menu toEntity(final MenuGroup menuGroup, final MenuProducts menuProducts) {
+    public Menu toMenu(final MenuGroup menuGroup, final MenuProducts menuProducts) {
         return Menu.of(name, price, menuGroup, menuProducts);
     }
 

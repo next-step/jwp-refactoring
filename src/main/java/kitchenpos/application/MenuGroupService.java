@@ -21,7 +21,7 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest request) {
-        MenuGroup menuGroup = menuGroupRepository.save(request.toEntity());
+        MenuGroup menuGroup = menuGroupRepository.save(request.toMenuGroup());
         return MenuGroupResponse.from(menuGroup);
     }
 

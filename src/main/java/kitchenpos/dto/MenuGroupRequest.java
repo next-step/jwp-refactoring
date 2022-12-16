@@ -23,7 +23,7 @@ public class MenuGroupRequest {
         return name;
     }
 
-    public MenuGroup toEntity() {
+    public MenuGroup toMenuGroup() {
         return MenuGroup.of(name);
     }
 }

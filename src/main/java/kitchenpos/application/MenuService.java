@@ -41,7 +41,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_MENU_GROUP.getMessage(), menuGroupId)));
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProductsRequest()));
-        Menu menu = request.toEntity(menuGroup, menuProducts);
+        Menu menu = request.toMenu(menuGroup, menuProducts);
 
         return MenuResponse.from(menuRepository.save(menu));
     }

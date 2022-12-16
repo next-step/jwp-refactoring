@@ -25,7 +25,7 @@ public class ProductRequest {
         return price;
     }
 
-    public Product toEntity() {
+    public Product toProduct() {
         return Product.of(name, price);
     }
 }

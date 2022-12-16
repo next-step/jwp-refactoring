@@ -29,7 +29,7 @@ public class OrderTableRequest {
         return empty;
     }
 
-    public OrderTable toEntity() {
+    public OrderTable toOrderTable() {
         return OrderTable.of(numberOfGuests, empty);
     }
 }
