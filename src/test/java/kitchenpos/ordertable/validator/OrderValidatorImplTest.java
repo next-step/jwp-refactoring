@@ -1,4 +1,4 @@
-package kitchenpos.order.validator;
+package kitchenpos.ordertable.validator;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
@@ -38,13 +38,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 관련 validator 테스트")
 @ExtendWith(MockitoExtension.class)
-public class OrderValidatorTest {
+public class OrderValidatorImplTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private OrderValidator orderValidator;
+    private OrderValidatorImpl orderValidator;
 
     private Product 감자튀김;
     private Product 불고기버거;
