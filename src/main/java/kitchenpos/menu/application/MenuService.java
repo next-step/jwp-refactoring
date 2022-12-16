@@ -1,12 +1,9 @@
 package kitchenpos.menu.application;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -45,23 +42,23 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
 
+        List<Product> products = productRepository.findAllById(request.getMenuProductIds());
+
         List<MenuProductRequest> menuProductRequests = request.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductrequest : menuProductRequests) {
             final Product product = productRepository.findById(menuProductrequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
 
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
-            menuProducts.add(menuProductrequest.createMenuProduct(product));
         }
 
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
 
-        final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, menuProducts));
+        final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, products));
         return MenuResponse.from(savedMenu);
     }
 

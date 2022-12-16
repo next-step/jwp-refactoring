@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Embedded;
@@ -83,7 +82,11 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void addProduct(MenuProduct menuProduct) {
+    public void addProducts(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addProduct);
+    }
+
+    private void addProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
         menuProduct.setMenu(this);
     }

@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -77,6 +79,7 @@ class MenuServiceTest {
                 .collect(Collectors.toList());
         MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of(양념치킨.getName(), 양념치킨.getPrice(), 양식.getId(), menuProductRequests);
         given(menuGroupRepository.findById(치킨_스파게티_더블세트_메뉴.getMenuGroupId())).willReturn(Optional.of(양식));
+        when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(양념치킨, 스파게티));
         given(productRepository.findById(치킨_두마리.getProduct().getId())).willReturn(Optional.of(양념치킨));
         given(productRepository.findById(스파게티_이인분.getProduct().getId())).willReturn(Optional.of(스파게티));
         given(menuRepository.save(any())).willReturn(양념치킨_두마리_세트);
