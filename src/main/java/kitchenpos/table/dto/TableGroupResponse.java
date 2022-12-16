@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 
 public class TableGroupResponse {
     private Long id;
-    private List<OrderTableResponse> orderTableResponses;
+    private List<OrderTableResponse> orderTables;
+
+    public TableGroupResponse() {
+    }
 
     public TableGroupResponse(TableGroup tableGroup) {
         this.id = tableGroup.getId();
-        this.orderTableResponses = tableGroup.getOrderTables()
+        this.orderTables = tableGroup.getOrderTables()
                 .stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
@@ -25,9 +28,8 @@ public class TableGroupResponse {
         return id;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTableResponses.stream()
-                .map(OrderTableResponse::getId)
-                .collect(Collectors.toList());
+    public List<OrderTableResponse> getOrderTables() {
+        return orderTables;
     }
 }
+
