@@ -1,12 +1,12 @@
-package kitchenpos.Acceptance;
+package kitchenpos.acceptance;
 
-import static kitchenpos.Acceptance.MenuGroupTestFixture.메뉴_그룹_생성_요청함;
-import static kitchenpos.Acceptance.MenuTestFixture.메뉴_생성_요청함;
-import static kitchenpos.Acceptance.MenuTestFixture.메뉴_생성됨;
-import static kitchenpos.Acceptance.MenuTestFixture.메뉴_조회_요청_응답됨;
-import static kitchenpos.Acceptance.MenuTestFixture.메뉴_조회_요청함;
-import static kitchenpos.Acceptance.MenuTestFixture.메뉴_조회_포함됨;
-import static kitchenpos.Acceptance.ProductTestFixture.상품_생성_요청함;
+import static kitchenpos.acceptance.MenuGroupTestFixture.메뉴_그룹_생성_요청함;
+import static kitchenpos.acceptance.MenuTestFixture.메뉴_생성_요청함;
+import static kitchenpos.acceptance.MenuTestFixture.메뉴_생성됨;
+import static kitchenpos.acceptance.MenuTestFixture.메뉴_조회_요청_응답됨;
+import static kitchenpos.acceptance.MenuTestFixture.메뉴_조회_요청함;
+import static kitchenpos.acceptance.MenuTestFixture.메뉴_조회_포함됨;
+import static kitchenpos.acceptance.ProductTestFixture.상품_생성_요청함;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

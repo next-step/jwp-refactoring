@@ -1,10 +1,10 @@
-package kitchenpos.Acceptance;
+package kitchenpos.acceptance;
 
-import static kitchenpos.Acceptance.TableGroupTestFixture.단체_지정_해제됨;
-import static kitchenpos.Acceptance.TableGroupTestFixture.단체_지정_생성됨;
-import static kitchenpos.Acceptance.TableGroupTestFixture.단체_지정_요청;
-import static kitchenpos.Acceptance.TableGroupTestFixture.단체_지정_해제_요청;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_생성_요청함;
+import static kitchenpos.acceptance.TableGroupTestFixture.단체_지정_해제됨;
+import static kitchenpos.acceptance.TableGroupTestFixture.단체_지정_생성됨;
+import static kitchenpos.acceptance.TableGroupTestFixture.단체_지정_요청;
+import static kitchenpos.acceptance.TableGroupTestFixture.단체_지정_해제_요청;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_생성_요청함;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

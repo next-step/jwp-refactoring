@@ -1,4 +1,4 @@
-package kitchenpos.Acceptance;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

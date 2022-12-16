@@ -1,14 +1,14 @@
-package kitchenpos.Acceptance;
+package kitchenpos.acceptance;
 
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_방문_손님_수_변경_요청함;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_상태_변경_요청함;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_상태_변경됨;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_생성_요청함;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_생성됨;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_손님_수_변경됨;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_요청_응답됨;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_조회_요청함;
-import static kitchenpos.Acceptance.TableTestFixture.주문_테이블_조회_포함됨;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_방문_손님_수_변경_요청함;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_상태_변경_요청함;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_상태_변경됨;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_생성_요청함;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_생성됨;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_손님_수_변경됨;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_요청_응답됨;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_조회_요청함;
+import static kitchenpos.acceptance.TableTestFixture.주문_테이블_조회_포함됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
