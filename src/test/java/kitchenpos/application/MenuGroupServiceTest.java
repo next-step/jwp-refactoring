@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.repository.MenuGroupRepository;
