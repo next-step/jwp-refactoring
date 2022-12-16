@@ -39,7 +39,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct2> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {
     }
@@ -59,10 +59,10 @@ public class Menu {
         addMenuProducts(toMenuProducts(productsCount));
     }
 
-    private List<MenuProduct2> toMenuProducts(Map<Product, Integer> productsCount) {
+    private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
         return productsCount.entrySet()
             .stream()
-            .map(entry -> new MenuProduct2(this, entry.getKey(), entry.getValue()))
+            .map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
             .collect(Collectors.toList());
     }
 
@@ -78,22 +78,22 @@ public class Menu {
         return menuGroup;
     }
 
-    private List<MenuProduct2> toMenuProduct(List<Product> products) {
+    private List<MenuProduct> toMenuProduct(List<Product> products) {
         return products.stream()
-            .map(product -> new MenuProduct2(this, product, 1))
+            .map(product -> new MenuProduct(this, product, 1))
             .collect(Collectors.toList());
     }
 
-    private void addMenuProducts(List<MenuProduct2> menuProducts) {
+    private void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(this::addMenuProduct);
     }
 
-    private void addMenuProduct(MenuProduct2 addMenuProduct) {
+    private void addMenuProduct(MenuProduct addMenuProduct) {
         this.menuProducts.add(addMenuProduct);
         addMenuProduct.setMenu(this);
     }
 
-    public List<MenuProduct2> getMenuProducts() {
+    public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
@@ -110,7 +110,7 @@ public class Menu {
 
     private Money sumAllProductsPrice() {
         return menuProducts.stream()
-            .map(MenuProduct2::getPurchasePrice)
+            .map(MenuProduct::getPurchasePrice)
             .reduce(Money.ZERO, Money::add);
     }
 }

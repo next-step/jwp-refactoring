@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct2;
+import kitchenpos.domain.MenuProduct;
 
 public class MenuResponse {
 
@@ -46,7 +46,7 @@ public class MenuResponse {
 			this.quantity = quantity;
 		}
 
-		public static List<MenuProductResponse> of(List<MenuProduct2> menuProducts) {
+		public static List<MenuProductResponse> of(List<MenuProduct> menuProducts) {
 			return menuProducts.stream()
 				.map(menuProduct -> new MenuProductResponse(menuProduct.getProductId(),
 															menuProduct.getQuantity()))

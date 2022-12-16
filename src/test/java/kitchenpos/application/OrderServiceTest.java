@@ -104,11 +104,11 @@ class OrderServiceTest {
 	}
 
 	private static Order createOrder(OrderStatus orderStatus) {
-		return new Order(orderStatus, createOrderTable2(), createMenus(3));
+		return new Order(orderStatus, createOrderTable(), createMenus(3));
 	}
 
 	private static Order createOrder() {
-		return new Order(createOrderTable2(), createMenus(3));
+		return new Order(createOrderTable(), createMenus(3));
 	}
 
 	private static Map<Menu, Integer> createMenus(int count) {
@@ -124,7 +124,7 @@ class OrderServiceTest {
 						Lists.newArrayList(new Product("product", 1_000L)));
 	}
 
-	private static OrderTable createOrderTable2() {
+	private static OrderTable createOrderTable() {
 		return new OrderTable(10, true);
 	}
 
