@@ -5,6 +5,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -30,18 +31,39 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
+//    @Transactional
+//    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+//        List<OrderTable> orderTables = findAllOrderTablesById(tableGroupRequest.getOrderTables());
+//        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup(OrderTables.from(orderTables)));
+//        return TableGroupResponse.from(tableGroup);
+//    }
+//
+//    @Transactional
+//    public void ungroup(final Long tableGroupId) {
+//        TableGroup tableGroup = findTableGroupById(tableGroupId);
+//        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTables());
+//        tableGroup.ungroup(orders);
+//    }
+
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = findAllOrderTablesById(tableGroupRequest.getOrderTables());
-        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup(OrderTables.from(orderTables)));
-        return TableGroupResponse.from(tableGroup);
+        OrderTables orderTables = OrderTables.from(findAllOrderTablesById(tableGroupRequest.getOrderTables()));
+        List<OrderTableResponse> orderTableResponses = orderTables.getOrderTables()
+            .stream()
+            .map(OrderTableResponse::from)
+            .collect(Collectors.toList());
+        final TableGroup tableGroup = tableGroupRepository.save(TableGroup.from());
+        orderTables.registerTableGroup(tableGroup.getId());
+        return TableGroupResponse.from(tableGroup, orderTableResponses);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTables());
+        OrderTables orderTables = OrderTables.from(findAllOrderTableByTableGroupId(tableGroupId));
+        List<Order> orders = findAllOrderByOrderTableIds(orderTables.getOrderTables());
         tableGroup.ungroup(orders);
+        orderTables.ungroupOrderTables();
     }
 
     private List<OrderTable> findAllOrderTablesById(List<Long> ids) {
@@ -65,5 +87,9 @@ public class TableGroupService {
             .map(OrderTable::getId)
             .collect(Collectors.toList());
         return orderRepository.findAllByOrderTableIdIn(orderTableIds);
+    }
+
+    private List<OrderTable> findAllOrderTableByTableGroupId(Long id) {
+        return orderTableRepository.findAllByTableGroupId(id);
     }
 }

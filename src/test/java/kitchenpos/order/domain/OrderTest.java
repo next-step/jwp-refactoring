@@ -35,8 +35,8 @@ class OrderTest {
         하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
         주문메뉴 = OrderMenu.from(하와이안피자세트);
-        주문테이블A = new OrderTable(1L, null, 4, true);
-        주문테이블B = new OrderTable(1L, null, 4, false);
+        주문테이블A = OrderTable.of(1L, 4, true);
+        주문테이블B = OrderTable.of(1L, 4, false);
         하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
     }
 

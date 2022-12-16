@@ -73,25 +73,27 @@ public class TableGroupServiceTest {
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
         주문메뉴 = OrderMenu.from(하와이안피자세트);
         하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
-        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문테이블 = OrderTable.of(1L, 0, false);
         주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(주문메뉴))));
 
-        주문테이블A = new OrderTable(1L, null, 4, true);
-        주문테이블B = new OrderTable(2L, null, 6, true);
+        주문테이블A = OrderTable.of(1L, 4, true);
+        주문테이블B = OrderTable.of(2L, 6, true);
     }
 
     @DisplayName("주문 테이블의 단체를 지정한다.")
     @Test
     void createTableGroup() {
-        OrderTable orderTable1 = new OrderTable(3L, null, 4, true);
-        OrderTable orderTable2 = new OrderTable(4L, null, 4, true);
+        OrderTable orderTable1 = OrderTable.of(3L, 4, true);
+        OrderTable orderTable2 = OrderTable.of(4L, 4, true);
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
+        TableGroup tableGroup = TableGroup.from(1L);
+        OrderTables.from(Arrays.asList(orderTable1, orderTable2)).registerTableGroup(tableGroup.getId());
+
         TableGroupRequest request = TableGroupRequest.from(orderTableIds);
 
         when(orderTableRepository.findById(orderTable1.getId())).thenReturn(Optional.of(주문테이블A));
         when(orderTableRepository.findById(orderTable2.getId())).thenReturn(Optional.of(주문테이블B));
-        when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
+        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         // when
         TableGroupResponse result = tableGroupService.create(request);
@@ -130,8 +132,8 @@ public class TableGroupServiceTest {
     @Test
     void notExistOrderTableException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 4, false);
-        OrderTable orderTable2 = new OrderTable(2L, null, 4, true);
+        OrderTable orderTable1 = OrderTable.of(1L, 4, false);
+        OrderTable orderTable2 = OrderTable.of(2L, 4, true);
         TableGroupRequest request = TableGroupRequest.from(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         // when & then
@@ -143,9 +145,12 @@ public class TableGroupServiceTest {
     @Test
     void alreadyTableGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, null, 4, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 4, true);
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
+        OrderTable orderTable1 = OrderTable.of(1L, 4, true);
+        OrderTable orderTable2 = OrderTable.of(2L, 4, true);
+        TableGroup tableGroup = TableGroup.from(1L);
+        OrderTables.from(Arrays.asList(orderTable1, orderTable2)).registerTableGroup(tableGroup.getId());
+
+
         TableGroupRequest request = TableGroupRequest.from(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         // when & then
@@ -157,9 +162,12 @@ public class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(주문테이블, 주문테이블A, 주문테이블B)));
+        TableGroup tableGroup = TableGroup.from(1L);
+        OrderTables.from(Arrays.asList(주문테이블, 주문테이블A, 주문테이블B)).registerTableGroup(tableGroup.getId());
         Order order = 주문.changeOrderStatus(OrderStatus.COMPLETION);
+
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
+        when(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).thenReturn(Arrays.asList(주문테이블, 주문테이블A, 주문테이블B));
         when(orderRepository.findAllByOrderTableIdIn(
             Arrays.asList(주문테이블.getId(), 주문테이블A.getId(), 주문테이블B.getId()))).thenReturn(Collections.singletonList(order));
 
@@ -168,23 +176,8 @@ public class TableGroupServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(주문테이블A.getTableGroup()).isNull(),
-            () -> assertThat(주문테이블B.getTableGroup()).isNull()
+            () -> assertThat(주문테이블A.findTableGroupId()).isNull(),
+            () -> assertThat(주문테이블B.findTableGroupId()).isNull()
         );
-    }
-
-    @DisplayName("단체 내 주문 테이블들의 상태가 조리, 식사일 때 단체 지정 해체 시 예외가 발생한다.")
-    @Test
-    void unGroupStateException() {
-        // given
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(주문테이블, 주문테이블A, 주문테이블B)));
-        Order order = 주문.changeOrderStatus(OrderStatus.COOKING);
-        when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.findAllByOrderTableIdIn(
-            Arrays.asList(주문테이블.getId(), 주문테이블A.getId(), 주문테이블B.getId()))).thenReturn(Collections.singletonList(order));
-
-        // when & then
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 }

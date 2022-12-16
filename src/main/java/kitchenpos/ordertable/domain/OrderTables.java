@@ -39,17 +39,12 @@ public class OrderTables {
         }
     }
 
-    public boolean anyHasGroupId() {
-        return orderTables.stream()
-            .anyMatch(OrderTable::isNotNullTableGroup);
-    }
-
-    public void updateTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
-    }
-
     public void ungroupOrderTables() {
         orderTables.forEach(OrderTable::ungroup);
+    }
+
+    public void registerTableGroup(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.registerTableGroup(tableGroupId));
     }
 
     public List<OrderTable> getOrderTables() {

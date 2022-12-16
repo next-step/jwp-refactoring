@@ -79,7 +79,7 @@ public class OrderServiceTest {
             MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
         주문메뉴 = OrderMenu.from(하와이안피자세트);
 
-        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문테이블 = OrderTable.of(1L,  0, false);
         하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
         주문 = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
     }

@@ -44,7 +44,7 @@ class OrderTableTest {
     @DisplayName("주문 테이블의 비어있는 상태를 수정한다.")
     @Test
     void updateEmpty() {
-        OrderTable orderTable = new OrderTable(4, true);
+        OrderTable orderTable = OrderTable.of(4, true);
 
         orderTable.changeEmpty(false);
 
@@ -54,16 +54,17 @@ class OrderTableTest {
     @DisplayName("주문 테이블의 단체 지정을 해제한다.")
     @Test
     void ungroup() {
-        OrderTable orderTable1 = new OrderTable(4, false);
-        OrderTable orderTable2 = new OrderTable(6, true);
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
+        OrderTable orderTable1 = OrderTable.of(4, false);
+        OrderTable orderTable2 = OrderTable.of(6, true);
+        TableGroup tableGroup = TableGroup.from(1L);
+        OrderTables.from(Arrays.asList(orderTable1, orderTable2)).registerTableGroup(tableGroup.getId());
 
         orderTable2.ungroup();
 
         assertAll(
-            () -> assertThat(orderTable1.getTableGroup()).isNotNull(),
+            () -> assertThat(orderTable1.findTableGroupId()).isNotNull(),
             () -> assertThat(orderTable1.isNotNullTableGroup()).isTrue(),
-            () -> assertThat(orderTable2.getTableGroup()).isNull(),
+            () -> assertThat(orderTable2.findTableGroupId()).isNull(),
             () -> assertThat(orderTable2.isNotNullTableGroup()).isFalse()
         );
     }
@@ -71,7 +72,7 @@ class OrderTableTest {
     @DisplayName("주문 테이블의 손님 수를 수정한다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable orderTable = OrderTable.of(4, false);
 
         orderTable.changeNumberOfGuests(6);
 
@@ -81,7 +82,7 @@ class OrderTableTest {
     @DisplayName("비어있는 상태의 주문 테이블의 손님 수를 수정하면 에러가 발생한다.")
     @Test
     void validateOrderTableNotEmptyException() {
-        OrderTable orderTable = new OrderTable(4, true);
+        OrderTable orderTable = OrderTable.of(4, true);
 
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(6))
             .isInstanceOf(IllegalArgumentException.class);

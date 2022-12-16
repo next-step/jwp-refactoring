@@ -65,7 +65,7 @@ public class TableServiceTest {
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
         주문메뉴 = OrderMenu.from(하와이안피자세트);
         하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
-        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문테이블 = OrderTable.of(1L, 0, false);
         주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(주문메뉴))));
     }
 
@@ -138,11 +138,14 @@ public class TableServiceTest {
     @Test
     void updateOrderTableAssignGroupException() {
         // given
-        OrderTable orderTable1 = new OrderTable( 4, true);
-        OrderTable orderTable2 = new OrderTable( 4, true);
-        TableGroup tableGroup = new TableGroup(
-            OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
-        OrderTable orderTable = new OrderTable(5L, tableGroup, 4, false);
+        OrderTable orderTable1 = OrderTable.of(4, true);
+        OrderTable orderTable2 = OrderTable.of(4, true);
+
+        TableGroup tableGroup = TableGroup.from(1L);
+
+        OrderTable orderTable = OrderTable.of(4, false);
+        orderTable.registerTableGroup(tableGroup.getId());
+
         OrderTableRequest orderTableRequest = OrderTableRequest.of(4, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
