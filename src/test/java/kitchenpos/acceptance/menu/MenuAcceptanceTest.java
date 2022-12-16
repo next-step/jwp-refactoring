@@ -35,7 +35,7 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	 */
 	@BeforeEach
 	void setup() {
-		List<ProductRequest> 상품목록 = ProductFixture.상품목록2(3);
+		List<ProductRequest> 상품목록 = ProductFixture.상품목록(3);
 
 		List<ExtractableResponse<Response>> 등록_응답 = products.등록_요청(상품목록);
 

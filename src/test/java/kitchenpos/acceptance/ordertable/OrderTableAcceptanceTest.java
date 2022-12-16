@@ -169,7 +169,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest2 {
 		tableGroups.등록되어_있음(TableGroupFixture.주문_테이블_그룹(주문_테이블_목록));
 		OrderTableResponse 주문_테이블 = 주문_테이블_목록.get(0);
 		MenuGroupResponse 메뉴그룹 = menuGroups.등록되어_있음(MenuGroupFixture.메뉴그룹());
-		List<ProductResponse> 상품목록 = products.등록되어_있음(ProductFixture.상품목록2(3));
+		List<ProductResponse> 상품목록 = products.등록되어_있음(ProductFixture.상품목록(3));
 		MenuResponse 메뉴 = menus.등록되어_있음(MenuFixture.메뉴(상품목록, 메뉴그룹));
 		OrderResponse 주문 = orders.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
 

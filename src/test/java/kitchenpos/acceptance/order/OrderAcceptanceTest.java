@@ -52,7 +52,7 @@ class OrderAcceptanceTest extends AcceptanceTest2 {
 	 */
 	@BeforeEach
 	void setup() {
-		상품목록 = products.등록되어_있음(ProductFixture.상품목록2(3));
+		상품목록 = products.등록되어_있음(ProductFixture.상품목록(3));
 		메뉴그룹 = menuGroups.등록되어_있음(MenuGroupFixture.메뉴그룹());
 		메뉴 = menus.등록되어_있음(MenuFixture.메뉴(상품목록, 메뉴그룹));
 		주문_테이블 = orderTables.등록되어_있음(OrderTableFixture.주문_테이블());

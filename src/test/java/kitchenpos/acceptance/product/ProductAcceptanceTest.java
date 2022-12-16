@@ -1,6 +1,6 @@
 package kitchenpos.acceptance.product;
 
-import static kitchenpos.acceptance.product.ProductFixture.상품2;
+import static kitchenpos.acceptance.product.ProductFixture.상품;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ class ProductAcceptanceTest extends AcceptanceTest2 {
 	 */
 	@BeforeEach
 	void setup() {
-		ProductRequest 상품 = 상품2(상품명, 상품가격);
+		ProductRequest 상품 = 상품(상품명, 상품가격);
 		ExtractableResponse<Response> 상품_등록_응답 = step.등록_요청(상품);
 
 		상품_아이디 = step.등록됨(상품_등록_응답).getId();
@@ -55,7 +55,7 @@ class ProductAcceptanceTest extends AcceptanceTest2 {
 	 */
 	@Test
 	void 상품_등록_실패() {
-		ProductRequest 상품 = 상품2(상품명, null);
+		ProductRequest 상품 = 상품(상품명, null);
 
 		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(상품);
 

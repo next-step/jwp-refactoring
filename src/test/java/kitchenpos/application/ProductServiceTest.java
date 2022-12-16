@@ -7,8 +7,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.acceptance.product.ProductFixture;
 import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
@@ -48,7 +48,7 @@ class ProductServiceTest {
     @DisplayName("상품목록 목록")
     void testGetProductList() {
         // given
-        List<Product> expectedProducts = Lists.newArrayList(ProductFixture.상품목록(3));
+        List<Product> expectedProducts = createProductList(3);
         when(productRepository.findAll()).thenReturn(expectedProducts);
 
         // when
@@ -59,5 +59,10 @@ class ProductServiceTest {
         verify(productRepository, times(1)).findAll();
     }
 
+    private List<Product> createProductList(int count) {
+        return LongStream.range(0, count)
+            .mapToObj(id -> new Product(id, "product-"+id, Money.valueOf(1000)))
+            .collect(Collectors.toList());
+    }
 
 }
