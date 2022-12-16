@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Name;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;

@@ -1,6 +1,5 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.Id;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.domain.NumberOfGuests;
-import kitchenpos.order.domain.Order;
 
 @Entity
 public class OrderTable {

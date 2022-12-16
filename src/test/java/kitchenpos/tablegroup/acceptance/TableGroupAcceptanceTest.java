@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
-import kitchenpos.common.acceptance.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;

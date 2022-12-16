@@ -3,7 +3,6 @@ package kitchenpos.product.acceptance;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_목록_조회_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
-import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
 import static kitchenpos.product.domain.ProductTestFixture.generateProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.acceptance.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
