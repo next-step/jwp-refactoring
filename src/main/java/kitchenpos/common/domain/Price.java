@@ -1,13 +1,13 @@
 package kitchenpos.common.domain;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.common.error.ErrorEnum;
 
 @Embeddable
 public class Price {
+    private static final int ZERO = 0;
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -33,5 +33,20 @@ public class Price {
         if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException(ErrorEnum.PRICE_UNDER_ZERO.message());
         }
+    }
+
+    public Price add(Price another) {
+        return new Price(price.add(another.price));
+    }
+
+    public Price multiply(BigDecimal value) {
+        return new Price(price.multiply(value));
+    }
+
+    public boolean isBiggerThan(Price totalPrice) {
+        if (price.compareTo(totalPrice.price) > ZERO) {
+            return true;
+        }
+        return false;
     }
 }

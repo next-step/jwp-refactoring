@@ -69,8 +69,8 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        치킨 = new Product(1L, "치킨", BigDecimal.valueOf(20_000));
-        스파게티 = new Product(2L, "스파게티", BigDecimal.valueOf(10_000));
+        치킨 = new Product(1L, "치킨", new Price(BigDecimal.valueOf(20_000)));
+        스파게티 = new Product(2L, "스파게티", new Price(BigDecimal.valueOf(10_000)));
         양식 = new MenuGroup(1L, "양식");
 
         치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new Price(BigDecimal.valueOf(13_000)), 양식);

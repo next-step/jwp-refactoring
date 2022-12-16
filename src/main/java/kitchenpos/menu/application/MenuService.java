@@ -37,11 +37,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        final BigDecimal price = request.getPrice();
+        //final BigDecimal price = request.getPrice();
 
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
-
         List<Product> products = productRepository.findAllById(request.getMenuProductIds());
 
         List<MenuProductRequest> menuProductRequests = request.getMenuProducts();
@@ -51,18 +50,14 @@ public class MenuService {
             final Product product = productRepository.findById(menuProductrequest.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
 
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            sum = sum.add(product.getPrice().value().multiply(BigDecimal.valueOf(menuProductrequest.getQuantity())));
         }
 
         final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, products));
         return MenuResponse.from(savedMenu);
     }
 
-    public List<MenuResponse> list() {
+    public List<MenuResponse> findAll() {
         return menuRepository.findAll()
                 .stream()
                 .map(MenuResponse::from)

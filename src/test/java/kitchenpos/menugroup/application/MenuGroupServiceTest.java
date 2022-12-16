@@ -54,7 +54,7 @@ public class MenuGroupServiceTest {
     void 메뉴_그룹_목록_조회할_수_있다() {
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(치킨, 스파게티));
 
-        List<MenuGroupResponse> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.findAll();
 
         assertAll(
                 () -> assertThat(menuGroups).hasSize(2),

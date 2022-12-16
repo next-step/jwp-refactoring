@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
@@ -24,8 +21,8 @@ public class Menu {
     private Price price;
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
@@ -70,24 +67,19 @@ public class Menu {
         return menuGroup;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroup = menuGroup;
-    }
-
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
+    public void setMenuProducts(MenuProducts menuProducts) {
+        validatePrice(menuProducts.totalMenuPrice());
         this.menuProducts = menuProducts;
+        menuProducts.getMenuProducts().forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
-    public void addProducts(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(this::addProduct);
-    }
-
-    private void addProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
+    private void validatePrice(Price totalPrice) {
+        if (price.isBiggerThan(totalPrice)) {
+            throw new IllegalArgumentException("메뉴의 가격이 전체 메뉴 상품 가격의 합보다 클 수 없습니다.");
+        }
     }
 }

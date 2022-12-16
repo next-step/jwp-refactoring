@@ -11,7 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,14 +23,16 @@ import org.springframework.http.MediaType;
 
 @DisplayName("상픔 관련 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
-    private Product 후라이드;
-    private Product 순살치킨;
+    private ProductRequest 후라이드;
+    private ProductRequest 순살치킨;
+    private ProductResponse 생성된_후라이드;
+    private ProductResponse 생성된_순살치킨;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16_000));
-        순살치킨 = new Product(1L, "순살치킨", BigDecimal.valueOf(17_000));
+        후라이드 = ProductRequest.of("후라이드", BigDecimal.valueOf(16_000));
+        순살치킨 = ProductRequest.of("순살치킨", BigDecimal.valueOf(17_000));
     }
 
     @Test
@@ -42,21 +47,21 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 상품_목록을_조회_할_수_있다() {
         // given
-        후라이드 = 상품_생성_요청(후라이드).as(Product.class);
-        순살치킨 = 상품_생성_요청(순살치킨).as(Product.class);
+        생성된_후라이드 = 상품_생성_요청(후라이드).as(ProductResponse.class);
+        생성된_순살치킨 = 상품_생성_요청(순살치킨).as(ProductResponse.class);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();
 
         // then
-        상품_목록_응답됨(response, Arrays.asList(후라이드.getId(), 순살치킨.getId()));
+        상품_목록_응답됨(response, Arrays.asList(생성된_후라이드.getId(), 생성된_순살치킨.getId()));
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(product)
+                .body(request)
                 .when().post("/api/products")
                 .then().log().all()
                 .extract();
@@ -75,9 +80,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private void 상품_목록_응답됨(ExtractableResponse<Response> response, List<Long> productIds) {
-        List<Long> ids = response.jsonPath().getList(".", Product.class)
+        List<Long> ids = response.jsonPath().getList(".", ProductResponse.class)
                         .stream()
-                        .map(Product::getId)
+                        .map(ProductResponse::getId)
                         .collect(Collectors.toList());
 
         assertAll(

@@ -59,8 +59,8 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         양식 = new MenuGroup(1L, "양식");
-        양념치킨 = new Product(1L, "양념치킨", BigDecimal.valueOf(20_000));
-        스파게티 = new Product(2L, "스파게티", BigDecimal.valueOf(10_000));
+        양념치킨 = new Product(1L, "양념치킨", new Price(BigDecimal.valueOf(20_000)));
+        스파게티 = new Product(2L, "스파게티", new Price(BigDecimal.valueOf(10_000)));
         양념치킨_두마리_세트 = new Menu(1L, "양념치킨_두마리_세트", new Price(BigDecimal.valueOf(40_000)), 양식);
         스파게티_이인분_세트 = new Menu(2L, "양념치킨_두마리_세트", new Price(BigDecimal.valueOf(40_000)), 양식);
 
@@ -77,7 +77,7 @@ class MenuServiceTest {
                 .stream()
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
-        MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of(양념치킨.getName(), 양념치킨.getPrice(), 양식.getId(), menuProductRequests);
+        MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of(양념치킨.getName(), 양념치킨.getPrice().value(), 양식.getId(), menuProductRequests);
         given(menuGroupRepository.findById(치킨_스파게티_더블세트_메뉴.getMenuGroupId())).willReturn(Optional.of(양식));
         when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(양념치킨, 스파게티));
         given(productRepository.findById(치킨_두마리.getProduct().getId())).willReturn(Optional.of(양념치킨));
@@ -119,7 +119,7 @@ class MenuServiceTest {
     void 메뉴_목록을_조회할_수_있다() {
         given(menuRepository.findAll()).willReturn(Arrays.asList(양념치킨_두마리_세트, 스파게티_이인분_세트));
 
-        List<MenuResponse> menus = menuService.list();
+        List<MenuResponse> menus = menuService.findAll();
 
         assertThat(menus).hasSize(2);
         assertThat(menus.stream().map(MenuResponse::getId))

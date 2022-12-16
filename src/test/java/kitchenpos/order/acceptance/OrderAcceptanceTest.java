@@ -30,7 +30,8 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,8 @@ import org.springframework.http.MediaType;
 
 @DisplayName("주문 관련 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
-    private Product 순살치킨;
-    private Product 후라이드치킨;
+    private ProductResponse 생성된_순살치킨;
+    private ProductResponse 생성된_후라이드치킨;
     private MenuGroup 치킨;
     private Menu 순살치킨메뉴;
     private Menu 두마리치킨세트메뉴;
@@ -55,13 +56,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        순살치킨 = 상품_생성_요청(new Product(1L, "순살치킨", BigDecimal.valueOf(20_000))).as(Product.class);
-        후라이드치킨 = 상품_생성_요청(new Product(2L, "후라이드치킨", BigDecimal.valueOf(18_000))).as(Product.class);
+        생성된_순살치킨 = 상품_생성_요청(ProductRequest.of("순살치킨", BigDecimal.valueOf(20_000))).as(ProductResponse.class);
+        생성된_후라이드치킨 = 상품_생성_요청(ProductRequest.of("후라이드치킨", BigDecimal.valueOf(18_000))).as(ProductResponse.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
         순살치킨메뉴 = new Menu("순살치킨", new Price(BigDecimal.valueOf(12_000L)), 치킨);
         두마리치킨세트메뉴 = new Menu("두마리치킨세트", new Price(BigDecimal.valueOf(38_000L)), 치킨);
-        순살치킨상품 = MenuProductRequest.of(순살치킨.getId(), 1L);
-        후라이드치킨상품 = MenuProductRequest.of(후라이드치킨.getId(), 1L);
+        순살치킨상품 = MenuProductRequest.of(생성된_순살치킨.getId(), 1L);
+        후라이드치킨상품 = MenuProductRequest.of(생성된_후라이드치킨.getId(), 1L);
         두마리치킨세트_응답 = 메뉴_생성_요청(MenuRequest.of(
                 두마리치킨세트메뉴.getName(),
                 두마리치킨세트메뉴.getPrice().value(),

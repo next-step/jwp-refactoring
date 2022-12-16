@@ -13,11 +13,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,8 +32,8 @@ import org.springframework.http.MediaType;
 @DisplayName("메뉴 관련 인수 테스트")
 public
 class MenuAcceptanceTest extends AcceptanceTest {
-    private Product 후라이드치킨;
-    private Product 콜라;
+    private ProductResponse 생성된_후라이드치킨;
+    private ProductResponse 생성된_콜라;
     private MenuGroup 치킨;
     private MenuProductRequest 후라이드치킨상품;
     private MenuProductRequest 콜라상품;
@@ -38,12 +42,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드치킨 = 상품_생성_요청(new Product(1L, "후라이드 치킨", BigDecimal.valueOf(18_000))).as(Product.class);
-        콜라 = 상품_생성_요청(new Product(2L, "콜라", BigDecimal.valueOf(1_800))).as(Product.class);
+        생성된_후라이드치킨 = 상품_생성_요청(ProductRequest.of("후라이드 치킨", BigDecimal.valueOf(18_000))).as(ProductResponse.class);
+        생성된_콜라 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(1_800))).as(ProductResponse.class);
         치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
 
-        후라이드치킨상품 = MenuProductRequest.of(후라이드치킨.getId(), 1L);
-        콜라상품 = MenuProductRequest.of(콜라.getId(), 1L);
+        후라이드치킨상품 = MenuProductRequest.of(생성된_후라이드치킨.getId(), 1L);
+        콜라상품 = MenuProductRequest.of(생성된_콜라.getId(), 1L);
         치킨콜라세트 = MenuRequest.of("치킨콜라 세트", BigDecimal.valueOf(19_800), 치킨.getId(), Arrays.asList(후라이드치킨상품, 콜라상품));
     }
 
