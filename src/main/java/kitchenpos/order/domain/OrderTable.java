@@ -50,6 +50,10 @@ public class OrderTable {
         return empty;
     }
 
+    public boolean isGrouping() {
+        return Objects.nonNull(tableGroup);
+    }
+
     public void enGroupBy(TableGroup tableGroup) {
         validateIsNotEmptyTable();
 
@@ -58,7 +62,9 @@ public class OrderTable {
     }
 
     public void unGroupBy() {
-        this.tableGroup = null;
+        if (isGrouping()) {
+            this.tableGroup = null;
+        }
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
@@ -93,19 +99,19 @@ public class OrderTable {
 
     private void validateIsNotEmptyTable() {
         if (!isEmpty()) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE);
+            throw new IllegalStateException(EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE);
         }
     }
 
     private void validateIsEmptyTable() {
         if (isEmpty()) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_IS_EMPTY_TABLE);
+            throw new IllegalStateException(EXCEPTION_MESSAGE_IS_EMPTY_TABLE);
         }
     }
 
     private void validateAlreadyGroup() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
+        if (isGrouping()) {
+            throw new IllegalStateException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
         }
     }
 }

@@ -2,6 +2,8 @@ package kitchenpos.order.domain;
 
 import kitchenpos.JpaEntityTest;
 import kitchenpos.order.repository.OrderTableRepository;
+import kitchenpos.order.repository.TableGroupRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class OrderTableTest extends JpaEntityTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
 
     @DisplayName("테이블 생성 테스트")
     @Test
@@ -59,7 +63,7 @@ public class OrderTableTest extends JpaEntityTest {
 
         // when / then
         assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(2))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("빈테이블 여부 변경 테스트")
@@ -79,12 +83,14 @@ public class OrderTableTest extends JpaEntityTest {
     @Test
     void changeEmptyException1() {
         // given
-        OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, true));
-        // TODO : 단체테이블로 group
+        OrderTable 테이블1 = orderTableRepository.save(new OrderTable(1, true));
+        OrderTable 테이블2 = orderTableRepository.save(new OrderTable(1, true));
+        TableGroup 단체테이블 = tableGroupRepository.save(new TableGroup(Lists.newArrayList(테이블1, 테이블2)));
+        flushAndClear();
 
-        // when
-
-        // then
+        // when / then
+        assertThatThrownBy(() -> 테이블1.changeEmpty(true))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("빈테이블 여부 변경 테스트 예외 - 속해있는 주문이 요리 / 식사 상태중일 경우")
@@ -92,7 +98,7 @@ public class OrderTableTest extends JpaEntityTest {
     void changeEmptyException2() {
         // given
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, true));
-        // TODO : 단체테이블로 group
+        // TODO : 속해있는 주문이 요리 / 식자 상태 중일 경우
 
         // when
 
