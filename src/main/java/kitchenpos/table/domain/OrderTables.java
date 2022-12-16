@@ -32,6 +32,7 @@ public class OrderTables {
 
     public void addOrderTables(List<OrderTable> orderTables) {
         validateTables(orderTables);
+        orderTables.stream().forEach(orderTable -> orderTable.group());
         orderTables.stream().forEach(orderTable -> this.orderTables.add(orderTable));
     }
 

@@ -79,6 +79,10 @@ public class OrderTable {
         return new OrderTableBuilder();
     }
 
+    public void group() {
+        this.empty = false;
+    }
+
     public static class OrderTableBuilder {
         private Long id;
         private TableGroup tableGroup;
