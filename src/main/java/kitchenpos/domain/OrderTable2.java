@@ -73,7 +73,7 @@ public class OrderTable2 {
 		return numberOfGuests;
 	}
 
-	public Boolean isEmpty() {
+	public boolean isEmpty() {
 		return empty;
 	}
 

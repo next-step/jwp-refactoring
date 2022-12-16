@@ -11,7 +11,7 @@ public class MenuGroupAcceptanceTestStep extends AcceptanceTestStep<MenuGroupReq
 	static final String REQUEST_PATH = "/api/menu-groups";
 
 	public MenuGroupAcceptanceTestStep() {
-		super(MenuGroupRequest.class, MenuGroupResponse.class);
+		super(MenuGroupResponse.class);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class OrderTableAcceptanceTestStep extends AcceptanceTestStep<OrderTableR
 
 
 	public OrderTableAcceptanceTestStep() {
-		super(OrderTableRequest.class, OrderTableResponse.class);
+		super(OrderTableResponse.class);
 	}
 
 	@Override

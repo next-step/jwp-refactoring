@@ -21,7 +21,7 @@ public class ProductFixture {
 
 	@Deprecated
 	public static Product 상품(String name, int price) {
-		return new Product(name, price);
+		return new Product(name, Money.valueOf(price));
 	}
 
 	@Deprecated

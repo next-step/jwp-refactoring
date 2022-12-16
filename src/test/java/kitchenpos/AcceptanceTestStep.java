@@ -14,11 +14,9 @@ import kitchenpos.utils.RestAssuredUtils;
 
 public abstract class AcceptanceTestStep<Q, P> {
 
-    private final Class<Q> requestClass;
     private final Class<P> responseClass;
 
-    public AcceptanceTestStep(Class<Q> requestClass, Class<P> responseClass) {
-        this.requestClass = requestClass;
+    public AcceptanceTestStep(Class<P> responseClass) {
         this.responseClass = responseClass;
     }
 
@@ -44,6 +42,14 @@ public abstract class AcceptanceTestStep<Q, P> {
         return responses.stream().map(this::등록됨).collect(Collectors.toList());
     }
 
+    public P 등록되어_있음(Q requestBody) {
+        return 등록됨(등록_요청(requestBody));
+    }
+
+    public List<P> 등록되어_있음(List<Q> requestBodyList) {
+        return 등록됨(등록_요청(requestBodyList));
+    }
+
     public void 등록_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
     }
@@ -59,7 +65,7 @@ public abstract class AcceptanceTestStep<Q, P> {
             .contains(expectedId);
     }
 
-    public ExtractableResponse<Response> 수정_요청(String requestPath, long id, Q requestBody) {
+    public ExtractableResponse<Response> 수정_요청(String requestPath, long id, Object requestBody) {
         return RestAssuredUtils.put(requestPath,
                                     id,
                                     requestBody);
@@ -79,10 +85,6 @@ public abstract class AcceptanceTestStep<Q, P> {
 
     public void 삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public void 삭제_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isNotEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     protected abstract String getRequestPath();

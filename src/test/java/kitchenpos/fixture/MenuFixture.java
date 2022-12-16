@@ -1,65 +1,30 @@
 package kitchenpos.fixture;
 
-import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Money;
-import kitchenpos.domain.Product;
 import kitchenpos.ui.dto.MenuGroupResponse;
 import kitchenpos.ui.dto.MenuRequest;
+import kitchenpos.ui.dto.MenuResponse;
 import kitchenpos.ui.dto.ProductResponse;
 
 public class MenuFixture {
 
 	private static final String 메뉴명 = "메뉴 1";
-	private static final long 메뉴_아이디 = 1L;
 
-	@Deprecated
-	public static Menu 메뉴(List<Product> products, MenuGroup menuGroup, int price) {
-		Menu menu = new Menu();
-
-		menu.setId(메뉴_아이디);
-		menu.setName(메뉴명);
-		menu.setPrice(BigDecimal.valueOf(price));
-		menu.setMenuProducts(메뉴상품(products));
-		menu.setMenuGroupId(menuGroup.getId());
-
-		return menu;
-	}
-
-	@Deprecated
-	public static Menu 메뉴(List<Product> products, MenuGroup menuGroup) {
-		Money price = products.stream()
-			.map(Product::getPrice)
-			.reduce(Money.ZERO, Money::add);
-
-		return 메뉴(products, menuGroup, price.toBigInteger().intValue());
-	}
-
-	@Deprecated
-	private static List<MenuProduct> 메뉴상품(List<Product> products) {
-		return products.stream()
-			.map(product -> {
-				MenuProduct menuProduct = new MenuProduct();
-				menuProduct.setProductId(product.getId());
-				menuProduct.setQuantity(1);
-				return menuProduct;
-			}).collect(Collectors.toList());
-	}
-
-	public static MenuRequest 메뉴3(List<ProductResponse> products, MenuGroupResponse menuGroup) {
+	public static MenuRequest 메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {
 		Long productsPrice = products.stream()
 			.map(ProductResponse::getPrice)
 			.reduce(0L, Long::sum);
 
-		return 메뉴3(products, menuGroup, productsPrice);
+		return 메뉴(products, menuGroup, productsPrice);
 	}
 
-	public static MenuRequest 메뉴3(List<ProductResponse> products, MenuGroupResponse menuGroup, long price) {
+	public static MenuRequest 메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup, long price) {
 		return new MenuRequest(메뉴명, price, menuGroup.getId(), products);
+	}
+
+	public static MenuResponse 메뉴(long id) {
+		return new MenuResponse(id, 메뉴명, 10_000L, "menuGroup", Collections.emptyList());
 	}
 }

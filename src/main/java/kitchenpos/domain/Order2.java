@@ -1,8 +1,12 @@
 package kitchenpos.domain;
 
+import static kitchenpos.exception.CannotStartOrderException.TYPE.NO_ORDER_ITEMS;
+import static kitchenpos.exception.CannotStartOrderException.TYPE.ORDER_TABLE_NOT_EMPTY;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,6 +19,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import kitchenpos.exception.CannotChangeOrderStatusException;
+import kitchenpos.exception.CannotStartOrderException;
 
 @Entity
 @Table(name = "orders")
@@ -39,12 +46,22 @@ public class Order2 {
     protected Order2() {
     }
 
-    public Order2(OrderTable2 orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-        List<OrderLineItem2> orderLineItems) {
-        this.orderedTime = orderedTime;
+    public Order2(OrderStatus orderStatus, OrderTable2 orderTable, Map<Menu2, Integer> menus) {
         this.orderStatus = orderStatus;
         setOrderTable(orderTable);
-        addOrderLineItems(orderLineItems);
+        addOrderLineItems(OrderLineItem2.of(this, menus));
+    }
+
+    public Order2(OrderTable2 orderTable, Map<Menu2, Integer> menus) {
+        this(OrderStatus.COOKING, orderTable, menus);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     private void setOrderTable(OrderTable2 newOrderTable) {
@@ -62,5 +79,32 @@ public class Order2 {
 
     public List<OrderLineItem2> getOrderLineItems() {
         return orderLineItems;
+    }
+
+	public void startOrder() {
+        validateStartOrder();
+
+        orderStatus = OrderStatus.COOKING;
+        orderedTime = LocalDateTime.now();
+	}
+
+    private void validateStartOrder() {
+        if (orderLineItems.isEmpty()) {
+            throw new CannotStartOrderException(NO_ORDER_ITEMS);
+        }
+        if (!orderTable.isEmpty()) {
+            throw new CannotStartOrderException(ORDER_TABLE_NOT_EMPTY);
+        }
+    }
+
+    public void changeOrderStatus(OrderStatus toStatus) {
+        if (isCompleted()) {
+            throw new CannotChangeOrderStatusException();
+        }
+        orderStatus = toStatus;
+    }
+
+    private boolean isCompleted() {
+        return orderStatus == OrderStatus.COMPLETION;
     }
 }

@@ -52,13 +52,13 @@ public class MenuService {
     private Menu2 toMenu(MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
-        List<Product> products = productService.findAllById(menuRequest.getProductsId());
+        List<Product> products = productService.findAllById(menuRequest.toProductsId());
 
         return menuRequest.toMenu(menuGroup, multiplyQuantity(menuRequest, products));
     }
 
     private Map<Product, Integer> multiplyQuantity(MenuRequest menuRequest, List<Product> products) {
-        Map<Long, Integer> productsCount = menuRequest.getProducts();
+        Map<Long, Integer> productsCount = menuRequest.toProducts();
 
         return products.stream()
             .collect(Collectors.toMap(
@@ -68,5 +68,7 @@ public class MenuService {
             ));
     }
 
-
+    public List<Menu2> findAllById(List<Long> idList) {
+        return menuRepository.findAllById(idList);
+    }
 }

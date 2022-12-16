@@ -11,7 +11,7 @@ public class ProductAcceptanceTestStep extends AcceptanceTestStep<ProductRequest
 	static final String REQUEST_PATH = "/api/products";
 
 	public ProductAcceptanceTestStep() {
-		super(ProductRequest.class, ProductResponse.class);
+		super(ProductResponse.class);
 	}
 
 	@Override

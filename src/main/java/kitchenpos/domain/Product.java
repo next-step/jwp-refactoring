@@ -42,7 +42,7 @@ public class Product {
         this(null, name, price);
     }
 
-	public Product(String name, int price) {
+	public Product(String name, Long price) {
         this(name, Money.valueOf(price));
 	}
 

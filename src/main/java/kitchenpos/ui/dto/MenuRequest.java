@@ -45,13 +45,13 @@ public class MenuRequest {
 		return new Menu2(name, price, menuGroup, productsCount);
 	}
 
-	public List<Long> getProductsId() {
+	public List<Long> toProductsId() {
 		return menuProducts.stream()
 			.map(MenuProductRequest::getProductId)
 			.collect(Collectors.toList());
 	}
 
-	public Map<Long, Integer> getProducts() {
+	public Map<Long, Integer> toProducts() {
 		return menuProducts.stream()
 			.collect(Collectors.toMap(
 				MenuProductRequest::getProductId, it -> 1, Integer::sum));

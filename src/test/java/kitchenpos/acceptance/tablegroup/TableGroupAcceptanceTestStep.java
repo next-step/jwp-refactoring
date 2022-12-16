@@ -14,7 +14,7 @@ public class TableGroupAcceptanceTestStep extends AcceptanceTestStep<TableGroupR
 	static final String UNGROUP_REQUEST_PATH = "/api/table-groups/{tableGroupId}";
 
 	public TableGroupAcceptanceTestStep() {
-		super(TableGroupRequest.class, TableGroupResponse.class);
+		super(TableGroupResponse.class);
 	}
 
 	@Override

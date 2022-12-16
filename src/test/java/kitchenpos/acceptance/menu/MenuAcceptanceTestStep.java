@@ -11,7 +11,7 @@ public class MenuAcceptanceTestStep extends AcceptanceTestStep<MenuRequest, Menu
 	static final String REQUEST_PATH = "/api/menus";
 
 	public MenuAcceptanceTestStep() {
-		super(MenuRequest.class, MenuResponse.class);
+		super(MenuResponse.class);
 	}
 
 	@Override

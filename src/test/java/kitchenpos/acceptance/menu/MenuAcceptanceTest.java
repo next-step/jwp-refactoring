@@ -57,7 +57,7 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 
 		MenuGroupResponse 메뉴_그룹 = 메뉴_그룹_등록되어_있음();
 
-		MenuRequest 메뉴 = MenuFixture.메뉴3(상품목록, 메뉴_그룹);
+		MenuRequest 메뉴 = MenuFixture.메뉴(상품목록, 메뉴_그룹);
 
 		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴);
 
@@ -75,7 +75,7 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	void 메뉴_등록_실패() {
 		// when
 		MenuGroupResponse 존재하지_않는_메뉴_그룹 = MenuGroupFixture.메뉴그룹2(1L, "존재하지 않는 메뉴 그룹");
-		MenuRequest 메뉴 = MenuFixture.메뉴3(상품목록, 존재하지_않는_메뉴_그룹);
+		MenuRequest 메뉴 = MenuFixture.메뉴(상품목록, 존재하지_않는_메뉴_그룹);
 
 		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴);
 		// then
@@ -84,7 +84,7 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 		// when
 		MenuGroupResponse 메뉴_그룹 = 메뉴_그룹_등록되어_있음();
 		long 유효하지_않은_메뉴_가격 = 메뉴가격 * 2;
-		메뉴 = MenuFixture.메뉴3(상품목록, 메뉴_그룹, 유효하지_않은_메뉴_가격);
+		메뉴 = MenuFixture.메뉴(상품목록, 메뉴_그룹, 유효하지_않은_메뉴_가격);
 		등록_요청_응답 = step.등록_요청(메뉴);
 		// then
 		step.등록_실패함(등록_요청_응답);

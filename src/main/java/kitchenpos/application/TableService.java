@@ -88,7 +88,7 @@ public class TableService {
         return orderTable;
     }
 
-    private OrderTable2 findById(Long orderTableId) {
+    public OrderTable2 findById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
             .orElseThrow(EntityNotFoundException::new);
     }

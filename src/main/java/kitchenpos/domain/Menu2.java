@@ -102,9 +102,9 @@ public class Menu2 {
     }
 
     public void validatePrice() {
-        Money purchasePrice = sumAllPurchasePrices();
-        if (price.isGreaterThan(purchasePrice)) {
-            throw new InvalidMenuPriceException(price, purchasePrice);
+        Money allProductPrices = sumAllPurchasePrices();
+        if (allProductPrices.isGreaterThan(price)) {
+            throw new InvalidMenuPriceException(price, allProductPrices);
         }
     }
 

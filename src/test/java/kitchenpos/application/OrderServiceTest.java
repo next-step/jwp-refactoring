@@ -1,139 +1,131 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.Menu2;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Order2;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTable2;
+import kitchenpos.domain.Product;
+import kitchenpos.exception.CannotChangeOrderStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
 	@Mock
-	MenuDao menuDao;
-	@Mock
-	OrderDao orderDao;
-	@Mock
-	OrderLineItemDao orderLineItemDao;
-	@Mock
-	OrderTableDao orderTableDao;
+	OrderRepository orderRepository;
+
 	@InjectMocks
 	OrderService orderService;
 
-	@Captor
-	ArgumentCaptor<Order> orderArgumentCaptor;
-
-	static final List<Long> menus = Lists.newArrayList(1L, 2L, 3L);
+	@Deprecated
+	static final List<Long> menusId = Lists.newArrayList(1L, 2L, 3L);
 
 	@Test
+	@DisplayName("주문 생성")
 	void testCreateOrder() {
 		// given
-		OrderTable orderTable = createOrderTable();
-		Order order = createOrder(orderTable);
-		when(menuDao.countByIdIn(anyList())).thenReturn((long) menus.size());
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderDao.save(order)).thenAnswer(returnsFirstArg());
+		Order2 expectedOrder = createOrder();
 
+		when(orderRepository.save(any(Order2.class))).thenReturn(expectedOrder);
 		// when
-		order = orderService.create(order);
+		Order2 actualOrder = orderService.create(expectedOrder);
 
 		// then
-		verify(orderLineItemDao, times(order.getOrderLineItems().size())).save(any());
-		verify(orderDao, times(1)).save(order);
-		verify(orderDao).save(orderArgumentCaptor.capture());
-		Order savedOrder = orderArgumentCaptor.getValue();
-		assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+		verify(orderRepository, times(1)).save(expectedOrder);
+		assertThat(actualOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 	}
 
 	@Test
+	@DisplayName("주문 목록 조회 성공")
 	void testListOrder() {
-		List<Order> orders = createOrders(1L, 2L, 3L);
-		when(orderDao.findAll()).thenReturn(orders);
+		// given
+		Order2 expectedOrder1 = createOrder();
+		Order2 expectedOrder2 = createOrder();
+		when(orderRepository.findAll()).thenReturn(Lists.newArrayList(expectedOrder1, expectedOrder2));
 
-		orderService.list();
+		// when
+		List<Order2> actualOrders = orderService.findAll();
 
-		verify(orderDao, times(1)).findAll();
-		verify(orderLineItemDao, times(orders.size())).findAllByOrderId(anyLong());
+		// then
+		verify(orderRepository, times(1)).findAll();
+		assertThat(actualOrders).containsExactlyInAnyOrder(expectedOrder1, expectedOrder2);
 	}
 
 	@Test
+	@DisplayName("주문 상태 변경 성공")
 	void changeOrderStatus() {
-		Order order = createOrder(createOrderTable());
-		Long orderId = order.getId();
-		order.setOrderStatus(OrderStatus.MEAL.name());
+		// given
+		Order2 beforeOrder = createOrder(OrderStatus.COOKING);
+		OrderStatus expectedStatus = OrderStatus.MEAL;
+		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(beforeOrder));
 
-		when(orderDao.findById(anyLong())).thenReturn(Optional.of(order));
-		when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(order.getOrderLineItems());
+		// when
+		Order2 actualOrder = orderService.changeOrderStatus(1L, expectedStatus);
 
-		orderService.changeOrderStatus(orderId, order);
-
-		verify(orderDao, times(1)).save(any());
-		verify(orderLineItemDao, times(1)).findAllByOrderId(orderId);
+		// then
+		assertThat(actualOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 	}
 
-	private List<Order> createOrders(long ...orderId) {
-		return Arrays.stream(orderId)
-			.mapToObj(id -> {
-				OrderTable orderTable = createOrderTable();
-				Order order = createOrder(orderTable);
-				order.setId(id);
-				return order;
-			}).collect(Collectors.toList());
+	@Test
+	@DisplayName("주문 상태 변경 실패")
+	void failToChangeOrderStatusWhenOrderStatusIsCompletion() {
+		// given
+		Order2 beforeOrder = createOrder(OrderStatus.COMPLETION);
+		OrderStatus expectedStatus = OrderStatus.COOKING;
+		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(beforeOrder));
+
+		// when
+		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, expectedStatus))
+			.isInstanceOf(CannotChangeOrderStatusException.class);
 	}
 
-	private static Order createOrder(OrderTable orderTable) {
-		Order order = new Order();
-		order.setOrderTableId(orderTable.getId());
-		order.setOrderLineItems(createOrderLineItems());
-		order.setId(1L);
-		return order;
+	private static Order2 createOrder(OrderStatus orderStatus) {
+		return new Order2(orderStatus, createOrderTable2(), createMenus(3));
 	}
 
-	private static List<OrderLineItem> createOrderLineItems() {
-		return menus.stream()
-			.map(OrderServiceTest::createOrderLineItem)
-			.collect(Collectors.toList());
+	private static Order2 createOrder() {
+		return new Order2(createOrderTable2(), createMenus(3));
 	}
 
-	private static OrderLineItem createOrderLineItem(long menuId) {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setMenuId(menuId);
-		orderLineItem.setQuantity(1);
-
-		return orderLineItem;
+	private static Map<Menu2, Integer> createMenus(int count) {
+		return LongStream.range(0, count)
+			.mapToObj(i -> createMenu())
+			.collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
 	}
 
-	private static OrderTable createOrderTable() {
-		OrderTable orderTable = new OrderTable();
-		orderTable.setId(1L);
-		orderTable.setEmpty(false);
-		orderTable.setNumberOfGuests(5);
-		return orderTable;
+	private static Menu2 createMenu() {
+		return new Menu2("menu",
+						 10_000L,
+						 new MenuGroup("menu-group"),
+						 Lists.newArrayList(new Product("product", 1_000L)));
 	}
+
+	private static OrderTable2 createOrderTable2() {
+		return new OrderTable2(10, true);
+	}
+
 }
