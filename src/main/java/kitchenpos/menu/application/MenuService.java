@@ -42,10 +42,6 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         final BigDecimal price = request.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
 
