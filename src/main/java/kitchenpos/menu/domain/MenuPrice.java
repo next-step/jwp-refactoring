@@ -22,10 +22,6 @@ public class MenuPrice {
         this.price = price;
     }
 
-    public int compareTo(BigDecimal sum) {
-        return price.compareTo(sum);
-    }
-
     public BigDecimal getPrice() {
         return price;
     }

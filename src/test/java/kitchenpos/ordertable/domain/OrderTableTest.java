@@ -7,13 +7,10 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.validator.OrderTableValidator;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,8 +24,6 @@ class OrderTableTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private TableGroupRepository tableGroupRepository;
-    @Mock
     private Order order1;
     @Mock
     private Order order2;
@@ -39,14 +34,13 @@ class OrderTableTest {
 
     @BeforeEach
     void setUp() {
-        orderTableValidator = new OrderTableValidator(orderRepository, tableGroupRepository);
+        orderTableValidator = new OrderTableValidator(orderRepository);
     }
 
     @Test
     void 이미_단체_지정이_된_주문_테이블은_수정할_수_없다() {
         OrderTable orderTable = new OrderTable(1, false);
         orderTable.changeTableGroupId(1L);
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(new TableGroup()));
 
         ThrowingCallable 이미_단체_지정이_된_테이블_수정 = () -> orderTable.changeEmpty(true, orderTableValidator);
 

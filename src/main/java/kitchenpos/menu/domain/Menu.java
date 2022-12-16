@@ -36,7 +36,6 @@ public class Menu {
         this.price = new MenuPrice(price);
         this.menuGroupId = menuGroupId;
         addMenuProducts(menuProducts);
-        validateProductsPrice();
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
@@ -62,11 +61,5 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
-    }
-
-    private void validateProductsPrice() {
-        if (price.compareTo(menuProducts.sumMenuProductsPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 메뉴상품들 가격의 합보다 낮아야 합니다");
-        }
     }
 }

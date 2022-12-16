@@ -20,8 +20,8 @@ import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,18 +37,17 @@ class MenuServiceTest {
     @Mock
     private MenuProductRepository menuProductRepository;
     @Mock
-    private ProductService productService;
-    @Mock
     private MenuGroupRepository menuGroupRepository;
+    @Mock
+    private ProductRepository productRepository;
     private MenuValidator menuValidator;
     private MenuService menuService;
     private Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
-    private Product 양념치킨_상품 = new Product(1L, "양념치킨", new BigDecimal(16000.00));
 
     @BeforeEach
     void setUp() {
-        menuValidator = new MenuValidator(menuGroupRepository);
-        menuService = new MenuService(menuRepository, menuProductRepository, productService, menuValidator);
+        menuValidator = new MenuValidator(menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuProductRepository, menuValidator);
     }
 
     @Test
@@ -58,10 +57,10 @@ class MenuServiceTest {
                 Collections.singletonList(menuProduct));
         MenuGroup 메뉴그룹 = new MenuGroup("메뉴그룹");
         Menu 메뉴 = new Menu("후라이드치킨", new BigDecimal(16000.00), 1L,
-                Arrays.asList(new MenuProduct(null, 후라이드치킨_상품, 1), new MenuProduct(null, 양념치킨_상품, 1)));
+                Arrays.asList(new MenuProduct(null, 1L, 1), new MenuProduct(null, 2L, 1)));
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(메뉴그룹));
-        given(productService.findById(any())).willReturn(후라이드치킨_상품);
         given(menuRepository.save(any())).willReturn(메뉴);
+        given(productRepository.findById(any())).willReturn(Optional.of(new Product(1L, "상품", new BigDecimal(16000))));
 
         Menu menu = menuService.create(후라이드치킨_메뉴);
 
@@ -97,7 +96,6 @@ class MenuServiceTest {
         MenuRequest 메뉴의_가격이_메뉴_상품들_가격의_합보다_높은경우 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(40000.00), 1L,
                 Arrays.asList(menuProduct, menuProduct2));
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(new MenuGroup("메뉴그룹")));
-        given(productService.findById(any())).willReturn(후라이드치킨_상품);
 
         ThrowingCallable 잘못된_가격의_메뉴_등록 = () -> menuService.create(메뉴의_가격이_메뉴_상품들_가격의_합보다_높은경우);
 
@@ -119,7 +117,6 @@ class MenuServiceTest {
         MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
                 Collections.singletonList(menuProduct));
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(new MenuGroup("메뉴그룹")));
-        given(productService.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 상품이_등록되어_있지_않다 = () -> menuService.create(후라이드치킨);
 
@@ -129,9 +126,9 @@ class MenuServiceTest {
     @Test
     void 메뉴_목록을_조회할_수_있다() {
         Menu 후라이드치킨 = new Menu("후라이드치킨", new BigDecimal(16000.00), null,
-                Collections.singletonList(new MenuProduct(null, 후라이드치킨_상품, 1)));
+                Collections.singletonList(new MenuProduct(null, 1L, 1)));
         Menu 양념치킨 = new Menu("양념치킨", new BigDecimal(16000.00), null,
-                Collections.singletonList(new MenuProduct(null, 양념치킨_상품, 1)));
+                Collections.singletonList(new MenuProduct(null, 2L, 1)));
         given(menuRepository.findAllWithMenuProducts()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         List<Menu> menus = menuService.list();

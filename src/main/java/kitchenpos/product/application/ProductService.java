@@ -25,11 +25,6 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product findById(Long productId) {
-        return productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
-    }
-
-    @Transactional(readOnly = true)
     public List<Product> list() {
         return productRepository.findAll();
     }

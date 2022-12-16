@@ -18,8 +18,6 @@ import kitchenpos.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.ordertable.validator.OrderTableValidator;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +33,6 @@ class TableServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private TableGroupRepository tableGroupRepository;
-    @Mock
     private Order order;
     private OrderTable orderTable;
     private TableService tableService;
@@ -47,7 +43,7 @@ class TableServiceTest {
     void setUp() {
         orderTable = new OrderTable(1, false);
         orderTable.changeTableGroupId(1L);
-        OrderTableValidator orderTableValidator = new OrderTableValidator(orderRepository, tableGroupRepository);
+        OrderTableValidator orderTableValidator = new OrderTableValidator(orderRepository);
         tableService = new TableService(orderTableRepository, orderTableValidator);
     }
 
@@ -74,6 +70,7 @@ class TableServiceTest {
 
     @Test
     void 주문_테이블의_비어있음_여부를_수정할_수_있다() {
+        orderTable.changeTableGroupId(null);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         OrderTable changeEmptyOrderTable = tableService.changeEmpty(1L, emptyRequest);
@@ -93,7 +90,7 @@ class TableServiceTest {
 
     @Test
     void 이미_단체_지정이_된_주문테이블은_수정할_수_없다() {
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(new TableGroup()));
+        orderTable.changeTableGroupId(1L);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         ThrowingCallable 이미_단체_지정이_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);
@@ -103,6 +100,7 @@ class TableServiceTest {
 
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
+        orderTable.changeTableGroupId(null);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderRepository.findByOrderTableId(any())).willReturn(Collections.singletonList(order));
         given(order.getOrderStatus()).willReturn(OrderStatus.COOKING.name());

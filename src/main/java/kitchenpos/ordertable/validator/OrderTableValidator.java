@@ -8,7 +8,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderTableValidator {
 
     private final OrderRepository orderRepository;
-    private final TableGroupRepository tableGroupRepository;
 
-    public OrderTableValidator(OrderRepository orderRepository,
-                               TableGroupRepository tableGroupRepository) {
+    public OrderTableValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.tableGroupRepository = tableGroupRepository;
     }
 
     public void validateChangeEmpty(OrderTable orderTable) {
@@ -46,8 +42,7 @@ public class OrderTableValidator {
 
     @Transactional(readOnly = true)
     void validateAlreadyTableGroup(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroupId()) && tableGroupRepository.findById(orderTable.getTableGroupId())
-                .isPresent()) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException("이미 단체 지정이 된 주문 테이블입니다[" + orderTable + "]");
         }
     }
