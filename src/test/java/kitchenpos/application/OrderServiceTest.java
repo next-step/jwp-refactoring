@@ -13,22 +13,22 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.dto.request.OrderStatusRequest;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,47 +39,48 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private OrderRepository orderRepository;
+    @Mock
+    private MenuRepository menuRepository;
     @Mock
     private TableService tableService;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderDao orderDao;
     @InjectMocks
     private OrderService orderService;
+    private MenuProduct 메뉴_항목;
     private Menu 메뉴;
     private Order 주문;
-    private Order 주문_변경_요청;
+    private Order 주문_완료_상태;
+    private OrderStatusRequest 주문_상태_변경;
     private OrderLineItem 주문_항목;
     private OrderTable 좌석;
 
     @BeforeEach
     void setUp() {
-        메뉴 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), null, null);
+        메뉴_항목 = new MenuProduct(1L, 1);
+        메뉴 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), null, Arrays.asList(메뉴_항목));
         주문_항목 = new OrderLineItem(1L, null, 메뉴.getId(), 1L);
         좌석 = new OrderTable(1L, null, 1, false);
-        주문 = new Order(좌석.getId(), null, LocalDateTime.now(), Arrays.asList(주문_항목));
-        주문_변경_요청 = new Order(좌석.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(주문_항목));
+        주문 = new Order(좌석.getId(), Arrays.asList(주문_항목));
+        주문_완료_상태 = new Order(좌석.getId(), OrderStatus.COMPLETION, Arrays.asList(주문_항목));
+        주문_상태_변경 = new OrderStatusRequest(OrderStatus.COMPLETION);
     }
 
     @Test
     void 생성() {
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(1);
         given(tableService.findById(anyLong())).willReturn(좌석);
-        given(orderDao.save(any())).willReturn(주문);
-        given(orderLineItemDao.save(any())).willReturn(주문_항목);
+        given(orderRepository.save(any())).willReturn(주문);
 
         OrderResponse response = orderService.create(주문);
 
         assertThat(response.getOrderTableId()).isEqualTo(좌석.getId());
-        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(response.getOrderLineItems()).containsExactly(주문_항목);
     }
 
     @Test
     void 주문_항목이_empty인_경우() {
-        주문 = new Order(좌석.getId(), null, LocalDateTime.now(), Collections.emptyList());
+        주문 = new Order(좌석.getId(), Collections.emptyList());
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
@@ -90,7 +91,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_항목의_수와_등록된_메뉴의_수가_같지_않은_경우() {
-        given(menuDao.countByIdIn(anyList())).willReturn(0L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(0);
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
@@ -102,7 +103,7 @@ class OrderServiceTest {
     @Test
     void 좌석이_공석인_경우() {
         좌석 = new OrderTable(1L, null, 1, true);
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(1);
         given(tableService.findById(anyLong())).willReturn(좌석);
 
         assertThatThrownBy(
@@ -114,8 +115,7 @@ class OrderServiceTest {
 
     @Test
     void 조회() {
-        given(orderDao.findAll()).willReturn(Arrays.asList(주문));
-        given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(주문));
 
         List<OrderResponse> orders = orderService.list();
 
@@ -127,21 +127,20 @@ class OrderServiceTest {
 
     @Test
     void 주문_상태_변경() {
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(주문));
-        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(Arrays.asList(주문_항목));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문));
 
-        OrderResponse response = orderService.changeOrderStatus(anyLong(), 주문_변경_요청);
+        OrderResponse response = orderService.changeOrderStatus(anyLong(), 주문_상태_변경.getOrderStatus());
 
-        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
         assertThat(response.getOrderLineItems()).containsExactly(주문_항목);
     }
 
     @Test
     void 주문이_등록되어_있지_않은_경우() {
-        given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+        given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(anyLong(), 주문_변경_요청)
+                () -> orderService.changeOrderStatus(anyLong(), 주문_상태_변경.getOrderStatus())
         )
                 .isInstanceOf(KitchenposException.class)
                 .hasMessageContaining(ErrorCode.NOT_FOUND_ORDER.getDetail());
@@ -149,10 +148,10 @@ class OrderServiceTest {
 
     @Test
     void 주문_상태가_완료인_경우() {
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(주문_변경_요청));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문_완료_상태));
 
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(anyLong(), 주문_변경_요청)
+                () -> orderService.changeOrderStatus(anyLong(), 주문_상태_변경.getOrderStatus())
         )
                 .isInstanceOf(KitchenposException.class)
                 .hasMessageContaining(ALREADY_COMPLETION_STATUS.getDetail());
