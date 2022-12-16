@@ -25,6 +25,16 @@ class TableServiceTest {
     private TableService tableService;
 
     @Test
+    void 변경할_테이블이_존재하지_않으면__변경_불가능() {
+        //given
+        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+
+        //when
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, null))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void 주문테이블이_단체지정된_테이블이면_빈테이블로_변경_불가능() {
         //given
         OrderTable orderTable = new OrderTable();
