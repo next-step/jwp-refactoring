@@ -79,7 +79,8 @@ public class OrderTable {
         return new OrderTableBuilder();
     }
 
-    public void group() {
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
         this.empty = false;
     }
 

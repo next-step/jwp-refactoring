@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.OrderTablesException;
-import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.OneToMany;
@@ -30,9 +29,9 @@ public class OrderTables {
     }
 
 
-    public void addOrderTables(List<OrderTable> orderTables) {
+    public void addOrderTables(TableGroup tableGroup, List<OrderTable> orderTables) {
         validateTables(orderTables);
-        orderTables.stream().forEach(orderTable -> orderTable.group());
+        orderTables.stream().forEach(orderTable -> orderTable.group(tableGroup));
         orderTables.stream().forEach(orderTable -> this.orderTables.add(orderTable));
     }
 
@@ -42,10 +41,10 @@ public class OrderTables {
     }
 
     private void validateTableSize(List<OrderTable> orderTables) {
-        if(CollectionUtils.isEmpty(orderTables)){
+        if (CollectionUtils.isEmpty(orderTables)) {
             throw new OrderTablesException(EMPTY_TABLES);
         }
-        if(orderTables.size() < MIN_TABLE_SIZE){
+        if (orderTables.size() < MIN_TABLE_SIZE) {
             throw new OrderTablesException(LESS_THEN_MIN_TABLE_SIZE);
         }
     }
