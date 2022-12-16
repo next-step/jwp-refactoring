@@ -11,6 +11,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderLineItemRepository;
 import kitchenpos.order.persistence.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
@@ -33,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -46,12 +48,16 @@ public class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderValidator orderValidator;
 
     @DisplayName("주문을 추가할 경우 주문항목이 없으면 예외발생")
     @Test
     public void throwsExceptionWhenEmptyOrderItems() {
         OrderRequest order = new OrderRequest();
         order.setOrderLineItems(Collections.EMPTY_LIST);
+        doThrow(new IllegalArgumentException())
+                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -63,10 +69,8 @@ public class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderTableId(13l);
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
-        doReturn(Optional.ofNullable(OrderTable.builder().build()))
-                .when(orderTableRepository).findById(orderRequest.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).build(), Menu.builder().price(BigDecimal.valueOf(1000)).build()))
-                .when(menuRepository).findAllById(anyList());
+        doThrow(new IllegalArgumentException())
+                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -76,8 +80,9 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
         OrderRequest order = new OrderRequest();
-        doReturn(Optional.empty())
-                .when(orderTableRepository).findById(order.getOrderTableId());
+        doThrow(new IllegalArgumentException())
+                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
+
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -87,11 +92,8 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenEmptyTable() {
         OrderRequest order = new OrderRequest();
-        order.setOrderTableId(15l);
-        order.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
-        OrderTable orderTable = OrderTable.builder().empty(true).build();
-        doReturn(Optional.ofNullable(orderTable))
-                .when(orderTableRepository).findById(order.getOrderTableId());
+        doThrow(new IllegalArgumentException())
+                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -105,10 +107,6 @@ public class OrderServiceTest {
         orderRequest.setOrderTableId(15l);
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
         OrderTable orderTable = OrderTable.builder().id(12l).build();
-        doReturn(Optional.ofNullable(orderTable))
-                .when(orderTableRepository).findById(anyLong());
-        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).id(2l).build()))
-                .when(menuRepository).findAllById(anyList());
         doReturn(Order.builder()
                 .id(13l)
                 .orderTableId(orderTable.getId())
