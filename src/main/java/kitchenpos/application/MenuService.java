@@ -11,7 +11,9 @@ import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,13 +51,22 @@ public class MenuService {
     }
 
     private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
+        List<Product> products = toProduct(menuProductRequests);
+        Map<Long, Product> productIdToProduct = new HashMap<>();
+        for (Product product : products) {
+            productIdToProduct.put(product.getId(), product);
+        }
+
         return menuProductRequests.stream()
-                .map(menuProductRequest -> menuProductRequest.toMenuProduct(findProductById(menuProductRequest.getProductId())))
+                .map(menuProductRequest -> menuProductRequest.toMenuProduct(productIdToProduct.get(menuProductRequest.getProductId())))
                 .collect(Collectors.toList());
     }
 
-    private Product findProductById(final Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_PRODUCT.getMessage(), id)));
+    private List<Product> toProduct(final List<MenuProductRequest> menuProductRequests) {
+        List<Long> productIds = menuProductRequests.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllByIdIn(productIds);
     }
 }

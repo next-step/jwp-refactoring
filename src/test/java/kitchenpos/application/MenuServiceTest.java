@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
@@ -25,8 +26,8 @@ import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹;
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹요청;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
-import static kitchenpos.fixture.MenuTestFixture.메뉴세트요청;
 import static kitchenpos.fixture.MenuTestFixture.메뉴세트;
+import static kitchenpos.fixture.MenuTestFixture.메뉴세트요청;
 import static kitchenpos.fixture.ProductTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -79,9 +80,13 @@ class MenuServiceTest {
         // given
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(중국집1인메뉴세트그룹));
         when(menuRepository.save(any())).thenReturn(짜장면_탕수육_1인_메뉴_세트);
-        when(productRepository.findById(짜장면메뉴상품요청.getProductId())).thenReturn(Optional.of(상품생성(짜장면요청())));
-        when(productRepository.findById(탕수육메뉴상품요청.getProductId())).thenReturn(Optional.of(상품생성(탕수육요청())));
-        when(productRepository.findById(단무지메뉴상품요청.getProductId())).thenReturn(Optional.of(상품생성(단무지요청())));
+        Product 짜장면상품 = 상품생성(짜장면요청());
+        setId(1L, 짜장면상품);
+        Product 탕수육상품 = 상품생성(탕수육요청());
+        setId(2L, 탕수육상품);
+        Product 단무지상품 = 상품생성(단무지요청());
+        setId(4L, 단무지상품);
+        when(productRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
 
         // when
         MenuResponse saveMenu = menuService.create(짜장면_탕수육_1인_메뉴_세트_요청);

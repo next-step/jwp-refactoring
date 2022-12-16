@@ -2,8 +2,11 @@ package kitchenpos.fixture;
 
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class ProductTestFixture {
 
@@ -29,5 +32,11 @@ public class ProductTestFixture {
 
     public static Product 상품생성(ProductRequest request) {
         return Product.of(request.getName(), request.getPrice());
+    }
+
+    public static void setId(final long id, final Product product) {
+        Field idField = Objects.requireNonNull(ReflectionUtils.findField(Product.class, "id"));
+        ReflectionUtils.makeAccessible(idField);
+        ReflectionUtils.setField(idField, product, id);
     }
 }
