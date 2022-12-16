@@ -3,6 +3,9 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.MenuProductBag;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,12 +50,12 @@ class MenuRestControllerTest {
     @Test
     void 생성_성공() throws Exception {
         //given:
-        final Menu 메뉴 = 메뉴("자메이카 통다리 1인 세트",
-                BigDecimal.ONE,
+        final Menu 메뉴 = 메뉴(Name.from("자메이카 통다리 1인 세트"),
+                Price.from(BigDecimal.ONE),
                 menuGroupRepository.save(메뉴_그룹("추천 메뉴")).getId(),
-                Arrays.asList(
+                MenuProductBag.from(Arrays.asList(
                         메뉴_상품(productRepository.save(상품("통다리", BigDecimal.ONE)), 5),
-                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1)));
+                        메뉴_상품(productRepository.save(상품("콜라", BigDecimal.ONE)), 1))));
         //when:
         final Menu 저장된_메뉴 = mapper.readValue(
                 mockMvc.perform(post("/api/menus")

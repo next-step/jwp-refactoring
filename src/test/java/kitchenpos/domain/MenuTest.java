@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 
 import static kitchenpos.domain.PriceTest.MINUS_PRICE;
 import static kitchenpos.domain.ProductTest.상품;
@@ -18,30 +17,31 @@ public class MenuTest {
     @DisplayName("생성 성공")
     @Test
     void 생성_성공() {
-        final String 이름 = "자메이카 통다리 1인 세트";
-        final BigDecimal 가격 = BigDecimal.ONE;
+        final Name 이름 = Name.from("자메이카 통다리 1인 세트");
+        final Price 가격 = Price.from(BigDecimal.ONE);
         final Long 메뉴_그룹_id = 1L;
-        final List<MenuProduct> 메뉴_상품_목록 = Arrays.asList(
+        final MenuProductBag 메뉴_상품_목록 = MenuProductBag.from(Arrays.asList(
                 MenuProduct.of(상품("통다리"), 1),
                 MenuProduct.of(상품("콜라"), 1)
-        );
+        ));
         assertThat(Menu.of(이름, 가격, 메뉴_그룹_id, 메뉴_상품_목록)).isEqualTo(Menu.of(이름, 가격, 메뉴_그룹_id, 메뉴_상품_목록));
     }
 
     @DisplayName("생성 예외 - 메뉴의 가격이 0보다 적은 경우")
     @Test
     void 생성_예외_메뉴의_가격이_0보다_적은_경우() {
-        final String 이름 = "자메이카 통다리 1인 세트";
-        final BigDecimal 가격 = MINUS_PRICE;
-        final Long 메뉴_그룹_id = 1L;
-        final List<MenuProduct> 메뉴_상품_목록 = Arrays.asList(
-                MenuProduct.of(상품("통다리"), 1),
-                MenuProduct.of(상품("콜라"), 1)
-        );
-        assertThatIllegalArgumentException().isThrownBy(() -> Menu.of(이름, 가격, 메뉴_그룹_id, 메뉴_상품_목록));
+
+        assertThatIllegalArgumentException().isThrownBy(() -> Menu.of(
+                Name.from("자메이카 통다리 1인 세트"),
+                Price.from(MINUS_PRICE),
+                1L,
+                MenuProductBag.from(Arrays.asList(
+                        MenuProduct.of(상품("통다리"), 1),
+                        MenuProduct.of(상품("콜라"), 1)
+                ))));
     }
 
-    public static Menu 메뉴(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static Menu 메뉴(Name name, Price price, Long menuGroupId, MenuProductBag menuProducts) {
         return Menu.of(name, price, menuGroupId, menuProducts);
     }
 }

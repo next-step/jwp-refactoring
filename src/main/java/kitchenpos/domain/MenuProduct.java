@@ -44,16 +44,12 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     @JsonIgnore // infinite recursion을 피하기 위함
     public Menu getMenu() {
         return menu;
     }
 
-    public void setMenu(final Menu menu) {
+    public void updateMenu(final Menu menu) {
         this.menu = menu;
     }
 
@@ -65,16 +61,8 @@ public class MenuProduct {
         return this.product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
-    public void setProduct(final Product product) {
-        this.product = product;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     @Override
