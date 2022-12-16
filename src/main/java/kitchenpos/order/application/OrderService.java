@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private static final String ERROR_MESSAGE_NOT_FOUND_BY_ORDER_FORMAT = "주문이 존재하지 않습니다. ID : %d";
 
