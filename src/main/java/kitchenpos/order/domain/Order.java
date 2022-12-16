@@ -1,15 +1,13 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import org.springframework.data.annotation.CreatedDate;
+import kitchenpos.common.BaseEntity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "orders")
-public class Order {
+@Entity
+@Table(name = "orders")
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,13 +20,51 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @CreatedDate
-    private LocalDateTime orderedTime;
-
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {}
 
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+    }
 
+    public Long getId() {
+        return id;
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.getOrderLineItems();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = orderStatus;
+    }
+
+    public void checkForChangingOrderTable() {
+        if(orderStatus.isCooking() || orderStatus.isMeal()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void order(List<OrderLineItem> items) {
+        items.forEach(orderLineItem -> this.orderLineItems.addOrderLineItem(this, orderLineItem));
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.addOrderLineItem(this, orderLineItem);
+    }
 }
