@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.CannotUnGroupOrderTablesException;
@@ -26,6 +28,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @DisplayName("주문 유효성에 대한 테스트")
 @DataJpaTest
 class OrderValidatorImplTest {
+
+    private OrderMenu menu1 = OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(.16_000));
+    private OrderMenu menu2 = OrderMenu.of(2L, "양념치킨", BigDecimal.valueOf(.16_000));
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -59,7 +64,7 @@ class OrderValidatorImplTest {
     @DisplayName("주문테이블의 empty 변경 시 주문 하나라도 상태가 조리이면 예외가 발생한다.")
     @Test
     void checkEmptyChangeable() {
-        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(1L, 1));
+        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(menu1, 1));
         when(orderRepository.findAllByOrderTableId(any())).thenReturn(
                 Arrays.asList(Order.of(1L, 주문항목)));
 
@@ -71,7 +76,7 @@ class OrderValidatorImplTest {
     @DisplayName("주문테이블의 empty 변경 시 주문 하나라도 상태가 식사이면 예외가 발생한다.")
     @Test
     void checkEmptyChangeable2() {
-        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(1L, 1));
+        List<OrderLineItem> 주문항목 = Arrays.asList(OrderLineItem.of(menu1, 1));
         Order 주문 = Order.of(1L, 주문항목);
         주문.changeOrderStatus(OrderStatus.MEAL);
         when(orderRepository.findAllByOrderTableId(any())).thenReturn(Arrays.asList(주문));
@@ -84,8 +89,8 @@ class OrderValidatorImplTest {
     @DisplayName("주문테이블의 단체지정 취소 시 주문 하나라도 상태가 조리이면 예외가 발생한다.")
     @Test
     void checkUnGroupable() {
-        List<OrderLineItem> 주문항목1 = Arrays.asList(OrderLineItem.of(1L, 1));
-        List<OrderLineItem> 주문항목2 = Arrays.asList(OrderLineItem.of(2L, 1));
+        List<OrderLineItem> 주문항목1 = Arrays.asList(OrderLineItem.of(menu1, 1));
+        List<OrderLineItem> 주문항목2 = Arrays.asList(OrderLineItem.of(menu2, 1));
         when(orderRepository.findAllByOrderTableIdIn(anyList())).thenReturn(
                 Arrays.asList(Order.of(1L, 주문항목1), Order.of(2L, 주문항목2)));
 
@@ -97,8 +102,8 @@ class OrderValidatorImplTest {
     @DisplayName("주문테이블의 단체지정 취소 시 주문 하나라도 상태가 식사이면 예외가 발생한다.")
     @Test
     void checkUnGroupable2() {
-        List<OrderLineItem> 주문항목1 = Arrays.asList(OrderLineItem.of(1L, 1));
-        List<OrderLineItem> 주문항목2 = Arrays.asList(OrderLineItem.of(2L, 1));
+        List<OrderLineItem> 주문항목1 = Arrays.asList(OrderLineItem.of(menu1, 1));
+        List<OrderLineItem> 주문항목2 = Arrays.asList(OrderLineItem.of(menu2, 1));
         Order 주문 = Order.of(1L, 주문항목1);
         주문.changeOrderStatus(OrderStatus.MEAL);
         when(orderRepository.findAllByOrderTableIdIn(anyList())).thenReturn(

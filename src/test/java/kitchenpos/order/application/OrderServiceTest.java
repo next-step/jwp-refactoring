@@ -19,6 +19,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -79,7 +80,7 @@ class OrderServiceTest {
         주문_테이블 = OrderTable.of(1L, 3, false);
         비어있는_주문_테이블 = OrderTable.of(2L, 2, true);
 
-        주문항목 = OrderLineItem.of(1L, 후라이드치킨.getId(), 2);
+        주문항목 = OrderLineItem.of(1L, OrderMenu.of(후라이드치킨.getId(), 후라이드치킨.getName(), 후라이드치킨.getPrice()), 2);
         List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
         주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
 

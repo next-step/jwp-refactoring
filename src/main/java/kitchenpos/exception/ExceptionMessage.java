@@ -23,6 +23,8 @@ public class ExceptionMessage {
     public static final String ORDER_TABLE_NOT_FOUND = "주문테이블이 존재하지 않습니다.";
     public static final String MENU_NOT_FOUND = "메뉴가 존재하지 않습니다.";
     public static final String ORDER_NOT_FOUND = "주문이 존재하지 않습니다.";
+    public static final String INVALID_ORDER_MENU_PRICE = "주문한 메뉴의 가격이 유효하지 않습니다.";
+    public static final String INVALID_ORDER_MENU_NAME = "주문한 메뉴 이름은 1자 이상이어야 합니다.";
 
     private ExceptionMessage() {
     }

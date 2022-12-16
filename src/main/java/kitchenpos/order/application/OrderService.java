@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -66,7 +67,8 @@ public class OrderService {
 
     private OrderLineItem toOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
         Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-        return OrderLineItem.of(menu.getId(), orderLineItemRequest.getQuantity());
+        OrderMenu orderMenu = OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice());
+        return OrderLineItem.of(orderMenu, orderLineItemRequest.getQuantity());
     }
 
     private Menu findMenuById(Long id) {

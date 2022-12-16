@@ -1,9 +1,11 @@
 package kitchenpos.ordertable.domain;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.exception.CannotChangeEmptyException;
 import kitchenpos.ordertable.exception.CannotChangeNumberOfGuestsException;
@@ -51,7 +53,8 @@ class OrderTableTest {
     @Test
     void changeEmpty() {
         OrderTable 주문_테이블 = OrderTable.of(10, false);
-        Order 주문 = Order.of(주문_테이블.getId(), Arrays.asList(OrderLineItem.of(1L, 2)));
+        OrderMenu 주문메뉴 = OrderMenu.of(1L, "후라이드치킨", BigDecimal.valueOf(16_000));
+        Order 주문 = Order.of(주문_테이블.getId(), Arrays.asList(OrderLineItem.of(주문메뉴, 2)));
         주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         주문_테이블.changeEmpty(!주문_테이블.isEmpty());
