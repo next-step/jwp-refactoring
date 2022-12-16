@@ -58,7 +58,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴를_등록하면_등록된_메뉴_정보를_반환한다() {
+    void 메뉴를_등록시_등록에_성공하고_메뉴_정보를_반환한다() {
         // given
         given(menuGroupDao.existsById(한마리메뉴_그룹_아이디)).willReturn(true);
         given(productDao.findById(후라이드_상품_아이디)).willReturn(Optional.of(ProductFixture.후라이드));
@@ -78,7 +78,8 @@ class MenuServiceTest {
         후라이드치킨_등록_요청.setPrice(null);
 
         // when & then
-        메뉴_등록_실패();
+        assertThatThrownBy(() -> menuService.create(후라이드치킨_등록_요청))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -87,7 +88,8 @@ class MenuServiceTest {
         후라이드치킨_등록_요청.setPrice(BigDecimal.valueOf(-1));
 
         // when & then
-        메뉴_등록_실패();
+        assertThatThrownBy(() -> menuService.create(후라이드치킨_등록_요청))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -96,7 +98,8 @@ class MenuServiceTest {
         후라이드치킨_등록_요청.setMenuGroupId(null);
 
         // when & then
-        메뉴_등록_실패();
+        assertThatThrownBy(() -> menuService.create(후라이드치킨_등록_요청))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -106,7 +109,8 @@ class MenuServiceTest {
         given(productDao.findById(any())).willReturn(Optional.empty());
 
         // when
-        메뉴_등록_실패();
+        assertThatThrownBy(() -> menuService.create(후라이드치킨_등록_요청))
+                .isInstanceOf(IllegalArgumentException.class);
 
         // then
         then(productDao).should(times(1)).findById(any());
@@ -120,7 +124,8 @@ class MenuServiceTest {
         후라이드치킨_등록_요청.setPrice(BigDecimal.valueOf(35_000));
 
         // when
-        메뉴_등록_실패();
+        assertThatThrownBy(() -> menuService.create(후라이드치킨_등록_요청))
+                .isInstanceOf(IllegalArgumentException.class);
 
         // then
         then(menuGroupDao).should(times(1)).existsById(한마리메뉴_그룹_아이디);
@@ -147,11 +152,6 @@ class MenuServiceTest {
         then(menuDao).should(times(1)).save(any());
         then(menuProductDao).should(times(1)).save(any());
         assertThat(menu).isNotNull();
-    }
-
-    private void 메뉴_등록_실패() {
-        assertThatThrownBy(() -> menuService.create(후라이드치킨_등록_요청))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private void 메뉴_목록_조회됨(List<Menu> menus, String... expectedMenuNames) {

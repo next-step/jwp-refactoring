@@ -26,7 +26,7 @@ public class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
-    void 등록된_메뉴_그룹_목록_조회_요청시_요청에_성공한다() {
+    void 메뉴_그룹_목록_조회_요청시_요청에_성공한다() {
         // given
         String 메뉴명 = "한마리메뉴";
         MenuGroupRestAssured.메뉴_그룹_등록_요청(메뉴명);

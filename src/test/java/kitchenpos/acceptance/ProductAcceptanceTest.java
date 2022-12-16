@@ -4,6 +4,7 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.ProductFixture;
 import kitchenpos.rest.ProductRestAssured;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -19,20 +20,20 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void 신규_상품_정보가_주어진_경우_상품_등록_요청시_요청에_성공한다() {
         // given
-        String 피자_이름 = "페퍼로니";
-        BigDecimal 피자_가격 = BigDecimal.valueOf(12_000);
+        String 상품명 = "강정치킨";
+        BigDecimal 상품가격 = BigDecimal.valueOf(12_000);
 
         // when
-        ExtractableResponse<Response> response = ProductRestAssured.상품_등록_요청(피자_이름, 피자_가격);
+        ExtractableResponse<Response> response = ProductRestAssured.상품_등록_요청(상품명, 상품가격);
 
         // then
-        신규_상품_등록됨(response, 피자_이름, 피자_가격);
+        신규_상품_등록됨(response, 상품명, 상품가격);
     }
 
     @Test
-    void 등록된_상품_목록_조회_요청시_요청에_성공한다() {
+    void 상품_목록_조회_요청시_요청에_성공한다() {
         // given
-        ProductRestAssured.상품_등록_요청("페퍼로니", BigDecimal.valueOf(12_000));
+        ProductRestAssured.상품_등록됨(ProductFixture.후라이드);
 
         // when
         ExtractableResponse<Response> response = ProductRestAssured.상품_목록_조회_요청();

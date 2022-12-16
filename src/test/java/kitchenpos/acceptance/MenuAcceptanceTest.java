@@ -59,7 +59,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
-    void 등록된_메뉴_목록_조회_요청시_요청에_성공한다() {
+    void 메뉴_목록_조회_요청시_요청에_성공한다() {
         // given
         Menu 한마리메뉴 = MenuRestAssured.메뉴_등록됨(this.후라이드, this.한마리메뉴, MenuFixture.후라이드치킨, 2L).as(Menu.class);
 

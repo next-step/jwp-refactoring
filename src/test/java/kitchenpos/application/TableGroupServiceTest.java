@@ -39,7 +39,7 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Test
-    void 테이블_그룹_지정에_성공하고_그룹_정보를_반환한다() {
+    void 테이블_그룹_지정시_성공하고_그룹_정보를_반환한다() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
                 new OrderTable(1, true),

@@ -37,7 +37,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    void 신규_메뉴_그룹을_등록하면_등록된_정보를_반환한다() {
+    void 메뉴_그룹_등록시_등록에_성공하고_등록된_정보를_반환한다() {
         // given
         MenuGroup 한마리메뉴_등록_요청 = new MenuGroup("한마리메뉴");
         given(menuGroupDao.save(any())).willReturn(한마리메뉴);

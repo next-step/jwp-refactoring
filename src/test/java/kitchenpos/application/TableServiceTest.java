@@ -46,7 +46,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 주문_테이블을_등록하면_등록된_주문_테이블_정보를_반환한다() {
+    void 주문_테이블_등록시_성공하고_주문_테이블_정보를_반환한다() {
         // given
         given(orderTableDao.save(any())).willReturn(주문_테이블_등록_요청);
 
