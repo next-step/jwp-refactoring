@@ -21,7 +21,7 @@ public class MenuGroupService {
         return MenuGroupResponse.from(menuGroupRepository.save(request.createMenuGroup()));
     }
 
-    public List<MenuGroupResponse> list() {
+    public List<MenuGroupResponse> findAll() {
         return menuGroupRepository.findAll()
                 .stream()
                 .map(MenuGroupResponse::from)
