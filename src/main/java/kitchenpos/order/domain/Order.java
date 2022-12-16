@@ -73,7 +73,14 @@ public class Order extends AbstractAggregateRoot<Order> {
 
     public void changeStatus(OrderStatus changeStatus) {
         validateCompletion();
+        issueEventEmptyTable(changeStatus);
         this.orderStatus = changeStatus;
+    }
+
+    private void issueEventEmptyTable(OrderStatus changeStatus) {
+        if (changeStatus.isCompletion()) {
+            registerEvent(new OrderCompletionEvent(this.orderTableId));
+        }
     }
 
     public Long id() {

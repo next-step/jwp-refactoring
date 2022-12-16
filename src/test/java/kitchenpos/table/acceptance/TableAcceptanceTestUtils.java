@@ -123,4 +123,13 @@ public class TableAcceptanceTestUtils {
 
         assertThat(actualIds).containsExactlyElementsOf(expectIds);
     }
+
+    public static void 주분_테이블_목록_비움여부_검증(ExtractableResponse<Response> response, Boolean... empty) {
+        List<OrderTableResponse> actual = response.jsonPath()
+                .getList(".", OrderTableResponse.class);
+        assertThat(actual.stream()
+                .map(OrderTableResponse::isEmpty)
+                .collect(Collectors.toList())
+        ).containsExactly(empty);
+    }
 }
