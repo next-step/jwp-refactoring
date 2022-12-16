@@ -37,11 +37,19 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
         List<Menu> menus = findAllMenuByIds(orderRequest.findMenuIds());
         Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING, menus);
         return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+        if(orderTable.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        return orderTable;
     }
 
     private List<Menu> findAllMenuByIds(List<Long> menuIds) {
