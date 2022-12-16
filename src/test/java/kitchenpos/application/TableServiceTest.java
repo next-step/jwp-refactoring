@@ -47,7 +47,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         주문_좌석 = new OrderTable(1L, null, 0, false);
-        좌석_그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_좌석));
+        좌석_그룹 = new TableGroup(1L, Arrays.asList(주문_좌석));
         공석_주문_좌석 = new OrderTable(1L, null, 0, true);
         공석_변경_요청 = new OrderTable(1L, 좌석_그룹, 0, true);
         인원_변경_요청 = new OrderTable(1L, null, 4, false);

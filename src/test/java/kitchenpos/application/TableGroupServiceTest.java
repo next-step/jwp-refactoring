@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.exception.ErrorCode.NOT_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES;
 import static kitchenpos.exception.ErrorCode.ORDER_TABLES_MUST_BE_AT_LEAST_TWO;
 import static kitchenpos.exception.ErrorCode.TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP;
@@ -12,16 +12,15 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.dto.response.TableGroupResponse;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,50 +31,53 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
     private OrderTable 주문_좌석_1;
     private OrderTable 주문_좌석_2;
+    private TableGroupRequest 좌석_그룹_요청;
+    private TableGroupRequest 좌석_그룹_요청_2;
+    private TableGroup 생성된_좌석_그룹;
     private OrderTable 주문_좌석_3;
     private OrderTable 주문_좌석_4;
-    private TableGroup 좌석_그룹_1;
-    private TableGroup 좌석_그룹_2;
+    private TableGroup 생성된_좌석_그룹_2;
 
     @BeforeEach
     void setUp() {
         주문_좌석_1 = new OrderTable(1L, null, 1, true);
         주문_좌석_2 = new OrderTable(2L, null, 2, true);
-        주문_좌석_3 = new OrderTable(3L, 2L, 1, false);
-        주문_좌석_4 = new OrderTable(4L, 2L, 1, false);
-        좌석_그룹_1 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_좌석_1, 주문_좌석_2));
-        좌석_그룹_2 = new TableGroup(2L, LocalDateTime.now(), Arrays.asList(주문_좌석_3, 주문_좌석_4));
+        좌석_그룹_요청 = new TableGroupRequest(Arrays.asList(주문_좌석_1.getId(), 주문_좌석_2.getId()));
+        생성된_좌석_그룹 = new TableGroup(1L, Arrays.asList(주문_좌석_1, 주문_좌석_2));
+
+        주문_좌석_3 = new OrderTable(3L, null, 1, true);
+        주문_좌석_4 = new OrderTable(4L, null, 1, false);
+        좌석_그룹_요청_2 = new TableGroupRequest(Arrays.asList(주문_좌석_3.getId(), 주문_좌석_4.getId()));
+        생성된_좌석_그룹_2 = new TableGroup(2L, Arrays.asList(주문_좌석_3, 주문_좌석_4));
     }
 
     @Test
     void 생성() {
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2));
-        given(tableGroupDao.save(좌석_그룹_1)).willReturn(좌석_그룹_1);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2));
+        given(tableGroupRepository.save(any())).willReturn(생성된_좌석_그룹);
 
-        TableGroupResponse response = tableGroupService.create(좌석_그룹_1);
+        TableGroupResponse response = tableGroupService.create(좌석_그룹_요청);
 
         assertAll(
-                () -> assertThat(response.getOrderTables()).containsExactly(주문_좌석_1, 주문_좌석_2),
-                () -> assertThat(response.getOrderTables().get(0).getTableGroupId()).isEqualTo(좌석_그룹_1.getId()),
-                () -> assertThat(response.getOrderTables().get(1).getTableGroupId()).isEqualTo(좌석_그룹_1.getId())
+                () -> assertThat(response.getOrderTables()).containsExactly(주문_좌석_1, 주문_좌석_2)
         );
     }
 
     @Test
     void 좌석_그룹으로_지정하려고_하는_좌석_개수가_1개인_경우() {
-        좌석_그룹_1 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_좌석_1));
+        좌석_그룹_요청 = new TableGroupRequest(Arrays.asList(주문_좌석_1.getId()));
 
         assertThatThrownBy(
-                () -> tableGroupService.create(좌석_그룹_1)
+                () -> tableGroupService.create(좌석_그룹_요청)
         )
                 .isInstanceOf(KitchenposException.class)
                 .hasMessageContaining(ORDER_TABLES_MUST_BE_AT_LEAST_TWO.getDetail());
@@ -83,10 +85,10 @@ class TableGroupServiceTest {
 
     @Test
     void 좌석_그룹_지정을_요청한_좌석_개수와_실제_등록된_좌석_개수가_다른_경우() {
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2, 주문_좌석_3));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2, 주문_좌석_3));
 
         assertThatThrownBy(
-                () -> tableGroupService.create(좌석_그룹_1)
+                () -> tableGroupService.create(좌석_그룹_요청_2)
         )
                 .isInstanceOf(KitchenposException.class)
                 .hasMessageContaining(NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES.getDetail());
@@ -96,10 +98,10 @@ class TableGroupServiceTest {
     void 사용중인_좌석을_그룹으로_지정하려_하는_경우() {
         주문_좌석_1 = new OrderTable(1L, null, 1, false);
 
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_좌석_1, 주문_좌석_2));
 
         assertThatThrownBy(
-                () -> tableGroupService.create(좌석_그룹_1)
+                () -> tableGroupService.create(좌석_그룹_요청)
         )
                 .isInstanceOf(KitchenposException.class)
                 .hasMessageContaining(TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP.getDetail());
@@ -107,26 +109,26 @@ class TableGroupServiceTest {
 
     @Test
     void 좌석_그룹_해제() {
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(주문_좌석_3, 주문_좌석_4));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(주문_좌석_3, 주문_좌석_4));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
-        tableGroupService.ungroup(좌석_그룹_2.getId());
+        tableGroupService.ungroup(생성된_좌석_그룹_2.getId());
 
         assertAll(
-                () -> assertThat(주문_좌석_3.getTableGroupId()).isNull(),
-                () -> assertThat(주문_좌석_4.getTableGroupId()).isNull()
+                () -> assertThat(주문_좌석_3.getTableGroup()).isNull(),
+                () -> assertThat(주문_좌석_4.getTableGroup()).isNull()
         );
     }
 
     @Test
     void 좌석_상태가_COMPLETION_상태가_아닌_경우() {
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(주문_좌석_3, 주문_좌석_4));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(주문_좌석_3, 주문_좌석_4));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         assertThatThrownBy(
-                () -> tableGroupService.ungroup(좌석_그룹_2.getId())
+                () -> tableGroupService.ungroup(생성된_좌석_그룹_2.getId())
         )
                 .isInstanceOf(KitchenposException.class)
-                .hasMessageContaining(NOT_COMPLETION_STATUS.getDetail());
+                .hasMessageContaining(EXISTS_NOT_COMPLETION_STATUS.getDetail());
     }
 }

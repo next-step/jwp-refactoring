@@ -1,82 +1,58 @@
 package kitchenpos.application;
 
-import static kitchenpos.exception.ErrorCode.NOT_COMPLETION_STATUS;
+import static kitchenpos.application.validator.TableGroupValidator.validateOrderTables;
+import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.TableGroupResponse;
-import kitchenpos.exception.KitchenposException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.application.validator.TableGroupValidator;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.dto.response.TableGroupResponse;
+import kitchenpos.exception.KitchenposException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 public class TableGroupService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
     public TableGroupService(
-            final OrderDao orderDao,
-            final OrderTableDao orderTableDao,
-            final TableGroupDao tableGroupDao
+            final OrderRepository orderRepository,
+            final OrderTableRepository orderTableRepository,
+            final TableGroupRepository tableGroupRepository
     ) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
-    public TableGroupResponse create(final TableGroup tableGroup) {
-        tableGroup.validateOrderTables();
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        validateOrderTables(tableGroupRequest.getOrderTableIds(), savedOrderTables);
 
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(tableGroup.getOrderTableIds());
-        tableGroup.validateOrderTablesSize(savedOrderTables.size());
-        validateOrderTables(savedOrderTables);
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-        saveOrderTables(savedTableGroup.getId(), savedOrderTables);
-
-        savedTableGroup.setOrderTables(savedOrderTables);
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
 
         return TableGroupResponse.of(savedTableGroup);
     }
 
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
-        validateOrderStatus(getOrderTableIds(orderTables));
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        existsByCookingAndMeal(getOrderTableIds(orderTables));
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
-    }
-
-    private void validateOrderTables(List<OrderTable> orderTables) {
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new KitchenposException(TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP);
-            }
-        }
-    }
-
-    private void saveOrderTables(Long tableGroupId, List<OrderTable> savedOrderTables){
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
+            orderTable.ungroup();
         }
     }
 
@@ -86,10 +62,10 @@ public class TableGroupService {
                 .collect(Collectors.toList());
     }
 
-    private void validateOrderStatus(List<Long> orderTableIds){
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new KitchenposException(NOT_COMPLETION_STATUS);
+    private void existsByCookingAndMeal(List<Long> orderTableIds){
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new KitchenposException(EXISTS_NOT_COMPLETION_STATUS);
         }
     }
 }

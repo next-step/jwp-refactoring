@@ -1,4 +1,4 @@
-package kitchenpos.dto;
+package kitchenpos.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,9 +6,12 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 public class TableGroupResponse {
-    private final Long id;
-    private final LocalDateTime createdDate;
-    private final List<OrderTable> orderTables;
+    private Long id;
+    private LocalDateTime createdDate;
+    private List<OrderTable> orderTables;
+
+    public TableGroupResponse() {
+    }
 
     private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
