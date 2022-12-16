@@ -109,7 +109,6 @@ public class TableGroupServiceTest {
                 .when(tableGroupRepository)
                 .save(any(TableGroup.class));
 
-
         TableGroupResponse tableGroupResponse = tableGroupService.create(new TableGroupRequest(Arrays.asList(1l, 2l)));
         assertThat(tableGroupResponse.getOrderTables().stream().map(OrderTableResponse::getId).collect(Collectors.toList())).containsExactly(1l, 2l);
     }

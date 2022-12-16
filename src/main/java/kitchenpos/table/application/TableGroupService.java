@@ -31,7 +31,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = findAllOrderTableByIds(tableGroupRequest.getOrderTableIds());
-        return TableGroupResponse.of(tableGroupRequest.toTableGroup(orderTables));
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroupRequest.toTableGroup(orderTables)));
     }
 
     private List<OrderTable> findAllOrderTableByIds(List<Long> ids) {
