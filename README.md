@@ -16,8 +16,8 @@
     - [x] TableGroupDao -> TableGroupRepository 변경
     - [x] MenuGroupRepository -> MenuGroupRep
 - [ ] Fixture
-  - [ ] TableGroupFixture 
-- [ ] TableGroup 파라미터 DTO 변경 
+    - [ ] TableGroupFixture
+- [ ] TableGroup 파라미터 DTO 변경
 - [ ] OrderTables 일급 콜렉션
 - [ ] spring.jpa.hibernate.ddl-auto=validate 추가
 - [ ] 무분별한 setter 삭제
@@ -27,11 +27,13 @@
 - [ ] 함수(또는 메서드)의 길이가 10라인을 넘어가지 않도록 구현한다.
 - [ ] 배열 대신 컬렉션을 사용한다.
 - [ ] 모든 원시 값과 문자열을 포장한다
-  - [ ] MenuGroup Name 
+    - [ ] MenuGroup Name
 - [ ] 일급 컬렉션을 쓴다.
 - [ ] 모든 엔티티를 작게 유지한다.
 - [ ] 3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.
 - [ ] OrderLineItems test
+
+- [ ] 테이블 그룹 생성 시 orderTable 의 테이블 그룹은 null 이어야 한다.
 
 ### 이름
 

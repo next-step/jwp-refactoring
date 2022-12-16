@@ -66,8 +66,8 @@ class OrderCrudServiceTest extends ServiceTest {
         menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup.getId(), menuProducts));
 
         List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable());
-        orderTables.add(new OrderTable());
+        orderTables.add(new OrderTable(true));
+        orderTables.add(new OrderTable(true));
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
         OrderTable orderTable = orderTableRepository.save(new OrderTable());
         orderTable.setTableGroup(tableGroup);

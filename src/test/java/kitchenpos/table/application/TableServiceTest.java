@@ -128,7 +128,14 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("공석 상태로 변경한다. / 테이블 그룹이 있을 수 없다.")
     @Test
     void changeEmpty_fail_notTableGroup() {
-        assertThatThrownBy(() -> tableService.changeEmpty(createOrderTable().getId()))
+
+        OrderTable orderTable = changeEmptyOrder();
+
+        orderTable.setTableGroup(new TableGroup());
+
+        orderTableRepository.save(orderTable);
+
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -161,18 +168,19 @@ class TableServiceTest extends ServiceTest {
     }
 
     private OrderTable createOrderTable() {
-        OrderTable orderTable1 = orderTableRepository.save(new OrderTable());
-        OrderTable orderTable2 = orderTableRepository.save(new OrderTable());
 
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable1, orderTable2));
-
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
 
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.setTableGroup(tableGroup);
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    private OrderTable changeEmptyOrder() {
+        OrderTable orderTable1 = orderTableRepository.save(new OrderTable(true));
+        return orderTableRepository.save(orderTable1);
     }
 
     private Order createOrder() {

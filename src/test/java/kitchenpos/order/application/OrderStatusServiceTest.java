@@ -58,10 +58,14 @@ class OrderStatusServiceTest extends ServiceTest {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("a"));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
 
-        OrderTable orderTable1 = orderTableRepository.save(new OrderTable());
-        OrderTable orderTable2 = orderTableRepository.save(new OrderTable());
+        OrderTable orderTable1 = orderTableRepository.save(new OrderTable(false));
+        OrderTable orderTable2 = orderTableRepository.save(new OrderTable(false));
 
         List<OrderTable> orderTables = new ArrayList<>();
+
+        orderTable1.empty();
+        orderTable2.empty();
+
         orderTables.add(orderTable1);
         orderTables.add(orderTable2);
 
@@ -69,6 +73,7 @@ class OrderStatusServiceTest extends ServiceTest {
 
         orderTable1.setTableGroup(tableGroup);
         orderTable2.setTableGroup(tableGroup);
+
         orderTableRepository.save(orderTable1);
         orderTableRepository.save(orderTable2);
 
@@ -80,6 +85,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private void createOrder(OrderTable orderTable1, Menu menu) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
+        orderTable1.setEmpty(false);
         order = orderRepository.save(new Order(orderTable1, orderLineItems));
     }
 

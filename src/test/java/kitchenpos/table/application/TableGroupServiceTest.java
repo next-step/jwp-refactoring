@@ -67,7 +67,7 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        tableGroup.setOrderTables(Arrays.asList(makeNullTableGroup(createOrderTable(tableGroup)), makeNullTableGroup(createOrderTable(tableGroup))));
+        tableGroup.setOrderTables(Arrays.asList(makeNullTableGroup(changeEmptyOrder()), makeNullTableGroup(changeEmptyOrder())));
         TableGroup saveTableGroup = tableGroupService.create(tableGroup);
         assertThat(saveTableGroup.getCreatedDate()).isNotNull();
     }
@@ -134,7 +134,14 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private OrderTable createOrderTable(TableGroup tableGroup) {
-        return orderTableRepository.save(new OrderTable(tableGroup, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, false));
+        orderTable.setTableGroup(tableGroup);
+        return orderTableRepository.save(orderTable);
+    }
+
+    private OrderTable changeEmptyOrder() {
+        OrderTable orderTable1 = orderTableRepository.save(new OrderTable(true));
+        return orderTableRepository.save(orderTable1);
     }
 
     private void 주문_식사중_상태_변경() {

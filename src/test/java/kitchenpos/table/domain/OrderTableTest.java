@@ -25,16 +25,16 @@ class OrderTableTest {
         );
     }
 
-    @DisplayName("공석 상태로 변경 / 테이블 그룹이 없을 수 없다.")
-    @Test
-    void empty_fail_tableGroup() {
-
-        OrderTable orderTable = new OrderTable();
-
-        assertThatThrownBy(orderTable::empty)
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE);
-    }
+//    @DisplayName("공석 상태로 변경 / 테이블 그룹이 없을 수 없다.")
+//    @Test
+//    void empty_fail_tableGroup() {
+//
+//        OrderTable orderTable = new OrderTable();
+//
+//        assertThatThrownBy(orderTable::empty)
+//                .isInstanceOf(IllegalArgumentException.class)
+//                .hasMessageContaining(TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE);
+//    }
 
     @DisplayName("공석 상태로 변경")
     @Test
@@ -72,19 +72,19 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, false);
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
+                .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
     }
 
-    @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
-    @Test
-    void changeNumberOfGuests_fail_orderTable() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, false);
-        orderTable.setTableGroup(null);
-        assertThat(orderTable.getTableGroup()).isNull();
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-    }
+//    @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
+//    @Test
+//    void changeNumberOfGuests_fail_orderTable() {
+//        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, false);
+//        orderTable.setTableGroup(null);
+//        assertThat(orderTable.getTableGroup()).isNull();
+//        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
+//                .isInstanceOf(IllegalArgumentException.class)
+//                .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
+//    }
 
     @DisplayName("테이블이 공석 상태면 손님수를 변경할 수 없다.")
     @Test

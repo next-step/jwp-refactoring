@@ -18,8 +18,8 @@ class TableGroupTest {
     @Test
     void create() {
         List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, new TableGroup(), 1, true));
-        orderTables.add(new OrderTable(2L, new TableGroup(), 1, true));
+        orderTables.add(new OrderTable(1L, null, 1, true));
+        orderTables.add(new OrderTable(2L, null, 1, true));
         assertThatNoException().isThrownBy(() -> new TableGroup(orderTables));
     }
 

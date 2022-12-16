@@ -60,10 +60,6 @@ public class TableService {
     public OrderTable changeNumberOfGuests(final Long orderTableId, final ChangeNumberOfGuestsRequest request) {
         final int numberOfGuests = request.getNumberOfGuests();
 
-        if (numberOfGuests < CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER) {
-            throw new IllegalArgumentException(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -71,8 +67,7 @@ public class TableService {
             throw new IllegalArgumentException(TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return orderTableRepository.save(savedOrderTable);
     }
 }
