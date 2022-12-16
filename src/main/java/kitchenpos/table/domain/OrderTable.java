@@ -27,13 +27,6 @@ public class OrderTable {
     @Column
     private boolean empty;
 
-    private OrderTable(Long id, TableGroup tableGroupId, int numberOfGuests, boolean empty) {
-        this(numberOfGuests, empty);
-        this.id = id;
-        this.tableGroup = tableGroupId;
-        this.empty = empty;
-    }
-
     private OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -43,7 +36,7 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public Long getId() {

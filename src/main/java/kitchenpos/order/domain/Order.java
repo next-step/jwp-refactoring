@@ -44,7 +44,7 @@ public class Order {
         this.orderLineItemBag = orderLineItemBag;
     }
 
-    public Order() {
+    protected Order() {
     }
 
     public Long getId() {

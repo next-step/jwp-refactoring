@@ -23,7 +23,7 @@ public class OrderTableBag {
         return new OrderTableBag(orderTableList);
     }
 
-    public OrderTableBag() {
+    protected OrderTableBag() {
     }
 
     private static void checkCreatable(List<OrderTable> orderTableList) {

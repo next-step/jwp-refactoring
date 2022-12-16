@@ -41,7 +41,7 @@ public class Menu {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Long getId() {

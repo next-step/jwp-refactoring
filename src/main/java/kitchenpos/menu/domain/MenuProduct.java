@@ -38,7 +38,7 @@ public class MenuProduct {
         return new MenuProduct(product, quantity);
     }
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public Long getSeq() {

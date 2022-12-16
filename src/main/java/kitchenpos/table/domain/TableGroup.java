@@ -31,7 +31,7 @@ public class TableGroup {
         return new TableGroup(createdDate, orderTables);
     }
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public Long getId() {

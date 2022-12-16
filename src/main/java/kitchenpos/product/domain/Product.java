@@ -24,7 +24,7 @@ public class Product {
         this.price = price;
     }
 
-    public Product() {
+    protected Product() {
     }
 
     public static Product of(Name name, Price price) {

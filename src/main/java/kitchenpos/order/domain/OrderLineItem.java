@@ -32,7 +32,7 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     public Long getSeq() {

@@ -28,7 +28,7 @@ public class MenuGroup {
         return new MenuGroup(name);
     }
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public Long getId() {
