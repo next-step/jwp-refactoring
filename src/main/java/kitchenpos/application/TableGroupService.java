@@ -17,14 +17,11 @@ public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
-    private final OrderService orderService;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
-                             TableService tableService,
-                             OrderService orderService) {
+                             TableService tableService) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
-        this.orderService = orderService;
     }
 
     @Transactional
@@ -51,10 +48,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup savedTableGroup = findById(tableGroupId);
-        // TODO order should not exists in cookcing or meal
-
         savedTableGroup.ungroup();
-
     }
 
     private TableGroup findById(Long tableGroupId) {

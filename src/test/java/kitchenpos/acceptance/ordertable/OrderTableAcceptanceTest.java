@@ -12,23 +12,13 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
-import kitchenpos.acceptance.menu.MenuAcceptanceTestStep;
-import kitchenpos.acceptance.menu.MenuFixture;
-import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
-import kitchenpos.acceptance.menugroup.MenuGroupFixture;
 import kitchenpos.acceptance.order.OrderAcceptanceTestStep;
-import kitchenpos.acceptance.order.OrderFixture;
-import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
-import kitchenpos.acceptance.product.ProductFixture;
 import kitchenpos.acceptance.tablegroup.TableGroupAcceptanceTestStep;
 import kitchenpos.acceptance.tablegroup.TableGroupFixture;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.ui.dto.MenuGroupResponse;
-import kitchenpos.ui.dto.MenuResponse;
 import kitchenpos.ui.dto.OrderResponse;
 import kitchenpos.ui.dto.OrderTableRequest;
 import kitchenpos.ui.dto.OrderTableResponse;
-import kitchenpos.ui.dto.ProductResponse;
 
 @DisplayName("주문 테이블 관리")
 class OrderTableAcceptanceTest extends AcceptanceTest2 {
@@ -38,9 +28,6 @@ class OrderTableAcceptanceTest extends AcceptanceTest2 {
 	OrderTableAcceptanceTestStep step = new OrderTableAcceptanceTestStep();
 	TableGroupAcceptanceTestStep tableGroups = new TableGroupAcceptanceTestStep();
 	OrderAcceptanceTestStep orders = new OrderAcceptanceTestStep();
-	MenuAcceptanceTestStep menus = new MenuAcceptanceTestStep();
-	MenuGroupAcceptanceTestStep menuGroups = new MenuGroupAcceptanceTestStep();
-	ProductAcceptanceTestStep products = new ProductAcceptanceTestStep();
 
 	/**
 	 * Feature: 주문 테이블 관리 기능
@@ -168,10 +155,8 @@ class OrderTableAcceptanceTest extends AcceptanceTest2 {
 		List<OrderTableResponse> 주문_테이블_목록 = step.등록되어_있음(Lists.newArrayList(주문_테이블(), 주문_테이블()));
 		tableGroups.등록되어_있음(TableGroupFixture.주문_테이블_그룹(주문_테이블_목록));
 		OrderTableResponse 주문_테이블 = 주문_테이블_목록.get(0);
-		MenuGroupResponse 메뉴그룹 = menuGroups.등록되어_있음(MenuGroupFixture.메뉴그룹());
-		List<ProductResponse> 상품목록 = products.등록되어_있음(ProductFixture.상품목록(3));
-		MenuResponse 메뉴 = menus.등록되어_있음(MenuFixture.메뉴(상품목록, 메뉴그룹));
-		OrderResponse 주문 = orders.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
+
+		OrderResponse 주문 = orders.등록되어_있음(주문_테이블);
 
 		orders.주문_상태_변경_요청(주문.getId(), OrderStatus.MEAL);
 

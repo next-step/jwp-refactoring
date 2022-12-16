@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import kitchenpos.exception.CannotChangeEmptyOrderTable;
 import kitchenpos.exception.CannotChangeNumberOfGuestsException;
+import kitchenpos.exception.CannotDetachTableGroupException;
 import kitchenpos.exception.InvalidNumberOfGuestsException;
 
 @Entity
@@ -85,7 +86,14 @@ public class OrderTable {
 	}
 
 	public void detachTableGroup() {
+		validateDetachTableGroup();
 		tableGroup = null;
+	}
+
+	private void validateDetachTableGroup() {
+		if (hasAnyNotCompletedOrder()) {
+			throw new CannotDetachTableGroupException();
+		}
 	}
 
 	public boolean hasTableGroup() {
@@ -115,12 +123,12 @@ public class OrderTable {
 	}
 
 	public void validateChangeEmpty() {
-		if (hasNotCompletedOrder()) {
+		if (hasAnyNotCompletedOrder()) {
 			throw new CannotChangeEmptyOrderTable();
 		}
 	}
 
-	private boolean hasNotCompletedOrder() {
+	private boolean hasAnyNotCompletedOrder() {
 		return !orderList.isEmpty() && !orderList.stream().allMatch(Order::isCompleted);
 	}
 }
