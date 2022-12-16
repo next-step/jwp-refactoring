@@ -32,9 +32,7 @@ public class Menu {
         this.id = id;
         this.name = name;
         this.price = Price.of(price);
-        if (price.compareTo(menuProducts.getTotalPrice()) > 0) {
-            throw new IllegalArgumentException(MenuError.INVALID_PRICE);
-        }
+        this.price.checkValidate(menuProducts.getTotalPrice());
         if (menuGroupId == null) {
             throw new IllegalArgumentException(MenuError.REQUIRED_MENU_GROUP);
         }

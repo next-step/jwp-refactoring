@@ -23,15 +23,17 @@ public class Price {
         this.price = price;
     }
 
+    public void checkValidate(BigDecimal totalPrice) {
+        if (this.price.compareTo(totalPrice) > 0) {
+            throw new IllegalArgumentException(MenuError.INVALID_PRICE);
+        }
+    }
+
     public static Price of(BigDecimal price) {
         return new Price(price);
     }
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public int compareTo(BigDecimal price) {
-        return this.price.compareTo(price);
     }
 }
