@@ -1,26 +1,49 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.domain.Order;
 
-public class Order {
+public class OrderRequest {
 
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemRequest> orderLineItems;
 
-    public Order() {
+    public OrderRequest() {
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-        List<OrderLineItem> orderLineItems) {
+    public OrderRequest(String orderStatus) {
+        this(null, null, orderStatus, null, Collections.emptyList());
+    }
+
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        this(null, orderTableId, null, null, orderLineItems);
+    }
+
+    public OrderRequest(Long id, Long orderTableId, String orderStatus,
+        LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public Order toOrder() {
+        return new Order(
+            id,
+            orderTableId,
+            orderStatus,
+            orderedTime,
+            orderLineItems.stream()
+                .map(OrderLineItemRequest::toOrderLineItem)
+                .collect(Collectors.toList())
+        );
     }
 
     public Long getId() {
@@ -55,11 +78,11 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 }

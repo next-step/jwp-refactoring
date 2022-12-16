@@ -17,14 +17,14 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ import org.springframework.http.HttpStatus;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     OrderTable 일번테이블;
-    OrderLineItem 주문항목;
+    OrderLineItemRequest 주문항목;
 
     /*
     Feature: 주문 관련 기능
@@ -68,9 +68,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             Collections.singletonList(new MenuProductRequest(강정치킨.getId(), 2L)))
             .as(MenuResponse.class);
 
-        주문항목 = new OrderLineItem();
-        주문항목.setMenuId(더블강정치킨.getId());
-        주문항목.setQuantity(1L);
+        주문항목 = new OrderLineItemRequest(더블강정치킨.getId(), 1L);
     }
 
     @Test
@@ -82,20 +80,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(orderResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //when
-        Order 식사_상태_주문 = 주문_상태_수정(orderResponse.as(Order.class).getId(),
-            OrderStatus.MEAL).as(Order.class);
+        OrderResponse 식사_상태_주문 = 주문_상태_수정(orderResponse.as(OrderResponse.class).getId(),
+            OrderStatus.MEAL).as(OrderResponse.class);
         //then
         assertThat(식사_상태_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
 
         //when
-        List<Order> 주문_목록 = 주문_목록_조회().jsonPath().getList(".", Order.class);
+        List<OrderResponse> 주문_목록 = 주문_목록_조회().jsonPath().getList(".", OrderResponse.class);
         //then
         assertThat(주문_목록)
             .hasSize(1)
             .extracting(
-                Order::getId,
-                Order::getOrderStatus,
-                Order::getOrderTableId,
+                OrderResponse::getId,
+                OrderResponse::getOrderStatus,
+                OrderResponse::getOrderTableId,
                 order -> order.getOrderLineItems().get(0).getMenuId(),
                 order -> order.getOrderLineItems().get(0).getQuantity()
             )
@@ -117,14 +115,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(orderResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         //when
-        Order 계산_완료_상태_주문 = 주문_상태_수정(orderResponse.as(Order.class).getId(),
-            OrderStatus.COMPLETION).as(Order.class);
+        OrderResponse 계산_완료_상태_주문 = 주문_상태_수정(orderResponse.as(OrderResponse.class).getId(),
+            OrderStatus.COMPLETION).as(OrderResponse.class);
         //then
         assertThat(계산_완료_상태_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 
         //when
         ExtractableResponse<Response> changeStatusResponse = 주문_상태_수정(
-            orderResponse.as(Order.class).getId(),
+            orderResponse.as(OrderResponse.class).getId(),
             OrderStatus.MEAL);
         //then
         assertThat(changeStatusResponse.statusCode())
