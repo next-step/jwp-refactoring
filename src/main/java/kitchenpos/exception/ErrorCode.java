@@ -15,7 +15,7 @@ public enum ErrorCode {
     PRICE_NOT_EXISTS_OR_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "가격이 존재하지 않거나 0 보다 작습니다."),
     TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP(
             HttpStatus.BAD_REQUEST, "좌석이 공석이 아니거나 이미 좌석 그룹에 등록된 좌석입니다."),
-    NOT_COMPLETION_STATUS(HttpStatus.BAD_REQUEST, "식사가 끝난 좌석이 아닙니다."),
+    EXISTS_NOT_COMPLETION_STATUS(HttpStatus.BAD_REQUEST, "식사가 끝나지 않은 좌석이 있습니다."),
     NOT_EXISTS_TABLE(HttpStatus.BAD_REQUEST, "좌석이 존재하지 않습니다."),
     NOT_BEEN_UNGROUP(HttpStatus.BAD_REQUEST, "좌석 그룹이 해제되지 않았습니다."),
     PEOPLE_LESS_THAN_ZERO(HttpStatus.BAD_REQUEST, "인원 수가 0 보다 작을 수 없습니다."),
@@ -24,7 +24,8 @@ public enum ErrorCode {
     ORDER_TABLES_MUST_BE_AT_LEAST_TWO(
             HttpStatus.BAD_REQUEST, "좌석 그룹으로 지정하려면 좌석의 개수가 2개 이상이어야 합니다."),
     NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES(
-            HttpStatus.BAD_REQUEST, "그룹 지정을 요청한 좌석 수와 저장된 좌석 수가 일치하지 않습니다.")
+            HttpStatus.BAD_REQUEST, "그룹 지정을 요청한 좌석 수와 저장된 좌석 수가 일치하지 않습니다."),
+    NOT_EXISTS_TABLE_GROUP(HttpStatus.BAD_REQUEST, "좌석 그룹이 존재하지 않습니다.")
 
     ;
 
