@@ -4,18 +4,18 @@ package kitchenpos.menu.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.acceptance.MenuAcceptance.*;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptance.메뉴그룹_생성됨;
-import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성_요청;
-import static kitchenpos.menu.acceptance.ProductAcceptance.상품_생성됨;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성_요청;
+import static kitchenpos.menu.fixture.MenuGroupTestFixture.메뉴그룹_생성됨;
+import static kitchenpos.menu.fixture.MenuTestFixture.*;
+import static kitchenpos.product.fixture.ProductTestFixture.상품_생성_요청;
+import static kitchenpos.product.fixture.ProductTestFixture.상품_생성됨;
 
 @DisplayName("메뉴 관련 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -29,11 +29,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
 
         // when
-        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", BigDecimal.valueOf(27_000), menuGroupId, Lists.newArrayList(new MenuProductRequest(productId, 3L)));
 
         // then
         메뉴_생성됨(response);
@@ -48,11 +48,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuFailed1() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
 
         // when
-        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", new BigDecimal(-1), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", BigDecimal.valueOf(-1), menuGroupId, Lists.newArrayList(new MenuProductRequest(productId, 3L)));
 
         // then
         메뉴_생성_실패됨(response);
@@ -67,11 +67,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuFailed2() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
 
         // when
-        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", new BigDecimal(27_001), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+        ExtractableResponse<Response> response = 메뉴_생성_요청("순살세마리", BigDecimal.valueOf(27_001), menuGroupId, Lists.newArrayList(new MenuProductRequest(productId, 3L)));
 
         // then
         메뉴_생성_실패됨(response);
@@ -86,9 +86,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void findMenus() {
         // given
-        Long productId = 상품_생성_요청("순살치킨", new BigDecimal(9000)).jsonPath().getLong("id");
+        Long productId = 상품_생성_요청("순살치킨", 9_000).jsonPath().getLong("id");
         Long menuGroupId = 메뉴그룹_생성_요청("세마리치킨").jsonPath().getLong("id");
-        메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
+        메뉴_생성_요청("순살세마리", BigDecimal.valueOf(27_000), menuGroupId, Lists.newArrayList(new MenuProductRequest(productId, 3L)));
 
         // when
         ExtractableResponse<Response> response = 메뉴_조회_요청();
@@ -99,7 +99,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     /**
      * Scenario : 메뉴를 생성
-     *
      * Given : 상품이 등록되어 있음
      * And : 메뉴그룹이 등록되어 있음
      * When : 메뉴를 생성한다.
@@ -111,7 +110,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void menuIntegrationTest() {
         // given
-        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", new BigDecimal(9000));
+        ExtractableResponse<Response> createProductResponse = 상품_생성_요청("순살치킨", 9_000);
         Long productId = createProductResponse.jsonPath().getLong("id");
         상품_생성됨(createProductResponse);
 
@@ -121,12 +120,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴그룹_생성됨(createMenuGroupResponse);
 
         // when
-        ExtractableResponse<Response> createMenuResponse = 메뉴_생성_요청("순살세마리", new BigDecimal(27_000), menuGroupId, Lists.newArrayList(new MenuProduct(productId, 3)));
-        // And
+        ExtractableResponse<Response> createMenuResponse = 메뉴_생성_요청("순살세마리", BigDecimal.valueOf(27_000), menuGroupId, Lists.newArrayList(new MenuProductRequest(productId, 3L)));
+        // and
         메뉴_생성됨(createMenuResponse);
-        // And
+        // and
         ExtractableResponse<Response> menuListResponse = 메뉴_조회_요청();
-        // And
+        // and
         메뉴_조회됨(menuListResponse);
     }
 }

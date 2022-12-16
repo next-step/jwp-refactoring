@@ -20,6 +20,6 @@ public abstract class AcceptanceTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-        databaseCleanup.executeTruncate();
+        databaseCleanup.execute();
     }
 }

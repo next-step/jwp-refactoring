@@ -15,7 +15,7 @@ PUT {{host}}/api/tables/1/empty
 Content-Type: application/json
 
 {
-  "empty": false
+  "empty": true
 }
 
 ###
@@ -31,7 +31,7 @@ PUT {{host}}/api/tables/1/empty
 Content-Type: application/json
 
 {
-  "empty": true
+  "empty": false
 }
 
 ###
