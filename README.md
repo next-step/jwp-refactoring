@@ -125,11 +125,12 @@
 ## 2단계 - 서비스 리팩터링
 
 ### 기능목록 작성
-- [ ] 각 도메인에 `Spring Data JPA Entity`로 수정할 것(+ dao 삭제, Repository 추가)
-  - Menu
+- [x] 각 도메인에 `Spring Data JPA Entity`로 수정할 것(+ dao 삭제, Repository 추가)
+  - Product
     - [x] Product
       - [x] 인수 테스트
       - [x] 도메인 테스트
+  - Menu
     - [x] MenuGroup
       - [x] 인수 테스트
       - [x] 도메인 테스트
@@ -140,18 +141,19 @@
       - [x] 인수 테스트
       - [x] 도메인 테스트
   - Order
-    - [ ] Order
-      - [ ] 인수 테스트
-      - [ ] 도메인 테스트
-    - [ ] OrderLineItem
-      - [ ] 인수 테스트
-      - [ ] 도메인 테스트
-    - [ ] OrderTable
-      - [ ] 인수 테스트
-      - [ ] 도메인 테스트
-    - [ ] TableGroup
-      - [ ] 인수 테스트
-      - [ ] 도메인 테스트
+    - [x] Order
+      - [x] 인수 테스트
+      - [x] 도메인 테스트
+    - [x] OrderLineItem
+      - [x] 인수 테스트
+      - [x] 도메인 테스트
+  - Table
+    - [x] OrderTable
+      - [x] 인수 테스트
+      - [x] 도메인 테스트
+    - [x] TableGroup
+      - [x] 인수 테스트
+      - [x] 도메인 테스트
 
 ### 요구사항
 - 단위 테스트 하기 어려운 코드와 가능한 코드를 분리
