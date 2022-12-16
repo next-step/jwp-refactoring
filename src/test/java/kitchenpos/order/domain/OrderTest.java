@@ -95,6 +95,6 @@ public class OrderTest {
 
     public static Order 주문(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
             OrderLineItemBag orderLineItemList) {
-        return new Order(orderTable, orderStatus, orderedTime, orderLineItemList);
+        return Order.of(orderTable, orderStatus, orderedTime, orderLineItemList);
     }
 }

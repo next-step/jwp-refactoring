@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTable;
+import org.aspectj.weaver.ast.Or;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -36,12 +37,18 @@ public class Order {
     @Embedded
     private OrderLineItemBag orderLineItemBag;
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
             OrderLineItemBag orderLineItemBag) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItemBag = orderLineItemBag;
+    }
+
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+            OrderLineItemBag orderLineItemBag) {
+        checkValidOrderTable(orderTable);
+        return new Order(orderTable, orderStatus, orderedTime, orderLineItemBag);
     }
 
     protected Order() {
@@ -90,7 +97,7 @@ public class Order {
         this.orderLineItemBag.updateItemOrder(this);
     }
 
-    public void checkValidOrderTable() {
+    private static void checkValidOrderTable(OrderTable orderTable) {
         orderTable.checkNullId();
         orderTable.checkEmptyTable();
     }

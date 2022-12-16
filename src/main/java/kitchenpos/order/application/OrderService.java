@@ -21,8 +21,9 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
-        order.checkValidOrderTable();
+    public Order create(final Order requestOrder) {
+        final Order order = Order.of(requestOrder.getOrderTable(), requestOrder.getOrderStatus(),
+                requestOrder.getOrderedTime(), requestOrder.getOrderLineItemBag());
         order.updateItemOrder();
         menuService.validMenuCount(order.menuIds());
         return orderRepository.save(order);
