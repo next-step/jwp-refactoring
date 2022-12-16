@@ -1,12 +1,17 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.InvalidParameterException;
-
-import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Entity
 public class OrderTable {
+    private static final String ERROR_MESSAGE_CHANGE_GUEST_IS_EMPTY_TABLE = "비어있는 테이블은 인원 수를 변경할 수 없습니다.";
     private static final String ERROR_MESSAGE_ALREADY_EXIST_TABLE_GROUP = "단체 테이블이 존재합니다.";
 
     @Id
@@ -40,8 +45,8 @@ public class OrderTable {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
-    public boolean isEmpty() {
-        return empty.isTrue();
+    public void validateChangeEmpty(TableValidator tableValidator) {
+        tableValidator.validateChangeEmpty(this);
     }
 
     public void validateGrouped() {
@@ -56,7 +61,18 @@ public class OrderTable {
         this.empty = Empty.from(true);
     }
 
+    public boolean isEmpty() {
+        return empty.isTrue();
+    }
+
+    private void validateEmptyTable() {
+        if (this.isEmpty()) {
+            throw new InvalidParameterException(ERROR_MESSAGE_CHANGE_GUEST_IS_EMPTY_TABLE);
+        }
+    }
+
     public void changeNumberOfGuests(int numberOfGuests) {
+        validateEmptyTable();
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = Empty.from(false);
     }

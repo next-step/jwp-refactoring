@@ -15,10 +15,10 @@ import java.util.Optional;
 import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private TableValidator tableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -90,39 +90,11 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("빈 테이블로 수정시 주문 테이블은 단체 테이블이 아니어야 한다.")
-    void updateEmptyTableByNoneTableGroup() {
-        // given
-        OrderTable 단체테이블 = orderTable(2L, 1L, 8, false);
-        given(orderTableRepository.findById(단체테이블.id())).willReturn(Optional.of(단체테이블));
-
-        // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(단체테이블.id()))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("단체 테이블이 존재합니다.");
-    }
-
-    @Test
-    @DisplayName("빈 테이블로 수정시 주문 상태가 조리 중 또는 식사 중이면 안된다.")
-    void updateEmptyTableByOrderStatusIsCookingOrMeal() {
-        // given
-        Order order = order(1L, 주문테이블.id(), Collections.singletonList(짬뽕2_탕수육_주문_항목));
-        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(주문테이블));
-        given(orderRepository.findByOrderTableId(주문테이블.id())).willReturn(Optional.of(order));
-
-        // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블.id()))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("주문 상태가 조리 중 입니다.");
-    }
-
-    @Test
     @DisplayName("주문 테이블을 빈 테이블로 수정한다.")
     void updateEmptyTable() {
         // given
         Order order = order(1L, 주문테이블.id(), Collections.singletonList(짬뽕2_탕수육_주문_항목));
         given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(주문테이블));
-        given(orderRepository.findByOrderTableId(주문테이블.id())).willReturn(Optional.of(order));
         order.changeStatus(OrderStatus.COMPLETION);
 
         // when
@@ -176,10 +148,10 @@ class TableServiceTest {
     void updateTableNumberOfGuest() {
         // given
         OrderTableRequest changeTable = orderTableRequest(3, false);
-        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(주문테이블2.id())).willReturn(Optional.of(주문테이블2));
 
         // when
-        OrderTableResponse actual = tableService.changeNumberOfGuests(주문테이블.id(), changeTable);
+        OrderTableResponse actual = tableService.changeNumberOfGuests(주문테이블2.id(), changeTable);
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(3);
