@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.List;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTest {
 

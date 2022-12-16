@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.domain;
 
 import java.util.List;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupTest {
 
