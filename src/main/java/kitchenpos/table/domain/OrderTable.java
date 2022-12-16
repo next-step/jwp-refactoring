@@ -8,7 +8,6 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
     private static final String ERROR_MESSAGE_ALREADY_EXIST_TABLE_GROUP = "단체 테이블이 존재합니다.";
-    public static final String ERROR_MESSAGE_IS_EMPTY_TABLE = "비어있는 테이블입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,12 +68,6 @@ public class OrderTable {
 
     public void ungroup() {
         this.tableGroupId = null;
-    }
-
-    public void validateIsNotEmpty() {
-        if (this.isEmpty()) {
-            throw new InvalidParameterException(ERROR_MESSAGE_IS_EMPTY_TABLE);
-        }
     }
 
     public Long id() {

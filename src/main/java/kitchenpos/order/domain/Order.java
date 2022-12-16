@@ -6,7 +6,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity(name = "orders")
@@ -49,10 +48,6 @@ public class Order {
 
     public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
         return new Order(null, orderTableId, orderLineItems);
-    }
-
-    public static Order of(Long orderTableId, OrderLineItem... orderLineItems) {
-        return new Order(null, orderTableId, Arrays.asList(orderLineItems));
     }
 
     public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
