@@ -53,7 +53,7 @@ public class MenuService {
     }
 
     private List<MenuProduct> findAllMenuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
-        List<Product> products = toProduct(menuProductRequests);
+        List<Product> products = findProducts(menuProductRequests);
         validateProducts(products, menuProductRequests);
         Map<Long, Product> productIdToProduct = new HashMap<>();
         for (Product product : products) {
@@ -71,7 +71,7 @@ public class MenuService {
         }
     }
 
-    private List<Product> toProduct(final List<MenuProductRequest> menuProductRequests) {
+    private List<Product> findProducts(final List<MenuProductRequest> menuProductRequests) {
         List<Long> productIds = menuProductRequests.stream()
                 .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
