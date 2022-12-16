@@ -47,7 +47,6 @@ public class ProductAcceptance extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 상품_생성을_요청(String name, BigDecimal price) {
         ProductRequest request = new ProductRequest(name, price);
-
         return RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

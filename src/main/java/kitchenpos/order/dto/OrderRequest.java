@@ -6,7 +6,6 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -23,6 +22,14 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
+    }
+
+    public List<OrderLineItemRequest> getOrderLineItems() {
+        return orderLineItems;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public void setOrderLineItems(List<OrderLineItemRequest> orderLineItems) {

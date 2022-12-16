@@ -92,12 +92,9 @@ public class OrderServiceTest {
         OrderTable orderTable = OrderTable.builder().empty(true).build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableRepository).findById(order.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
-                .when(menuRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> orderService.create(order))
-                .isInstanceOf(OrderException.class)
-                .hasMessageContaining("주문테이블이 존재하지 않습니다");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 추가할 경우 주문을 반환")

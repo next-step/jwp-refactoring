@@ -13,28 +13,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderTest {
 
-    @DisplayName("주문을 생성할 경우 주문테이블이 없으면 예외발생")
-    @Test
-    public void throwsExceptionWhenNoneExistsTable() {
-        assertThatThrownBy(() -> Order.builder().build())
-                .isInstanceOf(OrderException.class)
-                .hasMessageContaining("주문테이블이 존재하지 않습니다");
-    }
-
-    @DisplayName("주문을 생성할 경우 주문테이블이 공석이면 예외발생")
-    @Test
-    public void throwsExceptionWhenEmptyTable() {
-        OrderTable orderTable = OrderTable.builder()
-                .empty(true)
-                .build();
-
-        assertThatThrownBy(() -> Order.builder()
-                .orderTable(orderTable)
-                .build())
-                .isInstanceOf(OrderException.class)
-                .hasMessageContaining("주문테이블이 존재하지 않습니다");
-    }
-
     @DisplayName("주문에 주문항목을 추가할경우 주문에서 확인할 수 있음")
     @Test
     public void returnOrderTable() {

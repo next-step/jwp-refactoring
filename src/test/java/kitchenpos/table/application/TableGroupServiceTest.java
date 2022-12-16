@@ -7,6 +7,7 @@ import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -102,7 +104,7 @@ public class TableGroupServiceTest {
                 .findAllById(anyList());
 
         TableGroupResponse tableGroupResponse = tableGroupService.create(new TableGroupRequest(Arrays.asList(1l, 2l)));
-        assertThat(tableGroupResponse.getOrderTableIds()).containsExactly(1l, 2l);
+        assertThat(tableGroupResponse.getOrderTables().stream().map(OrderTableResponse::getId).collect(Collectors.toList())).containsExactly(1l, 2l);
     }
 
     @DisplayName("테이블그룹을 해제할경우 테이블그룹이 등록안되있으면 예외발생")
