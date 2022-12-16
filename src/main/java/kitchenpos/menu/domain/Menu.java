@@ -1,0 +1,76 @@
+package kitchenpos.menu.domain;
+
+import java.math.BigDecimal;
+import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import kitchenpos.menugroup.domain.MenuGroup;
+
+@Entity
+public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Embedded
+    private MenuName name;
+
+    @Embedded
+    private MenuPrice price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
+
+    protected Menu() {
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.name = new MenuName(name);
+        this.price = new MenuPrice(price);
+        this.menuGroup = menuGroup;
+        addMenuProducts(menuProducts);
+        validateProductsPrice();
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(menuProduct -> menuProduct.changeMenu(this));
+        this.menuProducts = new MenuProducts(menuProducts);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name.getName();
+    }
+
+    public BigDecimal getPrice() {
+        return price.getPrice();
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
+    }
+
+    private void validateProductsPrice() {
+        if (price.compareTo(menuProducts.sumMenuProductsPrice()) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 메뉴상품들 가격의 합보다 낮아야 합니다");
+        }
+    }
+}
