@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-
 @Service
 public class TableGroupService {
     private final TableService tableService;
@@ -27,7 +25,7 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public TableGroup create(final TableGroup tableGroup) {
         final List<OrderTable> savedOrderTables = tableService.findAllByIdIn(tableGroup.tableIds());
         checkedTableSize(savedOrderTables, tableGroup.orderTables());
@@ -41,7 +39,7 @@ public class TableGroupService {
         }
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup savedTableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("단체 지정 테이블을 찾을 수 없습니다"));

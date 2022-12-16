@@ -8,8 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
@@ -23,7 +21,7 @@ public class MenuService {
         this.productService = productService;
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public Menu create(final Menu menu) {
         menuGroupService.existsById(menu.getMenuGroupId());
         productService.existProducts(menu.productList());

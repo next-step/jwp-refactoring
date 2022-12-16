@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-
 @Service
 public class TableService {
 
@@ -25,7 +23,7 @@ public class TableService {
         this.orderService = orderService;
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public OrderTable create(final OrderTable orderTable) {
         return orderTableRepository.save(orderTable);
     }
@@ -35,7 +33,7 @@ public class TableService {
         return orderTableRepository.findAll();
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         checkNullId(orderTableId);
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
@@ -45,7 +43,7 @@ public class TableService {
         return savedOrderTable;
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
         checkNullId(orderTableId);
         orderTable.checkValidGuestNumber();

@@ -1,16 +1,14 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menu.application.MenuService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 
 @Service
 public class OrderService {
@@ -22,7 +20,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public Order create(final Order order) {
         order.checkValidOrderTable();
         order.updateItemOrder();
@@ -36,7 +34,7 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
         checkedNullId(orderId);
         final Order savedOrder = orderRepository.findById(orderId)

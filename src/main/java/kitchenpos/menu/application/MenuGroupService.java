@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-
 @Service
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
@@ -17,7 +15,7 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional(isolation = READ_COMMITTED)
+    @Transactional
     public MenuGroup create(final MenuGroup menuGroup) {
         return menuGroupRepository.save(menuGroup);
     }
