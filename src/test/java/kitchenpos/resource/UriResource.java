@@ -6,6 +6,7 @@ public enum UriResource {
     메뉴_그룹_API("/api/menu-groups"),
     주문_테이블_API("/api/tables"),
     주문_테이블_그룹_API("/api/table-groups"),
+    주문_API("/api/orders"),
     ;
 
     private final String uri;

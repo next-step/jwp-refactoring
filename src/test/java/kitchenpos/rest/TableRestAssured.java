@@ -9,6 +9,10 @@ import org.springframework.http.MediaType;
 
 public class TableRestAssured {
 
+    public static ExtractableResponse<Response> 주문_테이블_등록됨(int numberOfGuests) {
+        return 주문_테이블_등록_요청(numberOfGuests, false);
+    }
+
     public static ExtractableResponse<Response> 주문_테이블_등록_요청(int numberOfGuests, boolean empty) {
         return RestAssured
                 .given().log().all()
