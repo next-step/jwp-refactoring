@@ -121,8 +121,6 @@ class TableGroupServiceTest {
         when(orderTableRepository.findAllByTableGroupId(단체1.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(false);
-        when(orderTableRepository.save(주문테이블1)).thenReturn(주문테이블1);
-        when(orderTableRepository.save(주문테이블2)).thenReturn(주문테이블2);
 
         // when
         tableGroupService.ungroup(단체1.getId());

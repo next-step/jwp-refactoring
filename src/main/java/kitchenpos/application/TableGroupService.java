@@ -84,7 +84,7 @@ public class TableGroupService {
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.unGroup();
-            orderTableRepository.save(orderTable);
+//            orderTableRepository.save(orderTable);
         }
     }
 
