@@ -1,11 +1,13 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.MenuGroupRequest;
+
 public class MenuGroupFixture {
     private MenuGroupFixture() {
     }
 
-    public static MenuGroup menuGroupParam(String name) {
-        return new MenuGroup(null, name);
+    public static MenuGroupRequest menuGroupParam(String name) {
+        return new MenuGroupRequest(name);
     }
 
     public static MenuGroup savedMenuGroup(Long id, String name) {

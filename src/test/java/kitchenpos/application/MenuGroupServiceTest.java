@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -32,12 +34,12 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = menuGroupParam("추천메뉴");
+        MenuGroupRequest menuGroupRequest = menuGroupParam("추천메뉴");
         MenuGroup savedMenuGroup = savedMenuGroup(1L, "추천메뉴");
-        given(menuGroupRepository.save(menuGroup)).willReturn(savedMenuGroup);
+        given(menuGroupRepository.save(any())).willReturn(savedMenuGroup);
 
         // when
-        MenuGroup actual = menuGroupService.create(menuGroup);
+        MenuGroupResponse actual = menuGroupService.create(menuGroupRequest);
 
         // then
         assertAll(
@@ -50,17 +52,20 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         // given
-        MenuGroup savedMenuGroup1 = savedMenuGroup(1L, "미뉴 그룹1");
+        MenuGroup savedMenuGroup1 = savedMenuGroup(1L, "메뉴 그룹1");
         MenuGroup savedMenuGroup2 = savedMenuGroup(2L, "메뉴 그룹2");
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(savedMenuGroup1, savedMenuGroup2));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
         assertAll(
             () -> assertThat(menuGroups).hasSize(2),
-            () -> assertThat(menuGroups).contains(savedMenuGroup1, savedMenuGroup2)
+            () -> assertThat(menuGroups.get(0).getId()).isNotNull(),
+            () -> assertThat(menuGroups.get(0).getName()).isEqualTo("메뉴 그룹1"),
+            () -> assertThat(menuGroups.get(1).getId()).isNotNull(),
+            () -> assertThat(menuGroups.get(1).getName()).isEqualTo("메뉴 그룹2")
         );
     }
 }

@@ -1,7 +1,5 @@
 package kitchenpos.domain;
 
-import static org.mockito.BDDMockito.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,9 +14,6 @@ public class TableGroupFixture {
     }
 
     public static TableGroup savedTableGroup(Long id) {
-        TableGroup tableGroup = mock(TableGroup.class);
-        given(tableGroup.getId()).willReturn(id);
-        given(tableGroup.getCreatedDate()).willReturn(LocalDateTime.now());
-        return tableGroup;
+        return new TableGroup(id, LocalDateTime.now());
     }
 }
