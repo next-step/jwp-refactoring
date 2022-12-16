@@ -52,13 +52,12 @@ public class OrderRequest {
         return orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
     }
 
-    public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<Menu> menus) {
+    public Order toOrder(Long orderTableId, OrderStatus orderStatus) {
         Order order = Order.builder()
                 .orderStatus(orderStatus)
-                .orderTable(orderTable)
+                .orderTableId(orderTableId)
                 .build();
         List<OrderLineItem> newOrderLineItems = orderLineItems.stream()
-                .filter(request -> menus.stream().anyMatch(menu -> menu.getId().equals(request.getMenuId())))
                 .map(request -> request.toOrderLineItem(order))
                 .collect(toList());
         order.addOrderLineItems(newOrderLineItems);

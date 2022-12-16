@@ -45,7 +45,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
-        List<Order> orders = orderRepository.findAllByOrderTableIn(tableGroup.getOrderTables());
+        List<Order> orders = orderRepository.findAllByOrderTableIdIn(tableGroup.orderTableIds());
         tableGroup.ungroup(orders);
     }
 }

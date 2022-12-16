@@ -2,14 +2,13 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static kitchenpos.order.exception.OrderExceptionType.*;
+import static kitchenpos.order.exception.OrderExceptionType.BEFORE_COMPLETE_ORDER_STATUS;
+import static kitchenpos.order.exception.OrderExceptionType.COMPLETE_ORDER_STATUS;
 
 @Entity
 @Table(name = "orders")
@@ -17,8 +16,7 @@ public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -29,7 +27,7 @@ public class Order extends BaseEntity {
 
     private Order(OrderBuilder builder) {
         this.id = builder.id;
-        this.orderTable = builder.orderTable;
+        this.orderTableId = builder.orderTableId;
         this.orderStatus = builder.orderStatus;
         this.orderLineItems = builder.orderLineItems;
     }
@@ -42,8 +40,8 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -59,7 +57,7 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
     }
 
-    private void validateCompleteStatus(){
+    private void validateCompleteStatus() {
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new OrderException(COMPLETE_ORDER_STATUS);
         }
@@ -77,7 +75,7 @@ public class Order extends BaseEntity {
 
     public static class OrderBuilder {
         private Long id;
-        private OrderTable orderTable;
+        private Long orderTableId;
         private OrderStatus orderStatus;
         private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
@@ -86,8 +84,8 @@ public class Order extends BaseEntity {
             return this;
         }
 
-        public OrderBuilder orderTable(OrderTable orderTable) {
-            this.orderTable = orderTable;
+        public OrderBuilder orderTableId(Long orderTableId) {
+            this.orderTableId = orderTableId;
             return this;
         }
 

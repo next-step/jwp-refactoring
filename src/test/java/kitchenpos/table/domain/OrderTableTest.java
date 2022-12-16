@@ -21,7 +21,7 @@ public class OrderTableTest {
     public void throwsExceptionWhenStatusIsMeal() {
         OrderTable orderTable = OrderTable.builder().build();
         Order order = Order.builder()
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.MEAL).build();
         List<Order> orders = Arrays.asList(order);
 
@@ -35,7 +35,7 @@ public class OrderTableTest {
     public void throwsExceptionWhenStatusIsCooking() {
         OrderTable orderTable = OrderTable.builder().build();
         Order order = Order.builder()
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COOKING).build();
         List<Order> orders = Arrays.asList(order);
 
@@ -49,7 +49,7 @@ public class OrderTableTest {
     public void throwsExceptionWhenHasTableGroup() {
         OrderTable orderTable = OrderTable.builder().tableGroup(TableGroup.builder().build()).build();
         Order order = Order.builder()
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COMPLETION).build();
         List<Order> orders = Arrays.asList(order);
 
@@ -64,7 +64,7 @@ public class OrderTableTest {
     public void returnIsEmpty() {
         OrderTable orderTable = OrderTable.builder().build();
         Order order = Order.builder()
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COMPLETION).build();
         List<Order> orders = Arrays.asList(order);
 

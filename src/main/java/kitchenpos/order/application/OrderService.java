@@ -37,9 +37,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        List<Menu> menus = findAllMenuByIds(orderRequest.findMenuIds());
-        Order order = orderRequest.toOrder(orderTable, OrderStatus.COOKING, menus);
+        findOrderTableById(orderRequest.getOrderTableId());
+        findAllMenuByIds(orderRequest.findMenuIds());
+        Order order = orderRequest.toOrder(orderRequest.getOrderTableId(), OrderStatus.COOKING);
         return OrderResponse.of(orderRepository.save(order));
     }
 

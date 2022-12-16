@@ -126,7 +126,7 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 해제할경우 테이블에 포함된 주문이 조리중이거나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
-        List<Order> orders = Arrays.asList(Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COOKING).build());
+        List<Order> orders = Arrays.asList(Order.builder().orderTableId(1l).orderStatus(OrderStatus.COOKING).build());
         TableGroup tableGroup = TableGroup.builder()
                 .orderTables(OrderTables.of(Arrays.asList(OrderTable.builder().build())))
                 .build();
@@ -135,7 +135,7 @@ public class TableGroupServiceTest {
                 .findById(anyLong());
         doReturn(orders)
                 .when(orderRepository)
-                .findAllByOrderTableIn(anyList());
+                .findAllByOrderTableIdIn(anyList());
 
         assertThatThrownBy(() -> tableGroupService.ungroup(15l))
                 .isInstanceOf(OrderException.class)

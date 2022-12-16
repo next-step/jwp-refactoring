@@ -20,7 +20,7 @@ public class OrderTest {
                 OrderLineItem.builder().seq(1l).build(),
                 OrderLineItem.builder().seq(2l).build()
         );
-        Order order = Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COMPLETION).build();
+        Order order = Order.builder().orderTableId(1l).orderStatus(OrderStatus.COMPLETION).build();
 
         order.addOrderLineItems(orderLineItems);
 
@@ -30,7 +30,7 @@ public class OrderTest {
     @DisplayName("주문상태를 수정할경우 주문상태가 계산완료일 경우 예외발생")
     @Test
     public void throwsExceptionWhenStatusIsComplete() {
-        Order order = Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COMPLETION).build();
+        Order order = Order.builder().orderTableId(1l).orderStatus(OrderStatus.COMPLETION).build();
 
         assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.COOKING))
                 .isInstanceOf(OrderException.class)
@@ -40,7 +40,7 @@ public class OrderTest {
     @DisplayName("주문상태를 수정할경우 주문상태가 변경")
     @Test
     public void returnOrderStatus() {
-        Order order = Order.builder().orderTable(OrderTable.builder().build()).orderStatus(OrderStatus.COOKING).build();
+        Order order = Order.builder().orderTableId(1l).orderStatus(OrderStatus.COOKING).build();
 
         order.changeOrderStatus(OrderStatus.MEAL);
 

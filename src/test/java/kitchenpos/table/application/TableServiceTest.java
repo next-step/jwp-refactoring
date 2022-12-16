@@ -78,7 +78,7 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
         List<Order> orders = getOrders(Order.builder()
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COOKING).build(), 5);
         OrderTable orderTable = OrderTable.builder()
                 .tableGroup(TableGroup.builder().id(13l).build())
@@ -87,7 +87,7 @@ public class TableServiceTest {
                 .when(orderTableRepository)
                 .findById(orderTable.getId());
         doReturn(orders).when(orderRepository)
-                .findAllByOrderTable(orderTable);
+                .findAllByOrderTableId(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderTableException.class)
@@ -98,12 +98,12 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
         List<Order> orders = getOrders(Order.builder()
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COOKING).build(), 5);
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(Optional.ofNullable(orderTable)).when(orderTableRepository).findById(orderTable.getId());
         doReturn(orders).when(orderRepository)
-                .findAllByOrderTable(orderTable);
+                .findAllByOrderTableId(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderException.class)
@@ -179,7 +179,7 @@ public class TableServiceTest {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value -> Order.builder()
                         .id(order.getId())
-                        .orderTable(order.getOrderTable())
+                        .orderTableId(order.getOrderTableId())
                         .orderStatus(order.getOrderStatus())
                         .orderLineItems(order.getOrderLineItems())
                         .build())

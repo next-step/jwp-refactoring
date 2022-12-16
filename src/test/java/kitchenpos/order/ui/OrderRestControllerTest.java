@@ -50,7 +50,7 @@ public class OrderRestControllerTest extends ControllerTest {
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(OrderResponse.of(Order.builder().id(orderId)
                 .orderLineItems(Arrays.asList(orderLineItem))
-                .orderTable(orderTable)
+                .orderTableId(orderTable.getId())
                 .build())).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
@@ -89,11 +89,11 @@ public class OrderRestControllerTest extends ControllerTest {
     public void returnOrders() throws Exception {
         Order order1 = Order.builder().id(1l)
                 .orderLineItems(Collections.EMPTY_LIST)
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .build();
         Order order2 = Order.builder().id(2l)
                 .orderLineItems(Collections.EMPTY_LIST)
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(2l)
                 .build();
         List<OrderResponse> orders = Arrays.asList(new OrderResponse(order1), new OrderResponse(order2));
         doReturn(orders).when(orderService).list();

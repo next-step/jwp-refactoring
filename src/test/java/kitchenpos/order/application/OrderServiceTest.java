@@ -111,7 +111,7 @@ public class OrderServiceTest {
                 .when(menuRepository).findAllById(anyList());
         doReturn(Order.builder()
                 .id(13l)
-                .orderTable(orderTable)
+                .orderTableId(orderTable.getId())
                 .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
                 .build())
                 .when(orderRepository).save(any(Order.class));
@@ -125,7 +125,7 @@ public class OrderServiceTest {
     @Test
     public void returnOrders() {
         List<Order> orders = getOrders(Order.builder().id(150l)
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderLineItems(Arrays.asList(OrderLineItem
                         .builder()
                         .menuId(1l)
@@ -152,7 +152,7 @@ public class OrderServiceTest {
     public void throwsExceptionWhenCompleteOrder() {
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COMPLETION)
                 .build();
         doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
@@ -167,7 +167,7 @@ public class OrderServiceTest {
     public void returnOrderWithChangedStatus() {
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
                 .orderStatus(OrderStatus.COOKING)
                 .build();
@@ -183,7 +183,7 @@ public class OrderServiceTest {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value -> Order.builder()
                         .id(order.getId())
-                        .orderTable(order.getOrderTable())
+                        .orderTableId(order.getOrderTableId())
                         .orderStatus(order.getOrderStatus())
                         .orderLineItems(order.getOrderLineItems())
                         .build())

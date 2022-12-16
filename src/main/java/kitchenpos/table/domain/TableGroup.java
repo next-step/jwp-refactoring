@@ -5,6 +5,7 @@ import kitchenpos.order.domain.Order;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup extends BaseEntity {
@@ -37,6 +38,13 @@ public class TableGroup extends BaseEntity {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
+    }
+
+    public List<Long> orderTableIds(){
+        return orderTables.getOrderTables()
+                .stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     public static class TableGroupBuilder {

@@ -38,7 +38,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        List<Order> savedOrders = orderRepository.findAllByOrderTable(savedOrderTable);
+        List<Order> savedOrders = orderRepository.findAllByOrderTableId(orderTableId);
         savedOrderTable.changeEmpty(orderTable.isEmpty(),savedOrders);
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
