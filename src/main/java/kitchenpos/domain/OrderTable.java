@@ -50,33 +50,17 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     @JsonIgnore
     public TableGroup getTableGroup() {
         return tableGroup;
-    }
-
-    public void setTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void changeEmpty(boolean empty) {
@@ -84,27 +68,9 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroup,
-                that.tableGroup);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tableGroup, numberOfGuests, empty);
-    }
-
-    public OrderTable changeNumberOfGuest(int numberOfGuests) {
+    public void changeNumberOfGuest(int numberOfGuests) {
         checkEmptyTable();
-        return new OrderTable(this.id, this.tableGroup, numberOfGuests, this.empty);
+        this.numberOfGuests = numberOfGuests;
     }
 
     public void checkGroup() {
@@ -138,5 +104,23 @@ public class OrderTable {
         if (this.id == null) {
             throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderTable that = (OrderTable) o;
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroup,
+                that.tableGroup);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tableGroup, numberOfGuests, empty);
     }
 }

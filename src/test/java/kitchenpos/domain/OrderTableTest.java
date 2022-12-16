@@ -27,4 +27,8 @@ public class OrderTableTest {
         비어있지_않은_테이블.changeEmpty(빈_상태);
         assertThat(비어있지_않은_테이블.isEmpty()).isTrue();
     }
+
+    public static OrderTable 주문_테이블(int numberOfGuest, boolean empty) {
+        return OrderTable.ofNumberOfGuestsAndEmpty(numberOfGuest, empty);
+    }
 }

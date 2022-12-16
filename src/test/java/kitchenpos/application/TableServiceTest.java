@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.OrderLineItemBag;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +59,7 @@ public class TableServiceTest {
                 주문_테이블,
                 계산_완료_상태,
                 LocalDateTime.now(),
-                Collections.emptyList()));
+                OrderLineItemBag.from(Collections.emptyList())));
         주문_테이블.changeEmpty(빈_상태);
         //when:
         final OrderTable 빈_자리_테이블 = tableService.changeEmpty(주문_테이블.getId(), 주문_테이블);
@@ -87,7 +88,7 @@ public class TableServiceTest {
                 주문_테이블,
                 식사_상태,
                 LocalDateTime.now(),
-                Collections.emptyList()));
+                OrderLineItemBag.from(Collections.emptyList())));
         주문_테이블.changeEmpty(빈_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(
@@ -104,7 +105,7 @@ public class TableServiceTest {
                 주문_테이블,
                 조리_상태,
                 LocalDateTime.now(),
-                Collections.emptyList()));
+                OrderLineItemBag.from(Collections.emptyList())));
         주문_테이블.changeEmpty(빈_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(
@@ -117,8 +118,9 @@ public class TableServiceTest {
         //given:
         final OrderTable 주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
         //when:
+        주문_테이블.changeNumberOfGuest(한_명의_방문객);
         final OrderTable 방문_손님_수가_변경_된_주문_테이블 = tableService.changeNumberOfGuests(
-                주문_테이블.getId(), 주문_테이블.changeNumberOfGuest(한_명의_방문객));
+                주문_테이블.getId(), 주문_테이블);
         //then:
         assertThat(방문_손님_수가_변경_된_주문_테이블.getNumberOfGuests()).isEqualTo(한_명의_방문객);
     }
@@ -128,9 +130,10 @@ public class TableServiceTest {
     void 방문_손님_수_변경_예외_주문_테이블이_존재하지_않는_경우() {
         //given:
         final OrderTable 주문_테이블 = 주문_테이블(두_명의_방문객, 비어있지_않은_상태);
+        주문_테이블.changeNumberOfGuest(한_명의_방문객);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(
-                주문_테이블.getId(), 주문_테이블.changeNumberOfGuest(한_명의_방문객)));
+                주문_테이블.getId(), 주문_테이블));
     }
 
     @DisplayName("방문 손님 수 변경 예외 - 주문 테이블이 비어 있는 경우")
@@ -138,9 +141,9 @@ public class TableServiceTest {
     void 방문_손님_수_변경_예외_주문_테이블이_비어_있는_경우() {
         //given:
         final OrderTable 주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 빈_상태));
+
         //when,then:
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(
-                주문_테이블.getId(), 주문_테이블.changeNumberOfGuest(한_명의_방문객)));
+        assertThatIllegalArgumentException().isThrownBy(() -> 주문_테이블.changeNumberOfGuest(한_명의_방문객));
     }
 
     public static OrderTable 주문_테이블(int numberOfGuest, boolean empty) {

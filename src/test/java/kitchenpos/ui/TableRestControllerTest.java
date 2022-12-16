@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableService;
+import kitchenpos.domain.OrderLineItemBag;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
@@ -90,7 +91,7 @@ class TableRestControllerTest {
                 저장된_주문_테이블,
                 계산_완료_상태,
                 LocalDateTime.now(),
-                Collections.emptyList()));
+                OrderLineItemBag.from(Collections.emptyList())));
 
         저장된_주문_테이블.changeEmpty(빈_상태);
         //when:
@@ -112,13 +113,13 @@ class TableRestControllerTest {
         //given:
         final OrderTable 저장된_주문_테이블 = tableService.create(주문_테이블(두_명의_방문객, 비어있지_않은_상태));
 
-        final OrderTable 방문_손님_변경_주문_테이블 = 저장된_주문_테이블.changeNumberOfGuest(한_명의_방문객);
+        저장된_주문_테이블.changeNumberOfGuest(한_명의_방문객);
         //when:
         final OrderTable 빈_주문_테이블 = mapper.readValue(
-                mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 방문_손님_변경_주문_테이블.getId())
+                mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 저장된_주문_테이블.getId())
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                                .content(mapper.writeValueAsString(방문_손님_변경_주문_테이블)))
+                                .content(mapper.writeValueAsString(저장된_주문_테이블)))
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), OrderTable.class);
