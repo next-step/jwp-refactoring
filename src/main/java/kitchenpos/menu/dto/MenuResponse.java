@@ -26,7 +26,7 @@ public class MenuResponse {
                 menu.id(),
                 menu.name().value(),
                 menu.price().value(),
-                menu.menuGroup().id(),
+                menu.menuGroupId(),
                 MenuProductResponse.toList(menu.menuProducts())
         );
     }

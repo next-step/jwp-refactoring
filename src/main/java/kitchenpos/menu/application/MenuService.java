@@ -30,9 +30,8 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
         List<MenuProduct> menuProducts = toMenuProduct(request.getMenuProductRequests());
-        Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
+        Menu menu = Menu.of(request.getName(), request.getPrice(), validateMenuGroup(request.getMenuGroupId()), menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
     }
 
@@ -46,9 +45,10 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuGroup findMenuGroupById(Long id) {
-        return menuGroupRepository.findById(id)
+    private long validateMenuGroup(Long id) {
+        MenuGroup menuGroup = menuGroupRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(ERROR_MESSAGE_NOT_FOUND_MENU_GROUP_FORMAT, id)));
+        return menuGroup.id();
     }
 
     private Product findProductById(Long id) {
