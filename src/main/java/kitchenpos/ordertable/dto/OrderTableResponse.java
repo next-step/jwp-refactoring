@@ -10,6 +10,10 @@ public class OrderTableResponse {
     public OrderTableResponse() {
     }
 
+    public OrderTableResponse(Long id) {
+        this.id = id;
+    }
+
     public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;

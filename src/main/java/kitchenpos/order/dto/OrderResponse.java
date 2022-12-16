@@ -30,7 +30,14 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order created) {
-        OrderTableResponse orderTableResponse = createOrderTableResponse(created.getOrderTable());
+        OrderTableResponse orderTableResponse = new OrderTableResponse(created.getOrderTableId());
+        List<OrderLineItemResponse> orderLineItems = createOrderLineItemResponses(created.getOrderLineItems());
+        return new OrderResponse(created.getId(), orderTableResponse, created.getOrderStatus(),
+                created.getOrderedTime(), orderLineItems);
+    }
+
+    public static OrderResponse of(Order created, OrderTable orderTable) {
+        OrderTableResponse orderTableResponse = createOrderTableResponse(orderTable);
         List<OrderLineItemResponse> orderLineItems = createOrderLineItemResponses(created.getOrderLineItems());
         return new OrderResponse(created.getId(), orderTableResponse, created.getOrderStatus(),
                 created.getOrderedTime(), orderLineItems);

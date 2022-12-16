@@ -20,8 +20,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.validator.OrderValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,21 +31,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
+    private OrderService orderService;
     @Mock
-    private Order order = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1l)));
+    private OrderValidator orderValidator;
     @Mock
     private MenuService menuService;
-    @Mock
-    private TableService tableService;
     @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
-    private OrderService orderService;
+    @Mock
+    private Order order = new Order(1L, Collections.singletonList(new OrderLineItem(1L, 1l)));
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuService, tableService, orderRepository, orderLineItemRepository);
+        orderService = new OrderService(menuService, orderRepository, orderLineItemRepository, orderValidator);
     }
 
     @Test
@@ -54,19 +53,17 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(tableService.findById(any())).willReturn(new OrderTable(2, false));
         given(menuService.countByIdIn(any())).willReturn(2L);
         given(orderRepository.save(any())).willReturn(order);
 
-        Order createOrder = orderService.create(orderRequest);
+        Order order = orderService.create(orderRequest);
 
-        assertThat(createOrder).isEqualTo(order);
+        assertThat(order).isEqualTo(order);
     }
 
     @Test
     void 수량이_남은_메뉴만_주문할_수_있다() {
         OrderRequest orderRequest = new OrderRequest(1L, Collections.emptyList());
-        given(tableService.findById(any())).willReturn(new OrderTable(2, false));
 
         ThrowingCallable 수량이_남지_않은_메뉴_주문시도 = () -> orderService.create(orderRequest);
 
@@ -78,7 +75,6 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(tableService.findById(any())).willReturn(new OrderTable(2, false));
         given(menuService.countByIdIn(any())).willReturn(1L);
 
         ThrowingCallable 없는_메뉴가_포함된_주문시도 = () -> orderService.create(orderRequest);
@@ -91,7 +87,6 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(tableService.findById(any())).willThrow(IllegalArgumentException.class);
 
         ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(orderRequest);
 
@@ -103,7 +98,6 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
-        given(tableService.findById(any())).willReturn(new OrderTable(2, true));
 
         ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(orderRequest);
 
@@ -112,7 +106,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_목록을_조회할_수_있다() {
-        given(orderRepository.findAllWithOrderTableAndOrderLineItems()).willReturn(Collections.singletonList(order));
+        given(orderRepository.findAllWithOrderLineItems()).willReturn(Collections.singletonList(order));
 
         List<Order> orders = orderService.list();
 

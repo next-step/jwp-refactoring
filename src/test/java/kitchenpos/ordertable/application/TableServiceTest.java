@@ -98,7 +98,7 @@ class TableServiceTest {
     @Test
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
         OrderTable orderTable = new OrderTable(1, false);
-        orderTable.addOrder(new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1))));
+        orderTable.addOrder(new Order(1L, Collections.singletonList(new OrderLineItem(1L, 1))));
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);

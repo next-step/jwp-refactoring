@@ -28,13 +28,6 @@ public class TableService {
     }
 
     @Transactional(readOnly = true)
-    public OrderTable findById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "주문 등록시, 등록된 주문 테이블만 지정할 수 있습니다 [orderTableId:" + orderTableId + "]"));
-    }
-
-    @Transactional(readOnly = true)
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllByIdIn(orderTableIds)
                 .orElseThrow(() -> new IllegalArgumentException("등록 된 주문 테이블에 대해서만 단체 지정이 가능합니다"));

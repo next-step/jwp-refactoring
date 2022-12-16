@@ -7,8 +7,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,24 +16,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final MenuService menuService;
-    private final TableService tableService;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(MenuService menuService, TableService tableService,
-                        OrderRepository orderRepository,
-                        OrderLineItemRepository orderLineItemRepository) {
+    public OrderService(MenuService menuService, OrderRepository orderRepository,
+                        OrderLineItemRepository orderLineItemRepository,
+                        OrderValidator orderValidator) {
         this.menuService = menuService;
-        this.tableService = tableService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
-
-        Order order = new Order(orderTable, orderRequest.getOrderLineItems());
+        Order order = new Order(orderRequest.getOrderTableId(), orderRequest.getOrderLineItems());
+        orderValidator.validateOrderTable(order);
         order.validateOrderLineItemsSizeAndMenuCount(menuService.countByIdIn(order.makeMenuIds()));
 
         return orderRepository.save(order);
@@ -42,7 +40,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<Order> list() {
-        final List<Order> orders = orderRepository.findAllWithOrderTableAndOrderLineItems();
+        final List<Order> orders = orderRepository.findAllWithOrderLineItems();
 
         orders.forEach(order -> order
                 .addLineItems(orderLineItemRepository.findAllByOrderId(order.getId()))

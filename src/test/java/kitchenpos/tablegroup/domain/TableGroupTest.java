@@ -53,8 +53,8 @@ class TableGroupTest {
 
     @Test
     void 주문_테이블에_조리_식사_상태가_포함된_주문이_있을경우_해제가_불가능하다() {
-        Order order1 = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
-        Order order2 = new Order(new OrderTable(1, false), Collections.singletonList(new OrderLineItem(1L, 1)));
+        Order order1 = new Order(1L, Collections.singletonList(new OrderLineItem(1L, 1)));
+        Order order2 = new Order(2L, Collections.singletonList(new OrderLineItem(1L, 1)));
         TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable, orderTable2));
         orderTable.addOrder(order1);
         orderTable2.addOrder(order2);

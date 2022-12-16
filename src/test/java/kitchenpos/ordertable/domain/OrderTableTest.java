@@ -28,7 +28,7 @@ class OrderTableTest {
     void 조리_식사_상태의_주문이_포함되어_있으면_수정할_수_없다() {
         OrderTable orderTable = new OrderTable(1, false);
         orderTable.addOrder(
-                new Order(new OrderTable(1, false), Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 2))));
+                new Order(1L, Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 2))));
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_테이블_수정 = () -> orderTable.validateOrderStatus(
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));

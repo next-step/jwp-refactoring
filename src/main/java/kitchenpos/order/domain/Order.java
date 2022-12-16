@@ -3,18 +3,15 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.ordertable.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -24,9 +21,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -38,12 +34,8 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItemsParam) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 등록시, 등록되어 있는 주문 테이블만 지정 가능합니다");
-        }
-        orderTable.addOrder(this);
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItemsParam) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = new OrderLineItems();
@@ -72,8 +64,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public String getOrderStatus() {
