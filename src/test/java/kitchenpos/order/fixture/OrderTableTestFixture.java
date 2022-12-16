@@ -3,7 +3,6 @@ package kitchenpos.order.fixture;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderTableTestFixture {
     public static ExtractableResponse<Response> 주문테이블_손님수_수정_요청(Long orderTableId, int numberOfGuests) {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTableId, numberOfGuests);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuests);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -24,7 +23,7 @@ public class OrderTableTestFixture {
     }
 
     public static ExtractableResponse<Response> 주문테이블_빈테이블_여부_수정_요청(Long orderTableId, boolean empty) {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(orderTableId, empty);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(empty);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -71,8 +70,8 @@ public class OrderTableTestFixture {
     }
 
     public static void 주문테이블_empty_확인됨(ExtractableResponse<Response> response, boolean empty) {
-        OrderTable orderTable = response.as(OrderTable.class);
-        assertThat(orderTable.isEmpty()).isEqualTo(empty);
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
+        assertThat(orderTableResponse.isEmpty()).isEqualTo(empty);
     }
 
     public static void 주문테이블_손님수_확인됨(ExtractableResponse<Response> response, int numberOfGuests) {
