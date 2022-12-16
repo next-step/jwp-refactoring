@@ -27,10 +27,14 @@ public class ProductService {
     }
 
     public void existProducts(List<Product> productList) {
-        if (!productRepository.countAllByIds(productList.stream()
-                        .map(Product::getId).collect(Collectors.toList()))
-                .equals(productList.size())) {
+        if (!equalsRealProductCount(productList)) {
             throw new IllegalArgumentException("존재하지 않는 상품이 포함되어 있습니다");
         }
+    }
+
+    private boolean equalsRealProductCount(List<Product> productList) {
+        return productRepository.countAllByIds(productList.stream()
+                        .map(Product::getId).collect(Collectors.toList()))
+                .equals(productList.size());
     }
 }
