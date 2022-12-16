@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.OrderTableError;
 import org.springframework.util.CollectionUtils;
@@ -21,34 +21,22 @@ public class OrderTables {
 
     }
 
-    public void group(TableGroup tableGroup, List<OrderTable> target) {
-        validate(target);
-        target.forEach(orderTable -> {
-            orderTable.checkOrderTableIsEmpty();
-            orderTable.changeEmpty(false, Collections.emptyList());
-            addOrderTable(tableGroup, orderTable);
-        });
+    private OrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
     }
 
-    private void validate(List<OrderTable> target) {
-        if (CollectionUtils.isEmpty(target)) {
+    public static OrderTables of(List<OrderTable> orderTables) {
+        return new OrderTables(orderTables);
+    }
+
+    public void group(Long tableGroupId) {
+        if (CollectionUtils.isEmpty(orderTables)) {
             throw new IllegalArgumentException(OrderTableError.REQUIRED_ORDER_TABLE_LIST);
         }
-
-        if (target.size() < MIN_ORDER_TABLES_SIZE) {
+        if (orderTables.size() < MIN_ORDER_TABLES_SIZE) {
             throw new IllegalArgumentException(OrderTableError.INVALID_ORDER_TABLE_LIST_SIZE);
         }
-    }
-
-    public void addOrderTable(TableGroup tableGroup, OrderTable orderTable) {
-        if (!hasOrderTable(orderTable)) {
-            this.orderTables.add(orderTable);
-            orderTable.updateTableGroup(tableGroup);
-        }
-    }
-
-    private boolean hasOrderTable(OrderTable orderTable) {
-        return this.orderTables.contains(orderTable);
+        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroupId));
     }
 
     public void ungroup() {

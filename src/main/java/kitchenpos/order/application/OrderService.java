@@ -6,13 +6,17 @@ import kitchenpos.exception.OrderTableError;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -30,20 +34,25 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
+        List<OrderLineItemRequest> orderLineItemRequests = request.getOrderLineItems();
+        List<OrderLineItem> orderLineItems = orderLineItemByMenuId(orderLineItemRequests);
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        Order order = request.toOrder(orderTable, OrderStatus.COOKING, menus);
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(OrderTableError.CANNOT_EMPTY);
+        }
+        Order order = Order.of(orderTable.getId(), OrderLineItems.of(orderLineItems));
 
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    private List<Menu> findAllMenuById(List<Long> menuIds) {
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-        if (menuIds.size() != menus.size()) {
-            throw new EntityNotFoundException(MenuError.NOT_FOUND);
-        }
-        return menus;
+    private List<OrderLineItem> orderLineItemByMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> {
+                    Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
+                            .orElseThrow(() -> new EntityNotFoundException(MenuError.NOT_FOUND));
+                    return orderLineItemRequest.toOrderLineItem(OrderMenu.of(menu));
+                }).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -52,11 +61,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(Long orderId, OrderStatus request) {
+    public OrderResponse changeOrderStatus(Long orderId, OrderStatus orderStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(OrderError.NOT_FOUND));
-        order.changeOrderStatus(request);
-
-        return OrderResponse.of(orderRepository.save(order));
+        order.changeOrderStatus(orderStatus);
+        return OrderResponse.of(order);
     }
 }

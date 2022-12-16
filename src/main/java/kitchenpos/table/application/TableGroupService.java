@@ -1,15 +1,18 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.exception.OrderTableError;
 import kitchenpos.exception.TableGroupError;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -25,21 +28,30 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = orderTableRepository.findAllById(tableGroupRequest.getOrderTables());
-        if (tableGroupRequest.getOrderTables().size() != orderTables.size()) {
-            throw new EntityNotFoundException(OrderTableError.NOT_FOUND);
-        }
-        return TableGroupResponse.of(tableGroupRepository.save(TableGroupRequest.toTableGroup(orderTables)));
+        OrderTables orderTables = OrderTables.of(orderTableById(tableGroupRequest.getOrderTables()));
+        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        orderTables.group(tableGroup.getId());
+        return TableGroupResponse.of(tableGroup, orderTables);
+    }
+
+    private List<OrderTable> orderTableById(List<Long> ids) {
+        return ids.stream()
+                .map(this::orderTableById)
+                .collect(Collectors.toList());
+    }
+
+    private OrderTable orderTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new EntityNotFoundException(TableGroupError.NOT_FOUND));
-        List<Order> orders = orderRepository.findAllByOrderTableIdIn(tableGroup.getOrderTableIds());
-
+        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        List<Order> orders = orderRepository.findAllByOrderTableIdIn(orderTables.getOrderTableIds());
         tableGroup.ungroup(orders);
-
-        tableGroupRepository.save(tableGroup);
+        orderTables.ungroup();
     }
 }

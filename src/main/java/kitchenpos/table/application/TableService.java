@@ -1,9 +1,12 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.exception.OrderTableError;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,9 +39,14 @@ public class TableService {
                 .orElseThrow(() -> new EntityNotFoundException(OrderTableError.NOT_FOUND));
         List<Order> orders = orderRepository.findAllByOrderTableId(savedOrderTable.getId());
 
-        savedOrderTable.changeEmpty(request.isEmpty(), orders);
+        validateOngoingOrder(orders);
+        savedOrderTable.changeEmpty(request.isEmpty());
 
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private void validateOngoingOrder(List<Order> orders) {
+        orders.forEach(Order::checkOngoingOrderTable);
     }
 
     @Transactional

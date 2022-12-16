@@ -1,6 +1,5 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -34,8 +33,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = new Product("치킨", BigDecimal.valueOf(3000L));
-        치즈볼 = new Product("치즈볼", BigDecimal.valueOf(1500L));
+        치킨 = new Product("치킨", BigDecimal.valueOf(15000));
+        치즈볼 = new Product("치즈볼", BigDecimal.valueOf(5000));
     }
 
     @DisplayName("상품을 생성한다.")

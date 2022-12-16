@@ -1,13 +1,16 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,55 +45,57 @@ class OrderServiceTest {
     private OrderService orderService;
 
     private OrderTable 주문테이블;
+    private Product 뿌링클;
+    private Product 후라이드;
+    private Product 콜라;
     private Order 주문;
-    private MenuGroup 뼈치킨;
-    private Menu 뿌링클_세트1;
-    private Menu 뿌링클_세트2;
+    private Menu 메뉴1;
+    private Menu 메뉴2;
     private OrderLineItem 주문_메뉴1;
     private OrderLineItem 주문_메뉴2;
-    private List<OrderLineItem> 주문_메뉴_목록;
+    private OrderLineItemRequest 뿌링클세트주문요청;
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable(2, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
-
-        뼈치킨 = new MenuGroup("뼈치킨");
-        뿌링클_세트1 = new Menu("뼈치킨 세트1", BigDecimal.valueOf(43000), 뼈치킨);
-        뿌링클_세트2 = new Menu("뼈치킨 세트2", BigDecimal.valueOf(50000), 뼈치킨);
-
-        ReflectionTestUtils.setField(주문테이블, "id", 1L);
-        ReflectionTestUtils.setField(주문, "id", 1L);
-        ReflectionTestUtils.setField(뼈치킨, "id", 1L);
-        ReflectionTestUtils.setField(뿌링클_세트1, "id", 1L);
-        ReflectionTestUtils.setField(뿌링클_세트2, "id", 2L);
-
-        주문_메뉴1 = new OrderLineItem(주문, 뿌링클_세트1, 1L);
-        주문_메뉴2 = new OrderLineItem(주문, 뿌링클_세트2, 1L);
-
-        주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
-        주문.order(주문_메뉴_목록);
+        뿌링클 = Product.of(1L, "뿌링클", BigDecimal.valueOf(20000));
+        후라이드 = Product.of(2L, "후라이드", BigDecimal.valueOf(15000));
+        콜라 = Product.of(3L, "콜라", BigDecimal.valueOf(2000));
+        MenuProduct 뿌링클_상품 = MenuProduct.of(뿌링클, 1);
+        MenuProduct 후라이드_상품 = MenuProduct.of(후라이드, 1);
+        MenuProduct 콜라_상품 = MenuProduct.of(콜라, 1);
+        MenuGroup 뼈치킨 = MenuGroup.of(1L, "뼈치킨");
+        메뉴1 = Menu.of(1L, "메뉴1", BigDecimal.valueOf(22000), 뼈치킨.getId(), Arrays.asList(뿌링클_상품, 콜라_상품));
+        메뉴2 = Menu.of(2L, "메뉴2", BigDecimal.valueOf(17000), 뼈치킨.getId(), Arrays.asList(후라이드_상품, 콜라_상품));
+        주문테이블 = OrderTable.of(1L, null, 5, false);
+        OrderMenu 메뉴1_주문메뉴 = OrderMenu.of(메뉴1);
+        OrderMenu 메뉴2_주문메뉴 = OrderMenu.of(메뉴2);
+        주문_메뉴1 = OrderLineItem.of(메뉴1_주문메뉴, 1L);
+        주문_메뉴2 = OrderLineItem.of(메뉴2_주문메뉴, 1L);
+        ReflectionTestUtils.setField(주문_메뉴1, "seq", 1L);
+        ReflectionTestUtils.setField(주문_메뉴2, "seq", 2L);
+        List<OrderLineItem> 주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
+        주문 = Order.of(1L, 주문테이블.getId(), OrderLineItems.of(주문_메뉴_목록));
+        뿌링클세트주문요청 = OrderLineItemRequest.of(주문_메뉴1);
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void 주문_생성() {
-        OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
-
-        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
-        when(menuRepository.findAllById(request.findAllMenuIds()))
-                .thenReturn(Arrays.asList(뿌링클_세트1, 뿌링클_세트2));
+        // when
+        OrderRequest orderRequest = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(뿌링클세트주문요청));
+        Order 주문 = Order.of(1L, 주문테이블.getId(), OrderLineItems.of(Collections.singletonList(뿌링클세트주문요청.toOrderLineItem(OrderMenu.of(메뉴1)))));
+        when(menuRepository.findById(메뉴1.getId())).thenReturn(Optional.of(메뉴1));
+        when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
-        OrderResponse orderResponse = orderService.create(request);
+        // when
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
-        assertThat(orderResponse).satisfies(res -> {
-            assertEquals(주문.getId(), res.getId());
-            assertEquals(주문테이블.getId(), res.getOrderTableId());
-            assertEquals(OrderStatus.COOKING, res.getOrderStatus());
-            assertEquals(request.getOrderLineItems().size(), res.getOrderLineItems().size());
-        });
+        // then
+        assertAll(
+                () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+                () -> assertThat(orderResponse.getId()).isEqualTo(주문.getId())
+        );
     }
 
     @DisplayName("등록되지 않은 메뉴로 주문을 생성할 수 없다.")
@@ -99,8 +104,8 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
-        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
-        when(menuRepository.findAllById(request.findAllMenuIds())).thenReturn(Arrays.asList(뿌링클_세트1));
+        when(menuRepository.findById(메뉴1.getId())).thenReturn(Optional.of(메뉴1));
+        when(menuRepository.findById(메뉴2.getId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(request)).isInstanceOf(EntityNotFoundException.class);
     }
@@ -108,6 +113,8 @@ class OrderServiceTest {
     @DisplayName("등록되지 않은 테이블은 주문을 생성할 수 없다.")
     @Test
     void 등록되지않은_테이블_주문_생성() {
+        when(menuRepository.findById(메뉴1.getId())).thenReturn(Optional.of(메뉴1));
+        when(menuRepository.findById(메뉴2.getId())).thenReturn(Optional.of(메뉴2));
         when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.empty());
 
         assertThatThrownBy(
@@ -119,14 +126,14 @@ class OrderServiceTest {
     @DisplayName("빈 테이블은 주문을 생성할 수 없다.")
     @Test
     void 빈_테이블_주문_생성() {
-        // given
-        주문테이블.changeEmpty(true, Collections.emptyList());
+        // when
+        주문테이블.changeEmpty(true);
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
+        when(menuRepository.findById(메뉴1.getId())).thenReturn(Optional.of(메뉴1));
+        when(menuRepository.findById(메뉴2.getId())).thenReturn(Optional.of(메뉴2));
         when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
-        when(menuRepository.findAllById(request.findAllMenuIds()))
-                .thenReturn(Arrays.asList(뿌링클_세트1, 뿌링클_세트2));
 
         assertThatThrownBy(() -> orderService.create(request)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -134,7 +141,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void 주문_목록_조회() {
-        when(orderRepository.findAll()).thenReturn(Arrays.asList(주문));
+        when(orderRepository.findAll()).thenReturn(Collections.singletonList(주문));
 
         List<OrderResponse> orders = orderService.list();
 
@@ -149,7 +156,6 @@ class OrderServiceTest {
     @Test
     void 주문_상태_변경() {
         when(orderRepository.findById(주문.getId())).thenReturn(Optional.of(주문));
-        when(orderRepository.save(주문)).thenReturn(주문);
 
         orderService.changeOrderStatus(주문.getId(), OrderStatus.COMPLETION);
 

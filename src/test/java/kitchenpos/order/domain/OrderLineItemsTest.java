@@ -10,51 +10,53 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderLineItemsTest {
-    private MenuGroup 뼈치킨;
-    private Menu 뿌링클_세트;
-    private Product 뿌링클;
-    private Product 치즈볼;
-    private OrderTable 주문테이블;
-    private Order 주문;
-    private OrderLineItem 뿌링클_세트_주문;
+    private Product 후라이드치킨;
+    private Product 양념치킨;
+    private MenuProduct 후라이드치킨상품;
+    private MenuProduct 양념치킨상품;
+    private MenuGroup 치킨단품;
+    private Menu 후라이드치킨단품;
+    private Menu 양념치킨단품;
+    private OrderLineItem 후라이드치킨단품_주문항목;
+    private OrderLineItem 양념치킨단품_주문항목;
 
     @BeforeEach
     void setUp() {
-        뼈치킨 = new MenuGroup("뼈치킨");
-        뿌링클_세트 = new Menu("뼈치킨 세트", BigDecimal.valueOf(22000), 뼈치킨);
-        뿌링클 = new Product("뿌링클", BigDecimal.valueOf(18000));
-        치즈볼 = new Product("치즈볼", BigDecimal.valueOf(4000));
-        주문테이블 = new OrderTable(1, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
-
-        뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
-                new MenuProduct(뿌링클_세트, 치즈볼, 2L)));
-
-        뿌링클_세트_주문 = new OrderLineItem(주문, 뿌링클_세트, 1L);
+        후라이드치킨 = Product.of(1L, "치킨버거", BigDecimal.valueOf(15000));
+        양념치킨 = Product.of(3L, "불고기버거", BigDecimal.valueOf(16000));
+        양념치킨상품 = MenuProduct.of(양념치킨, 1L);
+        후라이드치킨상품 = MenuProduct.of(후라이드치킨, 1L);
+        치킨단품 = MenuGroup.of(1L, "햄버거단품");
+        양념치킨단품 = Menu.of(2L, "치킨버거단품", BigDecimal.valueOf(15000), 치킨단품.getId(), Collections.singletonList(후라이드치킨상품));
+        후라이드치킨단품 = Menu.of(1L, "불고기버거단품", BigDecimal.valueOf(16000), 치킨단품.getId(), Collections.singletonList(양념치킨상품));
+        후라이드치킨단품_주문항목 = OrderLineItem.of(OrderMenu.of(후라이드치킨단품), 2);
+        양념치킨단품_주문항목 = OrderLineItem.of(OrderMenu.of(양념치킨단품), 1);
     }
 
-    @DisplayName("주문 상품을 추가한다.")
+    @DisplayName("주문 항목 집합을 생성한다.")
     @Test
-    void 주문_상품_추가() {
-        OrderLineItems orderLineItems = new OrderLineItems();
+    void 주문_항목_집합_생성() {
+        // when
+        OrderLineItems orderLineItems = OrderLineItems.of(Arrays.asList(후라이드치킨단품_주문항목, 양념치킨단품_주문항목));
 
-        orderLineItems.addOrderLineItem(주문, 뿌링클_세트_주문);
-
-        assertThat(orderLineItems.getOrderLineItems()).hasSize(1);
+        // then
+        assertAll(
+                () -> assertThat(orderLineItems.getOrderLineItems()).hasSize(2),
+                () -> assertThat(orderLineItems.getOrderLineItems()).containsExactly(후라이드치킨단품_주문항목, 양념치킨단품_주문항목)
+        );
     }
 
-    @DisplayName("이미 존재하는 주문 상품은 추가되지 않는다.")
+    @DisplayName("주문 항목이 비어있으면 주문 항목 집합 생성 시 에러가 발생한다.")
     @Test
-    void 이미_존재하는_주문_상품_추가() {
-        OrderLineItems orderLineItems = new OrderLineItems();
-
-        orderLineItems.addOrderLineItem(주문, 뿌링클_세트_주문);
-        orderLineItems.addOrderLineItem(주문, 뿌링클_세트_주문);
-
-        assertThat(orderLineItems.getOrderLineItems()).hasSize(1);
+    void 빈_주문항목_주문_항목_집합_생성() {
+        // when & then
+        assertThatThrownBy(() -> OrderLineItems.of(Collections.emptyList())).isInstanceOf(IllegalArgumentException.class);
     }
 }

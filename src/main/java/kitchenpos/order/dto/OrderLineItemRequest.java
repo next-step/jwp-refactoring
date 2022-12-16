@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 import java.util.List;
 
@@ -26,9 +27,12 @@ public class OrderLineItemRequest {
                 .collect(toList());
     }
 
-    public OrderLineItem toOrderLineItem(Order order, List<Menu> menus) {
-        Menu target = menus.stream().filter(menu -> menu.getId().equals(menuId)).findFirst().get();
-        return new OrderLineItem(order, target, quantity);
+    public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
+        return new OrderLineItemRequest(orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+    }
+
+    public OrderLineItem toOrderLineItem(OrderMenu menu) {
+        return OrderLineItem.of(menu, quantity);
     }
 
     public Long getMenuId() {

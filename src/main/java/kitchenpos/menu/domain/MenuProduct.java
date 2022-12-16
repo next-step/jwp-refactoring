@@ -29,6 +29,28 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this.seq = seq;
+        this.menu = menu;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(null, null, product, quantity);
+    }
+
+    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
+        return new MenuProduct(seq, menu, product, quantity);
+    }
+
+    public void updateMenu(Menu menu) {
+        if (this.menu != menu) {
+            this.menu = menu;
+            menu.addMenuProduct(this);
+        }
+    }
+
     public BigDecimal getPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
@@ -47,12 +69,5 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void updateMenu(Menu menu) {
-        if (this.menu != menu) {
-            this.menu = menu;
-            menu.addMenuProduct(this);
-        }
     }
 }
