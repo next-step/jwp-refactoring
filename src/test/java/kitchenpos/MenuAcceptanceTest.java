@@ -42,14 +42,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 파닭치킨 = 상품_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L)).as(Product.class);
                 뿌링클치킨 = 상품_생성_요청("뿌링클치킨", BigDecimal.valueOf(15_000L)).as(Product.class);
 
-                ExtractableResponse<Response> response = 메뉴_생성_요청("강정1,후라이드1치킨",
+                ExtractableResponse<Response> response = 메뉴_생성_요청("파닭치킨, 뿌링클치킨",
                     BigDecimal.valueOf(15_000L),
                     신메뉴.getId(), 파닭치킨, 뿌링클치킨);
 
                 메뉴_생성됨(response);
             }),
             dynamicTest("가격이 0미만의 메뉴을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(-1),
+                ExtractableResponse<Response> response = 메뉴_생성_요청("파닭치킨", BigDecimal.valueOf(-1),
                     신메뉴.getId(), 파닭치킨);
 
                 메뉴_생성_실패됨(response);
@@ -61,13 +61,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 메뉴_생성_실패됨(response);
             }),
             dynamicTest("메뉴 그룹 없이 메뉴을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
+                ExtractableResponse<Response> response = 메뉴_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L),
                     null, 파닭치킨);
 
                 메뉴_생성_실패됨(response);
             }),
             dynamicTest("상품 없이 메뉴을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
+                ExtractableResponse<Response> response = 메뉴_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L),
                     신메뉴.getId());
 
                 메뉴_생성_실패됨(response);
@@ -76,13 +76,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 Product 존재하지_않는_상품 = new Product();
                 존재하지_않는_상품.setId(Long.MAX_VALUE);
 
-                ExtractableResponse<Response> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
+                ExtractableResponse<Response> response = 메뉴_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L),
                     신메뉴.getId(), 존재하지_않는_상품);
 
                 메뉴_생성_실패됨(response);
             }),
             dynamicTest("상품 가격보다 비싼 메뉴을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 메뉴_생성_요청("비싼 강정치킨", BigDecimal.valueOf(18_000L),
+                ExtractableResponse<Response> response = 메뉴_생성_요청("고급치킨", BigDecimal.valueOf(18_000L),
                     신메뉴.getId(), 파닭치킨);
 
                 메뉴_생성_실패됨(response);
@@ -92,7 +92,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
                 메뉴_목록_응답됨(response);
-                메뉴_목록_확인됨(response, "강정1,후라이드1치킨");
+                메뉴_목록_확인됨(response, "파닭치킨, 뿌링클치킨");
                 메뉴_목록_메뉴에_메뉴_상품이_포함됨(response, 파닭치킨, 뿌링클치킨);
             })
         );
