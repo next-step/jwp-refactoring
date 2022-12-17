@@ -1,6 +1,5 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -22,9 +21,11 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 그룹 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class MenuGroupTest {
+public class MenuGroupServiceTest {
+
     @Mock
     private MenuGroupRepository menuGroupRepository;
+
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -33,8 +34,8 @@ public class MenuGroupTest {
 
     @BeforeEach
     void setUp() {
-        한마리메뉴_메뉴그룹 = new MenuGroup(1L, "한마리메뉴");
-        두마리메뉴_메뉴그룹 = new MenuGroup(2L, "두마리메뉴");
+        한마리메뉴_메뉴그룹 = new MenuGroup("한마리메뉴");
+        두마리메뉴_메뉴그룹 = new MenuGroup("두마리메뉴");
     }
 
     @DisplayName("메뉴 그룹을 생성할 수 있다.")
