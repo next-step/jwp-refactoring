@@ -3,13 +3,14 @@ package kitchenpos.acceptance;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductCreateRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.fixture.ProductFixture;
 import kitchenpos.rest.ProductRestAssured;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,44 +19,36 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class ProductAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
-    void 신규_상품_정보가_주어진_경우_상품_등록_요청시_요청에_성공한다() {
+    @DisplayName("신규 상품 정보가 주어진 경우 상품 등록 요청시 요청에 성공한다")
+    void createProductThenReturnProductInfoResponse() {
         // given
-        String 상품명 = "강정치킨";
-        BigDecimal 상품가격 = BigDecimal.valueOf(12_000);
+        ProductCreateRequest request = ProductCreateRequest.of("강정치킨", 12_000L);
 
         // when
-        ExtractableResponse<Response> response = ProductRestAssured.상품_등록_요청(상품명, 상품가격);
+        ExtractableResponse<Response> response = ProductRestAssured.상품_등록_요청(request);
 
         // then
-        신규_상품_등록됨(response, 상품명, 상품가격);
+        ProductResponse productResponse = response.as(ProductResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(productResponse.compareRequest(request)).isTrue()
+        );
     }
 
     @Test
-    void 상품_목록_조회_요청시_요청에_성공한다() {
+    @DisplayName("상품 목록 조회 요청시 요청에 성공한다")
+    void findAllProductsThenReturnProductInfoResponses() {
         // given
-        ProductRestAssured.상품_등록됨(ProductFixture.후라이드);
+        ProductRestAssured.상품_등록됨(ProductFixture.강정치킨);
 
         // when
         ExtractableResponse<Response> response = ProductRestAssured.상품_목록_조회_요청();
 
         // then
-        상품_목록_조회됨(response);
-    }
-
-    private void 신규_상품_등록됨(ExtractableResponse<Response> response, String name, BigDecimal price) {
-        Product product = response.as(Product.class);
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(product.getName()).isEqualTo(name),
-                () -> assertThat(product.getPrice().floatValue()).isEqualTo(price.floatValue())
-        );
-    }
-
-    private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
-        List<Product> products = response.as(new TypeRef<List<Product>>() {});
+        List<ProductResponse> productResponses = response.as(new TypeRef<List<ProductResponse>>() {});
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(products).hasSize(1)
+                () -> assertThat(productResponses).hasSize(1)
         );
     }
 }

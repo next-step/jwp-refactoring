@@ -2,10 +2,8 @@ package kitchenpos.fixture;
 
 import kitchenpos.domain.Product;
 
-import java.math.BigDecimal;
-
 public class ProductFixture {
 
-    public static final Product 페퍼로니 = new Product("페퍼로니", new BigDecimal(12_000));
-    public static final Product 후라이드 = new Product("후라이드", new BigDecimal(16_000));
+    public static final Product 후라이드 = Product.of("후라이드", 16_000L);
+    public static final Product 강정치킨 = Product.of("강정치킨", 12_000L);
 }

@@ -1,22 +1,24 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductCreateRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.fixture.ProductFixture;
+import kitchenpos.message.PriceMessage;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -26,83 +28,68 @@ import static org.mockito.Mockito.times;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
-    private Product 후라이드;
+    private Product product;
 
     @BeforeEach
     void setUp() {
-        this.후라이드 = ProductFixture.후라이드;
+        this.product = ProductFixture.후라이드;
     }
 
     @Test
-    void 상품_등록시_등록에_성공하고_상품_정보를_반환한다() {
+    @DisplayName("상품 등록시 등록에 성공하고 상품 정보를 반환한다")
+    void createProductThenReturnProductInfoTest() {
         // given
-        Product 상품_등록_요청 = new Product("후라이드", new BigDecimal(12_000));
-        given(productDao.save(any())).willReturn(상품_등록_요청);
+        ProductCreateRequest request = ProductCreateRequest.of("후라이드", 12_000L);
+        given(productRepository.save(any())).willReturn(request.toProduct());
 
         // when
-        Product 신규_상품 = productService.create(상품_등록_요청);
+        ProductResponse response = productService.createProduct(request);
 
         // then
-        상품_등록됨(신규_상품, 상품_등록_요청.getName(), 상품_등록_요청.getPrice());
+        then(productRepository).should(times(1)).save(any());
+        assertThat(response.compareRequest(request)).isTrue();
     }
 
     @Test
-    void 상품_등록시_상품_가격이_누락된경우_예외처리되어_등록에_실패한다() {
+    @DisplayName("상품 등록시 상품 가격이 누락된경우 예외처리되어 등록에 실패한다")
+    void createProductThenThrownByEmptyPriceTest() {
         // given
-        Product 가격_누락된_상품_등록_요청 = new Product("후라이드", null);
+        ProductCreateRequest request = new ProductCreateRequest("후라이드", null);
 
         // when
-        assertThatThrownBy(() -> productService.create(가격_누락된_상품_등록_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        // then
-        상품_등록실패(가격_누락된_상품_등록_요청);
+        assertThatThrownBy(() -> productService.createProduct(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(PriceMessage.CREATE_ERROR_PRICE_MUST_BE_NOT_NULL.message());
     }
 
     @Test
-    void 상품_등록시_상품_가격이_0원_미만인경우_예외처리되어_등록에_실패한다() {
+    @DisplayName("상품 등록시 상품 가격이 0원 미만인경우 예외처리되어 등록에 실패한다")
+    void createProductThenThrownByLessThanZeroPriceTest() {
         // given
-        Product 잘못된_가격의_상품_등록_요청 = new Product("페퍼로니", BigDecimal.valueOf(-1));
+        ProductCreateRequest request = ProductCreateRequest.of("후라이드", -1L);
 
         // when
-        assertThatThrownBy(() -> productService.create(잘못된_가격의_상품_등록_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        // then
-        상품_등록실패(잘못된_가격의_상품_등록_요청);
+        assertThatThrownBy(() -> productService.createProduct(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(PriceMessage.CREATE_ERROR_PRICE_MUST_BE_GREATER_THAN_ZERO.message());
     }
 
     @Test
-    void 상품_목록_조회시_등록된_상품_목록을_반환한다() {
+    @DisplayName("상품 목록 조회시 등록된 상품 목록을 반환한다")
+    void findAllProductsTest() {
         // given
-        given(productDao.findAll()).willReturn(Arrays.asList(후라이드));
+        given(productRepository.findAll()).willReturn(Arrays.asList(product));
 
         // when
-        List<Product> 상품_목록 = productService.list();
+        List<ProductResponse> productResponses = productService.findAll();
 
         // then
-        상품_목록_조회됨(상품_목록, 후라이드);
-    }
-
-    private void 상품_등록됨(Product product, String name, BigDecimal price) {
-        then(productDao).should(times(1)).save(any());
-        assertAll(
-                () -> assertThat(product.getName()).isEqualTo(name),
-                () -> assertThat(product.getPrice().floatValue()).isEqualTo(price.floatValue())
-        );
-    }
-
-    private void 상품_등록실패(Product product) {
-        then(productDao).should(times(0)).save(any());
-    }
-
-    private void 상품_목록_조회됨(List<Product> products, Product... expectedProducts) {
-        then(productDao).should(times(1)).findAll();
-        assertThat(products).hasSize(expectedProducts.length);
+        then(productRepository).should(times(1)).findAll();
+        assertThat(productResponses).hasSize(1);
     }
 }
