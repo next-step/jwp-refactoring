@@ -29,4 +29,29 @@ class PriceTest {
         assertThatThrownBy(() -> Price.from(BigDecimal.valueOf(price)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("가격을 더할 수 있다 ")
+    @Test
+    void sum() {
+        //given
+        Price 천원 = Price.from(BigDecimal.valueOf(1000));
+        Price 이천원 = Price.from(BigDecimal.valueOf(2000));
+        //when
+        Price 삼천원 = 천원.sum(이천원);
+        //then
+        assertThat(삼천원).isEqualTo(Price.from(BigDecimal.valueOf(3000)));
+
+    }
+
+    @DisplayName("가격을 곱할 수 있다.")
+    @Test
+    void multiply() {
+        //given
+        Price 천원 = Price.from(BigDecimal.valueOf(1000));
+        long 수량 = 3;
+        //when
+        Price 삼천원 = 천원.multiply(수량);
+        //then
+        assertThat(삼천원).isEqualTo(Price.from(BigDecimal.valueOf(3000)));
+    }
 }

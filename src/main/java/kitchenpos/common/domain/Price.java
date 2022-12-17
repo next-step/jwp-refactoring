@@ -27,6 +27,14 @@ public class Price {
         return price;
     }
 
+    public Price multiply(long quantity) {
+        return Price.from(price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price sum(Price price) {
+        return Price.from(this.price.add(price.price));
+    }
+
     private void validPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
