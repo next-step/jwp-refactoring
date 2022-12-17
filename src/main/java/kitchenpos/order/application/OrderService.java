@@ -11,6 +11,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -27,32 +28,25 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderValidator orderValidator
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        orderValidator.validator(orderRequest);
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findAllOrderLineItemByMenuId(orderLineItemRequests);
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        validateOrderTable(orderTable);
-        Order order = Order.of(orderTable.getId(), OrderLineItems.from(orderLineItems));
+        Order order = Order.of(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems));
         return OrderResponse.from(orderRepository.save(order));
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_NOT_EMPTY.getErrorMessage());
-        }
     }
 
     public List<OrderResponse> list() {
@@ -67,11 +61,6 @@ public class OrderService {
         final Order order = findOrderById(orderId);
         order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(order);
-    }
-
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException());
     }
 
     private List<OrderLineItem> findAllOrderLineItemByMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
