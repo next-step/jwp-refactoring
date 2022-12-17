@@ -51,6 +51,13 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    void 상품등록시_상품명을_입력안하면_에러발생() {
+        ExtractableResponse<Response> response = 상품_등록(null, new BigDecimal(17_000));
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @Test
     void 상품등록시_가격을_입력안하면_에러발생() {
         ExtractableResponse<Response> response = 상품_등록("강정치킨", null);
 
