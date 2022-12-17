@@ -41,3 +41,9 @@ allprojects {
         useJUnitPlatform()
     }
 }
+
+project(':kitchenpos-menu') {
+    dependencies {
+        implementation project(':kitchenpos-product')
+    }
+}

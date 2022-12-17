@@ -1,9 +1,8 @@
 package kitchenpos.menu.domain;
 
-import org.springframework.util.ObjectUtils;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import org.springframework.util.ObjectUtils;
 
 @Embeddable
 public class MenuName {

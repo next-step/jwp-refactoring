@@ -1,13 +1,13 @@
 package kitchenpos.menu.domain;
 
 
-import static kitchenpos.product.domain.ProductFixture.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class MenuValidatorTest {
         Menu menu = new Menu("두마리치킨", BigDecimal.valueOf(35000), 1L);
         menu.addMenuProduct(new MenuProduct(1L, 2));
         given(menuGroupRepository.existsById(1L)).willReturn(true);
-        given(productRepository.findById(1L)).willReturn(Optional.of(후라이드치킨));
+        given(productRepository.findById(1L)).willReturn(Optional.of(new Product("후라이드치킨", BigDecimal.valueOf(15000))));
 
         assertThatThrownBy(() -> menuValidator.validate(menu))
                 .isInstanceOf(IllegalArgumentException.class)

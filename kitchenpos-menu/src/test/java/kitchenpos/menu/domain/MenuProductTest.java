@@ -1,11 +1,10 @@
 package kitchenpos.menu.domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class MenuProductTest {
     @DisplayName("메뉴상품의 가격을 계산할 수 있다.")
