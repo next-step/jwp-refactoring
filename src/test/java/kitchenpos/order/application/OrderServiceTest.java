@@ -99,21 +99,6 @@ class OrderServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 수정 API - 이미 완료된 주문")
-    @ParameterizedTest
-    @EnumSource
-    void changeOrderStatus_save_order_already_completion(OrderStatus orderStatus) {
-        // given
-        Long orderId = 1L;
-        Order order = orderRequest(orderStatus);
-        given(orderRepository.findById(orderId)).willReturn(
-            Optional.of(savedOrder(orderId, OrderStatus.COMPLETION)));
-
-        // when, then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, order))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 수정 API")
     @ParameterizedTest
     @EnumSource

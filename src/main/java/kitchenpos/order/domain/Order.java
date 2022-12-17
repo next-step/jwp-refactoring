@@ -59,7 +59,7 @@ public class Order {
 
     private void validateCurrentOrderStatus() {
         if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException("이미 완료된 주문은 변경할 수 없습니다.");
+            throw new IllegalStateException("이미 완료된 주문은 변경할 수 없습니다.");
         }
     }
 

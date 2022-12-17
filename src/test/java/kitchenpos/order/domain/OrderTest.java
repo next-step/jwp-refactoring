@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 class OrderTest {
-
     @DisplayName("주문 상태 변경 - 이미 완료된 주문")
     @ParameterizedTest
     @EnumSource
@@ -17,8 +16,7 @@ class OrderTest {
 
         // when, then
         assertThatThrownBy(() -> order.updateOrderStatus(orderStatus))
-            // 문맥상 IllegalStateException 이 맞을듯 싶음, 스팩 논의 필요
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("주문 상태 변경")
