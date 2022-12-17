@@ -1,65 +1,74 @@
 package kitchenpos.ui;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static kitchenpos.ui.MenuGroupRestControllerTest.메뉴_그룹_생성_요청;
+import static kitchenpos.ui.MenuRestControllerTest.메뉴_생성_요청;
+import static kitchenpos.ui.OrderRestControllerTest.주문_생성_요청;
+import static kitchenpos.ui.ProductRestControllerTest.상품_생성_요청;
+import static kitchenpos.ui.TableRestControllerTest.좌석_생성_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.MenuProductRequest;
+import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.dto.response.TableGroupResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 class TableGroupRestControllerTest extends BaseTest {
-    private final Long 좌석_그룹_ID = 1L;
-    private final OrderTable 좌석_1 = new OrderTable(1L, null, 1, true);
-    private final OrderTable 좌석_2 = new OrderTable(2L, null, 1, true);
-    private final List<OrderTable> 좌석_목록 = Arrays.asList(좌석_1, 좌석_2);
+    private OrderTable 좌석_요청_1;
+    private OrderTable 좌석_요청_2;
+    private TableGroupRequest 좌석_그룹_요청;
 
-    @Test
-    void 생성() throws Exception {
-        String content = objectMapper.writeValueAsString(new TableGroup(좌석_그룹_ID, null, 좌석_목록));
+    @BeforeEach
+    void beforeEach() {
+        좌석_요청_1 = new OrderTable(null, 3, true);
+        좌석_요청_2 = new OrderTable(null, 1, true);
 
-        생성_요청(content);
+        Long orderTableId1 = 좌석_생성_요청(좌석_요청_1).getBody().getId();
+        Long orderTableId2 = 좌석_생성_요청(좌석_요청_2).getBody().getId();
+
+        좌석_그룹_요청 = new TableGroupRequest(Arrays.asList(orderTableId1, orderTableId2));
     }
 
     @Test
-    void 제거() throws Exception {
-        String content = objectMapper.writeValueAsString(new TableGroup(좌석_그룹_ID, null, 좌석_목록));
+    void 생성() {
+        ResponseEntity<TableGroupResponse> response = 좌석_그룹_생성_요청(좌석_그룹_요청);
 
-        Long id = 생성_요청(content);
-
-        제거_요청(id);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
-    private Long 생성_요청(String content) throws Exception {
-        MvcResult response = mockMvc.perform(post("/api/table-groups")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print())
-                .andReturn();
+    @Test
+    void 제거() {
+        ResponseEntity<TableGroupResponse> created = 좌석_그룹_생성_요청(좌석_그룹_요청);
 
-        return ID_반환(response);
+        ResponseEntity<Void> response = 좌석_그룹_제거_요청(created.getBody().getId());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
-    private Long ID_반환(MvcResult response){
-        String location = response.getResponse().getHeader("Location");
-        Pattern pattern = Pattern.compile("(\\d+)$");
-        Matcher matcher = pattern.matcher(location);
-        matcher.find();
-        return Long.parseLong(matcher.group(), 10);
+    private ResponseEntity<TableGroupResponse> 좌석_그룹_생성_요청(TableGroupRequest tableGroupRequest) {
+        return testRestTemplate.postForEntity(basePath + "/api/table-groups", tableGroupRequest, TableGroupResponse.class);
     }
 
-    private void 제거_요청(Long id) throws Exception {
-        mockMvc.perform(delete("/api/table-groups/" + id))
-                .andExpect(status().isNoContent())
-                .andDo(print());
+    private ResponseEntity<Void> 좌석_그룹_제거_요청(Long tableGroupId) {
+        return testRestTemplate.exchange(
+                basePath + "/api/table-groups/" + tableGroupId,
+                HttpMethod.DELETE,
+                null,
+                new ParameterizedTypeReference<Void>() {});
     }
 }

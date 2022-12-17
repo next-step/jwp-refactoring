@@ -14,14 +14,14 @@ class OrderTest {
         Order order = new Order();
         order.setId(1L);
         order.setOrderTableId(1L);
-        order.setOrderStatus("MEAL");
+        order.setOrderStatus(OrderStatus.MEAL);
         order.setOrderedTime(NOW);
         order.setOrderLineItems(Arrays.asList(new OrderLineItem()));
 
         assertAll(
                 () -> assertThat(order.getId()).isEqualTo(1L),
                 () -> assertThat(order.getOrderTableId()).isEqualTo(1L),
-                () -> assertThat(order.getOrderStatus()).isEqualTo("MEAL"),
+                () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL),
                 () -> assertThat(order.getOrderedTime()).isEqualTo(NOW),
                 () -> assertThat(order.getOrderLineItems().size()).isEqualTo(1)
         );

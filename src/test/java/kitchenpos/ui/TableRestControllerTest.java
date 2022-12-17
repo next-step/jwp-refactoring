@@ -1,96 +1,88 @@
 package kitchenpos.ui;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.OrderTableEmptyRequest;
+import kitchenpos.dto.request.OrderTableNumberOfGuestsRequest;
+import kitchenpos.dto.response.OrderTableResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 class TableRestControllerTest extends BaseTest {
-    private final Long 인원_변경_테스트_좌석_ID = 9L;
-    private final OrderTable 좌석 = new OrderTable(1L, 1L, 4, false);
-    private final OrderTable 공석_변경_좌석 = new OrderTable(1L, 1L, 4, false);
-    private final OrderTable 인원_변경_좌석 = new OrderTable(1L, 1L, 0, false);
+    private final OrderTable 좌석 = new OrderTable(null, 4, false);
+    private final OrderTableEmptyRequest 공석_변경_요청 = new OrderTableEmptyRequest(true);
+    private final OrderTableNumberOfGuestsRequest 인원_변경_요청 = new OrderTableNumberOfGuestsRequest(0);
 
     @Test
-    void 생성() throws Exception {
-        String content = objectMapper.writeValueAsString(좌석);
+    void 생성() {
+        ResponseEntity<OrderTableResponse> response = 좌석_생성_요청(좌석);
 
-        생성_요청(content);
-    }
-
-    @Test
-    void 조회() throws Exception {
-        조회_요청();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
-    void 공석으로_변경() throws Exception {
-        String content = objectMapper.writeValueAsString(좌석);
+    void 조회() {
+        좌석_생성_요청(좌석);
 
-        생성_요청(content);
+        ResponseEntity<List<OrderTable>> response = 조회_요청();
 
-        content = objectMapper.writeValueAsString(공석_변경_좌석);
-
-        공석_변경_요청(좌석.getId(), content);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().size()).isEqualTo(1);
     }
 
     @Test
-    void 인원_변경() throws Exception {
-        String content = objectMapper.writeValueAsString(인원_변경_좌석);
+    void 공석으로_변경() {
+        Long orderTableId = 좌석_생성_요청(좌석).getBody().getId();
+        HttpEntity<OrderTableEmptyRequest> requestEntity = new HttpEntity<>(공석_변경_요청);
 
-        인원_변경_요청(인원_변경_테스트_좌석_ID, content);
+        ResponseEntity<OrderTableResponse> response = 공석_변경_요청(orderTableId, requestEntity);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().isEmpty()).isTrue();
     }
 
-    private Long 생성_요청(String content) throws Exception {
-        MvcResult response = mockMvc.perform(post("/api/tables")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print())
-                .andReturn();
-        return ID_반환(response);
+    @Test
+    void 인원_변경() {
+        ResponseEntity<OrderTableResponse> create = 좌석_생성_요청(좌석);
+        HttpEntity<OrderTableNumberOfGuestsRequest> requestEntity = new HttpEntity<>(인원_변경_요청);
+
+        ResponseEntity<OrderTableResponse> response = 인원_변경_요청(create.getBody().getId(), requestEntity);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getNumberOfGuests()).isEqualTo(0);
     }
 
-    private Long ID_반환(MvcResult response){
-        String location = response.getResponse().getHeader("Location");
-        Pattern pattern = Pattern.compile("(\\d+)$");
-        Matcher matcher = pattern.matcher(location);
-        matcher.find();
-        return Long.parseLong(matcher.group(), 10);
+    public static ResponseEntity<OrderTableResponse> 좌석_생성_요청(OrderTable orderTable) {
+        return testRestTemplate.postForEntity(basePath + "/api/tables", orderTable, OrderTableResponse.class);
     }
 
-    private void 조회_요청() throws Exception {
-        mockMvc.perform(get("/api/tables"))
-                .andExpect(status().isOk())
-                .andDo(print());
+    private ResponseEntity<List<OrderTable>> 조회_요청() {
+        return testRestTemplate.exchange(
+                basePath + "/api/tables",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<OrderTable>>() {});
     }
 
-    private void 공석_변경_요청(Long id, String content) throws Exception {
-        mockMvc.perform(put("/api/tables/" + id + "/empty")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andReturn();
+    private ResponseEntity<OrderTableResponse> 공석_변경_요청(Long id, HttpEntity<OrderTableEmptyRequest> requestEntity) {
+        return testRestTemplate.exchange(
+                basePath + "/api/tables/" + id + "/empty",
+                HttpMethod.PUT,
+                requestEntity,
+                new ParameterizedTypeReference<OrderTableResponse>() {});
     }
 
-    private void 인원_변경_요청(Long id, String content) throws Exception {
-        mockMvc.perform(put("/api/tables/" + id + "/number-of-guests")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andReturn();
+    private ResponseEntity<OrderTableResponse> 인원_변경_요청(Long id, HttpEntity<OrderTableNumberOfGuestsRequest> requestEntity) {
+        return testRestTemplate.exchange(
+                basePath + "/api/tables/" + id + "/number-of-guests",
+                HttpMethod.PUT,
+                requestEntity,
+                new ParameterizedTypeReference<OrderTableResponse>() {});
     }
 }

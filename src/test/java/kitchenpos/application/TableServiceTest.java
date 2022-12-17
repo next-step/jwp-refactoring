@@ -1,5 +1,10 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
+import static kitchenpos.exception.ErrorCode.NOT_EXISTS_TABLE;
+import static kitchenpos.exception.ErrorCode.PEOPLE_LESS_THAN_ZERO;
+import static kitchenpos.exception.ErrorCode.TABLE_IS_EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -8,12 +13,16 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.exception.KitchenposException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,93 +33,100 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @InjectMocks
     private TableService tableService;
     private OrderTable 주문_좌석;
     private OrderTable 공석_주문_좌석;
     private OrderTable 공석_변경_요청;
     private OrderTable 인원_변경_요청;
+    private TableGroup 좌석_그룹;
 
     @BeforeEach
     void setUp() {
         주문_좌석 = new OrderTable(1L, null, 0, false);
+        좌석_그룹 = new TableGroup(1L, Arrays.asList(주문_좌석));
         공석_주문_좌석 = new OrderTable(1L, null, 0, true);
-        공석_변경_요청 = new OrderTable(1L, 1L, 0, true);
+        공석_변경_요청 = new OrderTable(1L, 좌석_그룹, 0, true);
         인원_변경_요청 = new OrderTable(1L, null, 4, false);
     }
 
     @Test
     void 생성() {
-        given(orderTableDao.save(any())).willReturn(주문_좌석);
+        given(orderTableRepository.save(any())).willReturn(주문_좌석);
 
-        OrderTable orderTable = tableService.create(주문_좌석);
+        OrderTableResponse response = tableService.create(주문_좌석);
 
         assertAll(
-                () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(0),
-                () -> assertThat(orderTable.getTableGroupId()).isNull(),
-                () -> assertThat(orderTable.isEmpty()).isFalse()
+                () -> assertThat(response.getNumberOfGuests()).isEqualTo(0),
+                () -> assertThat(response.getTableGroup()).isNull(),
+                () -> assertThat(response.isEmpty()).isFalse()
         );
     }
 
     @Test
     void 조회() {
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(주문_좌석));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_좌석));
 
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> responses = tableService.list();
 
-        assertThat(orderTables).containsExactly(주문_좌석);
+        assertThat(responses.size()).isEqualTo(1);
     }
 
     @Test
     void 공석으로_변경() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_좌석));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(공석_변경_요청);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_좌석));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
 
-        OrderTable orderTable = tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청);
+        OrderTableResponse response = tableService.changeEmpty(주문_좌석.getId(), true);
 
-        assertThat(orderTable.isEmpty()).isTrue();
+        assertThat(response.isEmpty()).isTrue();
     }
 
     @Test
     void 등록된_주문_좌석이_아닌_경우() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> tableService.changeEmpty(주문_좌석.getId(), true)
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_EXISTS_TABLE.getDetail());
     }
 
     @Test
     void 좌석_그룹으로_등록된_경우() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(공석_변경_요청));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(공석_변경_요청));
 
         assertThatThrownBy(
-                () -> tableService.changeEmpty(공석_변경_요청.getId(), 공석_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> tableService.changeEmpty(공석_변경_요청.getId(), true)
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_BEEN_UNGROUP.getDetail());
     }
 
     @Test
     void 좌석_상태가_준비중이거나_식사중인_경우() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_좌석));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_좌석));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         assertThatThrownBy(
-                () -> tableService.changeEmpty(주문_좌석.getId(), 공석_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> tableService.changeEmpty(주문_좌석.getId(), true)
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(EXISTS_NOT_COMPLETION_STATUS.getDetail());
     }
 
     @Test
     void 좌석_인원_변경() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_좌석));
-        given(orderTableDao.save(any())).willReturn(인원_변경_요청);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_좌석));
+        given(orderTableRepository.save(any())).willReturn(인원_변경_요청);
 
-        OrderTable orderTable = tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청);
+        OrderTableResponse response = tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청);
 
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(4);
+        assertThat(response.getNumberOfGuests()).isEqualTo(4);
     }
 
     @Test
@@ -119,24 +135,30 @@ class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(PEOPLE_LESS_THAN_ZERO.getDetail());
     }
 
     @Test
     void 주문한_좌석이_아닌_경우() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(NOT_EXISTS_TABLE.getDetail());
     }
 
     @Test
     void 공석인_경우() {
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(공석_주문_좌석));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(공석_주문_좌석));
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        )
+                .isInstanceOf(KitchenposException.class)
+                .hasMessageContaining(TABLE_IS_EMPTY.getDetail());
     }
 }

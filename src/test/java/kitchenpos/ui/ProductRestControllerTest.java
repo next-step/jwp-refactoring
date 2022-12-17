@@ -1,42 +1,44 @@
 package kitchenpos.ui;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.util.List;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 class ProductRestControllerTest extends BaseTest {
     @Test
-    void 생성() throws Exception {
-        String content = objectMapper.writeValueAsString(new Product("후라이드", BigDecimal.valueOf(16000)));
+    void 생성() {
+        ResponseEntity<Product> response = 상품_생성_요청(new Product("후라이드", BigDecimal.valueOf(16000)));
 
-        생성_요청(content);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
-    void 조회() throws Exception {
-        조회_요청();
+    void 조회() {
+        상품_생성_요청(new Product("후라이드", BigDecimal.valueOf(16000)));
+        상품_생성_요청(new Product("양념치킨", BigDecimal.valueOf(17000)));
+
+        ResponseEntity<List<Product>> response = 상품_조회_요청();
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().size()).isEqualTo(2);
     }
 
-    private void 생성_요청 (String content) throws Exception {
-        mockMvc.perform(post("/api/products")
-                        .content(content)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(print());
+    public static ResponseEntity<Product> 상품_생성_요청(Product product) {
+        return testRestTemplate.postForEntity(basePath + "/api/products", product, Product.class);
     }
 
-    private void 조회_요청 () throws Exception {
-        mockMvc.perform(get("/api/products"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
+    private ResponseEntity<List<Product>> 상품_조회_요청() {
+        return testRestTemplate.exchange(
+                basePath + "/api/products",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Product>>() {});
     }
 }

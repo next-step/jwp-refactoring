@@ -1,23 +1,61 @@
 package kitchenpos.domain;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import kitchenpos.exception.KitchenposException;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.util.CollectionUtils;
+
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+    }
+
+    public void validateNullOrderLineItems() {
+        if(CollectionUtils.isEmpty(orderLineItems)){
+            throw new KitchenposException(NOT_EXISTS_ORDER_LINE_ITEMS);
+        }
     }
 
     public Long getId() {
@@ -36,11 +74,11 @@ public class Order {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -58,5 +96,26 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public int getOrderLineItemsSize(){
+        return orderLineItems.size();
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public void isCompletionOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new KitchenposException(ALREADY_COMPLETION_STATUS);
+        }
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        isCompletionOrderStatus();
+        this.orderStatus = orderStatus;
     }
 }
