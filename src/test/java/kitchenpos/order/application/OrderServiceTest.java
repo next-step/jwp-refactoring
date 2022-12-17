@@ -48,8 +48,7 @@ class OrderServiceTest {
 
         OrderResponse actual = orderService.create(orderRequest);
 
-        verify(orderValidator).validateMenu(any(Order.class));
-        verify(orderValidator).validateTable(any(Order.class));
+        verify(orderValidator).validate(any(Order.class));
         assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
