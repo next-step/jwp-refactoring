@@ -44,9 +44,6 @@ public class Price {
     }
 
     public boolean isBiggerThan(Price totalPrice) {
-        if (price.compareTo(totalPrice.price) > ZERO) {
-            return true;
-        }
-        return false;
+        return price.compareTo(totalPrice.price) > ZERO;
     }
 }

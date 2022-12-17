@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import kitchenpos.common.domain.Price;
 
@@ -13,7 +14,7 @@ import kitchenpos.common.domain.Price;
 public class MenuProducts {
     private static final int ZERO = 0;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
@@ -22,12 +23,12 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProduct> get() {
         return Collections.unmodifiableList(menuProducts);
     }
 
     public Price totalMenuPrice() {
-        Price total = new Price(BigDecimal.valueOf(0));
+        Price total = new Price(BigDecimal.valueOf(ZERO));
         for (MenuProduct menuProduct : menuProducts) {
             total = total.add(menuProduct.calculatePrice());
         }

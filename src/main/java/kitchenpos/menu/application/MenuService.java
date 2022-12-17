@@ -37,8 +37,6 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        //final BigDecimal price = request.getPrice();
-
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
         List<Product> products = productRepository.findAllById(request.getMenuProductIds());
@@ -55,6 +53,17 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, products));
         return MenuResponse.from(savedMenu);
+    }
+
+    private List<Product> findAllProductByIds(List<Long> ids) {
+        return ids.stream()
+                .map(this::findProductById)
+                .collect(Collectors.toList());
+    }
+
+    private Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
     }
 
     public List<MenuResponse> findAll() {

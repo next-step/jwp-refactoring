@@ -1,15 +1,18 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
-import org.springframework.data.annotation.CreatedDate;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.order.domain.Order;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 public class TableGroup {
@@ -39,10 +42,6 @@ public class TableGroup {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreatedDate() {

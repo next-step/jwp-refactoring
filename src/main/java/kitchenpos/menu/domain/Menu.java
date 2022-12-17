@@ -70,13 +70,13 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+        return menuProducts.get();
     }
 
     public void setMenuProducts(MenuProducts menuProducts) {
         validatePrice(menuProducts.totalMenuPrice());
         this.menuProducts = menuProducts;
-        menuProducts.getMenuProducts().forEach(menuProduct -> menuProduct.setMenu(this));
+        menuProducts.get().forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
     private void validatePrice(Price totalPrice) {
