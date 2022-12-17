@@ -3,7 +3,7 @@ package kitchenpos.table;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableFixture {

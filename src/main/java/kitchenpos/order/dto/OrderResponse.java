@@ -1,32 +1,23 @@
-package kitchenpos.dto;
+package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Order;
+import kitchenpos.order.domain.Order;
 
-public class OrderRequest {
+public class OrderResponse {
 
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItemRequest> orderLineItems;
+    private List<OrderLineItemResponse> orderLineItems;
 
-    public OrderRequest() {
+    public OrderResponse() {
     }
 
-    public OrderRequest(String orderStatus) {
-        this(null, null, orderStatus, null, Collections.emptyList());
-    }
-
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
-        this(null, orderTableId, null, null, orderLineItems);
-    }
-
-    public OrderRequest(Long id, Long orderTableId, String orderStatus,
-        LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
+    public OrderResponse(Long id, Long orderTableId, String orderStatus,
+        LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -34,14 +25,15 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder() {
-        return new Order(
-            id,
-            orderTableId,
-            orderStatus,
-            orderedTime,
-            orderLineItems.stream()
-                .map(OrderLineItemRequest::toOrderLineItem)
+    public static OrderResponse from(Order order) {
+        return new OrderResponse(
+            order.getId(),
+            order.getOrderTableId(),
+            order.getOrderStatus(),
+            order.getOrderedTime(),
+            order.getOrderLineItems()
+                .stream()
+                .map(OrderLineItemResponse::from)
                 .collect(Collectors.toList())
         );
     }
@@ -78,11 +70,11 @@ public class OrderRequest {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItems() {
+    public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
+    public void setOrderLineItems(final List<OrderLineItemResponse> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 }
