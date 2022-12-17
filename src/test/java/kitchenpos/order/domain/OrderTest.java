@@ -40,18 +40,10 @@ class OrderTest {
         하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
     }
 
-    @DisplayName("주문 테이블이 빈 값이면 에러가 발생한다.")
-    @Test
-    void validateOrderTableNotEmptyException() {
-        assertThatThrownBy(() -> Order.of(주문테이블A,
-            OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴)))))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        Order order = Order.of(주문테이블B,
+        Order order = Order.of(주문테이블B.getId(),
             OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
 
         order.changeOrderStatus(OrderStatus.COMPLETION);
@@ -62,7 +54,7 @@ class OrderTest {
     @DisplayName("완료된 주문은 상태 변경 시 오류가 발생한다.")
     @Test
     void validateOrderStatusCompleteException() {
-        Order order = Order.of(주문테이블B,
+        Order order = Order.of(주문테이블B.getId(),
             OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
         order.changeOrderStatus(OrderStatus.COMPLETION);
 

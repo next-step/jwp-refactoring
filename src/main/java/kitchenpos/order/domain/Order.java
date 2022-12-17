@@ -25,8 +25,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -40,28 +39,21 @@ public class Order {
     public Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
-        validateOrderTableNotEmpty(orderTable);
+    private Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
         orderLineItems.setOrder(this);
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, OrderLineItems.from(orderLineItems));
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, OrderLineItems.from(orderLineItems));
     }
 
-    public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(null, orderTable, orderLineItems);
-    }
-
-    private void validateOrderTableNotEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_NOT_EMPTY.getErrorMessage());
-        }
+    public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(null, orderTableId, orderLineItems);
     }
 
     public Order changeOrderStatus(OrderStatus orderStatus) {
@@ -86,8 +78,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

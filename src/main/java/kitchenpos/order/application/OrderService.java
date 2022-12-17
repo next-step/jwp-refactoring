@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
@@ -43,8 +44,15 @@ public class OrderService {
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findAllOrderLineItemByMenuId(orderLineItemRequests);
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        Order order = Order.of(orderTable, OrderLineItems.from(orderLineItems));
+        validateOrderTable(orderTable);
+        Order order = Order.of(orderTable.getId(), OrderLineItems.from(orderLineItems));
         return OrderResponse.from(orderRepository.save(order));
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if(orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_NOT_EMPTY.getErrorMessage());
+        }
     }
 
     public List<OrderResponse> list() {

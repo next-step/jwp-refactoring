@@ -74,7 +74,7 @@ public class TableGroupServiceTest {
         주문메뉴 = OrderMenu.from(하와이안피자세트);
         하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
         주문테이블 = OrderTable.of(1L, 0, false);
-        주문 = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(주문메뉴))));
+        주문 = Order.of(주문테이블.getId(), OrderLineItems.from(Collections.singletonList(하와이안피자세트주문요청.toOrderLineItem(주문메뉴))));
 
         주문테이블A = OrderTable.of(1L, 4, true);
         주문테이블B = OrderTable.of(2L, 6, true);
