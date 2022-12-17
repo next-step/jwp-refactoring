@@ -1,4 +1,4 @@
-package kitchenpos.utils;
+package kitchenpos;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

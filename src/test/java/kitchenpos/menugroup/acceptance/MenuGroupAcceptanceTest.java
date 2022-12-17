@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.utils.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {

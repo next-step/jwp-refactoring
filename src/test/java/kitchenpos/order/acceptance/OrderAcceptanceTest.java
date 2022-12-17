@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.utils.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.acceptance.MenuId;
 import kitchenpos.table.acceptance.OrderTableId;
 

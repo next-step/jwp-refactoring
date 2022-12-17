@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.utils.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.order.acceptance.OrderId;
 
 @DisplayName("주문 테이블 인수 테스트")

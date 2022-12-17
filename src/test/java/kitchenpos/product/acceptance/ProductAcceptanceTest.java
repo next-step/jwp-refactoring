@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.utils.AcceptanceTest;
+import kitchenpos.AcceptanceTest;
 
 @DisplayName("상품 테이블 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
