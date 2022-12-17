@@ -3,15 +3,14 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.product.Product;
 import kitchenpos.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class ProductAcceptanceStep {
-    private ProductAcceptanceStep() {
+public class ProductAcceptanceUtils {
+    private ProductAcceptanceUtils() {
     }
 
     public static ExtractableResponse<Response> 상품_등록되어_있음(ProductRequest request) {

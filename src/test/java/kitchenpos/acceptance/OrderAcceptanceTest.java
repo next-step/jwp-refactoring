@@ -14,22 +14,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.acceptance.MenuAcceptanceStep.메뉴_등록되어_있음;
-import static kitchenpos.acceptance.MenuGroupAcceptanceStep.메뉴_그룹_등록되어_있음;
-import static kitchenpos.acceptance.OrderAcceptanceStep.*;
-import static kitchenpos.acceptance.ProductAcceptanceStep.상품_등록되어_있음;
-import static kitchenpos.acceptance.TableAcceptanceStep.주문_테이블_등록되어_있음;
+import static kitchenpos.acceptance.MenuAcceptanceUtils.메뉴_등록되어_있음;
+import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.메뉴_그룹_등록되어_있음;
+import static kitchenpos.acceptance.OrderAcceptanceUtils.*;
+import static kitchenpos.acceptance.ProductAcceptanceUtils.상품_등록되어_있음;
+import static kitchenpos.acceptance.TableAcceptanceUtils.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 관련 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroupResponse 프리미엄메뉴;
-    private ProductResponse 허니콤보;
-    private MenuResponse 허니콤보치킨;
-    private OrderTableResponse 주문_테이블;
-    private OrderTableResponse 비어있는_주문_테이블;
+    private MenuGroupResponse premiumMenu;
+    private ProductResponse honeycombo;
+    private MenuResponse honeycomboChicken;
+    private OrderTableResponse orderTable;
+    private OrderTableResponse emptyTable;
 
     /**
      * Given 메뉴 그룹 등록되어 있음
@@ -43,39 +43,39 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        프리미엄메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("프리미엄메뉴")).as(MenuGroupResponse.class);
+        premiumMenu = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("premiumMenu")).as(MenuGroupResponse.class);
 
-        허니콤보 = 상품_등록되어_있음(ProductRequest.of("허니콤보", BigDecimal.valueOf(18000))).as(ProductResponse.class);
+        honeycombo = 상품_등록되어_있음(ProductRequest.of("honeycombo", BigDecimal.valueOf(18000))).as(ProductResponse.class);
 
-        List<MenuProductRequest> 메뉴상품_목록 = Arrays.asList(MenuProductRequest.of(허니콤보.getId(), 2));
-        허니콤보치킨 = 메뉴_등록되어_있음(MenuRequest.of( "허니콤보치킨", BigDecimal.valueOf(18000), 프리미엄메뉴.getId(), 메뉴상품_목록))
+        List<MenuProductRequest> 메뉴상품_목록 = Arrays.asList(MenuProductRequest.of(honeycombo.getId(), 2));
+        honeycomboChicken = 메뉴_등록되어_있음(MenuRequest.of( "honeycomboChicken", BigDecimal.valueOf(18000), premiumMenu.getId(), 메뉴상품_목록))
                 .as(MenuResponse.class);
 
-        주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of( 2, false)).as(OrderTableResponse.class);
-        비어있는_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of( 2, true)).as(OrderTableResponse.class);
+        orderTable = 주문_테이블_등록되어_있음(OrderTableRequest.of( 2, false)).as(OrderTableResponse.class);
+        emptyTable = 주문_테이블_등록되어_있음(OrderTableRequest.of( 2, true)).as(OrderTableResponse.class);
 
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderRequest 주문 = OrderRequest.of(orderTable.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
-        주문_생성됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
 
     @DisplayName("주문 항목이 비어있으면 주문을 생성할 수 없다.")
     @Test
     void createFail() {
-        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), Collections.emptyList());
+        OrderRequest 주문 = OrderRequest.of(orderTable.getId(), Collections.emptyList());
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
-        주문_생성_실패함(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -83,33 +83,33 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createFail2() {
         List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(0L, 2));
-        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
+        OrderRequest 주문 = OrderRequest.of(orderTable.getId(), 주문_항목);
 
         ExtractableResponse<Response> response = 주문_생성_요청(주문);
 
-        주문_생성_실패함_서버(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성할 수 없다.")
     @Test
     void createFail3() {
-        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderRequest 주문 = OrderRequest.of(0L, 주문_항목);
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderRequest order = OrderRequest.of(0L, orderItems);
 
-        ExtractableResponse<Response> response = 주문_생성_요청(주문);
+        ExtractableResponse<Response> response = 주문_생성_요청(order);
 
-        주문_생성_실패함_서버(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성할 수 없다.")
     @Test
     void createFail4() {
-        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderRequest 주문 = OrderRequest.of(비어있는_주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderRequest order = OrderRequest.of(emptyTable.getId(), orderItems);
 
-        ExtractableResponse<Response> response = 주문_생성_요청(주문);
+        ExtractableResponse<Response> response = 주문_생성_요청(order);
 
-        주문_생성_실패함(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -117,14 +117,23 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
 
-        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderRequest order = OrderRequest.of(orderTable.getId(), orderItems);
 
-        OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
+        OrderResponse registeredOrder = 주문_등록되어_있음(order).as(OrderResponse.class);
 
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
-        주문_목록_조회됨(response, 등록된_주문);
+
+        List<OrderResponse> orders = response.jsonPath().getList(".", OrderResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(orders).hasSize(1),
+                () -> assertThat(orders.get(0)).isEqualTo(registeredOrder),
+                () -> assertThat(orders.get(0).getOrderLineItems())
+                        .containsExactlyInAnyOrder(registeredOrder.getOrderLineItems().get(0))
+        );
+
     }
 
 
@@ -132,69 +141,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
 
-        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderRequest 주문 = OrderRequest.of(주문_테이블.getId(), 주문_항목);
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderRequest order = OrderRequest.of(orderTable.getId(), orderItems);
 
-        OrderResponse 등록된_주문 = 주문_등록되어_있음(주문).as(OrderResponse.class);
+        OrderResponse registeredOrder = 주문_등록되어_있음(order).as(OrderResponse.class);
 
         String orderStatus = OrderStatus.MEAL.name();
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(orderStatus));
-
-        주문_상태_변경됨(response, orderStatus);
-    }
-
-
-    @DisplayName("주문이 없으면 주문의 상태를 변경할 수 없다.")
-    @Test
-    void changeOrderStatusFail() {
-        OrderRequest 등록되지_않은_주문 = OrderRequest.from(OrderStatus.MEAL.name());
-
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(0L, 등록되지_않은_주문);
-
-        주문_상태_변경_실패함_서버(response);
-    }
-
-
-    @DisplayName("주문 상태가 계산 완료이면 주문의 상태를 변경할 수 없다.")
-    @Test
-    void changeOrderStatusFail2() {
-        List<OrderLineItemRequest> 주문_항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderResponse 등록된_주문 = 주문_등록되어_있음(OrderRequest.of(주문_테이블.getId(), 주문_항목)).as(OrderResponse.class);
-
-        OrderResponse 계산완료된_주문 = 주문_상태_변경_요청(등록된_주문.getId(), OrderRequest.from(OrderStatus.COMPLETION.name()))
-                .as(OrderResponse.class);
-
-        ExtractableResponse<Response> response =
-                주문_상태_변경_요청(계산완료된_주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
-
-        주문_상태_변경_실패함(response);
-    }
-
-    private void 주문_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private void 주문_생성_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void 주문_생성_실패함_서버(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    private void 주문_목록_조회됨(ExtractableResponse<Response> response, OrderResponse order) {
-        List<OrderResponse> orders = response.jsonPath().getList(".", OrderResponse.class);
-
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(orders).hasSize(1),
-                () -> assertThat(orders.get(0)).isEqualTo(order),
-                () -> assertThat(orders.get(0).getOrderLineItems())
-                        .containsExactlyInAnyOrder(order.getOrderLineItems().get(0))
-        );
-    }
-
-    private void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(registeredOrder.getId(), OrderRequest.from(orderStatus));
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -202,11 +155,31 @@ class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 주문_상태_변경_실패함(ExtractableResponse<Response> response) {
+
+    @DisplayName("주문이 없으면 주문의 상태를 변경할 수 없다.")
+    @Test
+    void changeOrderStatusFail() {
+        OrderRequest notRegisteredOrder = OrderRequest.from(OrderStatus.MEAL.name());
+
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(0L, notRegisteredOrder);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+
+    @DisplayName("주문 상태가 계산 완료이면 주문의 상태를 변경할 수 없다.")
+    @Test
+    void changeOrderStatusFail2() {
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderResponse registeredOrder = 주문_등록되어_있음(OrderRequest.of(orderTable.getId(), orderItems)).as(OrderResponse.class);
+
+        OrderResponse payedOrder = 주문_상태_변경_요청(registeredOrder.getId(), OrderRequest.from(OrderStatus.COMPLETION.name()))
+                .as(OrderResponse.class);
+
+        ExtractableResponse<Response> response =
+                주문_상태_변경_요청(payedOrder.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void 주문_상태_변경_실패함_서버(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
 }

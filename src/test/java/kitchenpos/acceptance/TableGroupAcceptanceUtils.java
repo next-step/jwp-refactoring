@@ -3,12 +3,11 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.product.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
-public class TableGroupAcceptanceStep {
-    private TableGroupAcceptanceStep() {
+public class TableGroupAcceptanceUtils {
+    private TableGroupAcceptanceUtils() {
     }
 
     public static ExtractableResponse<Response> 단체_지정_등록되어_있음(TableGroupRequest request) {

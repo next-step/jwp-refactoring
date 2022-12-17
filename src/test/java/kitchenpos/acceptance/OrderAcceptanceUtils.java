@@ -3,12 +3,11 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.order.Order;
 import kitchenpos.dto.OrderRequest;
 import org.springframework.http.MediaType;
 
-public class OrderAcceptanceStep {
-    private OrderAcceptanceStep() {
+public class OrderAcceptanceUtils {
+    private OrderAcceptanceUtils() {
     }
 
     public static ExtractableResponse<Response> 주문_등록되어_있음(OrderRequest request) {

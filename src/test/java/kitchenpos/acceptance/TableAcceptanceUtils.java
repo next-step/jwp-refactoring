@@ -7,8 +7,8 @@ import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
-public class TableAcceptanceStep {
-    private TableAcceptanceStep() {
+public class TableAcceptanceUtils {
+    private TableAcceptanceUtils() {
     }
 
     public static ExtractableResponse<Response> 주문_테이블_등록되어_있음(OrderTableRequest request) {

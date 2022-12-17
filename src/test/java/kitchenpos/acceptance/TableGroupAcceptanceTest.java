@@ -13,104 +13,104 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.acceptance.MenuAcceptanceStep.메뉴_등록되어_있음;
-import static kitchenpos.acceptance.MenuGroupAcceptanceStep.메뉴_그룹_등록되어_있음;
-import static kitchenpos.acceptance.OrderAcceptanceStep.주문_등록되어_있음;
-import static kitchenpos.acceptance.OrderAcceptanceStep.주문_상태_변경_요청;
-import static kitchenpos.acceptance.ProductAcceptanceStep.상품_등록되어_있음;
-import static kitchenpos.acceptance.TableAcceptanceStep.주문_테이블_등록되어_있음;
-import static kitchenpos.acceptance.TableGroupAcceptanceStep.*;
+import static kitchenpos.acceptance.MenuAcceptanceUtils.메뉴_등록되어_있음;
+import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.메뉴_그룹_등록되어_있음;
+import static kitchenpos.acceptance.OrderAcceptanceUtils.주문_등록되어_있음;
+import static kitchenpos.acceptance.OrderAcceptanceUtils.주문_상태_변경_요청;
+import static kitchenpos.acceptance.ProductAcceptanceUtils.상품_등록되어_있음;
+import static kitchenpos.acceptance.TableAcceptanceUtils.주문_테이블_등록되어_있음;
+import static kitchenpos.acceptance.TableGroupAcceptanceUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단체 지정 관련 인수 테스트")
 class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTableRequest 비어있는_주문_테이블1;
-    private OrderTableRequest 비어있는_주문_테이블2;
+    private OrderTableRequest emptyOrderTable1;
+    private OrderTableRequest emptyOrderTable2;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        비어있는_주문_테이블1 = OrderTableRequest.of(3, true);
-        비어있는_주문_테이블2 = OrderTableRequest.of(2, true);
+        emptyOrderTable1 = OrderTableRequest.of(3, true);
+        emptyOrderTable2 = OrderTableRequest.of(2, true);
 
     }
 
     @DisplayName("단체 지정을 할 수 있다.")
     @Test
     void create() {
-        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
+        OrderTableResponse orderTable1 = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        OrderTableResponse orderTable2 = 주문_테이블_등록되어_있음(emptyOrderTable2).as(OrderTableResponse.class);
 
-        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
-        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정요청);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
+        ExtractableResponse<Response> response = 단체_지정_요청함(groupRequest);
 
-        단체_지정이됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("주문 테이블이 2개 이상이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createFail() {
-        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId()));
+        OrderTableResponse orderTable1 = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(orderTable1.getId()));
 
-        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정요청);
+        ExtractableResponse<Response> response = 단체_지정_요청함(groupRequest);
 
-        단체_지정_실패함(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("단체 지정할 주문 테이블이 등록된 주문 테이블이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createFail2() {
-        주문_테이블_등록되어_있음(비어있는_주문_테이블1);
-        주문_테이블_등록되어_있음(비어있는_주문_테이블2);
+        주문_테이블_등록되어_있음(emptyOrderTable1);
+        주문_테이블_등록되어_있음(emptyOrderTable2);
 
         ExtractableResponse<Response> response = 단체_지정_요청함(TableGroupRequest.from(Arrays.asList(3L, 4L)));
 
-        단체_지정_실패함_서버(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("등록된 주문 테이블 하나라도 빈 테이블이면 단체 지정을 할 수 없다.")
     @Test
     void createFail3() {
-        OrderTableResponse 주문_테이블 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        OrderTableResponse 비어있지_않은_주문_테이블 = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false))
+        OrderTableResponse orderTable = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        OrderTableResponse notEmptyTable = 주문_테이블_등록되어_있음(OrderTableRequest.of(2, false))
                 .as(OrderTableResponse.class);
 
-        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블.getId(), 비어있지_않은_주문_테이블.getId()));
-        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정요청);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(orderTable.getId(), notEmptyTable.getId()));
+        ExtractableResponse<Response> response = 단체_지정_요청함(groupRequest);
 
-        단체_지정_실패함(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("이미 단체 지정이 된 주문 테이블이면 단체 지정을 할 수 없다.")
     @Test
     void createFail4() {
-        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
+        OrderTableResponse orderTable1 = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        OrderTableResponse orderTable2 = 주문_테이블_등록되어_있음(emptyOrderTable2).as(OrderTableResponse.class);
 
-        TableGroupRequest 단체지정 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
-        단체_지정_등록되어_있음(단체지정);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
+        단체_지정_등록되어_있음(groupRequest);
 
-        ExtractableResponse<Response> response = 단체_지정_요청함(단체지정);
+        ExtractableResponse<Response> response = 단체_지정_요청함(groupRequest);
 
-        단체_지정_실패함(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("단체 지정을 취소할 수 있다.")
     @Test
     void ungroup() {
-        OrderTableResponse 주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        OrderTableResponse 주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
+        OrderTableResponse orderTable1 = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        OrderTableResponse orderTable2 = 주문_테이블_등록되어_있음(emptyOrderTable2).as(OrderTableResponse.class);
 
-        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()));
-        TableGroupResponse 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroupResponse.class);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
+        TableGroupResponse grouped = 단체_지정_등록되어_있음(groupRequest).as(TableGroupResponse.class);
 
-        ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
+        ExtractableResponse<Response> response = 단체_지정_취소_요청함(grouped.getId());
 
-        단체_지정_취소됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("단체 지정된 주문 테이블들의 상태가 조리이면 단체 지정을 취소할 수 없다.")
@@ -118,36 +118,36 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     void ungroupFail() {
 
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroupResponse 프리미엄메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("프리미엄메뉴")).as(MenuGroupResponse.class);
+        MenuGroupResponse premiumMenu = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("premiumMenu")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        ProductResponse 허니콤보 = 상품_등록되어_있음(ProductRequest.of("허니콤보", BigDecimal.valueOf(18000)))
+        ProductResponse honeycombo = 상품_등록되어_있음(ProductRequest.of("honeycombo", BigDecimal.valueOf(18000)))
                 .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
-        List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(허니콤보.getId(), 2));
-        MenuResponse 허니콤보치킨 = 메뉴_등록되어_있음(
-                MenuRequest.of("허니콤보치킨", BigDecimal.valueOf(18000), 프리미엄메뉴.getId(), 메뉴상품목록)
+        List<MenuProductRequest> menuProducts = Arrays.asList(MenuProductRequest.of(honeycombo.getId(), 2));
+        MenuResponse honeycomboChicken = 메뉴_등록되어_있음(
+                MenuRequest.of("honeycomboChicken", BigDecimal.valueOf(18000), premiumMenu.getId(), menuProducts)
         ).as(MenuResponse.class);
 
         // And 주문 테이블 여러개 등록되어 있음
-        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
+        OrderTableResponse registerOrder1 = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        OrderTableResponse registerOrder2 = 주문_테이블_등록되어_있음(emptyOrderTable2).as(OrderTableResponse.class);
 
         // And 단체 지정 되어 있음
-        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(등록된_주문_테이블1.getId(), 등록된_주문_테이블2.getId()));
-        TableGroupResponse 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroupResponse.class);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(registerOrder1.getId(), registerOrder2.getId()));
+        TableGroupResponse grouped = 단체_지정_등록되어_있음(groupRequest).as(TableGroupResponse.class);
 
         // And 주문(조리) 등록되어 있음
-        List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목));
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        주문_등록되어_있음(OrderRequest.of(registerOrder1.getId(), orderItems));
+        주문_등록되어_있음(OrderRequest.of(registerOrder2.getId(), orderItems));
 
         // When 단체 지정 취소 요청함
-        ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
+        ExtractableResponse<Response> response = 단체_지정_취소_요청함(grouped.getId());
 
         // Then 단체 지정 취소 실패함
-        단체_지정_취소_실패함(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -155,58 +155,38 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupFail2() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroupResponse 프리미엄메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("프리미엄메뉴")).as(MenuGroupResponse.class);
+        MenuGroupResponse premiumMenu = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("premiumMenu")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        ProductResponse 허니콤보 = 상품_등록되어_있음(ProductRequest.of("허니콤보", BigDecimal.valueOf(16_000)))
+        ProductResponse honeycombo = 상품_등록되어_있음(ProductRequest.of("honeycombo", BigDecimal.valueOf(18000)))
                 .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
-        List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(허니콤보.getId(), 2));
-        MenuResponse 허니콤보치킨 = 메뉴_등록되어_있음(
-                MenuRequest.of("허니콤보치킨", BigDecimal.valueOf(18000), 프리미엄메뉴.getId(), 메뉴상품목록)
+        List<MenuProductRequest> menuProducts = Arrays.asList(MenuProductRequest.of(honeycombo.getId(), 2));
+        MenuResponse honeycomboChicken = 메뉴_등록되어_있음(
+                MenuRequest.of("honeycomboChicken", BigDecimal.valueOf(18000), premiumMenu.getId(), menuProducts)
         ).as(MenuResponse.class);
 
         // And 주문 테이블 여러개 등록되어 있음
-        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(비어있는_주문_테이블1).as(OrderTableResponse.class);
-        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
+        OrderTableResponse registerOrder1 = 주문_테이블_등록되어_있음(emptyOrderTable1).as(OrderTableResponse.class);
+        OrderTableResponse registerOrder2 = 주문_테이블_등록되어_있음(emptyOrderTable2).as(OrderTableResponse.class);
 
         // And 단체 지정 되어 있음
-        TableGroupRequest 단체지정요청 = TableGroupRequest.from(Arrays.asList(등록된_주문_테이블1.getId(), 등록된_주문_테이블2.getId()));
-        TableGroupResponse 단체지정 = 단체_지정_등록되어_있음(단체지정요청).as(TableGroupResponse.class);
+        TableGroupRequest groupRequest = TableGroupRequest.from(Arrays.asList(registerOrder1.getId(), registerOrder2.getId()));
+        TableGroupResponse grouped = 단체_지정_등록되어_있음(groupRequest).as(TableGroupResponse.class);
 
         // And 주문(조리) 등록되어 있음
-        List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(허니콤보치킨.getId(), 2));
-        OrderResponse 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목)).as(OrderResponse.class);
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
+        OrderResponse order = 주문_등록되어_있음(OrderRequest.of(registerOrder1.getId(), orderItems)).as(OrderResponse.class);
+        주문_등록되어_있음(OrderRequest.of(registerOrder2.getId(), orderItems));
 
         // And 주문 상태(식사) 변경되어 있음
-        주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
+        주문_상태_변경_요청(order.getId(), OrderRequest.from(OrderStatus.MEAL.name()));
 
         // When 단체 지정 취소 요청함
-        ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
+        ExtractableResponse<Response> response = 단체_지정_취소_요청함(grouped.getId());
 
         // Then 단체 지정 취소 실패함
-        단체_지정_취소_실패함(response);
-    }
-
-    private void 단체_지정이됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private void 단체_지정_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void 단체_지정_실패함_서버(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    private void 단체_지정_취소됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    private void 단체_지정_취소_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 

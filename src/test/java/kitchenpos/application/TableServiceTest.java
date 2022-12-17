@@ -32,37 +32,37 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable 비어있지않은_주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
+    private OrderTable notEmptyTable;
+    private OrderTable emptyTable;
 
     @BeforeEach
     void setUp() {
-        비어있지않은_주문_테이블 = OrderTable.of(null, 2, false);
-        비어있는_주문_테이블 = OrderTable.of(null, 0, true);
+        notEmptyTable = OrderTable.of(null, 2, false);
+        emptyTable = OrderTable.of(null, 0, true);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void create() {
-        when(orderTableRepository.save(any())).thenReturn(비어있지않은_주문_테이블);
+        when(orderTableRepository.save(any())).thenReturn(notEmptyTable);
 
-        OrderTableResponse result = tableService.create(비어있지않은_주문_테이블);
+        OrderTableResponse result = tableService.create(notEmptyTable);
 
-        assertThat(result).isEqualTo(OrderTableResponse.from(비어있지않은_주문_테이블));
+        assertThat(result).isEqualTo(OrderTableResponse.from(notEmptyTable));
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
     void list() {
-        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(비어있지않은_주문_테이블, 비어있는_주문_테이블));
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(notEmptyTable, emptyTable));
 
         List<OrderTableResponse> results = tableService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(2),
                 () -> assertThat(results).containsExactly(
-                        OrderTableResponse.from(비어있지않은_주문_테이블),
-                        OrderTableResponse.from(비어있는_주문_테이블)
+                        OrderTableResponse.from(notEmptyTable),
+                        OrderTableResponse.from(emptyTable)
                 )
         );
     }
@@ -72,7 +72,7 @@ class TableServiceTest {
     void changeEmptyException() {
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
-        boolean empty = 비어있지않은_주문_테이블.isEmpty();
+        boolean empty = notEmptyTable.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -80,10 +80,10 @@ class TableServiceTest {
     @DisplayName("단체 지정된 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException2() {
-        비어있지않은_주문_테이블.setTableGroupId(1L);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        notEmptyTable.setTableGroupId(1L);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
 
-        boolean empty = 비어있지않은_주문_테이블.isEmpty();
+        boolean empty = notEmptyTable.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(INVALID_CHANGE_TO_EMPTY_GROUPED_TABLE);
@@ -92,10 +92,10 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리이면 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException3() {
-        Order.of(비어있지않은_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        Order.of(notEmptyTable, Arrays.asList(OrderLineItem.of(1L, 2)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
 
-        boolean empty = 비어있지않은_주문_테이블.isEmpty();
+        boolean empty = notEmptyTable.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(INVALID_CHANGE_TO_EMPTY_ORDER_STATUS);
@@ -105,11 +105,11 @@ class TableServiceTest {
     @DisplayName("주문 상태가 식사이면 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException4() {
-        Order 주문 = Order.of(비어있지않은_주문_테이블, Arrays.asList(OrderLineItem.of(1L, 2)));
+        Order 주문 = Order.of(notEmptyTable, Arrays.asList(OrderLineItem.of(1L, 2)));
         주문.changeOrderStatus(OrderStatus.MEAL);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
 
-        boolean empty = 비어있지않은_주문_테이블.isEmpty();
+        boolean empty = notEmptyTable.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(INVALID_CHANGE_TO_EMPTY_ORDER_STATUS);
@@ -118,10 +118,10 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 빈 상태를 변경할 수 있다.")
     @Test
     void changeEmpty() {
-        boolean isEmpty = 비어있지않은_주문_테이블.isEmpty();
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        boolean isEmpty = notEmptyTable.isEmpty();
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
 
-        OrderTableResponse result = tableService.changeEmpty(1L, !비어있지않은_주문_테이블.isEmpty());
+        OrderTableResponse result = tableService.changeEmpty(1L, !notEmptyTable.isEmpty());
 
         Assertions.assertThat(result.isEmpty()).isEqualTo(!isEmpty);
     }
@@ -129,7 +129,7 @@ class TableServiceTest {
     @DisplayName("방문한 손님 수가 0보다 작은경우 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsException() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
 
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, -1))
                 .isInstanceOf(BadRequestException.class)
@@ -141,8 +141,8 @@ class TableServiceTest {
     void changeNumberOfGuestsException2() {
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
-        Long orderTableId = 비어있지않은_주문_테이블.getId();
-        OrderTable orderTable = OrderTable.of(orderTableId, 4, 비어있지않은_주문_테이블.isEmpty());
+        Long orderTableId = notEmptyTable.getId();
+        OrderTable orderTable = OrderTable.of(orderTableId, 4, notEmptyTable.isEmpty());
         int numberOfGuests = orderTable.getNumberOfGuests();
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -151,10 +151,10 @@ class TableServiceTest {
     @DisplayName("등록된 주문 테이블이 빈 상태이면 방문한 손님 수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsException3() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(emptyTable));
 
-        Long orderTableId = 비어있는_주문_테이블.getId();
-        OrderTable orderTable = OrderTable.of(orderTableId, 2, 비어있는_주문_테이블.isEmpty());
+        Long orderTableId = emptyTable.getId();
+        OrderTable orderTable = OrderTable.of(orderTableId, 2, emptyTable.isEmpty());
         int numberOfGuests = orderTable.getNumberOfGuests();
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
                 .isInstanceOf(BadRequestException.class)
@@ -164,9 +164,9 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable orderTable = OrderTable.of(비어있지않은_주문_테이블.getId(), 4, 비어있지않은_주문_테이블.isEmpty());
+        OrderTable orderTable = OrderTable.of(notEmptyTable.getId(), 4, notEmptyTable.isEmpty());
 
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(비어있지않은_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
 
         int numberOfGuests = orderTable.getNumberOfGuests();
         OrderTableResponse result = tableService.changeNumberOfGuests(orderTable.getId(), numberOfGuests);

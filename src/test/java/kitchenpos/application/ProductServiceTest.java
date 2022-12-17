@@ -30,36 +30,36 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product 허니콤보;
-    private Product 레드윙;
+    private Product honeycombo;
+    private Product redwing;
 
     @BeforeEach
     void setUp() {
-        허니콤보 = Product.of(1L, "허니콤보", BigDecimal.valueOf(18000));
-        레드윙 = Product.of(2L, "레드윙", BigDecimal.valueOf(19000));
+        honeycombo = Product.of(1L, "honeycombo", BigDecimal.valueOf(18000));
+        redwing = Product.of(2L, "redwing", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void create() {
-        when(productRepository.save(any())).thenReturn(허니콤보);
+        when(productRepository.save(any())).thenReturn(honeycombo);
 
-        ProductResponse result = productService.create(허니콤보);
+        ProductResponse result = productService.create(honeycombo);
 
-        assertThat(result).isEqualTo(ProductResponse.from(허니콤보));
+        assertThat(result).isEqualTo(ProductResponse.from(honeycombo));
     }
 
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() {
-        when(productRepository.findAll()).thenReturn(Arrays.asList(허니콤보, 레드윙));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(honeycombo, redwing));
 
         List<ProductResponse> results = productService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(2),
-                () -> assertThat(results).containsExactly(ProductResponse.from(허니콤보), ProductResponse.from(레드윙))
+                () -> assertThat(results).containsExactly(ProductResponse.from(honeycombo), ProductResponse.from(redwing))
         );
     }
 }

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceStep.*;
+import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -24,7 +24,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     void create() {
         ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(MenuGroupRequest.from("프리미엄 치킨"));
 
-        메뉴_그룹_생성됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
 
@@ -36,23 +36,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> listResponse = 메뉴_그룹_목록_조회_요청();
 
-        메뉴_그룹_목록_조회됨(listResponse);
-        메뉴_그룹_목록에_등록된_메뉴_그룹_포함됨(listResponse, Arrays.asList(createResponse1, createResponse2));
-    }
-
-    private void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private void 메뉴_그룹_목록에_등록된_메뉴_그룹_포함됨(ExtractableResponse<Response> listResponse,
-                                         List<ExtractableResponse<Response>> createResponses) {
-
-        List<MenuGroupResponse> menuGroups = listResponse.jsonPath().getList(".", MenuGroupResponse.class);
-        List<MenuGroupResponse> createdMenuGroups = createResponses.stream()
+        assertThat(listResponse.statusCode()).isEqualTo(HttpStatus.OK.value());List<MenuGroupResponse> menuGroups = listResponse.jsonPath().getList(".", MenuGroupResponse.class);
+        List<MenuGroupResponse> createdMenuGroups = Arrays.asList(createResponse1, createResponse2).stream()
                 .map(it -> it.as(MenuGroupResponse.class))
                 .collect(Collectors.toList());
 
@@ -61,4 +46,6 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(menuGroups).containsAll(createdMenuGroups)
         );
     }
+
+
 }
