@@ -42,8 +42,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
         List<Order> orders = findAllOrderByOrderTableId(orderTable);
-        validateNotCompleteOrders(orders);
-        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        orderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
         return OrderTableResponse.from(orderTable);
     }
 
@@ -61,9 +60,5 @@ public class TableService {
 
     private List<Order> findAllOrderByOrderTableId(OrderTable orderTable) {
         return orderRepository.findAllByOrderTableId(orderTable.getId());
-    }
-
-    private void validateNotCompleteOrders(List<Order> orders) {
-        orders.forEach(Order::validateNotCompleteOrder);
     }
 }

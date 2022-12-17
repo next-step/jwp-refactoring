@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.domain.NumberOfGuests;
+import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
@@ -66,9 +68,14 @@ public class OrderTable {
     }
 
 
-    public void changeEmpty(boolean isEmpty) {
+    public void changeEmpty(boolean isEmpty, List<Order> orders) {
+        validateNotCompleteOrders(orders);
         validateHasTableGroup();
         this.empty = Empty.from(isEmpty);
+    }
+
+    private void validateNotCompleteOrders(List<Order> orders) {
+        orders.forEach(Order::validateNotCompleteOrder);
     }
 
     private void validateHasTableGroup() {

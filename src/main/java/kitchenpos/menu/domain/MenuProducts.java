@@ -34,14 +34,6 @@ public class MenuProducts {
         }
     }
 
-    public Price totalPrice() {
-        Price totalPrice = Price.from(BigDecimal.ZERO);
-        for(MenuProduct menuProduct: menuProducts) {
-            totalPrice = totalPrice.add(menuProduct.totalPrice());
-        }
-        return totalPrice;
-    }
-
     public void setMenu(final Menu menu) {
         menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }

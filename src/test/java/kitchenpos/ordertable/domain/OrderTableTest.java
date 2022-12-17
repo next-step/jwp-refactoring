@@ -7,15 +7,20 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductTestFixture;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupTestFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.domain.OrderMenuTestFixture;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductTestFixture;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,12 +37,12 @@ class OrderTableTest {
 
     @BeforeEach
     void setUp() {
-        하와이안피자 = new Product("하와이안피자", BigDecimal.valueOf(15_000));
-        피자 = new MenuGroup("피자");
-        하와이안피자상품 = new MenuProduct(하와이안피자, 1);
+        하와이안피자 = ProductTestFixture.create("하와이안피자", BigDecimal.valueOf(15_000));
+        피자 = MenuGroupTestFixture.create("피자");
+        하와이안피자상품 = MenuProductTestFixture.create(하와이안피자, 1);
         하와이안피자세트 = Menu.of("하와이안피자세트", BigDecimal.valueOf(15_000L), 피자.getId(),
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
-        주문메뉴 = OrderMenu.from(하와이안피자세트);
+        주문메뉴 = OrderMenuTestFixture.create(하와이안피자세트);
         하와이안피자세트주문 = OrderLineItem.of(주문메뉴, 1);
     }
 
@@ -46,7 +51,7 @@ class OrderTableTest {
     void updateEmpty() {
         OrderTable orderTable = OrderTable.of(4, true);
 
-        orderTable.changeEmpty(false);
+        orderTable.changeEmpty(false, Collections.emptyList());
 
         assertThat(orderTable.isEmpty()).isFalse();
     }

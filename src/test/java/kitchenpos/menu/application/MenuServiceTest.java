@@ -3,25 +3,26 @@ package kitchenpos.menu.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductTestFixture;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuTestFixture;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
+import kitchenpos.menugroup.domain.MenuGroupTestFixture;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductTestFixture;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,17 +63,17 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        하와이안피자 = new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000));
-        콜라 = new Product(2L, "콜라", BigDecimal.valueOf(2_000));
-        피클 = new Product(3L, "피클", BigDecimal.valueOf(1_000));
+        하와이안피자 = ProductTestFixture.create(1L, "하와이안피자", BigDecimal.valueOf(15_000));
+        콜라 = ProductTestFixture.create(2L, "콜라", BigDecimal.valueOf(2_000));
+        피클 = ProductTestFixture.create(3L, "피클", BigDecimal.valueOf(1_000));
 
-        피자 = new MenuGroup(1L, "피자");
+        피자 = MenuGroupTestFixture.create(1L, "피자");
 
-        하와이안피자상품 = new MenuProduct(1L, null, 하와이안피자, 1L);
-        콜라상품 = new MenuProduct(2L, null, 콜라, 1L);
-        피클상품 = new MenuProduct(3L, null, 피클, 1L);
+        하와이안피자상품 = MenuProductTestFixture.create(1L, null, 하와이안피자, 1L);
+        콜라상품 = MenuProductTestFixture.create(2L, null, 콜라, 1L);
+        피클상품 = MenuProductTestFixture.create(3L, null, 피클, 1L);
 
-        하와이안피자세트 = Menu.of(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(), Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
+        하와이안피자세트 = MenuTestFixture.create(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자, Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
 
         상품요청.add(MenuProductRequest.of(하와이안피자상품.getSeq(), 1L));
         상품요청.add(MenuProductRequest.of(콜라상품.getSeq(), 1L));
@@ -82,17 +83,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 생성한다.")
     @Test
     void createMenu() {
-        // given
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), 하와이안피자세트.getPrice().value(), 피자.getId(), 상품요청);
-        when(productRepository.findById(하와이안피자.getId())).thenReturn(Optional.of(하와이안피자));
-        when(productRepository.findById(콜라.getId())).thenReturn(Optional.of(콜라));
-        when(productRepository.findById(피클.getId())).thenReturn(Optional.of(피클));
         when(menuRepository.save(menuRequest.toMenu(MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))))).thenReturn(하와이안피자세트);
 
-        // when
         MenuResponse result = menuService.create(menuRequest);
 
-        // then
         assertAll(
             () -> assertThat(result.getId()).isEqualTo(하와이안피자세트.getId()),
             () -> assertThat(result.getName()).isEqualTo(하와이안피자세트.getName().value())
@@ -102,10 +97,8 @@ public class MenuServiceTest {
     @DisplayName("메뉴 가격이 null이면 예외가 발생한다.")
     @Test
     void createMenuNullPriceException() {
-        // given
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), null, 피자.getId(), 상품요청);
 
-        // when & then
         assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -114,21 +107,8 @@ public class MenuServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, -1000, -10000})
     void crateMenuUnderZeroPriceException(int price) {
-        // given
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(price), 피자.getId(), 상품요청);
 
-        // when & then
-        assertThatThrownBy(() -> menuService.create(menuRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴 그룹이 없는 메뉴를 생성하면 예외가 발생한다.")
-    @Test
-    void createMenuNotExistMenuGroupException() {
-        // given
-        MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(18_000), null, 상품요청);
-
-        // when & then
         assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -136,14 +116,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 조회할 수 있다.")
     @Test
     void findAllMenu() {
-        // given
         List<Menu> menus = Arrays.asList(하와이안피자세트);
         when(menuRepository.findAll()).thenReturn(menus);
 
-        // when
         List<MenuResponse> result = menuService.list();
 
-        // then
         assertAll(
             () -> assertThat(result).hasSize(1),
             () -> assertThat(result.stream().map(MenuResponse::getName))

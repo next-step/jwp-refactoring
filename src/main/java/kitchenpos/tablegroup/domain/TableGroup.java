@@ -39,8 +39,9 @@ public class TableGroup {
         return new TableGroup(id);
     }
 
-    public void ungroup(List<Order> orders) {
+    public void ungroup(List<Order> orders, OrderTables orderTables) {
         orders.forEach(Order::validateNotCompleteOrder);
+        orderTables.ungroupOrderTables();
     }
 
     public Long getId() {

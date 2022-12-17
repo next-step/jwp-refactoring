@@ -26,25 +26,21 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
 
-    private final ProductRepository productRepository;
-
     private final MenuValidator menuValidator;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final ProductRepository productRepository,
-            final MenuValidator menuValidator
-    ) {
+    public MenuService(final MenuRepository menuRepository, final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.productRepository = productRepository;
         this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
         menuValidator.validate(menuRequest);
-        List<Product> products = findAllProductByIds(menuRequest.getMenuProductIds());
-        Menu menu = menuRepository.save(menuRequest.toMenu(products));
+        List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
+            .stream()
+            .map(MenuProductRequest::toMenuProduct)
+            .collect(Collectors.toList());
+        Menu menu = menuRepository.save(menuRequest.toMenu(MenuProducts.from(menuProducts)));
         return MenuResponse.from(menu);
     }
 
@@ -53,16 +49,5 @@ public class MenuService {
             .stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
-    }
-
-    private List<Product> findAllProductByIds(List<Long> ids) {
-        return ids.stream()
-            .map(this::findProductById)
-            .collect(Collectors.toList());
-    }
-
-    private Product findProductById(Long id) {
-        return productRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException());
     }
 }

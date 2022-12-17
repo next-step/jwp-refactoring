@@ -30,13 +30,17 @@ public class MenuProductRequest {
         return quantity;
     }
 
+    public MenuProduct toMenuProduct() {
+        return new MenuProduct(productId, quantity);
+    }
+
     public MenuProduct toMenuProduct(Product product) {
-        return new MenuProduct(product, quantity);
+        return new MenuProduct(product.getId(), quantity);
     }
 
     public MenuProduct toMenuProduct(List<Product> products) {
         Product product = findProductByProductId(products);
-        return new MenuProduct(product, quantity);
+        return new MenuProduct(product.getId(), quantity);
     }
 
     private Product findProductByProductId(List<Product> products) {

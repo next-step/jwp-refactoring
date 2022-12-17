@@ -62,8 +62,7 @@ public class TableGroupService {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         OrderTables orderTables = OrderTables.from(findAllOrderTableByTableGroupId(tableGroupId));
         List<Order> orders = findAllOrderByOrderTableIds(orderTables.getOrderTables());
-        tableGroup.ungroup(orders);
-        orderTables.ungroupOrderTables();
+        tableGroup.ungroup(orders, orderTables);
     }
 
     private List<OrderTable> findAllOrderTablesById(List<Long> ids) {
