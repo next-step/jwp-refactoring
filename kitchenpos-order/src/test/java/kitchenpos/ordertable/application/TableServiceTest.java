@@ -67,8 +67,8 @@ class TableServiceTest {
         List<OrderTableResponse> results = tableService.list();
 
         assertAll(
-                () -> assertThat(results).hasSize(2),
-                () -> assertThat(results).containsExactly(
+                () -> Assertions.assertThat(results).hasSize(2),
+                () -> Assertions.assertThat(results).containsExactly(
                         OrderTableResponse.from(비어있지않은_주문_테이블),
                         OrderTableResponse.from(비어있는_주문_테이블)
                 )
@@ -118,7 +118,7 @@ class TableServiceTest {
 
         OrderTableResponse result = tableService.changeEmpty(1L, !비어있지않은_주문_테이블.isEmpty());
 
-        Assertions.assertThat(result.isEmpty()).isEqualTo(!isEmpty);
+        assertThat(result.isEmpty()).isEqualTo(!isEmpty);
     }
 
     @DisplayName("방문한 손님 수가 0보다 작은경우 주문 테이블의 방문한 손님 수를 변경할 수 없다.")
@@ -167,6 +167,6 @@ class TableServiceTest {
         int numberOfGuests = orderTable.getNumberOfGuests();
         OrderTableResponse result = tableService.changeNumberOfGuests(orderTable.getId(), numberOfGuests);
 
-        Assertions.assertThat(result.getNumberOfGuests()).isEqualTo(numberOfGuests);
+        assertThat(result.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 }

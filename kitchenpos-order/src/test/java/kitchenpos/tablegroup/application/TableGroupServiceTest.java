@@ -146,8 +146,8 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(1L);
 
         assertAll(
-                () -> assertThat(주문_테이블1.isGrouping()).isFalse(),
-                () -> assertThat(주문_테이블2.isGrouping()).isFalse()
+                () -> Assertions.assertThat(주문_테이블1.isGrouping()).isFalse(),
+                () -> Assertions.assertThat(주문_테이블2.isGrouping()).isFalse()
         );
     }
 }

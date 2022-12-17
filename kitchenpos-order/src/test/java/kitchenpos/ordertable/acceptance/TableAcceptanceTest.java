@@ -1,10 +1,5 @@
 package kitchenpos.ordertable.acceptance;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
-import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록되어_있음;
-import static kitchenpos.order.acceptance.OrderRestAssured.주문_등록되어_있음;
-import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
-import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_등록되어_있음;
 import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
 import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_목록_조회_요청;
 import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_방문한_손님_수_변경_요청;
@@ -20,21 +15,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.acceptance.OrderRestAssured;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menu.acceptance.MenuRestAssured;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.acceptance.MenuGroupRestAssured;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.acceptance.OrderRestAssured;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.product.acceptance.ProductRestAssured;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.tablegroup.acceptance.TableGroupRestAssured;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,7 +117,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         OrderTableResponse 등록된_빈_주문_테이블2 = 주문_테이블_등록되어_있음(비어있는_주문_테이블2).as(OrderTableResponse.class);
 
         List<OrderTableResponse> 주문_테이블_목록 = Arrays.asList(등록된_빈_주문_테이블1, 등록된_빈_주문_테이블2);
-        단체_지정_등록되어_있음(
+        TableGroupRestAssured.단체_지정_등록되어_있음(
                 TableGroupRequest.from(주문_테이블_목록.stream()
                         .map(OrderTableResponse::getId)
                         .collect(Collectors.toList()))
@@ -143,15 +143,15 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyFail3() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
+        MenuGroupResponse 두마리메뉴 = MenuGroupRestAssured.메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        ProductResponse 후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
+        ProductResponse 후라이드 = ProductRestAssured.상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
                 .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
-        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
+        MenuResponse 후라이드치킨 = MenuRestAssured.메뉴_등록되어_있음(
                 MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
         ).as(MenuResponse.class);
 
@@ -160,7 +160,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목));
+        OrderRestAssured.주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목));
 
         // When 주문 테이블 빈 상태 변경 요청
         OrderTableRequest 변경할_주문_테이블 =
@@ -185,15 +185,15 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmptyFail4() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
+        MenuGroupResponse 두마리메뉴 = MenuGroupRestAssured.메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        ProductResponse 후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
+        ProductResponse 후라이드 = ProductRestAssured.상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
                 .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
-        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
+        MenuResponse 후라이드치킨 = MenuRestAssured.메뉴_등록되어_있음(
                 MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
         ).as(MenuResponse.class);
 
@@ -202,7 +202,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         // And 주문 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        OrderResponse 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(OrderResponse.class);
+        OrderResponse 주문 = OrderRestAssured.주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블.getId(), 주문항목)).as(OrderResponse.class);
 
         // And 주문 상태(식사) 변경되어 있음
         OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL));
@@ -309,8 +309,8 @@ class TableAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertAll(
-                () -> assertThat(orderTables).hasSize(2),
-                () -> assertThat(orderTables).containsAll(createdOrderTables)
+                () -> Assertions.assertThat(orderTables).hasSize(2),
+                () -> Assertions.assertThat(orderTables).containsAll(createdOrderTables)
         );
     }
 

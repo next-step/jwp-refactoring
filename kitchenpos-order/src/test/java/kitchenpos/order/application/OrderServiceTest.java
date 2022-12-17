@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 서비스 테스트")
@@ -131,7 +132,7 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        doThrow(new EntityNotFoundException(ExceptionMessage.ORDER_TABLE_NOT_FOUND))
+        Mockito.doThrow(new EntityNotFoundException(ExceptionMessage.ORDER_TABLE_NOT_FOUND))
                 .when(orderValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> orderService.create(주문테이블_없는_주문요청))
@@ -158,7 +159,7 @@ class OrderServiceTest {
         List<OrderResponse> results = orderService.list();
 
         assertAll(
-                () -> assertThat(results).hasSize(1),
+                () -> Assertions.assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0)).isEqualTo(OrderResponse.from(주문)),
                 () -> assertThat(results.get(0).getOrderLineItems())
                         .containsExactly(OrderLineItemResponse.from(주문항목))

@@ -1,10 +1,6 @@
 package kitchenpos.tablegroup.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록되어_있음;
-import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
-import static kitchenpos.order.acceptance.OrderRestAssured.주문_등록되어_있음;
 import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
-import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_등록되어_있음;
 import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_요청함;
 import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_취소_요청함;
@@ -16,9 +12,11 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.acceptance.MenuRestAssured;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.acceptance.MenuGroupRestAssured;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.acceptance.OrderRestAssured;
@@ -28,6 +26,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.product.acceptance.ProductRestAssured;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -174,15 +173,15 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupFail() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
+        MenuGroupResponse 두마리메뉴 = MenuGroupRestAssured.메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        ProductResponse 후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
+        ProductResponse 후라이드 = ProductRestAssured.상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
                 .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
-        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
+        MenuResponse 후라이드치킨 = MenuRestAssured.메뉴_등록되어_있음(
                 MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
         ).as(MenuResponse.class);
 
@@ -196,8 +195,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목));
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
+        OrderRestAssured.주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목));
+        OrderRestAssured.주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
 
         // When 단체 지정 취소 요청함
         ExtractableResponse<Response> response = 단체_지정_취소_요청함(단체지정.getId());
@@ -221,15 +220,15 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupFail2() {
         // Given 메뉴 그룹 등록되어 있음
-        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
+        MenuGroupResponse 두마리메뉴 = MenuGroupRestAssured.메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
 
         // And 상품 등록되어 있음
-        ProductResponse 후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
+        ProductResponse 후라이드 = ProductRestAssured.상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000)))
                 .as(ProductResponse.class);
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> 메뉴상품목록 = Arrays.asList(MenuProductRequest.of(후라이드.getId(), 2));
-        MenuResponse 후라이드치킨 = 메뉴_등록되어_있음(
+        MenuResponse 후라이드치킨 = MenuRestAssured.메뉴_등록되어_있음(
                 MenuRequest.of("후라이드치킨", BigDecimal.valueOf(16_000), 두마리메뉴.getId(), 메뉴상품목록)
         ).as(MenuResponse.class);
 
@@ -243,8 +242,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // And 주문(조리) 등록되어 있음
         List<OrderLineItemRequest> 주문항목 = Arrays.asList(OrderLineItemRequest.of(후라이드치킨.getId(), 2));
-        OrderResponse 주문 = 주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목)).as(OrderResponse.class);
-        주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
+        OrderResponse 주문 = OrderRestAssured.주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블1.getId(), 주문항목)).as(OrderResponse.class);
+        OrderRestAssured.주문_등록되어_있음(OrderRequest.of(등록된_주문_테이블2.getId(), 주문항목));
 
         // And 주문 상태(식사) 변경되어 있음
         OrderRestAssured.주문_상태_변경_요청(주문.getId(), OrderRequest.from(OrderStatus.MEAL));
