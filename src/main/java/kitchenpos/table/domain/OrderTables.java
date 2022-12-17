@@ -29,9 +29,9 @@ public class OrderTables {
     }
 
 
-    public void addOrderTables(TableGroup tableGroup, List<OrderTable> orderTables) {
+    public void addOrderTables(Long tableGroupId, List<OrderTable> orderTables) {
         validateTables(orderTables);
-        orderTables.stream().forEach(orderTable -> orderTable.group(tableGroup));
+        orderTables.stream().forEach(orderTable -> orderTable.group(tableGroupId));
         orderTables.stream().forEach(orderTable -> this.orderTables.add(orderTable));
     }
 

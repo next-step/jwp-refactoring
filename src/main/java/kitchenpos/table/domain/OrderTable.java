@@ -1,10 +1,8 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.table.exception.OrderTableException;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 import static kitchenpos.table.exception.OrderTableExceptionType.*;
@@ -14,8 +12,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
@@ -24,7 +21,7 @@ public class OrderTable {
 
     private OrderTable(OrderTableBuilder builder) {
         this.id = builder.id;
-        this.tableGroup = builder.tableGroup;
+        this.tableGroupId = builder.tableGroupId;
         this.numberOfGuests = builder.numberOfGuests;
         this.empty = builder.empty;
     }
@@ -34,7 +31,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroup == null ? null : tableGroup.getId();
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -65,27 +62,27 @@ public class OrderTable {
     }
 
     private void validateTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new OrderTableException(USING_TABLE_GROUP);
         }
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public static OrderTableBuilder builder() {
         return new OrderTableBuilder();
     }
 
-    public void group(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public static class OrderTableBuilder {
         private Long id;
-        private TableGroup tableGroup;
+        private Long tableGroupId;
         private int numberOfGuests;
         private boolean empty;
 
@@ -94,8 +91,8 @@ public class OrderTable {
             return this;
         }
 
-        public OrderTableBuilder tableGroup(TableGroup tableGroup) {
-            this.tableGroup = tableGroup;
+        public OrderTableBuilder tableGroupId(Long tableGroupId) {
+            this.tableGroupId = tableGroupId;
             return this;
         }
 

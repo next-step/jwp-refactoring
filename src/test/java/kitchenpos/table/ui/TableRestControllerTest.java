@@ -79,7 +79,7 @@ public class TableRestControllerTest extends ControllerTest {
     @Test
     public void returnTables() throws Exception {
         List<OrderTableResponse> orderTables = getOrderTables(OrderTable.builder().id(13l)
-                .tableGroup(TableGroup.builder().build()).build(), 100);
+                .tableGroupId(1l).build(), 100);
         doReturn(orderTables).when(tableService).list();
 
         webMvc.perform(get("/api/tables"))
@@ -90,7 +90,7 @@ public class TableRestControllerTest extends ControllerTest {
     private OrderTableResponse getOrderTableResponse() {
         return OrderTableResponse.of(OrderTable.builder()
                 .id(Arbitraries.longs().between(1, 100).sample())
-                .tableGroup(TableGroup.builder().id(Arbitraries.longs().between(1, 100).sample()).build())
+                .tableGroupId(Arbitraries.longs().between(1, 100).sample())
                 .numberOfGuests(Arbitraries.integers().between(2, 5).sample())
                 .empty(true)
                 .build());

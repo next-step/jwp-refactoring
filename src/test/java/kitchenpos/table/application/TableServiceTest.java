@@ -46,7 +46,7 @@ public class TableServiceTest {
     @Test
     public void returnOderTable() {
         OrderTable orderTable = OrderTable.builder()
-                .tableGroup(TableGroup.builder().id(443l).build())
+                .tableGroupId(1l)
                 .build();
         doReturn(orderTable).when(orderTableRepository).save(any(OrderTable.class));
 
@@ -59,7 +59,7 @@ public class TableServiceTest {
         List<OrderTable> orderTables = getOrderTables(OrderTable
                 .builder()
                 .id(13l)
-                .tableGroup(TableGroup.builder().id(443l).build())
+                .tableGroupId(443l)
                 .empty(true)
                 .build(), 100);
         doReturn(orderTables).when(orderTableRepository).findAll();
@@ -84,7 +84,7 @@ public class TableServiceTest {
         doNothing().when(tableValidator).validateTableEmpty(anyLong());
         OrderTable orderTable = OrderTable.builder()
                 .id(1l)
-                .tableGroup(TableGroup.builder().id(13l).build())
+                .tableGroupId(13l)
                 .build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableRepository)
@@ -162,7 +162,7 @@ public class TableServiceTest {
         orderTable.setNumberOfGuests(15);
         OrderTable findTable = OrderTable.builder()
                 .numberOfGuests(5)
-                .tableGroup(TableGroup.builder().build())
+                .tableGroupId(1l)
                 .build();
         doReturn(Optional.ofNullable(findTable)).when(orderTableRepository).findById(orderTable.getId());
         doReturn(findTable).when(orderTableRepository).save(findTable);

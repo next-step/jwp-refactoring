@@ -24,7 +24,7 @@ public class TableGroup extends BaseEntity {
     }
 
     public void addOrderTables(List<OrderTable> orderTables) {
-        this.orderTables.addOrderTables(this,orderTables);
+        this.orderTables.addOrderTables(id,orderTables);
     }
 
     public void ungroup() {
