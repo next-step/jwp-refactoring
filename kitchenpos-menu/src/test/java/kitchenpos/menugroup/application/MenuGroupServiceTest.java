@@ -10,6 +10,7 @@ import java.util.List;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,7 @@ class MenuGroupServiceTest {
         List<MenuGroupResponse> list = menuGroupService.list();
 
         assertAll(
-                () -> assertThat(list).hasSize(2),
+                () -> Assertions.assertThat(list).hasSize(2),
                 () -> assertThat(list.get(0).getName()).isEqualTo("group1"),
                 () -> assertThat(list.get(1).getName()).isEqualTo("group2")
         );

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -68,8 +69,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertAll(
-                () -> assertThat(menuGroups).hasSize(2),
-                () -> assertThat(menuGroups).containsAll(createdMenuGroups)
+                () -> Assertions.assertThat(menuGroups).hasSize(2),
+                () -> Assertions.assertThat(menuGroups).containsAll(createdMenuGroups)
         );
     }
 }
