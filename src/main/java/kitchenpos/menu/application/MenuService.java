@@ -10,6 +10,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -24,31 +25,27 @@ import java.util.List;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
+
     private final ProductRepository productRepository;
+
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final ProductRepository productRepository,
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
-        MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        validateMenuGroup(menuGroup);
+        menuValidator.validate(menuRequest);
         List<Product> products = findAllProductByIds(menuRequest.getMenuProductIds());
-        return MenuResponse.from(menuRepository.save(menuRequest.toMenu(menuGroup, products)));
-    }
-
-    private void validateMenuGroup(MenuGroup menuGroup) {
-        if(menuGroup == null) {
-            throw new IllegalArgumentException(ErrorCode.MENU_GROUP_NOT_EMPTY.getErrorMessage());
-        }
+        Menu menu = menuRepository.save(menuRequest.toMenu(products));
+        return MenuResponse.from(menu);
     }
 
     public List<MenuResponse> list() {
@@ -56,11 +53,6 @@ public class MenuService {
             .stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
-    }
-
-    private MenuGroup findMenuGroupById (Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(() -> new NotFoundException());
     }
 
     private List<Product> findAllProductByIds(List<Long> ids) {

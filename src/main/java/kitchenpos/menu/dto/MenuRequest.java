@@ -54,12 +54,12 @@ public class MenuRequest {
             .collect(Collectors.toList());
     }
 
-    public Menu toMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-        return Menu.of(name, price, menuGroup.getId(), menuProducts);
+    public Menu toMenu(MenuProducts menuProducts) {
+        return Menu.of(name, price, menuGroupId, menuProducts);
     }
 
-    public Menu toMenu(MenuGroup menuGroup, List<Product> products) {
-        return Menu.of(name, price, menuGroup.getId(), createMenuProducts(products));
+    public Menu toMenu(List<Product> products) {
+        return Menu.of(name, price, menuGroupId, createMenuProducts(products));
     }
 
     private MenuProducts createMenuProducts(List<Product> products) {

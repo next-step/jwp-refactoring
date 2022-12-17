@@ -17,6 +17,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
@@ -37,13 +38,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MenuServiceTest {
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-
-    @Mock
     private MenuRepository menuRepository;
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
@@ -83,11 +84,10 @@ public class MenuServiceTest {
     void createMenu() {
         // given
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), 하와이안피자세트.getPrice().value(), 피자.getId(), 상품요청);
-        when(menuGroupRepository.findById(menuRequest.getMenuGroupId())).thenReturn(Optional.of(피자));
         when(productRepository.findById(하와이안피자.getId())).thenReturn(Optional.of(하와이안피자));
         when(productRepository.findById(콜라.getId())).thenReturn(Optional.of(콜라));
         when(productRepository.findById(피클.getId())).thenReturn(Optional.of(피클));
-        when(menuRepository.save(menuRequest.toMenu(피자, MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))))).thenReturn(하와이안피자세트);
+        when(menuRepository.save(menuRequest.toMenu(MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))))).thenReturn(하와이안피자세트);
 
         // when
         MenuResponse result = menuService.create(menuRequest);
@@ -133,24 +133,11 @@ public class MenuServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴에 포함된 상품이 존재하지 않으면 예외가 발생한다.")
-    @Test
-    void notExistProductException() {
-        // given
-        MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(18_000), 피자.getId(), new ArrayList<>());
-        when(menuGroupRepository.findById(하와이안피자세트.getMenuGroupId())).thenReturn(Optional.of(피자));
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(menuRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("메뉴의 가격은 모든 상품 가격의 합보다 작아야 한다.")
     @Test
     void menuPriceBiggerAllProductPriceException() {
         // given
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(20_000), 피자.getId(), 상품요청);
-        when(menuGroupRepository.findById(menuRequest.getMenuGroupId())).thenReturn(Optional.of(피자));
         when(productRepository.findById(하와이안피자.getId())).thenReturn(Optional.of(하와이안피자));
         when(productRepository.findById(콜라.getId())).thenReturn(Optional.of(콜라));
         when(productRepository.findById(피클.getId())).thenReturn(Optional.of(피클));
