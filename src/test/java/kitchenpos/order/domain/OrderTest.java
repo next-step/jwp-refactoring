@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Collections;
 import kitchenpos.common.exception.InvalidParameterException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ class OrderTest {
     @DisplayName("주문 객체를 생성한다.")
     void create() {
         // when
-        Order actual = Order.of(1L, 짜장_탕수육_주문_항목);
+        Order actual = Order.of(1L, Collections.singletonList(짜장_탕수육_주문_항목));
 
         // then
         assertAll(
@@ -28,7 +29,7 @@ class OrderTest {
     @DisplayName("등록되지 않은 테이블로 생성")
     void createByEmptyOrderTable() {
         // when & then
-        assertThatThrownBy(() -> Order.of(null, 짜장_탕수육_주문_항목))
+        assertThatThrownBy(() -> Order.of(null, Collections.singletonList(짜장_탕수육_주문_항목)))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("등록된 테이블이 존재하지 않습니다.");
     }
@@ -37,7 +38,7 @@ class OrderTest {
     @DisplayName("주문 상태 변경")
     void changeStatus() {
         // given
-        Order order = Order.of(1L, 짜장_탕수육_주문_항목);
+        Order order = Order.of(1L, Collections.singletonList(짜장_탕수육_주문_항목));
 
         // when
         order.changeStatus(OrderStatus.COMPLETION);
@@ -50,7 +51,7 @@ class OrderTest {
     @DisplayName("주문 완료된 주문 상태 변경시 에러")
     void changeStatusByCompletionOrderTable() {
         // given
-        Order order = Order.of(1L, 짜장_탕수육_주문_항목);
+        Order order = Order.of(1L, Collections.singletonList(짜장_탕수육_주문_항목));
         order.changeStatus(OrderStatus.COMPLETION);
 
         // when & then
@@ -63,7 +64,7 @@ class OrderTest {
     @DisplayName("주문 상태가 조리 중 또는 식사 중일 경우 예외")
     void validateStatus() {
         // given
-        Order order = Order.of(1L, 짜장_탕수육_주문_항목);
+        Order order = Order.of(1L, Collections.singletonList(짜장_탕수육_주문_항목));
 
         // when & then
         assertThatThrownBy(order::validateCookingAndMeal)

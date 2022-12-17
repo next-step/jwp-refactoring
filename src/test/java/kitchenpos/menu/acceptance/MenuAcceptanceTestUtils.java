@@ -15,7 +15,6 @@ import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +27,7 @@ public class MenuAcceptanceTestUtils {
     public static MenuResponse 메뉴_면류_짜장면() {
         ProductResponse 짜장면 = 상품_등록되어_있음("짜장면", BigDecimal.valueOf(7000));
         MenuGroupResponse 면류 = 메뉴_그룹_등록되어_있음("면류");
-        MenuProduct 짜장면_1그릇 = MenuProduct.of(Product.of("짜장면", BigDecimal.valueOf(7000)), 1L);
+        MenuProduct 짜장면_1그릇 = MenuProduct.of(짜장면.getId(), 1L);
         return 메뉴_등록되어_있음(짜장면.getName(), 면류.getId(), 짜장면.getPrice(), Collections.singletonList(new MenuProductRequest(짜장면.getId(), 1L)));
     }
 

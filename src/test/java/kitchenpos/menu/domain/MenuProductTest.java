@@ -18,7 +18,7 @@ class MenuProductTest {
     @DisplayName("메뉴 상품 객체 생성")
     void createMenuProduct() {
         // when
-        MenuProduct actual = MenuProduct.of(짬뽕, 1L);
+        MenuProduct actual = MenuProduct.of(짬뽕.id(), 1L);
 
         // then
         assertAll(
@@ -40,7 +40,7 @@ class MenuProductTest {
     @ValueSource(longs = {-1, Long.MIN_VALUE})
     void createMenuProductByQuantityGreaterThanZero(long quantity) {
         // when & then
-        assertThatThrownBy(() -> MenuProduct.of(짬뽕, quantity))
+        assertThatThrownBy(() -> MenuProduct.of(짬뽕.id(), quantity))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("수량은 0 이상이어야 합니다.");
     }
@@ -49,10 +49,10 @@ class MenuProductTest {
     @DisplayName("메뉴 상품 금액 구하기")
     void menuProductPrice() {
         // given
-        MenuProduct menuProduct = MenuProduct.of(짬뽕, 2L);
+        MenuProduct menuProduct = MenuProduct.of(짬뽕.id(), 2L);
 
         // when
-        Price actual = menuProduct.price();
+        Price actual = menuProduct.price(짬뽕.price());
 
         // then
         assertThat(actual.value()).isEqualTo(BigDecimal.valueOf(16_000L));

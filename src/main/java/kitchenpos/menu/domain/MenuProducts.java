@@ -1,21 +1,22 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.common.domain.Price;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class MenuProducts {
     private static final String ERROR_MESSAGE_MENU_PRODUCTS_IS_EMPTY = "메뉴 상품 목록은 필수입니다.";
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "menu_id", nullable = false)
     private List<MenuProduct> products = new ArrayList<>();
 
     protected MenuProducts() {}
@@ -33,18 +34,6 @@ public class MenuProducts {
         if (CollectionUtils.isEmpty(products)) {
             throw new InvalidParameterException(ERROR_MESSAGE_MENU_PRODUCTS_IS_EMPTY);
         }
-    }
-
-    Price totalPrice() {
-        Price totalPrice = Price.from(BigDecimal.ZERO);
-        for (MenuProduct menuProduct : products) {
-            totalPrice = totalPrice.sum(menuProduct.price());
-        }
-        return totalPrice;
-    }
-
-    void changeMenu(Menu menu) {
-        products.forEach(menuProduct -> menuProduct.changeMenu(menu));
     }
 
     public List<MenuProduct> list() {

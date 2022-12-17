@@ -1,7 +1,16 @@
 package kitchenpos.order.acceptance;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static kitchenpos.menu.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
+import static kitchenpos.order.acceptance.OrderAcceptanceTestUtils.*;
+import static kitchenpos.order.domain.OrderLineItemTestFixture.orderLineItemRequest;
+import static kitchenpos.table.acceptance.TableAcceptanceTestUtils.*;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
@@ -10,16 +19,6 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
-
-import java.util.stream.Stream;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static kitchenpos.menu.acceptance.MenuAcceptanceTestUtils.메뉴_면류_짜장면;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtils.*;
-import static kitchenpos.order.domain.OrderLineItemTestFixture.orderLineItemRequest;
-import static kitchenpos.table.acceptance.TableAcceptanceTestUtils.주문_테이블_등록되어_있음;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("주문 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
@@ -86,8 +85,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("주문의 상태를 수정한다. (식사 -> 완료)", () -> {
                     ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);
+                    ExtractableResponse<Response> response2 = 주문_테이블_목록_조회_요청();
 
                     주문_상태_수정됨(response);
+                    주분_테이블_목록_비움여부_검증(response2, true, true);
                 }),
                 dynamicTest("주문 상태를 변경하려면 주문상태가 완료가 아니어야 한다.", () -> {
                     ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);

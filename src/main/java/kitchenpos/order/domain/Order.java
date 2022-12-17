@@ -2,16 +2,16 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.exception.InvalidParameterException;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends AbstractAggregateRoot<Order> {
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COMPLETION = "이미 완료된 주문입니다.";
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COOKING = "주문 상태가 조리 중 입니다.";
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_MEAL = "주문 상태가 식사 중 입니다.";
@@ -36,7 +36,6 @@ public class Order {
     private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTableId);
         OrderLineItems items = OrderLineItems.from(orderLineItems);
-        items.updateOrder(this);
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderLineItems = items;
@@ -50,10 +49,6 @@ public class Order {
 
     public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
         return new Order(null, orderTableId, orderLineItems);
-    }
-
-    public static Order of(Long orderTableId, OrderLineItem... orderLineItems) {
-        return new Order(null, orderTableId, Arrays.asList(orderLineItems));
     }
 
     public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
@@ -78,7 +73,14 @@ public class Order {
 
     public void changeStatus(OrderStatus changeStatus) {
         validateCompletion();
+        issueEventEmptyTable(changeStatus);
         this.orderStatus = changeStatus;
+    }
+
+    private void issueEventEmptyTable(OrderStatus changeStatus) {
+        if (changeStatus.isCompletion()) {
+            registerEvent(new OrderCompletionEvent(this.orderTableId));
+        }
     }
 
     public Long id() {
@@ -99,16 +101,5 @@ public class Order {
 
     public OrderLineItems orderLineitems() {
         return orderLineItems;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", orderTableId=" + orderTableId +
-                ", orderStatus=" + orderStatus +
-                ", orderedTime=" + orderedTime +
-                ", orderLineItems=" + orderLineItems +
-                '}';
     }
 }

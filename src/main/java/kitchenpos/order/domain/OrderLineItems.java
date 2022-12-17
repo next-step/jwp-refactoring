@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import kitchenpos.common.exception.InvalidParameterException;
 import org.springframework.util.CollectionUtils;
 
@@ -15,7 +17,8 @@ import java.util.List;
 public class OrderLineItems {
     private static final String ERROR_MESSAGE_ORDER_LINE_ITEM_IS_EMPTY = "주문 항목은 비어있을 수 없습니다.";
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_id", nullable = false)
     private List<OrderLineItem> items = new ArrayList<>();
 
     protected OrderLineItems() {}
@@ -41,10 +44,6 @@ public class OrderLineItems {
 
     public static OrderLineItems of(OrderLineItem... items) {
         return new OrderLineItems(Arrays.asList(items));
-    }
-
-    public void updateOrder(Order order) {
-        items.forEach(orderLineItem -> orderLineItem.updateOrder(order));
     }
 
     public List<OrderLineItem> list() {

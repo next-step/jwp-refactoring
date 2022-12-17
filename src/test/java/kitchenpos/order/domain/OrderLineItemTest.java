@@ -4,7 +4,7 @@ import kitchenpos.common.exception.InvalidParameterException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.domain.MenuTestFixture.짜장_탕수육_세트;
+import static kitchenpos.menu.domain.MenuTestFixture.짜장_탕수육_주문_세트;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -15,7 +15,7 @@ class OrderLineItemTest {
     @DisplayName("주문 항목 객체 생성")
     void createOrderLineItem() {
         // when
-        OrderLineItem actual = OrderLineItem.of(짜장_탕수육_세트, 1L);
+        OrderLineItem actual = OrderLineItem.of(짜장_탕수육_주문_세트, 1L);
 
         // then
         assertAll(
@@ -37,7 +37,7 @@ class OrderLineItemTest {
     @DisplayName("수량이 음수인 주문 항목을 생성한다.")
     void createOrderLineItemByQuantityIsNegative() {
         // when & then
-        assertThatThrownBy(() -> OrderLineItem.of(짜장_탕수육_세트, -1))
+        assertThatThrownBy(() -> OrderLineItem.of(짜장_탕수육_주문_세트, -1))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("수량은 0 이상이어야 합니다.");
     }

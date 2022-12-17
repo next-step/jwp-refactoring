@@ -1,18 +1,15 @@
 package kitchenpos.menu.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.exception.InvalidParameterException;
 
 @Entity
 public class MenuProduct {
@@ -21,72 +18,52 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
     @Embedded
     private Quantity quantity;
 
     protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Product product, long quantity) {
-        validate(product);
+    private MenuProduct(Long seq, Long productId, long quantity) {
+        validate(productId);
         this.seq = seq;
-        this.product = product;
+        this.productId = productId;
         this.quantity = Quantity.from(quantity);
     }
 
-    private MenuProduct(Product product, long quantity) {
-        this(null, product, quantity);
+    private MenuProduct(Long productId, long quantity) {
+        this(null, productId, quantity);
     }
 
-    private void validate(Product product) {
-        if (product == null) {
+    private void validate(Long productId) {
+        if (productId == null) {
             throw new InvalidParameterException(ERROR_MESSAGE_MENU_PRODUCT_PRODUCT_IS_NULL);
         }
     }
 
-    public static MenuProduct of(Long seq, Product product, long quantity) {
-        return new MenuProduct(seq, product, quantity);
+    public static MenuProduct of(Long seq, Long productId, long quantity) {
+        return new MenuProduct(seq, productId, quantity);
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
-    void changeMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public Price price() {
-        return quantity.multiply(product.price());
+    public Price price(Price price) {
+        return quantity.multiply(price);
     }
 
     public Long seq() {
         return seq;
     }
 
-    public Menu menu() {
-        return menu;
-    }
-
-    public Product product() {
-        return product;
+    public Long productId() {
+        return productId;
     }
 
     public Quantity quantity() {
         return quantity;
-    }
-
-    public Long menuId() {
-        return menu.id();
-    }
-
-    public Long productId() {
-        return product.id();
     }
 
     public long quantityValue() {
@@ -103,12 +80,12 @@ public class MenuProduct {
         }
         MenuProduct that = (MenuProduct) o;
         return Objects.equals(seq, that.seq)
-                && Objects.equals(product, that.product)
+                && Objects.equals(productId, that.productId)
                 && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, product, quantity);
+        return Objects.hash(seq, productId, quantity);
     }
 }
