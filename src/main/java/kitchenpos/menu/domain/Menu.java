@@ -31,6 +31,12 @@ public class Menu {
         }
     }
 
+    public void validateMenuPrice(BigDecimal sumOfProducts) {
+        if (price.compareTo(sumOfProducts) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
+        }
+    }
+
     public Long getId() {
         return id;
     }
