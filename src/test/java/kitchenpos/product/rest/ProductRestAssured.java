@@ -1,11 +1,11 @@
-package kitchenpos.rest;
+package kitchenpos.product.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductCreateRequest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductCreateRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.resource.UriResource;
 import org.springframework.http.MediaType;
 

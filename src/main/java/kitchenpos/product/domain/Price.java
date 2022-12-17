@@ -1,7 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import kitchenpos.menu.domain.Quantity;
-import kitchenpos.message.PriceMessage;
+import kitchenpos.product.message.PriceMessage;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

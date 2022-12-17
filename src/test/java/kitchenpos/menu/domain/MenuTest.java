@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.menu.message.MenuMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

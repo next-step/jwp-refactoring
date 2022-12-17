@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.domain.Price;
-import kitchenpos.fixture.ProductFixture;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
