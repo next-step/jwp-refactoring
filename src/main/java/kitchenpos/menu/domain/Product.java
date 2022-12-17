@@ -1,6 +1,9 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.ProductErrorMessage;
+
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -12,18 +15,24 @@ public class Product {
     private String name;
 
     @Embedded
-    private Price price;
+    private ProductPrice price;
 
     protected Product() {}
 
-    public Product(String name, Price price) {
-        this(null, name, price);
+    public Product(String name, BigDecimal price) {
+        validate(name);
+        this.name = name;
+        this.price = new ProductPrice(price);
     }
 
-    public Product(Long id, String name, Price price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
+    private void validate(String name) {
+        if (Objects.isNull(name) || name.isEmpty()) {
+            throw new IllegalArgumentException(ProductErrorMessage.REQUIRED_NAME.getMessage());
+        }
+    }
+
+    public BigDecimal calculateAmount(long quantity) {
+        return this.price.multiply(new BigDecimal(quantity));
     }
 
     public Long getId() {
@@ -34,7 +43,7 @@ public class Product {
         return name;
     }
 
-    public Price getPrice() {
+    public ProductPrice getPrice() {
         return price;
     }
 
@@ -43,11 +52,11 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price);
+        return Objects.equals(name, product.name) && Objects.equals(price, product.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price);
+        return Objects.hash(name, price);
     }
 }

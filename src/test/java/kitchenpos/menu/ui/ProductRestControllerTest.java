@@ -1,20 +1,17 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.ControllerTest;
 import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
-import kitchenpos.menu.ui.ProductRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -30,11 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("ProductRestController 테스트")
 @WebMvcTest(ProductRestController.class)
-public class ProductRestControllerTest {
-    @Autowired
-    protected MockMvc webMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+public class ProductRestControllerTest extends ControllerTest {
+
     @MockBean
     private ProductService productService;
 
@@ -43,8 +37,11 @@ public class ProductRestControllerTest {
 
     @BeforeEach
     public void setUp() {
-        후라이드치킨 = new Product(1L, "후라이드치킨", new Price(new BigDecimal(16_000)));
-        양념치킨 = new Product(2L, "양념치킨", new Price(new BigDecimal(17_000)));
+        후라이드치킨 = new Product("후라이드치킨", new BigDecimal(16_000));
+        양념치킨 = new Product("양념치킨", new BigDecimal(17_000));
+
+        ReflectionTestUtils.setField(후라이드치킨, "id", 1L);
+        ReflectionTestUtils.setField(양념치킨, "id", 2L);
     }
 
     @DisplayName("상품 등록에 실패한다.")

@@ -1,7 +1,5 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
@@ -13,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -20,15 +19,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("상품 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
+
     @Mock
     private ProductRepository productRepository;
+
     @InjectMocks
     private ProductService productService;
 
@@ -38,9 +39,13 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨_상품 = new Product(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16_000L)));
-        양념치킨_상품 = new Product(2L, "양념치킨", new Price(BigDecimal.valueOf(16_000L)));
-        간장치킨_상품 = new Product(3L, "간장치킨", new Price(BigDecimal.valueOf(17_000L)));
+        후라이드치킨_상품 = new Product("후라이드치킨", BigDecimal.valueOf(16_000L));
+        양념치킨_상품 = new Product("양념치킨", BigDecimal.valueOf(16_000L));
+        간장치킨_상품 = new Product("간장치킨", BigDecimal.valueOf(17_000L));
+
+        ReflectionTestUtils.setField(후라이드치킨_상품, "id", 1L);
+        ReflectionTestUtils.setField(양념치킨_상품, "id", 2L);
+        ReflectionTestUtils.setField(간장치킨_상품, "id", 3L);
     }
 
     @DisplayName("상품의 가격은 반드시 존재해야 한다.")
@@ -70,13 +75,13 @@ public class ProductServiceTest {
         when(productRepository.save(any(Product.class))).thenReturn(후라이드치킨_상품);
 
         // when
-        ProductResponse product = productService.create(new ProductRequest("후라이드치킨", BigDecimal.valueOf(16_000)));
+        ProductResponse productResponse = productService.create(new ProductRequest("후라이드치킨", BigDecimal.valueOf(16_000)));
 
         // then
-        assertAll(() -> {
-            assertThat(product.getId()).isEqualTo(1L);
-            assertThat(product.getName()).isEqualTo("후라이드치킨");
-            assertThat(product.getPrice()).isEqualTo(BigDecimal.valueOf(16_000L));
+        assertThat(productResponse).satisfies(response -> {
+            assertEquals(response.getId(), 후라이드치킨_상품.getId());
+            assertEquals(response.getName(), 후라이드치킨_상품.getName());
+            assertEquals(response.getPrice(), 후라이드치킨_상품.getPrice().value());
         });
     }
 
