@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

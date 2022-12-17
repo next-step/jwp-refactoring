@@ -1,20 +1,17 @@
 package kitchenpos.ordertable.domain;
 
-import static java.util.Collections.emptyList;
-import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.menu.domain.MenuProductTestFixture.generateMenuProduct;
-import static kitchenpos.menu.domain.MenuTestFixture.generateMenu;
+import static kitchenpos.menugroup.domain.MenuGroupTestFixture.generateMenuGroup;
 import static kitchenpos.ordertable.domain.OrderTableTestFixture.generateOrderTable;
-import static kitchenpos.tablegroup.domain.TableGroupTestFixture.generateTableGroup;
 import static kitchenpos.product.domain.ProductTestFixture.generateProduct;
+import static kitchenpos.tablegroup.domain.TableGroupTestFixture.generateTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

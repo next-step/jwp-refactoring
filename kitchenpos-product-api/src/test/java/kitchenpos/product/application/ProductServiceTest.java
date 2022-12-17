@@ -16,6 +16,7 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -103,7 +104,7 @@ public class ProductServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(findProducts).hasSize(products.size()),
+                () -> Assertions.assertThat(findProducts).hasSize(products.size()),
                 () -> assertThat(findProducts.stream()
                         .map(ProductResponse::getName))
                         .containsExactly(감자튀김이름.value(),
