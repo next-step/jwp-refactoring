@@ -11,7 +11,7 @@ import java.util.List;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.application.ProductService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,8 +57,8 @@ class ProductServiceTest {
         List<ProductResponse> results = productService.list();
 
         assertAll(
-                () -> assertThat(results).hasSize(2),
-                () -> assertThat(results).containsExactly(ProductResponse.from(버팔로윙), ProductResponse.from(치킨텐더))
+                () -> Assertions.assertThat(results).hasSize(2),
+                () -> Assertions.assertThat(results).containsExactly(ProductResponse.from(버팔로윙), ProductResponse.from(치킨텐더))
         );
     }
 }
