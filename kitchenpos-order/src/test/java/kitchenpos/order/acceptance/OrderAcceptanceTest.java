@@ -13,7 +13,7 @@ import static kitchenpos.order.acceptance.OrderAcceptanceTestFixture.주문_생�
 import static kitchenpos.order.acceptance.OrderAcceptanceTestFixture.주문_생성되어_있음;
 import static kitchenpos.order.acceptance.OrderAcceptanceTestFixture.주문_생성됨;
 import static kitchenpos.acceptance.ProductAcceptanceTestFixture.상품_등록_되어_있음;
-import static kitchenpos.acceptance.TableAcceptanceTestFixture.주문_테이블_생성되어_있음;
+import static kitchenpos.order.acceptance.TableAcceptanceTestFixture.주문_테이블_생성되어_있음;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
