@@ -44,3 +44,11 @@
   * [x] 검증 로직의 분리
   * [x] 간접참조의 변경사항 발생 시 이벤트 발행 (혹은 DIP 활용)
 * [x] 조회 단위는 객체참조가 가능한 영역까지만 한다
+
+### 의존성 리팩터링 - 리뷰
+* [ ] 벨리데이터에서 검증 외 비즈니스로직을 수행하는 부분 제거
+* [ ] SRP, OCP 를 지킬 수 있도록 각 밸리데이션을 개별 클래스로 분리
+* [ ] 순환참조 제거
+  * Order - OrderValidator, OrderTable - OrderTableValidator, (패키지)Order - OrderTable
+
+
