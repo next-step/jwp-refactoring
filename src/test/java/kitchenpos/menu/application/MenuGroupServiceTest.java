@@ -1,8 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     private MenuGroup 메뉴그룹1;
     private MenuGroup 메뉴그룹2;
@@ -43,24 +44,26 @@ class MenuGroupServiceTest {
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void menuGroupTest1() {
         List<MenuGroup> 메뉴그룹들 = 메뉴그룹들_생성();
+        given(menuGroupRepository.findAll()).willReturn(메뉴그룹들);
 
-        given(menuGroupDao.findAll()).willReturn(메뉴그룹들);
+        List<MenuGroupResponse> 조회된_메뉴그룹들 = menuGroupService.list();
 
-        List<MenuGroup> 조회된_메뉴그룹들 = menuGroupService.list();
         assertThat(조회된_메뉴그룹들.size()).isEqualTo(메뉴그룹들.size());
     }
 
     @Test
     @DisplayName("새로운 메뉴 그룹을 추가할 수 있다.")
     void menuGroupTest2() {
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(메뉴그룹1);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(메뉴그룹1);
 
-        MenuGroup 생성된_메뉴그룹 = menuGroupService.create(메뉴그룹1);
+        MenuGroupRequest 추가할_메뉴그룹 = new MenuGroupRequest(메뉴그룹1.getName());
+        MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(추가할_메뉴그룹);
+
         assertThat(생성된_메뉴그룹.getName()).isEqualTo(메뉴그룹1.getName());
     }
 
     public static MenuGroup 메뉴그룹_생성(Long id, String name) {
-        return MenuGroup.of(id, name);
+        return new MenuGroup(id, name);
     }
 
     private List<MenuGroup> 메뉴그룹들_생성() {
