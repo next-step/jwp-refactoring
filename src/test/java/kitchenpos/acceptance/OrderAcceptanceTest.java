@@ -56,10 +56,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     }
 
-    /**
-     * When 주문 생성 요청
-     * Then 주문 생성됨
-     */
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
@@ -71,10 +67,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성됨(response);
     }
 
-    /**
-     * When 주문항목 없이 주문 생성 요청
-     * Then 주문 생성 실패함
-     */
+
     @DisplayName("주문 항목이 비어있으면 주문을 생성할 수 없다.")
     @Test
     void createFail() {
@@ -85,10 +78,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성_실패함(response);
     }
 
-    /**
-     * When 메뉴에 등록되어 있지 않은 주문항목으로 주문 생성 요청
-     * Then 주문 생성 실패함
-     */
+
     @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문을 생성할 수 없다.")
     @Test
     void createFail2() {
@@ -100,10 +90,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성_실패함_서버(response);
     }
 
-    /**
-     * When 등록되어 있지 않은 주문 테이블에 주문 생성 요청
-     * Then 주문 생성 실패함
-     */
     @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성할 수 없다.")
     @Test
     void createFail3() {
@@ -115,10 +101,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성_실패함_서버(response);
     }
 
-    /**
-     * When 비어있는 주문 테이블에 주문 생성 요청
-     * Then 주문 생성 실패함
-     */
     @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성할 수 없다.")
     @Test
     void createFail4() {
@@ -130,11 +112,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성_실패함(response);
     }
 
-    /**
-     * Given 주문 등록되어 있음
-     * When 주문 목록 조회 요청
-     * Then 주문 목록 조회됨
-     */
+
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void list() {
@@ -149,11 +127,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_조회됨(response, 등록된_주문);
     }
 
-    /**
-     * Given 주문 등록되어 있음
-     * When 주문 상태 변경 요청
-     * Then 주문 상태 변경됨
-     */
+
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
@@ -169,10 +143,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경됨(response, orderStatus);
     }
 
-    /**
-     * When 등록되지 않은 주문 상태 변경 요청
-     * Then 주문 상태 변경 실패함
-     */
+
     @DisplayName("주문이 없으면 주문의 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusFail() {
@@ -183,12 +154,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_실패함_서버(response);
     }
 
-    /**
-     * Given 주문 등록되어 있음
-     * And 계산완료 주문 상태 변경됨
-     * When 주문 상태 변경 요청
-     * Then 주문 상태 변경 실패함
-     */
+
     @DisplayName("주문 상태가 계산 완료이면 주문의 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatusFail2() {

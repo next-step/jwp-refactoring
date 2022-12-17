@@ -19,10 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("메뉴 그룹 관련 인수 테스트")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    /**
-     * When 메뉴 그룹 생성 요청
-     * Then 메뉴 그룹 생성됨
-     */
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
@@ -31,12 +27,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_생성됨(response);
     }
 
-    /**
-     * Given 메뉴 그룹 여러개 등록되어 있음
-     * When 메뉴 그룹 목록 조회 요청
-     * Then 메뉴 그룹 목록 조회됨
-     * Then 메뉴 그룹 목록에 등록된 메뉴 그룹 포함됨
-     */
+
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {

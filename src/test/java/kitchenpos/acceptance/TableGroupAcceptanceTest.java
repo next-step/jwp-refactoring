@@ -38,11 +38,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
     }
 
-    /**
-     * Given 주문 테이블이 여러개 등록되어 있음
-     * When 주문 테이블 2개 이상을 단체 지정 요청함
-     * Then 단체 지정이됨
-     */
     @DisplayName("단체 지정을 할 수 있다.")
     @Test
     void create() {
@@ -55,11 +50,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정이됨(response);
     }
 
-    /**
-     * Given 주문 테이블이 여러개 등록되어 있음
-     * When 주문 테이블 2개 미만을 단체 지정 요청함
-     * Then 단체 지정 실패함
-     */
     @DisplayName("주문 테이블이 2개 이상이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createFail() {
@@ -71,11 +61,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_실패함(response);
     }
 
-    /**
-     * Given 주문 테이블이 여러개 등록되어 있음
-     * When 등록되지 않은 주문 테이블로 단체 지정 요청함
-     * Then 단체 지정 실패함
-     */
     @DisplayName("단체 지정할 주문 테이블이 등록된 주문 테이블이 아니면 단체 지정을 할 수 없다.")
     @Test
     void createFail2() {
@@ -87,11 +72,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_실패함_서버(response);
     }
 
-    /**
-     * Given 주문 테이블이 여러개 등록되어 있음
-     * When 비어있지 않은 주문 테이블로 단체 지정 요청함
-     * Then 단체 지정 실패함
-     */
     @DisplayName("등록된 주문 테이블 하나라도 빈 테이블이면 단체 지정을 할 수 없다.")
     @Test
     void createFail3() {
@@ -105,12 +85,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_실패함(response);
     }
 
-    /**
-     * Given 주문 테이블이 여러개 등록되어 있음
-     * And 단체 지정 등록되어 있음
-     * When 이미 단체 지정된 주문 테이블로 단체 지정 요청함
-     * Then 단체 지정 실패함
-     */
     @DisplayName("이미 단체 지정이 된 주문 테이블이면 단체 지정을 할 수 없다.")
     @Test
     void createFail4() {
@@ -125,12 +99,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_실패함(response);
     }
 
-    /**
-     * Given 주문 테이블 여러개 등록되어 있음
-     * And 단체 지정 등록되어 있음
-     * When 단체 지정 취소 요청함
-     * Then 단체 지정 취소됨
-     */
     @DisplayName("단체 지정을 취소할 수 있다.")
     @Test
     void ungroup() {
@@ -145,16 +113,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_취소됨(response);
     }
 
-    /**
-     * Given 메뉴 그룹 등록되어 있음
-     * And 상품 등록되어 있음
-     * And 메뉴 등록되어 있음
-     * And 주문 테이블 여러개 등록되어 있음
-     * And 단체 지정 되어 있음
-     * And 주문(조리) 등록되어 있음
-     * When 단체 지정 취소 요청함
-     * Then 단체 지정 취소 실패함
-     */
     @DisplayName("단체 지정된 주문 테이블들의 상태가 조리이면 단체 지정을 취소할 수 없다.")
     @Test
     void ungroupFail() {
@@ -193,17 +151,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
 
-    /**
-     * Given 메뉴 그룹 등록되어 있음
-     * And 상품 등록되어 있음
-     * And 메뉴 등록되어 있음
-     * And 주문 테이블 여러개 등록되어 있음
-     * And 단체 지정 되어 있음
-     * And 주문(조리) 등록되어 있음
-     * And 주문 상태(식사) 변경되어 있음
-     * When 단체 지정 취소 요청함
-     * Then 단체 지정 취소 실패함
-     */
     @DisplayName("단체 지정된 주문 테이블들의 상태가 식사이면 단체 지정을 취소할 수 없다.")
     @Test
     void ungroupFail2() {

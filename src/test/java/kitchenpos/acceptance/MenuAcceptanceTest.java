@@ -39,10 +39,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
         허니콤보치킨_상품 = MenuProductRequest.of(허니콤보.getId(), 2);
     }
 
-    /**
-     * When 메뉴 생성 요청
-     * Then 메뉴 생성됨
-     */
     @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
@@ -54,10 +50,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_생성됨(response);
     }
 
-    /**
-     * When 가격이 없는 메뉴 생성 요청
-     * Then 메뉴 생성 실패함
-     */
+
     @DisplayName("메뉴 가격이 없으면(null) 메뉴 생성이 실패한다.")
     @Test
     void createFail() {
@@ -69,10 +62,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_생성_실패함(response);
     }
 
-    /**
-     * When 가격이 음수인 메뉴 생성 요청
-     * Then 메뉴 생성 실패함
-     */
+
     @DisplayName("메뉴 가격이 음수면 메뉴 생성이 실패한다.")
     @Test
     void createFail2() {
@@ -85,10 +75,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     }
 
-    /**
-     * When 메뉴 그룹이 존재하지 않는 메뉴 생성 요청
-     * Then 메뉴 생성 실패함
-     */
+
     @DisplayName("메뉴의 메뉴그룹이 존재하지 않으면 메뉴 생성 실패한다.")
     @Test
     void createFail3() {
@@ -101,10 +88,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     }
 
-    /**
-     * When 상품에 등록되지 않은 메뉴 상품으로 메뉴 생성 요청
-     * Then 메뉴 생성 실패함
-     */
+
     @DisplayName("상품에 등록되지 않은 메뉴 상품으로 메뉴를 생성할 수 없다.")
     @Test
     void createFail4() {
@@ -118,10 +102,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     }
 
-    /**
-     * When 메뉴의 가격이 메뉴 상품들의 가격의 합보다 큰 메뉴 생성 요청
-     * Then 메뉴 생성 실패함
-     */
     @DisplayName("메뉴의 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성할 수 없다.")
     @Test
     void createFail5() {
@@ -134,11 +114,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_생성_실패함(response);
     }
 
-    /**
-     * Given 메뉴 등록되어 있음
-     * When 메뉴 목록 조회 요청
-     * Then 메뉴 목록 조회됨
-     */
+
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() {

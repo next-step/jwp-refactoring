@@ -33,10 +33,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
         레드윙 = ProductRequest.of( "레드윙", BigDecimal.valueOf(20000));
     }
 
-    /**
-     * When 상품 생성 요청
-     * Then 상품 생성됨
-     */
     @DisplayName("상품을 생성한다.")
     @Test
     void create() {
@@ -45,10 +41,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성됨(response);
     }
 
-    /**
-     * When 가격이 없는 상품 생성 요청
-     * Then 상품 생성 실패함
-     */
     @DisplayName("가격이 없는 상품은 생성할 수 없다.")
     @Test
     void createFail() {
@@ -59,10 +51,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성_실패함(response);
     }
 
-    /**
-     * When 가격이 음수인 상품 생성 요청
-     * Then 상품 생성 실패함
-     */
     @DisplayName("가격이 음수인 상품은 생성할 수 없다.")
     @Test
     void createFail2() {
@@ -73,12 +61,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성_실패함(response);
     }
 
-    /**
-     * Given 상품 여러개 등록됨
-     * When 상품 목록 조회 요청
-     * Then 상품 목록 조회됨
-     * Then 상품 목록에 등록된 상품이 포함됨
-     */
+
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() {
