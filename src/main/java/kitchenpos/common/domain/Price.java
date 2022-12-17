@@ -29,7 +29,7 @@ public class Price {
 
     private void validPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("0원 이상의 가격을 입력하세요.");
+            throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
         }
     }
 
