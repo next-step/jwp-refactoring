@@ -15,4 +15,10 @@ public class OrderTableFixture {
         ReflectionTestUtils.setField(orderTable, "id", id);
         return orderTable;
     }
+
+    public static OrderTable 테이블(Long id) {
+        OrderTable orderTable = new OrderTable();
+        ReflectionTestUtils.setField(orderTable, "id", id);
+        return orderTable;
+    }
 }
