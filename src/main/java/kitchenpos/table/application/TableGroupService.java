@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -29,37 +28,32 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+        return tableGroupRepository.save(new TableGroup(findOrderTables(tableGroup.getOrderTableIds())));
+    }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
+    private List<OrderTable> findOrderTables(List<Long> orderTableIds) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        return tableGroupRepository.save(new TableGroup(savedOrderTables));
+        validateOrderTables(orderTableIds, savedOrderTables);
+        return savedOrderTables;
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);
+        validateOrderStatus(tableGroup);
+        tableGroup.upGroup();
+    }
 
-        final List<OrderTable> findOrderTables = tableGroup.getOrderTables();
+    private void validateOrderTables(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
+        if (orderTableIds.size() != savedOrderTables.size()) {
+            throw new IllegalArgumentException();
+        }
+    }
 
-        final List<Long> orderTableIds = findOrderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
+    private void validateOrderStatus(TableGroup tableGroup) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE);
         }
-
-        tableGroup.upGroup();
     }
 }

@@ -65,15 +65,19 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
+    public void upGroup() {
+        this.orderTables.unGroup();
+    }
+
+    public List<Long> getOrderTableIds() {
+        return this.orderTables.getOrderTableIds();
+    }
+
     public List<OrderTable> getOrderTables() {
         return this.orderTables.getOrderTables();
     }
 
     public void setOrderTables(List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
-    }
-
-    public void upGroup() {
-        this.orderTables.unGroup();
     }
 }

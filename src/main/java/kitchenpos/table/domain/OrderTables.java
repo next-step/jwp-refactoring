@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
@@ -24,5 +25,11 @@ public class OrderTables {
         for (OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(null);
         }
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 }
