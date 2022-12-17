@@ -21,4 +21,5 @@ public class MenuProducts {
     public List<MenuProduct> value() {
         return menuProducts;
     }
+
 }

@@ -65,10 +65,6 @@ public class Order {
         return orderStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }

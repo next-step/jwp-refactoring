@@ -35,14 +35,6 @@ public class OrderLineItem {
         return id;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
     public long getQuantity() {
         return quantity;
     }

@@ -27,4 +27,5 @@ public class ProductResponse {
     public String getName() {
         return name;
     }
+
 }

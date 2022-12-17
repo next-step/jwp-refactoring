@@ -13,4 +13,5 @@ public class OrderStatusRequest {
     public String getOrderStatus() {
         return orderStatus;
     }
+
 }

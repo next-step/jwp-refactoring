@@ -35,14 +35,6 @@ public class MenuProduct {
         return id;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
     public long getQuantity() {
         return quantity;
     }

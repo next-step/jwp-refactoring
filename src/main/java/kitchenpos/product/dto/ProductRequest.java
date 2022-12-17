@@ -21,4 +21,5 @@ public class ProductRequest {
     public BigDecimal getPrice() {
         return price;
     }
+
 }
