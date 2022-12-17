@@ -1,0 +1,19 @@
+logging.level:
+  org.springframework.jdbc.core: trace
+  org.hibernate.type.descriptor.sql: trace
+spring:
+  h2.console.enabled: true
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true

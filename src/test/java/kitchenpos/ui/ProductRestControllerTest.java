@@ -12,60 +12,66 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.IntegrationTest;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ProductRestControllerTest {
+class ProductRestControllerTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @DisplayName("상품을 등록한다")
     @Test
-    void products1() throws Exception {
-        Product product = new Product("강정치킨", BigDecimal.valueOf(17_000));
-
-        MvcResult result = mockMvc.perform(post("/api/products")
-            .contentType(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(product)))
-            .andDo(print())
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value(product.getName()))
-            .andExpect(jsonPath("$.price").value(product.getPrice().intValue()))
-            .andReturn();
-
-        assertThat(productDao.findById(getId(result))).isNotEmpty();
+    void test1() throws Exception {
+        Long id = 상품_등록();
+        assertThat(productRepository.findById(id)).isNotEmpty();
     }
 
     @DisplayName("전체 상품을 조회한다")
     @Test
     void products2() throws Exception {
+        상품_등록();
+
         mockMvc.perform(get("/api/products"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$..id").exists())
             .andExpect(jsonPath("$..name").exists())
-            .andExpect(jsonPath("$..price").exists())
-        ;
+            .andExpect(jsonPath("$..price").exists());
+    }
+
+    private Long 상품_등록() throws Exception {
+        ProductRequest request = new ProductRequest(new Name("강정치킨"), new Price(BigDecimal.valueOf(17_000)));
+
+        MvcResult result = mockMvc.perform(post("/api/products")
+            .contentType(APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.name").value(request.getName().value()))
+            .andExpect(jsonPath("$.price").value(request.getPrice().value()))
+            .andReturn();
+
+        return getId(result);
     }
 
     private Long getId(MvcResult result) throws
         com.fasterxml.jackson.core.JsonProcessingException,
         UnsupportedEncodingException {
         String response = result.getResponse().getContentAsString();
-        return objectMapper.readValue(response, Product.class).getId();
+        return objectMapper.readValue(response, ProductResponse.class).getId();
     }
 }

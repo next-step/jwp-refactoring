@@ -118,3 +118,9 @@
 -[x] 키친포스의 요구사항을 작성한다
 -[x] 위에서 정리한 요구사항을 토대로 테스트코드 작성
   -[x] 모든 `Business Object` 에 대해 테스트코드 작성
+
+## step2
+
+-[x] 단위테스트하기 어려운 코드와 가능한 코드를 분리 후 단위테스트 가능한 코드에 단위테스트 구현
+  -[x] Spring Data JPA 사용 시 `spring.jpa.hibernate.ddl-auto=validate` 옵션을 필수
+  -[x] 객체지향 생활체조원칙 준수
