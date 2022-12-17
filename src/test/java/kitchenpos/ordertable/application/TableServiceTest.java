@@ -15,6 +15,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.dto.UpdateEmptyRequest;
@@ -49,7 +50,7 @@ public class TableServiceTest {
     void setUp() {
         firstTable = new OrderTable(new NumberOfGuests(0), true);
         secondTable = new OrderTable(new NumberOfGuests(0), true);
-        개발자_단체 = new TableGroup(1L, null, Arrays.asList(firstTable, secondTable));
+        개발자_단체 = new TableGroup(1L, null, new OrderTables(Arrays.asList(firstTable, secondTable)));
     }
 
     @Test
@@ -142,7 +143,6 @@ public class TableServiceTest {
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(firstTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorEnum.ORDER_TABLE_NOT_EMPTY.message());
+                .hasMessageContaining(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
     }
 }
-

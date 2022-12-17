@@ -1,19 +1,18 @@
 package kitchenpos.tablegroup.application;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class TableGroupService {
@@ -28,51 +27,37 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return savedTableGroup;
+    public TableGroupResponse create(final TableGroupRequest request) {
+        final List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
+        final TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup(savedOrderTables));
+        return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        List<Order> orders = findAllOrderByTableIds(tableGroup.getOrderTableIds());
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
+        tableGroup.ungroup(orders);
+        tableGroupRepository.save(tableGroup);
+    }
+
+    private List<OrderTable> findAllOrderTablesByIds(List<Long> ids) {
+        return ids.stream()
+                .map(this::findOrderTableById)
                 .collect(Collectors.toList());
+    }
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+    private OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_EXISTS_ORDER_TABLE.message()));
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
-            orderTableRepository.save(orderTable);
-        }
+    private List<Order> findAllOrderByTableIds(List<Long> ids) {
+        return orderRepository.findAllByOrderTableIdIn(ids);
+    }
+    private TableGroup findTableGroupById(Long id) {
+        return tableGroupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_EXISTS_TABLE_GROUP.message()));
     }
 }
