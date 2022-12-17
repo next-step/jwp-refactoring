@@ -47,3 +47,9 @@ project(':kitchenpos-menu') {
         implementation project(':kitchenpos-product')
     }
 }
+
+project(':kitchenpos-order') {
+    dependencies {
+        implementation project(':kitchenpos-menu')
+    }
+}
