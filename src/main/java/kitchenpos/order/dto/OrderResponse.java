@@ -2,6 +2,7 @@ package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 
@@ -76,5 +77,26 @@ public class OrderResponse {
 
     public void setOrderLineItems(final List<OrderLineItemResponse> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderResponse that = (OrderResponse) o;
+        return Objects.equals(id, that.id) && Objects
+            .equals(orderTableId, that.orderTableId) && Objects
+            .equals(orderStatus, that.orderStatus) && Objects
+            .equals(orderedTime, that.orderedTime) && Objects
+            .equals(orderLineItems, that.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 }

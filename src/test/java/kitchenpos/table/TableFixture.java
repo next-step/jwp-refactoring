@@ -3,13 +3,19 @@ package kitchenpos.table;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableFixture {
 
+    public static final OrderTable 일번테이블 = new OrderTable(1L, null, 0, false);
+    public static final OrderTable 이번테이블 = new OrderTable(2L, null, 0, false);
+    public static final OrderTable 삼번테이블 = new OrderTable(3L, null, 0, false);
+
     public static ExtractableResponse<Response> 주문_테이블_추가(Long tableGroupId, int numberOfGuest,
         boolean empty) {
+
         OrderTableRequest orderTable = new OrderTableRequest(tableGroupId, numberOfGuest, empty);
         return 주문_테이블_추가(orderTable);
     }
