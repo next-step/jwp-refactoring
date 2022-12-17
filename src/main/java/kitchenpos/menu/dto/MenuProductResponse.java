@@ -1,5 +1,6 @@
 package kitchenpos.menu.dto;
 
+import java.util.Objects;
 import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
@@ -57,5 +58,23 @@ public class MenuProductResponse {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MenuProductResponse that = (MenuProductResponse) o;
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects
+            .equals(menuId, that.menuId) && Objects.equals(productId, that.productId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, menuId, productId, quantity);
     }
 }

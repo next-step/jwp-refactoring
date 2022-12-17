@@ -9,6 +9,9 @@ import org.springframework.http.MediaType;
 
 public class ProductFixture {
 
+    public static final Product 강정치킨 = new Product(1L, "강정치킨", new BigDecimal(17_000));
+    public static final Product 개손해치킨 = new Product(2L, "개손해치킨", new BigDecimal(-97_000));
+
     public static ExtractableResponse<Response> 상품_등록(String name, BigDecimal price) {
         Product product = new Product();
         product.setName(name);
