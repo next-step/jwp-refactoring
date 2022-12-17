@@ -48,15 +48,15 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    Order 주문1;
-    Order 주문2;
+    private Order 주문1;
+    private Order 주문2;
 
-    OrderTable 테이블1;
-    OrderTable 테이블2;
-    OrderTable 빈테이블;
+    private OrderTable 테이블1;
+    private OrderTable 테이블2;
+    private OrderTable 빈테이블;
 
-    OrderLineItem 풀코스_주문;
-    OrderLineItem 오일2인세트_주문;
+    private OrderLineItem 풀코스_주문;
+    private OrderLineItem 오일2인세트_주문;
 
 
     @BeforeEach
