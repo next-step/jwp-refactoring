@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,19 +8,18 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private List<MenuProduct> values = new ArrayList<>();
 
     protected MenuProducts() {}
 
     private MenuProducts(List<MenuProduct> menuProducts) {
         validateMenuProductsNotEmpty(menuProducts);
-        this.menuProducts = new ArrayList<>(menuProducts);
+        this.values = new ArrayList<>(menuProducts);
     }
 
     public static MenuProducts from(List<MenuProduct> menuProducts) {
@@ -35,10 +33,10 @@ public class MenuProducts {
     }
 
     public void setMenu(final Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
+        values.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return Collections.unmodifiableList(menuProducts);
+        return Collections.unmodifiableList(values);
     }
 }
