@@ -2,19 +2,19 @@
 
 ## 요구 사항
 
-- [ ] 서비스 로직 -> 도메인으로 이동
+- [x] 서비스 로직 -> 도메인으로 이동
     - [x] 메뉴그룹 서비스 도메인 로직 이동
-    - [ ] 메뉴 서비스 도메인 로직 이동
+    - [x] 메뉴 서비스 도메인 로직 이동
     - [x] 주문 CRUD 서비스 도메인 로직 이동
-    - [ ] 주문 상태 서비스 도메인 로직 이동
+    - [x] 주문 상태 서비스 도메인 로직 이동
     - [x] 상품 서비스 도메인 로직 이동
-    - [ ] 테이블그룹 서비스 도메인 로직 이동
-    - [ ] 테이블 서비스 도메인 로직 이동
-- [ ] JPA 사용
-    - [ ] OrderDao -> OrderRepository 변경
+    - [x] 테이블그룹 서비스 도메인 로직 이동
+    - [x] 테이블 서비스 도메인 로직 이동
+- [x] JPA 사용
+    - [x] OrderDao -> OrderRepository 변경
     - [x] OrderTableDao -> OrderTableRepository 변경
     - [x] TableGroupDao -> TableGroupRepository 변경
-    - [x] MenuGroupRepository -> MenuGroupRep
+    - [x] MenuGroupDao -> MenuGroupRepository 변경
 - [ ] Fixture
     - [ ] TableGroupFixture
 - [ ] TableGroup 파라미터 DTO 변경
