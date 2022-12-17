@@ -66,17 +66,17 @@ class OrderServiceTest {
     @BeforeEach
     void set_up() {
         주문_테이블 = OrderTableFixture.create(1, false);
+        ReflectionTestUtils.setField(주문_테이블, "id", 1L);
         주문 = OrderFixture.create(주문_테이블);
+        ReflectionTestUtils.setField(주문, "id", 1L);
 
-        상품 = ProductFixture.create("상품", BigDecimal.valueOf(1000L));
         메뉴그룹 = MenuGroupFixture.create("메뉴그룹");
+        ReflectionTestUtils.setField(메뉴그룹, "id", 1L);
         메뉴 = MenuFixture.create("메뉴", BigDecimal.valueOf(1000), 메뉴그룹);
+        ReflectionTestUtils.setField(메뉴, "id", 1L);
+        상품 = ProductFixture.create("상품", BigDecimal.valueOf(1000L));
         메뉴상품 = MenuProductFixture.create(메뉴, 상품, 2L);
 
-        ReflectionTestUtils.setField(주문_테이블, "id", 1L);
-        ReflectionTestUtils.setField(주문, "id", 1L);
-        ReflectionTestUtils.setField(메뉴그룹, "id", 1L);
-        ReflectionTestUtils.setField(메뉴, "id", 1L);
 
         주문_메뉴 = new OrderLineItem(주문, 메뉴.getId(), 1);
         OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 1L);
@@ -136,7 +136,7 @@ class OrderServiceTest {
     void create_error_order_table_value_empty() {
         // given
         Menu 메뉴 = MenuFixture.create("name", BigDecimal.valueOf(1000), 메뉴그룹);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(OrderTableFixture.create(1, false)));
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
         주문_테이블.changeEmptyStatus(true);
 

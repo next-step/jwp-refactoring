@@ -88,7 +88,7 @@ class TableServiceTest {
         // given
         OrderTable 주문테이블_변경 = OrderTableFixture.create(10, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문테이블_변경));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(주문테이블_변경);
 
         // when
@@ -113,8 +113,8 @@ class TableServiceTest {
     void update_error_table_status() {
         // given
         when(orderTableRepository.findById(주문테이블_1번.getId())).thenReturn(Optional.ofNullable(주문테이블_1번));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(
-                주문테이블_1번, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                주문테이블_1번.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).thenReturn(true);
 
         // when && then
