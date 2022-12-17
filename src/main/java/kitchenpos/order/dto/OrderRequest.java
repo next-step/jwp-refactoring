@@ -28,8 +28,8 @@ public class OrderRequest {
                 .collect(Collectors.toList());
     }
 
-    public Order toOrder(OrderTable orderTable, List<Menu> menus) {
-        Order order = new Order(orderTable.getId());
+    public Order toOrder(Long orderTableId, List<Menu> menus) {
+        Order order = new Order(orderTableId);
         List<OrderLineItem> items = orderLineItems.stream()
                 .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
                 .collect(toList());

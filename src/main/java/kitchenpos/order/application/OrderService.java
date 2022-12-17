@@ -7,8 +7,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.event.OrderCreateEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,23 +20,22 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final MenuRepository menuRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository,
-                        MenuRepository menuRepository) {
+    public OrderService(OrderRepository orderRepository, MenuRepository menuRepository,
+                        ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.eventPublisher = eventPublisher;
         this.menuRepository = menuRepository;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 없습니다."));
+        eventPublisher.publishEvent(new OrderCreateEvent(request.getOrderTableId()));
 
         List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        Order saveOrder = request.toOrder(orderTable, menus);
+        Order saveOrder = request.toOrder(request.getOrderTableId(), menus);
 
         return OrderResponse.from(orderRepository.save(saveOrder));
     }

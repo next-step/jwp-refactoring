@@ -1,7 +1,10 @@
 package kitchenpos.order.application;
 
 import kitchenpos.fixture.*;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -23,6 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -51,7 +55,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     private OrderTable 주문_테이블;
     private Order 주문;
@@ -83,6 +87,7 @@ class OrderServiceTest {
         주문_메뉴 = new OrderLineItem(주문, 메뉴.getId(), 1);
         OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 1L);
         주문_요청 = new OrderRequest(1L, Arrays.asList(주문_항목_요청));
+
     }
 
     @DisplayName("주문을 등록할 수 있다.")
@@ -91,7 +96,6 @@ class OrderServiceTest {
         // given
         OrderRequest request = new OrderRequest(주문_테이블.getId(), OrderLineItemRequest.list(Arrays.asList(주문_메뉴)));
 
-        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
         when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
@@ -114,7 +118,6 @@ class OrderServiceTest {
     @Test
     void create_error_duplicated_order_item() {
         // given
-        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴, 메뉴));
 
         // when && then
@@ -125,8 +128,6 @@ class OrderServiceTest {
     @DisplayName("주문 테이블의 값이 저장되어 있지 않으면 주문 할 수 없다.")
     @Test
     void create_error_order_table_empty() {
-        // given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // when && then
         assertThatThrownBy(() -> orderService.create(주문_요청))
@@ -137,10 +138,8 @@ class OrderServiceTest {
     @Test
     void create_error_order_table_value_empty() {
         // given
-        Menu 메뉴 = MenuFixture.create("name", BigDecimal.valueOf(1000), 메뉴그룹);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(OrderTableFixture.create(1, false)));
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
-        주문_테이블.changeEmptyStatus(true);
+        주문_요청 = new OrderRequest(null, Arrays.asList(new OrderLineItemRequest(1L, 1)));
 
         // when && then
         assertThatThrownBy(() -> orderService.create(주문_요청))
