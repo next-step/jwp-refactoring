@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,10 @@ import kitchenpos.ordertable.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.ordertable.validator.OrderTableValidator;
+import kitchenpos.validator.ordertable.OrderTableValidator;
+import kitchenpos.validator.ordertable.OrderTableValidatorsImpl;
+import kitchenpos.validator.ordertable.impl.AlreadyGroupedOrderTableValidator;
+import kitchenpos.validator.ordertable.impl.OrderStatusOrderTableValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,9 +44,12 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
+        List<OrderTableValidator> orderTableValidators = Arrays
+                .asList(new AlreadyGroupedOrderTableValidator(), new OrderStatusOrderTableValidator(orderRepository));
+
         orderTable = new OrderTable(1, false);
         orderTable.changeTableGroupId(1L);
-        OrderTableValidator orderTableValidator = new OrderTableValidator(orderRepository);
+        OrderTableValidatorsImpl orderTableValidator = new OrderTableValidatorsImpl(orderTableValidators);
         tableService = new TableService(orderTableRepository, orderTableValidator);
     }
 

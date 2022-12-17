@@ -4,7 +4,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.event.TableUnGroupedEvent;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
-import kitchenpos.tablegroup.validator.TableGroupValidator;
+import kitchenpos.validator.tablegroup.TableGroupValidatorsImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
-    private final TableGroupValidator tableGroupValidator;
+    private final TableGroupValidatorsImpl tableGroupValidator;
     private final ApplicationEventPublisher eventPublisher;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
-                             TableGroupValidator tableGroupValidator,
+                             TableGroupValidatorsImpl tableGroupValidator,
                              ApplicationEventPublisher eventPublisher) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableGroupValidator = tableGroupValidator;

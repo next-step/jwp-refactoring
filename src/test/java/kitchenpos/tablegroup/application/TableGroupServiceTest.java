@@ -8,17 +8,22 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.ordertable.validator.OrderTableValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
-import kitchenpos.tablegroup.validator.TableGroupValidator;
+import kitchenpos.validator.tablegroup.TableGroupValidator;
+import kitchenpos.validator.tablegroup.TableGroupValidatorsImpl;
+import kitchenpos.validator.tablegroup.impl.AlreadyGroupedTableGroupValidator;
+import kitchenpos.validator.tablegroup.impl.OrderStatusTableGroupValidator;
+import kitchenpos.validator.tablegroup.impl.OrderTableEmptyValidator;
+import kitchenpos.validator.tablegroup.impl.OrderTablesSizeValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,13 +52,17 @@ class TableGroupServiceTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
     private TableGroupService tableGroupService;
-    private TableGroupValidator tableGroupValidator;
-    private OrderTableValidator orderTableValidator;
+    private TableGroupValidatorsImpl tableGroupValidatorImpl;
 
     @BeforeEach
     void setUp() {
-        tableGroupValidator = new TableGroupValidator(orderTableRepository, orderRepository);
-        tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidator, eventPublisher);
+        List<TableGroupValidator> tableGroupValidators = Arrays
+                .asList(new OrderTableEmptyValidator(), new AlreadyGroupedTableGroupValidator(),
+                        new OrderTablesSizeValidator(),
+                        new OrderStatusTableGroupValidator(orderRepository));
+
+        tableGroupValidatorImpl = new TableGroupValidatorsImpl(orderTableRepository, tableGroupValidators);
+        tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidatorImpl, eventPublisher);
     }
 
     @Test

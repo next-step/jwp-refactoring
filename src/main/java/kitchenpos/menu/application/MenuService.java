@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.mapper.MenuMapper;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menu.validator.MenuValidators;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,21 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuValidator menuValidator;
+    private final MenuValidators menuValidators;
     private final MenuMapper menuMapper;
 
-    public MenuService(MenuRepository menuRepository, MenuValidator menuValidator,
+    public MenuService(MenuRepository menuRepository, MenuValidators menuValidators,
                        MenuMapper menuMapper) {
         this.menuRepository = menuRepository;
-        this.menuValidator = menuValidator;
+        this.menuValidators = menuValidators;
         this.menuMapper = menuMapper;
     }
 
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
-        menuValidator.validateCreation(menuRequest.getMenuGroupId());
+        menuValidators.validateCreation(menuRequest.getMenuGroupId());
         Menu menu = menuMapper.mapFrom(menuRequest);
-        menuValidator.validateProductsPrice(menu);
+        menuValidators.validateProductsPrice(menu);
         return menuRepository.save(menu);
     }
 

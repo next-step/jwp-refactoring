@@ -1,36 +1,26 @@
-package kitchenpos.menu.validator;
+package kitchenpos.validator.menu.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.validator.menu.MenuValidator;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional
-public class MenuValidator {
+@Order(2)
+public class ProductsPriceValidator extends MenuValidator {
 
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuValidator(MenuGroupRepository menuGroupRepository,
-                         ProductRepository productRepository) {
-        this.menuGroupRepository = menuGroupRepository;
+    public ProductsPriceValidator(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    @Transactional(readOnly = true)
-    public void validateCreation(Long menuGroupId) {
-        menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "메뉴 등록시, 등록되어 있는 메뉴 그룹만 지정할 수 있습니다[menuGroupId:" + menuGroupId + "]"));
-    }
-
-    @Transactional(readOnly = true)
-    public void validateProductsPrice(Menu menu) {
+    @Override
+    protected void validate(Menu menu) {
         BigDecimal price = menu.getPrice();
         List<MenuProduct> menuProducts = menu.getMenuProducts();
         BigDecimal sumMenuProductsPrice = makeSumMenuProductsPrice(menuProducts);

@@ -6,7 +6,7 @@ import kitchenpos.ordertable.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.ordertable.validator.OrderTableValidator;
+import kitchenpos.ordertable.validator.OrderTableValidators;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidator orderTableValidator;
+    private final OrderTableValidators orderTableValidators;
 
     public TableService(OrderTableRepository orderTableRepository,
-                        OrderTableValidator orderTableValidator) {
+                        OrderTableValidators orderTableValidators) {
         this.orderTableRepository = orderTableRepository;
-        this.orderTableValidator = orderTableValidator;
+        this.orderTableValidators = orderTableValidators;
     }
 
     @Transactional
@@ -38,13 +38,13 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableChangeEmptyRequest emptyRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "존재하지 않는 주문 테이블의 비어있음 여부를 수정할 수 없습니다[orderTableId:" + orderTableId + "]"));
 
-        savedOrderTable.changeEmpty(emptyRequest.isEmpty(), orderTableValidator);
-
-        return savedOrderTable;
+        orderTable.changeEmpty(emptyRequest.isEmpty());
+        orderTableValidators.validateChangeEmpty(orderTable);
+        return orderTable;
     }
 
     @Transactional

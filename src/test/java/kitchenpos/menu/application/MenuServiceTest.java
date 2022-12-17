@@ -17,11 +17,14 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.mapper.MenuMapper;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.validator.menu.MenuValidator;
+import kitchenpos.validator.menu.MenuValidatorsImpl;
+import kitchenpos.validator.menu.impl.AlreadyGroupedMenuValidator;
+import kitchenpos.validator.menu.impl.ProductsPriceValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,14 +42,17 @@ class MenuServiceTest {
     @Mock
     private ProductRepository productRepository;
     private MenuMapper menuMapper;
-    private MenuValidator menuValidator;
+    private MenuValidatorsImpl menuValidatorImpl;
     private MenuService menuService;
+    private List<MenuValidator> menuValidators;
 
     @BeforeEach
     void setUp() {
+        menuValidators = Arrays.asList(new AlreadyGroupedMenuValidator(menuGroupRepository),
+                new ProductsPriceValidator(productRepository));
         menuMapper = new MenuMapper(productRepository);
-        menuValidator = new MenuValidator(menuGroupRepository, productRepository);
-        menuService = new MenuService(menuRepository, menuValidator, menuMapper);
+        menuValidatorImpl = new MenuValidatorsImpl(menuValidators);
+        menuService = new MenuService(menuRepository, menuValidatorImpl, menuMapper);
     }
 
     @Test

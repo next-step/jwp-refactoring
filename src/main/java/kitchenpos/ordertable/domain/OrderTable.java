@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.ordertable.validator.OrderTableValidator;
 
 @Entity
 public class OrderTable {
@@ -32,9 +31,7 @@ public class OrderTable {
         this.empty = new OrderTableEmpty(empty);
     }
 
-    public void changeEmpty(final boolean empty, OrderTableValidator orderTableValidator) {
-        orderTableValidator.validateChangeEmpty(this);
-
+    public void changeEmpty(final boolean empty) {
         this.empty.changeEmpty(empty);
     }
 

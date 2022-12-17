@@ -20,9 +20,12 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.validator.order.OrderValidator;
+import kitchenpos.validator.order.OrderValidatorsImpl;
+import kitchenpos.validator.order.impl.OrderLineItemsSizeAndMenuCountValidator;
+import kitchenpos.validator.order.impl.OrderTableExistAndEmptyValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +38,7 @@ class OrderServiceTest {
 
     private OrderService orderService;
     @Mock
-    private OrderValidator orderValidator;
+    private OrderValidatorsImpl orderValidatorImpl;
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -46,10 +49,14 @@ class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private Order order = new Order(1L, Collections.singletonList(new OrderLineItem(1L, 1l)));
+    private List<OrderValidator> orderValidators;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
+        orderValidators = Arrays
+                .asList(new OrderTableExistAndEmptyValidator(orderTableRepository),
+                        new OrderLineItemsSizeAndMenuCountValidator(menuRepository));
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidatorImpl);
     }
 
     @Test
@@ -79,8 +86,8 @@ class OrderServiceTest {
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1, false)));
-        orderValidator = new OrderValidator(orderTableRepository, menuRepository);
-        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
+        orderValidatorImpl = new OrderValidatorsImpl(orderValidators);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidatorImpl);
 
         ThrowingCallable 없는_메뉴가_포함된_주문시도 = () -> orderService.create(orderRequest);
 
@@ -93,8 +100,8 @@ class OrderServiceTest {
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
-        orderValidator = new OrderValidator(orderTableRepository, menuRepository);
-        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
+        orderValidatorImpl = new OrderValidatorsImpl(orderValidators);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidatorImpl);
 
         ThrowingCallable 등록_되지_않은_주문_테이블_지정 = () -> orderService.create(orderRequest);
 
@@ -107,8 +114,8 @@ class OrderServiceTest {
                 new OrderLineItemRequest(2L, 1l));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1, true)));
-        orderValidator = new OrderValidator(orderTableRepository, menuRepository);
-        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidator);
+        orderValidatorImpl = new OrderValidatorsImpl(orderValidators);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderValidatorImpl);
 
         ThrowingCallable 빈_주문_테이블일_경우 = () -> orderService.create(orderRequest);
 

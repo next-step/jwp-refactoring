@@ -1,13 +1,17 @@
-package kitchenpos.ordertable.validator;
+package kitchenpos.validator.ordertable;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.validator.ordertable.impl.AlreadyGroupedOrderTableValidator;
+import kitchenpos.validator.ordertable.impl.OrderStatusOrderTableValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,17 +20,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class OrderTableValidatorTest {
+class OrderTableValidatorsTest {
 
     @Mock
     private OrderRepository orderRepository;
     @Mock
     private Order order;
-    private OrderTableValidator orderTableValidator;
+    private OrderTableValidatorsImpl orderTableValidator;
 
     @BeforeEach
     void setUp() {
-        orderTableValidator = new OrderTableValidator(orderRepository);
+        List<OrderTableValidator> orderTableValidators = Arrays
+                .asList(new AlreadyGroupedOrderTableValidator(), new OrderStatusOrderTableValidator(orderRepository));
+        orderTableValidator = new OrderTableValidatorsImpl(orderTableValidators);
     }
 
     @Test
