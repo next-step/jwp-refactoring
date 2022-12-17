@@ -1,12 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.*;
 import kitchenpos.domain.type.OrderStatus;
 import kitchenpos.port.MenuPort;
-import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderLineItemPort;
+import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderTablePort;
-import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

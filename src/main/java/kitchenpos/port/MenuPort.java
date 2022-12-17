@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface MenuPort {
     Menu save(Menu entity);
 
-    Optional<Menu> findById(Long id);
+    Menu findById(Long id);
 
     List<Menu> findAll();
 

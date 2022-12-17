@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ProductPort {
     Product save(Product entity);
 
-    Optional<Product> findById(Long id);
+    Product findById(Long id);
 
     List<Product> findAll();
 

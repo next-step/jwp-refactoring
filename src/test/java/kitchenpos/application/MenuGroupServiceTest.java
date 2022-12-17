@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.port.MenuGroupPort;
-import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +31,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그륩을 등록한다")
     void createMenuGroup() {
         MenuGroup 피자 = MenuGroup.from("피자");
+
         when(menuGroupPort.save(any())).thenReturn(피자);
 
         MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest("피자"));
@@ -44,7 +45,6 @@ class MenuGroupServiceTest {
     void getMenuGroupList() {
         MenuGroup 피자 = MenuGroup.from("피자");
         MenuGroup 치킨 = MenuGroup.from("치킨");
-
 
         when(menuGroupPort.findAll()).thenReturn(Arrays.asList(피자, 치킨));
 

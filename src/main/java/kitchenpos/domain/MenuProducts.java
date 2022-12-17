@@ -15,6 +15,10 @@ public class MenuProducts {
     protected MenuProducts() {}
 
     public MenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        this.menuProducts = new ArrayList<>(menuProducts);
+    }
+
+    public List<MenuProduct> getList() {
+        return this.menuProducts;
     }
 }

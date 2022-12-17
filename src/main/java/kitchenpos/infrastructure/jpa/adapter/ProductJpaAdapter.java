@@ -19,17 +19,17 @@ public class ProductJpaAdapter implements ProductPort {
 
     @Override
     public Product save(Product entity) {
-        return null;
+        return productJpaRepository.save(entity);
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
-        return Optional.empty();
+    public Product findById(Long id) {
+        return productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public List<Product> findAll() {
-        return null;
+        return productJpaRepository.findAll();
     }
 
     @Override

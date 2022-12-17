@@ -1,7 +1,7 @@
 package kitchenpos.infrastructure.jpa.adapter;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.infrastructure.jpa.repository.MenuJpaRepository;
 import kitchenpos.port.MenuPort;
 import org.springframework.stereotype.Repository;
 
@@ -10,23 +10,30 @@ import java.util.Optional;
 
 @Repository
 public class MenuJpaAdapter implements MenuPort {
-    @Override
-    public Menu save(Menu entity) {
-        return null;
+
+    private final MenuJpaRepository menuJpaRepository;
+
+    public MenuJpaAdapter(MenuJpaRepository menuJpaRepository) {
+        this.menuJpaRepository = menuJpaRepository;
     }
 
     @Override
-    public Optional<Menu> findById(Long id) {
-        return Optional.empty();
+    public Menu save(Menu entity) {
+        return menuJpaRepository.save(entity);
+    }
+
+    @Override
+    public Menu findById(Long id) {
+        return menuJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public List<Menu> findAll() {
-        return null;
+        return menuJpaRepository.findAll();
     }
 
     @Override
     public long countByIdIn(List<Long> ids) {
-        return 0;
+        return menuJpaRepository.countByIdIn(ids);
     }
 }

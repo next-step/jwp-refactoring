@@ -19,16 +19,16 @@ public class TableGroupJpaAdapter implements TableGroupPort {
 
     @Override
     public TableGroup save(TableGroup entity) {
-        return null;
+        return tableGroupJpaRepository.save(entity);
     }
 
     @Override
     public TableGroup findById(Long id) {
-        return tableGroupJpaRepository.findById(id).orElseThrow(() ->new IllegalArgumentException());
+        return tableGroupJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public List<TableGroup> findAll() {
-        return null;
+        return tableGroupJpaRepository.findAll();
     }
 }
