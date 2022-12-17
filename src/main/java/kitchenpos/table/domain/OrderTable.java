@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -32,8 +33,28 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void validateExist() {
+        if (Objects.nonNull(tableGroup.getId())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void validateEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public void removeTableGroup() {
         this.tableGroup = null;
+    }
+
+    public void updateNumberOfGuests(final int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void updateEmpty(final boolean empty) {
+        this.empty = empty;
     }
 
     public Long getId() {
@@ -48,16 +69,8 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
 }

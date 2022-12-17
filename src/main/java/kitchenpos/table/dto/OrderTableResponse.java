@@ -24,4 +24,15 @@ public class OrderTableResponse {
                 orderTable.isEmpty());
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
 }

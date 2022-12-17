@@ -4,7 +4,7 @@ import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.OrderTableServiceTest.generateOrderTable;
-import static kitchenpos.application.OrderTableServiceTest.generateOrderTableRequest;
+import static kitchenpos.table.application.OrderTableServiceTest.generateOrderTable;
+import static kitchenpos.table.application.OrderTableServiceTest.generateOrderTableIdRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +31,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("단체지정")
+public
 class TableGroupServiceTest {
 
     @InjectMocks
@@ -51,12 +52,12 @@ class TableGroupServiceTest {
     private OrderTable 메뉴테이블4;
     private OrderTable 메뉴테이블5;
 
-    private OrderTableRequest 메뉴테이블요청1;
-    private OrderTableRequest 메뉴테이블요청2;
-    private OrderTableRequest 메뉴테이블요청3;
-    private OrderTableRequest 메뉴테이블요청4;
+    private OrderTableIdRequest 메뉴테이블요청1;
+    private OrderTableIdRequest 메뉴테이블요청2;
+    private OrderTableIdRequest 메뉴테이블요청3;
+    private OrderTableIdRequest 메뉴테이블요청4;
 
-    private List<OrderTableRequest> 메뉴테이블요청들;
+    private List<OrderTableIdRequest> 메뉴테이블요청들;
 
     List<Long> 메뉴테이블_아이디들;
 
@@ -75,10 +76,10 @@ class TableGroupServiceTest {
         메뉴테이블4 = generateOrderTable(단체지정, 3, true);
         메뉴테이블5 = generateOrderTable(단체지정, 3, false);
 
-        메뉴테이블요청1 = generateOrderTableRequest(메뉴테이블1.getId());
-        메뉴테이블요청2 = generateOrderTableRequest(메뉴테이블2.getId());
-        메뉴테이블요청3 = generateOrderTableRequest(메뉴테이블3.getId());
-        메뉴테이블요청4 = generateOrderTableRequest(메뉴테이블4.getId());
+        메뉴테이블요청1 = generateOrderTableIdRequest(메뉴테이블1.getId());
+        메뉴테이블요청2 = generateOrderTableIdRequest(메뉴테이블2.getId());
+        메뉴테이블요청3 = generateOrderTableIdRequest(메뉴테이블3.getId());
+        메뉴테이블요청4 = generateOrderTableIdRequest(메뉴테이블4.getId());
 
         메뉴테이블요청들 = Arrays.asList(메뉴테이블요청1, 메뉴테이블요청2, 메뉴테이블요청3, 메뉴테이블요청4);
 
@@ -170,7 +171,7 @@ class TableGroupServiceTest {
         return new TableGroup(LocalDateTime.now());
     }
 
-    private TableGroupRequest generateTableGroupRequest(List<OrderTableRequest> orderTables) {
+    private TableGroupRequest generateTableGroupRequest(List<OrderTableIdRequest> orderTables) {
         return new TableGroupRequest(orderTables);
     }
 

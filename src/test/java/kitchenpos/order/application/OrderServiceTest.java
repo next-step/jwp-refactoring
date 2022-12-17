@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.OrderTableServiceTest.generateOrderTable;
 import static kitchenpos.menu.application.MenuServiceTest.generateMenu;
+import static kitchenpos.table.application.OrderTableServiceTest.generateOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
