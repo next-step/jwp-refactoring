@@ -1,13 +1,13 @@
 package kitchenpos.table.application;
 
 import kitchenpos.menu.domain.*;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,33 +26,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-    private final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(3), true);
-    private final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
-    private final Product 치즈김밥 = new Product(2L, "치즈김밥", new Price(new BigDecimal(2500)));
-    private final Product 라볶이 = new Product(3L, "라볶이", new Price(new BigDecimal(4500)));
-    private final Product 돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
-    private final Product 쫄면 = new Product(5L, "쫄면", new Price(new BigDecimal(5000)));
 
-    private final MenuGroup 분식 = new MenuGroup(1L, "분식");
+    private OrderTable 주문테이블1;
+    private Product 참치김밥;
+    private Product 라볶이;
+    private Product 돈까스;
 
-    private final MenuProduct 라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-    private final MenuProduct 라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-    private final MenuProduct 라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+    private MenuGroup 분식;
 
-    private MenuProducts 라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-    private final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
+    private MenuProduct 라볶이세트참치김밥;
+    private MenuProduct 라볶이세트라볶이;
+    private MenuProduct 라볶이세트돈까스;
 
-    OrderLineItem 주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-    OrderLineItem 주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
-    OrderTable 주문테이블2 = new OrderTable(1L, null, new NumberOfGuests(4), false);
-    Order 주문 = new Order(1L, 주문테이블2, OrderStatus.COOKING, LocalDateTime.now(),
-            new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+    private MenuProducts 라볶이세트구성;
+    private Menu 라볶이세트;
 
+    private OrderLineItem 주문항목1;
+    private OrderLineItem 주문항목2;
+    private OrderTable 주문테이블2;
+    private Order 주문;
 
     @Mock
     private OrderRepository orderRepository;
@@ -61,12 +57,37 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
+    @BeforeEach
+    void setUp() {
+        주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(3), true);
+
+        참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
+        라볶이 = new Product(2L, "라볶이", new Price(new BigDecimal(4500)));
+        돈까스 = new Product(3L, "돈까스", new Price(new BigDecimal(7000)));
+
+        분식 = new MenuGroup(1L, "분식");
+
+        라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
+        라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
+        라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+
+        라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
+        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
+
+        주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
+        주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
+        주문테이블2 = new OrderTable(1L, null, new NumberOfGuests(4), false);
+
+        주문 = new Order(1L, 주문테이블2, OrderStatus.COOKING, LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+    }
+
     @DisplayName("테이블생성테스트")
     @Test
     void createTableTest() {
         //given
-        given(orderTableRepository.save(any(OrderTable.class)))
-                .willReturn(주문테이블1);
+        when(orderTableRepository.save(any(OrderTable.class)))
+                .thenReturn(주문테이블1);
 
         //when
         OrderTableResponse result = tableService.create(OrderTableToOrderTableRequest(주문테이블1));
@@ -94,8 +115,8 @@ public class TableServiceTest {
 
         when(orderTableRepository.findById(orderTable.getId()))
                 .thenReturn(Optional.ofNullable(orderTable));
-        given(orderRepository.findOrderByOrderTable(any(OrderTable.class)))
-                .willReturn(Optional.ofNullable(주문));
+        when(orderRepository.findOrderByOrderTable(any(OrderTable.class)))
+                .thenReturn(Optional.ofNullable(주문));
 
         //when
         OrderTableResponse result = tableService.changeEmpty(orderTable.getId(), true);

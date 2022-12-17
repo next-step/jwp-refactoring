@@ -29,27 +29,27 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
 
-    private final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
-    private final Product 치즈김밥 = new Product(2L, "치즈김밥", new Price(new BigDecimal(2500)));
-    private final Product 라볶이 = new Product(3L, "라볶이", new Price(new BigDecimal(4500)));
-    private final Product 돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
-    private final Product 쫄면 = new Product(5L, "쫄면", new Price(new BigDecimal(5000)));
+    private Product 참치김밥;
+    private Product 치즈김밥;
+    private Product 라볶이;
+    private Product 돈까스;
+    private Product 쫄면;
 
-    private final MenuGroup 분식 = new MenuGroup(1L, "분식");
+    private MenuGroup 분식;
 
-    private final MenuProduct 라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-    private final MenuProduct 라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-    private final MenuProduct 라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+    private MenuProduct 라볶이세트참치김밥;
+    private MenuProduct 라볶이세트라볶이;
+    private MenuProduct 라볶이세트돈까스;
 
-    private final MenuProduct 쫄면세트치즈김밥 = new MenuProduct(치즈김밥, new Quantity(1));
-    private final MenuProduct 쫄면세트쫄면 = new MenuProduct(쫄면, new Quantity(1));
-    private final MenuProduct 쫄면세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+    private MenuProduct 쫄면세트치즈김밥;
+    private MenuProduct 쫄면세트쫄면;
+    private MenuProduct 쫄면세트돈까스;
 
-    private MenuProducts 라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-    private MenuProducts 쫄면세트구성 = new MenuProducts(Arrays.asList(쫄면세트치즈김밥, 쫄면세트쫄면, 쫄면세트돈까스));
+    private MenuProducts 라볶이세트구성;
+    private MenuProducts 쫄면세트구성;
 
-    private final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
-    private final Menu 쫄면세트 = new Menu(2L, "쫄면세트", new Price(new BigDecimal(14000)), 분식, 쫄면세트구성);
+    private Menu 라볶이세트;
+    private Menu 쫄면세트;
 
     @Mock
     private MenuRepository menuRepository;
@@ -63,6 +63,28 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
+        참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
+        치즈김밥 = new Product(2L, "치즈김밥", new Price(new BigDecimal(2500)));
+        라볶이 = new Product(3L, "라볶이", new Price(new BigDecimal(4500)));
+        돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
+        쫄면 = new Product(5L, "쫄면", new Price(new BigDecimal(5000)));
+
+        분식 = new MenuGroup(1L, "분식");
+
+        라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
+        라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
+        라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+
+        쫄면세트치즈김밥 = new MenuProduct(치즈김밥, new Quantity(1));
+        쫄면세트쫄면 = new MenuProduct(쫄면, new Quantity(1));
+        쫄면세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+
+        라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
+        쫄면세트구성 = new MenuProducts(Arrays.asList(쫄면세트치즈김밥, 쫄면세트쫄면, 쫄면세트돈까스));
+
+        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
+        쫄면세트 = new Menu(2L, "쫄면세트", new Price(new BigDecimal(14000)), 분식, 쫄면세트구성);
+
         menuGroupService = new MenuGroupService(menuGroupRepository);
         productService = new ProductService(productRepository);
         menuService = new MenuService(menuRepository, menuGroupService, productService);
@@ -80,8 +102,8 @@ public class MenuServiceTest {
                 .thenReturn(Optional.ofNullable(라볶이));
         when(productRepository.findById(돈까스.getId()))
                 .thenReturn(Optional.ofNullable(돈까스));
-        given(menuRepository.save(any(Menu.class)))
-                .willReturn(라볶이세트);
+        when(menuRepository.save(any(Menu.class)))
+                .thenReturn(라볶이세트);
 
         //when
         final MenuResponse menu = menuService.create(menuToMenuRequest(라볶이세트));

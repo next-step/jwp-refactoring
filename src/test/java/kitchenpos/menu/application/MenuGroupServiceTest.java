@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,8 +23,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
 
-    private final MenuGroup 분식 = new MenuGroup(1L,"분식");
-    private final MenuGroup 한식 = new MenuGroup(2L,"한식");
+    private MenuGroup 분식;
+    private MenuGroup 한식;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
@@ -31,11 +32,17 @@ public class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
+    @BeforeEach
+    void setUp() {
+        분식 = new MenuGroup(1L,"분식");
+        한식 = new MenuGroup(2L,"한식");
+    }
+
     @Test
     void createMenuGroupTest() {
         //given
-        given(menuGroupRepository.save(any(MenuGroup.class)))
-                .willReturn(분식);
+        when(menuGroupRepository.save(any(MenuGroup.class)))
+                .thenReturn(분식);
         MenuGroupRequest request = new MenuGroupRequest(분식.getName());
 
         //when

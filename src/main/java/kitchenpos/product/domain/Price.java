@@ -10,7 +10,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
 
-    private static final BigDecimal MINIMUM_PRICE = new BigDecimal(0);
+    private static final BigDecimal MINIMUM_PRICE = BigDecimal.ZERO;
 
     BigDecimal price;
 

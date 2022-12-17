@@ -47,7 +47,8 @@ public class OrderTest {
         final OrderTable orderTable = new OrderTable(new NumberOfGuests(10), true);
         //when
         //then
-        assertThatThrownBy(() -> new Order(orderTable, OrderStatus.COMPLETION, new OrderLineItems(Arrays.asList(주문항목1, 주문항목2))))
+        assertThatThrownBy(() -> new Order(orderTable, OrderStatus.COMPLETION,
+                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

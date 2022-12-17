@@ -42,24 +42,23 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-    private static final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
-    private static final Product 라볶이 = new Product(2L, "라볶이", new Price(new BigDecimal(4500)));
-    private static final Product 돈까스 = new Product(3L, "돈까스", new Price(new BigDecimal(7000)));
+    private static Product 참치김밥;
+    private static Product 라볶이;
+    private static Product 돈까스;
 
-    private static final MenuGroup 분식 = new MenuGroup(1L, "분식");
+    private static MenuGroup 분식;
 
-    private static final MenuProduct 라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-    private static final MenuProduct 라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-    private static final MenuProduct 라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+    private static MenuProduct 라볶이세트참치김밥;
+    private static MenuProduct 라볶이세트라볶이;
+    private static MenuProduct 라볶이세트돈까스;
 
-    private static MenuProducts 라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-    private static final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
+    private static MenuProducts 라볶이세트구성;
+    private static Menu 라볶이세트;
 
-    static final OrderLineItem 주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-    static final OrderLineItem 주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
-    static final OrderTable 주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
-    public static final Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(),
-            new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+    public static OrderLineItem 주문항목1;
+    public static OrderLineItem 주문항목2;
+    public static OrderTable 주문테이블;
+    public static Order 주문;
 
     @Mock
     private MenuRepository menuRepository;
@@ -77,6 +76,25 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
+        라볶이 = new Product(2L, "라볶이", new Price(new BigDecimal(4500)));
+        돈까스 = new Product(3L, "돈까스", new Price(new BigDecimal(7000)));
+
+        분식 = new MenuGroup(1L, "분식");
+
+        라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
+        라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
+        라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+
+        라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
+        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
+
+        주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
+        주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
+        주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
+        주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+
         menuService = new MenuService(menuRepository, menuGroupService, productService);
         tableService = new TableService(orderRepository, orderTableRepository);
         orderService = new OrderService(menuService, orderRepository, tableService);
@@ -90,11 +108,12 @@ public class OrderServiceTest {
                 .thenReturn(Optional.ofNullable(라볶이세트));
         when(orderTableRepository.findById(주문테이블.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블));
-        given(orderRepository.save(any(Order.class)))
-                .willReturn(주문);
+        when(orderRepository.save(any(Order.class)))
+                .thenReturn(주문);
 
         //when
-        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final List<OrderLineItemRequest> orderLineItemRequests =
+                Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
         final OrderResponse result = orderService.create(new OrderRequest(1L, orderLineItemRequests));
 
         //then
@@ -109,11 +128,22 @@ public class OrderServiceTest {
                         .isEqualTo(order.getOrderStatus().name()),
                 () -> assertThat(result.getOrderTableResponse().getId())
                         .isEqualTo(order.getOrderTable().getId()),
-                () -> assertThat(result.getOrderLineItems().stream().map(OrderLineItemResponse::getSeq).collect(Collectors.toList()))
-                        .containsAll(order.getOrderLineItems().getValue().stream().map(OrderLineItem::getSeq).collect(Collectors.toList()))
+                () -> assertThat(orderLineItemResponsesToSequences(result.getOrderLineItems()))
+                        .containsAll(orderLineItemToSequences(order.getOrderLineItems().getValue()))
         );
     }
 
+    private List<Long> orderLineItemResponsesToSequences(List<OrderLineItemResponse> orderLineItemResponses) {
+        return orderLineItemResponses.stream()
+                .map(OrderLineItemResponse::getSeq)
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> orderLineItemToSequences(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getSeq)
+                .collect(Collectors.toList());
+    }
 
     @DisplayName("빈 주문항목 목록으로 주문생성 오류 테스트")
     @Test
@@ -136,7 +166,8 @@ public class OrderServiceTest {
 
         //when
         //then
-        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final List<OrderLineItemRequest> orderLineItemRequests =
+                Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
         assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, orderLineItemRequests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -150,7 +181,8 @@ public class OrderServiceTest {
         when(orderTableRepository.findById(주문테이블.getId()))
                 .thenReturn(Optional.ofNullable(null));
 
-        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final List<OrderLineItemRequest> orderLineItemRequests =
+                Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
 
         //when
         //then
@@ -169,7 +201,8 @@ public class OrderServiceTest {
         when(orderTableRepository.findById(주문테이블.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블));
 
-        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
+        final List<OrderLineItemRequest> orderLineItemRequests =
+                Arrays.asList(new OrderLineItemRequest(라볶이세트.getId(), 1L));
 
         //when
         //then
