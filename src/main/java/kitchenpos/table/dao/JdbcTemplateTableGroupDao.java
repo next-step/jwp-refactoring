@@ -1,6 +1,5 @@
 package kitchenpos.table.dao;
 
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.TableGroup;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,10 +61,6 @@ public class JdbcTemplateTableGroupDao implements TableGroupDao {
     }
 
     private TableGroup toEntity(final ResultSet resultSet) throws SQLException {
-        final TableGroup entity = TableGroup.of(
-                resultSet.getLong(KEY_COLUMN_NAME),
-                resultSet.getObject("created_date", LocalDateTime.class),
-                null);
-        return entity;
+        return null;
     }
 }

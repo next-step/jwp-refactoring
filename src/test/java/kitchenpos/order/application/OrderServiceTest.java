@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.TableServiceTest.generateOrderTable;
+import static kitchenpos.application.OrderTableServiceTest.generateOrderTable;
 import static kitchenpos.menu.application.MenuServiceTest.generateMenu;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -74,7 +74,7 @@ class OrderServiceTest {
         메뉴1 = generateMenu(1L, "menu1", null, new MenuGroup(1L, null), null);
         메뉴2 = generateMenu(2L, "menu2", null, new MenuGroup(1L, null), null);
 
-        메뉴테이블 = generateOrderTable(1L, 0, false);
+        메뉴테이블 = generateOrderTable(null, 0, false);
 
         주문항목1 = generateOrderLineItem(메뉴1, 2L);
         주문항목2 = generateOrderLineItem(메뉴2, 1L);
@@ -118,7 +118,7 @@ class OrderServiceTest {
     @DisplayName("새로운 주문 추가 : 주문항목은 비어있어선 안된다.")
     void orderTest3() {
         given(menuRepository.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
-        given(orderTableRepository.findById(주문요청.getOrderTableId())).willReturn(Optional.of(generateOrderTable(1L, 0, true)));
+        given(orderTableRepository.findById(주문요청.getOrderTableId())).willReturn(Optional.of(generateOrderTable(null, 0, true)));
 
         assertThatThrownBy(() -> orderService.create(주문요청))
                 .isInstanceOf(IllegalArgumentException.class);

@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,31 +16,29 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
+    @Embedded
+    private OrderTables orderLineItems = new OrderTables();
+
     protected TableGroup() {}
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.id = id;
+    public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public static TableGroup of(long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static TableGroup create() {
+        return new TableGroup(LocalDateTime.now());
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return null;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-
+    public List<OrderTable> getOrderLineItems() {
+        return orderLineItems.value();
     }
 
 }

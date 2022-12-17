@@ -27,16 +27,21 @@ public class OrderTable {
         return new OrderTable(tableGroup, numberOfGuests, empty);
     }
 
+    public void update(TableGroup tableGroup, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.empty = empty;
+    }
+
+    public void removeTableGroup() {
+        this.tableGroup = null;
+    }
+
     public Long getId() {
         return id;
     }
 
     public Long getTableGroupId() {
-        return null;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-
+        return tableGroup.getId();
     }
 
     public int getNumberOfGuests() {
