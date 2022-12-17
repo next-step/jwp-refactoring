@@ -59,6 +59,9 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
+        if(!isDinning()){
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = orderStatus;
     }
 
