@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 public class TableGroupFixture {

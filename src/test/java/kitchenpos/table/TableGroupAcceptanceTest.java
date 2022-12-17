@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
