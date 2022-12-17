@@ -1,9 +1,11 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
+import kitchenpos.exception.OrderErrorMessage;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -26,8 +28,39 @@ public class Order extends BaseEntity {
     protected Order() {}
 
     public Order(OrderTable orderTable, OrderStatus orderStatus) {
+        validate(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
+    }
+
+    private void validate(OrderTable orderTable) {
+        if(Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(OrderErrorMessage.REQUIRED_ORDER_TABLE.getMessage());
+        }
+        if(orderTable.isEmpty()) {
+            throw new IllegalArgumentException(OrderErrorMessage.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
+        }
+    }
+
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException(OrderErrorMessage.CANNOT_CHANGE_COMPLETION_ORDER.getMessage());
+        }
+        this.orderStatus = orderStatus;
+    }
+
+    public void isCookingOrMeal() {
+        if(orderStatus.isCooking() || orderStatus.isMeal()) {
+            throw new IllegalArgumentException(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+        }
+    }
+
+    public void order(List<OrderLineItem> items) {
+        items.forEach(orderLineItem -> this.orderLineItems.addOrderLineItem(this, orderLineItem));
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.addOrderLineItem(this, orderLineItem);
     }
 
     public Long getId() {
@@ -43,28 +76,6 @@ public class Order extends BaseEntity {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.getOrderLineItems();
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        if (this.orderStatus.isCompletion()) {
-            throw new IllegalArgumentException();
-        }
-
-        this.orderStatus = orderStatus;
-    }
-
-    public void checkForChangingOrderTable() {
-        if(orderStatus.isCooking() || orderStatus.isMeal()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public void order(List<OrderLineItem> items) {
-        items.forEach(orderLineItem -> this.orderLineItems.addOrderLineItem(this, orderLineItem));
-    }
-
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        this.orderLineItems.addOrderLineItem(this, orderLineItem);
+        return orderLineItems.values();
     }
 }
