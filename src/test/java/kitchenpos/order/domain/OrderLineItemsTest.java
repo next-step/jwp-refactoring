@@ -45,16 +45,4 @@ class OrderLineItemsTest {
                 () -> assertThat(menuIds).contains(1L, 2L)
         );
     }
-
-    @Test
-    void 등록_된_메뉴만_주문_등록을_할_수_있다() {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addOrderLineItems(orderLineItemList);
-
-        ThrowingCallable 등록된_메뉴의_갯수가_불일치_할_경우 = () -> orderLineItems.validateOrderLineItemsSizeAndMenuCount(1);
-
-        assertThatIllegalArgumentException().isThrownBy(등록된_메뉴의_갯수가_불일치_할_경우);
-    }
-
-
 }

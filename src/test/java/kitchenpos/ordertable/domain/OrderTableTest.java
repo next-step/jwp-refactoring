@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -52,7 +51,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1, false);
         List<Order> orders = Arrays.asList(order1, order2);
         given(orderRepository.findByOrderTableId(any())).willReturn(orders);
-        given(order1.getOrderStatus()).willReturn(OrderStatus.COOKING.name());
+        given(order1.isSameStatus(any())).willReturn(true);
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_테이블_수정 = () -> orderTable.changeEmpty(true, orderTableValidator);
 
@@ -64,8 +63,8 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1, false);
         List<Order> orders = Arrays.asList(order1, order2);
         given(orderRepository.findByOrderTableId(any())).willReturn(orders);
-        given(order1.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
-        given(order2.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
+        given(order1.isSameStatus(any())).willReturn(false);
+        given(order2.isSameStatus(any())).willReturn(false);
         given(orderRepository.findByOrderTableId(any())).willReturn(orders);
 
         orderTable.changeEmpty(true, orderTableValidator);
@@ -78,8 +77,8 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(1, false);
         List<Order> orders = Arrays.asList(order1, order2);
         given(orderRepository.findByOrderTableId(any())).willReturn(orders);
-        given(order1.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
-        given(order2.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
+        given(order1.isSameStatus(any())).willReturn(false);
+        given(order2.isSameStatus(any())).willReturn(false);
         given(orderRepository.findByOrderTableId(any())).willReturn(orders);
         orderTable.changeEmpty(true, orderTableValidator);
 

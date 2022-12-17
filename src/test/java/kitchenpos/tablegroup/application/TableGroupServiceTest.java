@@ -52,7 +52,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupValidator = new TableGroupValidator(orderTableRepository, orderRepository, orderTableValidator);
+        tableGroupValidator = new TableGroupValidator(orderTableRepository, orderRepository);
         tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidator, eventPublisher);
     }
 

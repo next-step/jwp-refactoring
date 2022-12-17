@@ -31,13 +31,6 @@ public class OrderLineItems {
                 .collect(Collectors.toList());
     }
 
-    public void validateOrderLineItemsSizeAndMenuCount(long menuCount) {
-        if (orderLineItems.size() != menuCount) {
-            throw new IllegalArgumentException("주문 등록시, 등록 된 메뉴만 지정 가능합니다[orderLineItemsSize:" + orderLineItems.size() +
-                    "/menuCount:" + menuCount + "]");
-        }
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }

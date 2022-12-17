@@ -15,7 +15,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.menu.mapper.MenuMapper;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -35,19 +35,18 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuProductRepository menuProductRepository;
-    @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
+    private MenuMapper menuMapper;
     private MenuValidator menuValidator;
     private MenuService menuService;
-    private Product 후라이드치킨_상품 = new Product(1L, "후라이드치킨", new BigDecimal(16000.00));
 
     @BeforeEach
     void setUp() {
+        menuMapper = new MenuMapper(productRepository);
         menuValidator = new MenuValidator(menuGroupRepository, productRepository);
-        menuService = new MenuService(menuRepository, menuProductRepository, menuValidator);
+        menuService = new MenuService(menuRepository, menuValidator, menuMapper);
     }
 
     @Test
@@ -114,11 +113,12 @@ class MenuServiceTest {
     @Test
     void 등록_된_상품만_지정할_수_있다() {
         MenuProductRequest menuProduct = new MenuProductRequest(1L, 2L, 1L, 1l);
-        MenuRequest 후라이드치킨 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
+        MenuRequest 후라이드치킨_요청 = new MenuRequest(1L, "후라이드치킨", new BigDecimal(16000.00), 1L,
                 Collections.singletonList(menuProduct));
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(new MenuGroup("메뉴그룹")));
+        given(productRepository.findById(any())).willReturn(Optional.empty());
 
-        ThrowingCallable 상품이_등록되어_있지_않다 = () -> menuService.create(후라이드치킨);
+        ThrowingCallable 상품이_등록되어_있지_않다 = () -> menuService.create(후라이드치킨_요청);
 
         assertThatIllegalArgumentException().isThrownBy(상품이_등록되어_있지_않다);
     }

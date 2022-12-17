@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableChangeEmptyRequest;
@@ -103,7 +102,7 @@ class TableServiceTest {
         orderTable.changeTableGroupId(null);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderRepository.findByOrderTableId(any())).willReturn(Collections.singletonList(order));
-        given(order.getOrderStatus()).willReturn(OrderStatus.COOKING.name());
+        given(order.isSameStatus(any())).willReturn(true);
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_주문테이블_수정 = () -> tableService.changeEmpty(1L, emptyRequest);
 
         assertThatIllegalArgumentException().isThrownBy(조리_식사_상태의_주문이_포함_된_주문테이블_수정);

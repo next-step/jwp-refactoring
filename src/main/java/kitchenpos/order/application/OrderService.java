@@ -29,7 +29,7 @@ public class OrderService {
     @Transactional
     public Order create(final OrderRequest orderRequest) {
         Order order = new Order(orderRequest.getOrderTableId(), orderRequest.getOrderLineItems());
-        order.validateCreation(orderValidator);
+        orderValidator.validateCreation(order);
 
         return orderRepository.save(order);
     }

@@ -71,4 +71,16 @@ class OrderValidatorTest {
 
         assertThatNoException().isThrownBy(정상적으로_등록_가능한_경우);
     }
+
+    @Test
+    void 등록된_메뉴만_주문_등록을_할_수_있다() {
+        OrderTable orderTable = new OrderTable(1, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        given(menuRepository.countByIdIn(any())).willReturn(2L);
+        OrderValidator orderValidator = new OrderValidator(orderTableRepository, menuRepository);
+
+        ThrowingCallable 등록된_메뉴의_갯수가_맞지_않는_경우 = () -> orderValidator.validateCreation(order);
+
+        assertThatNoException().isThrownBy(등록된_메뉴의_갯수가_맞지_않는_경우);
+    }
 }

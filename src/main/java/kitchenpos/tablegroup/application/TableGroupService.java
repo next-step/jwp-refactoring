@@ -2,7 +2,7 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.event.UnGroupEvent;
+import kitchenpos.tablegroup.event.TableUnGroupedEvent;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,7 +28,7 @@ public class TableGroupService {
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        tableGroupValidator.validateCreation(tableGroup.getId(), tableGroupRequest.getOrderTableIds());
+        tableGroupValidator.validateCreation(tableGroup.getId(), eventPublisher, tableGroupRequest.getOrderTableIds());
         return tableGroup;
     }
 
@@ -40,6 +40,6 @@ public class TableGroupService {
 
         tableGroupValidator.validateUngroup(tableGroupId);
         tableGroupRepository.delete(tableGroup);
-        eventPublisher.publishEvent(new UnGroupEvent(tableGroupId));
+        eventPublisher.publishEvent(new TableUnGroupedEvent(tableGroupId));
     }
 }

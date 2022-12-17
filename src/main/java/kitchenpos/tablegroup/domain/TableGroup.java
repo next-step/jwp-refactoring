@@ -26,5 +26,4 @@ public class TableGroup {
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
-
 }

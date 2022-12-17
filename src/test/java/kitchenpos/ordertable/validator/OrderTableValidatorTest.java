@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -45,7 +44,7 @@ class OrderTableValidatorTest {
         OrderTable orderTable = new OrderTable(1, false);
         orderTable.changeTableGroupId(null);
         given(orderRepository.findByOrderTableId(any())).willReturn(Collections.singletonList(order));
-        given(order.getOrderStatus()).willReturn(OrderStatus.COOKING.name());
+        given(order.isSameStatus(any())).willReturn(true);
 
         ThrowingCallable 조리_식사_상태의_주문이_포함_된_경우 = () -> orderTableValidator.validateChangeEmpty(orderTable);
 

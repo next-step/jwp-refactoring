@@ -1,10 +1,10 @@
 package kitchenpos.tablegroup.event;
 
-public class UnGroupEvent {
+public class TableUnGroupedEvent {
 
     private Long tableGroupId;
 
-    public UnGroupEvent(Long tableGroupId) {
+    public TableUnGroupedEvent(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 

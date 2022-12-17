@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.order.validator.OrderValidator;
 
 @Entity
 @Table(name = "orders")
@@ -48,10 +47,6 @@ public class Order {
         orderLineItems.addOrderLineItems(orderLineItemsParam);
     }
 
-    public void validateOrderLineItemsSizeAndMenuCount(long menuCount) {
-        orderLineItems.validateOrderLineItemsSizeAndMenuCount(menuCount);
-    }
-
     public void changeStatus(String orderStatusParam) {
         validateOrderStatus();
         this.orderStatus = OrderStatus.valueOf(orderStatusParam);
@@ -63,8 +58,8 @@ public class Order {
         }
     }
 
-    public void validateCreation(OrderValidator orderValidator) {
-        orderValidator.validateCreation(this);
+    public boolean isSameStatus(List<String> orderStatuses) {
+        return orderStatuses.contains(this.orderStatus.name());
     }
 
     public List<Long> makeMenuIds() {
@@ -89,9 +84,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
-    }
-
-    public boolean isSameStatus(List<String> orderStatuses) {
-        return orderStatuses.contains(this.orderStatus.name());
     }
 }

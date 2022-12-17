@@ -41,15 +41,6 @@ class OrderTest {
     }
 
     @Test
-    void 등록_된_메뉴만_주문_등록을_할_수_있다() {
-        order.addLineItems(Arrays.asList(new OrderLineItem(1L, 1l), new OrderLineItem(2L, 1l)));
-
-        ThrowingCallable 등록된_메뉴의_갯수가_불일치_할_경우 = () -> order.validateOrderLineItemsSizeAndMenuCount(1);
-
-        assertThatIllegalArgumentException().isThrownBy(등록된_메뉴의_갯수가_불일치_할_경우);
-    }
-
-    @Test
     void 이미_완료된_주문은_상태를_변경할_수_없다() {
         order.changeStatus(OrderStatus.COMPLETION.name());
 

@@ -6,11 +6,9 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -66,15 +64,4 @@ class MenuValidatorTest {
 
         assertThatIllegalArgumentException().isThrownBy(메뉴_가격이_상품들_가격의_합보다_높은_경우);
     }
-
-    @Test
-    void 등록되지_않은_상품은_메뉴_상품으로_지정할_수_없다() {
-        given(productRepository.findById(any())).willReturn(Optional.empty());
-        List<MenuProductRequest> menuProductRequests = Collections
-                .singletonList(new MenuProductRequest(1L, 1L, 1L, 1L));
-        ThrowingCallable 메뉴_상품_생성시_등록되지_않은_상품이_있을_경우 = () -> menuValidator.createMenuProducts(menuProductRequests);
-
-        assertThatIllegalArgumentException().isThrownBy(메뉴_상품_생성시_등록되지_않은_상품이_있을_경우);
-    }
-
 }

@@ -21,18 +21,17 @@ public class OrderTableValidator {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional(readOnly = true)
     public void validateChangeEmpty(OrderTable orderTable) {
         validateAlreadyTableGroup(orderTable);
         validateOrderStatus(orderTable.getId());
     }
 
-    @Transactional(readOnly = true)
-    void validateOrderStatus(Long orderTableId) {
+    private void validateOrderStatus(Long orderTableId) {
         List<Order> orders = orderRepository.findByOrderTableId(orderTableId);
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         Optional<Order> findInOrderStatuses = orders.stream()
-                .filter(order -> orderStatuses
-                        .contains(order.getOrderStatus()))
+                .filter(order -> order.isSameStatus(orderStatuses))
                 .findAny();
 
         if (findInOrderStatuses.isPresent()) {
@@ -40,8 +39,7 @@ public class OrderTableValidator {
         }
     }
 
-    @Transactional(readOnly = true)
-    void validateAlreadyTableGroup(OrderTable orderTable) {
+    private void validateAlreadyTableGroup(OrderTable orderTable) {
         if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException("이미 단체 지정이 된 주문 테이블입니다[" + orderTable + "]");
         }

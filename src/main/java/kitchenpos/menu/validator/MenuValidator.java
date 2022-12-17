@@ -2,12 +2,9 @@ package kitchenpos.menu.validator;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,18 +30,6 @@ public class MenuValidator {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuProduct> createMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
-                .map(menuProductRequest -> {
-                    Product product = productRepository.findById(menuProductRequest.getProductId())
-                            .orElseThrow(() -> new IllegalArgumentException(
-                                    "등록되지 않은 상품은 메뉴상품으로 지정할 수 없습니다[productId:" + menuProductRequest.getProductId()
-                                            + "]"));
-                    return new MenuProduct(null, product.getId(), menuProductRequest.getQuantity());
-                })
-                .collect(Collectors.toList());
-    }
-
     public void validateProductsPrice(Menu menu) {
         BigDecimal price = menu.getPrice();
         List<MenuProduct> menuProducts = menu.getMenuProducts();
@@ -56,8 +41,7 @@ public class MenuValidator {
         }
     }
 
-    @Transactional(readOnly = true)
-    BigDecimal makeSumMenuProductsPrice(List<MenuProduct> menuProducts) {
+    private BigDecimal makeSumMenuProductsPrice(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                 .map(menuProduct -> productRepository.findById(menuProduct.getProductId())
                         .orElseThrow(() -> new IllegalArgumentException(
