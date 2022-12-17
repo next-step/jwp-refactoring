@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
@@ -38,7 +37,6 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final Menu menu) {
-        validatePrice(menu);
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
@@ -75,13 +73,6 @@ public class MenuService {
                 .add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
         return sum;
-    }
-
-    private void validatePrice(Menu menu) {
-        BigDecimal price = menu.getPrice();
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public List<MenuResponse> list() {
