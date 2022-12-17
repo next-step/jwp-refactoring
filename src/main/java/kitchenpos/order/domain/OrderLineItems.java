@@ -5,15 +5,17 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", nullable = false)
     private List<OrderLineItem> orderLineItems;
-
 
     protected OrderLineItems() {}
 
@@ -32,10 +34,6 @@ public class OrderLineItems {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
-    }
-
-    public void setOrder(Order order){
-        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
     }
 
     public List<OrderLineItem> readOnlyValue() {

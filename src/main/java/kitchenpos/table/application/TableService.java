@@ -39,7 +39,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-        boolean completedOrderTable = existsOrderByOrderTableIdAndOrderStatusIn(orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        boolean completedOrderTable = existsOrderByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
         orderTable.changeEmpty(orderTableRequest.isEmpty(), completedOrderTable);
         return OrderTableResponse.from(orderTable);
     }
@@ -55,7 +55,7 @@ public class TableService {
         return orderTableRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
     }
 
-    private boolean existsOrderByOrderTableIdAndOrderStatusIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
-        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
+    private boolean existsOrderByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, orderStatuses);
     }
 }

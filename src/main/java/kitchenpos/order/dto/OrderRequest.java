@@ -2,6 +2,8 @@ package kitchenpos.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 
 public class OrderRequest {
@@ -19,6 +21,13 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItemRequests = orderLineItemRequests;
+    }
+
+    public Order toOrder(List<OrderLineItem> orderLineItems) {
+        return new Order.Builder()
+                .orderTableId(orderTableId)
+                .orderLineItems(orderLineItems)
+                .build();
     }
 
     public Long getOrderTableId() {

@@ -41,11 +41,19 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        List<OrderTable> orderTableList = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        boolean completedOrderTable = orderRepository.existsByOrderTableInAndOrderStatusIn(orderTableList,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        OrderTables orderTables = tableGroup.getOrderTables();
+        boolean completedOrderTable = existsByOrderTableIdInAndOrderStatusIn(orderTables.getOrderTableIds());
         TableGroupUnGroupValidator.validate(completedOrderTable);
-        OrderTables orderTables = OrderTables.from(orderTableList);
         orderTables.unTableGroup();
+    }
+
+    public TableGroup findTableGroupById(Long id) {
+        return tableGroupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("단체가 존재하지 않습니다."));
+    }
+
+    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 }

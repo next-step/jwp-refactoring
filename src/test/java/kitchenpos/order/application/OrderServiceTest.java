@@ -22,16 +22,16 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,10 +78,10 @@ class OrderServiceTest {
         소머리국밥_메뉴상품 = 메뉴상품_생성(null, null, 소머리국밥, 1L);
         소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사, Arrays.asList(소머리국밥_메뉴상품));
 
-        주문_항목 = 주문_항목_생성(1L, null, 주문메뉴_생성(소머리국밥_메뉴.getId(), 소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue()), 2);
+        주문_항목 = 주문_항목_생성(1L, 주문메뉴_생성(소머리국밥_메뉴.getId(), 소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue()), 2);
         주문_테이블 = 주문_테이블_생성(1L, null, 2, false);
 
-        주문 = 주문_생성(1L, 주문_테이블, Arrays.asList(주문_항목));
+        주문 = 주문_생성(1L, 주문_테이블.getId(), Arrays.asList(주문_항목));
     }
 
     @Test

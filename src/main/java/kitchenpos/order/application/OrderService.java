@@ -7,12 +7,12 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,13 +31,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
         List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItemRequests());
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
         OrderValidator.validateCreateOrder(orderTable, orderLineItems);
-        Order order = orderRepository.save(new Order.Builder()
-                .orderTable(orderTable)
-                .orderLineItems(orderLineItems)
-                .build());
+        Order order = orderRepository.save(orderRequest.toOrder(orderLineItems));
         return OrderResponse.from(order);
     }
 
@@ -74,6 +71,10 @@ public class OrderService {
 
     public Order findOrderById(Long id) {
         return orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+    }
+
+    public OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
     }
 
     public Menu findMenuById(Long id) {

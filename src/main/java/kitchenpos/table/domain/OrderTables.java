@@ -4,6 +4,7 @@ package kitchenpos.table.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -41,4 +42,9 @@ public class OrderTables {
         orderTables.stream().forEach(orderTable -> orderTable.setEmpty(false));
     }
 
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
 }

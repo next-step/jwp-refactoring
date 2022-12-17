@@ -9,8 +9,9 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import kitchenpos.table.application.TableGroupService;
+import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -75,8 +76,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 해제")
     void ungroup() {
         // given
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
-        when(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).thenReturn(false);
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(단체));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(false);
 
         // when
         tableGroupService.ungroup(단체.getId());
