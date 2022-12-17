@@ -1,9 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -70,6 +67,7 @@ public class MenuServiceTest {
     private Menu 메뉴1;
     private Menu 메뉴2;
     private Menu 메뉴3;
+    private Menu 메뉴4;
 
     @BeforeEach
     void setUp() {
@@ -78,15 +76,19 @@ public class MenuServiceTest {
         상품1 = generateProduct(1L, "product1", 가격(1000));
         상품2 = generateProduct(2L, "product2", 가격(1500));
 
-        메뉴상품1 = generateMenuProduct(상품1, 1);
-        메뉴상품2 = generateMenuProduct(상품2, 1);
-
         메뉴상품요청1 = generateMenuProductRequest(상품1.getId(), 1);
         메뉴상품요청2 = generateMenuProductRequest(상품2.getId(), 1);
 
-        메뉴상품들 = Arrays.asList(메뉴상품1, 메뉴상품2);
-
         메뉴상품요청들 = Arrays.asList(메뉴상품요청1, 메뉴상품요청2);
+
+        메뉴1 = generateMenu(1L, "menu1", 가격(2500));
+        메뉴2 = generateMenu(2L, "menu2", 가격(1000));
+        메뉴3 = generateMenu(3L, "menu3", 가격(1500));
+
+        메뉴상품1 = generateMenuProduct(메뉴1, 상품1, 1);
+        메뉴상품2 = generateMenuProduct(메뉴2, 상품2, 1);
+
+        메뉴상품들 = Arrays.asList(메뉴상품1, 메뉴상품2);
 
         메뉴1 = generateMenu(1L, "menu1", 가격(2500), 메뉴그룹, 메뉴상품들);
         메뉴2 = generateMenu(2L, "menu2", 가격(1000), 메뉴그룹, 메뉴상품들);
@@ -143,7 +145,7 @@ public class MenuServiceTest {
     @DisplayName("새로운 메뉴 추가 : 존재하지 않는 상품으로 요청할 수 없다.")
     void menuTest5() {
         List<MenuProduct> 존재하지않는_제품이포함된_메뉴제품들 = new ArrayList<>();
-        존재하지않는_제품이포함된_메뉴제품들.add(generateMenuProduct(new Product(999L, null, null), 1));
+        존재하지않는_제품이포함된_메뉴제품들.add(generateMenuProduct(null, new Product(999L, null, null), 1));
 
         Menu 존재하지않는_제품이포함된_메뉴 = generateMenu(1L, "menu1", 가격(1500), 메뉴그룹, 존재하지않는_제품이포함된_메뉴제품들);
 
@@ -165,17 +167,21 @@ public class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    public static Menu generateMenu(Long id, String name, BigDecimal price) {
+        return new Menu(id, name, new Price(price), null, null);
+    }
+
     public static Menu generateMenu(Long id, String name, BigDecimal price,
                                     MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, new Price(price), menuGroup, menuProducts);
+        return new Menu(id, name, new Price(price), menuGroup, new MenuProducts(menuProducts));
     }
 
     private MenuRequest generateMenuRequest(Menu menu, List<MenuProductRequest> menuProductRequests) {
         return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProductRequests);
     }
 
-    public static MenuProduct generateMenuProduct(Product product, long quantity) {
-        return new MenuProduct(null, product, quantity);
+    public static MenuProduct generateMenuProduct(Menu menu, Product product, long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
     public static MenuProductRequest generateMenuProductRequest(Long productId, long quantity) {

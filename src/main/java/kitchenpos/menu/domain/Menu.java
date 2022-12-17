@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,8 +19,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
@@ -31,7 +30,7 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -41,6 +40,10 @@ public class Menu {
 
     public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
         return new Menu(name, Price.create(price), menuGroup);
+    }
+
+    public void validate(Price sum) {
+        validatePrice(sum);
     }
 
     public void validatePrice(Price sum) {
@@ -66,7 +69,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.value();
     }
 
 }

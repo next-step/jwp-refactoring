@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +24,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문테이블")
+public
 class TableServiceTest {
 
     @InjectMocks
@@ -151,15 +152,15 @@ class TableServiceTest {
     }
 
     public static OrderTable generateOrderTable(Long id, int numberOfGuests, boolean empty) {
-        return OrderTable.of(id, null, numberOfGuests, empty);
+        return new OrderTable(null, numberOfGuests, empty);
     }
 
     public static OrderTable generateOrderTable(Long id, Long tableGroupId) {
-        return OrderTable.of(id, tableGroupId, 0, true);
+        return new OrderTable(null, 0, true);
     }
 
     public static OrderTable generateOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
+        return new OrderTable(null, numberOfGuests, empty);
     }
 
     private List<OrderTable> 메뉴테이블들_생성() {

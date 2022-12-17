@@ -21,20 +21,38 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        this.id = seq;
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this.order = order;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long seq, Long orderId, Long menuId, long quantity) {
-        return new OrderLineItem(seq, orderId, menuId, quantity);
+    public static OrderLineItem create(Order order, Menu menu, long quantity) {
+        return new OrderLineItem(order, menu, quantity);
     }
 
-    public void setOrderId(final Long orderId) {
+    public Long getId() {
+        return id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public Long getOrderId() {
+        return order.getId();
     }
 
     public Long getMenuId() {
-        return null;
+        return menu.getId();
     }
 
 }

@@ -1,13 +1,12 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Order {
@@ -22,18 +21,36 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderedTime;
 
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
+
     protected Order() {}
 
-    public Order(Long id, Long orderTableId, String orderStatus,
-                 LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.id = id;
+    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public static Order of(Long id, Long orderTableId, String orderStatus,
-                           LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+    public static Order create(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(orderTable, orderStatus, orderedTime);
+    }
+
+    public void validate() {
+        validateOrderTable();
+    }
+
+    private void validateOrderTable() {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeStatus(String orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+        this.orderStatus = OrderStatus.valueOf(orderStatus).name();
     }
 
     public Long getId() {
@@ -41,30 +58,23 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return null;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
+        return orderTable.getId();
     }
 
     public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return null;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-
+        return orderLineItems.value();
     }
 
 }

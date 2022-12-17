@@ -17,14 +17,14 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    public static OrderTable create(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroup, numberOfGuests, empty);
     }
 
     public Long getId() {

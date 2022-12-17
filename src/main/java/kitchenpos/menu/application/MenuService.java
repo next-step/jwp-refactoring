@@ -56,7 +56,7 @@ public class MenuService {
 
             sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
         }
-        createdMenu.validatePrice(sum);
+        createdMenu.validate(sum);
 
         return MenuResponse.from(createdMenu);
     }

@@ -31,4 +31,27 @@ public class MenuProduct {
         return new MenuProduct(menu, product, quantity);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public Long getMenuId() {
+        return menu.getId();
+    }
+
+    public Long getProductId() {
+        return product.getId();
+    }
 }

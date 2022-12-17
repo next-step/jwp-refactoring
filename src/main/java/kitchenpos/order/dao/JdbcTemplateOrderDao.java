@@ -1,6 +1,5 @@
 package kitchenpos.order.dao;
 
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.Order;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -96,12 +94,6 @@ public class JdbcTemplateOrderDao implements OrderDao {
     }
 
     private Order toEntity(final ResultSet resultSet) throws SQLException {
-        final Order entity = Order.of(
-                resultSet.getLong(KEY_COLUMN_NAME),
-                resultSet.getLong("order_table_id"),
-                resultSet.getString("order_status"),
-                resultSet.getObject("ordered_time", LocalDateTime.class),
-                null);
-        return entity;
+        return null;
     }
 }

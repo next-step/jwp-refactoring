@@ -1,6 +1,5 @@
 package kitchenpos.table.dao;
 
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -95,11 +94,6 @@ public class JdbcTemplateOrderTableDao implements OrderTableDao {
     }
 
     private OrderTable toEntity(final ResultSet resultSet) throws SQLException {
-        final OrderTable entity = OrderTable.of(
-                resultSet.getLong(KEY_COLUMN_NAME),
-                resultSet.getObject("table_group_id", Long.class),
-                resultSet.getInt("number_of_guests"),
-                resultSet.getBoolean("empty"));
-        return entity;
+        return null;
     }
 }
