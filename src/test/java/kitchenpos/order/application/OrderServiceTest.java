@@ -27,6 +27,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -78,9 +79,9 @@ public class OrderServiceTest {
         스파게티_이인분 = new MenuProduct(2L, 2L, 치킨_스파게티_더블세트_메뉴, 스파게티);
         치킨_두마리_요청 = MenuProductRequest.of(치킨.getId(), 1L);
         스파게티_이인분_요청 = MenuProductRequest.of(스파게티.getId(), 1L);
-        치킨_스파게티_더블세트_메뉴.setMenuProducts(Arrays.asList(치킨_두마리, 스파게티_이인분));
+        //치킨_스파게티_더블세트_메뉴.setMenuProducts(Arrays.asList(치킨_두마리, 스파게티_이인분));
 
-        주문_테이블 = new OrderTable(1L, 0, false);
+        주문_테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
         주문_항목 = new OrderLineItem(1L, 치킨_스파게티_더블세트_메뉴);
         주문 = new Order(주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.addOrderLineItem(주문_항목);

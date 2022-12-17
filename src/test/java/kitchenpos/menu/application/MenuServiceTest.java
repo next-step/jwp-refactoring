@@ -66,9 +66,6 @@ class MenuServiceTest {
 
         치킨_두마리 = new MenuProduct(1L, 2L, 양념치킨_두마리_세트, 양념치킨);
         스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티_이인분_세트, 스파게티);
-
-        양념치킨_두마리_세트.setMenuProducts(Arrays.asList(치킨_두마리));
-        스파게티_이인분_세트.setMenuProducts(Arrays.asList(스파게티_이인분));
     }
 
     @Test

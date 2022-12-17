@@ -5,12 +5,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -44,8 +47,8 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstTable = new OrderTable(0, true);
-        secondTable = new OrderTable(0, true);
+        firstTable = new OrderTable(new NumberOfGuests(0), true);
+        secondTable = new OrderTable(new NumberOfGuests(0), true);
         개발자_단체 = new TableGroup(1L, null, Arrays.asList(firstTable, secondTable));
     }
 
@@ -76,7 +79,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블_이용_여부를_변경할_수_있다() {
-        OrderTable expected = new OrderTable(1L, 1, true);
+        OrderTable expected = new OrderTable(1L, new NumberOfGuests(1), true);
         UpdateEmptyRequest request = UpdateEmptyRequest.of(false);
         given(orderTableRepository.findById(expected.getId())).willReturn(Optional.of(firstTable));
         given(orderTableRepository.save(firstTable)).willReturn(firstTable);
@@ -98,10 +101,11 @@ public class TableServiceTest {
 
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
-        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(firstTable.isEmpty());
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(firstTable.getId(), orderStatus)).willReturn(true);
+        given(orderRepository.findAllByOrderTableId(orderTable.getId())).willReturn(Arrays.asList(order));
 
         assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -109,7 +113,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블의_손님_수를_변경할_수_있다() {
-        OrderTable expected = new OrderTable(1L, 5, false);
+        OrderTable expected = new OrderTable(1L, new NumberOfGuests(5), false);
         firstTable.setEmpty(false);
         UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(expected.getNumberOfGuests());
         given(orderTableRepository.findById(expected.getId())).willReturn(Optional.of(firstTable));
@@ -122,21 +126,23 @@ public class TableServiceTest {
 
     @Test
     void 주문_테이블의_손님_수를_음수로_변경할_수_없다() {
-        OrderTable expected = new OrderTable(1L, -1, false);
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(0), false);
         UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(-1);
+        given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(firstTable));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(expected.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.GUESTS_UNDER_ZERO.message());
     }
 
     @Test
     void 주문_테이블이_빈_테이블이면_손님_수를_변경할_수_없다() {
-        //firstTable.setEmpty(true);
         UpdateNumberOfGuestsRequest request = UpdateNumberOfGuestsRequest.of(0);
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(firstTable.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.ORDER_TABLE_NOT_EMPTY.message());
     }
 }
 

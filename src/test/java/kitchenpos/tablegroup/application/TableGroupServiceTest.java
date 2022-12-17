@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -43,8 +44,8 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstTable = new OrderTable(1L, 0, true);
-        secondTable = new OrderTable(2L, 0, true);
+        firstTable = new OrderTable(1L, new NumberOfGuests(0), true);
+        secondTable = new OrderTable(2L, new NumberOfGuests(0), true);
 
         orderTables = Arrays.asList(firstTable, secondTable);
     }

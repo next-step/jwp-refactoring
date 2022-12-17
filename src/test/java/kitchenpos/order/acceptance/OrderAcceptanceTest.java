@@ -29,6 +29,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -70,7 +71,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(순살치킨상품, 후라이드치킨상품)
         )).as(MenuResponse.class);
 
-        주문테이블 = 주문테이블_생성_요청(new OrderTable(null, 0, false))
+        주문테이블 = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(0), false))
                 .as(OrderTable.class);
         두마리치킨세트_주문 = new OrderLineItem(null, 두마리치킨세트_응답.getId(), 순살치킨메뉴);
         두마리치킨세트_요청 = OrderLineItemRequest.of(두마리치킨세트_응답.getId(), 1L);

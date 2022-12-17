@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 
@@ -67,8 +69,8 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
     }
 
     public void setMenuProducts(MenuProducts menuProducts) {
@@ -79,7 +81,7 @@ public class Menu {
 
     private void validatePrice(Price totalPrice) {
         if (price.isBiggerThan(totalPrice)) {
-            throw new IllegalArgumentException("메뉴의 가격이 전체 메뉴 상품 가격의 합보다 클 수 없습니다.");
+            throw new IllegalArgumentException(ErrorEnum.MENU_PRICE_OVER_TOTAL_PRICE.message());
         }
     }
 }

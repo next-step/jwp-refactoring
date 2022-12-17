@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -115,6 +116,12 @@ public class Order {
     public void addLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
         orderLineItem.addOrder(this);
+    }
+
+    public void validateOrderStatusShouldComplete() {
+        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalArgumentException(ErrorEnum.NOT_PAYMENT_ORDER.message());
+        }
     }
 
     @Override

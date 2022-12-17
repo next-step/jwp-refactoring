@@ -1,6 +1,8 @@
 package kitchenpos.ordertable.domain;
 
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,13 +10,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
@@ -22,13 +27,13 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -50,10 +55,10 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.value();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void setNumberOfGuests(final NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -62,6 +67,30 @@ public class OrderTable {
     }
 
     public void setEmpty(final boolean empty) {
+        this.empty = empty;
+    }
+
+    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
+        validateShouldNotEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateShouldNotEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_NOT_EMPTY.message());
+        }
+    }
+
+    private void validateHasTableGroup() {
+        if (tableGroup != null) {
+            throw new IllegalArgumentException(ErrorEnum.ALREADY_GROUP.message());
+        }
+    }
+
+    public void updateEmpty(boolean empty, List<Order> orders) {
+        validateHasTableGroup();
+        orders.forEach(Order::validateOrderStatusShouldComplete);
+
         this.empty = empty;
     }
 

@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +27,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, 4, true))
+        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(4), true))
                 .as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, 4, true))
+        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(4), true))
                 .as(OrderTable.class);
         개발자_모임_단체 = new TableGroup(1L, null, Arrays.asList(주문테이블_A, 주문테이블_B));
     }
