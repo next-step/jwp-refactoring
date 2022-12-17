@@ -59,8 +59,8 @@ class MenuServiceTest extends ServiceTest {
         menuGroup = menuGroupRepository.save(new MenuGroup("A"));
         Product product = productRepository.save(new Product(new Name("A"), new Price(BigDecimal.valueOf(2))));
         menuProduct = menuProductRepository.save(new MenuProduct(null, product, 1L));
-        Menu menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup, Arrays.asList(menuProduct)));
-        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        Menu menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup, Collections.singletonList(menuProduct)));
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
     }
 
     @DisplayName("가격을 필수값으로 갖는다.")
