@@ -89,25 +89,25 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 테이블은 주문 테이블이여야한다.")
     void tableGroupIsOrderTable() {
-        TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
-
         when(orderTablePort.findAllByIdIn(anyList())).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(() ->
-                tableGroupService.create(단체지정)
+                tableGroupService.create(any())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 이미 단체지정 되어있으면(이용중) 등록 할 수 없다.")
     void tableGroupIsAlreadyUseFail() {
-        주문테이블_일번.setEmpty(false);
-        TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
+        주문테이블_일번 = new OrderTable(2L, null, 7, false);
+        주문테이블_리스트 = Arrays.asList(주문테이블_일번, 주문테이블_이번);
+
+        TableGroup 단체지정 = new TableGroup(OrderTables.from(주문테이블_리스트));
 
         when(orderTablePort.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(주문테이블_리스트);
 
         assertThatThrownBy(() ->
-                tableGroupService.create(단체지정)
+                tableGroupService.create(any())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -119,8 +119,8 @@ class TableGroupServiceTest {
 
         tableGroupService.ungroup(1L);
 
-        assertThat(주문테이블_일번.getTableGroupId()).isNull();
-        assertThat(주문테이블_이번.getTableGroupId()).isNull();
+        assertThat(주문테이블_일번.getTableGroup()).isNull();
+        assertThat(주문테이블_이번.getTableGroup()).isNull();
     }
 
     @Test

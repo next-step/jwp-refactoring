@@ -28,8 +28,6 @@ public class TableGroup {
     }
 
     public static void of() {
-
-
     }
 
     public static TableGroup from(List<OrderTable> orderTables) {
@@ -57,10 +55,5 @@ public class TableGroup {
 
     public List<Long> getOrderTablesId() {
         return getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList());
-    }
-
-    public boolean isNotNull() {
-        orderTables.
-        return this != null;
     }
 }

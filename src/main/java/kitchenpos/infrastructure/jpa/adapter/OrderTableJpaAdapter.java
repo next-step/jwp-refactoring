@@ -20,17 +20,18 @@ public class OrderTableJpaAdapter implements OrderTablePort {
 
     @Override
     public OrderTable save(OrderTable entity) {
-        return null;
+        return orderTableJpaRepository.save(entity);
     }
 
     @Override
-    public Optional<OrderTable> findById(Long id) {
-        return Optional.empty();
+    public OrderTable findById(Long id) {
+        return orderTableJpaRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public List<OrderTable> findAll() {
-        return null;
+        return orderTableJpaRepository.findAll();
     }
 
     @Override
@@ -40,6 +41,6 @@ public class OrderTableJpaAdapter implements OrderTablePort {
 
     @Override
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
-        return null;
+        return orderTableJpaRepository.findAllByTableGroupId(tableGroupId);
     }
 }

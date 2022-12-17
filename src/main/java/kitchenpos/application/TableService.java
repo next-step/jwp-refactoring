@@ -1,18 +1,22 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Order;
+import kitchenpos.dto.ChaneNumberOfGuestRequest;
+import kitchenpos.dto.ChangeEmptyRequest;
 import kitchenpos.dto.TableRequest;
+import kitchenpos.dto.TableResponse;
 import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderTablePort;
-import kitchenpos.domain.type.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderPort orderPort;
     private final OrderTablePort orderTablePort;
@@ -22,53 +26,38 @@ public class TableService {
         this.orderTablePort = orderTablePort;
     }
 
-    @Transactional
-    public OrderTable create(final TableRequest request) {
-        orderTable.setTableGroupId(null);
+    public TableResponse create(final TableRequest request) {
+        final OrderTable orderTable =
+                OrderTable.ofByTableGroupNull(request.getNumberOfGuests(), request.isEmpty());
 
-        return orderTablePort.save(orderTable);
+        final OrderTable saveOrderTable = orderTablePort.save(orderTable);
+
+        return TableResponse.from(saveOrderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTablePort.findAll();
+    @Transactional(readOnly = true)
+    public List<TableResponse> list() {
+        final List<OrderTable> orderTable = orderTablePort.findAll();
+
+        return orderTable.stream()
+                .map(TableResponse::from)
+                .collect(Collectors.toList());
     }
 
-    @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTablePort.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+    public TableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
+        final OrderTable savedOrderTable = orderTablePort.findById(orderTableId);
+        final List<Order> order = orderPort.findAllByOrderTableIdIn(Arrays.asList(orderTableId));
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
+        savedOrderTable.changeEmpty(request.isEmpty(), order);
 
-        if (orderPort.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
-        return orderTablePort.save(savedOrderTable);
+        return TableResponse.from(savedOrderTable);
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public TableResponse changeNumberOfGuests(final Long orderTableId, final ChaneNumberOfGuestRequest request) {
+        final OrderTable orderTable = orderTablePort.findById(orderTableId);
+        orderTable.changeNumberOfGuests(request.getNumberOfRequest());
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTablePort.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTablePort.save(savedOrderTable);
+        return TableResponse.from(orderTable);
     }
 }

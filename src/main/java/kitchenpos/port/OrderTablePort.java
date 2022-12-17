@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface OrderTablePort {
     OrderTable save(OrderTable entity);
 
-    Optional<OrderTable> findById(Long id);
+    OrderTable findById(Long id);
 
     List<OrderTable> findAll();
 
