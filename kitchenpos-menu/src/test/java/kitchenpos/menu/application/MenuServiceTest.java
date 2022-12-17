@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 서비스 테스트")
@@ -114,7 +115,7 @@ class MenuServiceTest {
     @DisplayName("메뉴의 메뉴그룹이 존재하지 않으면 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        doThrow(new EntityNotFoundException(ExceptionMessage.MENU_GROUP_NOT_FOUND))
+        Mockito.doThrow(new EntityNotFoundException(ExceptionMessage.MENU_GROUP_NOT_FOUND))
                 .when(menuValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴그룹_없는_메뉴요청))
@@ -125,7 +126,7 @@ class MenuServiceTest {
     @DisplayName("상품에 등록되지 않은 메뉴 상품으로 메뉴를 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        doThrow(new EntityNotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND))
+        Mockito.doThrow(new EntityNotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND))
                 .when(menuValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> menuService.create(메뉴요청))
@@ -152,7 +153,7 @@ class MenuServiceTest {
         List<MenuResponse> results = menuService.list();
 
         assertAll(
-                () -> assertThat(results).hasSize(1),
+                () -> Assertions.assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getMenuProducts())
                         .containsExactly(MenuProductResponse.from(후라이드치킨상품))
         );

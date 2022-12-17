@@ -1,10 +1,8 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
-import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -14,13 +12,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.acceptance.MenuGroupRestAssured;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.product.acceptance.ProductRestAssured;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
-        후라이드 = 상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000))).as(ProductResponse.class);
+        두마리메뉴 = MenuGroupRestAssured.메뉴_그룹_등록되어_있음(MenuGroupRequest.from("두마리메뉴")).as(MenuGroupResponse.class);
+        후라이드 = ProductRestAssured.상품_등록되어_있음(ProductRequest.of("후라이드", BigDecimal.valueOf(16_000))).as(ProductResponse.class);
         후라이드치킨_상품 = MenuProductRequest.of(후라이드.getId(), 2);
     }
 
@@ -168,7 +169,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         List<MenuResponse> menus = response.jsonPath().getList(".", MenuResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(menus).hasSize(1)
+                () -> Assertions.assertThat(menus).hasSize(1)
         );
     }
 }
