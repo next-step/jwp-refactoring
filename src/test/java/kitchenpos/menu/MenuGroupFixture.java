@@ -3,7 +3,7 @@ package kitchenpos.menu;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupFixture {
