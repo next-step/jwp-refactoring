@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

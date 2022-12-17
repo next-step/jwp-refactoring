@@ -10,7 +10,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.BigDecimalComparator;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
