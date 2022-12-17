@@ -1,10 +1,19 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class MenuGroup {
+
+    @Id
+    @GeneratedValue
     private Long id;
+
     private String name;
 
-    private MenuGroup() {}
+    protected MenuGroup() {}
 
     public MenuGroup(Long id, String name) {
         this.id = id;

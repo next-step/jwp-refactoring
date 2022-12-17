@@ -1,17 +1,28 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.Product;
+
+import javax.persistence.*;
+
+@Entity
 public class MenuProduct {
-    private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Product product;
+
     private long quantity;
 
-    private MenuProduct() {}
+    protected MenuProduct() {}
 
     public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
+        this.id = seq;
         this.quantity = quantity;
     }
 
@@ -19,20 +30,11 @@ public class MenuProduct {
         return new MenuProduct(seq, menuId, productId, quantity);
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
     public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
     }
 
     public Long getProductId() {
-        return productId;
+        return null;
     }
 
     public long getQuantity() {
