@@ -22,12 +22,4 @@ class MenuTest {
         피자 = new MenuGroup("피자");
         하와이안피자상품 = new MenuProduct(하와이안피자, 1);
     }
-
-    @DisplayName("메뉴 가격이 모든 상품 가격의 합보다 크면 에러가 발생한다.")
-    @Test
-    void validatePriceException() {
-        assertThatThrownBy(() -> new Menu("하와이안피자세트", BigDecimal.valueOf(18_000), 피자.getId(),
-            MenuProducts.from(Arrays.asList(하와이안피자상품))))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 }

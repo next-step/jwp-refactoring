@@ -133,20 +133,6 @@ public class MenuServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴의 가격은 모든 상품 가격의 합보다 작아야 한다.")
-    @Test
-    void menuPriceBiggerAllProductPriceException() {
-        // given
-        MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(20_000), 피자.getId(), 상품요청);
-        when(productRepository.findById(하와이안피자.getId())).thenReturn(Optional.of(하와이안피자));
-        when(productRepository.findById(콜라.getId())).thenReturn(Optional.of(콜라));
-        when(productRepository.findById(피클.getId())).thenReturn(Optional.of(피클));
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(menuRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("메뉴를 조회할 수 있다.")
     @Test
     void findAllMenu() {

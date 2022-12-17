@@ -19,6 +19,7 @@ import kitchenpos.menugroup.domain.MenuGroupTestFixture;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductTestFixture;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ public class MenuValidatorTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
+
+    @Mock
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuValidator menuValidator;
@@ -53,10 +57,23 @@ public class MenuValidatorTest {
 
     @DisplayName("존재하는 메뉴 그룹에 속하지 않는 메뉴는 생성할 수 없다.")
     @Test
-    void validateMenuRequestThrowErrorWhenMenuGroupIsNotExists() {
+    void validateMenuGroupNotExistsException() {
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(15_000), 10L, 상품요청);
         when((menuGroupRepository.findById(10L))).thenReturn(Optional.empty());
 
+        assertThatThrownBy(() -> menuValidator.validate(menuRequest))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴의 가격은 모든 상품 가격의 합보다 작아야 한다.")
+    @Test
+    void menuPriceBiggerAllProductPriceException() {
+        // given
+        MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(18_000), 피자.getId(), 상품요청);
+        when(menuGroupRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(피자));
+        when(productRepository.findById(하와이안피자.getId())).thenReturn(Optional.of(하와이안피자));
+
+        // when & then
         assertThatThrownBy(() -> menuValidator.validate(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }

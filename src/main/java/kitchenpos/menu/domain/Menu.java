@@ -38,17 +38,7 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
-        validatePrice(Price.from(price), menuProducts.totalPrice());
-        menuProducts.setMenu(this);
-        this.name = Name.from(name);
-        this.price = Price.from(price);
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
-    }
-
     private Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
-        validatePrice(Price.from(price), menuProducts.totalPrice());
         menuProducts.setMenu(this);
         this.id = id;
         this.name = Name.from(name);
@@ -63,18 +53,6 @@ public class Menu {
 
     public static Menu of(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         return new Menu(null, name, price, menuGroupId, menuProducts);
-    }
-
-    private void validatePrice(Price price, Price totalPrice) {
-        if (price.isBiggerThan(totalPrice)) {
-            throw new IllegalArgumentException(ErrorCode.MENU_PRICE_MORE_THAN_TOTAL_PRICE.getErrorMessage());
-        }
-    }
-
-    private void validateMenuGroupNotEmpty(MenuGroup menuGroup) {
-        if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException(ErrorCode.MENU_GROUP_NOT_EMPTY.getErrorMessage());
-        }
     }
 
     public Long getId() {
