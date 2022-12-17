@@ -1,13 +1,13 @@
 package kitchenpos.tablegroup.acceptance;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록되어_있음;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderRestAssured.주문_등록되어_있음;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록되어_있음;
 import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_등록되어_있음;
 import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_요청함;
 import static kitchenpos.tablegroup.acceptance.TableGroupRestAssured.단체_지정_취소_요청함;
-import static kitchenpos.ordertable.acceptance.TableRestAssured.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -16,13 +16,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.acceptance.OrderRestAssured;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.acceptance.OrderRestAssured;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
