@@ -9,7 +9,7 @@
 | POST   | /api/products | 상품 생성 요청 |
 | GET    | /api/products | 상품 목록 조회 |
 
-```sql
+```sqlh2
 CREATE TABLE product
 (
     id    BIGINT(20) NOT NULL AUTO_INCREMENT,
@@ -33,7 +33,7 @@ CREATE TABLE product
 |--------|------------------|-------------|
 | POST   | /api/menu-groups | 메뉴 그룹 생성 요청 |
 | GET    | /api/menu-groups | 메뉴 그룹 목록 조회 |
-```sql
+```sqlh2
 CREATE TABLE menu_group (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE menu_group (
 |--------|------------|----------|
 | POST   | /api/menus | 메뉴 생성 요청 |
 | GET    | /api/menus | 메뉴 목록 조회 |
-```sql
+```sqlh2
 CREATE TABLE menu (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE menu (
 | POST   | /api/orders                        | 주문 생성 요청 |
 | GET    | /api/orders                        | 주문 목록 조회 |
 | PUT    | /api/orders/{orderId}/order-status | 주문 상태 변경 |
-```sql
+```sqlh2
 CREATE TABLE orders (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     order_table_id BIGINT(20) NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE orders (
 | PUT    | /api/tables/{orderTableId}/empty            | 주문 테이블 상태 변경 요청       |
 | PUT    | /api/tables/{orderTableId}/number-of-guests | 주문 테이블 방문한 손님 수 변경 요청 |
 
-```sql
+```sqlh2
 CREATE TABLE order_table (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     table_group_id BIGINT(20),
@@ -150,7 +150,7 @@ CREATE TABLE order_table (
 |--------|----------------------------------|------------------|
 | POST   | /api/table-groups                | 단체 지정을 생성할 수 있다. |
 | DELETE | /api/table-groups/{tableGroupId} | 단체 지정을 해제할 수 있다. |
-```sql
+```sqlh2
 CREATE TABLE table_group (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     created_date DATETIME NOT NULL,
@@ -243,7 +243,9 @@ CREATE TABLE table_group (
 - 비즈니스 로직 -> 도메인 영역으로
 - DTO 활용
 - 도메인별 패키지 분리
+  - 상품 / 메뉴 / 주문
 - 의존성이 적은 영역부터 리팩토링 시작
+  1. product
 
 ```
 changeShippingInfo() vs setShippingInfo()
