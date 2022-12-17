@@ -1,4 +1,6 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.ordertable.testfixture;
+
+import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTableTestFixture {
 

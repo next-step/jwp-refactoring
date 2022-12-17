@@ -14,7 +14,7 @@ import kitchenpos.menugroup.domain.MenuGroupTestFixture;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.testfixture.OrderMenuTestFixture;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableTestFixture;
+import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;
 import org.junit.jupiter.api.BeforeEach;

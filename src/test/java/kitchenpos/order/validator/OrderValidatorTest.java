@@ -21,7 +21,7 @@ import kitchenpos.order.testfixture.OrderTestFixture;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableTestFixture;
+import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;

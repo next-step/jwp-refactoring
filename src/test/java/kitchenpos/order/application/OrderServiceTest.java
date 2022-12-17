@@ -29,7 +29,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableTestFixture;
+import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;
 import org.junit.jupiter.api.BeforeEach;
