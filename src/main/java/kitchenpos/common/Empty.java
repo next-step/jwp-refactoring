@@ -21,7 +21,7 @@ public class Empty {
 		return new Empty(empty);
 	}
 
-	public boolean value() {
+	public boolean isEmpty() {
 		return value;
 	}
 

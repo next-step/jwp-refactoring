@@ -21,7 +21,7 @@ public class OrderTableResponse {
 			orderTable.getId(),
 			orderTable.getTableGroupId(),
 			orderTable.getGuestCounts().value(),
-			orderTable.getEmpty().value());
+			orderTable.isEmpty());
 
 	}
 

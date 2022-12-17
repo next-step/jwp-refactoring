@@ -40,10 +40,6 @@ public class MenuProducts {
 		return total;
 	}
 
-	public void updateMenuProductsMenu(Menu menu) {
-
-	}
-
 	public int getSize() {
 		return menuProducts.size();
 	}

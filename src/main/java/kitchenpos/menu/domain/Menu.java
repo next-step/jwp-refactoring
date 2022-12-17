@@ -52,11 +52,6 @@ public class Menu {
 		}
 	}
 
-	private void addMenuProducts(MenuProducts menuProducts) {
-		menuProducts.updateMenuProductsMenu(this);
-		this.menuProducts = menuProducts;
-	}
-
 	public Long getId() {
 		return id;
 	}

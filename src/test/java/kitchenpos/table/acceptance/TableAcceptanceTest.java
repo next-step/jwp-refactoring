@@ -114,7 +114,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 		OrderTableRequest orderTableRequest = OrderTableRequest.of(guestCounts, empty);
 		return 주문테이블_생성_요청(orderTableRequest).as(OrderTableResponse.class).getId();
 	}
-	
+
 	public static ExtractableResponse<Response> 주문테이블_생성_요청(OrderTableRequest orderTableRequest) {
 		return RestAssured
 			.given().log().all()

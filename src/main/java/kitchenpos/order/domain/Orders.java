@@ -24,6 +24,6 @@ public class Orders {
 	}
 
 	public boolean isAllFinished() {
-		return orders.stream().allMatch(it -> it.getOrderStatus().equals(OrderStatus.COMPLETION));
+		return orders.stream().allMatch(it -> it.isFinished());
 	}
 }

@@ -73,7 +73,7 @@ public class OrderTable {
 	}
 
 	private void validateTableEmpty() {
-		if (this.empty.value()) {
+		if (this.empty.isEmpty()) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_NUMBER_OF_GUESTS_WHEN_TABLE_IS_EMPTY);
 		}
 	}
@@ -90,7 +90,7 @@ public class OrderTable {
 	}
 
 	public boolean isEmpty() {
-		return this.empty.value();
+		return this.empty.isEmpty();
 	}
 
 }

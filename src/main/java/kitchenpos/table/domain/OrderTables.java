@@ -36,7 +36,7 @@ public class OrderTables {
 	}
 
 	public boolean isAllEmpty() {
-		return orderTables.stream().allMatch(it -> it.getEmpty().value());
+		return orderTables.stream().allMatch(it -> it.isEmpty());
 	}
 
 	public boolean isAnyGrouped() {

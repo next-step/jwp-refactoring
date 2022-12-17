@@ -51,6 +51,15 @@ public class Order {
 		return order;
 	}
 
+	public void updateOrderStatus(OrderStatus orderStatus) {
+		validateCurrentOrderStatus();
+		this.orderStatus = orderStatus;
+	}
+
+	public boolean isFinished() {
+		return orderStatus.equals(OrderStatus.COMPLETION);
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -81,11 +90,6 @@ public class Order {
 		if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_ORDER_STATUS_WHEN_COMPLETED);
 		}
-	}
-
-	public void updateOrderStatus(OrderStatus orderStatus) {
-		validateCurrentOrderStatus();
-		this.orderStatus = orderStatus;
 	}
 
 }

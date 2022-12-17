@@ -30,7 +30,6 @@ import kitchenpos.order.dto.OrderResponse;
 
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
-
 	@DisplayName("주문 기능 통합 테스트")
 	@TestFactory
 	Stream<DynamicNode> order() {

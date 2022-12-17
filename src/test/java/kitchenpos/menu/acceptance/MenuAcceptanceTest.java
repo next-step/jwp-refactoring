@@ -89,7 +89,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 				ExtractableResponse<Response> response = 메뉴_생성_요청(비싼_세트);
 				// then
 				메뉴_생성_실패됨(response);
-
 			}),
 			dynamicTest("메뉴의 목록을 조회할 수 있다.", () -> {
 				// given

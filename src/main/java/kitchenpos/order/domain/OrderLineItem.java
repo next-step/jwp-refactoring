@@ -39,6 +39,10 @@ public class OrderLineItem {
 		return new OrderLineItem(menu, quantity);
 	}
 
+	public void updateOrder(Order order) {
+		this.order = order;
+	}
+
 	public Long getSeq() {
 		return seq;
 	}
@@ -55,7 +59,4 @@ public class OrderLineItem {
 		return quantity;
 	}
 
-	public void updateOrder(Order order) {
-		this.order = order;
-	}
 }
