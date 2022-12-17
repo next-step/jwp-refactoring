@@ -1,6 +1,7 @@
 package kitchenpos.product.application;
 
-import static kitchenpos.product.domain.ProductFixture.*;
+import static kitchenpos.product.domain.ProductFixture.양념치킨;
+import static kitchenpos.product.domain.ProductFixture.후라이드치킨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
