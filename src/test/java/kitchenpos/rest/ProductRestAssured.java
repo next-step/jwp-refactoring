@@ -5,13 +5,15 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductCreateRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.resource.UriResource;
 import org.springframework.http.MediaType;
 
 public class ProductRestAssured {
 
-    public static ExtractableResponse<Response> 상품_등록됨(Product product) {
-        return 상품_등록_요청(new ProductCreateRequest(product.getName(), product.getPrice().value()));
+    public static ProductResponse 상품_등록됨(Product product) {
+        return 상품_등록_요청(new ProductCreateRequest(product.getName(), product.getPrice().value()))
+                .as(ProductResponse.class);
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(ProductCreateRequest request) {

@@ -31,7 +31,7 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
         ProductResponse productResponse = response.as(ProductResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(productResponse.compareRequest(request)).isTrue()
+                () -> assertThat(productResponse.getId()).isNotNull()
         );
     }
 

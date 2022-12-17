@@ -39,9 +39,4 @@ public class ProductResponse {
     public BigDecimal getPrice() {
         return price;
     }
-
-    public boolean compareRequest(ProductCreateRequest request) {
-        return this.name.equals(request.getName())
-                && this.price.equals(request.getPrice());
-    }
 }

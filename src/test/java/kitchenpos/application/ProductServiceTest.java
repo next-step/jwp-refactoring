@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -52,7 +53,10 @@ class ProductServiceTest {
 
         // then
         then(productRepository).should(times(1)).save(any());
-        assertThat(response.compareRequest(request)).isTrue();
+        assertAll(
+                () -> assertThat(response.getName()).isEqualTo(request.getName()),
+                () -> assertThat(response.getPrice()).isEqualTo(request.getPrice())
+        );
     }
 
     @Test
