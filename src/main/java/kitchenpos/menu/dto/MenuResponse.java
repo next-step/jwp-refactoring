@@ -11,16 +11,16 @@ public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+    private MenuGroupResponse menuGroup;
     private List<MenuProductResponse> menuProducts;
 
     public MenuResponse() {}
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
+    public MenuResponse(Long id, String name, BigDecimal price, MenuGroupResponse menuGroup, List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
@@ -29,7 +29,7 @@ public class MenuResponse {
                 .map(MenuProductResponse::from)
                 .collect(Collectors.toList());
 
-        return new MenuResponse(menu.getId(), menu.getNameValue(), menu.getPriceValue(), menu.getMenuGroupId(), menuProductResponses);
+        return new MenuResponse(menu.getId(), menu.getNameValue(), menu.getPriceValue(), MenuGroupResponse.from(menu.getMenuGroup()), menuProductResponses);
     }
 
     public Long getId() {
@@ -44,8 +44,8 @@ public class MenuResponse {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroupResponse getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProductResponse> getMenuProducts() {
@@ -62,12 +62,12 @@ public class MenuResponse {
         }
         MenuResponse that = (MenuResponse) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price)
-                && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
+                && Objects.equals(menuGroup, that.menuGroup) && Objects.equals(menuProducts, that.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 
     public static class Builder {
@@ -75,7 +75,7 @@ public class MenuResponse {
         private Long id;
         private String name;
         private BigDecimal price;
-        private Long menuGroupId;
+        private MenuGroupResponse menuGroup;
         private List<MenuProductResponse> menuProducts;
 
         public Builder id(Long id) {
@@ -93,8 +93,8 @@ public class MenuResponse {
             return this;
         }
 
-        public Builder menuGroupId(Long menuGroupId) {
-            this.menuGroupId = menuGroupId;
+        public Builder menuGroup(MenuGroupResponse menuGroup) {
+            this.menuGroup = menuGroup;
             return this;
         }
 
@@ -104,7 +104,7 @@ public class MenuResponse {
         }
 
         public MenuResponse build() {
-            return new MenuResponse(id, name, price, menuGroupId, menuProducts);
+            return new MenuResponse(id, name, price, menuGroup, menuProducts);
         }
     }
 }

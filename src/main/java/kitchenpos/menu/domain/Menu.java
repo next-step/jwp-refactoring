@@ -47,7 +47,6 @@ public class Menu {
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.from(menuProducts);
-        this.menuProducts.setMenu(this);
     }
 
     private static void validateNonNullMenuGroup(MenuGroup menuGroup) {

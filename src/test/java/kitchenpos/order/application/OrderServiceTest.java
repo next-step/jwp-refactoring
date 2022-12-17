@@ -72,10 +72,10 @@ class OrderServiceTest {
         소머리국밥 = 상품_생성(2L, "소머리국밥", BigDecimal.valueOf(8000));
         식사 = 메뉴그룹_생성(1L, "식사");
 
-        미역국_메뉴상품 = 메뉴상품_생성(null, null, 미역국, 1L);
+        미역국_메뉴상품 = 메뉴상품_생성(null, 미역국, 1L);
         미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사, Arrays.asList(미역국_메뉴상품));
 
-        소머리국밥_메뉴상품 = 메뉴상품_생성(null, null, 소머리국밥, 1L);
+        소머리국밥_메뉴상품 = 메뉴상품_생성(null, 소머리국밥, 1L);
         소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사, Arrays.asList(소머리국밥_메뉴상품));
 
         주문_항목 = 주문_항목_생성(1L, 주문메뉴_생성(소머리국밥_메뉴.getId(), 소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue()), 2);

@@ -17,7 +17,7 @@ class MenuProductsTest {
     void create() {
         // given
         Product 미역국 = 상품_생성(1L, "미역국", BigDecimal.valueOf(6000));
-        MenuProduct 미역국_메뉴상품 = 메뉴상품_생성(1L, null, 미역국, 1L);
+        MenuProduct 미역국_메뉴상품 = 메뉴상품_생성(1L, 미역국, 1L);
 
         // when
         MenuProducts 메뉴상품들 = MenuProducts.from(Arrays.asList(미역국_메뉴상품));
