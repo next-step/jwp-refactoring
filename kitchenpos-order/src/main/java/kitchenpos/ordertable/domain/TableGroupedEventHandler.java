@@ -4,7 +4,9 @@ import java.util.List;
 import kitchenpos.tablegroup.domain.TableGroupedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class TableGroupedEventHandler {
@@ -18,8 +20,8 @@ public class TableGroupedEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener
-    @Transactional
+    @TransactionalEventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handle(TableGroupedEvent event) {
         List<Long> tableIds = event.getTableIds();
         validateMinCriteria(tableIds);
