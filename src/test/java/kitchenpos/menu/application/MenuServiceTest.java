@@ -5,7 +5,7 @@ import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
 import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
 import static kitchenpos.menu.dto.MenuRequestTest.메뉴_요청_객체_생성;
 import static kitchenpos.menu.dto.MenuResponseTest.메뉴_응답_객체들_생성;
-import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.menu.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

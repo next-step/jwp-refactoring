@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
-import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.menu.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

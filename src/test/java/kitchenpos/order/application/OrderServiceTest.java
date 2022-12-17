@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
-import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.menu.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.order.domain.OrderLineItemTest.주문_항목_생성;
 import static kitchenpos.order.domain.OrderMenuTest.주문메뉴_생성;
 import static kitchenpos.order.domain.OrderTest.주문_생성;

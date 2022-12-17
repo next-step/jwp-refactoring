@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.acceptance;
+package kitchenpos.table.acceptance;
 
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;

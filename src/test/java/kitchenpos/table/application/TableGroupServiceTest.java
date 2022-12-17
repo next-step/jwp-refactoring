@@ -1,8 +1,8 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.table.domain.OrderTableTest.주문_테이블_생성;
-import static kitchenpos.tablegroup.domain.TableGroupTest.단체_생성;
-import static kitchenpos.tablegroup.dto.TableGroupRequestTest.단체_지정_생성_요청_객체_생성;
+import static kitchenpos.table.domain.TableGroupTest.단체_생성;
+import static kitchenpos.table.dto.TableGroupRequestTest.단체_지정_생성_요청_객체_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;

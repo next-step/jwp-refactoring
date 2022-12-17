@@ -2,7 +2,7 @@ package kitchenpos.order.acceptance;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
 import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_요청_객체_생성;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
