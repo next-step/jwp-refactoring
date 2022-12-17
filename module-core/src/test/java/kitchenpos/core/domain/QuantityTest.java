@@ -1,10 +1,10 @@
-package kitchenpos.common.domain;
+package kitchenpos.core.domain;
 
-import kitchenpos.price.domain.Quantity;
+import kitchenpos.core.exception.InvalidQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Quantity 클래스 테스트")
 class QuantityTest {
@@ -21,7 +21,7 @@ class QuantityTest {
     void failureCreate() {
         assertThatThrownBy(() -> {
             new Quantity(-1L);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(InvalidQuantityException.class)
           .hasMessageContaining("유효하지 않은 수량입니다.");
     }
 

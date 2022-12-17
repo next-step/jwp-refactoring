@@ -1,14 +1,11 @@
-package kitchenpos.common.domain;
+package kitchenpos.core.domain;
 
-import kitchenpos.price.domain.Amount;
-import kitchenpos.price.domain.Price;
-import kitchenpos.price.domain.Quantity;
+import kitchenpos.core.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Price 클래스 테스트")
 class PriceTest {
@@ -27,7 +24,7 @@ class PriceTest {
     void failureCreate() {
         assertThatThrownBy(() -> {
             new Price(BigDecimal.valueOf(-1));
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(InvalidPriceException.class)
         .hasMessageContaining("유효하지 않은 가격입니다.");
     }
 
