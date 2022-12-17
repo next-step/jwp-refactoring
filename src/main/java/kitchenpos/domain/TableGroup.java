@@ -4,8 +4,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup {
@@ -16,16 +16,24 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @Embedded
-    private OrderTables orderTables;
+    private OrderTables orderTables = new OrderTables();
 
 
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
+    public TableGroup(OrderTables orderTables) {
         this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public static void of() {
+
+
+    }
+
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(OrderTables.from(orderTables));
     }
 
     public Long getId() {
@@ -38,5 +46,21 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
+    }
+
+
+
+    public void ungroup(List<Order> order) {
+        order.forEach(Order::validCheckOrderStatusIsCookingAndMeal);
+        orderTables.ungroup();
+    }
+
+    public List<Long> getOrderTablesId() {
+        return getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList());
+    }
+
+    public boolean isNotNull() {
+        orderTables.
+        return this != null;
     }
 }

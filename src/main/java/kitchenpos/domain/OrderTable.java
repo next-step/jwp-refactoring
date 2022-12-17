@@ -26,6 +26,10 @@ public class OrderTable {
         this.isEmpty = isEmpty;
     }
 
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
 
     public Long getId() {
         return id;
@@ -41,5 +45,9 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return isEmpty;
+    }
+
+    public boolean isNotNull() {
+        return this.tableGroup != null;
     }
 }

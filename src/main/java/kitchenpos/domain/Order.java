@@ -1,9 +1,11 @@
 package kitchenpos.domain;
 
+import kitchenpos.domain.type.OrderStatus;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -17,7 +19,7 @@ public class Order {
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
     @CreatedDate
     private LocalDateTime orderedTime;
@@ -27,14 +29,14 @@ public class Order {
 
     protected Order() {}
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -42,8 +44,14 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItem) {
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItem) {
         return new Order(orderTable, orderStatus, orderedTime, OrderLineItems.of(orderLineItem));
+    }
+
+    public void validCheckOrderStatusIsCookingAndMeal() {
+        if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -54,7 +62,7 @@ public class Order {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

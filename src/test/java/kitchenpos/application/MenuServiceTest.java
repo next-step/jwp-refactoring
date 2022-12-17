@@ -77,7 +77,6 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", Price.from(BigDecimal.valueOf(3_000)), 스피빅그륩.getId(), productRequest);
 
-
         Menu result = menuService.create(request);
 
         assertThat(result.getId()).isEqualTo(스테이크_파스타_빅세트.getId());

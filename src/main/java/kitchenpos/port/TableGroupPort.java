@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface TableGroupPort {
     TableGroup save(TableGroup entity);
 
-    Optional<TableGroup> findById(Long id);
+    TableGroup findById(Long id);
 
     List<TableGroup> findAll();
 }

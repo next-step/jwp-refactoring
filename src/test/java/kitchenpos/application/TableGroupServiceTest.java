@@ -1,5 +1,8 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.OrderTables;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderTablePort;
 import kitchenpos.port.TableGroupPort;
@@ -53,34 +56,33 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체지정을 등록 할 수 있다.")
     void createTableGroup() {
-        TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
+        TableGroup 단체지정 = new TableGroup(OrderTables.from(주문테이블_리스트));
 
         when(orderTablePort.findAllByIdIn(Arrays.asList(주문테이블_일번.getId(), 주문테이블_이번.getId()))).thenReturn(주문테이블_리스트);
         when(tableGroupPort.save(단체지정)).thenReturn(단체지정);
 
-        TableGroup savedTableGroup = tableGroupService.create(단체지정);
+        TableGroupResponse result = tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L, 3L)));
 
-        assertThat(savedTableGroup.getId()).isNotNull();
-        assertThat(savedTableGroup.getOrderTables()).containsAll(주문테이블_리스트);
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getOrderTables().get(0).getNumberOfGuests()).isEqualTo(주문테이블_일번.getNumberOfGuests());
+        assertThat(result.getOrderTables().get(1).getNumberOfGuests()).isEqualTo(주문테이블_이번.getNumberOfGuests());
     }
 
     @Test
     @DisplayName("주문 테이블이 비어있어야만 단체지정이 가능한다.")
     void emptyOrderTableAddTableGroup() {
-        TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), 주문테이블_리스트);
+        TableGroup 단체지정 = new TableGroup(OrderTables.from(주문테이블_리스트));
 
         assertThatThrownBy(() ->
-                tableGroupService.create(단체지정)
+                tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L, 3L)))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 2개 이여야만 단채 지정이 가능하다.")
     void tableGroupsSizeMinTwo() {
-        TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블_일번));
-
         assertThatThrownBy(() ->
-                tableGroupService.create(단체지정)
+                tableGroupService.create(new TableGroupRequest(Arrays.asList(1L)))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

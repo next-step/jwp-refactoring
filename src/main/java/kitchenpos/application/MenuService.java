@@ -45,9 +45,8 @@ public class MenuService {
 
         List<Product> product = productPort.findAllByIdIn(request.getProductId());
 
-        
 
-        Menu.of(request.getPrice(), request.getName(), menuGroup);
+        Menu.of(request.getName(), request.getPrice(), menuGroup, );
         final BigDecimal price = menu.getPrice();
 
 

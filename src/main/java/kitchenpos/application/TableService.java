@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.dto.TableRequest;
 import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderTablePort;
 import kitchenpos.domain.type.OrderStatus;
@@ -22,7 +23,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
+    public OrderTable create(final TableRequest request) {
         orderTable.setTableGroupId(null);
 
         return orderTablePort.save(orderTable);

@@ -1,15 +1,22 @@
 package kitchenpos.infrastructure.jpa.adapter;
 
 import kitchenpos.domain.Order;
+import kitchenpos.infrastructure.jpa.repository.OrderJpaRepository;
 import kitchenpos.port.OrderPort;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class OrderJpaRepository implements OrderPort {
+public class OrderJpaAdapter implements OrderPort {
+
+    private final OrderJpaRepository orderJpaRepository;
+
+    public OrderJpaAdapter(OrderJpaRepository orderJpaRepository) {
+        this.orderJpaRepository = orderJpaRepository;
+    }
+
     @Override
     public Order save(Order entity) {
         return null;
@@ -23,6 +30,11 @@ public class OrderJpaRepository implements OrderPort {
     @Override
     public List<Order> findAll() {
         return null;
+    }
+
+    @Override
+    public List<Order> findAllByOrderTableIdIn(List<Long> orderTablesId) {
+        return orderJpaRepository.findAllByOrderTableIdIn(orderTablesId);
     }
 
     @Override

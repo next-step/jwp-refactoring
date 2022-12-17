@@ -12,6 +12,8 @@ public interface OrderPort {
 
     List<Order> findAll();
 
+    List<Order> findAllByOrderTableIdIn(List<Long> orderTablesId);
+
     boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<String> orderStatuses);
 
     boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses);
