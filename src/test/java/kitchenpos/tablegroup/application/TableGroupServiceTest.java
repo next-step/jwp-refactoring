@@ -69,8 +69,8 @@ public class TableGroupServiceTest {
         하와이안피자 = new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000));
         피자 = new MenuGroup(1L, "피자");
         하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트, 하와이안피자, 1L);
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
-            MenuProducts.from(Arrays.asList(하와이안피자상품)));
+        하와이안피자세트 = Menu.of(1L, "하와이안피자세트", BigDecimal.valueOf(15_000L), 피자.getId(),
+            Arrays.asList(하와이안피자상품));
         주문메뉴 = OrderMenu.from(하와이안피자세트);
         하와이안피자세트주문요청 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
         주문테이블 = OrderTable.of(1L, 0, false);

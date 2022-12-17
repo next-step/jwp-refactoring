@@ -55,11 +55,11 @@ public class MenuRequest {
     }
 
     public Menu toMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+        return Menu.of(name, price, menuGroup.getId(), menuProducts);
     }
 
     public Menu toMenu(MenuGroup menuGroup, List<Product> products) {
-        return new Menu(name, price, menuGroup, createMenuProducts(products));
+        return Menu.of(name, price, menuGroup.getId(), createMenuProducts(products));
     }
 
     private MenuProducts createMenuProducts(List<Product> products) {

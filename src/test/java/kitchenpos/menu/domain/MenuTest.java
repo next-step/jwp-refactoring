@@ -23,18 +23,10 @@ class MenuTest {
         하와이안피자상품 = new MenuProduct(하와이안피자, 1);
     }
 
-    @DisplayName("메뉴 그룹이 존재하지 않으면 에러가 발생한다.")
-    @Test
-    void validateMenuGroupNotEmptyException() {
-        assertThatThrownBy(() -> new Menu("하와이안피자세트", BigDecimal.valueOf(15_000), null,
-            MenuProducts.from(Arrays.asList(하와이안피자상품))))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("메뉴 가격이 모든 상품 가격의 합보다 크면 에러가 발생한다.")
     @Test
     void validatePriceException() {
-        assertThatThrownBy(() -> new Menu("하와이안피자세트", BigDecimal.valueOf(18_000), 피자,
+        assertThatThrownBy(() -> new Menu("하와이안피자세트", BigDecimal.valueOf(18_000), 피자.getId(),
             MenuProducts.from(Arrays.asList(하와이안피자상품))))
             .isInstanceOf(IllegalArgumentException.class);
     }

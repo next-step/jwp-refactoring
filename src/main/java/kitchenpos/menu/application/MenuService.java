@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.stream.Collectors;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -26,7 +27,6 @@ public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
@@ -40,8 +40,15 @@ public class MenuService {
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        validateMenuGroup(menuGroup);
         List<Product> products = findAllProductByIds(menuRequest.getMenuProductIds());
         return MenuResponse.from(menuRepository.save(menuRequest.toMenu(menuGroup, products)));
+    }
+
+    private void validateMenuGroup(MenuGroup menuGroup) {
+        if(menuGroup == null) {
+            throw new IllegalArgumentException(ErrorCode.MENU_GROUP_NOT_EMPTY.getErrorMessage());
+        }
     }
 
     public List<MenuResponse> list() {

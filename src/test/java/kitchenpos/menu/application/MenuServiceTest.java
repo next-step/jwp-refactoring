@@ -71,7 +71,7 @@ public class MenuServiceTest {
         콜라상품 = new MenuProduct(2L, null, 콜라, 1L);
         피클상품 = new MenuProduct(3L, null, 피클, 1L);
 
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자, MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
+        하와이안피자세트 = Menu.of(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(), Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
 
         상품요청.add(MenuProductRequest.of(하와이안피자상품.getSeq(), 1L));
         상품요청.add(MenuProductRequest.of(콜라상품.getSeq(), 1L));
@@ -138,7 +138,7 @@ public class MenuServiceTest {
     void notExistProductException() {
         // given
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), BigDecimal.valueOf(18_000), 피자.getId(), new ArrayList<>());
-        when(menuGroupRepository.findById(하와이안피자세트.getMenuGroup().getId())).thenReturn(Optional.of(피자));
+        when(menuGroupRepository.findById(하와이안피자세트.getMenuGroupId())).thenReturn(Optional.of(피자));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(menuRequest))

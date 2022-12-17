@@ -75,8 +75,8 @@ public class OrderServiceTest {
         콜라상품 = new MenuProduct(2L, 하와이안피자세트, 콜라, 1L);
         피클상품 = new MenuProduct(3L, 하와이안피자세트, 피클, 1L);
 
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자,
-            MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
+        하와이안피자세트 = Menu.of(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자.getId(),
+            Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
         주문메뉴 = OrderMenu.from(하와이안피자세트);
 
         주문테이블 = OrderTable.of(1L,  0, false);
