@@ -12,5 +12,7 @@ public interface MenuPort {
 
     List<Menu> findAll();
 
+    List<Menu> findAllByMenuId(List<Long> menuId);
+
     long countByIdIn(List<Long> ids);
 }

@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Embeddable
@@ -16,7 +17,7 @@ public class OrderLineItems {
     }
 
     private OrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new ArrayList<>(orderLineItems);
     }
 
     public static OrderLineItems of(List<OrderLineItem> orderLineItem) {

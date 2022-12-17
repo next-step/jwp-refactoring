@@ -19,31 +19,22 @@ public class OrderJpaAdapter implements OrderPort {
 
     @Override
     public Order save(Order entity) {
-        return null;
+        return orderJpaRepository.save(entity);
     }
 
     @Override
-    public Optional<Order> findById(Long id) {
-        return Optional.empty();
+    public Order findById(Long id) {
+        return orderJpaRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
     public List<Order> findAll() {
-        return null;
+        return orderJpaRepository.findAll();
     }
 
     @Override
     public List<Order> findAllByOrderTableIdIn(List<Long> orderTablesId) {
         return orderJpaRepository.findAllByOrderTableIdIn(orderTablesId);
-    }
-
-    @Override
-    public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<String> orderStatuses) {
-        return false;
-    }
-
-    @Override
-    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses) {
-        return false;
     }
 }

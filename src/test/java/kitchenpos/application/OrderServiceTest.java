@@ -2,6 +2,9 @@ package kitchenpos.application;
 
 import kitchenpos.domain.*;
 import kitchenpos.domain.type.OrderStatus;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.port.MenuPort;
 import kitchenpos.port.OrderLineItemPort;
 import kitchenpos.port.OrderPort;
@@ -28,7 +31,7 @@ class OrderServiceTest {
 
 
     @Mock
-    private MenuPort menuDao;
+    private MenuPort menuPort;
     @Mock
     private OrderPort orderPort;
     @Mock
@@ -48,15 +51,15 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = new Product(1L, "후라이드치킨", BigDecimal.valueOf(3_000));
-        제로콜라 = new Product(2L, "제로콜라", BigDecimal.valueOf(2_000));
+        후라이드치킨 = new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨");
+        제로콜라 = new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라");
 
-        치킨 = new MenuGroup(1L, "치킨");
+        치킨 = MenuGroup.from("치킨");
 
-        후라이드_이인분 = new MenuProduct(1L, 1L, 후라이드치킨.getId(), 2);
-        제로콜라_삼인분 = new MenuProduct(1L, 1L, 제로콜라.getId(), 3);
+        후치콜세트 = Menu.of("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분));
 
-        후치콜세트 = new Menu(1L, "후치콜세트", BigDecimal.valueOf(5_000), 치킨.getId(), Arrays.asList(제로콜라_삼인분, 후라이드_이인분));
+        후라이드_이인분 = MenuProduct.of(후치콜세트, 후라이드치킨, 2);
+        제로콜라_삼인분 = MenuProduct.of(후치콜세트, 제로콜라, 2);
 
         주문테이블 = new OrderTable(1L, null, 0, false);
     }
@@ -64,59 +67,59 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문을 등록 할 수 있다")
     void createOrder() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문.getId(), 후치콜세트.getId(), 1);
-        주문.setOrderLineItems(Arrays.asList(주문_항목));
-
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
-        when(orderTablePort.findById(any())).thenReturn(Optional.of(주문테이블));
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
+        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문, 후치콜세트, 1L);
+        주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
+        
+        
+        when(menuPort.countByIdIn(any())).thenReturn(1L);
+        when(orderTablePort.findById(any())).thenReturn(주문테이블);
         when(orderPort.save(any())).thenReturn(주문);
         when(orderLineItemPort.save(any())).thenReturn(주문_항목);
 
-        Order result = orderService.create(주문);
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
+        OrderResponse result = orderService.create(new OrderRequest(1L, Arrays.asList(orderLineItemRequest)));
 
         assertThat(result.getId()).isNotNull();
         assertThat(result.getOrderStatus()).isNotNull();
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(result.getOrderLineItems()).contains(주문_항목);
     }
 
     @Test
     @DisplayName("주문 항목이 비어 있을 수 없다.")
     void createOrderEmpty() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-
         assertThatThrownBy(() ->
-                orderService.create(주문)
+                orderService.create(new OrderRequest(1L, null))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 항목의 수와 등록된 메뉴의 수는 같아야한다.")
     void createOrderSameMenuSize() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문.getId(), 후치콜세트.getId(), 1);
-        주문.setOrderLineItems(Arrays.asList(주문_항목));
-
-        when(menuDao.countByIdIn(any())).thenReturn(0L);
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
+        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문, 후치콜세트, 1L);
+        주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
+        
+        when(menuPort.countByIdIn(any())).thenReturn(0L);
 
         assertThatThrownBy(() ->
-                orderService.create(주문)
+                orderService.create(any())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블에 등록 되어 있어야한다.")
     void createOrderAlreadyMenu() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문.getId(), 후치콜세트.getId(), 1);
-        주문.setOrderLineItems(Arrays.asList(주문_항목));
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
+        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문, 후치콜세트, 1L);
+        주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
 
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
-        when(orderTablePort.findById(any())).thenReturn(Optional.empty());
+        when(menuPort.countByIdIn(any())).thenReturn(1L);
+        when(orderTablePort.findById(any())).thenReturn(null);
 
         assertThatThrownBy(() ->
-                orderService.create(주문)
+                orderService.create(any())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,54 +127,52 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 리스트를 받을 수 있다.")
     void getOrderList() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문.getId(), 후치콜세트.getId(), 1);
-        주문.setOrderLineItems(Arrays.asList(주문_항목));
-
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
+        OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문, 후치콜세트, 1L);
+        주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
+        
         when(orderPort.findAll()).thenReturn(Collections.singletonList(주문));
         when(orderLineItemPort.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(주문_항목));
 
-        List<Order> result = orderService.list();
+        List<OrderResponse> result = orderService.list();
 
         assertThat(result).hasSize(1);
-        assertThat(result.stream().map(Order::getId)).contains(주문.getId());
+
+        assertThat(result.stream().map(OrderResponse::getId)).contains(주문.getId());
     }
 
     @Test
     @DisplayName("주문 상태를 변경 할 수 있다.")
     void changeOrderStatus() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        Order 주문변경 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
 
-        when(orderPort.findById(주문.getId())).thenReturn(Optional.of(주문));
+        when(orderPort.findById(주문.getId())).thenReturn(주문);
 
-        orderService.changeOrderStatus(주문.getId(), 주문변경);
+        orderService.changeOrderStatus(주문.getId(), OrderStatus.COMPLETION);
 
-        assertThat(주문.getOrderStatus()).isEqualTo(주문변경.getOrderStatus());
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     @Test
     @DisplayName("등록된 주문이 있어야한다.")
     void changeOrderStatusAlreadyMenu() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        Order 새로운_주문변경 = new Order(2L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        when(orderPort.findById(주문.getId())).thenReturn(Optional.empty());
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION, null);
+
+        when(orderPort.findById(주문.getId())).thenReturn(null);
 
         assertThatThrownBy(() ->
-                orderService.changeOrderStatus(주문.getId(), 새로운_주문변경)
+                orderService.changeOrderStatus(주문.getId(), OrderStatus.COOKING)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("계산이 완료된 상태이면 주문 상태 변경이 불가능하다.")
     void changeOrderStatusNotCompleteChange() {
-        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order 주문변경 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION, null);
 
-        when(orderPort.findById(주문.getId())).thenReturn(Optional.of(주문));
+        when(orderPort.findById(주문.getId())).thenReturn(주문);
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문변경))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), OrderStatus.COOKING))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

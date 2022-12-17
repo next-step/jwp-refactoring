@@ -38,13 +38,13 @@ class OrderRestControllerTest extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드치킨 = 상품을_등록한다(Product.of(BigDecimal.valueOf(3_000), "후라이드치킨")).as(Product.class);
+        후라이드치킨 = 상품을_등록한다(new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨")).as(Product.class);
 
-        제로콜라 = 상품을_등록한다(Product.of(BigDecimal.valueOf(2_000), "제로콜라")).as(Product.class);
+        제로콜라 = 상품을_등록한다(new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라")).as(Product.class);
 
         치킨 = 메뉴그룹을_생성한다(MenuGroup.of("치킨")).as(MenuGroup.class);
 
-        후치콜세트 = 메뉴를_생성한다(Menu.of("후치콜세트", Price.from(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분))).as(Menu.class);
+        후치콜세트 = 메뉴를_생성한다(Menu.of("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분))).as(Menu.class);
 
         후라이드_이인분 = MenuProduct.of(후치콜세트, 후라이드치킨, 2);
         제로콜라_삼인분 = MenuProduct.of(후치콜세트, 제로콜라, 3);
@@ -54,7 +54,7 @@ class OrderRestControllerTest extends AcceptanceSupport {
 
         주문항목 = new OrderLineItem(null, null, 후치콜세트, 1);
 
-        주문 = Order.of(주문테이블, null, null, Arrays.asList(주문항목));
+        주문 = new Order(주문테이블, null, OrderLineItems.of(Arrays.asList(주문항목)));
     }
 
     @Test
@@ -87,7 +87,7 @@ class OrderRestControllerTest extends AcceptanceSupport {
         // given
         주문 = 주문_생성을_요청한다(주문).as(Order.class);
 
-        Order 변경한_주문 = Order.of(주문테이블, 주문.getOrderStatus(), 주문.getOrderedTime(), Arrays.asList(주문항목));
+        Order 변경한_주문 = new Order(주문테이블, 주문.getOrderStatus(), OrderLineItems.of(Arrays.asList(주문항목)));
 
 
         // when

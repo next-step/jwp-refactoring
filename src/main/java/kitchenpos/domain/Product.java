@@ -16,15 +16,10 @@ public class Product {
 
     protected Product() {}
 
-    private Product(String name, BigDecimal price) {
+    public Product(Price price, String name) {
+        this.price = price;
         this.name = name;
-        this.price = Price.from(price);
     }
-
-    public static Product of(BigDecimal price, String name) {
-        return new Product(name, price);
-    }
-
 
     public Long getId() {
         return id;

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface MenuJpaRepository extends JpaRepository<Menu, Long> {
     long countByIdIn(List<Long> ids);
+
+    List<Menu> findAllByIdIn(List<Long> id);
 }

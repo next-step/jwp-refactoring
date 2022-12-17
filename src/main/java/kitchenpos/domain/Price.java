@@ -13,13 +13,9 @@ public class Price {
 
     protected Price() {}
 
-    private Price(BigDecimal price) {
+    public Price(BigDecimal price) {
         validCheckPrice(price);
         this.price = price;
-    }
-
-    public static Price from(BigDecimal price) {
-        return new Price(price);
     }
 
     private void validCheckPrice(BigDecimal price) {

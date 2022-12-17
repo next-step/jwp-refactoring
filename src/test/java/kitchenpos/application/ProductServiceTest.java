@@ -1,5 +1,8 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Price;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.port.ProductPort;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -30,11 +33,11 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품을 등록 할 수 있다")
     void createProduct() {
-        Product 스테이크 = new Product(1L, "스테이크", BigDecimal.valueOf(10_000));
+        Product 스테이크 = new Product(new Price(BigDecimal.valueOf(10_000)), "스테이크");
 
         when(productPort.save(any())).thenReturn(스테이크);
 
-        Product result = productService.create(스테이크);
+        ProductResponse result = productService.create(new ProductRequest("스테이크", BigDecimal.valueOf(10_000)));
 
         assertThat(result.getId()).isEqualTo(스테이크.getId());
         assertThat(result.getPrice()).isEqualTo(스테이크.getPrice());
@@ -44,18 +47,16 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품의 가격은 0원 이상이여야한다")
     void createProductPriceZero() {
-        Product 스테이크 = new Product(1L, "스테이크", BigDecimal.valueOf(-1));
-
         assertThatThrownBy(() ->
-                productService.create(스테이크)
+                productService.create(new ProductRequest("스테이크", BigDecimal.valueOf(-1)))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("상품 리스트를 받을 수 있다")
     void getProductList() {
-        Product 스테이크 = new Product(1L, "스테이크", BigDecimal.valueOf(200));
-        Product 감자튀김 = new Product(2L, "감자튀김", BigDecimal.valueOf(300));
+        Product 스테이크 = new Product(new Price(BigDecimal.valueOf(200)), "스테이크");
+        Product 감자튀김 = new Product(new Price(BigDecimal.valueOf(200)), "감자튀김");
 
         when(productPort.findAll()).thenReturn(Arrays.asList(스테이크, 감자튀김));
 

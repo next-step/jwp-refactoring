@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.type.OrderStatus;
 import kitchenpos.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.dto.ChangeEmptyRequest;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
 import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderTablePort;
-import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -91,9 +90,10 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리, 식사중 이면 테이블 이용여부 변경이 불가능하다.")
     void changeFailIfStatusCookingAndMeal() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
+        Order 주문 = new Order(주문테이블, OrderStatus.COOKING, null);
 
         when(orderTablePort.findById(1L)).thenReturn(주문테이블);
-        when(orderPort.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderPort.findAllByOrderTableIdIn(any())).thenReturn(Arrays.asList(주문));
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new ChangeEmptyRequest(true)))

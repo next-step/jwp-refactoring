@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -27,29 +28,36 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    protected Order() {}
+    protected Order() {
+    }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
-
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItem) {
-        return new Order(orderTable, orderStatus, orderedTime, OrderLineItems.of(orderLineItem));
-    }
-
     public void validCheckOrderStatusIsCookingAndMeal() {
         if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void addOrderLineItems(List<OrderLineItem> orderLineItem, List<Menu> menu) {
+        validCheckOrderLineItemSizeIsSameMenuSize(orderLineItem, menu);
+        OrderLineItems.of(orderLineItem);
+    }
+
+    private void validCheckOrderLineItemSizeIsSameMenuSize(List<OrderLineItem> orderLineItem, List<Menu> menu) {
+        if (orderLineItem.size() != menu.size()) {
             throw new IllegalArgumentException();
         }
     }
@@ -70,7 +78,15 @@ public class Order {
         return orderedTime;
     }
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.getOrderLineItems();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = orderStatus;
     }
 }
