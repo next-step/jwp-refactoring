@@ -14,17 +14,9 @@ public class TableGroup extends BaseEntity {
     private Long id;
 
     @Embedded
-    private OrderTables orderTables;
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
 
     public List<Long> getOrderTableIds() {
         return this.orderTables.values().stream()
@@ -33,7 +25,7 @@ public class TableGroup extends BaseEntity {
     }
 
     public void ungroup(List<Order> orders) {
-        orders.forEach(Order::checkForChangingOrderTable);
+        orders.forEach(Order::isCookingOrMeal);
         this.orderTables.ungroup();
     }
 
@@ -44,4 +36,13 @@ public class TableGroup extends BaseEntity {
     public void addOrderTable(OrderTable orderTable) {
         this.orderTables.addOrderTable(this, orderTable);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables.values();
+    }
+
 }
