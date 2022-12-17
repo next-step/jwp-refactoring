@@ -12,12 +12,6 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public void validate() {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }

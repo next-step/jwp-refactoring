@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,24 +13,6 @@ public class OrderRequest {
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
-    }
-
-    public void validate(long menuCount) {
-        validateParam();
-        validateMenus(menuCount);
-    }
-
-    public void validateParam() {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public void validateMenus(long menuCount) {
-        if (orderLineItems.size() != menuCount) {
-            throw new IllegalArgumentException();
-        }
-
     }
 
     public List<Long> getMenuIds() {

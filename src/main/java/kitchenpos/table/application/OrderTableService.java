@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -54,7 +55,7 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        orderTableRequest.validate();
+        OrderTableValidator.validate(orderTableRequest.getNumberOfGuests());
 
         OrderTable savedOrderTable = getOrderTable(orderTableId);
         savedOrderTable.validateEmpty();

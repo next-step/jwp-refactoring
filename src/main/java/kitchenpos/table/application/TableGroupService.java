@@ -4,6 +4,7 @@ import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupValidator;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -33,7 +34,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        tableGroupRequest.validate(savedOrderTables);
+        TableGroupValidator.validate(tableGroupRequest.getOrderTables(), savedOrderTables);
 
         TableGroup tableGroup = TableGroup.create();
         TableGroup createTableGroup = tableGroupRepository.save(tableGroup);

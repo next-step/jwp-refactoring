@@ -5,6 +5,7 @@ import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -43,7 +44,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderRequest.validate(menuRepository.countByIdIn(orderRequest.getMenuIds()));
+        OrderValidator.validate(orderRequest, menuRepository.countByIdIn(orderRequest.getMenuIds()));
 
         OrderTable orderTable = getOrderTable(orderRequest.getOrderTableId());
 
