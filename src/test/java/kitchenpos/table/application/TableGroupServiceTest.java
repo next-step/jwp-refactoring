@@ -145,20 +145,20 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private void 주문_식사중_상태_변경() {
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     private void 주문_요리중_상태_변경() {
         Order order1 = orderRepository.findById(order.getId()).get();
-        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     private void 주문_완료_상태_변경() {
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     private void 테이블_그룹_존재_검증(TableGroup tableGroup) {

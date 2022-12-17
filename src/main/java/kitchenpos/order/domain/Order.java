@@ -24,7 +24,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
@@ -45,14 +46,14 @@ public class Order {
         }
         this.orderLineItems.addAll(orderLineItems);
 //        this.orderLineItems = orderLineItems;
-        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public Order(long id, OrderTable orderTable, String status, LocalDateTime orderedTime) {
+    public Order(long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.id = id;
         this.orderTable = orderTable;
-        this.orderStatus = status;
+        this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
@@ -64,11 +65,7 @@ public class Order {
         this.id = id;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -81,14 +78,14 @@ public class Order {
     }
 
     public void meal() {
-        if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException(COMPLETION_CHANGE_EXCEPTION_MESSAGE);
         }
-        this.orderStatus = OrderStatus.MEAL.name();
+        this.orderStatus = OrderStatus.MEAL;
     }
 
     public void complete() {
-        this.orderStatus = OrderStatus.COMPLETION.name();
+        this.orderStatus = OrderStatus.COMPLETION;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
@@ -103,8 +100,8 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void changeOrderStatus(String orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
         }
         this.orderStatus = orderStatus;
@@ -114,9 +111,13 @@ public class Order {
         if (this.orderTable == null) {
             throw new EntityNotFoundException("주문테이블이 존재하지 않습니다.");
         }
-        if (this.orderStatus.equals(OrderStatus.COOKING.name()) || this.orderStatus.equals(OrderStatus.MEAL.name())) {
+        if (this.orderStatus.equals(OrderStatus.COOKING) || this.orderStatus.equals(OrderStatus.MEAL)) {
             throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
         }
         this.orderTable.empty();
+    }
+
+    public OrderStatus getOrderStatus() {
+        return this.orderStatus;
     }
 }

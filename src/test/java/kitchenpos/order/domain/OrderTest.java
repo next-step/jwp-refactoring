@@ -50,7 +50,7 @@ class OrderTest {
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
         Order order = new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
         order.meal();
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
@@ -60,7 +60,7 @@ class OrderTest {
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
         Order order = new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
         order.complete();
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
         assertThatThrownBy(order::meal)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(COMPLETION_CHANGE_EXCEPTION_MESSAGE);
@@ -73,6 +73,6 @@ class OrderTest {
         orderLineItems.add(new OrderLineItem(null, 1L, 1));
         Order order = new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
         order.complete();
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 }

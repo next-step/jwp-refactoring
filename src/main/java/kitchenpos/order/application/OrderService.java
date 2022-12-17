@@ -59,7 +59,7 @@ public class OrderService {
     public Order changeOrderStatus(final Long orderId, final OrderStatusChangeRequest order) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
-        savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()).name());
+        savedOrder.changeOrderStatus(order.getOrderStatus());
         return orderRepository.save(savedOrder);
     }
 }

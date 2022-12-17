@@ -120,7 +120,7 @@ class TableServiceTest extends ServiceTest {
         orderTableRepository.save(orderTable);
 
         Order order = createOrder();
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
         order.setOrderTable(orderTable);
         orderRepository.save(order);
 
@@ -136,7 +136,7 @@ class TableServiceTest extends ServiceTest {
         orderTableRepository.save(orderTable);
 
         Order order = createOrder();
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
         order.setOrderTable(orderTable);
         orderRepository.save(order);
 
@@ -162,7 +162,7 @@ class TableServiceTest extends ServiceTest {
     void empty_fail_meal() {
 
         Order order = createOrder();
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
         assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTable().getId()))

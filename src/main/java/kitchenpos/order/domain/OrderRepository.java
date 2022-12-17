@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> asList);
-
-    boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<String> asList);
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses);
 
     Optional<Order> findByOrderTableId(Long orderTableId);
 }

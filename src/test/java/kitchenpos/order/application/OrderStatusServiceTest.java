@@ -95,7 +95,7 @@ class OrderStatusServiceTest extends ServiceTest {
         OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.MEAL);
 
         assertThat(orderService.changeOrderStatus(order.getId(), request).getOrderStatus())
-                .isEqualTo(OrderStatus.MEAL.name());
+                .isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
@@ -105,7 +105,7 @@ class OrderStatusServiceTest extends ServiceTest {
         OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.COMPLETION);
 
         assertThat(orderService.changeOrderStatus(order.getId(), request).getOrderStatus())
-                .isEqualTo(OrderStatus.COMPLETION.name());
+                .isEqualTo(OrderStatus.COMPLETION);
 
         주문완료_검증됨();
 
@@ -123,6 +123,6 @@ class OrderStatusServiceTest extends ServiceTest {
 
     private void 주문완료_검증됨() {
         Order findOrder = orderRepository.findById(order.getId()).get();
-        assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 }

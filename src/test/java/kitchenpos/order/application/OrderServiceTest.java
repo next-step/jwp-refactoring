@@ -121,7 +121,7 @@ class OrderServiceTest extends ServiceTest {
         OrderResponse orderResponse = orderService.create(new OrderCreateRequest(orderTableId, orderLineItems));
 
         assertAll(
-                () -> assertThat(orderResponse.getStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(orderResponse.getId()).isNotNull(),
                 () -> assertThat(orderResponse.getOrderedTime()).isNotNull(),
                 () -> assertThat(orderResponse.getOrderTableId()).isNotNull(),

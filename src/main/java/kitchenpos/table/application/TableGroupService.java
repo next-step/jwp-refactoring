@@ -52,7 +52,7 @@ public class TableGroupService {
 
     private void validateOrderStatus(TableGroup tableGroup) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE);
         }
     }

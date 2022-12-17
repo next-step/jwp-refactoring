@@ -2,6 +2,7 @@ package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,22 +13,18 @@ public class OrderResponse {
     private final List<OrderLineItem> orderLineItems;
     private final LocalDateTime orderedTime;
     private final Long orderTableId;
-    private String status;
+    private OrderStatus orderStatus;
 
     public OrderResponse(Order order) {
         this.orderId = order.getId();
         this.orderLineItems = order.getOrderLineItems();
-        this.status = order.getOrderStatus();
+        this.orderStatus = order.getOrderStatus();
         this.orderedTime = order.getOrderedTime();
         this.orderTableId = order.getOrderTable().getId();
     }
 
     public Long getId() {
         return this.orderId;
-    }
-
-    public String getStatus() {
-        return this.status;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -40,5 +37,9 @@ public class OrderResponse {
 
     public List<OrderLineItem> getOrderLineItmes() {
         return this.orderLineItems;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return this.orderStatus;
     }
 }
