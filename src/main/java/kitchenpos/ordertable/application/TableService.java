@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -19,10 +20,12 @@ public class TableService {
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -42,7 +45,8 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
         List<Order> orders = findAllOrderByOrderTableId(orderTable);
-        orderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
+        orderValidator.validateNotCompleteOrders(orders);
+        orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTable);
     }
 

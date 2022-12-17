@@ -1,7 +1,9 @@
 package kitchenpos.order.validator;
 
+import java.util.List;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -30,5 +32,9 @@ public class OrderValidator {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.ORDER_TABLE_NOT_EMPTY.getErrorMessage());
         }
+    }
+
+    public void validateNotCompleteOrders(List<Order> orders) {
+        orders.forEach(Order::validateNotCompleteOrder);
     }
 }

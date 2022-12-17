@@ -67,15 +67,9 @@ public class OrderTable {
         this.empty = Empty.IS_NOT_EMPTY;
     }
 
-
-    public void changeEmpty(boolean isEmpty, List<Order> orders) {
-        validateNotCompleteOrders(orders);
+    public void changeEmpty(boolean isEmpty) {
         validateHasTableGroup();
         this.empty = Empty.from(isEmpty);
-    }
-
-    private void validateNotCompleteOrders(List<Order> orders) {
-        orders.forEach(Order::validateNotCompleteOrder);
     }
 
     private void validateHasTableGroup() {

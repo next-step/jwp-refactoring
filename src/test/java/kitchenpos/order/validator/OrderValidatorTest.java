@@ -91,12 +91,17 @@ class OrderValidatorTest {
     @DisplayName("주문 테이블이 존재하지 않다면 에러가 발생한다.")
     @Test
     void validateOrderTableNotExistsException() {
-        // given
         OrderRequest orderRequest = OrderRequest.of(10L, OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
         when(orderTableRepository.findById(10L)).thenReturn(Optional.empty());
 
-        // when & then
         assertThatThrownBy(() -> orderValidator.validator(orderRequest))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문이 완료되지 않으면 에러가 발생한다.")
+    @Test
+    void validateNotCompleteOrdersException() {
+        assertThatThrownBy(() -> orderValidator.validateNotCompleteOrders(Arrays.asList(주문)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

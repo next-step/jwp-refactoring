@@ -48,7 +48,7 @@ class OrderTableTest {
     void updateEmpty() {
         OrderTable orderTable = OrderTable.of(4, true);
 
-        orderTable.changeEmpty(false, Collections.emptyList());
+        orderTable.changeEmpty(false);
 
         assertThat(orderTable.isEmpty()).isFalse();
     }
