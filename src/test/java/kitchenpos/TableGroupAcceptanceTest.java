@@ -3,6 +3,7 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static kitchenpos.OrderAcceptanceTest.메뉴_등록_요청;
+import static kitchenpos.OrderAcceptanceTest.주문_생성_요청;
 import static kitchenpos.TableAcceptanceTest.테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -81,6 +84,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 ExtractableResponse<Response> response = 단체_지정_해지_요청(단체_지정1);
 
                 단체_지정_해지됨(response);
+            }),
+            dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
+                주문_생성_요청(테이블3, 메뉴_등록_요청().as(Menu.class));
+
+                ExtractableResponse<Response> response = 단체_지정_해지_요청(단체_지정2);
+
+                단체_지정_해지_실패됨(response);
             })
         );
     }
@@ -115,5 +125,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     public static void 단체_지정_해지됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 단체_지정_해지_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

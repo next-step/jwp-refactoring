@@ -3,6 +3,7 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -17,6 +18,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static kitchenpos.OrderAcceptanceTest.메뉴_등록_요청;
+import static kitchenpos.OrderAcceptanceTest.주문_생성_요청;
+import static kitchenpos.TableGroupAcceptanceTest.단체_지정_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -79,6 +83,25 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 ExtractableResponse<Response> response = 테이블_비움_여부_변경_요청(빈_테이블, false);
 
                 테이블_비움_여부_변경됨(response);
+            }),
+            dynamicTest("다시 빈 테이블로 변경한다.", () -> {
+                ExtractableResponse<Response> response = 테이블_비움_여부_변경_요청(빈_테이블, true);
+
+                테이블_비움_여부_변경됨(response);
+            }),
+            dynamicTest("단체 지정된 주문 테이블의 비움 여부를 변경한다.", () -> {
+                단체_지정_생성_요청(손님이_있는_테이블, 손님이_있는_테이블2);
+
+                ExtractableResponse<Response> response = 테이블_비움_여부_변경_요청(손님이_있는_테이블, true);
+
+                테이블_비움_여부_변경됨(response);
+            }),
+            dynamicTest("주문이 들어간 테이블의 비움 여부를 변경한다.", () -> {
+                OrderTable 주문이_들어간_테이블 = 주문이_들어간_테이블_가져오기();
+
+                ExtractableResponse<Response> response = 테이블_비움_여부_변경_요청(주문이_들어간_테이블, true);
+
+                테이블_비움_여부_변경_실패됨(response);
             })
         );
     }
@@ -162,5 +185,18 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static void 테이블_비움_여부_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 테이블_비움_여부_변경_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static OrderTable 주문이_들어간_테이블_가져오기() {
+        OrderTable 주문이_들어간_테이블 = 테이블_생성_요청(false, 5).as(OrderTable.class);
+        Menu 등록된_메뉴 = 메뉴_등록_요청().as(Menu.class);
+
+        주문_생성_요청(주문이_들어간_테이블, 등록된_메뉴);
+
+        return 주문이_들어간_테이블;
     }
 }
