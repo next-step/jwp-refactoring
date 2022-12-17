@@ -184,6 +184,32 @@
 
 ---
 
+## 2단계 - 서비스 리팩터링
+
+### 요구사항
+1. 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다.
+    - Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션을 필수로 준다.
+    - 데이터베이스 스키마 변경 및 마이그레이션이 필요하다면 아래 문서를 적극 활용한다.
+    
+### TODO
+1. 도메인 객체 JPA 적용
+    - menu
+    - order
+    - product
+    - table
+2. 서비스 로직 리팩토링
+    - menu
+    - order
+    - product
+    - table
+3. 단위 테스트 구현
+    - menu
+    - order
+    - product
+    - table
+
+---
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
