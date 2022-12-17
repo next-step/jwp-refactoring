@@ -1,8 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +30,7 @@ public class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Product 상품1;
     private Product 상품2;
@@ -36,9 +38,9 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        상품1 = generateProduct(1L, "product1", 가격(1000));
-        상품2 = generateProduct(2L, "product2", 가격(1500));
-        상품3 = generateProduct(3L, "product3", 가격(1300));
+        상품1 = generateProduct("product1", 가격(1000));
+        상품2 = generateProduct("product2", 가격(1500));
+        상품3 = generateProduct("product3", 가격(1300));
     }
 
     @Test
@@ -46,35 +48,38 @@ public class ProductServiceTest {
     void projectTest1() {
         List<Product> 상품들 = 상품들_생성();
 
-        given(productDao.findAll()).willReturn(상품들);
+        given(productRepository.findAll()).willReturn(상품들);
 
-        List<Product> 조회된_상품들 = productService.list();
+        List<ProductResponse> 조회된_상품들 = productService.list();
+
         assertThat(조회된_상품들.size()).isEqualTo(상품들.size());
     }
 
     @Test
     @DisplayName("새로운 상품을 추가할 수 있다.")
     void projectTest2() {
-        given(productDao.save(any(Product.class))).willReturn(상품1);
+        given(productRepository.save(any(Product.class))).willReturn(상품1);
 
-        Product 추가된_상품 = productService.create(상품1);
+        ProductRequest 추가할_상품 = new ProductRequest(상품1.getName(), 상품1.getPrice());
+        ProductResponse 추가된_상품 = productService.create(추가할_상품);
+
         assertThat(추가된_상품.getName()).isEqualTo(상품1.getName());
     }
 
     @Test
     @DisplayName("새로운 상품 추가 : 상품 가격은 필수값이며, 음수여서는 안된다.")
     void projectTest3() {
-        Product 가격이_NULL인_상품 = generateProduct(1L, "product1", null);
-        Product 가격이_음수인_상품 = generateProduct(2L, "product2", 가격(-1));
+        Product 가격이_NULL인_상품 = generateProduct("product1", null);
+        Product 가격이_음수인_상품 = generateProduct("product2", 가격(-1));
 
-        assertThatThrownBy(() -> productService.create(가격이_NULL인_상품))
+        assertThatThrownBy(() -> productService.create(new ProductRequest(가격이_NULL인_상품.getName(), 가격이_NULL인_상품.getPrice())))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> productService.create(가격이_음수인_상품))
+        assertThatThrownBy(() -> productService.create(new ProductRequest(가격이_음수인_상품.getName(), 가격이_음수인_상품.getPrice())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static Product generateProduct(Long id, String name, BigDecimal price) {
-        return Product.of(id, name, price);
+    public static Product generateProduct(String name, BigDecimal price) {
+        return new Product(name, new Price(price));
     }
 
     private List<Product> 상품들_생성() {

@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -23,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.ProductServiceTest.generateProduct;
+import static kitchenpos.product.application.ProductServiceTest.generateProduct;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -73,8 +74,8 @@ public class MenuServiceTest {
     void setUp() {
         메뉴그룹 = 메뉴그룹_생성(1L, "menuGroup");
 
-        상품1 = generateProduct(1L, "product1", 가격(1000));
-        상품2 = generateProduct(2L, "product2", 가격(1500));
+        상품1 = generateProduct("product1", 가격(1000));
+        상품2 = generateProduct("product2", 가격(1500));
 
         메뉴상품요청1 = generateMenuProductRequest(상품1.getId(), 1);
         메뉴상품요청2 = generateMenuProductRequest(상품2.getId(), 1);
@@ -145,7 +146,7 @@ public class MenuServiceTest {
     @DisplayName("새로운 메뉴 추가 : 존재하지 않는 상품으로 요청할 수 없다.")
     void menuTest5() {
         List<MenuProduct> 존재하지않는_제품이포함된_메뉴제품들 = new ArrayList<>();
-        존재하지않는_제품이포함된_메뉴제품들.add(generateMenuProduct(null, new Product(999L, null, null), 1));
+        존재하지않는_제품이포함된_메뉴제품들.add(generateMenuProduct(null, new Product(null, null), 1));
 
         Menu 존재하지않는_제품이포함된_메뉴 = generateMenu(1L, "menu1", 가격(1500), 메뉴그룹, 존재하지않는_제품이포함된_메뉴제품들);
 
@@ -160,7 +161,7 @@ public class MenuServiceTest {
         given(productRepository.findById(상품1.getId())).willReturn(Optional.of(상품1));
         given(productRepository.findById(상품2.getId())).willReturn(Optional.of(상품2));
 
-        Menu 상품들의_가격의합보다_큰메뉴 = generateMenu(1L, "menu1", 가격(3000), 메뉴그룹, 메뉴상품들);
+        Menu 상품들의_가격의합보다_큰메뉴 = generateMenu(1L, "menu1", 가격(4000), 메뉴그룹, 메뉴상품들);
         given(menuRepository.save(any(Menu.class))).willReturn(상품들의_가격의합보다_큰메뉴);
 
         assertThatThrownBy(() -> menuService.create(generateMenuRequest(상품들의_가격의합보다_큰메뉴, 메뉴상품요청들)))
