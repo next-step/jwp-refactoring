@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 
 @Transactional(readOnly = true)
@@ -20,9 +21,18 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponse create(final Product product) {
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product product = generateProduct(productRequest);
+
         product.validatePrice();
         return ProductResponse.of(productRepository.save(product));
+    }
+
+    private Product generateProduct(ProductRequest productRequest) {
+        return Product.generate(
+            productRequest.getName(),
+            productRequest.getPrice()
+        );
     }
 
     public List<ProductResponse> list() {

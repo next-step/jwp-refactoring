@@ -16,10 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("상품 서비스 테스트")
@@ -34,10 +34,10 @@ class ProductServiceTest {
     @Test
     void create_price_null() {
         // given
-        Product product = productParam("강정치킨", null);
+        ProductRequest productRequest = productRequest("강정치킨", null);
 
         // when, then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(productRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -45,7 +45,7 @@ class ProductServiceTest {
     @Test
     void create_price_zero() {
         // given
-        Product product = productParam("강정치킨", new BigDecimal(-1000));
+        ProductRequest product = productRequest("강정치킨", new BigDecimal(-1000));
 
         // when, then
         assertThatThrownBy(() -> productService.create(product))
@@ -58,11 +58,11 @@ class ProductServiceTest {
         // given
         String name = "상품";
         BigDecimal price = new BigDecimal(17000);
-        Product product = productParam(name, price);
-        given(productRepository.save(product)).willReturn(ProductFixture.savedProduct(1L, name, price));
+        ProductRequest productRequest = productRequest(name, price);
+        given(productRepository.save(any())).willReturn(savedProduct(1L, name, price));
 
         // when
-        ProductResponse actual = productService.create(product);
+        ProductResponse actual = productService.create(productRequest);
 
         // then
         assertAll(
