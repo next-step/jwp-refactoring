@@ -1,19 +1,13 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import org.aspectj.weaver.ast.Or;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,9 +20,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "order_table_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
     @Enumerated(value = EnumType.STRING)
     @Column(name = "order_status")
     private OrderStatus orderStatus;
@@ -37,18 +30,17 @@ public class Order {
     @Embedded
     private OrderLineItemBag orderLineItemBag;
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
             OrderLineItemBag orderLineItemBag) {
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItemBag = orderLineItemBag;
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public static Order of(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
             OrderLineItemBag orderLineItemBag) {
-        checkValidOrderTable(orderTable);
-        return new Order(orderTable, orderStatus, orderedTime, orderLineItemBag);
+        return new Order(orderTableId, orderStatus, orderedTime, orderLineItemBag);
     }
 
     protected Order() {
@@ -58,8 +50,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -97,11 +89,6 @@ public class Order {
         this.orderLineItemBag.updateItemOrder(this);
     }
 
-    private static void checkValidOrderTable(OrderTable orderTable) {
-        orderTable.checkNullId();
-        orderTable.checkEmptyTable();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -111,12 +98,12 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return Objects.equals(orderTable, order.orderTable) && Objects.equals(orderStatus,
+        return Objects.equals(orderTableId, order.orderTableId) && Objects.equals(orderStatus,
                 order.orderStatus) && Objects.equals(orderLineItemBag, order.orderLineItemBag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTable, orderStatus, orderLineItemBag);
+        return Objects.hash(orderTableId, orderStatus, orderLineItemBag);
     }
 }

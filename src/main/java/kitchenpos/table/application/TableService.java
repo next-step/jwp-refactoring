@@ -1,14 +1,16 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableBag;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -16,11 +18,12 @@ public class TableService {
     private static final List<OrderStatus> COULD_NOT_CHANGE_EMPTY_STATUSES = Arrays.asList(
             OrderStatus.MEAL, OrderStatus.COOKING);
     private final OrderTableRepository orderTableRepository;
-    private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderService orderService) {
+    public TableService(OrderTableRepository orderTableRepository,
+            OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderService = orderService;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -38,9 +41,17 @@ public class TableService {
         checkNullId(orderTableId);
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다"));
-        orderService.existsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId(), COULD_NOT_CHANGE_EMPTY_STATUSES);
+        checkExistsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId());
         savedOrderTable.changeEmpty(true);
         return savedOrderTable;
+    }
+
+    private void checkExistsByOrderTableIdAndOrderStatusIn(Long id) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(id, COULD_NOT_CHANGE_EMPTY_STATUSES)) {
+            throw new IllegalArgumentException("주문 상태는 " + COULD_NOT_CHANGE_EMPTY_STATUSES.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(",")) + "가 아니어야 합니다");
+        }
     }
 
     @Transactional
@@ -61,5 +72,30 @@ public class TableService {
 
     public List<OrderTable> findAllByIdIn(List<Long> tableIds) {
         return orderTableRepository.findAllByIdIn(tableIds);
+    }
+
+    public void group(List<OrderTable> orderTables, Long id) {
+        orderTables.forEach(it -> it.updateGroup(id));
+    }
+
+    public void unGroupTables(OrderTableBag orderTableBag) {
+        checkExistsByOrderTableIdInAndOrderStatusIn(orderTableBag);
+        orderTableBag.unGroup();
+    }
+
+    private void checkExistsByOrderTableIdInAndOrderStatusIn(OrderTableBag orderTableBag) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableBag.orderTableIds(),
+                COULD_NOT_CHANGE_EMPTY_STATUSES)) {
+            throw new IllegalArgumentException("주문 상태는 " + COULD_NOT_CHANGE_EMPTY_STATUSES.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(",")) + "가 아니어야 합니다");
+        }
+    }
+
+    public void checkValidNullAndEmpty(Long orderTableId) {
+        checkNullId(orderTableId);
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다"));
+        orderTable.checkEmptyTable();
     }
 }

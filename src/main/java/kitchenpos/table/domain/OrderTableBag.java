@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.Objects;
@@ -10,10 +11,11 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderTableBag {
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
+    @OneToMany(fetch = FetchType.LAZY)
     private List<OrderTable> orderTableList;
 
-    public OrderTableBag(List<OrderTable> orderTableList) {
+    private OrderTableBag(List<OrderTable> orderTableList) {
         checkCreatable(orderTableList);
         this.orderTableList = orderTableList;
     }
@@ -55,11 +57,11 @@ public class OrderTableBag {
     }
 
     private static boolean checkNullTableGroupId(List<OrderTable> orderTableList) {
-        return orderTableList.stream().anyMatch(it -> Objects.nonNull(it.getTableGroup()));
+        return orderTableList.stream().anyMatch(it -> Objects.nonNull(it.getTableGroupId()));
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
-        this.orderTableList.forEach(it -> it.updateGroup(tableGroup));
+        this.orderTableList.forEach(it -> it.updateGroup(tableGroup.getId()));
     }
 
     public void unGroup() {

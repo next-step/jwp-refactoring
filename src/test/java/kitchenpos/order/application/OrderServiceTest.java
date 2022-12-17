@@ -148,14 +148,12 @@ public class OrderServiceTest {
                         MenuProductBag.from(Arrays.asList(
                                 메뉴_상품(productRepository.save(상품_통다리()), 5),
                                 메뉴_상품(productRepository.save(상품_콜라()), 1)))));
-
-        final Order 주문 = 주문(
+        //when,then:
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문(
                 주문_테이블(2, 비어있지_않은_상태),
                 조리_상태,
                 LocalDateTime.now(),
-                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
-        //when,then:
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문));
+                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))))));
     }
 
     @DisplayName("생성 예외 - 주문 테이블이 빈 테이블일 경우")
@@ -170,13 +168,12 @@ public class OrderServiceTest {
                                 메뉴_상품(productRepository.save(상품_통다리()), 5),
                                 메뉴_상품(productRepository.save(상품_콜라()), 1)))));
 
-        final Order 주문 = 주문(
+        //when,then:
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 빈_상태)),
                 조리_상태,
                 LocalDateTime.now(),
-                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
-        //when,then:
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문));
+                OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))))));
     }
 
     @DisplayName("목록 조회 성공 - 주문 항목도 함께 조회 된다")

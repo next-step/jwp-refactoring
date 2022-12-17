@@ -15,11 +15,8 @@ import java.util.Arrays;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹;
 import static kitchenpos.menu.domain.MenuProductTest.메뉴_상품;
 import static kitchenpos.menu.domain.MenuTest.메뉴;
-import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객;
-import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
-import static kitchenpos.order.domain.OrderTableTest.빈_상태;
+import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블_아이디_포함;
 import static kitchenpos.product.domain.ProductTest.상품;
-import static kitchenpos.table.application.TableServiceTest.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -40,14 +37,16 @@ public class OrderTest {
                         메뉴_상품(상품("통다리", BigDecimal.ONE), 5),
                         메뉴_상품(상품("콜라", BigDecimal.ONE), 1))));
 
+        final OrderTable 주문_테이블 = 두_명의_방문객이_존재하는_테이블_아이디_포함();
+
         final Order 주문 = 주문(
-                두_명의_방문객이_존재하는_테이블(),
+                주문_테이블,
                 조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
 
         assertThat(주문).isEqualTo(주문(
-                두_명의_방문객이_존재하는_테이블(),
+                주문_테이블,
                 조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
@@ -64,7 +63,7 @@ public class OrderTest {
                         메뉴_상품(상품("콜라", BigDecimal.ONE), 1))));
 
         final Order 주문 = 주문(
-                두_명의_방문객이_존재하는_테이블(),
+                두_명의_방문객이_존재하는_테이블_아이디_포함(),
                 조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
@@ -85,7 +84,7 @@ public class OrderTest {
                         메뉴_상품(상품("콜라", BigDecimal.ONE), 1))));
 
         final Order 주문 = 주문(
-                두_명의_방문객이_존재하는_테이블(),
+                두_명의_방문객이_존재하는_테이블_아이디_포함(),
                 계산_완료_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
@@ -95,6 +94,6 @@ public class OrderTest {
 
     public static Order 주문(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
             OrderLineItemBag orderLineItemList) {
-        return Order.of(orderTable, orderStatus, orderedTime, orderLineItemList);
+        return Order.of(orderTable.getId(), orderStatus, orderedTime, orderLineItemList);
     }
 }

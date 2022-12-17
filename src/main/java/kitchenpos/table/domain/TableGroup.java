@@ -58,18 +58,6 @@ public class TableGroup {
         return this.orderTableBag.orderTableIds();
     }
 
-    public void updateTableGroup() {
-        this.orderTableBag.updateTableGroup(this);
-    }
-
-    public void unGroup() {
-        this.orderTableBag.unGroup();
-    }
-
-    public List<Long> orderTableIds() {
-        return this.orderTableBag.orderTableIds();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

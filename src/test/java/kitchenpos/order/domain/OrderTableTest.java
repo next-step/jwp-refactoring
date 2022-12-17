@@ -4,6 +4,8 @@ import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 테이블 테스트")
@@ -13,6 +15,7 @@ public class OrderTableTest {
     public static final boolean 비어있지_않은_상태 = false;
     public static final int 두_명의_방문객 = 2;
     public static final int 한_명의_방문객 = 1;
+    private static final AtomicLong 테이블_id = new AtomicLong(100);
 
     @DisplayName("생성 성공")
     @Test
@@ -38,5 +41,9 @@ public class OrderTableTest {
 
     public static OrderTable 두_명의_방문객이_존재하는_테이블() {
         return OrderTable.ofNumberOfGuestsAndEmpty(두_명의_방문객, 비어있지_않은_상태);
+    }
+
+    public static OrderTable 두_명의_방문객이_존재하는_테이블_아이디_포함() {
+        return OrderTable.ofNumberOfGuestsAndEmpty(테이블_id.getAndIncrement(), 두_명의_방문객, 비어있지_않은_상태);
     }
 }
