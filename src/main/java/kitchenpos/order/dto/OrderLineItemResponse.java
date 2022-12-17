@@ -8,7 +8,7 @@ import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemResponse {
 
-    private Long seq;
+    private Long id;
 
     private Long orderId;
 
@@ -18,8 +18,8 @@ public class OrderLineItemResponse {
 
     public OrderLineItemResponse() {}
 
-    public OrderLineItemResponse(Long seq, Order order, OrderMenu orderMenu, Quantity quantity) {
-        this.seq = seq;
+    public OrderLineItemResponse(Long id, Order order, OrderMenu orderMenu, Quantity quantity) {
+        this.id = id;
         this.orderId = order.getId();
         this.menuId = orderMenu.getMenuId();
         this.quantity = quantity.value();
@@ -29,8 +29,8 @@ public class OrderLineItemResponse {
         return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrder(), orderLineItem.getOrderMenu(), orderLineItem.getQuantity());
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Long getOrderId() {
