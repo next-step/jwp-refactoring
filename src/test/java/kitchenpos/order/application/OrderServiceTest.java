@@ -16,7 +16,7 @@ import kitchenpos.menu.testfixture.MenuTestFixture;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroupTestFixture;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
@@ -42,7 +42,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 관련 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
+class OrderServiceTest {
 
     @Mock
     private MenuRepository menuRepository;
@@ -108,18 +108,6 @@ public class OrderServiceTest {
             () -> assertThat(result.getOrderStatus()).isEqualTo(주문.getOrderStatus())
         );
     }
-
-//    @DisplayName("주문 테이블이 등록되지 않으면 예외가 발생한다.")
-//    @Test
-//    void crateOrderNotExistOrderTableException() {
-//        // given
-//        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
-//        when(menuRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(하와이안피자세트));
-//
-//        // when & then
-//        assertThatThrownBy(() -> orderService.create(orderRequest))
-//            .isInstanceOf(IllegalArgumentException.class);
-//    }
 
     @DisplayName("주문 항목 메뉴가 등록되지 않으면 예외가 발생한다.")
     @Test

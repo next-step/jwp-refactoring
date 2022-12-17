@@ -12,7 +12,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.testfixture.MenuProductTestFixture;
 import kitchenpos.menu.testfixture.MenuTestFixture;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupTestFixture;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.testfixture.OrderMenuTestFixture;
@@ -34,7 +34,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderValidatorTest {
+class OrderValidatorTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;

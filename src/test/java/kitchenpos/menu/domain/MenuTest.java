@@ -1,10 +1,9 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.testfixture.MenuProductTestFixture;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupTestFixture;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;
 import org.junit.jupiter.api.BeforeEach;

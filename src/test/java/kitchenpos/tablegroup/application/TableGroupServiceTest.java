@@ -39,7 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("단체 지정 관련 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class TableGroupServiceTest {
+class TableGroupServiceTest {
 
     @Mock
     private OrderRepository orderRepository;

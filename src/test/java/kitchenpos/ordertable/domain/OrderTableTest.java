@@ -12,7 +12,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.testfixture.MenuProductTestFixture;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupTestFixture;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.testfixture.OrderMenuTestFixture;

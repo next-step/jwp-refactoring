@@ -1,7 +1,6 @@
-package kitchenpos.menugroup.domain;
+package kitchenpos.menugroup.testfixture;
 
-import java.math.BigDecimal;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupTestFixture {
 

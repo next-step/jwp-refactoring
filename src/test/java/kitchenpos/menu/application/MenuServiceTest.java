@@ -19,7 +19,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupTestFixture;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;
 import kitchenpos.product.repository.ProductRepository;
@@ -35,7 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 관련 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class MenuServiceTest {
+class MenuServiceTest {
 
     @Mock
     private MenuRepository menuRepository;
