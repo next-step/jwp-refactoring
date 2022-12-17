@@ -5,6 +5,8 @@ import java.util.Objects;
 
 @Entity
 public class MenuProduct {
+    
+    private static int MIN_MENU_PRODUCT_QUANTITY = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +43,8 @@ public class MenuProduct {
             throw new IllegalArgumentException("메뉴 상품에는 상품이 필수값 입니다.");
         }
 
-        if (quantity < 0) {
-            throw new IllegalArgumentException("수량은 1개 이상이여야 합니다.");
+        if (quantity < MIN_MENU_PRODUCT_QUANTITY) {
+            throw new IllegalArgumentException("메뉴 상품의 상품 수량은 1개 이상이여야 합니다.");
         }
     }
 
