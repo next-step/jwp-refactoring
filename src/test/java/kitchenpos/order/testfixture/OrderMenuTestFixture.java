@@ -1,6 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.testfixture;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.OrderMenu;
 
 public class OrderMenuTestFixture {
 

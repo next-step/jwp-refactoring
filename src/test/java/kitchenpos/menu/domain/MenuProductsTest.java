@@ -4,13 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.common.domain.Price;
+import kitchenpos.menu.testfixture.MenuProductTestFixture;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupTestFixture;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductTestFixture;
+import kitchenpos.product.testfixture.ProductTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
