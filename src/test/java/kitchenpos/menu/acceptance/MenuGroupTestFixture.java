@@ -1,19 +1,24 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.TestFixture;
-import kitchenpos.domain.MenuGroup;
-import org.assertj.core.api.Assertions;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 
 public class MenuGroupTestFixture extends TestFixture {
 
     public static final String MENU_GROUP_BASE_URI = "/api/menu-groups";
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청함(MenuGroup menuGroup) {
-        return post(MENU_GROUP_BASE_URI, menuGroup);
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청함(String name) {
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(name);
+        return post(MENU_GROUP_BASE_URI, menuGroupRequest);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_조회_요청함() {
@@ -25,7 +30,12 @@ public class MenuGroupTestFixture extends TestFixture {
     }
 
     public static void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {
+        MenuGroupResponse menuGroupResponse = response.as(MenuGroupResponse.class);
         created(response);
+        assertAll(
+                ()-> assertThat(menuGroupResponse.getId()).isNotNull(),
+                ()-> assertThat(menuGroupResponse.getName()).isNotNull()
+        );
     }
 
     public static void 메뉴_그룹_조회_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> menuGroupResponses) {
@@ -42,7 +52,7 @@ public class MenuGroupTestFixture extends TestFixture {
                 .map(MenuGroup::getId)
                 .collect(Collectors.toList());
 
-        Assertions.assertThat(actualIds).containsAll(expectIds);
+        assertThat(actualIds).containsAll(expectIds);
     }
 
 }

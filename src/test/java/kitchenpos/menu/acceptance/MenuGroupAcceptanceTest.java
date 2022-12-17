@@ -1,30 +1,29 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupTestFixture.메뉴_그룹_생성_요청함;
-import static kitchenpos.acceptance.MenuGroupTestFixture.메뉴_그룹_생성됨;
-import static kitchenpos.acceptance.MenuGroupTestFixture.메뉴_그룹_조회_요청_응답됨;
-import static kitchenpos.acceptance.MenuGroupTestFixture.메뉴_그룹_조회_요청함;
-import static kitchenpos.acceptance.MenuGroupTestFixture.메뉴_그룹_조회_포함됨;
+import static kitchenpos.menu.acceptance.MenuGroupTestFixture.메뉴_그룹_생성_요청함;
+import static kitchenpos.menu.acceptance.MenuGroupTestFixture.메뉴_그룹_생성됨;
+import static kitchenpos.menu.acceptance.MenuGroupTestFixture.메뉴_그룹_조회_요청_응답됨;
+import static kitchenpos.menu.acceptance.MenuGroupTestFixture.메뉴_그룹_조회_요청함;
+import static kitchenpos.menu.acceptance.MenuGroupTestFixture.메뉴_그룹_조회_포함됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 추천메뉴;
-    private MenuGroup 오늘의메뉴;
+    private String 추천메뉴;
+    private String 오늘의메뉴;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        추천메뉴 = new MenuGroup("추천메뉴");
-        오늘의메뉴 = new MenuGroup("오늘의메뉴");
+        추천메뉴 = "추천메뉴";
+        오늘의메뉴 = "오늘의메뉴";
     }
 
     @DisplayName("메뉴 그룹 등록한다.")

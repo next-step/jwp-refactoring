@@ -245,7 +245,7 @@ CREATE TABLE table_group (
 - 도메인별 패키지 분리
   - 상품 / 메뉴 / 주문
 - 의존성이 적은 영역부터 리팩토링 시작
-  1. product
+  product -> menuGroup
 
 ```
 changeShippingInfo() vs setShippingInfo()
