@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,6 +37,14 @@ public class OrderLineItem {
 
     public OrderMenu getOrderMenu() {
         return orderMenu;
+    }
+
+    public String getMenuNameValue() {
+        return orderMenu.getMenuNameValue();
+    }
+
+    public BigDecimal getMenuPriceValue() {
+        return orderMenu.getMenuPriceValue();
     }
 
     public Quantity getQuantity() {
