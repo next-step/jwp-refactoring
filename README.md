@@ -219,7 +219,7 @@ CREATE TABLE table_group (
 ### 요구 사항
 - [ ] 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리
   - [ ] 단위 테스트 가능한 코드에 대해 단위 테스트를 구현
-- [ ] Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션 설정
+- [x] Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션 설정
 - [ ] 필요하면 데이터베이스 스키마 변경 및 마이그레이션
 
 ### 힌트
@@ -245,7 +245,8 @@ CREATE TABLE table_group (
 - 도메인별 패키지 분리
   - 상품 / 메뉴 / 주문
 - 의존성이 적은 영역부터 리팩토링 시작
-  product -> menuGroup
+  - product 
+  - menuGroup -> menuProduct -> menu 
 
 ```
 changeShippingInfo() vs setShippingInfo()
