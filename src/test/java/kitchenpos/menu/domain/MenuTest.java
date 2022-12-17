@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static kitchenpos.menu.domain.MenuProductTest.메뉴_상품;
 import static kitchenpos.product.domain.PriceTest.MINUS_PRICE;
 import static kitchenpos.product.domain.ProductTest.상품;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,8 +25,8 @@ public class MenuTest {
         final Price 가격 = Price.from(BigDecimal.ONE);
         final Long 메뉴_그룹_id = 1L;
         final MenuProductBag 메뉴_상품_목록 = MenuProductBag.from(Arrays.asList(
-                MenuProduct.of(상품("통다리"), 1),
-                MenuProduct.of(상품("콜라"), 1)
+                메뉴_상품(상품("통다리"), 1),
+                메뉴_상품(상품("콜라"), 1)
         ));
         //when, then:
         assertThat(Menu.of(이름, 가격, 메뉴_그룹_id, 메뉴_상품_목록)).isEqualTo(Menu.of(이름, 가격, 메뉴_그룹_id, 메뉴_상품_목록));
@@ -39,8 +40,8 @@ public class MenuTest {
                 Price.from(MINUS_PRICE),
                 1L,
                 MenuProductBag.from(Arrays.asList(
-                        MenuProduct.of(상품("통다리"), 1),
-                        MenuProduct.of(상품("콜라"), 1)
+                        메뉴_상품(상품("통다리"), 1),
+                        메뉴_상품(상품("콜라"), 1)
                 ))));
     }
 
