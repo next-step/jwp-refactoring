@@ -17,11 +17,6 @@ public class MenuProducts {
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
-
-    }
-
-    public void addMenuProduct(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
     }
 
     public List<MenuProduct> getMenuProducts() {

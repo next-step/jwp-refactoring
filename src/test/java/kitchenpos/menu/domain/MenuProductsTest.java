@@ -28,7 +28,7 @@ class MenuProductsTest {
         MenuProduct 양념치킨상품 = MenuProduct.of(양념치킨, 양념치킨수량);
 
         MenuProducts menuProducts = new MenuProducts();
-        menuProducts.addMenuProduct(Arrays.asList(강장치킨상품, 양념치킨상품));
+        Arrays.asList(강장치킨상품, 양념치킨상품).forEach(menuProducts::add);
 
         //when
         Price price = menuProducts.totalPrice();
