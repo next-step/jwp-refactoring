@@ -36,11 +36,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
         menuValidator.validate(menuRequest);
-        List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
-            .stream()
-            .map(MenuProductRequest::toMenuProduct)
-            .collect(Collectors.toList());
-        Menu menu = menuRepository.save(menuRequest.toMenu(MenuProducts.from(menuProducts)));
+        Menu menu = menuRepository.save(menuRequest.toMenu());
         return MenuResponse.from(menu);
     }
 

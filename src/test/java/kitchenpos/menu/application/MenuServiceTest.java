@@ -84,7 +84,7 @@ public class MenuServiceTest {
     @Test
     void createMenu() {
         MenuRequest menuRequest = MenuRequest.of(하와이안피자세트.getName().value(), 하와이안피자세트.getPrice().value(), 피자.getId(), 상품요청);
-        when(menuRepository.save(menuRequest.toMenu(MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품))))).thenReturn(하와이안피자세트);
+        when(menuRepository.save(menuRequest.toMenu())).thenReturn(하와이안피자세트);
 
         MenuResponse result = menuService.create(menuRequest);
 
