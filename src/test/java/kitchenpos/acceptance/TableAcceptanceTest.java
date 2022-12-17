@@ -3,8 +3,10 @@ package kitchenpos.acceptance;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.rest.TableRestAssured;
+import kitchenpos.table.dto.OrderTableCreateRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -18,81 +20,38 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class TableAcceptanceTest extends BaseAcceptanceTest {
 
     @Test
-    void 신규_주문_테이블_정보가_주어진_경우_테이블_등록_요청시_요청에_성공한다() {
+    @DisplayName("신규 주문 테이블 정보가 주어진 경우 테이블 등록 요청시 요청에 성공한다")
+    void createOrderTableThenReturnOrderTableResponseTest() {
         // given
-        int numberOfGuests = 0;
-        boolean empty = true;
+        OrderTableCreateRequest request = new OrderTableCreateRequest(0, true);
 
         // when
-        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_등록_요청(numberOfGuests, empty);
+        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_등록_요청(request);
 
         // then
-        주문_테이블_등록됨(response, numberOfGuests, empty);
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests()),
+                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(request.isEmpty())
+        );
     }
 
     @Test
-    void 주문_테이블_목록_조회_요청시_요청에_성공한다() {
+    @DisplayName("주문 테이블 목록 조회 요청시 요청에_성공한다")
+    void findAllOrderTablesThenReturnOrderTableResponsesTest() {
         // given
-        List<OrderTable> 기존_주문_테이블_목록 = Arrays.asList(
-                TableRestAssured.주문_테이블_등록됨(1).as(OrderTable.class),
-                TableRestAssured.주문_테이블_등록됨(2).as(OrderTable.class)
+        List<OrderTableResponse> expectedOrderTables = Arrays.asList(
+                TableRestAssured.주문_테이블_등록됨(new OrderTableCreateRequest(1, true)),
+                TableRestAssured.주문_테이블_등록됨(new OrderTableCreateRequest(2, true))
         );
 
         // when
         ExtractableResponse<Response> response = TableRestAssured.주문_테이블_목록_조회_요청();
 
         // then
-        주문_테이블_목록_조회됨(response, 기존_주문_테이블_목록);
-    }
-
-    @Test
-    void 주문_테이블의_이용_가능_상태로_변경_요청시_요청에_성공한다() {
-        // given
-        OrderTable orderTable = TableRestAssured.주문_테이블_등록됨(1).as(OrderTable.class);
-
-        // when
-        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_이용_가능_상태로_변경_요청(orderTable.getId());
-
-        // then
-        주문_테이블_이용_여부_변경됨(response, true);
-    }
-
-    @Test
-    void 주문_테이블을_이용_불가_상태로_변경_요청시_요청에_성공한다() {
-        // given
-        OrderTable orderTable = TableRestAssured.주문_테이블_등록됨(0).as(OrderTable.class);
-
-        // when
-        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_이용_불가_상태로_변경_요청(orderTable.getId());
-
-        // then
-        주문_테이블_이용_여부_변경됨(response, false);
-    }
-
-    @Test
-    void 주문_테이블의_손님수_변경_요청시_요청에_성공한다() {
-        // given
-        OrderTable orderTable = TableRestAssured.주문_테이블_등록됨(1).as(OrderTable.class);
-
-        // when
-        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_손님수_변경_요청(orderTable.getId(), 3);
-
-        // then
-        주문_테이블_손님수_변경됨(response, 3);
-    }
-
-    private void 주문_테이블_등록됨(ExtractableResponse<Response> response, int numberOfGuests, boolean empty) {
-        OrderTable 신규_주문_테이블 = response.as(OrderTable.class);
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(신규_주문_테이블.getNumberOfGuests()).isEqualTo(numberOfGuests),
-                () -> assertThat(신규_주문_테이블.isEmpty()).isEqualTo(empty)
-        );
-    }
-
-    private void 주문_테이블_목록_조회됨(ExtractableResponse<Response> response, List<OrderTable> orderTables) {
         JsonPath jsonPath = response.jsonPath();
-        List<Integer> numberOfGuestsInExpectedTables = orderTables.stream().map(OrderTable::getNumberOfGuests).collect(Collectors.toList());
+        List<Integer> numberOfGuestsInExpectedTables = expectedOrderTables.stream().map(OrderTableResponse::getNumberOfGuests).collect(Collectors.toList());
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(jsonPath.getList("tableGroupId", Long.class)).isEqualTo(Arrays.asList(null, null)),
@@ -100,19 +59,54 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         );
     }
 
-    private void 주문_테이블_이용_여부_변경됨(ExtractableResponse<Response> response, boolean empty) {
-        OrderTable 주문_테이블 = response.as(OrderTable.class);
+    @Test
+    @DisplayName("주문 테이블의 이용 가능 상태로 변경 요청시 요청에 성공한다")
+    void changeOrderTableAvailableStateThenReturnResponse() {
+        // given
+        OrderTableResponse orderTable = TableRestAssured.주문_테이블_등록됨(new OrderTableCreateRequest(1, false));
+
+        // when
+        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_이용_가능_상태로_변경_요청(orderTable.getId());
+
+        // then
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(주문_테이블.isEmpty()).isEqualTo(empty)
+                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(true)
         );
     }
 
-    private void 주문_테이블_손님수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
-        OrderTable 주문_테이블 = response.as(OrderTable.class);
+    @Test
+    @DisplayName("주문 테이블을 이용 불가 상태로 변경 요청시 요청에 성공한다")
+    void changeOrderTableUnAvailableStateThenReturnResponseTest() {
+        // given
+        OrderTableResponse orderTable = TableRestAssured.주문_테이블_등록됨(new OrderTableCreateRequest(1, true));
+
+        // when
+        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_이용_불가_상태로_변경_요청(orderTable.getId());
+
+        // then
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(주문_테이블.getNumberOfGuests()).isEqualTo(numberOfGuests)
+                () -> assertThat(orderTableResponse.isEmpty()).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("주문 테이블의 손님수 변경 요청시 요청에 성공한다")
+    void changeNumberOfGuestsThenReturnResponseTest() {
+        // given
+        OrderTableResponse orderTable = TableRestAssured.주문_테이블_등록됨(new OrderTableCreateRequest(1, false));
+
+        // when
+        ExtractableResponse<Response> response = TableRestAssured.주문_테이블_손님수_변경_요청(orderTable.getId(), 3);
+
+        // then
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(3)
         );
     }
 }
