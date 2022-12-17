@@ -21,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴그룹")
-class MenuGroupServiceTest {
+public class MenuGroupServiceTest {
 
     @InjectMocks
     private MenuGroupService menuGroupService;
