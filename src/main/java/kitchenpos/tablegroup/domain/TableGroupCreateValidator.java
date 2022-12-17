@@ -1,5 +1,8 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.dto.CreateTableGroupRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,11 +17,11 @@ public class TableGroupCreateValidator {
         this.tableRepository = tableRepository;
     }
 
-    public void validate(TableGroup tableGroup) {
-        checkCreatable(tableGroup.orderTables());
-        final List<OrderTable> savedOrderTables = tableRepository.findAllByIdIn(tableGroup.tableIds());
+    public void validate(CreateTableGroupRequest request) {
+        final List<OrderTable> savedOrderTables = tableRepository.findAllByIdIn(request.getOrderTableIds());
+        checkCreatable(savedOrderTables);
         checkedAlreadyExistGroup(savedOrderTables);
-        checkedTableSize(savedOrderTables, tableGroup.orderTables());
+        checkedTableSize(savedOrderTables, request.getOrderTableIds());
     }
 
     private void checkCreatable(List<OrderTable> orderTableList) {
@@ -63,8 +66,8 @@ public class TableGroupCreateValidator {
         return savedOrderTables.stream().anyMatch(it -> it.getTableGroupId() != null);
     }
 
-    private void checkedTableSize(List<OrderTable> savedOrderTables, List<OrderTable> orderTables) {
-        if (savedOrderTables.size() != orderTables.size()) {
+    private void checkedTableSize(List<OrderTable> savedOrderTables, List<Long> request) {
+        if (savedOrderTables.size() != request.size()) {
             throw new IllegalArgumentException("실제 저장 된 테이블 목록의 수와 요청한 테이블 목록의 수가 다릅니다");
         }
     }

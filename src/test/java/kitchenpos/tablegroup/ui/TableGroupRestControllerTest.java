@@ -1,11 +1,10 @@
-package kitchenpos.table.ui;
+package kitchenpos.tablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableBag;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.CreateTableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +12,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
-import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
-import static kitchenpos.table.domain.TableGroupTest.단체_지정;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.table.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,32 +45,29 @@ class TableGroupRestControllerTest {
     @Test
     void 생성_성공() throws Exception {
         //given:
-        final OrderTableBag 주문_테이블_목록 = OrderTableBag.from(Arrays.asList(
-                tableService.create(두_명의_방문객이_존재하는_테이블()),
-                tableService.create(두_명의_방문객이_존재하는_테이블())));
+        final List<Long> 주문_테이블_id_목록 = Arrays.asList(
+                tableService.create(두_명의_방문객이_존재하는_테이블()).getId(),
+                tableService.create(두_명의_방문객이_존재하는_테이블()).getId());
 
-        final TableGroup 단체_지정_테이블 = 단체_지정(LocalDateTime.now(), 주문_테이블_목록);
         //when:
-        final TableGroup 저장된_단체_지정_테이블 = mapper.readValue(
-                mockMvc.perform(post("/api/table-groups")
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .accept(MediaType.APPLICATION_JSON_VALUE)
-                                .content(mapper.writeValueAsString(단체_지정_테이블)))
-                        .andDo(print())
-                        .andExpect(status().isCreated())
-                        .andReturn().getResponse().getContentAsString(), TableGroup.class);
+        assertThatNoException().isThrownBy(() -> mockMvc.perform(post("/api/table-groups")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON_VALUE)
+                        .content(mapper.writeValueAsString(new CreateTableGroupRequest(주문_테이블_id_목록))))
+                .andDo(print())
+                .andExpect(status().isCreated()));
         //then:
-        assertThat(저장된_단체_지정_테이블.orderTables().stream().anyMatch(OrderTable::isEmpty)).isFalse();
     }
 
+    @Transactional
     @DisplayName("단체 지정 해제 성공")
     @Test
     void 단체_지정_해제_성공() {
         //given:
         final TableGroup 저장된_단체_지정_테이블 = tableGroupService.create(
-                단체_지정(LocalDateTime.now(), OrderTableBag.from(Arrays.asList(
-                        tableService.create(두_명의_방문객이_존재하는_테이블()),
-                        tableService.create(두_명의_방문객이_존재하는_테이블())))));
+                new CreateTableGroupRequest(Arrays.asList(
+                        tableService.create(두_명의_방문객이_존재하는_테이블()).getId(),
+                        tableService.create(두_명의_방문객이_존재하는_테이블()).getId())));
         //when,then:
         assertThatNoException().isThrownBy(() ->
                 mockMvc.perform(delete("/api/table-groups/{tableGroupId}", 저장된_단체_지정_테이블.getId()))
