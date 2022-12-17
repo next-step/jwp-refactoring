@@ -29,7 +29,7 @@ public class MenuRequest {
         List<MenuProduct> menuProducts = this.menuProductRequests.stream()
                 .map(request -> request.toMenuProducts(menu, products))
                 .collect(Collectors.toList());
-        menu.addMenuProduct(menuProducts);
+        menu.create(menuProducts);
         return menu;
     }
 
