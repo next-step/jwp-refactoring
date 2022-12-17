@@ -31,20 +31,6 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-//    @Transactional
-//    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-//        List<OrderTable> orderTables = findAllOrderTablesById(tableGroupRequest.getOrderTables());
-//        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup(OrderTables.from(orderTables)));
-//        return TableGroupResponse.from(tableGroup);
-//    }
-//
-//    @Transactional
-//    public void ungroup(final Long tableGroupId) {
-//        TableGroup tableGroup = findTableGroupById(tableGroupId);
-//        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTables());
-//        tableGroup.ungroup(orders);
-//    }
-
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         OrderTables orderTables = OrderTables.from(findAllOrderTablesById(tableGroupRequest.getOrderTables()));
