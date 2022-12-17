@@ -1,6 +1,6 @@
-package kitchenpos.fixture;
+package kitchenpos.menugroup.fixture;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupFixture {
 

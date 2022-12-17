@@ -1,12 +1,13 @@
-package kitchenpos.acceptance;
+package kitchenpos.menugroup.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.MenuGroupCreateRequest;
-import kitchenpos.dto.MenuGroupResponse;
-import kitchenpos.fixture.MenuGroupFixture;
-import kitchenpos.rest.MenuGroupRestAssured;
+import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.fixture.MenuGroupFixture;
+import kitchenpos.menugroup.rest.MenuGroupRestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
