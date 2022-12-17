@@ -1,9 +1,9 @@
 package kitchenpos.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,10 @@ public class MenuAcceptanceTestFixture {
         request.put("name", name);
         request.put("price", price);
         request.put("menuGroupId", menuGroup);
-        request.put("menuProducts", new HashMap<String, Object>() {{
+        request.put("menuProducts", Collections.singletonList(new HashMap<String, Object>() {{
             put("productId", product);
             put("quantity", quantity);
-        }});
+        }}));
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

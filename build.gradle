@@ -42,6 +42,12 @@ allprojects {
     }
 }
 
+dependencies {
+    implementation project(':kitchenpos-menu')
+    implementation project(':kitchenpos-order')
+    implementation project(':kitchenpos-product')
+}
+
 project(':kitchenpos-menu') {
     dependencies {
         implementation project(':kitchenpos-product')
