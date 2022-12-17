@@ -1,1 +1,6 @@
 rootProject.name = 'kitchenpos'
+include 'kitchenpos-common'
+include 'kitchenpos-product-api'
+include 'kitchenpos-menu-api'
+include 'kitchenpos-order-api'
+
