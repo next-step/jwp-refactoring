@@ -29,8 +29,8 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu(Name name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        if (Objects.isNull(menuGroupId)) {
+    public Menu(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
         if (Objects.isNull(price)) {

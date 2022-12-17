@@ -22,10 +22,6 @@ public class MenuCreateRequest {
         this.name = name;
     }
 
-    public Menu toMenu() {
-        return new Menu(new Name(this.name), new Price(this.price), this.menuGroupId, this.menuProducts);
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return this.menuProducts;
     }

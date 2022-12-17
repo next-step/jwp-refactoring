@@ -9,6 +9,7 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,32 +37,26 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
 
+        final List<MenuProduct> menuProducts = request.getMenuProducts();
+        validateExistMenuProducts(menuProducts);
+
+        Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), findMenuGroup(request), menuProducts);
+
+        return new MenuResponse(menuRepository.save(menu));
+    }
+
+    private MenuGroup findMenuGroup(MenuCreateRequest request) {
         if (request.getMenuGroupId() == null) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
         }
+        return menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(EntityNotFoundException::new);
+    }
 
-        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
-            throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
-        }
-
-        final List<MenuProduct> menuProducts = request.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
+    private void validateExistMenuProducts(List<MenuProduct> menuProducts) {
         for (final MenuProduct menuProduct : menuProducts) {
             productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
         }
-        Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), request.getMenuGroupId(), menuProducts);
-//
-//        final Long menuId = savedMenu.getId();
-//        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-//        for (final MenuProduct menuProduct : menuProducts) {
-//            menuProduct.setMenuId(menuId);
-//            savedMenuProducts.add(menuProductDao.save(menuProduct));
-//        }
-//        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return new MenuResponse(menuRepository.save(menu));
     }
 
     public List<Menu> list() {

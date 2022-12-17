@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.table.application.TableService.*;
@@ -193,7 +194,7 @@ class TableServiceTest extends ServiceTest {
 
     private Order createOrder() {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("a"));
-        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup.getId(), Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
+        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(new MenuProduct(null, ProductFixture.product(), 1L))));
         OrderTable orderTable = orderTableRepository.save(new OrderTable());
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));

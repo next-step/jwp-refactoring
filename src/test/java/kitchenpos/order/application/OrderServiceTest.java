@@ -63,7 +63,7 @@ class OrderServiceTest extends ServiceTest {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("A"));
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.valueOf(2))), 1L));
-        menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup.getId(), menuProducts));
+        menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup, menuProducts));
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(true));
