@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -73,7 +74,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         주문테이블 = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(0), false))
                 .as(OrderTable.class);
-        두마리치킨세트_주문 = new OrderLineItem(null, 두마리치킨세트_응답.getId(), 순살치킨메뉴);
+        두마리치킨세트_주문 = new OrderLineItem(null, new Quantity(1L), 순살치킨메뉴);
         두마리치킨세트_요청 = OrderLineItemRequest.of(두마리치킨세트_응답.getId(), 1L);
         주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(두마리치킨세트_주문));
     }

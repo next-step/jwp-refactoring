@@ -1,9 +1,9 @@
 package kitchenpos.order.dto;
 
+import java.util.List;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
-
-import java.util.List;
 
 public class OrderLineItemRequest {
     private Long menuId;
@@ -26,7 +26,7 @@ public class OrderLineItemRequest {
                 .findFirst()
                 .get();
 
-        return new OrderLineItem(quantity, menu);
+        return new OrderLineItem(new Quantity(quantity), menu);
     }
 
     public Long getMenuId() {

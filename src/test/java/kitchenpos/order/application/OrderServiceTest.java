@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -75,14 +76,14 @@ public class OrderServiceTest {
         양식 = new MenuGroup(1L, "양식");
 
         치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new Price(BigDecimal.valueOf(13_000)), 양식);
-        치킨_두마리 = new MenuProduct(1L, 2L, 치킨_스파게티_더블세트_메뉴, 치킨);
-        스파게티_이인분 = new MenuProduct(2L, 2L, 치킨_스파게티_더블세트_메뉴, 스파게티);
+        치킨_두마리 = new MenuProduct(1L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 치킨);
+        스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 스파게티);
         치킨_두마리_요청 = MenuProductRequest.of(치킨.getId(), 1L);
         스파게티_이인분_요청 = MenuProductRequest.of(스파게티.getId(), 1L);
         //치킨_스파게티_더블세트_메뉴.setMenuProducts(Arrays.asList(치킨_두마리, 스파게티_이인분));
 
         주문_테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
-        주문_항목 = new OrderLineItem(1L, 치킨_스파게티_더블세트_메뉴);
+        주문_항목 = new OrderLineItem(new Quantity(1L), 치킨_스파게티_더블세트_메뉴);
         주문 = new Order(주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.addOrderLineItem(주문_항목);
         주문_항목_요청 = OrderLineItemRequest.of(치킨_스파게티_더블세트_메뉴.getMenuGroup().getId(), 1L);

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -64,8 +65,8 @@ class MenuServiceTest {
         양념치킨_두마리_세트 = new Menu(1L, "양념치킨_두마리_세트", new Price(BigDecimal.valueOf(40_000)), 양식);
         스파게티_이인분_세트 = new Menu(2L, "양념치킨_두마리_세트", new Price(BigDecimal.valueOf(40_000)), 양식);
 
-        치킨_두마리 = new MenuProduct(1L, 2L, 양념치킨_두마리_세트, 양념치킨);
-        스파게티_이인분 = new MenuProduct(2L, 2L, 스파게티_이인분_세트, 스파게티);
+        치킨_두마리 = new MenuProduct(1L, new Quantity(2L), 양념치킨_두마리_세트, 양념치킨);
+        스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), 스파게티_이인분_세트, 스파게티);
     }
 
     @Test

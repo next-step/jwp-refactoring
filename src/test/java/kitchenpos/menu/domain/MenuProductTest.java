@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class MenuProductTest {
         Long 수량 = 3L;
         Long 순살치킨_가격 = 20_000L;
         Product product = new Product("순살치킨", new Price(BigDecimal.valueOf(순살치킨_가격)));
-        MenuProduct menuProduct = new MenuProduct(수량, product);
+        MenuProduct menuProduct = new MenuProduct(new Quantity(수량), product);
 
         // when
         Price calculatePrice = menuProduct.calculatePrice();

@@ -1,12 +1,9 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
     private Long seq;
