@@ -4,39 +4,47 @@ import static kitchenpos.menu.domain.MenuFixture.*;
 import static kitchenpos.menu.domain.MenuProductFixture.*;
 import static kitchenpos.product.domain.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @DisplayName("메뉴 유효성 검사")
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {
+    @Mock
+    private MenuGroupRepository menuGroupRepository;
+    @Mock
+    private ProductRepository productRepository;
 
-    @Autowired
+    @InjectMocks
     private MenuValidator menuValidator;
 
     @DisplayName("메뉴 유효성 검사 - 가격 없음")
     @Test
     void validate_price_null() {
         // given
-        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
-        Menu menu = savedMenu(1L, "후라이드+후라이드", null, 1L, Collections.singletonList(menuProduct));
-        List<Product> products = Collections.singletonList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
-        boolean menuGroupNotExists = false;
+        MenuProductRequest menuProduct = menuProductRequest(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", null, 1L, Collections.singletonList(menuProduct));
 
         // when, then
-        assertThatThrownBy(() -> menuValidator.validate(menu, products, menuGroupNotExists))
+        assertThatThrownBy(() -> menuValidator.validate(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -44,13 +52,11 @@ public class MenuValidatorTest {
     @Test
     void validate_price_zero() {
         // given
-        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
-        Menu menu = savedMenu(1L, "후라이드+후라이드", BigDecimal.ZERO, 1L, Collections.singletonList(menuProduct));
-        List<Product> products = Arrays.asList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
-        boolean menuGroupNotExists = false;
+        MenuProductRequest menuProduct = menuProductRequest(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", BigDecimal.ZERO, 1L, Collections.singletonList(menuProduct));
 
         // when, then
-        assertThatThrownBy(() -> menuValidator.validate(menu, products, menuGroupNotExists))
+        assertThatThrownBy(() -> menuValidator.validate(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -58,13 +64,14 @@ public class MenuValidatorTest {
     @Test
     void validate_menu_group_not_exists() {
         // given
-        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
-        Menu menu = savedMenu(1L, "후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
-        List<Product> products = Arrays.asList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
-        boolean menuGroupNotExists = true;
+        MenuProductRequest menuProduct = menuProductRequest(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", BigDecimal.valueOf(17000), 1L,
+            Collections.singletonList(menuProduct));
+
+        given(menuGroupRepository.existsById(any())).willReturn(false);
 
         // when, then
-        assertThatThrownBy(() -> menuValidator.validate(menu, products, menuGroupNotExists))
+        assertThatThrownBy(() -> menuValidator.validate(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,13 +79,15 @@ public class MenuValidatorTest {
     @Test
     void validate_product_not_exists() {
         // given
-        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
-        Menu menu = savedMenu(1L, "후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProduct));
-        List<Product> products = Collections.emptyList();
-        boolean menuGroupNotExists = false;
+        MenuProductRequest menuProduct = menuProductRequest(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", BigDecimal.valueOf(17000), 1L,
+            Collections.singletonList(menuProduct));
+
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findAllById(anyList())).willReturn(Collections.emptyList());
 
         // when, then
-        assertThatThrownBy(() -> menuValidator.validate(menu, products, menuGroupNotExists))
+        assertThatThrownBy(() -> menuValidator.validate(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -86,13 +95,16 @@ public class MenuValidatorTest {
     @Test
     void validate_product_price_invalid() {
         // given
-        MenuProduct menuProduct = savedMenuProduct(1L, 1L, 2L);
-        Menu menu = savedMenu(1L, "후라이드+후라이드", new BigDecimal(22000), 1L, Collections.singletonList(menuProduct));
-        List<Product> products = Collections.singletonList(savedProduct(1L, "후라이드", BigDecimal.valueOf(10000)));
-        boolean menuGroupNotExists = false;
+        MenuProductRequest menuProduct = menuProductRequest(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", BigDecimal.valueOf(22000), 1L,
+            Collections.singletonList(menuProduct));
+
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        List<Product> savedProducts = Collections.singletonList(savedProduct(1L, new BigDecimal(10000)));
+        given(productRepository.findAllById(anyList())).willReturn(savedProducts);
 
         // when, then
-        assertThatThrownBy(() -> menuValidator.validate(menu, products, menuGroupNotExists))
+        assertThatThrownBy(() -> menuValidator.validate(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

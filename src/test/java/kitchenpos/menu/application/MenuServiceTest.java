@@ -2,7 +2,6 @@ package kitchenpos.menu.application;
 
 import static kitchenpos.menu.domain.MenuFixture.*;
 import static kitchenpos.menu.domain.MenuProductFixture.*;
-import static kitchenpos.product.domain.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -20,11 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -34,10 +30,7 @@ import kitchenpos.menu.dto.MenuResponse;
 class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private MenuGroupRepository menuGroupRepository;
-    @Mock
-    private ProductRepository productRepository;
+
     @Mock
     private MenuValidator menuValidator;
 
@@ -48,20 +41,15 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuProductRequest menuProductRequest = menuProductParam(1L, 2L);
-        MenuRequest menuRequest = menuRequest("후라이드+후라이드", new BigDecimal(17000), 1L, Collections.singletonList(menuProductRequest));
-
-        given(menuGroupRepository.existsById(menuRequest.getMenuGroupId())).willReturn(true);
-        List<Product> savedProducts = Collections.singletonList(savedProduct(1L, new BigDecimal(10000)));
-
-        given(productRepository.findAllById(anyList())).willReturn(savedProducts);
+        MenuProductRequest menuProductRequest = menuProductRequest(1L, 2L);
+        MenuRequest menuRequest = menuRequest("후라이드+후라이드", new BigDecimal(17000), 1L,
+            Collections.singletonList(menuProductRequest));
 
         MenuProduct savedMenuProduct = savedMenuProduct(1L, 1L, 2L);
         Menu savedMenu = savedMenu(1L, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(),
             Collections.singletonList(savedMenuProduct));
         given(menuRepository.save(any())).willReturn(savedMenu);
-        doNothing().when(menuValidator).validate(savedMenu, savedProducts, false);
-
+        doNothing().when(menuValidator).validate(menuRequest);
 
         // when
         MenuResponse actual = menuService.create(menuRequest);

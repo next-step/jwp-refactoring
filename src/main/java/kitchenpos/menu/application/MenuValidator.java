@@ -6,17 +6,27 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @Component
 public class MenuValidator {
-    public void validate(Menu menu, List<Product> products, boolean menuGroupNotExists) {
-        validatePriceNotNull(menu.getPrice());
-        validatePriceGreaterThanZero(menu.getPrice());
-        validateMenuGroupExists(menuGroupNotExists);
-        validateMenuProductSum(menu, products);
+    private final ProductRepository productRepository;
+    private final MenuGroupRepository menuGroupRepository;
+
+    public MenuValidator(ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
+        this.productRepository = productRepository;
+        this.menuGroupRepository = menuGroupRepository;
+    }
+
+    public void validate(MenuRequest menuRequest) {
+        validatePriceNotNull(menuRequest.getPrice());
+        validatePriceGreaterThanZero(menuRequest.getPrice());
+        validateMenuGroupExists(menuRequest);
+        validateMenuProductSum(menuRequest);
     }
 
     private void validatePriceNotNull(BigDecimal price) {
@@ -31,22 +41,23 @@ public class MenuValidator {
         }
     }
 
-    private void validateMenuGroupExists(boolean menuGroupNotExists) {
-        if (menuGroupNotExists) {
+    private void validateMenuGroupExists(MenuRequest menuRequest) {
+        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
             throw new IllegalArgumentException("존재하지 않는 메뉴 그룹입니다.");
         }
     }
 
-    private void validateMenuProductSum(Menu menu, List<Product> products) {
-        BigDecimal sum = menuProductSum(menu.getMenuProducts(), products);
-        if (menu.getPrice().compareTo(sum) > 0) {
+    private void validateMenuProductSum(MenuRequest menuRequest) {
+        BigDecimal sum = menuProductSum(menuRequest);
+        if (menuRequest.getPrice().compareTo(sum) > 0) {
             throw new IllegalArgumentException("메뉴 가격은 상품 가격의 합계보다 비쌀 수 없습니다.");
         }
     }
 
-    private BigDecimal menuProductSum(List<MenuProduct> menuProducts, List<Product> products) {
+    private BigDecimal menuProductSum(MenuRequest menuRequest) {
+        List<Product> products = productRepository.findAllById(menuRequest.getProductIds());
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (final MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
             BigDecimal price = products.stream()
                 .filter(product -> product.hasId(menuProduct.getProductId()))
                 .map(Product::getPrice)
