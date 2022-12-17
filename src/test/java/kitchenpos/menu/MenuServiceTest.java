@@ -72,7 +72,7 @@ class MenuServiceTest {
             .thenReturn(Optional.of(강정치킨));
         when(productDao.findById(eq(2L)))
             .thenReturn(Optional.of(개손해치킨));
-        Menu menu = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴.getId(),
+        Menu menu = new Menu(1L, "더블강정치킨", new BigDecimal(199_000), 추천메뉴.getId(),
             Arrays.asList(더블강정치킨상품, 더블개손해치킨상품));
 
         //when

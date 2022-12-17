@@ -1,8 +1,6 @@
 package kitchenpos.product.application;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
@@ -21,12 +19,6 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         return ProductResponse.from(productDao.save(product));
     }
 
