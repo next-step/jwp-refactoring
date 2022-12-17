@@ -119,6 +119,10 @@ public class OrderTable {
         this.orders.add(order);
     }
 
+    public boolean isGrouping() {
+        return this.tableGroup == null;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -136,6 +140,7 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 
 
 }

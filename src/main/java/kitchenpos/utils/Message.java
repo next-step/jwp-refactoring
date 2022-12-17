@@ -9,7 +9,7 @@ public class Message {
 
     public static final String EMPTY_ORDER_TABLE = "주문 시 주문 테이블이 빈 상태여서는 안됩니다.";
 
-    public static final String INVALID_MENU_PRICE = "메뉴 가격이 메뉴 상품 금액이하여야 합니다.";
+    public static final String INVALID_MENU_PRICE = "메뉴 가격이 메뉴 상품 금액 이하여야 합니다.";
     public static final String INVALID_CHANGE_ORDER_STATUS = "계산 완료된 주문은 상태를 변경할 수 없습니다.";
 
     public static final String INVALID_ORDER_TABLE_SIZE = "주문 테이블이 2개 이상일 때 단체 지정을 할 수 있습니다.";
