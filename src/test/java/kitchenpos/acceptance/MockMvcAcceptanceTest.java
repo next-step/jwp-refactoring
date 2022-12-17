@@ -27,6 +27,7 @@ import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.dto.TableRequest;
@@ -125,8 +126,12 @@ public class MockMvcAcceptanceTest {
         return getObjectByResponse(테이블_그룹_생성_결과, TableGroupResponse.class);
     }
 
+    ResultActions 상품_등록_요청(String name, Integer price) throws Exception {
+        return mockPost("/api/products", new ProductRequest(name, new BigDecimal(price)));
+    }
+
     Product 상품_등록(String name, Integer price) throws Exception {
-        ResultActions response = mockPost("/api/products", new Product(name, new BigDecimal(price)));
+        ResultActions response = 상품_등록_요청(name, price);
         return getObjectByResponse(response, Product.class);
     }
 

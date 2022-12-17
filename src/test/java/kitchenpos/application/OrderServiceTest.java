@@ -20,6 +20,7 @@ import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderStatusRequest;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,8 @@ class OrderServiceTest {
     void createTest(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, false));
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
         Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
                 new MenuProductRequest(product1.getId(), 1),
@@ -102,8 +103,8 @@ class OrderServiceTest {
     void createFailTest3(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, true));
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
         Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
                 new MenuProductRequest(product1.getId(), 1),
@@ -125,8 +126,8 @@ class OrderServiceTest {
     void changeStatus1(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, false));
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
         Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
                 new MenuProductRequest(product1.getId(), 1),
@@ -148,8 +149,8 @@ class OrderServiceTest {
     void changeStatus2(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, false));
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
         Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
                 new MenuProductRequest(product1.getId(), 1),
@@ -171,8 +172,8 @@ class OrderServiceTest {
     void changeStatusFail(){
         // given
         OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, false));
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
         Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
                 new MenuProductRequest(product1.getId(), 1),

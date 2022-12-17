@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -97,12 +98,8 @@ public class ProductAcceptanceTest extends MockMvcAcceptanceTest{
                 .andDo(print());
     }
 
-    private ResultActions 상품_등록_요청(String name, Integer price) throws Exception {
-        return mockPost("/api/products", new Product(name, new BigDecimal(price)));
-    }
-
     private ResultActions 상품_등록_요청(String name) throws Exception {
-        return mockPost("/api/products", new Product(name, null));
+        return mockPost("/api/products", new ProductRequest(name, null));
     }
 
     private ResultActions 상품_전체_조회_요청() throws Exception {

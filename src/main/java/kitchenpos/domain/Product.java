@@ -23,14 +23,15 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
+        this(null, name, price);
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = price;
+
+        validatePrice();
     }
 
     public Long getId() {
@@ -45,9 +46,17 @@ public class Product {
         return price;
     }
 
-    public void validatePrice() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+    private void validatePrice() {
+        if (isPriceNull() || isPriceLessThanZero()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private boolean isPriceLessThanZero() {
+        return price.compareTo(BigDecimal.ZERO) < 0;
+    }
+
+    private boolean isPriceNull() {
+        return Objects.isNull(price);
     }
 }

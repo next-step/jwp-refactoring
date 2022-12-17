@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class ProductServiceTest {
         // given
 
         // when
-        Product savedProduct = productService.create(new Product("1번 상품", new BigDecimal(1000)));
+        Product savedProduct = productService.create(new ProductRequest("1번 상품", new BigDecimal(1000)));
 
         // then
         assertThat(savedProduct.getId()).isNotNull();
@@ -47,7 +48,7 @@ class ProductServiceTest {
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> productService.create(new Product("1번 상품", null))
+                () -> productService.create(new ProductRequest("1번 상품", null))
         );
 
         // then
@@ -60,7 +61,7 @@ class ProductServiceTest {
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> productService.create(new Product("1번 상품", new BigDecimal(-1)))
+                () -> productService.create(new ProductRequest("1번 상품", new BigDecimal(-1)))
         );
 
         // then
@@ -70,9 +71,9 @@ class ProductServiceTest {
     @DisplayName("상품 목록 조회 테스트")
     void listTest(){
         // given
-        Product product1 = productService.create(new Product("1번 상품", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("2번 상품", new BigDecimal(2000)));
-        Product product3 = productService.create(new Product("3번 상품", new BigDecimal(3000)));
+        Product product1 = productService.create(new ProductRequest("1번 상품", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("2번 상품", new BigDecimal(2000)));
+        Product product3 = productService.create(new ProductRequest("3번 상품", new BigDecimal(3000)));
 
         // when
         List<Product> products = productService.list();
