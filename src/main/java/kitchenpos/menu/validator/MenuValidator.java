@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -47,11 +48,7 @@ public class MenuValidator {
 
     private void validateMenuProducts(MenuRequest menuRequest) {
         Price price = Price.from(menuRequest.getPrice());
-        List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
-            .stream()
-            .map(MenuProductRequest::toMenuProduct)
-            .collect(Collectors.toList());
-        if(price.isBiggerThan(calPrice(menuProducts))) {
+        if(price.isBiggerThan(totalPrice(menuRequest.getMenuProducts()))) {
             throw new IllegalArgumentException(ErrorCode.MENU_PRICE_MORE_THAN_TOTAL_PRICE.getErrorMessage());
         }
     }
@@ -61,12 +58,12 @@ public class MenuValidator {
             .orElseThrow(() -> new NotFoundException());
     }
 
-    private Price calPrice(List<MenuProduct> menuProducts) {
+    private Price totalPrice(List<MenuProductRequest> menuProductRequests) {
         Price totalPrice = Price.from(BigDecimal.ZERO);
-        for(MenuProduct menuProduct: menuProducts) {
-            Product product = findProductById(menuProduct.getProductId());
+        for(MenuProductRequest menuProductRequest: menuProductRequests) {
+            Product product = findProductById(menuProductRequest.getProductId());
             Price productPrice = product.getPrice();
-            totalPrice = totalPrice.add(productPrice.multiply(menuProduct.getQuantity()));
+            totalPrice = totalPrice.add(productPrice.multiply(Quantity.from(menuProductRequest.getQuantity())));
         }
         return totalPrice;
     }
