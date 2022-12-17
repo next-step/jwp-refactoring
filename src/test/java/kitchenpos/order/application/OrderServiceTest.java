@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.domain.OrderFixture.*;
 import static kitchenpos.order.domain.OrderLineItemFixture.*;
-import static kitchenpos.table.domain.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -21,15 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 
@@ -37,63 +31,35 @@ import kitchenpos.order.dto.OrderResponse;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
     @Mock
     private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
 
-    @DisplayName("주문 등록 API - 등록 되어 있지 않은 주문 테이블")
-    @Test
-    void create_order_table_not_exists() {
-        // given
-        Long orderTableId = 1L;
-        Long menuId1 = 1L;
-        Long menuId2 = 2L;
-        OrderRequest orderRequest = orderRequest(orderTableId, Arrays.asList(
-            orderLineItemRequest(menuId1, 1L),
-            orderLineItemRequest(menuId2, 2L))
-        );
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 등록 API")
     @Test
     void create() {
         // given
         Long orderTableId = 1L;
-        Long menuId1 = 1L;
-        Long menuId2 = 2L;
-        OrderRequest order = orderRequest(orderTableId, Arrays.asList(
-            orderLineItemRequest(menuId1, 1),
-            orderLineItemRequest(menuId2, 2)
+        OrderRequest orderRequest = orderRequest(orderTableId, Arrays.asList(
+            orderLineItemRequest(1L, 1),
+            orderLineItemRequest(2L, 2)
         ));
         OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L);
         OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L);
         Order savedOrder = savedOrder(1L, orderTableId, Arrays.asList(savedOrderLineItem1, savedOrderLineItem2));
 
-        long menuCount = 2L;
-        given(menuRepository.countByIdIn(Arrays.asList(menuId1, menuId2))).willReturn(menuCount);
-        OrderTable orderTable = savedOrderTable(orderTableId, false);
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
-        doNothing().when(orderValidator).validateSave(any(Order.class), any(OrderTable.class), anyLong());
+        doNothing().when(orderValidator).validateSave(orderRequest);
 
         // when
-        OrderResponse actual = orderService.create(order);
+        OrderResponse actual = orderService.create(orderRequest);
 
         // then
         assertAll(
-            () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
+            () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTableId),
             () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
             () -> assertThat(actual.getOrderedTime()).isNotNull(),
             () -> assertThat(actual.getOrderLineItems()).hasSize(2),

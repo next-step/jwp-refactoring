@@ -36,6 +36,7 @@ public class MenuValidatorTest {
     @InjectMocks
     private MenuValidator menuValidator;
 
+
     @DisplayName("메뉴 유효성 검사 - 가격 없음")
     @Test
     void validate_price_null() {
