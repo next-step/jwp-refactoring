@@ -70,5 +70,6 @@ class MenuGroupServiceTest {
                 () -> assertThat(메뉴그룹목록.get(1).getName()).isEqualTo(메뉴_그룹_요일.getName())
         );
     }
+
 }
 

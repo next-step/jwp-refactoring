@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -120,6 +121,19 @@ class MenuServiceTest {
                 () -> assertThat(메뉴_목록_조회).hasSize(1),
                 () -> assertThat(메뉴_목록_조회.get(0).getName()).isEqualTo(메뉴_기본.getName())
         );
+    }
+
+    @DisplayName("메뉴의 가격이 메뉴 상품 가격의 합보다 크다면 등록할 수 없다")
+    @Test
+    void menu_price_less_then_menu_product_sum() {
+        // given
+        when(menuGroupService.findById(any())).thenReturn(메뉴_그룹_치킨);
+        when(productRepository.findAllById(Arrays.asList(1L))).thenReturn(Arrays.asList(상품_후라이드치킨));
+        MenuRequest 비싼_메뉴가격_기본_요청 = new MenuRequest("메뉴 기본", BigDecimal.valueOf(999_999), 메뉴_그룹_치킨.getId(), Arrays.asList(메뉴_상품_후라이드_치킨_요청));
+
+        // when && then
+        Assertions.assertThatThrownBy(() -> menuService.create(비싼_메뉴가격_기본_요청))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

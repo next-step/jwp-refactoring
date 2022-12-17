@@ -75,6 +75,7 @@ class OrderServiceTest {
         메뉴 = MenuFixture.create("메뉴", BigDecimal.valueOf(1000), 메뉴그룹);
         ReflectionTestUtils.setField(메뉴, "id", 1L);
         상품 = ProductFixture.create("상품", BigDecimal.valueOf(1000L));
+        ReflectionTestUtils.setField(상품, "id", 1L);
         메뉴상품 = MenuProductFixture.create(메뉴, 상품, 2L);
 
 

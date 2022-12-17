@@ -21,7 +21,7 @@ public class MenuProductRequest {
 
     public MenuProduct toMenuProducts(Menu menu, List<Product> products) {
         Product product = findProductByProductId(products);
-        return new MenuProduct(menu, product, quantity);
+        return new MenuProduct(menu, product.getId(), quantity);
     }
 
     private Product findProductByProductId(List<Product> products) {

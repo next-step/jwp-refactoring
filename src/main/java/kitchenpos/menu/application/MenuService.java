@@ -6,6 +6,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,19 @@ public class MenuService {
     public MenuResponse create(MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         List<Product> products = findAllProductByIds(request.findAllProductIds());
+
+        validatePrice(request.getPrice(), products);
+
         Menu menu = request.toMenu(menuGroup, products);
         return MenuResponse.from(menuRepository.save(menu));
+    }
+
+    private void validatePrice(BigDecimal price, List<Product> products) {
+        Price productsPrice = products.stream()
+                .map(Product::getPrice)
+                .reduce(Price.of(BigDecimal.ZERO), Price::add);
+
+        Price.of(price).validateTotalPrice(productsPrice);
     }
 
     private List<Product> findAllProductByIds(List<Long> productIds) {
