@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables;
 
     protected OrderTables() {}
@@ -30,16 +32,15 @@ public class OrderTables {
         return Collections.unmodifiableList(this.orderTables);
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        orderTables.stream().forEach(orderTable -> orderTable.setTableGroup(tableGroup));
+    public void grouping(Long tableGroupId) {
+        orderTables.stream().forEach(orderTable -> {
+            orderTable.setTableGroupId(tableGroupId);
+            orderTable.setEmpty(false);
+        });
     }
 
-    public void unTableGroup() {
-        orderTables.stream().forEach(orderTable -> orderTable.unTableGroup());
-    }
-
-    public void changeIsNotEmpty() {
-        orderTables.stream().forEach(orderTable -> orderTable.setEmpty(false));
+    public void ungroup() {
+        orderTables.stream().forEach(orderTable -> orderTable.ungroup());
     }
 
     public List<Long> getOrderTableIds() {

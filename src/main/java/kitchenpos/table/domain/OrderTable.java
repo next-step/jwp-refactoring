@@ -4,12 +4,9 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,9 +17,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -32,28 +28,28 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
     public void changeEmpty(boolean empty, boolean existsOrderStatusComplete) {
-        validateOrderStatusComplete(existsOrderStatusComplete);
+        validateOrderStatusIsNotComplete(existsOrderStatusComplete);
         validateTableGroupNull();
         this.empty = empty;
     }
 
-    private void validateTableGroupNull() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("단체 지정된 테이블입니다.");
+    private void validateOrderStatusIsNotComplete(boolean exists) {
+        if (exists) {
+            throw new IllegalArgumentException("이미 계산이 완료되었습니다.");
         }
     }
 
-    private void validateOrderStatusComplete(boolean exists){
-        if(exists){
-            throw new IllegalArgumentException("이미 계산이 완료되었습니다.");
+    private void validateTableGroupNull() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException("단체 지정된 테이블입니다.");
         }
     }
 
@@ -69,16 +65,16 @@ public class OrderTable {
         }
     }
 
-    public void unTableGroup() {
-        this.tableGroup = null;
+    public void ungroup() {
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -97,21 +93,14 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public Long tableGroupId() {
-        if (Objects.isNull(tableGroup)) {
-            return null;
-        }
-        return tableGroup.getId();
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public static class Builder {
 
         private Long id;
-        private TableGroup tableGroup;
+        private Long tableGroupId;
         private int numberOfGuests;
         private boolean empty;
 
@@ -120,8 +109,8 @@ public class OrderTable {
             return this;
         }
 
-        public Builder tableGroup(TableGroup tableGroup) {
-            this.tableGroup = tableGroup;
+        public Builder tableGroupId(Long tableGroupId) {
+            this.tableGroupId = tableGroupId;
             return this;
         }
 
@@ -136,7 +125,7 @@ public class OrderTable {
         }
 
         public OrderTable build() {
-            return new OrderTable(id, tableGroup, numberOfGuests, empty);
+            return new OrderTable(id, tableGroupId, numberOfGuests, empty);
         }
     }
 }

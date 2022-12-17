@@ -59,11 +59,11 @@ class TableGroupServiceTest {
         // given
         when(orderTableRepository.findAllById(anyList())).thenReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(단체);
-        주문_테이블_1.setTableGroup(null);
-        주문_테이블_2.setTableGroup(null);
+        주문_테이블_1.setTableGroupId(null);
+        주문_테이블_2.setTableGroupId(null);
         주문_테이블_1.setEmpty(true);
         주문_테이블_2.setEmpty(true);
-        TableGroupRequest 단체_지정_생성_요청_객체 = 단체_지정_생성_요청_객체_생성(주문_테이블_1.tableGroupId(), 주문_테이블_2.tableGroupId());
+        TableGroupRequest 단체_지정_생성_요청_객체 = 단체_지정_생성_요청_객체_생성(주문_테이블_1.getTableGroupId(), 주문_테이블_2.getTableGroupId());
 
         // when
         TableGroupResponse 단체_지정_생성_응답_객체 = tableGroupService.create(단체_지정_생성_요청_객체);
@@ -83,7 +83,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(단체.getId());
 
         // then
-        assertThat(주문_테이블_1.tableGroupId()).isNull();
-        assertThat(주문_테이블_2.tableGroupId()).isNull();
+        assertThat(주문_테이블_1.getTableGroupId()).isNull();
+        assertThat(주문_테이블_2.getTableGroupId()).isNull();
     }
 }

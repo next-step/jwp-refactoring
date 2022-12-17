@@ -27,16 +27,11 @@ public class TableGroup {
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables = OrderTables.from(orderTables);
-        setOrderTablesTableGourp();
-        changeOrderTablesIsNotEmpty();
+        groupingOrderTables();
     }
 
-    private void setOrderTablesTableGourp() {
-        orderTables.setTableGroup(this);
-    }
-
-    private void changeOrderTablesIsNotEmpty() {
-        orderTables.changeIsNotEmpty();
+    private void groupingOrderTables() {
+        orderTables.grouping(id);
     }
 
     public Long getId() {
@@ -51,8 +46,16 @@ public class TableGroup {
         return orderTables;
     }
 
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
+    }
+
     public List<OrderTable> getOrderTablesReadOnlyValue() {
         return orderTables.readOnlyValue();
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
     }
 
     public static class Builder {

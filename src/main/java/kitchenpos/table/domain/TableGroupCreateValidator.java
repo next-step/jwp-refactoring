@@ -28,7 +28,7 @@ public class TableGroupCreateValidator {
 
     private static void validateOrderTableIsEmptyOrNull(List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.tableGroupId())) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
                 throw new IllegalArgumentException("주문 테이블이 비어있지 않거나, 이미 단체에 소속되어 있습니다.");
             }
         }

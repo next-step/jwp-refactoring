@@ -46,7 +46,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = findOrderTableById(orderTableId);
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(orderTable);
     }
