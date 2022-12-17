@@ -78,12 +78,12 @@ class OrderStatusServiceTest extends ServiceTest {
         orderTableRepository.save(orderTable2);
 
         createOrder(orderTable1, menu);
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
     private void createOrder(OrderTable orderTable1, Menu menu) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
+        OrderLineItems orderLineItems = new OrderLineItems();
+        orderLineItems.addAll(Arrays.asList(new OrderLineItem(null, menu.getId(), 1)));
         orderTable1.setEmpty(false);
         order = orderRepository.save(new Order(orderTable1, orderLineItems));
     }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static kitchenpos.order.application.OrderService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
-import static kitchenpos.order.application.OrderService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 
 
@@ -30,22 +30,12 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
-        }
-        if (Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-        }
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+        validateOrderTable(orderTable);
+        validateOrderLineItems(orderLineItems);
         this.orderTable = orderTable;
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(this);
-        }
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
-        }
-        this.orderLineItems.addAll(orderLineItems);
-//        this.orderLineItems = orderLineItems;
+        orderLineItems.mapOrder(this);
+        this.orderLineItems = orderLineItems;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
@@ -57,16 +47,27 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
+    private static void validateOrderTable(OrderTable orderTable) {
+        if (Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
+        }
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void validateOrderLineItems(OrderLineItems orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public void setOrderStatus(final OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -119,5 +120,9 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return this.orderStatus;
+    }
+
+    public void setOrderStatus(final OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

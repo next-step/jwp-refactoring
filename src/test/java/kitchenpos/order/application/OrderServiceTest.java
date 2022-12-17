@@ -24,8 +24,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.order.application.OrderService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
-import static kitchenpos.order.application.OrderService.ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -74,7 +74,7 @@ class OrderServiceTest extends ServiceTest {
 
         OrderTable orderTable1 = orderTableRepository.save(orderTable);
         orderTableId = orderTable1.getId();
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 생성한다. / 주문 항목이 비어있을 수 없다.")
@@ -85,7 +85,7 @@ class OrderServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
+                .hasMessageContaining(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("주문을 생성한다. / 주문 항목의 수와 메뉴의 수는 같아야 한다.")
@@ -97,7 +97,7 @@ class OrderServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(1L, orderLineItems)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
+                .hasMessageContaining(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("주문을 생성한다. / 주문 테이블은 비어있을 수 없다.")
