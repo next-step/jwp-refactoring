@@ -1,6 +1,5 @@
 package kitchenpos.menu.dao;
 
-import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.MenuProduct;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -70,11 +69,6 @@ public class JdbcTemplateMenuProductDao implements MenuProductDao {
     }
 
     private MenuProduct toEntity(final ResultSet resultSet) throws SQLException {
-        final MenuProduct entity = MenuProduct.of(
-                resultSet.getLong(KEY_COLUMN_NAME),
-                resultSet.getLong("menu_id"),
-                resultSet.getLong("product_id"),
-                resultSet.getLong("quantity"));
-        return entity;
+        return null;
     }
 }

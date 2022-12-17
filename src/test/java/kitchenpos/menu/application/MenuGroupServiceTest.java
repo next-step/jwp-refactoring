@@ -57,9 +57,9 @@ public class MenuGroupServiceTest {
         given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(메뉴그룹1);
 
         MenuGroupRequest 추가할_메뉴그룹 = new MenuGroupRequest(메뉴그룹1.getName());
-        MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(추가할_메뉴그룹);
+        MenuGroupResponse 추가된_메뉴그룹 = menuGroupService.create(추가할_메뉴그룹);
 
-        assertThat(생성된_메뉴그룹.getName()).isEqualTo(메뉴그룹1.getName());
+        assertThat(추가된_메뉴그룹.getName()).isEqualTo(메뉴그룹1.getName());
     }
 
     public static MenuGroup 메뉴그룹_생성(Long id, String name) {

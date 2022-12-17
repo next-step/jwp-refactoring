@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("상품")
-class ProductServiceTest {
+public class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;

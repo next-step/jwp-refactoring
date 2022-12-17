@@ -21,24 +21,14 @@ public class MenuProduct {
 
     protected MenuProduct() {}
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.id = seq;
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        this.menu = menu;
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProduct(seq, menuId, productId, quantity);
-    }
-
-    public void setMenuId(final Long menuId) {
-    }
-
-    public Long getProductId() {
-        return null;
-    }
-
-    public long getQuantity() {
-        return quantity;
+    public static MenuProduct create(Menu menu, Product product, long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
 }

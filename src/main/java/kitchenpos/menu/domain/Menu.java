@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,23 +13,40 @@ public class Menu {
     private Long id;
 
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
+
     protected Menu() {}
 
-    public Menu(Long id, String name, BigDecimal price,
-                Long menuGroupId, List<MenuProduct> menuProducts) { // FIXME
+    public Menu(String name, Price price, MenuGroup menuGroup) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
-    public static Menu of(Long id, String name, BigDecimal price,
-                          Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroupId, menuProducts);
+    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(name, Price.create(price), menuGroup);
+    }
+
+    public void validatePrice(Price sum) {
+        if (price.isGather(sum)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -40,19 +58,15 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.value();
     }
 
     public Long getMenuGroupId() {
-        return null;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return null;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-
+        return menuProducts;
     }
 
 }
