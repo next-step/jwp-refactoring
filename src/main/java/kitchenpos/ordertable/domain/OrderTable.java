@@ -77,7 +77,7 @@ public class OrderTable {
 
     private void validateShouldNotEmpty() {
         if (isEmpty()) {
-            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_NOT_EMPTY.message());
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
         }
     }
 
@@ -92,6 +92,10 @@ public class OrderTable {
         orders.forEach(Order::validateOrderStatusShouldComplete);
 
         this.empty = empty;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     @Override
