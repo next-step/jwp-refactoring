@@ -5,7 +5,6 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.event.TableGroupedEvent;
 import kitchenpos.tablegroup.event.TableUnGroupedEvent;
-import kitchenpos.validator.ordertable.OrderTableValidatorsImpl;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +12,9 @@ import org.springframework.stereotype.Component;
 public class TableGroupEventListener {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidatorsImpl orderTableValidator;
 
-    public TableGroupEventListener(OrderTableRepository orderTableRepository,
-                                   OrderTableValidatorsImpl orderTableValidator) {
+    public TableGroupEventListener(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderTableValidator = orderTableValidator;
     }
 
     @EventListener
