@@ -46,4 +46,12 @@ public class MenuGroup {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MenuGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

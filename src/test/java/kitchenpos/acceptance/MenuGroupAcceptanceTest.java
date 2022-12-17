@@ -29,7 +29,7 @@ public class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
         MenuGroupResponse menuGroupResponse = response.as(MenuGroupResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(menuGroupResponse.compareRequest(request)).isTrue()
+                () -> assertThat(menuGroupResponse.getId()).isNotNull()
         );
     }
 

@@ -32,8 +32,4 @@ public class MenuGroupResponse {
     public String getName() {
         return name;
     }
-
-    public boolean compareRequest(MenuGroupCreateRequest request) {
-        return this.name.equals(request.getName());
-    }
 }

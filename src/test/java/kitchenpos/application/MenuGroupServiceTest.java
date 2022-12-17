@@ -51,7 +51,7 @@ class MenuGroupServiceTest {
 
         // then
         then(menuGroupRepository).should(times(1)).save(any());
-        assertThat(menuGroupResponse.compareRequest(request)).isTrue();
+        assertThat(menuGroupResponse.getName()).isEqualTo(request.getName());
     }
 
     @Test
