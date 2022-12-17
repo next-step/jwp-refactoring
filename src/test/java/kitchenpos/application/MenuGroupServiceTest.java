@@ -1,9 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupCreateRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.fixture.MenuGroupFixture;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,53 +27,47 @@ import static org.mockito.Mockito.times;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroup 한마리메뉴;
+    private MenuGroup menuGroup;
 
     @BeforeEach
     void setUp() {
-        한마리메뉴 = MenuGroupFixture.한마리메뉴;
+        menuGroup = MenuGroupFixture.한마리메뉴;
     }
 
     @Test
-    void 메뉴_그룹_등록시_등록에_성공하고_등록된_정보를_반환한다() {
+    @DisplayName("메뉴 그룹 등록시 등록에 성공하고 등록된 정보를 반환한다")
+    void createMenuGroupThenReturnMenuGroupResponse() {
         // given
-        MenuGroup 한마리메뉴_등록_요청 = new MenuGroup("한마리메뉴");
-        given(menuGroupDao.save(any())).willReturn(한마리메뉴);
+        MenuGroupCreateRequest request = new MenuGroupCreateRequest("한마리메뉴");
+        given(menuGroupRepository.save(any())).willReturn(request.toMenuGroup());
 
         // when
-        MenuGroup 한마리메뉴 = menuGroupService.create(한마리메뉴_등록_요청);
+        MenuGroupResponse menuGroupResponse = menuGroupService.createMenuGroup(request);
 
         // then
-        메뉴_그룹_등록됨(한마리메뉴, 한마리메뉴_등록_요청.getName());
+        then(menuGroupRepository).should(times(1)).save(any());
+        assertThat(menuGroupResponse.compareRequest(request)).isTrue();
     }
 
     @Test
-    void 메뉴_그룹_목록_조회시_등록된_메뉴_그룹_목록을_반환한다() {
+    @DisplayName("메뉴 그룹 목록 조회시 등록된 메뉴 그룹 목록을 반환한다")
+    void findAllMenuGroupsThenMenuGroupResponses() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(한마리메뉴));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.findAllMenuGroups();
 
         // then
-        메뉴_그룹_목록_조회됨(menuGroups, 한마리메뉴.getName());
-    }
-
-    private void 메뉴_그룹_등록됨(MenuGroup menuGroup, String name) {
-        then(menuGroupDao).should(times(1)).save(any());
-        assertThat(menuGroup.getName()).isEqualTo(name);
-    }
-
-    private void 메뉴_그룹_목록_조회됨(List<MenuGroup> menuGroups, String... expectedNames) {
-        then(menuGroupDao).should(times(1)).findAll();
+        then(menuGroupRepository).should(times(1)).findAll();
         List<String> groupNames = menuGroups.stream()
-                .map(MenuGroup::getName)
+                .map(MenuGroupResponse::getName)
                 .collect(Collectors.toList());
-        assertThat(groupNames).containsExactly(expectedNames);
+        assertThat(groupNames).containsExactly(menuGroup.getName());
     }
 }
