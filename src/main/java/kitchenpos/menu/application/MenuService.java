@@ -27,12 +27,12 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         menuValidator.validate(menuRequest);
-        Menu savedMenu = menuRepository.save(createMenu(menuRequest));
+        Menu savedMenu = menuRepository.save(generateMenu(menuRequest));
 
         return MenuResponse.from(savedMenu);
     }
 
-    private Menu createMenu(MenuRequest menuRequest) {
+    private Menu generateMenu(MenuRequest menuRequest) {
         return Menu.generate(
             menuRequest.getName(),
             menuRequest.getPrice(),

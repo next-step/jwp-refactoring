@@ -3,6 +3,7 @@ package kitchenpos.product.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,24 +15,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private ProductPrice price;
 
     protected Product() {}
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = ProductPrice.from(price);
     }
 
     public static Product generate(String name, BigDecimal price) {
         return new Product(null, name, price);
-    }
-
-    public void validatePrice() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("상품 가격이 0 미만일 수는 없습니다.");
-        }
     }
 
     public boolean hasId(Long id) {
@@ -46,7 +42,11 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public ProductPrice getPrice() {
         return price;
+    }
+
+    public BigDecimal getPriceValue() {
+        return price.value();
     }
 }

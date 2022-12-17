@@ -30,28 +30,6 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    @DisplayName("상품 등록 API - 가격 없음")
-    @Test
-    void create_price_null() {
-        // given
-        ProductRequest productRequest = productRequest("강정치킨", null);
-
-        // when, then
-        assertThatThrownBy(() -> productService.create(productRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("상품 등록 API - 가격 0원 미만")
-    @Test
-    void create_price_zero() {
-        // given
-        ProductRequest product = productRequest("강정치킨", new BigDecimal(-1000));
-
-        // when, then
-        assertThatThrownBy(() -> productService.create(product))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("상품 등록 API")
     @Test
     void create_price() {

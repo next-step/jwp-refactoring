@@ -23,8 +23,6 @@ public class ProductService {
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         Product product = generateProduct(productRequest);
-
-        product.validatePrice();
         return ProductResponse.of(productRepository.save(product));
     }
 
