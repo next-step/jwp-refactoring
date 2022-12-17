@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.table.application.TableService.*;
+import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -119,7 +120,7 @@ class TableServiceTest extends ServiceTest {
 
         Order order = createOrder();
         order.setOrderStatus(OrderStatus.COMPLETION.name());
-
+        order.setOrderTable(orderTable);
         orderRepository.save(order);
 
         assertThat(tableService.changeEmpty(orderTable.getId()).isEmpty()).isTrue();
@@ -129,13 +130,20 @@ class TableServiceTest extends ServiceTest {
     @Test
     void changeEmpty_fail_notTableGroup() {
 
-        OrderTable orderTable = changeEmptyOrder();
-
-        orderTable.setTableGroup(new TableGroup());
-
+        OrderTable orderTable = createOrderTable();
+        orderTable.setTableGroup(null);
         orderTableRepository.save(orderTable);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId()))
+        Order order = createOrder();
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderTable(orderTable);
+        orderRepository.save(order);
+
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
+        orderTable.setTableGroup(tableGroup);
+        orderTableRepository.save(orderTable);
+
+        assertThatThrownBy(() -> tableService.changeEmpty((orderTable).getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
     }

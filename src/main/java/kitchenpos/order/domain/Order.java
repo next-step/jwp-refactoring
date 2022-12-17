@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.application.OrderStatusService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 
 
 @Entity
@@ -103,5 +104,19 @@ public class Order {
             throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
         }
         this.orderStatus = orderStatus;
+    }
+
+    public void emptyTable() {
+        if (this.orderTable == null) {
+            throw new EntityNotFoundException("주문테이블이 존재하지 않습니다.");
+        }
+        if (this.orderStatus.equals(OrderStatus.COOKING.name()) || this.orderStatus.equals(OrderStatus.MEAL.name())) {
+            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
+        }
+        this.orderTable.empty();
+    }
+
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 }

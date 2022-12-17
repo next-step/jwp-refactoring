@@ -41,7 +41,6 @@ class OrderTableTest {
     void empty_fail_cooking() {
 
         OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroup(new TableGroup());
 
         assertThat(orderTable.isEmpty()).isFalse();
 
