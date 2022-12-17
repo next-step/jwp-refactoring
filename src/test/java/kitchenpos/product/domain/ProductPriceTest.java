@@ -3,7 +3,6 @@ package kitchenpos.product.domain;
 import java.math.BigDecimal;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidPriceException;
-import kitchenpos.product.domain.ProductPrice;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

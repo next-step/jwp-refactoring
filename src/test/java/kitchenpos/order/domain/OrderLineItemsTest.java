@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.order.exception.EmptyOrderLineItemException;
 import kitchenpos.exception.ExceptionMessage;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

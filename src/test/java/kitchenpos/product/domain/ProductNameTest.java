@@ -2,7 +2,6 @@ package kitchenpos.product.domain;
 
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidNameSizeException;
-import kitchenpos.product.domain.ProductName;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

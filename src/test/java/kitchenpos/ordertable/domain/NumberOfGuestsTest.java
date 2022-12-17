@@ -2,7 +2,6 @@ package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.ordertable.exception.InvalidNumberOfGuestsSize;
-import kitchenpos.ordertable.domain.NumberOfGuests;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

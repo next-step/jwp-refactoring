@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import kitchenpos.exception.ExceptionMessage;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.menu.exception.MenuPriceGreaterThanAmountException;
-import kitchenpos.menu.domain.MenuPrice;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
