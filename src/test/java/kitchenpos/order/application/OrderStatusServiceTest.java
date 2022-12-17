@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.order.application.OrderStatusService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -48,7 +48,7 @@ class OrderStatusServiceTest extends ServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
 
     @Autowired
-    private OrderStatusService orderStatusService;
+    private OrderService orderService;
 
     private Order order;
 
@@ -78,8 +78,7 @@ class OrderStatusServiceTest extends ServiceTest {
         orderTableRepository.save(orderTable2);
 
         createOrder(orderTable1, menu);
-
-        orderStatusService = new OrderStatusService(orderRepository, orderLineItemRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
     }
 
     private void createOrder(OrderTable orderTable1, Menu menu) {
@@ -95,7 +94,7 @@ class OrderStatusServiceTest extends ServiceTest {
 
         OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.MEAL);
 
-        assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
+        assertThat(orderService.changeOrderStatus(order.getId(), request).getOrderStatus())
                 .isEqualTo(OrderStatus.MEAL.name());
     }
 
@@ -105,12 +104,12 @@ class OrderStatusServiceTest extends ServiceTest {
 
         OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.COMPLETION);
 
-        assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
+        assertThat(orderService.changeOrderStatus(order.getId(), request).getOrderStatus())
                 .isEqualTo(OrderStatus.COMPLETION.name());
 
         주문완료_검증됨();
 
-        assertThatThrownBy(() -> orderStatusService.changeOrderStatus(order.getId(), request))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
     }
@@ -118,7 +117,7 @@ class OrderStatusServiceTest extends ServiceTest {
     @DisplayName("주문상태를 완료로 변경한다.")
     @Test
     void name() {
-        orderStatusService.changeOrderStatus(order.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION));
+        orderService.changeOrderStatus(order.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION));
         주문완료_검증됨();
     }
 

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Order.COMPLETION_CHANGE_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Order.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.*;

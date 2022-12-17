@@ -24,17 +24,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
-import static kitchenpos.order.application.OrderCrudService.ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.application.OrderService.ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("OrderCrudService")
-class OrderCrudServiceTest extends ServiceTest {
+class OrderServiceTest extends ServiceTest {
 
     @Autowired
-    private OrderCrudService orderCrudService;
+    private OrderService orderService;
 
     @Autowired
     private MenuRepository menuRepository;
@@ -74,7 +74,7 @@ class OrderCrudServiceTest extends ServiceTest {
 
         OrderTable orderTable1 = orderTableRepository.save(orderTable);
         orderTableId = orderTable1.getId();
-        orderCrudService = new OrderCrudService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 생성한다. / 주문 항목이 비어있을 수 없다.")
@@ -83,7 +83,7 @@ class OrderCrudServiceTest extends ServiceTest {
 
         OrderCreateRequest request = new OrderCreateRequest(orderTableId, new ArrayList<>());
 
-        assertThatThrownBy(() -> orderCrudService.create(request))
+        assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE);
     }
@@ -95,7 +95,7 @@ class OrderCrudServiceTest extends ServiceTest {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, 100L, 1));
 
-        assertThatThrownBy(() -> orderCrudService.create(new OrderCreateRequest(1L, orderLineItems)))
+        assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(1L, orderLineItems)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
     }
@@ -108,7 +108,7 @@ class OrderCrudServiceTest extends ServiceTest {
 
         OrderCreateRequest request = new OrderCreateRequest(1L, orderLineItems);
 
-        assertThatThrownBy(() -> orderCrudService.create(request))
+        assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -118,7 +118,7 @@ class OrderCrudServiceTest extends ServiceTest {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 3));
 
-        OrderResponse orderResponse = orderCrudService.create(new OrderCreateRequest(orderTableId, orderLineItems));
+        OrderResponse orderResponse = orderService.create(new OrderCreateRequest(orderTableId, orderLineItems));
 
         assertAll(
                 () -> assertThat(orderResponse.getStatus()).isEqualTo(OrderStatus.COOKING.name()),
@@ -134,7 +134,7 @@ class OrderCrudServiceTest extends ServiceTest {
     void list() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), 3));
-        orderCrudService.create(new OrderCreateRequest(orderTableId, orderLineItems));
-        assertThat(orderCrudService.list()).hasSize(1);
+        orderService.create(new OrderCreateRequest(orderTableId, orderLineItems));
+        assertThat(orderService.list()).hasSize(1);
     }
 }

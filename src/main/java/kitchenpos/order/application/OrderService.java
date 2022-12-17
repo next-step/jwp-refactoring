@@ -1,12 +1,10 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class OrderCrudService {
+public class OrderService {
+    public static final String COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE = "주문완료일 경우 주문상태를 변경할 수 없다.";
 
     public static final String ORDERLINEITEMS_EMPTY_EXCEPTION_MESSAGE = "주문 항목이 비어있을 수 없다.";
     public static final String ORDERLINEITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE = "주문 항목의 수와 메뉴의 수는 같아야 한다.";
@@ -25,7 +24,7 @@ public class OrderCrudService {
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderCrudService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderLineItemRepository orderLineItemRepository, final OrderTableRepository orderTableRepository) {
+    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderLineItemRepository orderLineItemRepository, final OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
@@ -49,24 +48,18 @@ public class OrderCrudService {
 
         final Order savedOrder = orderRepository.save(new Order(orderTable, request.toOrderLineItems()));
 
-//        final Long orderId = savedOrder.getId();
-//        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-//        for (final OrderLineItem orderLineItem : orderLineItems) {
-//            orderLineItem.setOrderId(orderId);
-//            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-//        }
-//        savedOrder.setOrderLineItems(savedOrderLineItems);
-
         return new OrderResponse(savedOrder);
     }
 
     public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
+        return orderRepository.findAll();
+    }
 
-//        for (final Order order : orders) {
-//            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-//        }
-
-        return orders;
+    @Transactional
+    public Order changeOrderStatus(final Long orderId, final OrderStatusChangeRequest order) {
+        final Order savedOrder = orderRepository.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
+        savedOrder.changeOrderStatus(OrderStatus.valueOf(order.getOrderStatus()).name());
+        return orderRepository.save(savedOrder);
     }
 }
