@@ -15,21 +15,21 @@ import kitchenpos.ui.dto.ProductResponse;
 
 @RestController
 public class ProductRestController {
-    private final ProductService productService;
+	private final ProductService productService;
 
-    public ProductRestController(final ProductService productService) {
-        this.productService = productService;
-    }
+	public ProductRestController(final ProductService productService) {
+		this.productService = productService;
+	}
 
-    @PostMapping("/api/products")
-    public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest productRequest) {
-        final ProductResponse created = productService.create(productRequest);
-        final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri).body(created);
-    }
+	@PostMapping("/api/products")
+	public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest productRequest) {
+		final ProductResponse created = productService.create(productRequest);
+		final URI uri = URI.create("/api/products/" + created.getId());
+		return ResponseEntity.created(uri).body(created);
+	}
 
-    @GetMapping("/api/products")
-    public ResponseEntity<List<ProductResponse>> list() {
-        return ResponseEntity.ok().body(productService.list());
-    }
+	@GetMapping("/api/products")
+	public ResponseEntity<List<ProductResponse>> list() {
+		return ResponseEntity.ok().body(productService.list());
+	}
 }

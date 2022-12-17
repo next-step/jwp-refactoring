@@ -92,7 +92,7 @@ public class Money {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		Money money = (Money) o;
+		Money money = (Money)o;
 		return value.equals(money.value);
 	}
 

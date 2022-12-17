@@ -15,39 +15,39 @@ import kitchenpos.ui.dto.ProductResponse;
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
-    private final ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+	public ProductService(ProductRepository productRepository) {
+		this.productRepository = productRepository;
+	}
 
-    @Transactional
-    public ProductResponse create(ProductRequest productRequest) {
-        return new ProductResponse(create(productRequest.toProduct()));
-    }
+	@Transactional
+	public ProductResponse create(ProductRequest productRequest) {
+		return new ProductResponse(create(productRequest.toProduct()));
+	}
 
-    @Transactional
-    public Product create(Product product) {
-        return productRepository.save(product);
-    }
+	@Transactional
+	public Product create(Product product) {
+		return productRepository.save(product);
+	}
 
-    public List<ProductResponse> list() {
-        return ProductResponse.of(productRepository.findAll());
-    }
+	public List<ProductResponse> list() {
+		return ProductResponse.of(productRepository.findAll());
+	}
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
-    }
+	public List<Product> findAll() {
+		return productRepository.findAll();
+	}
 
-    public List<Product> findAllById(List<Long> productsId) {
-        List<Product> products = productRepository.findAllById(productsId);
-        validateIfExists(products, productsId);
-        return products;
-    }
+	public List<Product> findAllById(List<Long> productsId) {
+		List<Product> products = productRepository.findAllById(productsId);
+		validateIfExists(products, productsId);
+		return products;
+	}
 
-    private void validateIfExists(List<Product> products, List<Long> productsId) {
-        if (products.size() != new HashSet<>(productsId).size()) {
-            throw new EntityNotFoundException();
-        }
-    }
+	private void validateIfExists(List<Product> products, List<Long> productsId) {
+		if (products.size() != new HashSet<>(productsId).size()) {
+			throw new EntityNotFoundException();
+		}
+	}
 }

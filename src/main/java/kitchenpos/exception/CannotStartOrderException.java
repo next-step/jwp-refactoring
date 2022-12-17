@@ -16,8 +16,7 @@ public class CannotStartOrderException extends RuntimeException {
 
 	public enum TYPE {
 		NO_ORDER_ITEMS("주문할 메뉴가 없습니다"),
-		ORDER_TABLE_NOT_EMPTY("주문 테이블이 비어있지 않습니다")
-		,
+		ORDER_TABLE_NOT_EMPTY("주문 테이블이 비어있지 않습니다"),
 		;
 
 		public final String message;

@@ -18,53 +18,53 @@ import javax.persistence.Table;
 @Table(name = "order_line_item")
 public class OrderLineItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long seq;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
-    private Order order;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "order_id")
+	private Order order;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "menu_id")
+	private Menu menu;
 
-    private Integer quantity;
+	private Integer quantity;
 
-    protected OrderLineItem() {
-    }
+	protected OrderLineItem() {
+	}
 
-    public OrderLineItem(Order order, Menu menu, Integer quantity) {
-        setOrder(order);
-        this.menu = menu;
-        this.quantity = quantity;
-    }
+	public OrderLineItem(Order order, Menu menu, Integer quantity) {
+		setOrder(order);
+		this.menu = menu;
+		this.quantity = quantity;
+	}
 
-    public static List<OrderLineItem> of(Order order, Map<Menu, Integer> menus) {
-        return menus.entrySet()
-            .stream()
-            .map(entry -> new OrderLineItem(order, entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
-    }
+	public static List<OrderLineItem> of(Order order, Map<Menu, Integer> menus) {
+		return menus.entrySet()
+			.stream()
+			.map(entry -> new OrderLineItem(order, entry.getKey(), entry.getValue()))
+			.collect(Collectors.toList());
+	}
 
-    public void setOrder(Order newOrder) {
-        if (Objects.nonNull(order)) {
-            order.getOrderLineItems().remove(this);
-        }
+	public void setOrder(Order newOrder) {
+		if (Objects.nonNull(order)) {
+			order.getOrderLineItems().remove(this);
+		}
 
-        order = newOrder;
+		order = newOrder;
 
-        if (!order.getOrderLineItems().contains(this)) {
-            order.getOrderLineItems().add(this);
-        }
-    }
+		if (!order.getOrderLineItems().contains(this)) {
+			order.getOrderLineItems().add(this);
+		}
+	}
 
-    public String getMenuName() {
-        return menu.getName();
-    }
+	public String getMenuName() {
+		return menu.getName();
+	}
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+	public Integer getQuantity() {
+		return quantity;
+	}
 }

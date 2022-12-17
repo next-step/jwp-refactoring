@@ -14,32 +14,32 @@ import kitchenpos.ui.dto.MenuGroupResponse;
 @Service
 @Transactional(readOnly = true)
 public class MenuGroupService {
-    private final MenuGroupRepository menuGroupRepository;
+	private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(MenuGroupRepository menuGroupRepository) {
-        this.menuGroupRepository = menuGroupRepository;
-    }
+	public MenuGroupService(MenuGroupRepository menuGroupRepository) {
+		this.menuGroupRepository = menuGroupRepository;
+	}
 
-    @Transactional
-    public MenuGroupResponse create(MenuGroupRequest menuGroupRequest) {
-        return new MenuGroupResponse(create(menuGroupRequest.toMenuGroup()));
-    }
+	@Transactional
+	public MenuGroupResponse create(MenuGroupRequest menuGroupRequest) {
+		return new MenuGroupResponse(create(menuGroupRequest.toMenuGroup()));
+	}
 
-    @Transactional
-    public MenuGroup create(MenuGroup menuGroup) {
-        return menuGroupRepository.save(menuGroup);
-    }
+	@Transactional
+	public MenuGroup create(MenuGroup menuGroup) {
+		return menuGroupRepository.save(menuGroup);
+	}
 
-    public List<MenuGroupResponse> list() {
-        return MenuGroupResponse.of(menuGroupRepository.findAll());
-    }
+	public List<MenuGroupResponse> list() {
+		return MenuGroupResponse.of(menuGroupRepository.findAll());
+	}
 
-    public List<MenuGroup> findAll() {
-        return menuGroupRepository.findAll();
-    }
+	public List<MenuGroup> findAll() {
+		return menuGroupRepository.findAll();
+	}
 
 	public MenuGroup findById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(EntityNotFoundException::new);
+		return menuGroupRepository.findById(menuGroupId)
+			.orElseThrow(EntityNotFoundException::new);
 	}
 }

@@ -15,44 +15,44 @@ import kitchenpos.ui.dto.TableGroupResponse;
 @Transactional(readOnly = true)
 public class TableGroupService {
 
-    private final TableGroupRepository tableGroupRepository;
-    private final TableService tableService;
+	private final TableGroupRepository tableGroupRepository;
+	private final TableService tableService;
 
-    public TableGroupService(TableGroupRepository tableGroupRepository,
-                             TableService tableService) {
-        this.tableGroupRepository = tableGroupRepository;
-        this.tableService = tableService;
-    }
+	public TableGroupService(TableGroupRepository tableGroupRepository,
+							 TableService tableService) {
+		this.tableGroupRepository = tableGroupRepository;
+		this.tableService = tableService;
+	}
 
-    @Transactional
-    public TableGroupResponse create(List<Long> orderTableId) {
-        return new TableGroupResponse(save(orderTableId));
-    }
+	@Transactional
+	public TableGroupResponse create(List<Long> orderTableId) {
+		return new TableGroupResponse(save(orderTableId));
+	}
 
-    @Transactional
-    public TableGroup save(List<Long> orderTableId) {
-        List<OrderTable> orderTable = tableService.findAllById(orderTableId);
-        validateExistsAll(orderTableId, orderTable);
+	@Transactional
+	public TableGroup save(List<Long> orderTableId) {
+		List<OrderTable> orderTable = tableService.findAllById(orderTableId);
+		validateExistsAll(orderTableId, orderTable);
 
-        TableGroup tableGroup = TableGroup.create(orderTable);
+		TableGroup tableGroup = TableGroup.create(orderTable);
 
-        return tableGroupRepository.save(tableGroup);
-    }
+		return tableGroupRepository.save(tableGroup);
+	}
 
-    private void validateExistsAll(List<Long> orderTableId, List<OrderTable> orderTable) {
-        if (orderTableId.size() != orderTable.size()) {
-            throw new EntityNotFoundException();
-        }
-    }
+	private void validateExistsAll(List<Long> orderTableId, List<OrderTable> orderTable) {
+		if (orderTableId.size() != orderTable.size()) {
+			throw new EntityNotFoundException();
+		}
+	}
 
-    @Transactional
-    public void ungroup(Long tableGroupId) {
-        TableGroup savedTableGroup = findById(tableGroupId);
-        savedTableGroup.ungroup();
-    }
+	@Transactional
+	public void ungroup(Long tableGroupId) {
+		TableGroup savedTableGroup = findById(tableGroupId);
+		savedTableGroup.ungroup();
+	}
 
-    private TableGroup findById(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(EntityNotFoundException::new);
-    }
+	private TableGroup findById(Long tableGroupId) {
+		return tableGroupRepository.findById(tableGroupId)
+			.orElseThrow(EntityNotFoundException::new);
+	}
 }

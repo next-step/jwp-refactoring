@@ -22,8 +22,8 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 
 	public OrderService(TableService tableService,
-                        MenuService menuService,
-                        OrderRepository orderRepository) {
+						MenuService menuService,
+						OrderRepository orderRepository) {
 		this.tableService = tableService;
 		this.menuService = menuService;
 		this.orderRepository = orderRepository;
