@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import java.sql.SQLException;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

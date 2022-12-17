@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableFixture {

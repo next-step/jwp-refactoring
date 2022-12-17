@@ -11,7 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
