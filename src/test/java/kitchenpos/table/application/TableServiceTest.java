@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
-import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
-import static kitchenpos.order.domain.OrderTableTest.빈_상태;
-import static kitchenpos.order.domain.OrderTableTest.빈_테이블;
-import static kitchenpos.order.domain.OrderTableTest.한_명의_방문객;
 import static kitchenpos.order.domain.OrderTest.주문;
+import static kitchenpos.table.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
+import static kitchenpos.table.domain.OrderTableTest.빈_상태;
+import static kitchenpos.table.domain.OrderTableTest.빈_테이블;
+import static kitchenpos.table.domain.OrderTableTest.한_명의_방문객;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 

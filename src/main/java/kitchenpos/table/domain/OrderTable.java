@@ -91,16 +91,6 @@ public class OrderTable {
         this.empty = false;
     }
 
-    public void unGroup() {
-        this.tableGroupId = null;
-    }
-
-    public void checkNullId() {
-        if (this.id == null) {
-            throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다");
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
