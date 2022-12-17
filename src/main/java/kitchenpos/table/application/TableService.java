@@ -3,7 +3,6 @@ package kitchenpos.table.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableBag;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,32 +69,23 @@ public class TableService {
         }
     }
 
-    public List<OrderTable> findAllByIdIn(List<Long> tableIds) {
-        return orderTableRepository.findAllByIdIn(tableIds);
-    }
-
     public void group(List<OrderTable> orderTables, Long id) {
         orderTables.forEach(it -> it.updateGroup(id));
     }
 
-    public void unGroupTables(OrderTableBag orderTableBag) {
-        checkExistsByOrderTableIdInAndOrderStatusIn(orderTableBag);
-        orderTableBag.unGroup();
+    public void unGroupTables(List<OrderTable> orderTableList) {
+        checkExistsByOrderTableIdInAndOrderStatusIn(
+                orderTableList.stream()
+                        .map(OrderTable::getId).collect(Collectors.toList()));
+        orderTableList.forEach(OrderTable::unGroup);
     }
 
-    private void checkExistsByOrderTableIdInAndOrderStatusIn(OrderTableBag orderTableBag) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableBag.orderTableIds(),
+    private void checkExistsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIsList) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIsList,
                 COULD_NOT_CHANGE_EMPTY_STATUSES)) {
             throw new IllegalArgumentException("주문 상태는 " + COULD_NOT_CHANGE_EMPTY_STATUSES.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining(",")) + "가 아니어야 합니다");
         }
-    }
-
-    public void checkValidNullAndEmpty(Long orderTableId) {
-        checkNullId(orderTableId);
-        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다"));
-        orderTable.checkEmptyTable();
     }
 }

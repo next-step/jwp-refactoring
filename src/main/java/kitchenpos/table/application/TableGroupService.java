@@ -31,7 +31,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup savedTableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("단체 지정 테이블을 찾을 수 없습니다"));
-        tableService.unGroupTables(savedTableGroup.getOrderTableBag());
+        tableService.unGroupTables(savedTableGroup.orderTables());
         tableGroupRepository.save(savedTableGroup);
     }
 }

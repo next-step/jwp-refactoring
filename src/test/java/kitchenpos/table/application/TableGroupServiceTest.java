@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 @DisplayName("단체 지정 테스트")
 public class TableGroupServiceTest {
 
-    private static final OrderStatus 단체_지정_해제가_불가능한_조리_상태 = OrderStatus.COMPLETION;
+    private static final OrderStatus 단체_지정_해제가_불가능한_조리_상태 = OrderStatus.COOKING;
 
     @Autowired
     private TableService tableService;
@@ -123,9 +123,9 @@ public class TableGroupServiceTest {
                 OrderLineItemBag.from(Collections.emptyList())));
         //when:
         final TableGroup 단체_지정_테이블 = tableGroupService.create(
-                단체_지정(LocalDateTime.now(), OrderTableBag.from(Arrays.asList(
+                단체_지정(LocalDateTime.now(), OrderTableBag.from(new ArrayList<>(Arrays.asList(
                         첫_번째_테이블, 두_번째_테이블
-                ))));
+                )))));
         //then:
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(단체_지정_테이블.getId()));
     }

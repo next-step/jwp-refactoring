@@ -35,10 +35,4 @@ public class MenuService {
     public List<Menu> list() {
         return menuRepository.findAll();
     }
-
-    public void validMenuCount(List<Long> menuIds) {
-        if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("요청한 메뉴 갯수와 저장된 메뉴 갯수가 일치하지 않습니다");
-        }
-    }
 }
