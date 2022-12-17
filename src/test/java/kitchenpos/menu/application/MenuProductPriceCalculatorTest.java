@@ -3,15 +3,19 @@ package kitchenpos.menu.application;
 import static kitchenpos.menu.domain.MenuProductFixture.*;
 import static kitchenpos.product.domain.ProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.DynamicTest.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,38 +49,39 @@ class MenuProductPriceCalculatorTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("금액 합계 계산 - 단일 상품")
-    @Test
-    void calculateSum_single_product() {
-        // given
-        List<MenuProductRequest> menuProducts = Collections.singletonList(menuProductRequest(1L, 2));
-        given(productRepository.findAllById(anyList()))
-            .willReturn(Collections.singletonList(savedProduct(1L, BigDecimal.valueOf(5000))));
+    @DisplayName("금액 합계 계산")
+    @TestFactory
+    Stream<DynamicTest> calculateSum_single_product() {
+        return Stream.of(
+            dynamicTest("단일 상품", () -> {
+                // given
+                List<MenuProductRequest> menuProducts = Collections.singletonList(menuProductRequest(1L, 2));
+                given(productRepository.findAllById(anyList()))
+                    .willReturn(Collections.singletonList(savedProduct(1L, BigDecimal.valueOf(5000))));
 
-        // when
-        ProductPrice actual = menuProductPriceCalculator.calculateSum(menuProducts);
+                // when
+                ProductPrice actual = menuProductPriceCalculator.calculateSum(menuProducts);
 
-        // then
-        assertThat(actual).isEqualTo(ProductPrice.from(10000));
-    }
+                // then
+                assertThat(actual).isEqualTo(ProductPrice.from(10000));
+            }),
+            dynamicTest("여러 상품", () -> {
+                // given
+                List<MenuProductRequest> menuProducts = Arrays.asList(
+                    menuProductRequest(1L, 2),
+                    menuProductRequest(2L, 3)
+                );
+                given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(
+                    savedProduct(1L, BigDecimal.valueOf(5000)),
+                    savedProduct(2L, BigDecimal.valueOf(6000))
+                ));
 
-    @DisplayName("금액 합계 계산 - 여러 상품")
-    @Test
-    void calculateSum_multiple_product() {
-        // given
-        List<MenuProductRequest> menuProducts = Arrays.asList(
-            menuProductRequest(1L, 2),
-            menuProductRequest(2L, 3)
+                // when
+                ProductPrice actual = menuProductPriceCalculator.calculateSum(menuProducts);
+
+                // then
+                assertThat(actual).isEqualTo(ProductPrice.from(28000));
+            })
         );
-        given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(
-            savedProduct(1L, BigDecimal.valueOf(5000)),
-            savedProduct(2L, BigDecimal.valueOf(6000))
-        ));
-
-        // when
-        ProductPrice actual = menuProductPriceCalculator.calculateSum(menuProducts);
-
-        // then
-        assertThat(actual).isEqualTo(ProductPrice.from(28000));
     }
 }

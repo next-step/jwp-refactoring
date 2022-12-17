@@ -9,12 +9,11 @@ import javax.persistence.Id;
 
 @Entity
 public class OrderTable {
-    private static final int MIN_NUMBER_OF_GUESTS = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long tableGroupId;
-    private int numberOfGuests;
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {}
@@ -22,7 +21,7 @@ public class OrderTable {
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
@@ -48,20 +47,13 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        validateNumberOfGuests(numberOfGuests);
         validateEmpty();
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
     private void validateEmpty() {
         if (empty) {
             throw new IllegalArgumentException("테이블이 비어있습니다.");
-        }
-    }
-
-    private void validateNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException("방문한 손님수가 0미만일 수 없습니다.");
         }
     }
 
@@ -74,7 +66,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.value();
     }
 
     public boolean isEmpty() {

@@ -4,11 +4,15 @@ import static kitchenpos.order.acceptance.OrderAcceptanceUtils.*;
 import static kitchenpos.table.acceptance.OrderTableAcceptanceUtils.*;
 import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceUtils.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.DynamicTest.*;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -29,35 +33,49 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
      * then 주문 테이블 손님 수 변경 완료
      */
     @DisplayName("주문 테이블 관리")
-    @Test
-    void orderTable() {
-        // when
-        ExtractableResponse<Response> 주문_테이블_등록_요청 = 주문_테이블_등록_요청(0, true);
+    @TestFactory
+    Stream<DynamicTest> orderTable() {
+        return Stream.of(
+            dynamicTest("주문 테이블 등록", () -> {
+                // when
+                ExtractableResponse<Response> 주문_테이블_등록_요청 = 주문_테이블_등록_요청(0, true);
 
-        // then
-        주문_테이블_등록_요청_완료(주문_테이블_등록_요청);
-        OrderTableId 주문_테이블_ID = 주문_테이블_ID_추출(주문_테이블_등록_요청);
+                // then
+                주문_테이블_등록_요청_완료(주문_테이블_등록_요청);
+            }),
+            dynamicTest("주문 테이블 조회", () -> {
+                // when
+                ExtractableResponse<Response> 주문_테이블_조회_요청 = 주문_테이블_조회_요청();
 
-        // when
-        ExtractableResponse<Response> 주문_테이블_조회_요청 = 주문_테이블_조회_요청();
+                // then
+                주문_테이블_조회_요청_완료(주문_테이블_조회_요청);
+                assertThat(주문_테이블_추출(주문_테이블_조회_요청)).hasSize(1);
+            }),
+            dynamicTest("주문 테이블 상태 변경", () -> {
+                // given
+                ExtractableResponse<Response> 주문_테이블_등록_요청 = 주문_테이블_등록_요청(2, true);
+                OrderTableId 주문_테이블_ID = 주문_테이블_ID_추출(주문_테이블_등록_요청);
 
-        // then
-        주문_테이블_조회_요청_완료(주문_테이블_조회_요청);
-        assertThat(주문_테이블_추출(주문_테이블_조회_요청)).hasSize(1);
+                // when
+                boolean 변경할_테이블_상태 = false;
+                ExtractableResponse<Response> 주문_테이블_테이블_상태_변경_요청 = 주문_테이블_상태_변경_요청(주문_테이블_ID, 변경할_테이블_상태);
 
-        // when
-        boolean 변경할_테이블_상태 = false;
-        ExtractableResponse<Response> 주문_테이블_테이블_상태_변경_요청 = 주문_테이블_상태_변경_요청(주문_테이블_ID, 변경할_테이블_상태);
+                // then
+                주문_테이블_상태_변경_완료(주문_테이블_테이블_상태_변경_요청);
+            }),
+            dynamicTest("주문 테이블 상태 변경", () -> {
+                // given
+                ExtractableResponse<Response> 주문_테이블_등록_요청 = 주문_테이블_등록_요청(3, false);
+                OrderTableId 주문_테이블_ID = 주문_테이블_ID_추출(주문_테이블_등록_요청);
 
-        // then
-        주문_테이블_상태_변경_완료(주문_테이블_테이블_상태_변경_요청);
+                // when
+                int 변경할_손님수 = 4;
+                ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청 = 주문_테이블_손님_수_변경_요청(주문_테이블_ID, 변경할_손님수);
 
-        // when
-        int 변경할_손님수 = 4;
-        ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청 = 주문_테이블_손님_수_변경_요청(주문_테이블_ID, 변경할_손님수);
-
-        // then
-        주문_테이블_손님_수_변경_완료(주문_테이블_손님_수_변경_요청);
+                // then
+                주문_테이블_손님_수_변경_완료(주문_테이블_손님_수_변경_요청);
+            })
+        );
     }
 
     /**
