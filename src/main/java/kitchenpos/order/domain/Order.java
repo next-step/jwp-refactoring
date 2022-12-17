@@ -1,24 +1,34 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class Order {
+
+    @Id
+    @GeneratedValue
     private Long id;
-    private Long orderTableId;
+
+    @ManyToOne
+    private OrderTable orderTable;
+
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
 
-    private Order() {}
+    protected Order() {}
 
     public Order(Long id, Long orderTableId, String orderStatus,
                  LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
     }
 
     public static Order of(Long id, Long orderTableId, String orderStatus,
@@ -31,11 +41,10 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return null;
     }
 
     public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public String getOrderStatus() {
@@ -46,20 +55,16 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
     public void setOrderedTime(final LocalDateTime orderedTime) {
         this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return null;
     }
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+
     }
 
 }

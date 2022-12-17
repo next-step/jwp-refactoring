@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

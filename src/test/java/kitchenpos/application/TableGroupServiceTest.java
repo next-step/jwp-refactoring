@@ -4,7 +4,7 @@ import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
