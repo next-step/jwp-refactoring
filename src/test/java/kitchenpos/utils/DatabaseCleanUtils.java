@@ -33,11 +33,16 @@ public class DatabaseCleanUtils implements InitializingBean {
 	public void cleanUp() {
 		try (Connection connection = dataSource.getConnection()) {
 			execute(connection, "SET REFERENTIAL_INTEGRITY FALSE");
-			tableNames.forEach(tableName -> execute(connection, "TRUNCATE TABLE " + tableName ));
+			tableNames.stream().filter(this::isNotFlywayTable)
+				.forEach(tableName -> execute(connection, "TRUNCATE TABLE " + tableName ));
 			execute(connection,"SET REFERENTIAL_INTEGRITY TRUE");
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private boolean isNotFlywayTable(String tableName) {
+		return !tableName.startsWith("FLYWAY") && !tableName.startsWith("flyway");
 	}
 
 	private static void execute(Connection connection, String sql) {

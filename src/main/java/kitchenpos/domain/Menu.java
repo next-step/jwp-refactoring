@@ -1,52 +1,116 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import kitchenpos.exception.InvalidMenuPriceException;
+
+@Entity
+@Table(name = "menu")
 public class Menu {
-    private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
 
-    public Long getId() {
-        return id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "price"))
+    private Money price;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
+
+    protected Menu() {
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Menu(String name, Long price, MenuGroup menuGroup, List<Product> products) {
+        this.name = name;
+        this.price = Money.valueOf(price);
+        this.menuGroup = menuGroup;
+        addMenuProducts(toMenuProduct(products));
+    }
+
+    public Menu(String name, Long price, MenuGroup menuGroup, Map<Product, Integer> productsCount) {
+        this.id = null;
+        this.name = name;
+        this.price = Money.valueOf(price);
+        this.menuGroup = menuGroup;
+        addMenuProducts(toMenuProducts(productsCount));
+    }
+
+    private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
+        return productsCount.entrySet()
+            .stream()
+            .map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public Long getId() {
+        return id;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    private List<MenuProduct> toMenuProduct(List<Product> products) {
+        return products.stream()
+            .map(product -> new MenuProduct(this, product, 1))
+            .collect(Collectors.toList());
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    private void addMenuProducts(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    private void addMenuProduct(MenuProduct addMenuProduct) {
+        this.menuProducts.add(addMenuProduct);
+        addMenuProduct.setMenu(this);
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public Money getPrice() {
+        return price;
+    }
+
+    public void validatePrice() {
+        Money allProductPrices = sumAllProductsPrice();
+        if (allProductPrices.isGreaterThan(price)) {
+            throw new InvalidMenuPriceException(price, allProductPrices);
+        }
+    }
+
+    private Money sumAllProductsPrice() {
+        return menuProducts.stream()
+            .map(MenuProduct::getPurchasePrice)
+            .reduce(Money.ZERO, Money::add);
     }
 }

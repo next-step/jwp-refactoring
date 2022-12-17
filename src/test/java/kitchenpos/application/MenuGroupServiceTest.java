@@ -1,51 +1,47 @@
 package kitchenpos.application;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
 	@Mock
-	MenuGroupDao menuGroupDao;
+	MenuGroupRepository menuGroupRepository;
+
+	@InjectMocks
 	MenuGroupService menuGroupService;
 
-	@BeforeEach
-	void setup() {
-		menuGroupService = new MenuGroupService(menuGroupDao);
-	}
-
 	@Test
+	@DisplayName("메뉴 그룹 생성")
 	void testCreateMenuGroup() {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName("메뉴그룹1");
+		MenuGroup menuGroup = createMenuGroup();
 
 		menuGroupService.create(menuGroup);
 
-		verify(menuGroupDao, times(1)).save(any());
+		verify(menuGroupRepository, times(1)).save(menuGroup);
 	}
 
 	@Test
+	@DisplayName("메뉴 목록 조회")
 	void testMenuLst() {
-		menuGroupService.list();
+		menuGroupService.findAll();
 
-		verify(menuGroupDao, times(1)).findAll();
+		verify(menuGroupRepository, times(1)).findAll();
 	}
 
-	public static MenuGroup createMenuGroup() {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setId(1L);
-		menuGroup.setName("베이커리");
-		return menuGroup;
+	private MenuGroup createMenuGroup() {
+		return new MenuGroup("menu-group");
 	}
+
 }

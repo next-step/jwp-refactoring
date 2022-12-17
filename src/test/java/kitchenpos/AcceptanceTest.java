@@ -12,7 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.utils.DatabaseCleanUtils;
@@ -27,9 +30,15 @@ public abstract class AcceptanceTest<T> {
     @Autowired
     private DatabaseCleanUtils databaseCleanup;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+        RestAssured.config = RestAssured.config()
+            .objectMapperConfig(
+                new ObjectMapperConfig().jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
         databaseCleanup.cleanUp();
     }
 
