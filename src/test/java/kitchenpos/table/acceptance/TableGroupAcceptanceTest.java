@@ -76,14 +76,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
-    @DisplayName("등록되지 않은 테이블그룹을 해제하면 실패")
-    @Test
-    void ungroupWithNullTableGroup() {
-        ExtractableResponse<Response> response = 테이블그룹_해제를_요청(-1L);
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
-    }
-
     @DisplayName("계산전 테이블의 테이블 그룹을 해제하면 실패")
     @Test
     void ungroupWithCookingOrEatingOrder() {

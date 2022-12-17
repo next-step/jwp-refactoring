@@ -1,12 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -45,6 +42,8 @@ public class TableGroupServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private TableValidator tableValidator;
+    @Mock
+    private OrderValidator orderValidator;
 
     @DisplayName("테이블그룹을 추가할 경우 등록안된 테이블이 있으면 예외발생")
     @Test
@@ -86,7 +85,7 @@ public class TableGroupServiceTest {
     @Test
     public void throwsExceptionWhenAlreadyHasGroup() {
         TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(1l, 2l, 3l, 4l, 5l));
-        doReturn(Arrays.asList(OrderTable.builder().id(1l).tableGroup(TableGroup.builder().id(15l).build()).build(), OrderTable.builder().id(2l).empty(true).build()))
+        doReturn(Arrays.asList(OrderTable.builder().id(1l).tableGroupId(15l).build(), OrderTable.builder().id(2l).empty(true).build()))
                 .when(orderTableRepository)
                 .findAllById(anyList());
 
@@ -98,10 +97,8 @@ public class TableGroupServiceTest {
     @Test
     public void returnTableGroup() {
         OrderTable orderTable1 = OrderTable.builder()
-                .tableGroup(TableGroup.builder().build())
                 .id(1l).empty(true).build();
         OrderTable orderTable2 = OrderTable.builder()
-                .tableGroup(TableGroup.builder().build())
                 .id(2l).empty(true).build();
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         doReturn(orderTables)
@@ -109,7 +106,6 @@ public class TableGroupServiceTest {
                 .findAllById(anyList());
         doReturn(TableGroup.builder()
                 .id(1l)
-                .orderTables(OrderTables.of(orderTables))
                 .build())
                 .when(tableGroupRepository)
                 .save(any(TableGroup.class));
@@ -118,28 +114,12 @@ public class TableGroupServiceTest {
         assertThat(tableGroupResponse.getOrderTables().stream().map(OrderTableResponse::getId).collect(Collectors.toList())).containsExactly(1l, 2l);
     }
 
-    @DisplayName("테이블그룹을 해제할경우 테이블그룹이 등록안되있으면 예외발생")
-    @Test
-    public void throwsExceptionWhenTableGroupIsNull() {
-        doReturn(Optional.empty())
-                .when(tableGroupRepository)
-                .findById(anyLong());
-        assertThatThrownBy(() -> tableGroupService.ungroup(13l))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("테이블그룹을 해제할경우 테이블에 포함된 주문이 조리중이거나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
-        TableGroup tableGroup = TableGroup.builder()
-                .orderTables(OrderTables.of(Arrays.asList(OrderTable.builder().build())))
-                .build();
-        doReturn(Optional.ofNullable(tableGroup))
-                .when(tableGroupRepository)
-                .findById(anyLong());
         doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다"))
-                .when(tableValidator)
-                .validateTableUnGroup(anyLong());
+                .when(orderValidator)
+                .validateOrderComplete(anyList());
 
 
         assertThatThrownBy(() -> tableGroupService.ungroup(15l))

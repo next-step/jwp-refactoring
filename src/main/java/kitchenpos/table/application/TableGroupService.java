@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -17,12 +19,15 @@ public class TableGroupService {
     private final TableValidator tableValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderValidator orderValidator;
 
 
     public TableGroupService(final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository,
-                             final TableValidator tableValidator
+                             final TableValidator tableValidator,
+                             final OrderValidator orderValidator
     ) {
+        this.orderValidator = orderValidator;
         this.tableValidator = tableValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
@@ -30,22 +35,24 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = findAllOrderTableByIds(tableGroupRequest.getOrderTableIds());
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroupRequest.toTableGroup(orderTables)));
+        OrderTables orderTables = findAllOrderTableByIds(tableGroupRequest.getOrderTableIds());
+        TableGroup tableGroup = tableGroupRepository.save(tableGroupRequest.toTableGroup());
+        orderTables.addTableGroup(tableGroup);
+        return TableGroupResponse.of(tableGroup, orderTables);
     }
 
-    private List<OrderTable> findAllOrderTableByIds(List<Long> ids) {
+    private OrderTables findAllOrderTableByIds(List<Long> ids) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(ids);
         if (ids.size() != orderTables.size()) {
             throw new IllegalArgumentException();
         }
-        return orderTables;
+        return OrderTables.of(orderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
-        tableValidator.validateTableUnGroup(tableGroupId);
-        tableGroup.ungroup();
+        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        orderValidator.validateOrderComplete(orderTables.getOrderTableIds());
+        orderTables.ungroup();
     }
 }

@@ -46,11 +46,11 @@ public class TableServiceTest {
     @Test
     public void returnOderTable() {
         OrderTable orderTable = OrderTable.builder()
-                .tableGroupId(1l)
+                .tableGroupId(2l)
                 .build();
         doReturn(orderTable).when(orderTableRepository).save(any(OrderTable.class));
 
-        assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(443l);
+        assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(2l);
     }
 
     @DisplayName("주문테이블목록을 조회할경우 주문테이블목록 반환")

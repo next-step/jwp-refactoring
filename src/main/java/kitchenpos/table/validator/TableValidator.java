@@ -18,12 +18,6 @@ public class TableValidator {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    public void validateTableUnGroup(Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
-        List<Order> orders = orderRepository.findAllByOrderTableIdIn(tableGroup.orderTableIds());
-        orders.forEach(Order::validateBeforeCompleteStatus);
-    }
-
     public void validateTableEmpty(Long orderTableId) {
         List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
         orders.forEach(Order::validateBeforeCompleteStatus);

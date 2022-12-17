@@ -1,15 +1,9 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.exception.OrderException;
 import kitchenpos.table.exception.OrderTableException;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,7 +13,7 @@ public class OrderTableTest {
     @DisplayName("공석여부를 수정할경우 테이블그룹에 소속되있는경우 예외발생")
     @Test
     public void throwsExceptionWhenHasTableGroup() {
-        OrderTable orderTable = OrderTable.builder().tableGroup(TableGroup.builder().build()).build();
+        OrderTable orderTable = OrderTable.builder().tableGroupId(1l).build();
 
         assertThatThrownBy(() -> orderTable.changeEmpty(true))
                 .isInstanceOf(OrderTableException.class)
@@ -61,7 +55,7 @@ public class OrderTableTest {
     @DisplayName("손님수를 수정할경우 값이 변경")
     @Test
     public void returnNumberOfGuests() {
-        int numberOfGuests = Arbitraries.integers().between(2,100).sample();
+        int numberOfGuests = Arbitraries.integers().between(2, 100).sample();
         OrderTable orderTable = OrderTable.builder()
                 .numberOfGuests(2)
                 .empty(false).build();
