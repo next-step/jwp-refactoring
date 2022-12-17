@@ -1,9 +1,10 @@
 package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.table.application.TableService;
 import kitchenpos.order.domain.OrderLineItemBag;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,13 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
-import static kitchenpos.order.domain.OrderTableTest.빈_테이블;
-import static kitchenpos.table.application.TableServiceTest.주문_테이블;
-import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객;
-import static kitchenpos.order.domain.OrderTableTest.비어있지_않은_상태;
 import static kitchenpos.order.domain.OrderTableTest.빈_상태;
+import static kitchenpos.order.domain.OrderTableTest.빈_테이블;
 import static kitchenpos.order.domain.OrderTableTest.한_명의_방문객;
-import static kitchenpos.order.domain.OrderTest.계산_완료_상태;
 import static kitchenpos.order.domain.OrderTest.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DisplayName("주문 테이블 ui 테스트")
 class TableRestControllerTest {
+
+    private static final OrderStatus 빈_테이블_변경이_가능한_주문_완료_상태 = OrderStatus.COMPLETION;
 
     @Autowired
     private MockMvc mockMvc;
@@ -91,7 +90,7 @@ class TableRestControllerTest {
 
         orderRepository.save(주문(
                 저장된_주문_테이블,
-                계산_완료_상태,
+                빈_테이블_변경이_가능한_주문_완료_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Collections.emptyList())));
 

@@ -29,9 +29,6 @@ import static kitchenpos.menu.domain.MenuTest.메뉴;
 import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.order.domain.OrderTableTest.비어있지_않은_상태;
 import static kitchenpos.order.domain.OrderTableTest.빈_상태;
-import static kitchenpos.order.domain.OrderTest.계산_완료_상태;
-import static kitchenpos.order.domain.OrderTest.식사_상태;
-import static kitchenpos.order.domain.OrderTest.조리_상태;
 import static kitchenpos.order.domain.OrderTest.주문;
 import static kitchenpos.product.domain.ProductTest.상품_콜라;
 import static kitchenpos.product.domain.ProductTest.상품_통다리;
@@ -43,6 +40,10 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @DisplayName("주문 테스트")
 @SpringBootTest
 public class OrderServiceTest {
+
+    private final OrderStatus 주문_상태_변경이_가능한_조리_상태 = OrderStatus.COOKING;
+    private final OrderStatus 주문_상태_변경이_가능한_식사_상태 = OrderStatus.MEAL;
+    private final OrderStatus 주문_상태_변경이_불가능한_계산_완료_상태 = OrderStatus.COMPLETION;
 
     @Autowired
     private OrderTableRepository orderTableRepository;
@@ -73,7 +74,7 @@ public class OrderServiceTest {
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
         //when,then:
@@ -94,7 +95,7 @@ public class OrderServiceTest {
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
         //when:
@@ -109,7 +110,7 @@ public class OrderServiceTest {
         //given:
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Collections.emptyList()));
         //when,then:
@@ -130,7 +131,7 @@ public class OrderServiceTest {
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장되지_않은_메뉴.getId(), 1L))));
         //when,then:
@@ -151,7 +152,7 @@ public class OrderServiceTest {
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문(
                 주문_테이블(2, 비어있지_않은_상태),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))))));
     }
@@ -171,7 +172,7 @@ public class OrderServiceTest {
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 빈_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))))));
     }
@@ -192,7 +193,7 @@ public class OrderServiceTest {
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(주문_항목)));
 
@@ -219,14 +220,14 @@ public class OrderServiceTest {
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
 
-        생성된_주문.changeStatus(식사_상태);
+        생성된_주문.changeStatus(주문_상태_변경이_가능한_식사_상태);
 
         //when,then:
-        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문).isStatus(식사_상태)).isTrue();
+        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문).isStatus(주문_상태_변경이_가능한_식사_상태)).isTrue();
     }
 
     @DisplayName("상태 변경 성공 - 식사 상태에서 계산 완료 상태")
@@ -243,14 +244,14 @@ public class OrderServiceTest {
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
 
-        생성된_주문.changeStatus(식사_상태);
+        생성된_주문.changeStatus(주문_상태_변경이_가능한_식사_상태);
 
         //when,then:
-        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문).isStatus(식사_상태)).isTrue();
+        assertThat(orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문).isStatus(주문_상태_변경이_가능한_식사_상태)).isTrue();
     }
 
     @DisplayName("상태 변경 예외 - 주문이 존재하지 않는 경우")
@@ -270,7 +271,7 @@ public class OrderServiceTest {
                 OrderStatus.COOKING,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
-        생성된_주문.changeStatus(계산_완료_상태);
+        생성된_주문.changeStatus(주문_상태_변경이_불가능한_계산_완료_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() ->
                 orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문));
@@ -290,11 +291,11 @@ public class OrderServiceTest {
 
         final Order 생성된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
 
-        생성된_주문.changeStatus(계산_완료_상태);
+        생성된_주문.changeStatus(주문_상태_변경이_불가능한_계산_완료_상태);
         //when,then:
         assertThatIllegalArgumentException().isThrownBy(() ->
                 orderService.changeOrderStatus(생성된_주문.getId(), 생성된_주문));

@@ -2,18 +2,18 @@ package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProductBag;
-import kitchenpos.product.domain.Name;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemBag;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +28,15 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_추천_메뉴;
-import static kitchenpos.product.domain.ProductTest.상품_콜라;
-import static kitchenpos.product.domain.ProductTest.상품_통다리;
-import static kitchenpos.table.application.TableServiceTest.주문_테이블;
 import static kitchenpos.menu.domain.MenuProductTest.메뉴_상품;
 import static kitchenpos.menu.domain.MenuTest.메뉴;
 import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객;
 import static kitchenpos.order.domain.OrderTableTest.비어있지_않은_상태;
-import static kitchenpos.order.domain.OrderTest.식사_상태;
-import static kitchenpos.order.domain.OrderTest.조리_상태;
 import static kitchenpos.order.domain.OrderTest.주문;
-import static kitchenpos.product.domain.ProductTest.상품;
+import static kitchenpos.product.domain.ProductTest.상품_콜라;
+import static kitchenpos.product.domain.ProductTest.상품_통다리;
+import static kitchenpos.table.application.TableServiceTest.주문_테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,6 +49,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DisplayName("주문 ui 테스트")
 class OrderRestControllerTest {
+
+    private static final OrderStatus 주문_상태_변경이_가능한_조리_상태 = OrderStatus.COOKING;
+    private static final OrderStatus 주문_상태_변경이_가능한_식사_상태 = OrderStatus.MEAL;
 
     @Autowired
     private MockMvc mockMvc;
@@ -89,7 +88,7 @@ class OrderRestControllerTest {
 
         final Order 주문 = 주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L))));
         //when:
@@ -119,7 +118,7 @@ class OrderRestControllerTest {
 
         final Order 저장된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
         //when:
@@ -147,11 +146,11 @@ class OrderRestControllerTest {
 
         final Order 저장된_주문 = orderService.create(주문(
                 orderTableRepository.save(주문_테이블(두_명의_방문객, 비어있지_않은_상태)),
-                조리_상태,
+                주문_상태_변경이_가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Arrays.asList(new OrderLineItem(저장된_메뉴.getId(), 1L)))));
 
-        저장된_주문.changeStatus(식사_상태);
+        저장된_주문.changeStatus(주문_상태_변경이_가능한_식사_상태);
         //when:
         final Order 상태_변경된_주문 = mapper.readValue(
                 mockMvc.perform(put("/api/orders/{orderId}/order-status", 저장된_주문.getId())

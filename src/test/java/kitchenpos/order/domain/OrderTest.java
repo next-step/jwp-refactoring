@@ -23,9 +23,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @DisplayName("주문 테스트")
 public class OrderTest {
 
-    public static final OrderStatus 조리_상태 = OrderStatus.COOKING;
-    public static final OrderStatus 식사_상태 = OrderStatus.MEAL;
-    public static final OrderStatus 계산_완료_상태 = OrderStatus.COMPLETION;
+    private static final OrderStatus 조리_상태 = OrderStatus.COOKING;
+    private static final OrderStatus 계산_완료_상태 = OrderStatus.COMPLETION;
 
     @DisplayName("생성 성공")
     @Test

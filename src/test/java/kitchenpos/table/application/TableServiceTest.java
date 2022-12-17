@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderLineItemBag;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,6 @@ import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존
 import static kitchenpos.order.domain.OrderTableTest.빈_상태;
 import static kitchenpos.order.domain.OrderTableTest.빈_테이블;
 import static kitchenpos.order.domain.OrderTableTest.한_명의_방문객;
-import static kitchenpos.order.domain.OrderTest.계산_완료_상태;
-import static kitchenpos.order.domain.OrderTest.식사_상태;
-import static kitchenpos.order.domain.OrderTest.조리_상태;
 import static kitchenpos.order.domain.OrderTest.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -27,6 +25,10 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 @SpringBootTest
 @DisplayName("주문 테이블 테스트")
 public class TableServiceTest {
+
+    private static final OrderStatus 빈_테이블_변경이_불가능한_조리_상태 = OrderStatus.COOKING;
+    private static final OrderStatus 빈_테이블_변경이_불가능한_식사_상태 = OrderStatus.MEAL;
+    private static final OrderStatus 빈_테이블_변경이_가능한_계산_완료_상태 = OrderStatus.COMPLETION;
 
     @Autowired
     private TableService tableService;
@@ -57,7 +59,7 @@ public class TableServiceTest {
 
         orderRepository.save(주문(
                 주문_테이블,
-                계산_완료_상태,
+                빈_테이블_변경이_가능한_계산_완료_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Collections.emptyList())));
         주문_테이블.changeEmpty(빈_상태);
@@ -85,7 +87,7 @@ public class TableServiceTest {
 
         orderRepository.save(주문(
                 주문_테이블,
-                식사_상태,
+                빈_테이블_변경이_불가능한_식사_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Collections.emptyList())));
         주문_테이블.changeEmpty(빈_상태);
@@ -102,7 +104,7 @@ public class TableServiceTest {
 
         orderRepository.save(주문(
                 주문_테이블,
-                조리_상태,
+                빈_테이블_변경이_불가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Collections.emptyList())));
         주문_테이블.changeEmpty(빈_상태);

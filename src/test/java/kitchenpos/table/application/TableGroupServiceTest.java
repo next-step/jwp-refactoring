@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderLineItemBag;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableBag;
 import kitchenpos.table.domain.TableGroup;
@@ -18,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블;
-import static kitchenpos.order.domain.OrderTest.조리_상태;
 import static kitchenpos.order.domain.OrderTest.주문;
 import static kitchenpos.table.domain.TableGroupTest.단체_지정;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 @SpringBootTest
 @DisplayName("단체 지정 테스트")
 public class TableGroupServiceTest {
+
+    private static final OrderStatus 단체_지정_해제가_불가능한_조리_상태 = OrderStatus.COMPLETION;
 
     @Autowired
     private TableService tableService;
@@ -116,7 +118,7 @@ public class TableGroupServiceTest {
 
         orderRepository.save(주문(
                 첫_번째_테이블,
-                조리_상태,
+                단체_지정_해제가_불가능한_조리_상태,
                 LocalDateTime.now(),
                 OrderLineItemBag.from(Collections.emptyList())));
         //when:
