@@ -12,6 +12,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;

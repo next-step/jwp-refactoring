@@ -11,6 +11,7 @@ import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;

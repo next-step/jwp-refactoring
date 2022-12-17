@@ -15,6 +15,7 @@ import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class TableGroupService {
     private final OrderRepository orderRepository;

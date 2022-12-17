@@ -17,6 +17,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 
+@Transactional(readOnly = true)
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
