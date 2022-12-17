@@ -56,11 +56,12 @@ public class OrderRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_수정_요청(Long id) {
+    public static ExtractableResponse<Response> 주문_수정_요청(Long id, Order order) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put("/api/orders/" + id + "order-status")
+                .body(order)
+                .when().put("/api/orders/" + id + "/order-status")
                 .then().log().all()
                 .extract();
     }
@@ -80,5 +81,9 @@ public class OrderRestAssured {
 
     public static void 주문_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 주문_수정안됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
