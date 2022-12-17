@@ -10,16 +10,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.application.TableGroupValidator;
 
 @DisplayName("단체 지정 유효성 검사")
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class TableGroupValidatorTest {
-    @Autowired
+    @InjectMocks
     private TableGroupValidator tableGroupValidator;
 
     @DisplayName("단체 지정 등록 API - 주문 테이블 없음")

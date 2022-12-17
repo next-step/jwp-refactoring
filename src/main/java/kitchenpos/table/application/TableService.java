@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.OrderTableRequest;
@@ -49,12 +47,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블입니다."));
-        final boolean orderStatusUnchangeable = orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
-        tableValidator.validateChangeEmpty(savedOrderTable, orderStatusUnchangeable);
+        tableValidator.validateChangeEmpty(savedOrderTable);
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(savedOrderTable);
@@ -63,10 +58,14 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블입니다."));
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.from(savedOrderTable);
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블입니다."));
     }
 }

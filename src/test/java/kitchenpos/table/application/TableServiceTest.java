@@ -15,9 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.application.TableValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.OrderTableRequest;
@@ -26,8 +23,6 @@ import kitchenpos.tablegroup.dto.OrderTableResponse;
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-    @Mock
-    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableDao;
     @Mock
@@ -94,27 +89,13 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = orderTableParam(empty);
         OrderTable savedOrderTable = savedOrderTable(1L, tableGroupId, !empty);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
-        doNothing().when(tableValidator).validateChangeEmpty(savedOrderTable, false);
+        doNothing().when(tableValidator).validateChangeEmpty(savedOrderTable);
 
         // when
         tableService.changeEmpty(orderTableId, orderTableRequest);
 
         // then
         assertThat(savedOrderTable.isEmpty()).isEqualTo(empty);
-    }
-
-    @DisplayName("방문한 손님수 수정 API - 방문한 손님수 0 미만")
-    @Test
-    void changeNumberOfGuests_number_of_guests_less_than_0() {
-        // given
-        Long orderTableId = 1L;
-        int numberOfGuests = -1;
-        OrderTableRequest orderTableRequest = orderTableParam(numberOfGuests);
-
-        // when, then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("방문한 손님수 수정 API - ID에 해당하는 주문 테이블 존재 하지 않음")
@@ -125,21 +106,6 @@ class TableServiceTest {
         int numberOfGuests = 4;
         OrderTableRequest orderTableRequest = orderTableParam(numberOfGuests);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("방문한 손님수 수정 API - ID에 해당하는 주문 테이블이 빈 테이블")
-    @Test
-    void changeNumberOfGuests_saved_order_table_is_empty() {
-        // given
-        Long orderTableId = 1L;
-        int numberOfGuests = 4;
-        OrderTableRequest orderTableRequest = orderTableParam(numberOfGuests);
-        OrderTable savedOrderTable = savedOrderTable(orderTableId, true);
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
         // when, then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTableRequest))
