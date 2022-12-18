@@ -133,15 +133,15 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         // And 메뉴 등록되어 있음
         List<MenuProductRequest> menuItems = Arrays.asList(MenuProductRequest.of(honeycombo.getId(), 2));
-        MenuResponse honeycombo치킨 = 메뉴_등록되어_있음(
-                MenuRequest.of("honeycombo치킨", BigDecimal.valueOf(18000), premiumMenu.getId(), menuItems)
+        MenuResponse honeycomboChicken = 메뉴_등록되어_있음(
+                MenuRequest.of("honeycomboChicken", BigDecimal.valueOf(18000), premiumMenu.getId(), menuItems)
         ).as(MenuResponse.class);
 
         // And 주문 테이블 등록되어 있음
         OrderTableResponse registeredOrderTable = 주문_테이블_등록되어_있음(notEmptyOrderTable1).as(OrderTableResponse.class);
 
         // And 주문(조리) 등록되어 있음
-        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycombo치킨.getId(), 2));
+        List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
         주문_등록되어_있음(OrderRequest.of(registeredOrderTable.getId(), orderItems));
 
         // When 주문 테이블 빈 상태 변경 요청
