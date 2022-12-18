@@ -1,14 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderLineItemRepository;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +28,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.MenuTestFixture.*;
-import static kitchenpos.fixture.OrderLineItemTestFixture.*;
+import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보목록;
+import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보요청;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
 import static kitchenpos.fixture.OrderTestFixture.주문;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,9 +47,6 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;

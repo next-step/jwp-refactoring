@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;

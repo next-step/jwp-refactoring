@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

@@ -1,10 +1,10 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 import java.util.Arrays;
 import java.util.List;
