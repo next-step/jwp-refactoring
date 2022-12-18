@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("OrderCrudService")
 class OrderServiceTest extends ServiceTest {
 
+    public static final long NOT_EXIST_ORDER_TABLE_ID = 100L;
     @Autowired
     private OrderService orderService;
 
@@ -57,7 +58,7 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private MenuGroupRepository menuGroupRepository;
 
-    private OrderTable orderTable;
+    private OrderTable orderTableA;
     private Menu menu;
 
     @BeforeEach
@@ -70,10 +71,10 @@ class OrderServiceTest extends ServiceTest {
         orderTables.add(emptyOrderTable());
         orderTables.add(emptyOrderTable());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-        orderTable = orderTableRepository.save(new OrderTable());
-        orderTable.setTableGroup(tableGroup);
+        orderTableA = orderTableRepository.save(new OrderTable());
+        orderTableA.setTableGroup(tableGroup);
 
-        orderTable = orderTableRepository.save(orderTable);
+        orderTableA = orderTableRepository.save(orderTableA);
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
@@ -81,7 +82,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     void create_fail_orderLineItems() {
 
-        OrderCreateRequest request = new OrderCreateRequest(orderTable.getId(), new ArrayList<>());
+        OrderCreateRequest request = new OrderCreateRequest(orderTableA.getId(), new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -91,7 +92,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문을 생성한다. / 주문 항목의 수와 메뉴의 수는 같아야 한다.")
     @Test
     void create_fail_orderLineItemSize() {
-        assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(orderTable.getId(), orderLineItemsA())))
+        assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(orderTableA.getId(), notExistMenuOrderLineItem())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
     }
@@ -100,7 +101,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     void create_fail_orderTableEmpty() {
 
-        OrderCreateRequest request = new OrderCreateRequest(orderTable.getId(), orderLineItemsA());
+        OrderCreateRequest request = new OrderCreateRequest(NOT_EXIST_ORDER_TABLE_ID, orderLineItemsA());
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -110,7 +111,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     void create() {
 
-        OrderResponse orderResponse = orderService.create(new OrderCreateRequest(orderTable.getId(), orderLineItemsA()));
+        OrderResponse orderResponse = orderService.create(new OrderCreateRequest(orderTableA.getId(), orderLineItemsA()));
 
         assertAll(
                 () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
@@ -124,13 +125,20 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문을 조회한다.")
     @Test
     void list() {
-        orderService.create(new OrderCreateRequest(orderTable.getId(), orderLineItemsA()));
+        orderService.create(new OrderCreateRequest(orderTableA.getId(), orderLineItemsA()));
         assertThat(orderService.list()).hasSize(1);
     }
 
     private List<OrderLineItem> orderLineItemsA() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem(null, menu.getId(), new Quantity(3)));
+        return orderLineItems;
+    }
+
+    private List<OrderLineItem> notExistMenuOrderLineItem() {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), new Quantity(3)));
+        orderLineItems.add(new OrderLineItem(null, 30L, new Quantity(3)));
         return orderLineItems;
     }
 }

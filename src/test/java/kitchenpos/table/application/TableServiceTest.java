@@ -85,7 +85,7 @@ class TableServiceTest extends ServiceTest {
         orderTable.setEmpty(false);
         orderTableRepository.save(orderTable);
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(1);
-        assertThat(tableService.changeNumberOfGuests(orderTableA.getId(), changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(1);
+        assertThat(tableService.changeNumberOfGuests(orderTableA.getId(), changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(new NumberOfGuests(1));
     }
 
     @DisplayName("손님수를 변경한다. / 0명보다 작을 수 없다.")

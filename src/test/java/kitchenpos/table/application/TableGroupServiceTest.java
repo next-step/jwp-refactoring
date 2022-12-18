@@ -78,6 +78,8 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroupA.setOrderTables(singletonList(orderTableA));
         tableGroupB.setOrderTables(singletonList(orderTableB));
         order = orderRepository.save(new Orders(orderTableA, orderLineItemsA()));
+        orderLineItemsB = new OrderLineItems();
+        orderLineItemsA = orderLineItemsA();
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
@@ -112,7 +114,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         테이블_그룹_존재_검증(tableGroupB);
 
-        Orders order = new Orders(orderTableB, orderLineItemsA);
+        Orders order = new Orders(orderTableA, orderLineItemsA);
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -138,9 +140,9 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     void unGroup_fail_meal() {
 
-        테이블_그룹_존재_검증(tableGroupA);
-
-        주문_식사중_상태_변경();
+        Orders order = new Orders(orderTableA, orderLineItemsA);
+        order.setOrderStatus(OrderStatus.MEAL);
+        orderRepository.save(order);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupA.getId()))
                 .isInstanceOf(IllegalArgumentException.class)

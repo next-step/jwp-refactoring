@@ -39,6 +39,7 @@ public class OrderTable {
     public OrderTable(TableGroup tableGroup, boolean empty) {
         this.tableGroup = tableGroup;
         this.empty = empty;
+        this.numberOfGuests = new NumberOfGuests(0);
     }
 
     public Long getId() {
