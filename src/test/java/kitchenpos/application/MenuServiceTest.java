@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-@DisplayName("메뉴 테스트")
+@DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
