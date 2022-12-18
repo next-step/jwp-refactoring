@@ -117,4 +117,8 @@ public class Menu {
 
     public void setMenuGroupId(long menu_group_id) {
     }
+
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
+    }
 }

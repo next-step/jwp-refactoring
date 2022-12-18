@@ -102,4 +102,16 @@ public class MenuProduct {
     private boolean isNegative(long quantity) {
         return quantity < ZERO;
     }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Long getProduct() {
+        return product.getId();
+    }
 }
