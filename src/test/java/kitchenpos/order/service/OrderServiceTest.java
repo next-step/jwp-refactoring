@@ -2,6 +2,7 @@ package kitchenpos.order.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -28,6 +29,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +39,9 @@ class OrderServiceTest {
 
 	@Mock
 	OrderRepository orderRepository;
+	@Mock
+	OrderValidator orderValidator;
+
 	@InjectMocks
 	OrderService orderService;
 
@@ -93,12 +98,12 @@ class OrderServiceTest {
 		Order beforeOrder = createOrder(OrderStatus.COOKING);
 		OrderStatus expectedStatus = OrderStatus.MEAL;
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(beforeOrder));
-
+		when(orderRepository.save(any())).thenAnswer(returnsFirstArg());
 		// when
 		Order actualOrder = orderService.changeOrderStatus(1L, expectedStatus);
 
 		// then
-		assertThat(actualOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+		assertThat(actualOrder.getOrderStatus()).isEqualTo(expectedStatus);
 	}
 
 	@Test

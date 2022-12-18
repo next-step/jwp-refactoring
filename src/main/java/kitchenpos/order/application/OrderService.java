@@ -8,22 +8,22 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.ui.dto.OrderResponse;
-import kitchenpos.order.ui.dto.OrderStatusRequest;
+import kitchenpos.order.domain.OrderValidator;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
 	private final OrderRepository orderRepository;
+	private final OrderValidator orderValidator;
 
-	public OrderService(OrderRepository orderRepository) {
+	public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
 		this.orderRepository = orderRepository;
+		this.orderValidator = orderValidator;
 	}
 
 	@Transactional
 	public Order create(Order order) {
-		order.startOrder();
-
+		order.place(orderValidator);
 		return orderRepository.save(order);
 	}
 
@@ -32,17 +32,12 @@ public class OrderService {
 	}
 
 	@Transactional
-	public OrderResponse changeOrderStatus(Long orderId, OrderStatusRequest statusRequest) {
-		return new OrderResponse(changeOrderStatus(orderId, statusRequest.toOrderStatus()));
-	}
-
-	@Transactional
 	public Order changeOrderStatus(Long orderId, OrderStatus toStatus) {
-		Order savedOrder = findById(orderId);
+		Order order = findById(orderId);
 
-		savedOrder.changeOrderStatus(toStatus);
+		order.changeOrderStatus(toStatus);
 
-		return savedOrder;
+		return orderRepository.save(order);
 	}
 
 	private Order findById(Long orderId) {

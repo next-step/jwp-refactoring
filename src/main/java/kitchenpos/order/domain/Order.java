@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.order.exception.CannotStartOrderException.TYPE.NO_ORDER_ITEMS;
-
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
-import kitchenpos.order.exception.CannotStartOrderException;
 
 @Entity
 @Table(name = "orders")
@@ -69,21 +66,15 @@ public class Order {
 		return orderLineItems;
 	}
 
-	public void startOrder() {
-		validateStartOrder();
+	public Long getOrderTableId() {
+		return orderTableId;
+	}
+
+	public void place(OrderValidator orderValidator) {
+		orderValidator.validate(this);
 
 		orderStatus = OrderStatus.COOKING;
 		orderedTime = LocalDateTime.now();
-	}
-
-	private void validateStartOrder() {
-		if (orderLineItems.isEmpty()) {
-			throw new CannotStartOrderException(NO_ORDER_ITEMS);
-		}
-		// TODO validate start order
-		// if (!orderTable.isEmpty()) {
-		// 	throw new CannotStartOrderException(ORDER_TABLE_NOT_EMPTY);
-		// }
 	}
 
 	public void changeOrderStatus(OrderStatus toStatus) {
