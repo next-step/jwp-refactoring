@@ -22,7 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -38,52 +38,40 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블 등록 할 수 있다.")
     void createTable() {
-        OrderTable 주문테이블 = new OrderTable(1L, null, 4, true);
-        when(tableService.create(any())).thenReturn(TableResponse.from(주문테이블));
+        OrderTable 주문테이블 = new OrderTable(1, true);
+
+        given(orderTablePort.save(any())).willReturn(주문테이블);
 
         TableResponse result = tableService.create(new TableRequest(3, false));
 
-        assertThat(result.getId()).isNotNull();
         assertThat(result.isEmpty()).isTrue();
-        assertThat(result.getNumberOfGuests()).isEqualTo(4);
-
+        assertThat(result.getNumberOfGuests()).isEqualTo(1);
     }
 
     @Test
     @DisplayName("주문 테이블 리스트를 받을 수 있다.")
     void getTableList() {
-        OrderTable 주문테이블_일번 = new OrderTable(1L, null, 4, true);
-        OrderTable 주문테이블_이번 = new OrderTable(2L, null, 2, true);
-
-        when(orderTablePort.findAll()).thenReturn(Arrays.asList(주문테이블_일번, 주문테이블_이번));
+        OrderTable orderTable = new OrderTable(1L, null, 7, true);
+        given(orderTablePort.findAll()).willReturn(Arrays.asList(orderTable));
 
         List<TableResponse> result = tableService.list();
 
-        assertThat(result).hasSize(2);
-        assertThat(result).contains(TableResponse.from(주문테이블_일번), TableResponse.from(주문테이블_이번));
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getNumberOfGuests()).isEqualTo(7);
     }
 
     @Test
     @DisplayName("주문테이블의 상태를 변경할 수 있다.")
     void changeTableStatusEmpty() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
+        Order order = new Order(주문테이블, OrderStatus.COMPLETION);
 
-        when(orderTablePort.findById(any())).thenReturn(주문테이블);
-        when(orderTablePort.save(any())).thenReturn(주문테이블);
+        given(orderTablePort.findById(any())).willReturn(주문테이블);
+        given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(order));
 
         TableResponse result = tableService.changeEmpty(1L, new ChangeEmptyRequest(true));
 
         assertThat(result.isEmpty()).isTrue();
-    }
-
-    @Test
-    @DisplayName("등록된 주문 테이블이여야 주문 테아블 상태를 변경 할 수 있다.")
-    void isRegisterTable() {
-        when(orderTablePort.findById(any())).thenReturn(null);
-
-        assertThatThrownBy(() ->
-                tableService.changeEmpty(1L, new ChangeEmptyRequest(true))
-        ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -92,8 +80,8 @@ class TableServiceTest {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
         Order 주문 = new Order(주문테이블, OrderStatus.COOKING, null);
 
-        when(orderTablePort.findById(1L)).thenReturn(주문테이블);
-        when(orderPort.findAllByOrderTableIdIn(any())).thenReturn(Arrays.asList(주문));
+        given(orderTablePort.findById(1L)).willReturn(주문테이블);
+        given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(주문));
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new ChangeEmptyRequest(true)))
@@ -105,7 +93,7 @@ class TableServiceTest {
     void notChangeGuestNumber() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
 
-        when(orderTablePort.findById(any())).thenReturn(주문테이블);
+        given(orderTablePort.findById(any())).willReturn(주문테이블);
 
         TableResponse result = tableService.changeNumberOfGuests(주문테이블.getId(), new ChaneNumberOfGuestRequest(3));
 
@@ -115,31 +103,12 @@ class TableServiceTest {
     @Test
     @DisplayName("방문한 손님의 수는 0명 이상이여야한다.")
     void notChangeGuestIsMinZero() {
+        OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
+
+        given(orderTablePort.findById(any())).willReturn(주문테이블);
+
         assertThatThrownBy(() ->
                 tableService.changeNumberOfGuests(1L, new ChaneNumberOfGuestRequest(-1))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("등록된 주문 테이블이여아 한다.")
-    void alreadyRegisterTable() {
-        when(orderTablePort.findById(1L)).thenReturn(null);
-
-        assertThatThrownBy(() ->
-                tableService.changeNumberOfGuests(1L, new ChaneNumberOfGuestRequest(3))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-
-    @Test
-    @DisplayName("등록된 주문 테이블이여아 주문 테이블의 방문한 손님의 수를 바꿀 수 있다.")
-    void tableIsNotEmpty() {
-        OrderTable 주문테이블 = new OrderTable(1L, null, 6, true);
-
-        when(orderTablePort.findById(any())).thenReturn(주문테이블);
-
-        assertThatThrownBy(() ->
-                tableService.changeNumberOfGuests(1L, new ChaneNumberOfGuestRequest(3))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

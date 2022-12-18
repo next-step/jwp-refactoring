@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
 import kitchenpos.domain.type.OrderStatus;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,86 +24,87 @@ import static kitchenpos.acceptence.TableRestControllerTest.주문테이블을_�
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderRestControllerTest extends AcceptanceSupport {
-    private Product 후라이드치킨;
-    private Product 제로콜라;
-    private MenuGroup 치킨;
-    private MenuProduct 후라이드_이인분;
-    private MenuProduct 제로콜라_삼인분;
-    private Menu 후치콜세트;
-    private OrderTable 주문테이블;
-
-    private OrderLineItem 주문항목;
-
+    private ProductResponse 치킨;
+    private ProductResponse 제로콜라;
+    private MenuGroupResponse 양식_메뉴_그륩;
+    private MenuGroup 양식;
+    private MenuResponse 후치콜세트_메뉴_생성;
+    private TableResponse 주문테이블;
+    private OrderTable 주문테이블_일번;
+    private OrderTable 주문테이블_이번;
+    private TableGroup 테이블_그륩;
+    private OrderLineItem 후치콜_세트_주문_아이템;
     private Order 주문;
+    private Menu 치킨_콜라_정식_메뉴;
+    private OrderLineItemRequest 후치콜세트_주문요청;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        후라이드치킨 = 상품을_등록한다(new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨")).as(Product.class);
+        치킨 = 상품을_등록한다(new ProductRequest("치킨", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        제로콜라 = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
+        양식_메뉴_그륩 = 메뉴그룹을_생성한다(new MenuGroupRequest("양식_메뉴_그륩")).as(MenuGroupResponse.class);
+        양식 = new MenuGroup(1L, 양식_메뉴_그륩.getName());
+        MenuProductRequest productA = new MenuProductRequest(치킨.getId(), 1L);
+        MenuProductRequest productB = new MenuProductRequest(제로콜라.getId(), 2L);
+        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000)), 양식);
+        MenuRequest request = new MenuRequest(
+                치킨_콜라_정식_메뉴.getName(), 치킨_콜라_정식_메뉴.getPrice().getPrice(), 치킨_콜라_정식_메뉴.getMenuGroup().getId(),
+                Arrays.asList(productA, productB)
+        );
+        후치콜세트_메뉴_생성 = 메뉴를_생성한다(request).as(MenuResponse.class);
+        주문테이블 = 주문테이블을_생성한다(new TableRequest(0, false)).as(TableResponse.class);
 
-        제로콜라 = 상품을_등록한다(new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라")).as(Product.class);
-
-        치킨 = 메뉴그룹을_생성한다(MenuGroup.of("치킨")).as(MenuGroup.class);
-
-        후치콜세트 = 메뉴를_생성한다(Menu.of("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분))).as(Menu.class);
-
-        후라이드_이인분 = MenuProduct.of(후치콜세트, 후라이드치킨, 2);
-        제로콜라_삼인분 = MenuProduct.of(후치콜세트, 제로콜라, 3);
-
-
-        주문테이블 = 주문테이블을_생성한다(new OrderTable(null, null, 0, false)).as(OrderTable.class);
-
-        주문항목 = new OrderLineItem(null, null, 후치콜세트, 1);
-
-        주문 = new Order(주문테이블, null, OrderLineItems.of(Arrays.asList(주문항목)));
+        주문테이블_일번 = new OrderTable(1L, null, 3, true);
+        주문테이블_이번 = new OrderTable(2L, null, 7, true);
+        테이블_그륩 = new TableGroup(new OrderTables(Arrays.asList(주문테이블_일번, 주문테이블_이번)));
+        후치콜_세트_주문_아이템 = new OrderLineItem(치킨_콜라_정식_메뉴, 1L);
+        주문 = new Order(new OrderTable(테이블_그륩, 5, true), OrderStatus.COOKING);
+        주문.addOrderLineItems(Arrays.asList(후치콜_세트_주문_아이템), Arrays.asList(치킨_콜라_정식_메뉴));
+        후치콜세트_주문요청 = new OrderLineItemRequest(후치콜세트_메뉴_생성.getId(), 1L);
     }
 
     @Test
     @DisplayName("주문을 등록 할 수 있다.")
     void createOrder() {
         // when
-        ExtractableResponse<Response> response = 주문_생성을_요청한다(주문);
+        ExtractableResponse<Response> response = 주문_생성을_요청한다(주문테이블.getId(), Arrays.asList(후치콜세트_주문요청));
 
         // then
         상태값을_비교한다(response.statusCode(), HttpStatus.CREATED);
     }
 
     @Test
+    @DisplayName("주문 상태를 변경 할 수 있다.")
+    void updateOrderStatus() {
+        // given
+        OrderResponse 주문_응답 = 주문_생성을_요청한다(주문테이블.getId(), Arrays.asList(후치콜세트_주문요청)).as(OrderResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 주문_상태_수정_요청(주문_응답.getId(), OrderStatus.COMPLETION);
+
+        // then
+        상태값을_비교한다(response.statusCode(), HttpStatus.OK);
+        주문_상태가_변경되었는지_확인한다(response, OrderStatus.COMPLETION.name());
+    }
+
+    @Test
     @DisplayName("주문 리스트를 받을 수 있다.")
     void getOrderList() {
-        // given
-        주문 = 주문_생성을_요청한다(주문).as(Order.class);
+        주문_생성을_요청한다(주문테이블.getId(), Arrays.asList(후치콜세트_주문요청)).as(OrderResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문_리스트를_요청한다();
 
         // then
         상태값을_비교한다(response.statusCode(), HttpStatus.OK);
-        주문_리스트를_비교한다(response, Arrays.asList(주문.getId()));
     }
 
-    @Test
-    @DisplayName("주문 상태를 변경 할 수 있다.")
-    void updateOrderStatus() {
-        // given
-        주문 = 주문_생성을_요청한다(주문).as(Order.class);
-
-        Order 변경한_주문 = new Order(주문테이블, 주문.getOrderStatus(), OrderLineItems.of(Arrays.asList(주문항목)));
-
-
-        // when
-        ExtractableResponse<Response> response = 주문_상태_수정_요청(주문.getId(), 변경한_주문);
-
-        // then
-        상태값을_비교한다(response.statusCode(), HttpStatus.OK);
-        주문_상태가_변경되었는지_확인한다(response, OrderStatus.COOKING.name());
-    }
-
-    private ExtractableResponse<Response> 주문_생성을_요청한다(Order order) {
+    private ExtractableResponse<Response> 주문_생성을_요청한다(Long orderTableId, List<OrderLineItemRequest> request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order).when().post("/api/orders")
+                .body(new OrderRequest(orderTableId, request)).when().post("/api/orders")
                 .then().log().all()
                 .extract();
     }
@@ -119,11 +121,11 @@ class OrderRestControllerTest extends AcceptanceSupport {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, Order order) {
+    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, OrderStatus status) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(new ChangeOrderStatusRequest(status))
                 .when().put("/api/orders/{id}/order-status", id)
                 .then().log().all()
                 .extract();
@@ -134,8 +136,8 @@ class OrderRestControllerTest extends AcceptanceSupport {
     }
 
     private void 주문_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> getId) {
-        List<Order> result = response.jsonPath().getList(".", Order.class);
-        List<Long> responseId = result.stream().map(Order::getId).collect(Collectors.toList());
+        List<OrderResponse> result = response.jsonPath().getList(".", OrderResponse.class);
+        List<Long> responseId = result.stream().map(OrderResponse::getId).collect(Collectors.toList());
         assertThat(responseId).containsAll(getId);
     }
 

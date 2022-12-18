@@ -14,16 +14,13 @@ public class MenuGroup {
 
     protected MenuGroup() {}
 
-    private MenuGroup(String name) {
+    public MenuGroup(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public static MenuGroup from(String name) {
-        return new MenuGroup(name);
-    }
-
-    public static MenuGroup of(String name) {
-        return new MenuGroup(name);
+    public MenuGroup(String name) {
+        this.name = name;
     }
 
     public Long getId() {
@@ -33,5 +30,4 @@ public class MenuGroup {
     public String getName() {
         return name;
     }
-
 }

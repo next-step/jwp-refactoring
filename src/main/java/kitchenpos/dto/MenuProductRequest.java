@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 
@@ -14,18 +15,9 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public Long getQuantity() {
-        return quantity;
-    }
-
-
     public MenuProduct makeMenuProduct(List<Product> product) {
         Product targetProduct = findProduct(product);
-        return MenuProduct.of(null, targetProduct, quantity);
+        return new MenuProduct(targetProduct, quantity);
     }
 
     private Product findProduct(List<Product> products) {
@@ -34,4 +26,13 @@ public class MenuProductRequest {
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
 }

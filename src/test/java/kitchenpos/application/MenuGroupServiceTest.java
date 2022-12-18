@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -30,23 +30,22 @@ class MenuGroupServiceTest {
     @Test
     @DisplayName("메뉴 그륩을 등록한다")
     void createMenuGroup() {
-        MenuGroup 피자 = MenuGroup.from("피자");
+        MenuGroup 피자 = new MenuGroup("피자");
 
-        when(menuGroupPort.save(any())).thenReturn(피자);
+        given(menuGroupPort.save(any())).willReturn(피자);
 
         MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest("피자"));
 
-        assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getName()).isEqualTo("피자");
     }
 
     @Test
     @DisplayName("메뉴 그륩 리스트를 받아온다")
     void getMenuGroupList() {
-        MenuGroup 피자 = MenuGroup.from("피자");
-        MenuGroup 치킨 = MenuGroup.from("치킨");
+        MenuGroup 피자 = new MenuGroup("피자");
+        MenuGroup 치킨 = new MenuGroup("치킨");
 
-        when(menuGroupPort.findAll()).thenReturn(Arrays.asList(피자, 치킨));
+        given(menuGroupPort.findAll()).willReturn(Arrays.asList(피자, 치킨));
 
         List<MenuGroup> result = menuGroupService.list();
 

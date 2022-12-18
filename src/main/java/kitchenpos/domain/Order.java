@@ -23,12 +23,17 @@ public class Order {
     private OrderStatus orderStatus;
 
     @CreatedDate
-    private LocalDateTime orderedTime;
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
+    }
+
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
     }
 
     public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
@@ -42,9 +47,10 @@ public class Order {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = LocalDateTime.now();
+        this.orderedTime = LocalDateTime.now();;
         this.orderLineItems = orderLineItems;
     }
+
     public void validCheckOrderStatusIsCookingAndMeal() {
         if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(this.orderStatus)) {
             throw new IllegalArgumentException();
@@ -53,7 +59,8 @@ public class Order {
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItem, List<Menu> menu) {
         validCheckOrderLineItemSizeIsSameMenuSize(orderLineItem, menu);
-        OrderLineItems.of(orderLineItem);
+        this.orderLineItems = new OrderLineItems(orderLineItem);
+        orderLineItems.setOrderLineItem(this);
     }
 
     private void validCheckOrderLineItemSizeIsSameMenuSize(List<OrderLineItem> orderLineItem, List<Menu> menu) {
@@ -83,10 +90,16 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+        validCheckCompletion();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validCheckCompletion() {
+
+
+
+        if (this.orderStatus == OrderStatus.COMPLETION) {
             throw new IllegalArgumentException();
         }
-
-        this.orderStatus = orderStatus;
     }
 }

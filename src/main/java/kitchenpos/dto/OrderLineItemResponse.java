@@ -8,6 +8,9 @@ public class OrderLineItemResponse {
     private Long orderId;
     private Long quantity;
 
+    protected OrderLineItemResponse() {
+    }
+
     public OrderLineItemResponse(Long seq, Long menuId, Long orderId, Long quantity) {
         this.seq = seq;
         this.menuId = menuId;

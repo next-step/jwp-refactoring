@@ -3,6 +3,9 @@ package kitchenpos.dto;
 public class ChaneNumberOfGuestRequest {
     private int numberOfRequest;
 
+    protected ChaneNumberOfGuestRequest() {
+    }
+
     public ChaneNumberOfGuestRequest(int numberOfRequest) {
         this.numberOfRequest = numberOfRequest;
     }

@@ -19,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -35,7 +35,7 @@ class ProductServiceTest {
     void createProduct() {
         Product 스테이크 = new Product(new Price(BigDecimal.valueOf(10_000)), "스테이크");
 
-        when(productPort.save(any())).thenReturn(스테이크);
+        given(productPort.save(any())).willReturn(스테이크);
 
         ProductResponse result = productService.create(new ProductRequest("스테이크", BigDecimal.valueOf(10_000)));
 
@@ -58,11 +58,10 @@ class ProductServiceTest {
         Product 스테이크 = new Product(new Price(BigDecimal.valueOf(200)), "스테이크");
         Product 감자튀김 = new Product(new Price(BigDecimal.valueOf(200)), "감자튀김");
 
-        when(productPort.findAll()).thenReturn(Arrays.asList(스테이크, 감자튀김));
+        given(productPort.findAll()).willReturn(Arrays.asList(스테이크, 감자튀김));
 
         List<Product> result = productService.list();
 
         assertThat(result).hasSize(2);
-        assertThat(result).contains(스테이크, 감자튀김);
     }
 }

@@ -7,6 +7,9 @@ import java.util.List;
 public class TableGroupRequest {
     private List<Long> orderTableIds;
 
+    protected TableGroupRequest() {
+    }
+
     public TableGroupRequest(List<Long> orderTableIds) {
         this.orderTableIds = orderTableIds;
     }
@@ -14,6 +17,4 @@ public class TableGroupRequest {
     public List<Long> getOrderTableIds() {
         return orderTableIds;
     }
-
-
 }

@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import org.hibernate.engine.internal.Collections;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -18,35 +19,29 @@ public class OrderTables {
     protected OrderTables() {
     }
 
-    private OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public OrderTables(List<OrderTable> orderTables) {
+        validCheckOrderTableIsEmptyAndMinSize(orderTables);
+        this.orderTables = new ArrayList<>(orderTables);
     }
 
-    private static void validCheckOrderTableIsEmptyAndMinSize(List<OrderTable> orderTables) {
+    private void validCheckOrderTableIsEmptyAndMinSize(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
     }
 
-    public static OrderTables from(List<OrderTable> orderTables) {
-        validCheckOrderTableIsEmptyAndMinSize(orderTables);
-        return new OrderTables(orderTables);
-    }
-
     public void ungroup() {
-        validCheckIsNotEmptyAndHasNotGroup();
-
         orderTables.forEach(OrderTable::ungroup);
     }
-
-    private void validCheckIsNotEmptyAndHasNotGroup() {
-        validIsNotEmpty();
-        validHasGroup();
-    }
-
     private void validHasGroup() {
+
+        System.out.println(orderTables.toString());
+
         boolean matchGroup = orderTables.stream()
                 .anyMatch(OrderTable::isNotNull);
+
+        System.out.println("=-==------");
+        System.out.println(matchGroup);
 
         if (matchGroup) {
             throw new IllegalArgumentException();
@@ -57,6 +52,7 @@ public class OrderTables {
         boolean matchIsNotEmpty = orderTables.stream()
                 .anyMatch(orderTable -> !orderTable.isEmpty());
 
+
         if (matchIsNotEmpty) {
             throw new IllegalArgumentException();
         }
@@ -66,4 +62,8 @@ public class OrderTables {
         return orderTables;
     }
 
+    public void validCheckTableGroup() {
+        validIsNotEmpty();
+        validHasGroup();
+    }
 }

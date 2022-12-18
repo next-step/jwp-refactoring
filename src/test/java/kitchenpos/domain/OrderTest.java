@@ -25,15 +25,15 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = Product.of(BigDecimal.valueOf(3_000), "후라이드치킨");
-        제로콜라 = Product.of(BigDecimal.valueOf(2_000), "제로콜라");
+        후라이드치킨 = new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨");
+        제로콜라 = new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라");
 
-        치킨 = MenuGroup.from("치킨");
+        치킨 = new MenuGroup("치킨");
 
-        후치콜세트 = Menu.of("후치콜세트", Price.from(BigDecimal.valueOf(5_000)), 치킨, Arrays.asList(제로콜라_삼인분, 후라이드_이인분));
+        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨);
 
-        후라이드_이인분 = MenuProduct.of(후치콜세트, 후라이드치킨, 2);
-        제로콜라_삼인분 = MenuProduct.of(후치콜세트, 제로콜라, 2);
+        후라이드_이인분 = new MenuProduct(후치콜세트, 후라이드치킨, 2);
+        제로콜라_삼인분 = new MenuProduct(후치콜세트, 제로콜라, 2);
 
         주문테이블 = new OrderTable(1L, null, 0, false);
     }
@@ -44,10 +44,8 @@ class OrderTest {
     @DisplayName("주문상태가 COOKING, MEAL 이면 주문을 생성할수 없다")
     void orderStatusCheckValidCookingAndMeal(OrderStatus status) {
         Order 주문 = new Order(1L, 주문테이블, status, null);
-        주문.validCheckOrderStatusIsCookingAndMeal();
 
-        assertThatThrownBy(
-                주문::validCheckOrderStatusIsCookingAndMeal)
+        assertThatThrownBy(주문::validCheckOrderStatusIsCookingAndMeal)
                 .isInstanceOf(IllegalArgumentException.class);
 
     }

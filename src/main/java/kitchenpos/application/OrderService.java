@@ -1,12 +1,11 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.ChangeOrderStatusRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.port.MenuPort;
 import kitchenpos.port.OrderPort;
-import kitchenpos.port.OrderLineItemPort;
 import kitchenpos.port.OrderTablePort;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -38,21 +37,11 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         final OrderTable orderTable = orderTablePort.findById(request.getOrderTableId());
         final List<Menu> menu = menuPort.findAllByMenuId(request.getMenuId());
-        final Order order = new Order(orderTable, OrderStatus.COOKING, null);
-        final List<OrderLineItem> orderLineItem = getOrderLineItem(request.getOrderLineItemRequest(), menu, order);
+        Order order = request.makeOrder(orderTable, menu);
 
-        order.addOrderLineItems(orderLineItem, menu);
         final Order saveOrder = orderPort.save(order);
 
         return OrderResponse.from(saveOrder);
-    }
-
-    private List<OrderLineItem> getOrderLineItem(List<OrderLineItemRequest> requests, List<Menu> menu, Order order) {
-        return requests
-                .stream()
-                .map(orderLineItemRequest ->
-                        OrderLineItem.of(orderLineItemRequest.getQuantity(), menu, order, orderLineItemRequest.getMenuId())
-                ).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -64,9 +53,10 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final ChangeOrderStatusRequest request) {
         final Order savedOrder = orderPort.findById(orderId);
-        savedOrder.changeOrderStatus(orderStatus);
+
+        savedOrder.changeOrderStatus(request.getOrderStatus());
         Order result = orderPort.save(savedOrder);
 
         return OrderResponse.from(result);

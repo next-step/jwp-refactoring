@@ -27,8 +27,8 @@ public class TableService {
     }
 
     public TableResponse create(final TableRequest request) {
-        final OrderTable orderTable =
-                OrderTable.ofByTableGroupNull(request.getNumberOfGuests(), request.isEmpty());
+        final OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
+        orderTable.setTableGroupNull();
 
         final OrderTable saveOrderTable = orderTablePort.save(orderTable);
 

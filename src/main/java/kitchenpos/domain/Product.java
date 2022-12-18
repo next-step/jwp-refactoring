@@ -12,9 +12,15 @@ public class Product {
     private String name;
 
     @Embedded
-    private Price price;
+    private Price price = new Price();
 
     protected Product() {}
+
+    public Product(Long id, Price price, String name) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 
     public Product(Price price, String name) {
         this.price = price;

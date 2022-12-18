@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.port.MenuGroupPort;
@@ -34,13 +32,22 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupPort.findById(request.getMenuGroupId());
-        List<Product> product = productPort.findAllByIdIn(request.getProductId());
+        List<Product> product = productPort.findAllByIdIn(getProductId(request));
+        Menu menu = new Menu(request.getName(), new Price(request.getPrice()), menuGroup);
 
-        Menu menu = Menu.of(request.getName(), Price.from(request.getPrice()), menuGroup, null);
-        menu.addMenuProducts(request.makeMenuProducts(product));
+        MenuProducts menuProducts = request.makeMenuProducts(product);
+
+        menu.addMenuProducts(menuProducts);
         Menu saveMenu = menuPort.save(menu);
 
         return MenuResponse.from(saveMenu);
+    }
+
+    private List<Long> getProductId(MenuRequest request) {
+        return request.getMenuProduct()
+                .stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

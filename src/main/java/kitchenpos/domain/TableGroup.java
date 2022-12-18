@@ -23,16 +23,11 @@ public class TableGroup {
     }
 
     public TableGroup(OrderTables orderTables) {
+        orderTables.validCheckTableGroup();
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
     }
 
-    public static void of() {
-    }
-
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(OrderTables.from(orderTables));
-    }
 
     public Long getId() {
         return id;

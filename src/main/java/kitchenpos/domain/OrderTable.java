@@ -28,14 +28,15 @@ public class OrderTable {
         this.isEmpty = isEmpty;
     }
 
-    private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.isEmpty = isEmpty;
     }
 
-    public static OrderTable ofByTableGroupNull(int numberOfGuests, boolean isEmpty) {
-        return new OrderTable(null, numberOfGuests, isEmpty);
+    public OrderTable(int numberOfGuests, boolean isEmpty) {
+        this.numberOfGuests = numberOfGuests;
+        this.isEmpty = isEmpty;
     }
 
     public void ungroup() {
@@ -45,7 +46,6 @@ public class OrderTable {
     public void changeEmpty(boolean isEmpty, List<Order> order) {
         validCheckIsNotNullTableGroup();
         validCheckIsOrderStatusInCookingAndMeal(order);
-
         this.isEmpty = isEmpty;
     }
 
@@ -59,20 +59,28 @@ public class OrderTable {
         }
     }
 
+    public void addTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public boolean isNotNull() {
         return this.tableGroup != null;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
+    public void changeNumberOfGuests(Integer numberOfGuests) {
         validCheckIsGuestZero(numberOfGuests);
 
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void validCheckIsGuestZero(int numberOfGuests) {
-        if (numberOfGuests < 0) {
+    private void validCheckIsGuestZero(Integer numberOfGuests) {
+        if (numberOfGuests < 0 || Objects.isNull(numberOfGuests)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void setTableGroupNull() {
+        this.tableGroup = null;
     }
 
     public Long getId() {
@@ -90,4 +98,5 @@ public class OrderTable {
     public boolean isEmpty() {
         return isEmpty;
     }
+
 }

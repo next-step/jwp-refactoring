@@ -14,7 +14,7 @@ class PriceTest {
     @DisplayName("가격이 0원 미만일 수 없습니다")
     void priceZeroNo() {
         assertThatThrownBy(() ->
-                new Price(BigDecimal.ZERO)
+                new Price(BigDecimal.valueOf(-1))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

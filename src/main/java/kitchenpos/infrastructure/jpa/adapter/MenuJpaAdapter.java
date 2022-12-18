@@ -1,6 +1,7 @@
 package kitchenpos.infrastructure.jpa.adapter;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.infrastructure.jpa.repository.MenuJpaRepository;
 import kitchenpos.port.MenuPort;
 import org.springframework.stereotype.Repository;

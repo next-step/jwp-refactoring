@@ -4,6 +4,7 @@ import kitchenpos.dto.OrderLineItemRequest;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class OrderLineItem {
@@ -21,6 +22,10 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
 
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;
@@ -29,19 +34,8 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    private OrderLineItem(Order order, Menu menu, long quantity) {
+    public void setOrderLineItem(Order order) {
         this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    public static OrderLineItem of(Long quantity, List<Menu> menus, Order order, Long menuId) {
-        Menu filterMenu = menus.stream()
-                .filter(menu -> menu.getId().equals(menuId))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-
-        return new OrderLineItem(order, filterMenu, quantity);
     }
 
     public Long getSeq() {

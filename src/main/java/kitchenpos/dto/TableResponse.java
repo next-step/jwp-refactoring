@@ -1,27 +1,38 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
+
+import java.util.Objects;
 
 public class TableResponse {
     private Long id;
     private Long tableGroup;
     private int numberOfGuests;
-    private boolean isEmpty;
+    private boolean empty;
 
-    private TableResponse(Long id, Long tableGroup, int numberOfGuests, boolean isEmpty) {
+    private TableResponse(Long id, TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroup = tableGroupNullCheck(tableGroup);
         this.numberOfGuests = numberOfGuests;
-        this.isEmpty = isEmpty;
+        this.empty = isEmpty;
     }
 
     public static TableResponse from(OrderTable orderTable) {
         return new TableResponse(
                 orderTable.getId(),
-                orderTable.getTableGroup().getId(),
+                orderTable.getTableGroup(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty()
         );
+    }
+
+    private Long tableGroupNullCheck(TableGroup tableGroup) {
+        if (Objects.isNull(tableGroup)) {
+            return null;
+        }
+
+        return tableGroup.getId();
     }
 
     public Long getId() {
@@ -37,6 +48,6 @@ public class TableResponse {
     }
 
     public boolean isEmpty() {
-        return isEmpty;
+        return empty;
     }
 }

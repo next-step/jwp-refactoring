@@ -22,7 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -49,23 +49,21 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
+        스테이크 = new Product(1L, new Price(BigDecimal.valueOf(30_000)), "스테이크");
+        파스타 = new Product(2L, new Price(BigDecimal.valueOf(15_000)), "파스타");
+        스파빅그륩 = new MenuGroup("피자");
+        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 스파빅그륩);
 
-        스테이크 = Product.of((BigDecimal.valueOf(30_000)), "스테이크");
-        파스타 = Product.of(BigDecimal.valueOf(15_000), "파스타");
-        스파빅그륩 = MenuGroup.from("피자");
-        스테이크_파스타_빅세트 = Menu.of("스테이크_파스타_빅세트", Price.from(BigDecimal.valueOf(45_000)), 스파빅그륩, Arrays.asList(스테이크_이인분, 파스타_삼인분));
-
-        스테이크_이인분 = MenuProduct.of(스테이크_파스타_빅세트, 파스타, 2);
-        파스타_삼인분 = MenuProduct.of(스테이크_파스타_빅세트, 파스타, 3);
+        스테이크_이인분 = new MenuProduct(스테이크_파스타_빅세트, 파스타, 2);
+        파스타_삼인분 = new MenuProduct(스테이크_파스타_빅세트, 파스타, 3);
     }
 
 
     @Test
     @DisplayName("메뉴를 생성할 수 있다")
     void createMenu() {
-        when(menuGroupPort.existsById(any())).thenReturn(true);
-        when(productPort.findAllByIdIn(any())).thenReturn(Arrays.asList(스테이크, 파스타));
-        when(menuPort.save(any())).thenReturn(스테이크_파스타_빅세트);
+        given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList(스테이크, 파스타));
+        given(menuPort.save(any())).willReturn(스테이크_파스타_빅세트);
 
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(3_000), 스파빅그륩.getId(), productRequest);
@@ -95,8 +93,6 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 스파빅그륩.getId(), productRequest);
 
-        when(menuGroupPort.existsById(any())).thenReturn(false);
-
         assertThatThrownBy(() ->
                 menuService.create(request)
         ).isInstanceOf(IllegalArgumentException.class);
@@ -108,8 +104,7 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 스파빅그륩.getId(), productRequest);
 
-        when(menuGroupPort.existsById(any())).thenReturn(true);
-        when(productPort.findAllByIdIn(any())).thenReturn(Arrays.asList());
+        given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList());
 
         assertThatThrownBy(() ->
                 menuService.create(request)
@@ -119,11 +114,11 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격은 모든 상품의 합 이하야야한다")
     void createMenuIsAllProductSumMin() {
-        List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 2L), new MenuProductRequest(파스타.getId(), 3L));
-        MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(90_000), 스파빅그륩.getId(), productRequest);
-
-        when(menuGroupPort.existsById(any())).thenReturn(true);
-        when(productPort.findAllByIdIn(any())).thenReturn(Arrays.asList(스테이크, 파스타));
+        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(200_000)), 스파빅그륩);
+        given(menuGroupPort.findById(스테이크_파스타_빅세트.getMenuGroup().getId())).willReturn(스파빅그륩);
+        given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList(스테이크));
+        List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
+        MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(3_000), 스파빅그륩.getId(), productRequest);
 
         assertThatThrownBy(() ->
                 menuService.create(request)
@@ -136,10 +131,10 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 2L), new MenuProductRequest(파스타.getId(), 3L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(90_000), 스파빅그륩.getId(), productRequest);
 
-        Menu 스테이크_파스타_빅세트 = Menu.of("스테이크_파스타_빅세트", Price.from(BigDecimal.valueOf(90_000)), 스파빅그륩, Arrays.asList(스테이크_이인분, 파스타_삼인분));
-        Menu 스테이크_세트 = Menu.of("스테이크_세트", Price.from(BigDecimal.valueOf(90_000)), 스파빅그륩, Arrays.asList(스테이크_이인분));
+        Menu 스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩);
+        Menu 스테이크_세트 = new Menu("스테이크_세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩);
 
-        when(menuPort.findAll()).thenReturn(Arrays.asList(스테이크_파스타_빅세트, 스테이크_세트));
+        given(menuPort.findAll()).willReturn(Arrays.asList(스테이크_파스타_빅세트, 스테이크_세트));
 
         List<MenuResponse> result = menuService.list();
 

@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.port.OrderPort;
@@ -33,10 +34,8 @@ public class TableGroupService {
         List<OrderTable> orderTables =
                 orderTablePort.findAllByIdIn(request.getOrderTableIds());
 
-        TableGroup tableGroup = TableGroup.from(orderTables);
-
+        TableGroup tableGroup = new TableGroup(new OrderTables(orderTables));
         final TableGroup savedTableGroup = tableGroupPort.save(tableGroup);
-
 
         return TableGroupResponse.from(savedTableGroup);
     }

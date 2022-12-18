@@ -2,11 +2,11 @@ package kitchenpos.dto;
 
 public class TableRequest {
     private int numberOfGuests;
-    private boolean isEmpty;
+    private boolean empty;
 
     public TableRequest(int numberOfGuests, boolean isEmpty) {
         this.numberOfGuests = numberOfGuests;
-        this.isEmpty = isEmpty;
+        this.empty = isEmpty;
     }
 
     public int getNumberOfGuests() {
@@ -14,6 +14,10 @@ public class TableRequest {
     }
 
     public boolean isEmpty() {
-        return isEmpty;
+        return empty;
+    }
+
+    public void makeOrderTable() {
+
     }
 }

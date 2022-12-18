@@ -19,7 +19,7 @@ public class MenuGroupService {
     }
 
     public MenuGroupResponse create(final MenuGroupRequest request) {
-        MenuGroup menuGroup = menuGroupPort.save(MenuGroup.from(request.getName()));
+        MenuGroup menuGroup = menuGroupPort.save(new MenuGroup(request.getName()));
 
         return MenuGroupResponse.from(menuGroup);
     }

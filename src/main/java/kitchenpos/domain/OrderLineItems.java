@@ -16,15 +16,15 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
-    private OrderLineItems(List<OrderLineItem> orderLineItems) {
+    public OrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = new ArrayList<>(orderLineItems);
-    }
-
-    public static OrderLineItems of(List<OrderLineItem> orderLineItem) {
-        return new OrderLineItems(orderLineItem);
     }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void setOrderLineItem(Order order) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrderLineItem(order));
     }
 }

@@ -4,11 +4,14 @@ import kitchenpos.domain.Order;
 import kitchenpos.infrastructure.jpa.repository.OrderJpaRepository;
 import kitchenpos.port.OrderPort;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Service
+@Transactional
 public class OrderJpaAdapter implements OrderPort {
 
     private final OrderJpaRepository orderJpaRepository;
@@ -23,17 +26,20 @@ public class OrderJpaAdapter implements OrderPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Order findById(Long id) {
         return orderJpaRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Order> findAll() {
         return orderJpaRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Order> findAllByOrderTableIdIn(List<Long> orderTablesId) {
         return orderJpaRepository.findAllByOrderTableIdIn(orderTablesId);
     }

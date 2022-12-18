@@ -6,11 +6,14 @@ import kitchenpos.infrastructure.jpa.repository.MenuGroupJpaRepository;
 import kitchenpos.infrastructure.jpa.repository.MenuProductJpaRepository;
 import kitchenpos.port.MenuGroupPort;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Service
+@Transactional
 public class MenuGroupJpaAdapter implements MenuGroupPort {
 
     private final MenuGroupJpaRepository menuGroupJpaRepository;
@@ -20,21 +23,25 @@ public class MenuGroupJpaAdapter implements MenuGroupPort {
     }
 
     @Override
+    @Transactional
     public MenuGroup save(MenuGroup entity) {
-        return null;
+        return menuGroupJpaRepository.save(entity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MenuGroup findById(Long id) {
         return menuGroupJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MenuGroup> findAll() {
         return menuGroupJpaRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         return menuGroupJpaRepository.existsById(id);
     }
