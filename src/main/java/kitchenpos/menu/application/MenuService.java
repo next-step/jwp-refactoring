@@ -3,7 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-
     private final ProductRepository productRepository;
 
     public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
@@ -31,14 +30,15 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(NoResultException::new);
-        final List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
-                .map(menuProductRequest -> {
-                    Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(NoResultException::new);
-                    return new MenuProduct(product, menuProductRequest.getQuantity());
-                })
+        List<MenuProductRequest> menuProductsRequests = menuRequest.getMenuProducts();
+        final List<Long> productsIds = menuProductsRequests.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+        final List<MenuProduct> menuProducts = productRepository.findAllById(productsIds).stream()
+                .map(product -> new MenuProduct(product, menuRequest.getQuantityByProductId(product.getId())))
                 .collect(Collectors.toList());
 
+        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(NoResultException::new);
         final Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);
     }

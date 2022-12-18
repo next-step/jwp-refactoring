@@ -7,7 +7,7 @@ import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.order.dto.OrderMenuRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
@@ -44,7 +44,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         Long orderTableId = 주문테이블_생성_요청(2, false).jsonPath().getLong("id");
 
         // when
-        ExtractableResponse<Response> response = 주문_생성_요청(orderTableId, Lists.newArrayList(new OrderMenuRequest(menuId, 2L)));
+        ExtractableResponse<Response> response = 주문_생성_요청(orderTableId, Lists.newArrayList(new OrderLineItemRequest(menuId, 2L)));
 
         // then
         주문_생성됨(response);
@@ -68,7 +68,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         OrderTableResponse 주문테이블 = 주문테이블_생성_요청(2, true).as(OrderTableResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderMenuRequest(후라이드치킨.getId(), 2L)));
+        ExtractableResponse<Response> response = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderLineItemRequest(후라이드치킨.getId(), 2L)));
 
         // then
         주문_생성_실패됨(response);
@@ -90,7 +90,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 메뉴그룹.getId(),
                 Lists.newArrayList(new MenuProductRequest(상품.getId(), 1L))).as(MenuResponse.class);
         OrderTableResponse 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTableResponse.class);
-        주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderMenuRequest(후라이드치킨.getId(), 2L)));
+        주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderLineItemRequest(후라이드치킨.getId(), 2L)));
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
@@ -115,7 +115,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 메뉴그룹.getId(),
                 Lists.newArrayList(new MenuProductRequest(상품.getId(), 1L))).as(MenuResponse.class);
         OrderTableResponse 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTableResponse.class);
-        OrderResponse 주문 = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderMenuRequest(후라이드치킨.getId(), 2L)))
+        OrderResponse 주문 = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderLineItemRequest(후라이드치킨.getId(), 2L)))
                 .as(OrderResponse.class);
 
         // when
@@ -141,7 +141,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 메뉴그룹.getId(),
                 Lists.newArrayList(new MenuProductRequest(상품.getId(), 1L))).as(MenuResponse.class);
         OrderTableResponse 주문테이블 = 주문테이블_생성_요청(2, false).as(OrderTableResponse.class);
-        OrderResponse 주문 = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderMenuRequest(후라이드치킨.getId(), 2L))).as(OrderResponse.class);
+        OrderResponse 주문 = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderLineItemRequest(후라이드치킨.getId(), 2L))).as(OrderResponse.class);
         주문_상태_수정_요청(주문.getId(), "COMPLETION");
 
         // when
@@ -210,7 +210,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블_수정됨(orderTableChangeNumberOfGuestsResponse);
 
         // when
-        ExtractableResponse<Response> createOrderResponse = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderMenuRequest(메뉴.getId(), 2L)));
+        ExtractableResponse<Response> createOrderResponse = 주문_생성_요청(주문테이블.getId(), Lists.newArrayList(new OrderLineItemRequest(메뉴.getId(), 2L)));
         // then
         주문_생성됨(createOrderResponse);
         // and

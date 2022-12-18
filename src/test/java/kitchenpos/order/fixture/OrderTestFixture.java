@@ -3,7 +3,7 @@ package kitchenpos.order.fixture;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.dto.OrderMenuRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +24,8 @@ public class OrderTestFixture {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderMenuRequest> orderMenuRequests) {
-        OrderRequest orderRequest = new OrderRequest(orderTableId, orderMenuRequests);
+    public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+        OrderRequest orderRequest = new OrderRequest(orderTableId, orderLineItemRequests);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

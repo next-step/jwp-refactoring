@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -25,9 +24,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTable> orderTables = tableGroupRequest.getOrderTableIds().stream()
-                .map(orderTableId -> orderTableRepository.findById(orderTableId).orElseThrow(NoResultException::new))
-                .collect(Collectors.toList());
+        final List<OrderTable> orderTables = orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds());
         final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
 
         return TableGroupResponse.of(savedTableGroup);

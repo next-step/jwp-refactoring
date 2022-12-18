@@ -8,12 +8,12 @@ public class OrderRequest {
     private static final String EXCEPTION_MESSAGE_INVALID_MENU_PRODUCTS = "유효한 Order Line Item 이 없습니다! 값을 확인해주세요.";
     private Long orderTableId;
     private String orderStatus;
-    private List<OrderMenuRequest> orderLineItems;
+    private List<OrderLineItemRequest> orderLineItems;
 
     private OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<OrderMenuRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         validateOrderLineItems(orderLineItems);
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
@@ -31,11 +31,19 @@ public class OrderRequest {
         return orderStatus;
     }
 
-    public List<OrderMenuRequest> getOrderLineItems() {
+    public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
 
-    private void validateOrderLineItems(List<OrderMenuRequest> orderLineItems) {
+    public Long getQuantityByMenuId(Long menuId) {
+        return orderLineItems.stream()
+                .filter(orderLineItemRequest -> orderLineItemRequest.getMenuId().equals(menuId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new)
+                .getQuantity();
+    }
+
+    private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException(EXCEPTION_MESSAGE_INVALID_MENU_PRODUCTS);
         }

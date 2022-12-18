@@ -40,6 +40,14 @@ public class MenuRequest {
         return menuProducts;
     }
 
+    public Long getQuantityByProductId(Long productId) {
+        return menuProducts.stream()
+                .filter(menuProductRequest -> menuProductRequest.getProductId().equals(productId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new)
+                .getQuantity();
+    }
+
     private void validateMenuRequest(List<MenuProductRequest> menuProducts) {
         if (CollectionUtils.isEmpty(menuProducts)) {
             throw new IllegalArgumentException(EXCEPTION_MESSAGE_INVALID_MENU_PRODUCTS);

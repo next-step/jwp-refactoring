@@ -183,7 +183,7 @@
 - [x] 미사용 의존성 제거
 - [x] `MenuRequest` 에서 validation 적용 필요(request 내에서 List 타입이 있는 경우 전수 조사 필요)
 - [x] `Objects.isNull` 메서드 사용은 `Predicate` 이외에는 지양할 것 (가독성이 떨어짐, 차라리 `null == price`로 사용)
-- [ ] 전체적으로 쿼리 호출 횟수에 대한 피드백 반영 필요
+- [x] 전체적으로 쿼리 호출 횟수에 대한 피드백 반영 필요
 
 -----
 
