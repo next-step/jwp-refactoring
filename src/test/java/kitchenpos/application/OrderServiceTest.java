@@ -1,11 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.order.*;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
+import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,140 +27,142 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.utils.Message.EMPTY_ORDER_TABLE;
+import static kitchenpos.utils.Message.INVALID_CHANGE_ORDER_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-@DisplayName("주문 서비스 테스트")
+@DisplayName("order 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
 
-    private Menu 허니콤보;
-    private OrderTable 주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
-    private Order 주문;
-    private Order 계산완료_주문;
-    private OrderLineItem 주문항목;
+    private Menu  honeycomboChicken;
+    private OrderTable  orderTable;
+    private OrderTable  emptyOrderTable;
+    private Order order;
+    private Order payedOrder;
+    private OrderLineItem orderItems;
+    private OrderRequest orderRequest;
+    private OrderRequest noOrderItemRequest;
+    private OrderRequest noMenuRequest;
+    private OrderRequest notContainTableRequest;
+    private OrderRequest emptyTableRequest;
 
     @BeforeEach
     void setUp() {
+        MenuGroup premiumMenu = MenuGroup.of(1L, "premiumMenu");
+        Product honeycombo = Product.of(1L, "honeycombo", BigDecimal.valueOf(16_000));
 
-        List<MenuProduct> 메뉴상품_목록 = Arrays.asList(MenuProduct.of(1L, 1L, 1L, 2));
-        허니콤보 = Menu.of(1L, "허니콤보", BigDecimal.valueOf(18000), 1L, 메뉴상품_목록);
+        List<MenuProduct> menuProductItem = Arrays.asList(MenuProduct.of(honeycombo, 2));
+         honeycomboChicken = Menu.of(1L, " honeycomboChicken", BigDecimal.valueOf(16_000), premiumMenu, menuProductItem);
 
-        주문_테이블 = OrderTable.of(1L, 3, false);
-        비어있는_주문_테이블 = OrderTable.of(2L, 2, true);
+         orderTable = OrderTable.of(1L, 3, false);
+         emptyOrderTable = OrderTable.of(2L, 2, true);
 
-        주문항목 = OrderLineItem.of(1L, null, 허니콤보.getId(), 2);
-        List<OrderLineItem> 주문항목_목록 = Arrays.asList(주문항목);
-        주문 = Order.of(1L, 주문_테이블.getId(), 주문항목_목록);
+        orderItems = OrderLineItem.of(1L,  honeycomboChicken.getId(), 2);
+        List<OrderLineItem> orderItems_목록 = Arrays.asList(orderItems);
+        order = Order.of(1L,  orderTable, orderItems_목록);
 
-        계산완료_주문 = Order.of(2L, 주문_테이블.getId(), 주문항목_목록);
-        계산완료_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        payedOrder = Order.of(2L,  orderTable, orderItems_목록);
+        payedOrder.changeOrderStatus(OrderStatus.COMPLETION);
+
+        orderRequest = OrderRequest.of( orderTable.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
+        noOrderItemRequest = OrderRequest.of( orderTable.getId(), Collections.emptyList());
+        noMenuRequest = OrderRequest.of( orderTable.getId(), Arrays.asList(OrderLineItemRequest.of(2L, 1)));
+        notContainTableRequest = OrderRequest.of(null, Arrays.asList(OrderLineItemRequest.of(1L, 2)));
+        emptyTableRequest = OrderRequest.of( emptyOrderTable.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 2)));
     }
 
-    @DisplayName("주문을 생성한다.")
+    @DisplayName("order을 생성한다.")
     @Test
     void create() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.save(any())).thenReturn(주문항목);
+        when(menuRepository.findById(any())).thenReturn(Optional.of( honeycomboChicken));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of( orderTable));
+        when(orderRepository.save(any())).thenReturn(order);
 
-        Order result = orderService.create(주문);
+        OrderResponse result = orderService.create(orderRequest);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
                 () -> assertThat(result.getOrderLineItems()).hasSize(1),
-                () -> assertThat(result.getOrderLineItems()).containsExactly(주문항목)
+                () -> assertThat(result.getOrderLineItems())
+                        .containsExactly(OrderLineItemResponse.from(orderItems))
         );
     }
 
-    @DisplayName("주문 항목이 비어있으면 주문 생성 시 예외가 발생한다.")
+    @DisplayName("order 항목이 비어있으면 order 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        Order order = Order.of(1L, Collections.emptyList());
-
-        Assertions.assertThatThrownBy(() -> orderService.create(order))
+        Assertions.assertThatThrownBy(() -> orderService.create(noOrderItemRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문 생성 시 예외가 발생한다.")
+    @DisplayName("order 항목이 메뉴에 등록되어 있지 않다면 order 생성 시 예외가 발생한다.")
     @Test
     void createException2() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
+        when(menuRepository.findById(any())).thenReturn(Optional.empty());
 
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-                OrderLineItem.of(1L, 2),
-                OrderLineItem.of(2L, 1));
-        Order order = Order.of(1L, orderLineItems);
-
-        Assertions.assertThatThrownBy(() -> orderService.create(order))
+        Assertions.assertThatThrownBy(() -> orderService.create(noMenuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
+    @DisplayName("order 테이블이 등록되어 있지 않다면 order을 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(menuRepository.findById(any())).thenReturn(Optional.of( honeycomboChicken));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> orderService.create(주문))
+        Assertions.assertThatThrownBy(() -> orderService.create(notContainTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 테이블이 빈 테이블이면 주문을 생성 시 예외가 발생한다.")
+    @DisplayName("order 테이블이 빈 테이블이면 order을 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        when(menuDao.countByIdIn(anyList())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(비어있는_주문_테이블));
+        when(menuRepository.findById(any())).thenReturn(Optional.of( honeycomboChicken));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of( emptyOrderTable));
 
-        Assertions.assertThatThrownBy(() -> orderService.create(주문))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> orderService.create(emptyTableRequest))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageStartingWith(EMPTY_ORDER_TABLE);
     }
 
-    @DisplayName("주문 목록을 조회한다.")
+    @DisplayName("order 목록을 조회한다.")
     @Test
     void list() {
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
 
-        List<Order> results = orderService.list();
+        List<OrderResponse> results = orderService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(1),
-                () -> assertThat(results.get(0)).isEqualTo(주문),
-                () -> assertThat(results.get(0).getOrderLineItems()).containsExactly(주문항목)
+                () -> assertThat(results.get(0)).isEqualTo(OrderResponse.from(order)),
+                () -> assertThat(results.get(0).getOrderLineItems())
+                        .containsExactly(OrderLineItemResponse.from(orderItems))
         );
     }
 
-    @DisplayName("주문 상태를 변경한다.")
+    @DisplayName("order 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(주문));
-        when(orderDao.save(any())).thenReturn(주문);
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(주문항목));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
-        Order 상태변경_주문 = Order.of(주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
-        Order result = orderService.changeOrderStatus(주문.getId(), 상태변경_주문);
+        OrderResponse result = orderService.changeOrderStatus(order.getId(), OrderStatus.MEAL.name());
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
@@ -161,25 +170,23 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문이 없으면 주문의 상태 변경 시 예외가 발생한다.")
+    @DisplayName("order이 없으면 order의 상태 변경 시 예외가 발생한다.")
     @Test
     void changeOrderStatusException() {
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
-        Long orderId = 주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 주문))
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(0L, OrderStatus.MEAL.name()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 상태가 계산 완료이면 주문의 상태 변경 시 예외가 발생한다.")
+    @DisplayName("order 상태가 계산 완료이면 order의 상태 변경 시 예외가 발생한다.")
     @Test
     void changeOrderStatusException2() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(계산완료_주문));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(payedOrder));
 
-        Order 상태변경_주문 = Order.of(계산완료_주문.getId(), 주문_테이블.getId(), Arrays.asList(주문항목));
-        상태변경_주문.setOrderStatus(OrderStatus.MEAL.name());
-        Long orderId = 상태변경_주문.getId();
-        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, 상태변경_주문))
-                .isInstanceOf(IllegalArgumentException.class);
+        Long orderId = payedOrder.getId();
+        Assertions.assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL.name()))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageStartingWith(INVALID_CHANGE_ORDER_STATUS);
     }
 }

@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
-import org.assertj.core.api.Assertions;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,58 +25,41 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
-    private Product 허니콤보;
-    private Product 레드윙;
+    private Product honeycombo;
+    private Product redwing;
 
     @BeforeEach
     void setUp() {
-        허니콤보 = Product.of(1L, "허니콤보", BigDecimal.valueOf(18000));
-        레드윙 = Product.of(2L, "레드윙", BigDecimal.valueOf(19000));
+        honeycombo = Product.of(1L, "honeycombo", BigDecimal.valueOf(18000));
+        redwing = Product.of(2L, "redwing", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void create() {
-        when(productDao.save(any())).thenReturn(허니콤보);
+        when(productRepository.save(any())).thenReturn(honeycombo);
 
-        Product result = productService.create(허니콤보);
+        ProductResponse result = productService.create(honeycombo);
 
-        assertThat(result).isEqualTo(허니콤보);
+        assertThat(result).isEqualTo(ProductResponse.from(honeycombo));
     }
 
-    @DisplayName("상품 생성 시 가격이 null 이면 예외가 발생한다.")
-    @Test
-    void createException() {
-        Product product = Product.of(1L, "product", null);
-
-        Assertions.assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("상품 생성 시 가격이 0보다 작으면 예외가 발생한다.")
-    @Test
-    void createException2() {
-        Product product = Product.of(1L, "product", BigDecimal.valueOf(-1));
-
-        Assertions.assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() {
-        when(productDao.findAll()).thenReturn(Arrays.asList(허니콤보, 레드윙));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(honeycombo, redwing));
 
-        List<Product> results = productService.list();
+        List<ProductResponse> results = productService.list();
 
         assertAll(
                 () -> assertThat(results).hasSize(2),
-                () -> assertThat(results).containsExactly(허니콤보, 레드윙)
+                () -> assertThat(results).containsExactly(ProductResponse.from(honeycombo), ProductResponse.from(redwing))
         );
     }
 }

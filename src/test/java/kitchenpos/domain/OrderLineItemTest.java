@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.domain.order.OrderLineItem;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,8 @@ class OrderLineItemTest {
     @DisplayName("id가 같은 두 객체는 같다.")
     @Test
     void equalsTest() {
-        OrderLineItem orderLineItem1 = OrderLineItem.of(1L, 1L, 1L, 2);
-        OrderLineItem orderLineItem2 = OrderLineItem.of(1L, 1L, 1L, 2);
+        OrderLineItem orderLineItem1 = OrderLineItem.of(1L, 1L, 2);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(1L, 1L, 2);
 
         Assertions.assertThat(orderLineItem1).isEqualTo(orderLineItem2);
     }
@@ -19,8 +20,8 @@ class OrderLineItemTest {
     @DisplayName("id가 다르면 두 객체는 다르다.")
     @Test
     void equalsTest2() {
-        OrderLineItem orderLineItem1 = OrderLineItem.of(1L, 1L, 1L, 2);
-        OrderLineItem orderLineItem2 = OrderLineItem.of(2L, 1L, 1L, 2);
+        OrderLineItem orderLineItem1 = OrderLineItem.of(1L, 1L, 2);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(2L, 1L, 2);
 
         Assertions.assertThat(orderLineItem1).isNotEqualTo(orderLineItem2);
     }
