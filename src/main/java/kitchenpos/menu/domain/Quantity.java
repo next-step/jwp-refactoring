@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
 
 @Embeddable
 public class Quantity {
@@ -20,7 +19,7 @@ public class Quantity {
     }
 
     private void validateQuantity(final Long quantity) {
-        if (Objects.isNull(quantity) || quantity < ZERO) {
+        if (null == quantity || quantity < ZERO) {
             throw new IllegalArgumentException(EXCEPTION_MESSAGE_QUANTITY_IS_NOT_NEGATIVE);
         }
     }
