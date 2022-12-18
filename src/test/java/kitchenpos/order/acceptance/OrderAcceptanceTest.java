@@ -27,7 +27,8 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        OrderTable 주문테이블 = 주문_테이블_생성_요청함(new OrderTable(null, null, 3, false)).as(OrderTable.class);
+        OrderTableResponse 주문테이블 = 주문_테이블_생성_요청함(new OrderTableRequest(3, false)).as(OrderTableResponse.class);
         MenuGroupResponse 메뉴분류세트 = 메뉴_그룹_생성_요청함("메뉴분류세트").as(MenuGroupResponse.class);
         ProductResponse 후라이드 = 상품_생성_요청함("후라이드", BigDecimal.valueOf(15000)).as(ProductResponse.class);
         ProductResponse 콜라 = 상품_생성_요청함("콜라", BigDecimal.valueOf(1000)).as(ProductResponse.class);

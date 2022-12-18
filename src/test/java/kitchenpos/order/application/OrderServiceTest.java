@@ -18,7 +18,6 @@ import kitchenpos.menu.domain.MenuGroupFactory;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductFactory;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderFactory;
 import kitchenpos.order.domain.OrderLineItem;
@@ -30,6 +29,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductFactory;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableFactory;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +55,6 @@ class OrderServiceTest {
     private Menu 후라이드세트;
     private OrderTable 주문테이블;
     private Order 주문;
-    private OrderLineItem 후라이드세트주문항목;
     private OrderLineItemRequest 주문항목요청;
 
     @BeforeEach
@@ -68,12 +67,9 @@ class OrderServiceTest {
         MenuProduct 후라이드메뉴상품 = MenuProductFactory.create(1L, 후라이드세트, 후라이드, 1L);
         MenuProduct 콜라메뉴상품 = MenuProductFactory.create(2L, 후라이드세트, 콜라, 1L);
 
-        MenuProductRequest 후라이드메뉴상품요청 = new MenuProductRequest(후라이드.getId(), 1L);
-        MenuProductRequest 콜라메뉴상품요청 = new MenuProductRequest(콜라.getId(), 1L);
-
         후라이드세트 = MenuFactory.create(1L, "후라이드세트", BigDecimal.valueOf(16000), 메뉴분류세트, Arrays.asList(후라이드메뉴상품, 콜라메뉴상품));
-        주문테이블 = new OrderTable(1L, null, 4, false);
-        후라이드세트주문항목 = new OrderLineItem(1L, 주문, 후라이드세트, 1L);
+        주문테이블 = OrderTableFactory.create(1L, null, 4, false);
+        OrderLineItem 후라이드세트주문항목 = new OrderLineItem(1L, 주문, 후라이드세트, 1L);
         주문 = OrderFactory.create(1L, 주문테이블, Collections.singletonList(후라이드세트주문항목));
         주문항목요청 = new OrderLineItemRequest(후라이드세트.getId(), 1L);
     }
@@ -141,7 +137,7 @@ class OrderServiceTest {
     @Test
     void createOrderTableEmpty() {
         //given
-        OrderTable 빈주문테이블 = new OrderTable(1L, null, 0, true);
+        OrderTable 빈주문테이블 = OrderTableFactory.create(1L, null, 0, true);
         OrderRequest 주문요청 = new OrderRequest(빈주문테이블.getId(), null, Collections.singletonList(주문항목요청));
         given(orderTableRepository.findById(빈주문테이블.getId())).willReturn(Optional.ofNullable(빈주문테이블));
         given(menuRepository.findById(후라이드세트.getId())).willReturn(Optional.ofNullable(후라이드세트));

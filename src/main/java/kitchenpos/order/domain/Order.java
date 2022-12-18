@@ -55,20 +55,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    private void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-        orderLineItem.setOrder(this);
-    }
-
-    private void validOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("비어있는 주문항목은 등록할 수 없습니다.");
-        }
-    }
-
-    private void validOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문테이블이 비어있습니다.");
+    public void validIfNotCompletion() {
+        if (!this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException("완료되지 않은 주문입니다.");
         }
     }
 
@@ -90,5 +79,22 @@ public class Order {
 
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
+    }
+
+    private void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+        orderLineItem.setOrder(this);
+    }
+
+    private void validOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("비어있는 주문항목은 등록할 수 없습니다.");
+        }
+    }
+
+    private void validOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문테이블이 비어있습니다.");
+        }
     }
 }
