@@ -243,7 +243,8 @@ How?
 - [x] Table 과 다른 패키지 / 객체 간 의존성 제거
   - [x] OrderTable --> TableGroup 의존성 제거 (간접참조)
 
-- 도메인 서비스가 필요한가 고민해볼 것 (OrderValidator 등등 ... )
+- [ ] Validator 도입
+  - [ ] OrderValidator
 
 ### 힌트
 - 함께 생성되고 함께 삭제되는 객체들을 함께 묶어라
