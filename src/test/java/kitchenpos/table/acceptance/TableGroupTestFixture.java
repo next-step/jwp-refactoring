@@ -1,14 +1,14 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.TestFixture;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
 
 public class TableGroupTestFixture extends TestFixture {
     public static final String TABLE_GROUP_BASE_URI = "/api/table-groups";
 
-    public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_요청(TableGroupRequest tableGroup) {
         return post(TABLE_GROUP_BASE_URI, tableGroup);
     }
 

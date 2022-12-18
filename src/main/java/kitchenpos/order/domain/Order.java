@@ -31,7 +31,7 @@ public class Order {
     @Embedded
     private final OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
     }
 
     protected Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {

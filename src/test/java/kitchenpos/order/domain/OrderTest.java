@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collections;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,7 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable(1L, null, 4, false);
+        주문테이블 = OrderTableFactory.create(1L, null, 4, false);
         주문항목 = new OrderLineItem(1L, null, null, 1L);
     }
 
@@ -58,8 +59,7 @@ class OrderTest {
     @Test
     void validOrderTable() {
         //given
-        OrderTable 빈주문테이블 = new OrderTable(1L, null, 0, true);
-        Order order = OrderFactory.create(1L, 주문테이블, Collections.singletonList(주문항목));
+        OrderTable 빈주문테이블 = OrderTableFactory.create(1L, null, 0, true);
         //when & then
         assertThatThrownBy(() -> OrderFactory.create(1L, 빈주문테이블, Collections.singletonList(주문항목)))
                 .isInstanceOf(IllegalArgumentException.class);
