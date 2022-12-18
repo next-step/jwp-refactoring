@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.product.dao.ProductDao;
@@ -53,16 +54,27 @@ public class MenuService {
     }
 
     private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        List<Product> products = findProducts(menuProductRequests);
         List<MenuProduct> menuProducts = new ArrayList<>();
+
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            final Product product = getProduct(menuProductRequest.getProductId());
+            final Product product = getProduct(products, menuProductRequest.getProductId());
             menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return menuProducts;
     }
 
-    private Product getProduct(Long productId) {
-        return productDao.findById(productId)
+    private List<Product> findProducts(List<MenuProductRequest> menuProductRequests) {
+        List<Long> productIds = menuProductRequests.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+        return productDao.findProductByIdIn(productIds);
+    }
+
+    private Product getProduct(List<Product> products, Long productId) {
+        return products.stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
 }
