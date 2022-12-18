@@ -47,7 +47,7 @@ public class ProductRestControllerTest extends ControllerTest {
     @Test
     void 상품_등록() throws Exception {
         ProductRequest request = new ProductRequest(스테이크.getName(), 스테이크.getPrice());
-        given(productService.create(스테이크)).willReturn(스테이크);
+        given(productService.create(any(ProductRequest.class))).willReturn(ProductResponse.of(스테이크));
 
         webMvc.perform(post("/api/products")
                 .content(mapper.writeValueAsString(request))
@@ -61,7 +61,7 @@ public class ProductRestControllerTest extends ControllerTest {
     @Test
     void 상품_등록_실패() throws Exception {
         ProductRequest request = new ProductRequest(스테이크.getName(), 스테이크.getPrice());
-        given(productService.create(스테이크)).willThrow(IllegalArgumentException.class);
+        given(productService.create(any(ProductRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/products")
                 .content(mapper.writeValueAsString(request))
@@ -72,7 +72,7 @@ public class ProductRestControllerTest extends ControllerTest {
     @Test
     void 상품_목록_조회() throws Exception {
         given(productService.list())
-                .willReturn(Arrays.asList(스테이크, 스파게티));
+                .willReturn(Arrays.asList(ProductResponse.of(스테이크), ProductResponse.of(스파게티)));
 
         webMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())

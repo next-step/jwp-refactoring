@@ -43,8 +43,8 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @Test
     void 메뉴_그룹_등록() throws Exception {
         MenuGroupRequest request = new MenuGroupRequest("양식");
-        given(menuGroupService.create(양식))
-                .willReturn(양식);
+        given(menuGroupService.create(any(MenuGroupRequest.class)))
+                .willReturn(MenuGroupResponse.of(양식));
 
         webMvc.perform(post("/api/menu-groups")
                 .content(mapper.writeValueAsString(request))
@@ -57,7 +57,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @Test
     void 메뉴_그룹_목록_조회() throws Exception {
         given(menuGroupService.list())
-                .willReturn(Arrays.asList(양식, 중식));
+                .willReturn(Arrays.asList(MenuGroupResponse.of(양식), MenuGroupResponse.of(중식)));
 
         webMvc.perform(get("/api/menu-groups"))
                 .andExpect(status().isOk())

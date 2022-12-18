@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.ui.MenuRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +75,7 @@ public class MenuRestControllerTest extends ControllerTest {
     @Test
     void 메뉴_등록() throws Exception {
         MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(50000), 양식.getId(), menuProducts);
-        given(menuService.create(양식_세트)).willReturn(양식_세트);
+        given(menuService.create(any(MenuRequest.class))).willReturn(MenuResponse.of(양식_세트));
 
         webMvc.perform(post("/api/menus")
                 .content(mapper.writeValueAsString(request))
@@ -89,7 +90,7 @@ public class MenuRestControllerTest extends ControllerTest {
     @Test
     void 메뉴_등록_실패() throws Exception {
         MenuRequest request = new MenuRequest("양식 세트", new BigDecimal(55000), 양식.getId(), menuProducts);
-        given(menuService.create(양식_세트)).willThrow(IllegalArgumentException.class);
+        given(menuService.create(any(MenuRequest.class))).willThrow(IllegalArgumentException.class);
 
         webMvc.perform(post("/api/menus")
                 .content(mapper.writeValueAsString(request))
@@ -99,7 +100,7 @@ public class MenuRestControllerTest extends ControllerTest {
 
     @Test
     void 메뉴_목록_조회() throws Exception {
-        given(menuService.list()).willReturn(Arrays.asList(양식_세트));
+        given(menuService.list()).willReturn(Arrays.asList(MenuResponse.of(양식_세트)));
 
         webMvc.perform(get("/api/menus"))
                 .andExpect(status().isOk())
