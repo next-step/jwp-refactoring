@@ -117,7 +117,7 @@ class TableAcceptanceTest extends AcceptanceTest {
                 OrderTableRequest.of(registeredEmptyOrderTable1.getNumberOfGuests(), !registeredEmptyOrderTable1.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(registeredEmptyOrderTable1.getId(), changeOrderTable);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -150,7 +150,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(registeredOrderTable.getId(), changeOrderTable);
 
         // Then 빈 상태 변경 요청 실패됨
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -186,7 +186,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 주문_테이블_빈_상태_변경_요청(registeredOrderTable.getId(), changeOrderTable);
 
         // Then 빈 상태 변경 요청 실패됨
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -236,7 +236,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response =
                 주문_테이블_방문한_손님_수_변경_요청(emptyOrderTable.getId(), changeOrderTable);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 
