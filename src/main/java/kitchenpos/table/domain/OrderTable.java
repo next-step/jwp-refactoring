@@ -69,7 +69,7 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
+    public void changeSitNumberOfGuest(NumberOfGuests numberOfGuests) {
 //        if (Objects.isNull(tableGroup)) {
 //            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
 //        }
