@@ -7,6 +7,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -22,11 +23,14 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
 
-    public OrderService(final MenuRepository menuRepository, OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public OrderService(final MenuRepository menuRepository, OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
+                        OrderLineItemRepository orderLineItemRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     @Transactional
@@ -39,7 +43,11 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(NoResultException::new);
-        final Order savedOrder = orderRepository.save(new Order(orderTable, orderLineItems));
+        final Order savedOrder = orderRepository.save(new Order(orderTable));
+
+        savedOrder.addOrderLineItems(orderLineItems);
+        orderLineItemRepository.saveAll(savedOrder.getOrderLineItems());
+
         return OrderResponse.of(savedOrder);
     }
 

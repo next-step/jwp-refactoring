@@ -238,7 +238,8 @@ How?
 - [x] Menu 와 다른 패키지 / 객체 간 의존성 제거
   - [x] MenuProduct --> Menu 의존성 제거 (간접참조)
 - [ ] Order 와 다른 패키지 / 객체 간 의존성 제거
-  - [ ] OrderLineItem --> Order 의존성 제거 (간접참조)
+  - [x] OrderLineItem --> Order 의존성 제거 (간접참조)
+  - [ ] Order --> OrderTable 의존성 제거 (간접참조)
 - [ ] Table 과 다른 패키지 / 객체 간 의존성 제거
   - [ ] OrderTable --> TableGroup 의존성 제거 (간접참조)
 

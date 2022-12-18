@@ -117,7 +117,8 @@ public class OrderTableTest extends JpaEntityTest {
         // given
         Menu menu = createMenuFixture("순살후라이드");
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, false));
-        Order order = orderRepository.save(new Order(savedOrderTable, Lists.newArrayList(new OrderLineItem(menu, 2L))));
+        Order order = orderRepository.save(new Order(savedOrderTable));
+        order.addOrderLineItems(Lists.newArrayList(new OrderLineItem(menu, 2L)));
         order.updateStatus(OrderStatus.MEAL);
         flushAndClear();
 

@@ -33,15 +33,12 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable) {
         orderTable.validateIsEmptyTable();
         assignOrderTable(orderTable);
         this.orderStatus = OrderStatus.COOKING;
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            addOrderLineItem(orderLineItem);
-        }
     }
-
+    
     private void assignOrderTable(OrderTable orderTable) {
         orderTable.ordered(this);
         this.orderTable = orderTable;
@@ -67,8 +64,14 @@ public class Order {
         return orderLineItems.values();
     }
 
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            addOrderLineItem(orderLineItem);
+        }
+    }
+
     private void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.addedBy(this.getId());
+        orderLineItem.addedBy(this.id);
         orderLineItems.add(orderLineItem);
     }
 

@@ -36,7 +36,8 @@ public class OrderTest extends JpaEntityTest {
         OrderLineItem orderLineItem = new OrderLineItem(menu, 2L);
 
         // when
-        Order savedOrder = orderRepository.save(new Order(테이블, Lists.newArrayList(orderLineItem)));
+        Order savedOrder = orderRepository.save(new Order(테이블));
+        savedOrder.addOrderLineItems(Lists.newArrayList(orderLineItem));
         flushAndClear();
 
         // then
@@ -54,7 +55,8 @@ public class OrderTest extends JpaEntityTest {
         Menu menu = createMenuFixture("순살후라이드치킨");
         OrderTable 테이블 = new OrderTable(4, false);
         OrderLineItem orderLineItem = new OrderLineItem(menu, 2L);
-        Order savedOrder = orderRepository.save(new Order(테이블, Lists.newArrayList(orderLineItem)));
+        Order savedOrder = orderRepository.save(new Order(테이블));
+        savedOrder.addOrderLineItems(Lists.newArrayList(orderLineItem));
         flushAndClear();
 
         // when
