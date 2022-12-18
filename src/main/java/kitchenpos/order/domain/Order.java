@@ -68,7 +68,7 @@ public class Order {
     }
 
     private void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.addedBy(this);
+        orderLineItem.addedBy(this.getId());
         orderLineItems.add(orderLineItem);
     }
 
@@ -91,12 +91,12 @@ public class Order {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
-        Order entity = (Order) o;
-        return Objects.equals(orderTable, entity.orderTable) && Objects.equals(orderLineItems, entity.orderLineItems);
+        Order order = (Order) o;
+        return Objects.equals(getOrderTable(), order.getOrderTable()) && orderStatus == order.orderStatus && Objects.equals(getOrderedTime(), order.getOrderedTime()) && Objects.equals(getOrderLineItems(), order.getOrderLineItems());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTable, orderLineItems);
+        return Objects.hash(getOrderTable(), orderStatus, getOrderedTime(), getOrderLineItems());
     }
 }

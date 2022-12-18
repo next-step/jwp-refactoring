@@ -45,6 +45,10 @@ public class MenuProduct {
         return quantity.value();
     }
 
+    public void addedBy(Long menuId) {
+        this.menuId = menuId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,9 +60,5 @@ public class MenuProduct {
     @Override
     public int hashCode() {
         return Objects.hash(menuId, getProduct(), getQuantity());
-    }
-
-    public void addedBy(Long menuId) {
-        this.menuId = menuId;
     }
 }

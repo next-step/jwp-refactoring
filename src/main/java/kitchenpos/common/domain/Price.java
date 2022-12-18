@@ -24,10 +24,8 @@ public class Price {
         return price;
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (null == price || price.compareTo(BigDecimal.ZERO) < ZERO) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_PRICE_IS_NOT_NEGATIVE);
-        }
+    public boolean isLarger(BigDecimal comparePrice) {
+        return this.price.compareTo(comparePrice) > ZERO;
     }
 
     @Override
@@ -43,7 +41,9 @@ public class Price {
         return Objects.hash(price);
     }
 
-    public boolean isLarger(BigDecimal comparePrice) {
-        return this.price.compareTo(comparePrice) > ZERO;
+    private void validatePrice(BigDecimal price) {
+        if (null == price || price.compareTo(BigDecimal.ZERO) < ZERO) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_PRICE_IS_NOT_NEGATIVE);
+        }
     }
 }
