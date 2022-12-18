@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,11 +26,14 @@ import kitchenpos.table.exception.CannotCreateGroupTableException;
 public class TableGroup {
 
 	public static final int MINIMUM_ORDER_TABLE_COUNT = 2;
-	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<OrderTable> orderTables = new ArrayList<>();
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@OneToMany(mappedBy = "tableGroup")
+	private final List<OrderTable> orderTables = new ArrayList<>();
+
 	private LocalDateTime createdDate;
 
 	protected TableGroup() {
@@ -39,7 +41,7 @@ public class TableGroup {
 
 	public TableGroup(List<OrderTable> orderTables) {
 		this.createdDate = LocalDateTime.now();
-		addOrderTables(orderTables);
+		this.orderTables.addAll(orderTables);
 	}
 
 	public static TableGroup create(List<OrderTable> orderTable) {
@@ -86,17 +88,6 @@ public class TableGroup {
 
 	public List<OrderTable> getOrderTables() {
 		return orderTables;
-	}
-
-	private void addOrderTables(List<OrderTable> orderTables) {
-		orderTables.forEach(this::addOrderTable);
-	}
-
-	private void addOrderTable(OrderTable orderTable) {
-		if (!orderTables.contains(orderTable)) {
-			orderTables.add(orderTable);
-		}
-		orderTable.changeTableGroup(this);
 	}
 
 	public void ungroup() {

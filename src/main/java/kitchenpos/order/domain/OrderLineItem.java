@@ -15,8 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.menu.domain.Menu;
-
 @Entity
 @Table(name = "order_line_item")
 public class OrderLineItem {
@@ -29,31 +27,28 @@ public class OrderLineItem {
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "menu_id")
-	private Menu menu;
+	private Long menuId;
 
 	private Integer quantity;
 
 	protected OrderLineItem() {
 	}
 
-	public OrderLineItem(Order order, Menu menu, Integer quantity) {
+	public OrderLineItem(Order order, Long menuId, Integer quantity) {
 		this.order = order;
-		this.menu = menu;
+		this.menuId = menuId;
 		this.quantity = quantity;
 	}
 
-	public static List<OrderLineItem> of(Order order, Map<Menu, Integer> menus) {
+	public static List<OrderLineItem> of(Order order, Map<Long, Integer> menus) {
 		return menus.entrySet()
 					.stream()
 					.map(entry -> new OrderLineItem(order, entry.getKey(), entry.getValue()))
 					.collect(Collectors.toList());
 	}
 
-	public String getMenuName() {
-		return menu.getName()
-				   .toString();
+	public Long getMenuId() {
+		return menuId;
 	}
 
 	public Integer getQuantity() {

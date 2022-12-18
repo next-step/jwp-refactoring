@@ -1,58 +1,60 @@
 package kitchenpos.order.domain;
 
 import static kitchenpos.order.exception.CannotStartOrderException.TYPE.NO_ORDER_ITEMS;
-import static kitchenpos.order.exception.CannotStartOrderException.TYPE.ORDER_TABLE_NOT_EMPTY;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.CannotStartOrderException;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
 public class Order {
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "order_table_id")
-	private OrderTable orderTable;
+
+	@Embedded
+	private OrderLineItems orderLineItems = new OrderLineItems();
+
+	private Long orderTableId;
+
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus;
+
 	private LocalDateTime orderedTime;
 
 	protected Order() {
 	}
 
-	public Order(OrderStatus orderStatus, OrderTable orderTable, Map<Menu, Integer> menus) {
-		this.orderStatus = orderStatus;
-		changeOrderTable(orderTable);
-		orderLineItems.addAll(OrderLineItem.of(this, menus));
+	public Order(Long orderTableId, Map<Long, Integer> menus) {
+		this.orderTableId = orderTableId;
+		this.orderedTime = LocalDateTime.now();
+		orderLineItems.addAll(this, menus);
 	}
 
-	public Order(OrderTable orderTable, Map<Menu, Integer> menus) {
-		this(OrderStatus.COOKING, orderTable, menus);
+	public Order(Long id,
+				 Map<Long, Integer> menus,
+				 Long orderTableId,
+				 OrderStatus orderStatus,
+				 LocalDateTime orderedTime) {
+		this.id = id;
+		this.orderLineItems.addAll(this, menus);
+		this.orderTableId = orderTableId;
+		this.orderStatus = orderStatus;
+		this.orderedTime = orderedTime;
 	}
 
 	public Long getId() {
@@ -63,12 +65,8 @@ public class Order {
 		return orderStatus;
 	}
 
-	public List<OrderLineItem> getOrderLineItems() {
+	public OrderLineItems getOrderLineItems() {
 		return orderLineItems;
-	}
-
-	private void changeOrderTable(OrderTable newOrderTable) {
-		this.orderTable = newOrderTable;
 	}
 
 	public void startOrder() {
@@ -82,9 +80,10 @@ public class Order {
 		if (orderLineItems.isEmpty()) {
 			throw new CannotStartOrderException(NO_ORDER_ITEMS);
 		}
-		if (!orderTable.isEmpty()) {
-			throw new CannotStartOrderException(ORDER_TABLE_NOT_EMPTY);
-		}
+		// TODO validate start order
+		// if (!orderTable.isEmpty()) {
+		// 	throw new CannotStartOrderException(ORDER_TABLE_NOT_EMPTY);
+		// }
 	}
 
 	public void changeOrderStatus(OrderStatus toStatus) {

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 
 public class OrderResponse {
 	private Long id;
@@ -46,26 +46,26 @@ public class OrderResponse {
 	}
 
 	static class OrderLineItemResponse {
-		private String menu;
+		private Long menuId;
 		private Integer quantity;
 
 		private OrderLineItemResponse() {
 		}
 
-		public OrderLineItemResponse(String menu, Integer quantity) {
-			this.menu = menu;
+		public OrderLineItemResponse(Long menuId, Integer quantity) {
+			this.menuId = menuId;
 			this.quantity = quantity;
 		}
 
-		public static List<OrderLineItemResponse> of(List<OrderLineItem> orderLineItems) {
+		public static List<OrderLineItemResponse> of(OrderLineItems orderLineItems) {
 			return orderLineItems.stream()
-								 .map(orderLineItem -> new OrderLineItemResponse(orderLineItem.getMenuName(),
+								 .map(orderLineItem -> new OrderLineItemResponse(orderLineItem.getMenuId(),
 																				 orderLineItem.getQuantity()))
 								 .collect(Collectors.toList());
 		}
 
-		public String getMenu() {
-			return menu;
+		public Long getMenuId() {
+			return menuId;
 		}
 
 		public Integer getQuantity() {

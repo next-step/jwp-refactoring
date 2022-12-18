@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.table.domain.OrderTable;
 
 public class OrderRequest {
 
 	private Long orderTableId;
+
 	private List<OrderLineItemRequest> orderLineItems;
 
 	private OrderRequest() {
@@ -25,29 +23,16 @@ public class OrderRequest {
 											.collect(Collectors.toList());
 	}
 
-	public Order toOrder(OrderTable orderTable, List<Menu> menus) {
-		return new Order(orderTable, getMenusWithQuantity(menus));
+	public Order toOrder() {
+		return new Order(orderTableId, getMenusWithQuantity());
 	}
 
-	private Map<Menu, Integer> getMenusWithQuantity(List<Menu> menus) {
+	private Map<Long, Integer> getMenusWithQuantity() {
 		return orderLineItems.stream()
 							 .collect(Collectors.toMap(
-								 orderLineItem -> getMenu(menus, orderLineItem.getMenuId()),
-								 OrderLineItemRequest::getQuantity, Integer::sum));
-	}
-
-	private Menu getMenu(List<Menu> menus, Long menuId) {
-		return menus.stream()
-					.filter(menu -> menu.getId()
-										.equals(menuId))
-					.findAny()
-					.orElseThrow(EntityNotFoundException::new);
-	}
-
-	public List<Long> menuIdList() {
-		return orderLineItems.stream()
-							 .map(OrderRequest.OrderLineItemRequest::getMenuId)
-							 .collect(Collectors.toList());
+								 OrderLineItemRequest::getMenuId,
+								 OrderLineItemRequest::getQuantity,
+								 Integer::sum));
 	}
 
 	public Long getOrderTableId() {
@@ -60,6 +45,7 @@ public class OrderRequest {
 
 	public static class OrderLineItemRequest {
 		private Long menuId;
+
 		private Integer quantity;
 
 		private OrderLineItemRequest() {

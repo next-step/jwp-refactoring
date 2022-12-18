@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,58 +24,42 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.Money;
-import kitchenpos.menu.service.MenuServiceTest;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
-import kitchenpos.table.domain.OrderTable;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-	@Deprecated
-	static final List<Long> menusId = Lists.newArrayList(1L, 2L, 3L);
-	static final long MENU_GROUP_ID = 1L;
+	Long ORDER_TABLE_ID = 1L;
+
 	@Mock
 	OrderRepository orderRepository;
 	@InjectMocks
 	OrderService orderService;
 
-	private static Order createOrder(OrderStatus orderStatus) {
-		return new Order(orderStatus, createOrderTable(), createMenus(3));
+	private Order createOrder(OrderStatus orderStatus) {
+		return new Order(1L,
+						 createMenus(3),
+						 ORDER_TABLE_ID,
+						 orderStatus,
+						 LocalDateTime.now()
+						 );
 	}
 
-	private static Order createOrder() {
-		return new Order(createOrderTable(), createMenus(3));
-	}
-
-	private static Map<Menu, Integer> createMenus(int count) {
+	private Map<Long, Integer> createMenus(int count) {
 		return LongStream.range(0, count)
-						 .mapToObj(OrderServiceTest::createMenu)
-						 .collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
-	}
-
-	private static Menu createMenu(long id) {
-		return new Menu(id,
-						"menu",
-						Money.valueOf(10_000L),
-						MENU_GROUP_ID,
-						MenuServiceTest.createProducts(3));
-	}
-
-	private static OrderTable createOrderTable() {
-		return new OrderTable(10, true);
+						 .boxed()
+						 .collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
 	}
 
 	@Test
 	@DisplayName("주문 생성")
 	void testCreateOrder() {
 		// given
-		Order expectedOrder = createOrder();
+		Order expectedOrder = createOrder(OrderStatus.COOKING);
 
 		when(orderRepository.save(any(Order.class))).thenReturn(expectedOrder);
 		// when
@@ -89,16 +74,16 @@ class OrderServiceTest {
 	@DisplayName("주문 목록 조회 성공")
 	void testListOrder() {
 		// given
-		Order expectedOrder1 = createOrder();
-		Order expectedOrder = createOrder();
-		when(orderRepository.findAll()).thenReturn(Lists.newArrayList(expectedOrder1, expectedOrder));
+		Order expectedOrder1 = createOrder(OrderStatus.COOKING);
+		Order expectedOrder2 = createOrder(OrderStatus.MEAL);
+		when(orderRepository.findAll()).thenReturn(Lists.newArrayList(expectedOrder1, expectedOrder2));
 
 		// when
 		List<Order> actualOrders = orderService.findAll();
 
 		// then
 		verify(orderRepository, times(1)).findAll();
-		assertThat(actualOrders).containsExactlyInAnyOrder(expectedOrder1, expectedOrder);
+		assertThat(actualOrders).containsExactlyInAnyOrder(expectedOrder1, expectedOrder2);
 	}
 
 	@Test
