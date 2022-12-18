@@ -79,7 +79,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 상품의 총 금액의 합보다 큰 값을 메뉴의 가격으로 하여 메뉴를 생성할경우 실패")
     @Test
     void createMenuWithInvalidPrice() {
-        ExtractableResponse<Response> response = 메뉴_생성을_요청("먹물치킨", new BigDecimal(90000), 치킨.getId(), 메뉴상품);
+        ExtractableResponse<Response> response = 메뉴_생성을_요청("먹물치킨", new BigDecimal(9000000), 치킨.getId(), 메뉴상품);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }

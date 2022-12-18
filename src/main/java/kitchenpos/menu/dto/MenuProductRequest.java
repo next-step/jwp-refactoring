@@ -34,11 +34,11 @@ public class MenuProductRequest {
         this.productId = productId;
     }
 
-    public MenuProduct toMenuProducts(final Menu menu, final List<Product> products) {
+/*    public MenuProduct toMenuProducts(final Menu menu, final List<Product> products) {
         return MenuProduct.builder()
                 .menu(menu)
                 .product(products.stream().filter(product -> product.getId().equals(productId)).findFirst().get())
                 .quantity(quantity)
                 .build();
-    }
+    }*/
 }

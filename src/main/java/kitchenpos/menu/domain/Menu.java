@@ -56,14 +56,7 @@ public class Menu {
     }
 
     public void addMenuProducts(MenuProducts menuProducts) {
-        validateMenuPrice(menuProducts);
         this.menuProducts.addMenuProducts(menuProducts);
-    }
-
-    private void validateMenuPrice(MenuProducts menuProducts) {
-        if (price.isExceedPrice(menuProducts.getSumOfMenuProductPrice())) {
-            throw new MenuException(MenuExceptionType.EXCEED_MENU_PRODUCT_PRICE);
-        }
     }
 
     public static MenuBuilder builder() {

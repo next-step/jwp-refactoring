@@ -72,7 +72,11 @@ public class MenuRequest {
                 .build();
         List<MenuProduct> newMenuProducts = menuProducts.stream()
                 .filter(request -> products.stream().anyMatch(product -> product.getId().equals(request.getProductId())))
-                .map(request -> request.toMenuProducts(menu, products))
+                .map(request -> MenuProduct.builder()
+                        .productId(request.getProductId())
+                        .menu(menu)
+                        .quantity(request.getQuantity())
+                        .build())
                 .collect(toList());
         menu.addMenuProducts(MenuProducts.of(newMenuProducts));
         return menu;

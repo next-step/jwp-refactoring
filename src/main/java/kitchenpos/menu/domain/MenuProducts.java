@@ -27,14 +27,6 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public BigDecimal getSumOfMenuProductPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getPrice());
-        }
-        return sum;
-    }
-
     public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
     }

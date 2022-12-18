@@ -7,6 +7,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuProductRepository;
 import kitchenpos.menu.persistence.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.ProductException;
 import kitchenpos.product.persistence.ProductRepository;
@@ -24,13 +25,16 @@ public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
+            final MenuValidator menuValidator,
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
             final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
+        this.menuValidator = menuValidator;
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.menuProductRepository = menuProductRepository;
@@ -41,6 +45,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
+        menuValidator.validatePrice(menuRequest);
         List<Product> menuProducts = findAllProductByIds(menuRequest.getMenuProductIds());
         Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);

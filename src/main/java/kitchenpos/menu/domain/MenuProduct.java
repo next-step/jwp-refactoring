@@ -1,10 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -13,8 +9,7 @@ public class MenuProduct {
     private Long seq;
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private Long productId;
     @Column
     private long quantity;
 
@@ -24,7 +19,7 @@ public class MenuProduct {
     private MenuProduct(MenuProductBuilder builder) {
         this.seq = builder.seq;
         this.menu = builder.menu;
-        this.product = builder.product;
+        this.productId = builder.productId;
         this.quantity = builder.quantity;
     }
 
@@ -40,33 +35,22 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public long getQuantity() {
+        return quantity;
     }
 
     public Long getProductId() {
-        if (Objects.isNull(product)) {
-            return null;
-        }
-        return product.getId();
-    }
-
-    public long getQuantity() {
-        return quantity;
+        return productId;
     }
 
     public static MenuProductBuilder builder() {
         return new MenuProductBuilder();
     }
 
-    public BigDecimal getPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
-    }
-
     public static class MenuProductBuilder {
         private Long seq;
         private Menu menu;
-        private Product product;
+        private Long productId;
         private long quantity;
 
         public MenuProductBuilder seq(Long seq) {
@@ -79,8 +63,8 @@ public class MenuProduct {
             return this;
         }
 
-        public MenuProductBuilder product(Product product) {
-            this.product = product;
+        public MenuProductBuilder productId(Long productId) {
+            this.productId = productId;
             return this;
         }
 

@@ -8,8 +8,10 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.MenuExceptionType;
 import kitchenpos.menu.persistence.MenuGroupRepository;
 import kitchenpos.menu.persistence.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.persistence.ProductRepository;
@@ -32,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
@@ -43,6 +46,8 @@ public class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private MenuValidator menuValidator;
 
     @DisplayName("메뉴가 속한 메뉴그룹이 없는경우 예외발생")
     @Test
@@ -57,8 +62,10 @@ public class MenuServiceTest {
     @DisplayName("메뉴룰 추가하면 메뉴정보를 반환")
     @Test
     public void returnMenu() {
-        MenuProductRequest menuProductRequest = new MenuProductRequest(1l,3);
-        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.builder().product(Product.builder().id(1l).price(ProductPrice.of(BigDecimal.valueOf(1000))).build()).menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(1l, 3);
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.builder()
+                .productId(1l)
+                .menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build());
         List<MenuProductRequest> menuProductRequests = Arrays.asList(menuProductRequest);
 
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(0), 15l, menuProductRequests);
@@ -70,7 +77,7 @@ public class MenuServiceTest {
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
         doReturn(Arrays.asList(Product.builder()
                 .id(1l)
-                        .price(ProductPrice.of(BigDecimal.valueOf(1000)))
+                .price(ProductPrice.of(BigDecimal.valueOf(1000)))
                 .build())).when(productRepository).findAllById(anyList());
         doReturn(menu).when(menuRepository).save(any(Menu.class));
 
@@ -82,11 +89,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴가격이 메뉴구성상품들의 총 가격 높은경우 예외발생")
     @Test
     public void throwsExceptionWhenMenuPriceGreater() {
-        List<MenuProductRequest> menuProductRequests = Arrays.asList(new MenuProductRequest(1l,3));
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(new MenuProductRequest(1l, 3));
         MenuRequest menuRequest = new MenuRequest("메뉴", BigDecimal.valueOf(15000), 15l, menuProductRequests);
         doReturn(Optional.ofNullable(MenuGroup.builder().build())).when(menuGroupRepository).findById(anyLong());
-        doReturn(Arrays.asList(Product.builder().price(ProductPrice.of(BigDecimal.valueOf(1000))).id(1l)
-                .build())).when(productRepository).findAllById(anyList());
+        doThrow(new MenuException("메뉴가격은 상품가격을 초과할 수 없습니다"))
+                .when(menuValidator).validatePrice(any(MenuRequest.class));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(MenuException.class)
@@ -130,7 +137,7 @@ public class MenuServiceTest {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value -> MenuProduct.builder()
                         .seq(menuProduct.getSeq())
-                        .product(menuProduct.getProduct())
+                        .productId(menuProduct.getProductId())
                         .menu(menuProduct.getMenu())
                         .quantity(menuProduct.getQuantity())
                         .build())
