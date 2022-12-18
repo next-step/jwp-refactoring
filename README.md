@@ -10,9 +10,9 @@
 
 
 ### 상품(product)
-> - [ ] 상품 생성(POST /api/products)
->   - [ ] 상품의 가격은 0원 이하일 수 없다.
-> - [ ] 상품 목록 조회 (GET /api/products)
+> - [x] 상품 생성(POST /api/products)
+>   - [x] 상품의 가격은 0원 이하일 수 없다.
+> - [x] 상품 목록 조회 (GET /api/products)
 
 ### 메뉴(menu)
 > - [ ] 메뉴 생성 (POST /api/menus)
