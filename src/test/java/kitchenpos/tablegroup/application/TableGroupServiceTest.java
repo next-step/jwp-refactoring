@@ -148,43 +148,4 @@ class TableGroupServiceTest {
                 () -> assertThat(orderTable2.isGrouping()).isTrue()
         );
     }
-
-    @DisplayName("단체 지정된 주문 테이블들의 상태가 조리 상태면 단체 지정을 취소할 수 없다.")
-    @Test
-    void ungroupException() {
-        OrderTable orderTable1 = OrderTable.of(1L, 3, true);
-        OrderTable orderTable2 = OrderTable.of(2L, 3, true);
-        List<OrderTable> orderTable_목록 = Arrays.asList(orderTable1, orderTable2);
-        TableGroup.of(1L, orderTable_목록);
-
-        Order.of(orderTable1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        Order.of(orderTable2, Arrays.asList(OrderLineItem.of(2L, 2)));
-
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(orderTable_목록);
-
-        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(INVALID_CANCEL_ORDER_TABLES_STATUS);
-    }
-
-    @DisplayName("단체 지정된 주문 테이블들이 식사 상태면 단체 지정을 취소할 수 없다.")
-    @Test
-    void ungroupException3() {
-        OrderTable orderTable1 = OrderTable.of(1L, 3, true);
-        OrderTable orderTable2 = OrderTable.of(2L, 3, true);
-        List<OrderTable> orderTableList = Arrays.asList(orderTable1, orderTable2);
-        TableGroup.of(1L, orderTableList);
-
-        Order order1 = Order.of(orderTable1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        Order order2 = Order.of(orderTable2, Arrays.asList(OrderLineItem.of(2L, 2)));
-
-        order1.changeOrderStatus(OrderStatus.MEAL);
-        order2.changeOrderStatus(OrderStatus.MEAL);
-
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(orderTableList);
-
-        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(INVALID_CANCEL_ORDER_TABLES_STATUS);
-    }
 }
