@@ -47,7 +47,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = findById(orderTableId);
         List<Order> orders = orderRepository.findAllByOrderTableId(orderTable.getId());
-        orderValidator.validateOrderStatus(orders);
+        orderValidator.validateOnGoingOrderStatus(orders);
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return OrderTableResponse.from(savedOrderTable);

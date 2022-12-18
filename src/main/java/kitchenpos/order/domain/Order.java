@@ -1,15 +1,14 @@
 package kitchenpos.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import kitchenpos.ordertable.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.common.ErrorMessage.*;
+import static kitchenpos.common.ErrorMessage.COMPLETED_ORDER;
+import static kitchenpos.common.ErrorMessage.TABLE_HAVE_ONGOING_ORDER;
 
 @Entity(name = "orders")
 public class Order {
@@ -39,16 +38,6 @@ public class Order {
         return new Order(orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
-    private void validateOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(EMPTY_ORDER_TABLE_LIST.getMessage());
-        }
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(EMPTY_ORDER_TABLE.getMessage());
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -58,13 +47,19 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
-        validateOrderStatus();
+        validateCompletionOrderStatus();
         this.orderStatus = orderStatus;
     }
 
-    public void validateOrderStatus() {
+    public void validateCompletionOrderStatus() {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException(COMPLETED_ORDER.getMessage());
+        }
+    }
+
+    public void validateOnGoingOrderStatus() {
+        if (!Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException(TABLE_HAVE_ONGOING_ORDER.getMessage());
         }
     }
 

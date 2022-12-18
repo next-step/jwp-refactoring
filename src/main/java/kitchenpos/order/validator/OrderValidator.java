@@ -18,7 +18,7 @@ public class OrderValidator {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void validator(OrderRequest orderRequest) {
+    public void validate(OrderRequest orderRequest) {
         OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
         validateOrderTable(orderTable);
     }
@@ -34,7 +34,7 @@ public class OrderValidator {
         }
     }
 
-    public void validateOrderStatus(List<Order> orders) {
-        orders.forEach(Order::validateOrderStatus);
+    public void validateOnGoingOrderStatus(List<Order> orders) {
+        orders.forEach(Order::validateOnGoingOrderStatus);
     }
 }

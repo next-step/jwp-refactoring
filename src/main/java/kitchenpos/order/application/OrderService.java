@@ -35,7 +35,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        orderValidator.validator(request);
+        orderValidator.validate(request);
         List<OrderLineItemRequest> requestOrderLineItems = request.getOrderLineItemsRequest();
         validateOrderLineItems(requestOrderLineItems);
         List<OrderLineItem> orderLineItems = mapToOrderLineItems(requestOrderLineItems);

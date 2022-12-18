@@ -81,7 +81,7 @@ public class TableGroupService {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         List<Order> orders = findAllOrderByOrderTableIds(orderTables);
-        orderValidator.validateOrderStatus(orders);
+        orderValidator.validateOnGoingOrderStatus(orders);
         tableGroup.unGroup(orderTables);
     }
 
