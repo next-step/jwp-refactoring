@@ -12,9 +12,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq", nullable = false, columnDefinition = "bigint(20)")
     private Long seq;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
+    @Column(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
+    private Long menuId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
@@ -33,8 +32,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {
@@ -45,20 +44,20 @@ public class MenuProduct {
         return quantity.value();
     }
 
-    public void addedBy(final Menu menu) {
-        this.menu = menu;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MenuProduct)) return false;
         MenuProduct that = (MenuProduct) o;
-        return Objects.equals(getMenu(), that.getMenu()) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
+        return Objects.equals(menuId, that.menuId) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMenu(), getProduct(), getQuantity());
+        return Objects.hash(menuId, getProduct(), getQuantity());
+    }
+
+    public void addedBy(Long menuId) {
+        this.menuId = menuId;
     }
 }

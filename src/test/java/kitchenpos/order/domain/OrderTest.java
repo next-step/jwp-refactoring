@@ -4,10 +4,10 @@ import kitchenpos.JpaEntityTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +80,10 @@ public class OrderTest extends JpaEntityTest {
         productRepository.save(product);
 
         MenuGroup menuGroup = new MenuGroup("한마리치킨");
-        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup, Lists.newArrayList(new MenuProduct(product, 1L)));
-        return menuRepository.save(menu);
+        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup);
+        Menu save = menuRepository.save(menu);
+        save.addMenuProducts(Lists.newArrayList(new MenuProduct(product, 1L)));
+
+        return save;
     }
 }

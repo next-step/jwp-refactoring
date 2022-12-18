@@ -134,7 +134,10 @@ public class OrderTableTest extends JpaEntityTest {
         productRepository.save(product);
 
         MenuGroup menuGroup = new MenuGroup("한마리치킨");
-        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup, Lists.newArrayList(new MenuProduct(product, 1L)));
+        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup);
+        Menu save = menuRepository.save(menu);
+        save.addMenuProducts(Lists.newArrayList(new MenuProduct(product, 1L)));
+
         return menuRepository.save(menu);
     }
 }

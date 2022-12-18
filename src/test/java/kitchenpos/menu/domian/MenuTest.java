@@ -37,8 +37,10 @@ public class MenuTest extends JpaEntityTest {
 
         // when
         MenuProduct menuProduct = new MenuProduct(후라이드, 3L);
-        Menu 후라이드한마리치킨 = new Menu("후라이드한마리치킨", BigDecimal.valueOf(18_000 * 3L), 한마리치킨, Lists.newArrayList(menuProduct));
+        Menu 후라이드한마리치킨 = new Menu("후라이드한마리치킨", BigDecimal.valueOf(18_000 * 3L), 한마리치킨);
         Menu savedMenu = menuRepository.save(후라이드한마리치킨);
+        savedMenu.addMenuProducts(Lists.newArrayList(menuProduct));
+        flushAndClear();
 
         // then
         assertThat(savedMenu).isNotNull();
@@ -56,9 +58,11 @@ public class MenuTest extends JpaEntityTest {
 
         // when
         MenuProduct menuProduct = new MenuProduct(후라이드, 3L);
+        Menu savedMenu = menuRepository.save(new Menu("후라이드한마리치킨", BigDecimal.valueOf(18_000 * 4L), 한마리치킨));
+        flushAndClear();
 
         // then
-        assertThatThrownBy(() -> new Menu("후라이드한마리치킨", BigDecimal.valueOf(18_000 * 4L), 한마리치킨, Lists.newArrayList(menuProduct)))
+        assertThatThrownBy(() -> savedMenu.addMenuProducts(Lists.newArrayList(menuProduct)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
