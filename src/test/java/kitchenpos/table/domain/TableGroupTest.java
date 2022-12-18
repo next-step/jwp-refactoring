@@ -62,8 +62,6 @@ public class TableGroupTest extends JpaEntityTest {
 
         // when
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
-        savedTableGroup.enGroup(validator);
-        orderTableRepository.saveAll(savedTableGroup.getOrderTables());
         flushAndClear();
 
         // then
