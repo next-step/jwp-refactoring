@@ -1,18 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
-import java.math.BigDecimal;
+import javax.persistence.*;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class MenuProduct {
