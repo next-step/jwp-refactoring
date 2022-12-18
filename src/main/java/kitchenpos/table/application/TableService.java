@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -14,14 +15,17 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = orderTableRequest.toOrderTable();
+        orderTableValidator.validateCreate(orderTable);
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
@@ -35,14 +39,14 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(NoResultException::new);
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmpty(orderTableValidator, orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(NoResultException::new);
-        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        savedOrderTable.changeNumberOfGuests(orderTableValidator, orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 }

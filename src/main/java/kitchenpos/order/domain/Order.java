@@ -34,7 +34,6 @@ public class Order {
     }
 
     public Order(OrderTable orderTable) {
-        orderTable.validateIsEmptyTable();
         assignOrderTable(orderTable);
         this.orderStatus = OrderStatus.COOKING;
     }
@@ -84,10 +83,6 @@ public class Order {
         if (OrderStatus.isCompletion(this.orderStatus)) {
             throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_COMPLETION);
         }
-    }
-
-    public boolean isCooking() {
-        return OrderStatus.isCooking(orderStatus);
     }
 
     @Override

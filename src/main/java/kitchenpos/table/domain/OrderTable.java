@@ -8,12 +8,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "order_table")
 public class OrderTable {
-    private static final String EXCEPTION_MESSAGE_NUMBER_OF_GUESTS_IS_NOT_NEGATIVE = "가격은 음수일 수 없습니다.";
-    private static final String EXCEPTION_MESSAGE_IS_EMPTY_TABLE = "빈 테이블입니다. 요청하신 행위를 실행할 수 없습니다.";
-    private static final String EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE = "빈 테이블이 아닙니다. 요청하신 행위를 실행할 수 없습니다.";
-    private static final String EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP = "속해있는 단체 테이블이 있으므로 빈 테이블이 될 수 없습니다.";
-    private static final String EXCEPTION_MESSAGE_ALREADY_COOKING_OR_MEAL = "현재 속해있는 테이블의 주문이 요리중이거나, 식사중입니다.";
-    private static final int ZERO = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
@@ -35,7 +29,6 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -65,9 +58,7 @@ public class OrderTable {
     }
 
     public void enGroupBy(Long tableGroupId) {
-        validateIsNotEmptyTable();
-
-        changeEmpty(false);
+        this.empty = false;
         this.tableGroupId = tableGroupId;
     }
 
@@ -77,15 +68,13 @@ public class OrderTable {
         }
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        validateIsEmptyTable();
-        validateNumberOfGuests(numberOfGuests);
+    public void changeNumberOfGuests(OrderTableValidator orderTableValidator, int numberOfGuests) {
+        orderTableValidator.validateChangeNumberOfGuests(this, numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void changeEmpty(boolean empty) {
-        validateOrderStatus();
-        validateAlreadyGroup();
+    public void changeEmpty(OrderTableValidator orderTableValidator, boolean empty) {
+        orderTableValidator.validateChangeEmpty(this);
         this.empty = empty;
     }
 
@@ -100,35 +89,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getNumberOfGuests(), isEmpty());
-    }
-
-    private void validateNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < ZERO) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_NUMBER_OF_GUESTS_IS_NOT_NEGATIVE);
-        }
-    }
-
-    private void validateIsNotEmptyTable() {
-        if (!isEmpty()) {
-            throw new IllegalStateException(EXCEPTION_MESSAGE_IS_NOT_EMPTY_TABLE);
-        }
-    }
-
-    public void validateIsEmptyTable() {
-        if (isEmpty()) {
-            throw new IllegalStateException(EXCEPTION_MESSAGE_IS_EMPTY_TABLE);
-        }
-    }
-
-    private void validateAlreadyGroup() {
-        if (isGrouping()) {
-            throw new IllegalStateException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
-        }
-    }
-
-    public void validateOrderStatus() {
-        if (null != order && !order.isCooking()) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_COOKING_OR_MEAL);
-        }
     }
 }

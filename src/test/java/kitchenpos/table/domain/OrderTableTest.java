@@ -17,7 +17,6 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
 
@@ -25,10 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("테이블 도메인 테스트")
-@Import(TableGroupValidator.class)
 public class OrderTableTest extends JpaEntityTest {
-    @Autowired
-    private TableGroupValidator tableGroupValidator;
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -60,7 +56,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, false));
 
         // when
-        savedOrderTable.changeNumberOfGuests(2);
+        savedOrderTable.changeNumberOfGuests(getOrderTableValidator(), 2);
 
         // then
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(2);
@@ -73,7 +69,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, false));
 
         // when / then
-        assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(-1))
+        assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(getOrderTableValidator(), -1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -84,7 +80,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, true));
 
         // when / then
-        assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(2))
+        assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(getOrderTableValidator(),2))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -95,7 +91,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, true));
 
         // when
-        savedOrderTable.changeEmpty(false);
+        savedOrderTable.changeEmpty(getOrderTableValidator(), false);
 
         // then
         assertThat(savedOrderTable.isEmpty()).isFalse();
@@ -108,11 +104,11 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable 테이블1 = orderTableRepository.save(new OrderTable(1, true));
         OrderTable 테이블2 = orderTableRepository.save(new OrderTable(1, true));
         TableGroup 단체테이블 = tableGroupRepository.save(new TableGroup(Lists.newArrayList(테이블1, 테이블2)));
-        단체테이블.enGroup(tableGroupValidator);
+        단체테이블.enGroup(getTableGroupValidator());
         flushAndClear();
 
         // when / then
-        assertThatThrownBy(() -> 테이블1.changeEmpty(true))
+        assertThatThrownBy(() -> 테이블1.changeEmpty(getOrderTableValidator(), true))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -131,7 +127,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable orderTable = orderTableRepository.getOne(savedOrderTable.getId());
 
         // then
-        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+        assertThatThrownBy(() -> orderTable.changeEmpty(getOrderTableValidator(), true))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
