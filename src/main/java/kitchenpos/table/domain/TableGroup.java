@@ -42,7 +42,7 @@ public class TableGroup extends BaseTime {
         validator.validateEnGroup(orderTables.values());
 
         for (OrderTable orderTable : orderTables.values()) {
-            orderTable.enGroupBy(id);
+            orderTable.enGroupBy(this.id);
         }
     }
 

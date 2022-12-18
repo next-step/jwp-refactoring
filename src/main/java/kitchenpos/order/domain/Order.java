@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,9 +17,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "order_table_id", nullable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    @Column(name = "order_table_id", nullable = false)
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private OrderStatus orderStatus;
@@ -33,22 +31,17 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable) {
-        assignOrderTable(orderTable);
+    public Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
-    }
-    
-    private void assignOrderTable(OrderTable orderTable) {
-        orderTable.ordered(this);
-        this.orderTable = orderTable;
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus status() {
@@ -90,11 +83,15 @@ public class Order {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return Objects.equals(getOrderTable(), order.getOrderTable()) && orderStatus == order.orderStatus && Objects.equals(getOrderedTime(), order.getOrderedTime()) && Objects.equals(getOrderLineItems(), order.getOrderLineItems());
+        return orderStatus == order.orderStatus && Objects.equals(getOrderedTime(), order.getOrderedTime()) && Objects.equals(getOrderLineItems(), order.getOrderLineItems());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderTable(), orderStatus, getOrderedTime(), getOrderLineItems());
+        return Objects.hash(orderStatus, getOrderedTime(), getOrderLineItems());
+    }
+
+    public void startOrder(OrderValidator orderValidator) {
+        orderValidator.validate(this);
     }
 }

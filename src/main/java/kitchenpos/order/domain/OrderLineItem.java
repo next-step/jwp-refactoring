@@ -1,7 +1,9 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,9 +17,12 @@ public class OrderLineItem {
     private Long seq;
     @Column(name = "order_id", nullable = false, columnDefinition = "bigint(20)")
     private Long orderId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    @Column(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
+    private Long menuId;
+    @AttributeOverride(name = "name", column = @Column(name = "menu_name", nullable = false))
+    private Name menuName;
+    @AttributeOverride(name = "price", column = @Column(name = "menu_price", nullable = false))
+    private Price menuPrice;
     @Embedded
     private Quantity quantity;
 
@@ -25,7 +30,9 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Menu menu, Long quantity) {
-        this.menu = menu;
+        this.menuId = menu.getId();
+        this.menuName = new Name(menu.getName());
+        this.menuPrice = new Price(menu.getPrice());
         this.quantity = new Quantity(quantity);
     }
 
@@ -37,8 +44,16 @@ public class OrderLineItem {
         return orderId;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public Name getMenuName() {
+        return menuName;
+    }
+
+    public Price getMenuPrice() {
+        return menuPrice;
     }
 
     public Long getQuantity() {
@@ -54,11 +69,11 @@ public class OrderLineItem {
         if (this == o) return true;
         if (!(o instanceof OrderLineItem)) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(getOrderId(), that.getOrderId()) && Objects.equals(getMenu(), that.getMenu()) && Objects.equals(getQuantity(), that.getQuantity());
+        return Objects.equals(getOrderId(), that.getOrderId()) && Objects.equals(getMenuId(), that.getMenuId()) && Objects.equals(getMenuName(), that.getMenuName()) && Objects.equals(getMenuPrice(), that.getMenuPrice()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderId(), getMenu(), getQuantity());
+        return Objects.hash(getOrderId(), getMenuId(), getMenuName(), getMenuPrice(), getQuantity());
     }
 }

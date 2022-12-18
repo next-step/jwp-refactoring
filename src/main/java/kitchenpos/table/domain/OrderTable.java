@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -18,12 +16,7 @@ public class OrderTable {
     private int numberOfGuests;
     @Column(nullable = false, columnDefinition = "bit(1)")
     private boolean empty;
-    @OneToOne(mappedBy = "orderTable", cascade = CascadeType.ALL)
-    private Order order;
-
-    public Order getOrder() {
-        return order;
-    }
+    private Long orderId;
 
     protected OrderTable() {
     }
@@ -45,8 +38,12 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void ordered(Order order) {
-        this.order = order;
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void ordered(Long orderId) {
+        this.orderId = orderId;
     }
 
     public boolean isEmpty() {

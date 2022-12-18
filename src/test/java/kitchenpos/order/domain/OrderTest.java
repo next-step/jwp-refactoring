@@ -9,6 +9,7 @@ import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ public class OrderTest extends JpaEntityTest {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
+    private OrderTableRepository orderTableRepository;
+    @Autowired
     private ProductRepository productRepository;
     @Autowired
     private MenuRepository menuRepository;
@@ -32,11 +35,11 @@ public class OrderTest extends JpaEntityTest {
     void createOrder() {
         // given
         Menu menu = createMenuFixture("순살후라이드치킨");
-        OrderTable 테이블 = new OrderTable(4, false);
+        OrderTable 테이블 = orderTableRepository.save(new OrderTable(4, false));
         OrderLineItem orderLineItem = new OrderLineItem(menu, 2L);
 
         // when
-        Order savedOrder = orderRepository.save(new Order(테이블));
+        Order savedOrder = orderRepository.save(new Order(테이블.getId()));
         savedOrder.addOrderLineItems(Lists.newArrayList(orderLineItem));
         flushAndClear();
 
@@ -53,9 +56,9 @@ public class OrderTest extends JpaEntityTest {
     void updateOrderStatus() {
         // given
         Menu menu = createMenuFixture("순살후라이드치킨");
-        OrderTable 테이블 = new OrderTable(4, false);
+        OrderTable 테이블 = orderTableRepository.save(new OrderTable(4, false));
         OrderLineItem orderLineItem = new OrderLineItem(menu, 2L);
-        Order savedOrder = orderRepository.save(new Order(테이블));
+        Order savedOrder = orderRepository.save(new Order(테이블.getId()));
         savedOrder.addOrderLineItems(Lists.newArrayList(orderLineItem));
         flushAndClear();
 
