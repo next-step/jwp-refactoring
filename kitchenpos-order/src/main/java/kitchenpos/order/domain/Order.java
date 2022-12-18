@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.BaseEntity;
 import kitchenpos.order.exception.OrderException;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import static kitchenpos.order.exception.OrderExceptionType.COMPLETE_ORDER_STATU
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
