@@ -1,11 +1,10 @@
-package kitchenpos.ordertable;
+package kitchenpos.ordertable.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.common.TableStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.menugroup.MenuGroupRestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;

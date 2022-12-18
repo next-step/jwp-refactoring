@@ -1,4 +1,4 @@
-package kitchenpos.ordertable;
+package kitchenpos.ordertable.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

@@ -1,4 +1,4 @@
-package kitchenpos.product;
+package kitchenpos.product.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

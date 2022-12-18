@@ -1,18 +1,16 @@
-package kitchenpos.tablegroup;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.ordertable.OrderTableRestAssured;
+import kitchenpos.ordertable.acceptance.OrderTableRestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Stream;
