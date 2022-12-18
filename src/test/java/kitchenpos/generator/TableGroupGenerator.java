@@ -3,8 +3,8 @@ package kitchenpos.generator;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 public class TableGroupGenerator {
 

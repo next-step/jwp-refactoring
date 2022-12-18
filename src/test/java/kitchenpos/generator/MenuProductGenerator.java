@@ -1,6 +1,6 @@
 package kitchenpos.generator;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductGenerator {
 

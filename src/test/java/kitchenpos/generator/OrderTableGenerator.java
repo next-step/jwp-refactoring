@@ -1,6 +1,6 @@
 package kitchenpos.generator;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableGenerator {
 

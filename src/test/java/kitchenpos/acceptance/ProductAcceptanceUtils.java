@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 public class ProductAcceptanceUtils {
 

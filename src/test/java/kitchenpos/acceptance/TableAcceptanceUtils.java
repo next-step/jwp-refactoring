@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 public class TableAcceptanceUtils {
 

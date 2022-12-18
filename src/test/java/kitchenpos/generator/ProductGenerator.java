@@ -2,7 +2,7 @@ package kitchenpos.generator;
 
 import java.math.BigDecimal;
 
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 public class ProductGenerator {
 
