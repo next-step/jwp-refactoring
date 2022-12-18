@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -10,7 +11,6 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
 import kitchenpos.table.persistence.TableGroupRepository;
-import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,10 +37,6 @@ public class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
-    @Mock
-    private OrderRepository orderRepository;
-    @Mock
-    private TableValidator tableValidator;
     @Mock
     private OrderValidator orderValidator;
 
@@ -117,6 +112,9 @@ public class TableGroupServiceTest {
     @DisplayName("테이블그룹을 해제할경우 테이블에 포함된 주문이 조리중이거나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenTableIsMillOrCOOKING() {
+        doReturn(Arrays.asList(OrderTable.builder().id(12l).build()))
+                .when(orderTableRepository)
+                .findAllByTableGroupId(anyLong());
         doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다"))
                 .when(orderValidator)
                 .validateOrderComplete(anyList());

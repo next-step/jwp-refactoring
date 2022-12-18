@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;

@@ -1,16 +1,14 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.OrderTableException;
 import kitchenpos.table.persistence.OrderTableRepository;
-import kitchenpos.table.validator.TableValidator;
 import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,11 +34,9 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private TableValidator tableValidator;
+    private OrderValidator orderValidator;
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
@@ -72,7 +68,7 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
         OrderTable orderTable = OrderTable.builder().id(1l).build();
-        doNothing().when(tableValidator).validateTableEmpty(anyLong());
+        doNothing().when(orderValidator).validateOrderComplete(anyLong());
         doReturn(Optional.empty()).when(orderTableRepository).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
@@ -81,7 +77,7 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        doNothing().when(tableValidator).validateTableEmpty(anyLong());
+        doNothing().when(orderValidator).validateOrderComplete(anyLong());
         OrderTable orderTable = OrderTable.builder()
                 .id(1l)
                 .tableGroupId(13l)
@@ -99,7 +95,7 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
         OrderTable orderTable = OrderTable.builder().id(1l).build();
-        doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다")).when(tableValidator).validateTableEmpty(anyLong());
+        doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다")).when(orderValidator).validateOrderComplete(anyLong());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderException.class)

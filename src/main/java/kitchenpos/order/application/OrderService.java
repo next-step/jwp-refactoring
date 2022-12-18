@@ -6,7 +6,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.persistence.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final OrderValidator orderValidator;
+    private final OrderValidatorImpl orderValidator;
     private final OrderRepository orderRepository;
 
     public OrderService(
-            final OrderValidator orderValidator,
+            final OrderValidatorImpl orderValidator,
             final OrderRepository orderRepository
     ) {
         this.orderValidator = orderValidator;
@@ -30,7 +30,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         validateOrderLineItems(orderRequest.getOrderLineItems());
-        orderValidator.validateOrderCreate(orderRequest.getOrderTableId(),orderRequest.findMenuIds());
+        orderValidator.validateOrderCreate(orderRequest.getOrderTableId(), orderRequest.findMenuIds());
         Order order = orderRequest.toOrder(orderRequest.getOrderTableId(), OrderStatus.COOKING);
         return OrderResponse.of(orderRepository.save(order));
     }

@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -11,7 +10,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderLineItemRepository;
 import kitchenpos.order.persistence.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
@@ -22,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +47,7 @@ public class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderValidator orderValidator;
+    private OrderValidatorImpl orderValidator;
 
     @DisplayName("주문을 추가할 경우 주문항목이 없으면 예외발생")
     @Test

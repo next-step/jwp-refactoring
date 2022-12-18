@@ -1,10 +1,11 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
-import kitchenpos.table.validator.TableValidator;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final TableValidator tableValidator;
+    private final OrderValidator orderValidator;
 
     public TableService(final OrderTableRepository orderTableRepository,
-                        final TableValidator tableValidator
+                        final OrderValidator orderValidator
     ) {
-        this.tableValidator = tableValidator;
+        this.orderValidator = orderValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -37,7 +38,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        tableValidator.validateTableEmpty(orderTableId);
+        orderValidator.validateOrderComplete(orderTableId);
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         orderTable.changeEmpty(orderTableRequest.isEmpty());
