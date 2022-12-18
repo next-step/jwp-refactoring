@@ -26,7 +26,7 @@ public class Price {
             throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRICE.getErrorMessage());
         }
         if (isNegative(price)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRICE_IS_MINUS.getErrorMessage());
+            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRICE_IS_NEGATIVE.getErrorMessage());
         }
     }
 
@@ -36,5 +36,9 @@ public class Price {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public BigDecimal multiply(BigDecimal quantity) {
+        return this.price.multiply(quantity);
     }
 }

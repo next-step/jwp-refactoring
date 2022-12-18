@@ -79,4 +79,8 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
     }
+
+    public BigDecimal calculateAmount(long quantity) {
+        return this.price.multiply(new BigDecimal(quantity));
+    }
 }

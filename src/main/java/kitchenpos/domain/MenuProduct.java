@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -77,5 +78,9 @@ public class MenuProduct {
     }
 
     public void setQuantity(long quantity) {
+    }
+
+    public BigDecimal calculateAmount() {
+        return this.product.calculateAmount(quantity);
     }
 }

@@ -46,13 +46,22 @@ public class Menu {
         this.menuProducts.addMenuProduct(this, menuProduct);
     }
 
+    public void create(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
+        validatePrice();
+    }
+
     private void validation(String name, MenuGroup menuGroup) {
-        if (name.isEmpty()) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_NAME.getErrorMessage());
         }
         if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_GROUP.getErrorMessage());
         }
+    }
+
+    private void validatePrice() {
+        this.menuProducts.validatePrice(this.price.getPrice());
     }
 
     @Override
