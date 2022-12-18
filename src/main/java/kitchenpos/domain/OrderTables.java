@@ -10,6 +10,8 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kitchenpos.constants.ErrorCodeType.*;
+
 @Embeddable
 public class OrderTables {
 
@@ -26,7 +28,7 @@ public class OrderTables {
 
     private void validCheckOrderTableIsEmptyAndMinSize(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_TABLES_SIZE_IS_EMPTY_AND_MIN_SIZE.getMessage());
         }
     }
 
@@ -34,17 +36,11 @@ public class OrderTables {
         orderTables.forEach(OrderTable::ungroup);
     }
     private void validHasGroup() {
-
-        System.out.println(orderTables.toString());
-
         boolean matchGroup = orderTables.stream()
                 .anyMatch(OrderTable::isNotNull);
 
-        System.out.println("=-==------");
-        System.out.println(matchGroup);
-
         if (matchGroup) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MATCH_GROUP_PRESENT.getMessage());
         }
     }
 
@@ -52,9 +48,8 @@ public class OrderTables {
         boolean matchIsNotEmpty = orderTables.stream()
                 .anyMatch(orderTable -> !orderTable.isEmpty());
 
-
         if (matchIsNotEmpty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(NOT_MATCH_ORDER_TABLE.getMessage());
         }
     }
 

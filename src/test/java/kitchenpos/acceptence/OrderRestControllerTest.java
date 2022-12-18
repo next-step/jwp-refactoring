@@ -44,15 +44,23 @@ class OrderRestControllerTest extends AcceptanceSupport {
         치킨 = 상품을_등록한다(new ProductRequest("치킨", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
         제로콜라 = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
         양식_메뉴_그륩 = 메뉴그룹을_생성한다(new MenuGroupRequest("양식_메뉴_그륩")).as(MenuGroupResponse.class);
-        양식 = new MenuGroup(1L, 양식_메뉴_그륩.getName());
+        양식 = new MenuGroup(양식_메뉴_그륩.getId(), 양식_메뉴_그륩.getName());
+
+        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000)), 양식);
+
         MenuProductRequest productA = new MenuProductRequest(치킨.getId(), 1L);
         MenuProductRequest productB = new MenuProductRequest(제로콜라.getId(), 2L);
-        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000)), 양식);
+
+
         MenuRequest request = new MenuRequest(
                 치킨_콜라_정식_메뉴.getName(), 치킨_콜라_정식_메뉴.getPrice().getPrice(), 치킨_콜라_정식_메뉴.getMenuGroup().getId(),
                 Arrays.asList(productA, productB)
         );
+
+
         후치콜세트_메뉴_생성 = 메뉴를_생성한다(request).as(MenuResponse.class);
+        후치콜세트_주문요청 = new OrderLineItemRequest(후치콜세트_메뉴_생성.getId(), 1L);
+
         주문테이블 = 주문테이블을_생성한다(new TableRequest(0, false)).as(TableResponse.class);
 
         주문테이블_일번 = new OrderTable(1L, null, 3, true);
@@ -61,7 +69,6 @@ class OrderRestControllerTest extends AcceptanceSupport {
         후치콜_세트_주문_아이템 = new OrderLineItem(치킨_콜라_정식_메뉴, 1L);
         주문 = new Order(new OrderTable(테이블_그륩, 5, true), OrderStatus.COOKING);
         주문.addOrderLineItems(Arrays.asList(후치콜_세트_주문_아이템), Arrays.asList(치킨_콜라_정식_메뉴));
-        후치콜세트_주문요청 = new OrderLineItemRequest(후치콜세트_메뉴_생성.getId(), 1L);
     }
 
     @Test
@@ -98,6 +105,7 @@ class OrderRestControllerTest extends AcceptanceSupport {
 
         // then
         상태값을_비교한다(response.statusCode(), HttpStatus.OK);
+        주문_리스트를_비교한다(response, Arrays.asList(주문테이블.getId()));
     }
 
     private ExtractableResponse<Response> 주문_생성을_요청한다(Long orderTableId, List<OrderLineItemRequest> request) {
@@ -129,10 +137,6 @@ class OrderRestControllerTest extends AcceptanceSupport {
                 .when().put("/api/orders/{id}/order-status", id)
                 .then().log().all()
                 .extract();
-    }
-
-    private void 주문_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     private void 주문_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> getId) {

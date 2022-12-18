@@ -5,11 +5,16 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.infrastructure.jpa.repository.MenuJpaRepository;
 import kitchenpos.port.MenuPort;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+import static kitchenpos.constants.ErrorCodeType.MENU_NOT_FOUND;
+
+@Service
+@Transactional
 public class MenuJpaAdapter implements MenuPort {
 
     private final MenuJpaRepository menuJpaRepository;
@@ -25,7 +30,7 @@ public class MenuJpaAdapter implements MenuPort {
 
     @Override
     public Menu findById(Long id) {
-        return menuJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return menuJpaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(MENU_NOT_FOUND.getMessage()));
     }
 
     @Override

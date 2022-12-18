@@ -5,6 +5,8 @@ import kitchenpos.domain.OrderLineItem;
 
 import java.util.List;
 
+import static kitchenpos.constants.ErrorCodeType.MATCH_NOT_MENU;
+
 public class OrderLineItemRequest {
     private Long menuId;
     private Long quantity;
@@ -18,9 +20,9 @@ public class OrderLineItemRequest {
 
     public OrderLineItem createOrderLineItemRequest(List<Menu> menus) {
         Menu menu = menus.stream()
-                .filter(item -> item.getId().equals(menuId))
+                .filter(target -> target.getId().equals(menuId))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(MATCH_NOT_MENU.getMessage()));
 
         return new OrderLineItem(menu, quantity);
     }

@@ -31,6 +31,9 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest request) {
+
+        System.out.println(request.toString());
+
         MenuGroup menuGroup = menuGroupPort.findById(request.getMenuGroupId());
         List<Product> product = productPort.findAllByIdIn(getProductId(request));
         Menu menu = new Menu(request.getName(), new Price(request.getPrice()), menuGroup);

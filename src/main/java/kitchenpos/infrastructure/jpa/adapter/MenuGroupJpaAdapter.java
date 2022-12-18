@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.constants.ErrorCodeType.MENU_GROUP_NOT_FOUND;
+import static kitchenpos.constants.ErrorCodeType.MENU_NOT_FOUND;
+
 @Service
 @Transactional
 public class MenuGroupJpaAdapter implements MenuGroupPort {
@@ -31,18 +34,13 @@ public class MenuGroupJpaAdapter implements MenuGroupPort {
     @Override
     @Transactional(readOnly = true)
     public MenuGroup findById(Long id) {
-        return menuGroupJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return menuGroupJpaRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException(MENU_GROUP_NOT_FOUND.getMessage()));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MenuGroup> findAll() {
         return menuGroupJpaRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsById(Long id) {
-        return menuGroupJpaRepository.existsById(id);
     }
 }

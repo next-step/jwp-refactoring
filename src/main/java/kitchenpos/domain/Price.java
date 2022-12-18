@@ -5,6 +5,8 @@ import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static kitchenpos.constants.ErrorCodeType.PRICE_NOT_NULL_AND_ZERO;
+
 @Embeddable
 public class Price {
 
@@ -20,7 +22,7 @@ public class Price {
 
     private void validCheckPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(PRICE_NOT_NULL_AND_ZERO.getMessage());
         }
     }
 

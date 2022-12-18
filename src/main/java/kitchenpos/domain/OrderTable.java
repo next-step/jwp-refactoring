@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+import static kitchenpos.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
+import static kitchenpos.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
+
 @Entity
 public class OrderTable {
     @Id
@@ -55,7 +58,7 @@ public class OrderTable {
 
     private void validCheckIsNotNullTableGroup() {
         if (Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL.getMessage());
         }
     }
 
@@ -75,7 +78,7 @@ public class OrderTable {
 
     private void validCheckIsGuestZero(Integer numberOfGuests) {
         if (numberOfGuests < 0 || Objects.isNull(numberOfGuests)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(GUEST_NOT_NULL_AND_ZERO.getMessage());
         }
     }
 

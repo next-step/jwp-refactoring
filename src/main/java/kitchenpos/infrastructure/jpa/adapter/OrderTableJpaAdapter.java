@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.constants.ErrorCodeType.ORDER_TABLE_NOT_FOUND;
+
 @Service
 @Transactional
 public class OrderTableJpaAdapter implements OrderTablePort {
@@ -30,7 +32,7 @@ public class OrderTableJpaAdapter implements OrderTablePort {
     @Transactional(readOnly = true)
     public OrderTable findById(Long id) {
         return orderTableJpaRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ORDER_TABLE_NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -43,11 +45,5 @@ public class OrderTableJpaAdapter implements OrderTablePort {
     @Transactional(readOnly = true)
     public List<OrderTable> findAllByIdIn(List<Long> ids) {
         return orderTableJpaRepository.findAllByIdIn(ids);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
-        return orderTableJpaRepository.findAllByTableGroupId(tableGroupId);
     }
 }

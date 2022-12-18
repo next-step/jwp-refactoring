@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static kitchenpos.constants.ErrorCodeType.*;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -53,7 +55,7 @@ public class Order {
 
     public void validCheckOrderStatusIsCookingAndMeal() {
         if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(COOKING_MEAL_NOT_UNGROUP.getMessage());
         }
     }
 
@@ -65,7 +67,7 @@ public class Order {
 
     private void validCheckOrderLineItemSizeIsSameMenuSize(List<OrderLineItem> orderLineItem, List<Menu> menu) {
         if (orderLineItem.size() != menu.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_MENU_SIZE_DIFFERENT.getMessage());
         }
     }
 
@@ -95,11 +97,8 @@ public class Order {
     }
 
     private void validCheckCompletion() {
-
-
-
         if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION.getMessage());
         }
     }
 }

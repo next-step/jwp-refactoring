@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static kitchenpos.constants.ErrorCodeType.ORDER_LINE_ITEM_REQUEST;
+
 public class OrderRequest {
     private Long orderTableId;
     private List<OrderLineItemRequest> orderLineItemRequest;
@@ -15,7 +17,7 @@ public class OrderRequest {
 
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequest) {
         if (Objects.isNull(orderLineItemRequest)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
         }
 
         this.orderTableId = orderTableId;

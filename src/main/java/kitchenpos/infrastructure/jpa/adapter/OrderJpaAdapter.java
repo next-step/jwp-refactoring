@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.constants.ErrorCodeType.ORDER_NOT_FOUND;
+
 @Service
 @Transactional
 public class OrderJpaAdapter implements OrderPort {
@@ -29,7 +31,7 @@ public class OrderJpaAdapter implements OrderPort {
     @Transactional(readOnly = true)
     public Order findById(Long id) {
         return orderJpaRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ORDER_NOT_FOUND.getMessage()));
     }
 
     @Override

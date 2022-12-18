@@ -11,6 +11,4 @@ public interface MenuGroupPort {
     MenuGroup findById(Long id);
 
     List<MenuGroup> findAll();
-
-    boolean existsById(Long id);
 }

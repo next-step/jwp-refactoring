@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+import static kitchenpos.constants.ErrorCodeType.MENU_PRICE_NOT_OVER_SUM_PRICE;
+
 @Entity
 public class Menu {
     @Id
@@ -49,7 +51,7 @@ public class Menu {
 
     private static void validCheckMenuPrice(BigDecimal sumPrice, Price requestPrice) {
         if (requestPrice.getPrice().compareTo(sumPrice) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MENU_PRICE_NOT_OVER_SUM_PRICE.getMessage());
         }
     }
 

@@ -6,6 +6,8 @@ import kitchenpos.domain.Product;
 
 import java.util.List;
 
+import static kitchenpos.constants.ErrorCodeType.NOT_FOUND_PRODUCT;
+
 public class MenuProductRequest {
     private Long productId;
     private Long quantity;
@@ -24,7 +26,7 @@ public class MenuProductRequest {
         return products.stream()
                 .filter(product -> product.getId().equals(productId))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PRODUCT.getMessage()));
     }
 
     public Long getProductId() {
@@ -35,4 +37,13 @@ public class MenuProductRequest {
         return quantity;
     }
 
+    @Override
+    public String toString() {
+        return "MenuProductRequest{" +
+                "productId=" + productId +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
+
+

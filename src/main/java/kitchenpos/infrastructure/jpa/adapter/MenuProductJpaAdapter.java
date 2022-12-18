@@ -5,13 +5,15 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.infrastructure.jpa.repository.MenuProductJpaRepository;
 import kitchenpos.port.MenuProductPort;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Service
+@Transactional
 public class MenuProductJpaAdapter implements MenuProductPort {
-
 
     private final MenuProductJpaRepository menuProductJpaRepository;
 
@@ -21,21 +23,18 @@ public class MenuProductJpaAdapter implements MenuProductPort {
 
     @Override
     public MenuProduct save(MenuProduct entity) {
-        return null;
+        return menuProductJpaRepository.save(entity);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<MenuProduct> findById(Long id) {
         return Optional.empty();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MenuProduct> findAll() {
-        return null;
-    }
-
-    @Override
-    public List<MenuProduct> findAllByMenuId(Long menuId) {
-        return null;
+        return menuProductJpaRepository.findAll();
     }
 }

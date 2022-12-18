@@ -11,6 +11,4 @@ public interface MenuProductPort {
     Optional<MenuProduct> findById(Long id);
 
     List<MenuProduct> findAll();
-
-    List<MenuProduct> findAllByMenuId(Long menuId);
 }
