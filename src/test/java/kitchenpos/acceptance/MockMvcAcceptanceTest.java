@@ -8,19 +8,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import java.util.stream.Collectors;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.dto.TableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -98,37 +104,45 @@ public class MockMvcAcceptanceTest {
         return mockDelete("/api/table-groups/{tableGroupId}", id);
     }
 
-    ResultActions 테이블_그룹_생성_요청(OrderTable... tables) throws Exception {
-        return mockPost("/api/table-groups", new TableGroup(Arrays.asList(tables)));
+    ResultActions 테이블_그룹_생성_요청(TableRequest... tables) throws Exception {
+        return mockPost("/api/table-groups", new TableGroupRequest(Arrays.asList(tables)));
     }
 
     ResultActions 테이블_생성_요청(int person, boolean empty) throws Exception {
-        return mockPost("/api/tables", new OrderTable(person, empty));
+        return mockPost("/api/tables", new OrderTableRequest(person, empty));
     }
 
-    OrderTable 테이블_생성(int person, boolean empty) throws Exception {
+    OrderTableResponse 테이블_생성(int person, boolean empty) throws Exception {
         ResultActions 테이블_생성_결과 = 테이블_생성_요청(person, empty);
-        return getObjectByResponse(테이블_생성_결과, OrderTable.class);
+        return getObjectByResponse(테이블_생성_결과, OrderTableResponse.class);
     }
 
-    TableGroup 테이블_그룹_생성(OrderTable... tables) throws Exception {
+    TableGroupResponse 테이블_그룹_생성(TableRequest... tables) throws Exception {
         ResultActions 테이블_그룹_생성_결과 = 테이블_그룹_생성_요청(tables);
-        return getObjectByResponse(테이블_그룹_생성_결과, TableGroup.class);
+        return getObjectByResponse(테이블_그룹_생성_결과, TableGroupResponse.class);
+    }
+
+    ResultActions 상품_등록_요청(String name, Integer price) throws Exception {
+        return mockPost("/api/products", new ProductRequest(name, new BigDecimal(price)));
     }
 
     Product 상품_등록(String name, Integer price) throws Exception {
-        ResultActions response = mockPost("/api/products", new Product(name, new BigDecimal(price)));
+        ResultActions response = 상품_등록_요청(name, price);
         return getObjectByResponse(response, Product.class);
     }
 
-    Menu 메뉴_등록(String menuName, Integer price, MenuGroup group, List<MenuProduct> products) throws Exception {
-        Menu menu = new Menu(menuName, new BigDecimal(price), group.getId(), products);
-        return getObjectByResponse(mockPost("/api/menus", menu), Menu.class);
+    MenuResponse 메뉴_등록(String menuName, Integer price, MenuGroup group, List<MenuProduct> products) throws Exception {
+        ResultActions response = 메뉴_등록_요청(menuName, price, group, products);
+        return getObjectByResponse(response, MenuResponse.class);
     }
 
     ResultActions 메뉴_등록_요청(String menuName, Integer price, MenuGroup group, List<MenuProduct> products) throws Exception {
-        Menu menu = new Menu(menuName, new BigDecimal(price), group.getId(), products);
-        return mockPost("/api/menus", menu);
+        List<MenuProductRequest> menuProductRequests = products.stream()
+                .map(
+                        menuProduct -> new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity())
+                ).collect(Collectors.toList());
+        MenuRequest menuRequest = new MenuRequest(menuName, new BigDecimal(price), group.getId(), menuProductRequests);
+        return mockPost("/api/menus", menuRequest);
     }
 
     ResultActions 메뉴_전체_조회() throws Exception {
@@ -147,13 +161,13 @@ public class MockMvcAcceptanceTest {
         return mockPost("/api/menu-groups", new MenuGroup(name));
     }
 
-    ResultActions 주문_요청(OrderTable orderTable, Menu menu) throws Exception {
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
+    ResultActions 주문_요청(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
+        OrderRequest order = new OrderRequest(orderTable.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu.getId(), 1)));
         return mockPost("/api/orders", order);
     }
 
-    Order 주문_생성(OrderTable orderTable, Menu menu) throws Exception {
-        return getObjectByResponse(주문_요청(orderTable, menu), Order.class);
+    OrderResponse 주문_생성(OrderTableResponse orderTable, MenuResponse menu) throws Exception {
+        return getObjectByResponse(주문_요청(orderTable, menu), OrderResponse.class);
     }
 }

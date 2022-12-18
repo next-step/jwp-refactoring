@@ -6,16 +6,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -39,13 +41,13 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("주문 성공")
     void orderSuccessTest() throws Exception {
         // given
-        OrderTable 테이블 = 테이블_생성(2, false);
+        OrderTableResponse 테이블 = 테이블_생성(2, false);
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
 
         // when
@@ -71,7 +73,7 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("주문한 메뉴가 없으면 주문에 실패한다.")
     void orderFailTest1() throws Exception {
         // given
-        OrderTable 테이블 = 테이블_생성(2, false);
+        OrderTableResponse 테이블 = 테이블_생성(2, false);
 
         // when & then
         assertThatThrownBy(
@@ -92,10 +94,10 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("없는 메뉴를 주문하면 주문에 실패한다.")
     void orderFailTest2() throws Exception {
         // given
-        OrderTable 테이블 = 테이블_생성(2, false);
-        Menu 등록되지_않은_메뉴 = new Menu("등록되지 않은 메뉴", new BigDecimal(12000), 1L, Arrays.asList(
-                new MenuProduct(1L, 1), new MenuProduct(2L, 1)
-        ));
+        OrderTableResponse 테이블 = 테이블_생성(2, false);
+        MenuResponse 등록되지_않은_메뉴 = MenuResponse.of(new Menu("등록되지 않은 메뉴", new BigDecimal(1000), new MenuGroup("메뉴 그룹"), Arrays.asList(
+                new MenuProduct(new Product("상품1", new BigDecimal(1000)), 1), new MenuProduct(new Product("상품2", new BigDecimal(1000)), 1)
+        )));
 
         // when & then
         assertThatThrownBy(
@@ -116,13 +118,13 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("비어있는 테이블에서 주문 시도 시, 주문에 실패한다.")
     void orderFailTest3() throws Exception {
         // given
-        OrderTable 비어있는_테이블 = 테이블_생성(2, true);
+        OrderTableResponse 비어있는_테이블 = 테이블_생성(2, true);
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
 
         // when & then
@@ -152,29 +154,29 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("주문 상태를 변경한다.")
     void changeOrderStatusTest() throws Exception {
         // given
-        OrderTable 테이블 = 테이블_생성(2, false);
+        OrderTableResponse 테이블 = 테이블_생성(2, false);
         Product 상품1 = 상품_등록("상품1", 1000);
         Product 상품2 = 상품_등록("상품2", 2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
         ResultActions 주문_요청_결과 = 주문_요청(테이블, 메뉴1);
-        Order 최초_주문 = getObjectByResponse(주문_요청_결과, Order.class);
+        OrderResponse 최초_주문 = getObjectByResponse(주문_요청_결과, OrderResponse.class);
         assertThat(최초_주문.getId()).isNotNull();
         주문_상태_변경됨(최초_주문, OrderStatus.COOKING);
 
         // when
         ResultActions 식사중_상태_변경_요청_결과 = 주문_상태_변경_요청(최초_주문, OrderStatus.MEAL);
-        Order 식사중_주문 = getObjectByResponse(식사중_상태_변경_요청_결과, Order.class);
+        OrderResponse 식사중_주문 = getObjectByResponse(식사중_상태_변경_요청_결과, OrderResponse.class);
 
         // then
         주문_상태_변경됨(식사중_주문, OrderStatus.MEAL);
 
         // when
         ResultActions 계산완료_상태_변경_요청_결과 = 주문_상태_변경_요청(최초_주문, OrderStatus.COMPLETION);
-        Order 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, Order.class);
+        OrderResponse 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, OrderResponse.class);
 
         // then
         주문_상태_변경됨(계산완료_주문, OrderStatus.COMPLETION);
@@ -198,22 +200,22 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
     @DisplayName("계산완료인 주문은 상태를 변경할 수 없다.")
     void changeOrderStatusFailTest() throws Exception {
         // given
-        OrderTable 테이블 = 테이블_생성(2, false);
+        OrderTableResponse 테이블 = 테이블_생성(2, false);
         Product 상품1 = 상품_등록("상품1",1000);
         Product 상품2 = 상품_등록("상품2",2000);
         MenuGroup 메뉴그룹1 = 메뉴_그룹_추가("그룹1");
-        Menu 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
-                new MenuProduct(상품1.getId(), 1),
-                new MenuProduct(상품2.getId(), 1)
+        MenuResponse 메뉴1 = 메뉴_등록("메뉴1", 1000, 메뉴그룹1, Arrays.asList(
+                new MenuProduct(상품1, 1),
+                new MenuProduct(상품2, 1)
         ));
 
         ResultActions 주문_요청_결과 = 주문_요청(테이블, 메뉴1);
-        Order 최초_주문 = getObjectByResponse(주문_요청_결과, Order.class);
+        OrderResponse 최초_주문 = getObjectByResponse(주문_요청_결과, OrderResponse.class);
         assertThat(최초_주문.getId()).isNotNull();
         주문_상태_변경됨(최초_주문, OrderStatus.COOKING);
 
         ResultActions 계산완료_상태_변경_요청_결과 = 주문_상태_변경_요청(최초_주문, OrderStatus.COMPLETION);
-        Order 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, Order.class);
+        OrderResponse 계산완료_주문 = getObjectByResponse(계산완료_상태_변경_요청_결과, OrderResponse.class);
         주문_상태_변경됨(계산완료_주문, OrderStatus.COMPLETION);
 
         // when & then
@@ -222,16 +224,16 @@ public class OrderAcceptanceTest extends MockMvcAcceptanceTest {
         ).hasCause(new IllegalArgumentException());
     }
 
-    private void 주문_상태_변경됨(Order 최초_주문, OrderStatus orderStatus) {
+    private void 주문_상태_변경됨(OrderResponse 최초_주문, OrderStatus orderStatus) {
         assertThat(최초_주문.getOrderStatus()).isEqualTo(orderStatus.name());
     }
 
-    private ResultActions 주문_상태_변경_요청(Order 최초_주문, OrderStatus orderStatus) throws Exception {
-        return mockPut("/api/orders/{orderId}/order-status", 최초_주문.getId(), new Order(orderStatus.name()));
+    private ResultActions 주문_상태_변경_요청(OrderResponse 최초_주문, OrderStatus orderStatus) throws Exception {
+        return mockPut("/api/orders/{orderId}/order-status", 최초_주문.getId(), new OrderStatusRequest(orderStatus.name()));
     }
 
-    private ResultActions 주문_메뉴_없이_요청(OrderTable orderTable) throws Exception {
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
+    private ResultActions 주문_메뉴_없이_요청(OrderTableResponse orderTable) throws Exception {
+        OrderRequest order = new OrderRequest(orderTable.getId()
                 , Collections.emptyList());
         return mockPost("/api/orders", order);
     }

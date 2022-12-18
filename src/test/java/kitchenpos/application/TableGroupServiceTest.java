@@ -3,22 +3,28 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableRequest;
+import kitchenpos.order.application.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +59,10 @@ class TableGroupServiceTest {
     @DisplayName("테이블 단체 지정 성공")
     void createTest(){
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(0, true));
-        OrderTable orderTable2 = tableService.create(new OrderTable(0, true));
-        TableGroup tableGroup = new TableGroup(
-                Arrays.asList(orderTable1, orderTable2)
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest tableGroup = new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
         );
 
         // when
@@ -73,7 +79,7 @@ class TableGroupServiceTest {
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(new TableGroup())
+                () -> tableGroupService.create(new TableGroupRequest())
         );
 
         // then
@@ -83,13 +89,13 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정할 테이블이 존재하지 않는 테이블이면, 단체 지정에 실패한다.")
     void createFailTest2(){
         // given
-        TableGroup tableGroup = new TableGroup(
-                Arrays.asList(new OrderTable(0, true))
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                Arrays.asList(new TableRequest())
         );
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(tableGroupRequest)
         );
 
         // then
@@ -99,15 +105,15 @@ class TableGroupServiceTest {
     @DisplayName("비어있지 않은 테이블은 단체 지정할 수 없다.")
     void createFailTest3(){
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(0, false));
-        OrderTable orderTable2 = tableService.create(new OrderTable(0, true));
-        TableGroup tableGroup = new TableGroup(
-                Arrays.asList(orderTable1, orderTable2)
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(0, false));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
         );
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(tableGroupRequest)
         );
 
         // then
@@ -117,19 +123,19 @@ class TableGroupServiceTest {
     @DisplayName("이미 단체로 지정된 테이블은 단체 지정될 수 없다.")
     void createFailTest4(){
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(0, true));
-        OrderTable orderTable2 = tableService.create(new OrderTable(0, true));
-        tableGroupService.create(new TableGroup(
-                Arrays.asList(orderTable1, orderTable2)
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        tableGroupService.create(new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
         ));
-        OrderTable orderTable3 = tableService.create(new OrderTable(0, true));
-        TableGroup tableGroup = new TableGroup(
-                Arrays.asList(orderTable1, orderTable3)
+        OrderTable orderTable3 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable3.getId()))
         );
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(tableGroupRequest)
         );
 
         // then
@@ -139,10 +145,10 @@ class TableGroupServiceTest {
     @DisplayName("테이블 단체 지정 해제 테스트")
     void unGroupTest(){
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(0, true));
-        OrderTable orderTable2 = tableService.create(new OrderTable(0, true));
-        TableGroup tableGroup = tableGroupService.create(new TableGroup(
-                Arrays.asList(orderTable1, orderTable2)
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroup tableGroup = tableGroupService.create(new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
         ));
 
         // when
@@ -152,30 +158,30 @@ class TableGroupServiceTest {
         OrderTable table1 = orderTableDao.findById(orderTable1.getId()).orElse(null);
         OrderTable table2 = orderTableDao.findById(orderTable1.getId()).orElse(null);
         assertThat(table1).isNotNull();
-        assertThat(table1.getTableGroupId()).isNull();
+        assertThat(table1.getTableGroup()).isNull();
         assertThat(table2).isNotNull();
-        assertThat(table2.getTableGroupId()).isNull();
+        assertThat(table2.getTableGroup()).isNull();
     }
 
     @Test
     @DisplayName("단체 지정 된 테이블 중 조리중인 주문이 있는 테이블이 있으면 그 단체를 해제할 수 없다.")
     void unGroupFailTest1(){
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(2, true));
-        OrderTable orderTable2 = tableService.create(new OrderTable(2, true));
-        TableGroup tableGroup = tableGroupService.create(new TableGroup(
-                Arrays.asList(orderTable1, orderTable2)
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, true));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(2, true));
+        TableGroup tableGroup = tableGroupService.create(new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
         ));
 
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
-        Menu menu1 = menuService.create(new Menu("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
-                new MenuProduct(product1.getId(), 1),
-                new MenuProduct(product2.getId(), 1)
+        Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
+                new MenuProductRequest(product1.getId(), 1),
+                new MenuProductRequest(product2.getId(), 1)
         )));
-        orderService.create(new Order(orderTable1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
 
         // when
@@ -190,21 +196,21 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 된 테이블 중 식사중인 주문이 있는 테이블이 있으면 그 단체를 해제할 수 없다.")
     void unGroupFailTest2(){
         // given
-        OrderTable orderTable1 = tableService.create(new OrderTable(2, true));
-        OrderTable orderTable2 = tableService.create(new OrderTable(2, true));
-        TableGroup tableGroup = tableGroupService.create(new TableGroup(
-                Arrays.asList(orderTable1, orderTable2)
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(2, true));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(2, true));
+        TableGroup tableGroup = tableGroupService.create(new TableGroupRequest(
+                Arrays.asList(new TableRequest(orderTable1.getId()), new TableRequest(orderTable2.getId()))
         ));
 
-        Product product1 = productService.create(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productService.create(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productService.create(new ProductRequest("상품1", new BigDecimal(1000)));
+        Product product2 = productService.create(new ProductRequest("상품2", new BigDecimal(2000)));
         MenuGroup group1 = menuGroupService.create(new MenuGroup("그룹1"));
-        Menu menu1 = menuService.create(new Menu("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
-                new MenuProduct(product1.getId(), 1),
-                new MenuProduct(product2.getId(), 1)
+        Menu menu1 = menuService.create(new MenuRequest("메뉴1", new BigDecimal(1000), group1.getId(), Arrays.asList(
+                new MenuProductRequest(product1.getId(), 1),
+                new MenuProductRequest(product2.getId(), 1)
         )));
-        orderService.create(new Order(orderTable1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now()
-                , Collections.singletonList(new OrderLineItem(null, menu1.getId(), 1))));
+        orderService.create(new OrderRequest(orderTable1.getId(),
+                Collections.singletonList(new OrderLineItemRequest(menu1.getId(), 1))));
 
 
         // when
