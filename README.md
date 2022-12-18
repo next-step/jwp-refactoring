@@ -18,6 +18,7 @@
 - [x] Fixture 사용
 - [x] DTO 사용
 - [x] 일급 컬렉션을 쓴다.
+- [ ] 팩토리 메서드 사용
 - [ ] 모든 원시 값과 문자열을 포장한다
 - [ ] spring.jpa.hibernate.ddl-auto=validate 추가
 - [ ] 무분별한 setter 삭제

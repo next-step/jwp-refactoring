@@ -2,7 +2,9 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -35,13 +38,12 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
 
-
         final List<MenuProduct> menuProducts = request.getMenuProducts();
         validateExistMenuProducts(menuProducts);
 
         Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), findMenuGroup(request), menuProducts);
 
-        return new MenuResponse(menuRepository.save(menu));
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     private MenuGroup findMenuGroup(MenuCreateRequest request) {
@@ -58,8 +60,11 @@ public class MenuService {
         }
     }
 
-    public List<Menu> list() {
-        return menuRepository.findAll();
+    public List<MenuResponse> list() {
+        return menuRepository.findAll()
+                .stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 }
 

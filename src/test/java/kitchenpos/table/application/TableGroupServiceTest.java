@@ -11,6 +11,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.CreateTableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -87,7 +88,7 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     void create() {
         tableGroupA.setOrderTables(Arrays.asList(makeNullTableGroupOrderTable(changeEmptyOrder()), makeNullTableGroupOrderTable((changeEmptyOrder()))));
-        TableGroup saveTableGroup = tableGroupService.create(new CreateTableGroupRequest(tableGroupA.getOrderTableIds()));
+        TableGroupResponse saveTableGroup = tableGroupService.create(new CreateTableGroupRequest(tableGroupA.getOrderTableIds()));
         assertThat(saveTableGroup.getCreatedDate()).isNotNull();
     }
 

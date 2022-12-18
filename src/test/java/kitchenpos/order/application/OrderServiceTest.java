@@ -118,7 +118,7 @@ class OrderServiceTest extends ServiceTest {
                 () -> assertThat(orderResponse.getId()).isNotNull(),
                 () -> assertThat(orderResponse.getOrderedTime()).isNotNull(),
                 () -> assertThat(orderResponse.getOrderTableId()).isNotNull(),
-                () -> assertThat(orderResponse.getOrderLineItmes()).isNotNull()
+                () -> assertThat(orderResponse.getOrderLineItems()).isNotNull()
         );
     }
 

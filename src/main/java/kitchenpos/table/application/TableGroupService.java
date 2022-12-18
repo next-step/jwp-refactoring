@@ -4,6 +4,7 @@ import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.CreateTableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -28,8 +29,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final CreateTableGroupRequest request) {
-        return tableGroupRepository.save(new TableGroup(findOrderTables(request.getOrderTableIds())));
+    public TableGroupResponse create(final CreateTableGroupRequest request) {
+        return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(findOrderTables(request.getOrderTableIds()))));
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -69,7 +70,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void create() {
-        OrderTable orderTable = tableService.create(new OrderTable());
+        OrderTableResponse orderTable = tableService.create(new OrderTable());
         assertAll(
                 () -> assertThat(orderTable.getTableGroup()).isNull(),
 //                () -> assertThat(orderTable.getNumberOfGuests()).isZero(),

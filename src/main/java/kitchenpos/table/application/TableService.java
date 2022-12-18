@@ -3,13 +3,15 @@ package kitchenpos.table.application;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -24,27 +26,30 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
+    public OrderTableResponse create(final OrderTable orderTable) {
         orderTable.setTableGroup(null);
-        return orderTableRepository.save(orderTable);
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableRepository.findAll()
+                .stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId) {
+    public OrderTableResponse changeEmpty(final Long orderTableId) {
         Orders order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
         order.emptyTable();
-        return order.getOrderTable();
+        return OrderTableResponse.of(order.getOrderTable());
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final ChangeNumberOfGuestsRequest request) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final ChangeNumberOfGuestsRequest request) {
         OrderTable orderTable = findOrderTable(orderTableId);
         orderTable.changeSitNumberOfGuest(request.getNumberOfGuests());
-        return orderTable;
+        return OrderTableResponse.of(orderTable);
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

@@ -2,9 +2,9 @@ package kitchenpos.product.application;
 
 import kitchenpos.ServiceTest;
 import kitchenpos.common.Name;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.dto.ProductCreateRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class ProductServiceTest extends ServiceTest {
     @ValueSource(strings = {"상품A"})
     @DisplayName("상품 생성")
     void create(String name) {
-        Product product = productService.create(new ProductCreateRequest(name, BigDecimal.ONE));
+        ProductResponse product = productService.create(new ProductCreateRequest(name, BigDecimal.ONE));
         assertAll(
                 () -> assertEquals(0, product.getPrice().compareTo(BigDecimal.ONE)),
                 () -> assertThat(product.getName()).isEqualTo(new Name(name))
@@ -67,7 +67,7 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("상품 목록 조회")
     @Test
     void list() {
-        Product product = productService.create(new ProductCreateRequest("상품A", BigDecimal.ONE));
+        productService.create(new ProductCreateRequest("상품A", BigDecimal.ONE));
         assertThat(productService.list()).hasSize(1);
     }
 }
