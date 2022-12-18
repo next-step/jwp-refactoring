@@ -45,7 +45,7 @@ public class OrderTable {
 		this.id = id;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
-		setTableGroup(tableGroup);
+		changeTableGroup(tableGroup);
 	}
 
 	public OrderTable(Long id, int numberOfGuests, Boolean empty) {
@@ -56,7 +56,7 @@ public class OrderTable {
 		this(null, null, numberOfGuests, empty);
 	}
 
-	public void setTableGroup(TableGroup newTableGroup) {
+	public void changeTableGroup(TableGroup newTableGroup) {
 		if (Objects.nonNull(tableGroup)) {
 			tableGroup.getOrderTables().remove(this);
 		}
@@ -71,10 +71,6 @@ public class OrderTable {
 
 	public Long getId() {
 		return id;
-	}
-
-	public TableGroup getTableGroup() {
-		return tableGroup;
 	}
 
 	public int getNumberOfGuests() {
@@ -117,7 +113,7 @@ public class OrderTable {
 	}
 
 	private void validateNotEmptyTable() {
-		if (!empty) {
+		if (!isEmpty()) {
 			throw new CannotChangeNumberOfGuestsException();
 		}
 	}
@@ -130,5 +126,20 @@ public class OrderTable {
 
 	private boolean hasAnyNotCompletedOrder() {
 		return !orderList.isEmpty() && !orderList.stream().allMatch(Order::isCompleted);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		OrderTable that = (OrderTable)o;
+		return id.equals(that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

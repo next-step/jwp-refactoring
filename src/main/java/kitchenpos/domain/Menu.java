@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
@@ -59,23 +60,31 @@ public class Menu {
 		addMenuProducts(toMenuProducts(productsCount));
 	}
 
-	private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
-		return productsCount.entrySet()
-			.stream()
-			.map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
-			.collect(Collectors.toList());
+	public Long getId() {
+		return id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public Long getId() {
-		return id;
+	public List<MenuProduct> getMenuProducts() {
+		return menuProducts;
+	}
+
+	public Money getPrice() {
+		return price;
 	}
 
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
+	}
+
+	private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
+		return productsCount.entrySet()
+			.stream()
+			.map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
+			.collect(Collectors.toList());
 	}
 
 	private List<MenuProduct> toMenuProduct(List<Product> products) {
@@ -90,15 +99,7 @@ public class Menu {
 
 	private void addMenuProduct(MenuProduct addMenuProduct) {
 		this.menuProducts.add(addMenuProduct);
-		addMenuProduct.setMenu(this);
-	}
-
-	public List<MenuProduct> getMenuProducts() {
-		return menuProducts;
-	}
-
-	public Money getPrice() {
-		return price;
+		addMenuProduct.changeMenu(this);
 	}
 
 	public void validatePrice() {
@@ -110,7 +111,22 @@ public class Menu {
 
 	private Money sumAllProductsPrice() {
 		return menuProducts.stream()
-			.map(MenuProduct::getPurchasePrice)
+			.map(MenuProduct::totalPrice)
 			.reduce(Money.ZERO, Money::add);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Menu menu = (Menu)o;
+		return id.equals(menu.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

@@ -33,8 +33,8 @@ public class MenuProduct {
 	}
 
 	public MenuProduct(Menu menu, Product product, long quantity) {
-		setMenu(menu);
-		setProduct(product);
+		changeMenu(menu);
+		this.product = product;
 		this.quantity = quantity;
 	}
 
@@ -46,7 +46,11 @@ public class MenuProduct {
 		return quantity;
 	}
 
-	public void setMenu(Menu newMenu) {
+	public Money totalPrice() {
+		return product.getPrice().multiply(quantity);
+	}
+
+	public void changeMenu(Menu newMenu) {
 		if (Objects.nonNull(menu)) {
 			menu.getMenuProducts().remove(this);
 		}
@@ -56,11 +60,18 @@ public class MenuProduct {
 		}
 	}
 
-	public void setProduct(Product newProduct) {
-		this.product = newProduct;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		MenuProduct that = (MenuProduct)o;
+		return seq.equals(that.seq);
 	}
 
-	public Money getPurchasePrice() {
-		return product.getPrice().multiply(quantity);
+	@Override
+	public int hashCode() {
+		return Objects.hash(seq);
 	}
 }

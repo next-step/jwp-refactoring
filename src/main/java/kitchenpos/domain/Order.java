@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -48,7 +49,7 @@ public class Order {
 
 	public Order(OrderStatus orderStatus, OrderTable orderTable, Map<Menu, Integer> menus) {
 		this.orderStatus = orderStatus;
-		setOrderTable(orderTable);
+		changeOrderTable(orderTable);
 		addOrderLineItems(OrderLineItem.of(this, menus));
 	}
 
@@ -64,7 +65,11 @@ public class Order {
 		return orderStatus;
 	}
 
-	private void setOrderTable(OrderTable newOrderTable) {
+	public List<OrderLineItem> getOrderLineItems() {
+		return orderLineItems;
+	}
+
+	private void changeOrderTable(OrderTable newOrderTable) {
 		this.orderTable = newOrderTable;
 	}
 
@@ -74,11 +79,7 @@ public class Order {
 
 	private void addOrderLineItem(OrderLineItem addOrderLineItem) {
 		orderLineItems.add(addOrderLineItem);
-		addOrderLineItem.setOrder(this);
-	}
-
-	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
+		addOrderLineItem.changeOrder(this);
 	}
 
 	public void startOrder() {
@@ -106,5 +107,20 @@ public class Order {
 
 	public boolean isCompleted() {
 		return orderStatus == OrderStatus.COMPLETION;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Order order = (Order)o;
+		return id.equals(order.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

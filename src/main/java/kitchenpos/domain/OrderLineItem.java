@@ -36,7 +36,7 @@ public class OrderLineItem {
 	}
 
 	public OrderLineItem(Order order, Menu menu, Integer quantity) {
-		setOrder(order);
+		changeOrder(order);
 		this.menu = menu;
 		this.quantity = quantity;
 	}
@@ -48,7 +48,15 @@ public class OrderLineItem {
 			.collect(Collectors.toList());
 	}
 
-	public void setOrder(Order newOrder) {
+	public String getMenuName() {
+		return menu.getName();
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void changeOrder(Order newOrder) {
 		if (Objects.nonNull(order)) {
 			order.getOrderLineItems().remove(this);
 		}
@@ -60,11 +68,18 @@ public class OrderLineItem {
 		}
 	}
 
-	public String getMenuName() {
-		return menu.getName();
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		OrderLineItem that = (OrderLineItem)o;
+		return seq.equals(that.seq);
 	}
 
-	public Integer getQuantity() {
-		return quantity;
+	@Override
+	public int hashCode() {
+		return Objects.hash(seq);
 	}
 }

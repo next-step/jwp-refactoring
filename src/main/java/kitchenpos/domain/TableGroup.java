@@ -8,6 +8,7 @@ import static kitchenpos.exception.CannotCreateGroupTableException.TYPE.NOT_EMPT
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -43,13 +44,17 @@ public class TableGroup {
 		addOrderTables(orderTables);
 	}
 
-	public static TableGroup create(List<OrderTable> orderTable) {
-		validate(orderTable);
-		return new TableGroup(orderTable);
-	}
-
 	public Long getId() {
 		return id;
+	}
+
+	public List<OrderTable> getOrderTables() {
+		return orderTables;
+	}
+
+	public static TableGroup create(List<OrderTable> orderTable) {
+		validateCreateTableGroup(orderTable);
+		return new TableGroup(orderTable);
 	}
 
 	private void addOrderTables(List<OrderTable> orderTables) {
@@ -60,14 +65,10 @@ public class TableGroup {
 		if (!orderTables.contains(orderTable)) {
 			orderTables.add(orderTable);
 		}
-		orderTable.setTableGroup(this);
+		orderTable.changeTableGroup(this);
 	}
 
-	public List<OrderTable> getOrderTables() {
-		return orderTables;
-	}
-
-	public static void validate(List<OrderTable> orderTables) {
+	public static void validateCreateTableGroup(List<OrderTable> orderTables) {
 		if (hasNoOrderTables(orderTables)) {
 			throw new CannotCreateGroupTableException(HAS_NO_ORDER_TABLE);
 		}
@@ -100,5 +101,18 @@ public class TableGroup {
 
 	public void ungroup() {
 		orderTables.forEach(OrderTable::detachTableGroup);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TableGroup that = (TableGroup)o;
+		return id.equals(that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

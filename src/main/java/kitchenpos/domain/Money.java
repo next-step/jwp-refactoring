@@ -56,14 +56,6 @@ public class Money {
 		return Money.valueOf(value.add(other));
 	}
 
-	public BigDecimal multiply(BigDecimal other) {
-		return value.multiply(other);
-	}
-
-	public BigDecimal toBigDecimal() {
-		return value;
-	}
-
 	public Money multiply(long quantity) {
 		return Money.valueOf(value.multiply(BigDecimal.valueOf(quantity)));
 	}
