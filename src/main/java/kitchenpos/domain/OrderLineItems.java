@@ -23,9 +23,23 @@ public class OrderLineItems {
         }
     }
 
-    public List<MenuQuantityPair> getMenuQuantityPairs() {
+    public List<MenuQuantityPair> getMenuQuantityPairs(List<Menu> menus) {
         return this.orderLineItems.stream()
-            .map(orderLineItem -> new MenuQuantityPair(orderLineItem.getMenu(), orderLineItem.getQuantity()))
+            .map(orderLineItem -> new MenuQuantityPair(findMenuName(menus, orderLineItem),
+                orderLineItem.getQuantity()))
             .collect(toList());
     }
+
+    private Name findMenuName(List<Menu> menus, OrderLineItem orderLineItem) {
+        return findMenuById(orderLineItem.getMenuId(), menus)
+            .getName();
+    }
+
+    public Menu findMenuById(Long menuId, List<Menu> menus) {
+        return menus.stream()
+            .filter(menu -> menu.getId().equals(menuId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
+
 }

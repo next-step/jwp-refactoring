@@ -84,6 +84,7 @@ class OrderRestControllerTest extends IntegrationTest {
     @Test
     void test2() throws Exception {
         주문등록();
+        주문등록();
 
         mockMvc.perform(get("/api/orders"))
             .andDo(print())

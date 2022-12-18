@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import kitchenpos.domain.Menu;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -38,9 +37,4 @@ public class OrderRequest {
             .collect(Collectors.toList());
     }
 
-    public List<MenuQuantityPair> toMenuQuantityPairs(List<Menu> menus) {
-        return orderLineItems.stream()
-            .map(orderLineItemRequest -> orderLineItemRequest.toMenuQuantityPair(menus))
-            .collect(Collectors.toList());
-    }
 }

@@ -48,16 +48,16 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public Order(OrderTable orderTable, List<MenuQuantityPair> menuQuantityPairs) {
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (!orderTable.isEmpty()) {
             throw new NotEmptyTableException();
         }
-        if (menuQuantityPairs.size() == 0) {
+        if (orderLineItems.size() == 0) {
             throw new AtLeastOneOrderLineItemException();
         }
-        for (MenuQuantityPair menuQuantityPair : menuQuantityPairs) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
             this.orderLineItems.add(
-                new OrderLineItem(this, menuQuantityPair.getMenu(), menuQuantityPair.getQuantity()));
+                new OrderLineItem(this, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
         }
         this.orderTable = orderTable;
         this.orderStatus = COOKING;
@@ -84,8 +84,8 @@ public class Order {
         return orderStatus == COOKING || orderStatus == OrderStatus.MEAL;
     }
 
-    public List<MenuQuantityPair> getMenuQuantityPairs() {
-        return this.orderLineItems.getMenuQuantityPairs();
+    public List<MenuQuantityPair> getMenuQuantityPairs(List<Menu> menus) {
+        return this.orderLineItems.getMenuQuantityPairs(menus);
     }
 
     public void changeStatus(OrderStatus status) {

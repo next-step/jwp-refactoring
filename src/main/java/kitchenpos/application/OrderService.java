@@ -10,10 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.MenuFindException;
@@ -39,13 +41,14 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         OrderTable orderTable = findOrderTable(request.getOrderTableId());
         List<Menu> menus = findMenus(request.getMenuIds());
-        Order order = orderRepository.save(new Order(orderTable, request.toMenuQuantityPairs(menus)));
-        return OrderResponse.of(order);
+        Order order = orderRepository.save(new Order(orderTable, toOrderLineItems(request.getOrderLineItems())));
+        return OrderResponse.of(order, menus);
     }
 
     public List<OrderResponse> list() {
+        List<Menu> menus = menuRepository.findAll();
         return orderRepository.findAll().stream()
-            .map(OrderResponse::of)
+            .map(order -> OrderResponse.of(order, menus))
             .collect(toList());
     }
 
@@ -53,7 +56,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus status) {
         Order order = findOrder(orderId);
         order.changeStatus(status);
-        return OrderResponse.of(order);
+        return OrderResponse.of(order, menuRepository.findAll());
     }
 
     private Order findOrder(Long orderId) {
@@ -72,5 +75,12 @@ public class OrderService {
     private OrderTable findOrderTable(Long id) {
         return orderTableRepository.findById(id)
             .orElseThrow(NotExistIdException::new);
+    }
+
+    private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+            .map(orderLineItemRequest -> new OrderLineItem(orderLineItemRequest.getMenuId(),
+                orderLineItemRequest.getQuantity()))
+            .collect(toList());
     }
 }

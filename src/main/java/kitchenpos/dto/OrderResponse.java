@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 
@@ -27,15 +28,15 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse of(Order order, List<Menu> menus) {
         return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(),
             order.getOrderedTime(),
-            createOrderLineItems(order.getMenuQuantityPairs()));
+            createOrderLineItemResponses(order.getMenuQuantityPairs(menus)));
     }
 
-    private static List<OrderLineItemResponse> createOrderLineItems(List<MenuQuantityPair> pairs) {
+    private static List<OrderLineItemResponse> createOrderLineItemResponses(List<MenuQuantityPair> pairs) {
         return pairs.stream()
-            .map(menuQuantityPair -> new OrderLineItemResponse(menuQuantityPair.getMenu(),
+            .map(menuQuantityPair -> new OrderLineItemResponse(menuQuantityPair.getMenuName(),
                 menuQuantityPair.getQuantity()))
             .collect(toList());
     }

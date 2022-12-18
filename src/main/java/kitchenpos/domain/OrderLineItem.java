@@ -19,23 +19,25 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    private Long menuId;
 
     private Quantity quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Menu menu, Quantity quantity) {
-        this.order = order;
-        this.menu = menu;
+    public OrderLineItem(Long menuId, Quantity quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public OrderLineItem(Order order, Long menuId, Quantity quantity) {
+        this(menuId, quantity);
+        this.order = order;
+    }
+
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {

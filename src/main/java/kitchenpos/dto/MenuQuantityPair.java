@@ -1,19 +1,25 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.Menu;
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Quantity;
 
 public class MenuQuantityPair {
-    private Menu menu;
+    private Long menuId;
+    private Name menuName;
     private Quantity quantity;
 
-    public MenuQuantityPair(Menu menu, Quantity quantity) {
-        this.menu = menu;
+    public MenuQuantityPair(Name menuName, Quantity quantity) {
+        this.menuName = menuName;
         this.quantity = quantity;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public MenuQuantityPair(Long menuId, Name menuName, Quantity quantity) {
+        this(menuName, quantity);
+        this.menuId = menuId;
+    }
+
+    public Name getMenuName() {
+        return menuName;
     }
 
     public Quantity getQuantity() {
