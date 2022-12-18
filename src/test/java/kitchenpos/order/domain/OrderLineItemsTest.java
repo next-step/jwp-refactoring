@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +14,8 @@ import org.junit.jupiter.api.Test;
 
 class OrderLineItemsTest {
 
-    List<OrderLineItem> orderLineItemList = Arrays.asList(new OrderLineItem(1L, 1l), new OrderLineItem(2L, 1l));
+    List<OrderLineItem> orderLineItemList = Arrays.asList(new OrderLineItem(1L, 1l, "메뉴명", new BigDecimal(16000)),
+            new OrderLineItem(2L, 1l, "메뉴명", new BigDecimal(16000)));
 
     @Test
     void 주문_등록시_주문_수량을_추가할_수_있다() {

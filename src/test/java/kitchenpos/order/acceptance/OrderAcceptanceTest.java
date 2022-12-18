@@ -47,7 +47,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     void 등록_된_메뉴만_지정할_수_있다() throws Exception {
         주문_테이블_등록(주문_테이블);
         OrderRequest 없는_메뉴가_포함된_주문 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
 
         ResultActions resultActions = 주문_등록(없는_메뉴가_포함된_주문);
 
@@ -57,7 +57,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void 등록_된_주문_테이블만_지정할_수_있다() throws Exception {
         OrderRequest 등록_되지_않은_주문테이블_지정 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
 
         ResultActions resultActions = 주문_등록(등록_되지_않은_주문테이블_지정);
 
@@ -68,7 +68,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     void 주문_테이블은_비어있으면_안된다() throws Exception {
         주문_테이블_등록(빈_주문_테이블);
         OrderRequest 빈_주문_테이블_지정 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
 
         ResultActions resultActions = 주문_등록(빈_주문_테이블_지정);
 
@@ -81,7 +81,8 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
         상품_등록(후라이드치킨_상품);
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(주문_테이블);
-        OrderRequest 주문 = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+        OrderRequest 주문 = new OrderRequest(1L,
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
 
         ResultActions resultActions = 주문_등록(주문);
 
@@ -95,7 +96,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(주문_테이블);
         OrderRequest 주문 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
         주문_등록(주문);
 
         ResultActions resultActions = 주문_목록_조회();
@@ -138,7 +139,8 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
         상품_등록(후라이드치킨_상품);
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(주문_테이블);
-        OrderRequest 주문 = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+        OrderRequest 주문 = new OrderRequest(1L,
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
         주문_등록(주문);
         return 주문;
     }
@@ -169,7 +171,11 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("$.[0].orderStatus").value(OrderStatus.COOKING.name()))
                 .andExpect(jsonPath("$.[0].orderLineItems[0].seq").value(1L))
                 .andExpect(jsonPath("$.[0].orderLineItems[0].menuId").value(orderLineItems.getMenuId()))
-                .andExpect(jsonPath("$.[0].orderLineItems[0].quantity").value(orderLineItems.getQuantity()));
+                .andExpect(jsonPath("$.[0].orderLineItems[0].quantity").value(orderLineItems.getQuantity()))
+                .andExpect(
+                        jsonPath("$.[0].orderLineItems[0].menuName").value(orderLineItems.getOrderLineItemMenuName()))
+                .andExpect(jsonPath("$.[0].orderLineItems[0].menuPrice")
+                        .value(orderLineItems.getOrderLineItemMenuPrice().floatValue()));
     }
 
     private ResultActions 주문_목록_조회() throws Exception {

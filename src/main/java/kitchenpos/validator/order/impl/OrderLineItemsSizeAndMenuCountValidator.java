@@ -6,7 +6,6 @@ import kitchenpos.validator.order.OrderValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-@org.springframework.core.annotation.Order(2)
 public class OrderLineItemsSizeAndMenuCountValidator implements OrderValidator {
 
     private final MenuRepository menuRepository;

@@ -19,5 +19,4 @@ class MenuProductTest {
 
         assertThatIllegalArgumentException().isThrownBy(메뉴_상품_갯수_0미만_인_경우);
     }
-
 }

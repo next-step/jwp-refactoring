@@ -11,7 +11,6 @@ import kitchenpos.validator.ordertable.OrderTableValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-@org.springframework.core.annotation.Order(2)
 public class OrderStatusOrderTableValidator implements OrderTableValidator {
 
     private final OrderRepository orderRepository;

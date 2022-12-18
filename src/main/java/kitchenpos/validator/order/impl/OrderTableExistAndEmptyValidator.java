@@ -7,7 +7,6 @@ import kitchenpos.validator.order.OrderValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-@org.springframework.core.annotation.Order(1)
 public class OrderTableExistAndEmptyValidator implements OrderValidator {
 
     private final OrderTableRepository orderTableRepository;

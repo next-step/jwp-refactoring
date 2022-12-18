@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +49,8 @@ class OrderServiceTest {
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
-    private Order order = new Order(1L, Collections.singletonList(new OrderLineItem(1L, 1l)));
+    private Order order = new Order(1L,
+            Collections.singletonList(new OrderLineItem(1L, 1l, "메뉴명", new BigDecimal(16000))));
     private List<OrderValidator> orderValidators;
 
     @BeforeEach
@@ -61,8 +63,9 @@ class OrderServiceTest {
 
     @Test
     void 주문을_등록할_수_있다() {
-        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
-                new OrderLineItemRequest(2L, 1l));
+        List<OrderLineItemRequest> orderLineItems = Arrays
+                .asList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000)),
+                        new OrderLineItemRequest(2L, 1l, "메뉴명", new BigDecimal(160000)));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderRepository.save(any())).willReturn(order);
 
@@ -82,8 +85,9 @@ class OrderServiceTest {
 
     @Test
     void 등록_된_메뉴만_지정할_수_있다() {
-        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
-                new OrderLineItemRequest(2L, 1l));
+        List<OrderLineItemRequest> orderLineItems = Arrays
+                .asList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000)),
+                        new OrderLineItemRequest(2L, 1l, "메뉴명", new BigDecimal(160000)));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1, false)));
         orderValidatorImpl = new OrderValidatorsImpl(orderValidators);
@@ -96,8 +100,9 @@ class OrderServiceTest {
 
     @Test
     void 등록_된_주문_테이블만_지정할_수_있다() {
-        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
-                new OrderLineItemRequest(2L, 1l));
+        List<OrderLineItemRequest> orderLineItems = Arrays
+                .asList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000)),
+                        new OrderLineItemRequest(2L, 1l, "메뉴명", new BigDecimal(160000)));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
         orderValidatorImpl = new OrderValidatorsImpl(orderValidators);
@@ -110,8 +115,9 @@ class OrderServiceTest {
 
     @Test
     void 주문_테이블은_비어있으면_안된다() {
-        List<OrderLineItemRequest> orderLineItems = Arrays.asList(new OrderLineItemRequest(1L, 1l),
-                new OrderLineItemRequest(2L, 1l));
+        List<OrderLineItemRequest> orderLineItems = Arrays
+                .asList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000)),
+                        new OrderLineItemRequest(2L, 1l, "메뉴명", new BigDecimal(160000)));
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItems);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1, true)));
         orderValidatorImpl = new OrderValidatorsImpl(orderValidators);

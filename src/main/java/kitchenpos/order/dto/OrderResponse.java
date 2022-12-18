@@ -46,7 +46,8 @@ public class OrderResponse {
     private static List<OrderLineItemResponse> createOrderLineItemResponses(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
                 .map(orderLineItem -> new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenuId(),
-                        orderLineItem.getQuantity()))
+                        orderLineItem.getQuantity(), orderLineItem.getOrderLineItemMenuName(),
+                        orderLineItem.getOrderLineItemMenuPrice()))
                 .collect(Collectors.toList());
     }
 

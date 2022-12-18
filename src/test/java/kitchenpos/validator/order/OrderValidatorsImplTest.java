@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,8 @@ class OrderValidatorsImplTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private MenuRepository menuRepository;
-    private Order order = new Order(1L, Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 1)));
+    private Order order = new Order(1L, Arrays.asList(new OrderLineItem(1L, 1, "메뉴명", new BigDecimal(16000)),
+            new OrderLineItem(2L, 1, "메뉴명", new BigDecimal(16000))));
     private List<OrderValidator> orderValidators;
 
     @BeforeEach

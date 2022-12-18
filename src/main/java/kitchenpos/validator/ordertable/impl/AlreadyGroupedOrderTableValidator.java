@@ -3,11 +3,9 @@ package kitchenpos.validator.ordertable.impl;
 import java.util.Objects;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.validator.ordertable.OrderTableValidator;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(1)
 public class AlreadyGroupedOrderTableValidator implements OrderTableValidator {
 
     @Override

@@ -145,7 +145,8 @@ class TableAcceptanceTest extends BaseAcceptanceTest {
         상품_등록(후라이드치킨_상품);
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(orderTable);
-        OrderRequest 주문 = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
+        OrderRequest 주문 = new OrderRequest(1L,
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
         주문_등록(주문);
         return 주문;
     }

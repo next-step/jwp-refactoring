@@ -28,7 +28,8 @@ public class OrderRequest {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.stream()
                 .map(orderLineItemRequest -> new OrderLineItem(orderLineItemRequest.getMenuId(),
-                        orderLineItemRequest.getQuantity()))
+                        orderLineItemRequest.getQuantity(), orderLineItemRequest.getOrderLineItemMenuName(),
+                        orderLineItemRequest.getOrderLineItemMenuPrice()))
                 .collect(Collectors.toList());
     }
 
