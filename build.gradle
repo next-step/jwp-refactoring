@@ -36,8 +36,18 @@ subprojects {
     }
 }
 
+project(':kitchenpos-menu') {
+}
+
+project(':kitchenpos-order') {
+    dependencies {
+        compile project(':kitchenpos-menu')
+    }
+}
+
 project(':kitchenpos-app') {
     dependencies {
-        compile project(':kitchenpos')
+        compile project(':kitchenpos-menu')
+        compile project(':kitchenpos-order')
     }
 }

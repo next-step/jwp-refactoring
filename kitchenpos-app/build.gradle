@@ -4,7 +4,4 @@ jar { enabled = true }
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    compile "com.google.guava:guava:16+"
 }
