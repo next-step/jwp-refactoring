@@ -22,10 +22,13 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.generate(
+        return MenuGroupResponse.from(menuGroupRepository.save(generateMenuGroup(menuGroupRequest)));
+    }
+
+    private MenuGroup generateMenuGroup(MenuGroupRequest menuGroupRequest) {
+        return MenuGroup.generate(
             menuGroupRequest.getName()
-        ));
-        return MenuGroupResponse.from(savedMenuGroup);
+        );
     }
 
     public List<MenuGroupResponse> list() {

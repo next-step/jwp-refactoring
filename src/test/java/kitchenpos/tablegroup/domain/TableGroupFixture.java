@@ -17,4 +17,12 @@ public class TableGroupFixture {
     public static TableGroup savedTableGroup(Long id) {
         return new TableGroup(id, LocalDateTime.now());
     }
+
+    public static TableGroupCreateEvent tableGroupCreateEvent(List<Long> orderTableIds, Long tableGroupId) {
+        return new TableGroupCreateEvent(orderTableIds, tableGroupId);
+    }
+
+    public static TableGroupUngroupEvent tableGroupUngroupEvent(Long tableGroupId) {
+        return new TableGroupUngroupEvent(tableGroupId);
+    }
 }

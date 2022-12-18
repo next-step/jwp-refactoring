@@ -42,6 +42,10 @@ public class Menu {
         return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
+    public boolean hasId(Long id) {
+        return Objects.equals(this.id, id);
+    }
+
     public Long getId() {
         return id;
     }

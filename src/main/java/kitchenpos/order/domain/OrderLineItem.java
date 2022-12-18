@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import java.math.BigDecimal;
+
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,18 +14,23 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     private Long menuId;
+    private String menuName;
+    @Embedded
+    private OrderMenuPrice menuPrice;
     private long quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Long menuId, String menuName, BigDecimal menuPrice, long quantity) {
         this.seq = seq;
         this.menuId = menuId;
+        this.menuName = menuName;
+        this.menuPrice = OrderMenuPrice.from(menuPrice);
         this.quantity = quantity;
     }
 
-    public static OrderLineItem generate(Long menuId, long quantity) {
-        return new OrderLineItem(null, menuId, quantity);
+    public static OrderLineItem generate(Long menuId, String orderMenuName, BigDecimal orderMenuPrice, long quantity) {
+        return new OrderLineItem(null, menuId, orderMenuName, orderMenuPrice, quantity);
     }
 
     public Long getSeq() {
@@ -31,6 +39,14 @@ public class OrderLineItem {
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public BigDecimal getMenuPrice() {
+        return menuPrice.value();
     }
 
     public long getQuantity() {
