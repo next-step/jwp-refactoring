@@ -8,7 +8,6 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
 import kitchenpos.table.persistence.TableGroupRepository;
-import kitchenpos.table.validator.TableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ import java.util.List;
 
 @Service
 public class TableGroupService {
-    private final TableValidator tableValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
     private final OrderValidator orderValidator;
@@ -24,11 +22,9 @@ public class TableGroupService {
 
     public TableGroupService(final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository,
-                             final TableValidator tableValidator,
                              final OrderValidator orderValidator
     ) {
         this.orderValidator = orderValidator;
-        this.tableValidator = tableValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }

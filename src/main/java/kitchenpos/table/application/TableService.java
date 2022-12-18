@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -14,16 +13,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableValidator tableValidator;
 
-    public TableService(final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository,
+    public TableService(final OrderTableRepository orderTableRepository,
                         final TableValidator tableValidator
     ) {
         this.tableValidator = tableValidator;
-        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
