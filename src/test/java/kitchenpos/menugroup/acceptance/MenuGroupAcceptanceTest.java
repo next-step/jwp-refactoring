@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,20 +23,22 @@ import org.springframework.http.MediaType;
 @DisplayName("메뉴 그룹 관련 인수 테스트")
 public
 class MenuGroupAcceptanceTest extends AcceptanceTest {
-    private MenuGroup 한마리메뉴;
-    private MenuGroup 두마리메뉴;
+    private MenuGroupRequest 한마리메뉴_요청;
+    private MenuGroupRequest 두마리메뉴_요청;
+    private MenuGroupResponse 한마리메뉴_생성됨;
+    private MenuGroupResponse 두마리메뉴_생성됨;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
-        두마리메뉴 = new MenuGroup(2L, "두마리메뉴");
+        한마리메뉴_요청 = MenuGroupRequest.of("한마리메뉴");
+        두마리메뉴_요청 = MenuGroupRequest.of("두마리메뉴");
     }
 
     @Test
     void 메뉴_그룹을_등록할_수_있다() {
         // when
-        ExtractableResponse<Response> response = 메뉴그룹_생성_요청(한마리메뉴);
+        ExtractableResponse<Response> response = 메뉴그룹_생성_요청(한마리메뉴_요청);
 
         // then
         메뉴_그룹_생성됨(response);
@@ -43,22 +47,22 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void 메뉴_그룹_목록을_조회할_수_있다() {
         // given
-        한마리메뉴 = 메뉴그룹_생성_요청(한마리메뉴).as(MenuGroup.class);
-        두마리메뉴 = 메뉴그룹_생성_요청(두마리메뉴).as(MenuGroup.class);
+        한마리메뉴_생성됨 = 메뉴그룹_생성_요청(한마리메뉴_요청).as(MenuGroupResponse.class);
+        두마리메뉴_생성됨 = 메뉴그룹_생성_요청(두마리메뉴_요청).as(MenuGroupResponse.class);
 
         // when
         ExtractableResponse<Response> response = 메뉴그룹_목록_조회_요청();
 
         // then
-        메뉴그룹_목록_응답됨(response, Arrays.asList(한마리메뉴.getId(), 두마리메뉴.getId()));
+        메뉴그룹_목록_응답됨(response, Arrays.asList(한마리메뉴_생성됨.getId(), 두마리메뉴_생성됨.getId()));
 
     }
 
-    public static ExtractableResponse<Response> 메뉴그룹_생성_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴그룹_생성_요청(MenuGroupRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuGroup)
+                .body(request)
                 .when().post("/api/menu-groups")
                 .then().log().all()
                 .extract();

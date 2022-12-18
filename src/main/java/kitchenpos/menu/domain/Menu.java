@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -18,7 +19,8 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
     @Embedded
     private Price price;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,14 +30,14 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
+    public Menu(Long id, Name name, Price price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup) {
+    public Menu(Name name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -49,11 +51,11 @@ public class Menu {
         this.id = id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public void setName(final Name name) {
         this.name = name;
     }
 

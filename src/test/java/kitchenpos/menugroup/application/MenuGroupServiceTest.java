@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.domain.Name;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
@@ -33,19 +34,19 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = new MenuGroup(1L, "치킨");
-        스파게티 = new MenuGroup(2L, "스파게티");
+        치킨 = new MenuGroup(1L, new Name("치킨"));
+        스파게티 = new MenuGroup(2L, new Name("스파게티"));
     }
 
     @Test
     void 메뉴_그룹을_등록할_수_있다() {
         given(menuGroupRepository.save(any())).willReturn(치킨);
 
-        MenuGroupResponse savedProduct = menuGroupService.create(MenuGroupRequest.of(치킨.getName()));
+        MenuGroupResponse savedProduct = menuGroupService.create(MenuGroupRequest.of(치킨.getName().value()));
 
         assertAll(
                 () -> assertThat(savedProduct.getId()).isNotNull(),
-                () -> assertThat(savedProduct.getName()).isEqualTo(치킨.getName())
+                () -> assertThat(savedProduct.getName()).isEqualTo(치킨.getName().value())
         );
     }
 

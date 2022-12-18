@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
@@ -23,6 +24,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -44,7 +47,8 @@ import org.springframework.http.MediaType;
 class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 생성된_순살치킨;
     private ProductResponse 생성된_후라이드치킨;
-    private MenuGroup 치킨;
+    private MenuGroup 치킨그룹;
+    private MenuGroupResponse 치킨그룹_응답;
     private Menu 순살치킨메뉴;
     private Menu 두마리치킨세트메뉴;
     private MenuProductRequest 순살치킨상품;
@@ -60,13 +64,16 @@ class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         생성된_순살치킨 = 상품_생성_요청(ProductRequest.of("순살치킨", BigDecimal.valueOf(20_000))).as(ProductResponse.class);
         생성된_후라이드치킨 = 상품_생성_요청(ProductRequest.of("후라이드치킨", BigDecimal.valueOf(18_000))).as(ProductResponse.class);
-        치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
-        순살치킨메뉴 = new Menu("순살치킨", new Price(BigDecimal.valueOf(12_000L)), 치킨);
-        두마리치킨세트메뉴 = new Menu("두마리치킨세트", new Price(BigDecimal.valueOf(38_000L)), 치킨);
+
+        치킨그룹_응답 = 메뉴그룹_생성_요청(MenuGroupRequest.of("치킨")).as(MenuGroupResponse.class);
+        치킨그룹 = new MenuGroup(치킨그룹_응답.getId(), new Name(치킨그룹_응답.getName()));
+
+        순살치킨메뉴 = new Menu(new Name("순살치킨"), new Price(BigDecimal.valueOf(12_000L)), 치킨그룹);
+        두마리치킨세트메뉴 = new Menu(new Name("두마리치킨세트"), new Price(BigDecimal.valueOf(38_000L)), 치킨그룹);
         순살치킨상품 = MenuProductRequest.of(생성된_순살치킨.getId(), 1L);
         후라이드치킨상품 = MenuProductRequest.of(생성된_후라이드치킨.getId(), 1L);
         두마리치킨세트_응답 = 메뉴_생성_요청(MenuRequest.of(
-                두마리치킨세트메뉴.getName(),
+                두마리치킨세트메뉴.getName().value(),
                 두마리치킨세트메뉴.getPrice().value(),
                 두마리치킨세트메뉴.getMenuGroup().getId(),
                 Arrays.asList(순살치킨상품, 후라이드치킨상품)

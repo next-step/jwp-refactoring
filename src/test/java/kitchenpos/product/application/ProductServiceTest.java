@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
@@ -37,8 +38,8 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        양념치킨 = new Product("양념치킨", new Price(BigDecimal.valueOf(2_000)));
-        후라이드치킨 = new Product("후라이드치킨", new Price(BigDecimal.valueOf(18_000)));
+        양념치킨 = new Product(new Name("양념치킨"), new Price(BigDecimal.valueOf(2_000)));
+        후라이드치킨 = new Product(new Name("후라이드치킨"), new Price(BigDecimal.valueOf(18_000)));
     }
 
     @Test
@@ -50,7 +51,7 @@ public class ProductServiceTest {
 
         assertAll(
                 () -> assertThat(response.getId()).isEqualTo(양념치킨.getId()),
-                () -> assertThat(response.getName()).isEqualTo(양념치킨.getName()),
+                () -> assertThat(response.getName()).isEqualTo(양념치킨.getName().value()),
                 () -> assertThat(response.getPrice()).isEqualTo(양념치킨.getPrice().value())
         );
     }

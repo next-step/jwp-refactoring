@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
@@ -71,16 +72,15 @@ public class OrderServiceTest {
 
     @BeforeEach
     public void setUp() {
-        치킨 = new Product(1L, "치킨", new Price(BigDecimal.valueOf(20_000)));
-        스파게티 = new Product(2L, "스파게티", new Price(BigDecimal.valueOf(10_000)));
-        양식 = new MenuGroup(1L, "양식");
+        치킨 = new Product(1L, new Name("치킨"), new Price(BigDecimal.valueOf(20_000)));
+        스파게티 = new Product(2L, new Name("스파게티"), new Price(BigDecimal.valueOf(10_000)));
+        양식 = new MenuGroup(1L, new Name("양식"));
 
-        치킨_스파게티_더블세트_메뉴 = new Menu(1L, "치킨 스파게티 더블세트 메뉴", new Price(BigDecimal.valueOf(13_000)), 양식);
+        치킨_스파게티_더블세트_메뉴 = new Menu(1L, new Name("치킨 스파게티 더블세트 메뉴"), new Price(BigDecimal.valueOf(13_000)), 양식);
         치킨_두마리 = new MenuProduct(1L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 치킨);
         스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 스파게티);
         치킨_두마리_요청 = MenuProductRequest.of(치킨.getId(), 1L);
         스파게티_이인분_요청 = MenuProductRequest.of(스파게티.getId(), 1L);
-        //치킨_스파게티_더블세트_메뉴.setMenuProducts(Arrays.asList(치킨_두마리, 스파게티_이인분));
 
         주문_테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
         주문_항목 = new OrderLineItem(new Quantity(1L), 치킨_스파게티_더블세트_메뉴);

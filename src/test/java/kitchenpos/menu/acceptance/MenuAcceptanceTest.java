@@ -13,13 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +42,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         super.setUp();
         생성된_후라이드치킨 = 상품_생성_요청(ProductRequest.of("후라이드 치킨", BigDecimal.valueOf(18_000))).as(ProductResponse.class);
         생성된_콜라 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(1_800))).as(ProductResponse.class);
-        치킨 = 메뉴그룹_생성_요청(new MenuGroup(1L, "치킨")).as(MenuGroup.class);
+        치킨 = 메뉴그룹_생성_요청(MenuGroupRequest.of("치킨")).as(MenuGroup.class);
 
         후라이드치킨상품 = MenuProductRequest.of(생성된_후라이드치킨.getId(), 1L);
         콜라상품 = MenuProductRequest.of(생성된_콜라.getId(), 1L);

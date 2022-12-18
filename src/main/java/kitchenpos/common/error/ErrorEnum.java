@@ -14,6 +14,7 @@ public enum ErrorEnum {
     EXISTS_NOT_EMPTY_ORDER_TABLE("빈 상태가 아닌 주문테이블이 존재합니다."),
     ORDER_TABLE_TWO_OVER("주문 테이블은 2개 이상 존재해야 합니다."),
     QUANTITY_UNDER_ZERO("수량은 0개 이하일 수 없습니다."),
+    NOT_NULL_OR_EMPTY_NAME("이름을 반드시 입력해야 합니다."),
     DEFAULT_ERROR("오류가 발생하였습니다");
 
     private final String message;
