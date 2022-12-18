@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.utils.Message.NOT_EXISTS_ORDER_TABLE;
+
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
@@ -46,6 +48,6 @@ public class TableGroupService {
 
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_ORDER_TABLE));
     }
 }

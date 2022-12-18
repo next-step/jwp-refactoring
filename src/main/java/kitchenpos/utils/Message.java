@@ -24,4 +24,6 @@ public class Message {
 
     public static final String CAN_NOT_CHANGE_NUMBER_OF_GUESTS = "주문 테이블이 빈 테이블이면 방문한 손님 수를 변경할 수 없습니다.";
 
+    public static final String NOT_EXISTS_ORDER_TABLE = "해당 주문 테이블이 존재하지 않습니다.";
+
 }

@@ -35,6 +35,6 @@ public class MenuProducts {
     }
 
     public void setup(Menu menu) {
-        menuProducts.forEach(it -> it.setup(menu));
+        menuProducts.forEach(it -> it.updateMenu(menu));
     }
 }
