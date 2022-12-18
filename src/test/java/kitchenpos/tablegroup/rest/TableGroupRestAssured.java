@@ -4,19 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.resource.UriResource;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import org.springframework.http.MediaType;
-
-import java.util.List;
 
 public class TableGroupRestAssured {
 
-    public static ExtractableResponse<Response> 주문_테이블_그룹_지정_요청(List<OrderTable> orderTables) {
+    public static ExtractableResponse<Response> 주문_테이블_그룹_지정_요청(TableGroupCreateRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TableGroup(orderTables))
+                .body(request)
                 .when().post(UriResource.주문_테이블_그룹_API.uri())
                 .then().log().all()
                 .extract();
