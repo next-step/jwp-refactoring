@@ -62,7 +62,7 @@ public class OrderTable {
     }
 
     public boolean isGrouping() {
-        return Objects.nonNull(tableGroup);
+        return null != tableGroup;
     }
 
     public void enGroupBy(TableGroup tableGroup) {
@@ -128,7 +128,7 @@ public class OrderTable {
     }
 
     public void validateOrderStatus() {
-        if (Objects.nonNull(order) && !order.isCooking()) {
+        if (null != order && !order.isCooking()) {
             throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_COOKING_OR_MEAL);
         }
     }
