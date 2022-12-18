@@ -1,11 +1,36 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
+import kitchenpos.common.ErrorCode;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 255, nullable = false, unique = true)
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
+
+    public Product() {}
+
+    public Product(String name, BigDecimal price) {
+        validation(name);
+
+        this.name = name;
+        this.price = new Price(price);
+    }
 
     public Long getId() {
         return id;
@@ -23,11 +48,35 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    private void validation(String name) {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRODUCT_NAME.getErrorMessage());
+        }
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Product product = (Product) o;
+        return Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    public BigDecimal getPrice() {
+        return price.getPrice();
+    }
+
+    public void setPrice(BigDecimal price) {
     }
 }
