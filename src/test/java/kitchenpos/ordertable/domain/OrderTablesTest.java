@@ -89,37 +89,4 @@ class OrderTablesTest {
                 () -> assertThat(orderTables.getOrderTables().get(1).isEmpty()).isFalse()
         );
     }
-
-    @DisplayName("주문 상태가 조리인 주문 테이블이 하나라도 있으면 단체 지정 취소 시 예외가 발생한다.")
-    @Test
-    void ungroupException() {
-        OrderTable 주문_테이블1 = OrderTable.of(10, false);
-        Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        OrderTable 주문_테이블2 = OrderTable.of(10, false);
-        Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
-
-        OrderTables orderTables = OrderTables.from(Arrays.asList(주문_테이블1, 주문_테이블2));
-
-        Assertions.assertThatThrownBy(orderTables::unGroup)
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(INVALID_CANCEL_ORDER_TABLES_STATUS);
-    }
-
-    @DisplayName("주문 상태가 식사인 주문 테이블이 하나라도 있으면 단체 지정 취소 시 예외가 발생한다.")
-    @Test
-    void ungroupException2() {
-        OrderTable 주문_테이블1 = OrderTable.of(10, false);
-        Order 주문1 = Order.of(주문_테이블1, Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문1.changeOrderStatus(OrderStatus.COMPLETION);
-
-        OrderTable 주문_테이블2 = OrderTable.of(10, false);
-        Order 주문2 = Order.of(주문_테이블2, Arrays.asList(OrderLineItem.of(2L, 2)));
-        주문2.changeOrderStatus(OrderStatus.MEAL);
-
-        OrderTables orderTables = OrderTables.from(Arrays.asList(주문_테이블1, 주문_테이블2));
-
-        Assertions.assertThatThrownBy(orderTables::unGroup)
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(INVALID_CANCEL_ORDER_TABLES_STATUS);
-    }
 }
