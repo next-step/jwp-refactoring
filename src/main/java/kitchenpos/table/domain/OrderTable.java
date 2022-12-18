@@ -58,19 +58,27 @@ public class OrderTable {
         return empty;
     }
 
+    public boolean isNotEmpty() {
+        return !empty;
+    }
+
     public void changeEmpty(boolean empty) {
         validateChangeEmpty();
         this.empty = empty;
     }
 
     private void validateChangeEmpty() {
-        if(tableGroup != null) {
+        if(isEnrolledGroup()) {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
         }
 
-        if(this.orders.stream().anyMatch(order -> !order.isComplete())) {
+        if(this.orders.stream().anyMatch(Order::isCookingOrMealState)) {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message());
         }
+    }
+
+    public boolean isEnrolledGroup() {
+        return tableGroup != null;
     }
 
     public void changeNumberOfGuests(Integer numberOfGuests) {
@@ -84,13 +92,39 @@ public class OrderTable {
         }
     }
 
-    public void enrollGroup(TableGroup tableGroup) {
+    public void group(TableGroup tableGroup) {
+        validateGroup();
+        changeEmpty(false);
         this.tableGroup = tableGroup;
+    }
+
+    private void validateGroup() {
+        if(isNotEmpty()) {
+            throw new IllegalArgumentException(OrderTableMessage.GROUP_ERROR_ORDER_TABLE_IS_NOT_EMPTY.message());
+        }
+    }
+
+    public void unGroup() {
+        validateUpGroup();
+        this.tableGroup = null;
     }
 
     public void addOrder(Order order) {
         this.orders.add(order);
         order.enrollTable(this);
+    }
+
+    public void validateUpGroup() {
+        if(this.orders.stream().anyMatch(Order::isCookingOrMealState)) {
+            throw new IllegalArgumentException(OrderTableMessage.UN_GROUP_ERROR_INVALID_ORDER_STATE.message());
+        }
+    }
+
+    public boolean isGroupBy(TableGroup tableGroup) {
+        if(!isEnrolledGroup()) {
+            return false;
+        }
+        return this.tableGroup.equals(tableGroup);
     }
 
     @Override

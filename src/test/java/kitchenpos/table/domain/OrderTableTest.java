@@ -8,6 +8,9 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -53,12 +56,16 @@ class OrderTableTest {
     @DisplayName("주문 테이블의 이용 여부 변경시 테이블 그룹에 속해져있는 경우 예외처리되어 상태 변경에 실패한다")
     void changeOrderTableEmptyThrownByEnrolledTableGroupTest() {
         // given
-        TableGroup tableGroup = TableGroup.empty();
-        OrderTable orderTable = OrderTable.of(0, false);
-        orderTable.enrollGroup(tableGroup);
+        OrderTable orderTable = OrderTable.of(0, true);
+        List<OrderTable> orderTables = Arrays.asList(
+                orderTable,
+                OrderTable.of(2, true)
+        );
+        TableGroup tableGroup = new TableGroup(orderTables);
+        tableGroup.group();
 
         // when & then
-        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+        assertThatThrownBy(() -> orderTable.changeEmpty(false))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
     }

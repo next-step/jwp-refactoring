@@ -129,13 +129,18 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블의 이용 여부 변경시 테이블 그룹에 포함되어있는경우 변경에_실패한다")
+    @DisplayName("주문 테이블의 이용 여부 변경시 테이블 그룹에 포함되어있는경우 변경에 실패한다")
     void changeOrderTableEmptyThrownByEnrolledTableGroupTest() {
         // given
-        OrderTable expectedOrderTable = OrderTable.of(0, true);
-        expectedOrderTable.enrollGroup(TableGroup.empty());
+        OrderTable orderTable = OrderTable.of(0, true);
+        List<OrderTable> orderTables = Arrays.asList(
+                orderTable,
+                OrderTable.of(2, true)
+        );
+        TableGroup tableGroup = new TableGroup(orderTables);
+        tableGroup.group();
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, false);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         // when
         assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
