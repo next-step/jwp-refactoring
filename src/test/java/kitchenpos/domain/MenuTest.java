@@ -21,6 +21,5 @@ class MenuTest {
         assertThatThrownBy(
                 () -> menu.addMenuProducts(menuProducts))
                 .isInstanceOf(IllegalArgumentException.class);
-
     }
 }

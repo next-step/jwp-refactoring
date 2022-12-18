@@ -11,29 +11,18 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTest {
 
-    private Product 후라이드치킨;
-    private Product 제로콜라;
     private MenuGroup 치킨;
-    private MenuProduct 후라이드_이인분;
-    private MenuProduct 제로콜라_삼인분;
     private Menu 후치콜세트;
     private OrderTable 주문테이블;
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨");
-        제로콜라 = new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라");
-
         치킨 = new MenuGroup("치킨");
 
         후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨);
-
-        후라이드_이인분 = new MenuProduct(후치콜세트, 후라이드치킨, 2);
-        제로콜라_삼인분 = new MenuProduct(후치콜세트, 제로콜라, 2);
 
         주문테이블 = new OrderTable(1L, null, 0, false);
     }

@@ -47,14 +47,4 @@ public class MenuRequest {
                 .map(menuProduct -> menuProduct.makeMenuProduct(product))
                 .collect(Collectors.toList()));
     }
-
-    @Override
-    public String toString() {
-        return "MenuRequest{" +
-                "name='" + name + '\'' +
-                ", price=" + price +
-                ", menuGroupId=" + menuGroupId +
-                ", menuProduct=" + menuProduct +
-                '}';
-    }
 }

@@ -36,14 +36,6 @@ public class MenuProductRequest {
     public Long getQuantity() {
         return quantity;
     }
-
-    @Override
-    public String toString() {
-        return "MenuProductRequest{" +
-                "productId=" + productId +
-                ", quantity=" + quantity +
-                '}';
-    }
 }
 
 
