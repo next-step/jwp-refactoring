@@ -1,5 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.Menu.domain;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;

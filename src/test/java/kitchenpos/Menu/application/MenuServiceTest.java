@@ -1,14 +1,14 @@
-package kitchenpos.appliction;
+package kitchenpos.Menu.application;
 
-import kitchenpos.application.MenuService;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.domain.MenuFixture.메뉴;
-import static kitchenpos.domain.MenuGroupFixture.메뉴그룹;
-import static kitchenpos.domain.MenuProductFixture.메뉴상품;
-import static kitchenpos.domain.ProductFixture.상품;
+import static kitchenpos.Menu.domain.MenuFixture.메뉴;
+import static kitchenpos.Menu.domain.MenuGroupFixture.메뉴그룹;
+import static kitchenpos.Menu.domain.MenuProductFixture.메뉴상품;
+import static kitchenpos.Product.domain.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

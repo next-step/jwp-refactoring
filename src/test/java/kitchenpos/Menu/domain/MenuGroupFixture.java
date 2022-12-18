@@ -1,5 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.Menu.domain;
 
+import kitchenpos.menu.domain.MenuGroup;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class MenuGroupFixture {
