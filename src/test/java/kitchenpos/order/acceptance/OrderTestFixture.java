@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,13 +7,15 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.TestFixture;
-import kitchenpos.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 
 public class OrderTestFixture extends TestFixture {
 
     public static final String ORDER_BASE_URI = "/api/orders";
 
-    public static ExtractableResponse<Response> 주문_생성_요청함(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청함(OrderRequest order) {
         return post(ORDER_BASE_URI, order);
     }
 
@@ -21,7 +23,7 @@ public class OrderTestFixture extends TestFixture {
         return get(ORDER_BASE_URI);
     }
 
-    public static ExtractableResponse<Response> 주문_상태변경_요청함(Long orderId, Order order) {
+    public static ExtractableResponse<Response> 주문_상태변경_요청함(Long orderId, OrderRequest order) {
         return put(ORDER_BASE_URI + "/" + orderId + "/order-status", order);
     }
 
@@ -34,25 +36,25 @@ public class OrderTestFixture extends TestFixture {
         created(response);
     }
 
-    public static void 주문_조회_포함됨(ExtractableResponse<Response> response,
-                                 List<ExtractableResponse<Response>> orderResponses) {
+    public static void 주문_조회_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> orderResponses) {
         List<Long> actualIds = response.jsonPath()
-                .getList(".", Order.class)
+                .getList(".", OrderResponse.class)
                 .stream()
-                .map(Order::getId)
+                .map(OrderResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectIds = orderResponses.stream()
-                .map(r -> r.as(Order.class))
+                .map(r -> r.as(OrderResponse.class))
                 .collect(Collectors.toList())
                 .stream()
-                .map(Order::getId)
+                .map(OrderResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(actualIds).containsAll(expectIds);
     }
 
-    public static void 주문_상태_변경됨(Order order, Order status) {
-        assertThat(order.getOrderStatus()).isEqualTo(status.getOrderStatus());
+    public static void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus status) {
+        OrderResponse actual = response.as(OrderResponse.class);
+        assertThat(actual.getOrderStatus()).isEqualTo(status);
     }
 }
