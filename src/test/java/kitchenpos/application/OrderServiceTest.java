@@ -11,6 +11,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,9 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderValidator orderValidator;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -79,8 +83,8 @@ class OrderServiceTest {
         짬뽕_탕수육_1인_메뉴_세트주문 = 주문정보요청(2L, 1);
         주문1_요청 = 주문(주문테이블1.getId(), null, null, Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문));
         주문2_요청 = 주문(주문테이블2.getId(), null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        주문1 = Order.of(주문테이블1, 주문정보목록(주문1_요청.getOrderLineItemsRequest()));
-        주문2 = Order.of(주문테이블2, 주문정보목록(주문2_요청.getOrderLineItemsRequest()));
+        주문1 = Order.of(1L, 주문정보목록(주문1_요청.getOrderLineItemsRequest()));
+        주문2 = Order.of(2L, 주문정보목록(주문2_요청.getOrderLineItemsRequest()));
     }
 
     @DisplayName("주문 생성 작업을 성공한다.")
@@ -92,7 +96,6 @@ class OrderServiceTest {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         when(menuRepository.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
-        when(orderTableRepository.findById(주문1.getOrderTable().getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.save(any())).thenReturn(주문1);
 
         // when
@@ -153,7 +156,7 @@ class OrderServiceTest {
         when(orderRepository.findById(주문2.getId())).thenReturn(Optional.of(주문2));
 
         // when
-        OrderResponse order = orderService.changeOrderStatus(주문2.getId(), 주문2);
+        OrderResponse order = orderService.changeOrderStatus(주문2.getId(), 주문2_요청);
 
         // then
         assertThat(order.getOrderStatus()).isEqualTo(주문2.getOrderStatus());
@@ -163,22 +166,22 @@ class OrderServiceTest {
     @Test
     void changeOrderWithException1() {
         // given
-        OrderRequest 미등록_주문_요청 = 주문(null,null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
-        Order 미등록_주문 = Order.of(OrderTable.of(10, false), 주문정보목록(미등록_주문_요청.getOrderLineItemsRequest()));
+        OrderRequest 미등록_주문_요청 = 주문(null, null, null, singletonList(짜장면_탕수육_1인_메뉴_세트주문));
+        Order 미등록_주문 = Order.of(1L, 주문정보목록(미등록_주문_요청.getOrderLineItemsRequest()));
         when(orderRepository.findById(미등록_주문.getId())).thenReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(미등록_주문.getId(), 미등록_주문));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(미등록_주문.getId(), 미등록_주문_요청));
     }
 
     @DisplayName("주문 상태를 변경할 때, 주문이 이미 완료되어 있으면 IllegalArgumentException을 반환한다.")
     @Test
     void changeOrderWithException2() {
         // given
-        주문2.changeOrderStatus(OrderStatus.COMPLETION);
         when(orderRepository.findById(주문2.getId())).thenReturn(Optional.of(주문2));
+        주문2.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(주문2.getId(), 주문2));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(주문2.getId(), 주문2_요청));
     }
 }

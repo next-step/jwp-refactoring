@@ -1,14 +1,14 @@
 package kitchenpos.order.application;
 
 import kitchenpos.common.ErrorMessage;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,27 +23,27 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
             final OrderTableRepository orderTableRepository,
-            final MenuRepository menuRepository
+            final MenuRepository menuRepository,
+            final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.menuRepository = menuRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        Long orderTableId = request.getOrderTableId();
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_ORDER_TABLE.getMessage(), orderTableId)));
+        orderValidator.validator(request);
         List<OrderLineItemRequest> requestOrderLineItems = request.getOrderLineItemsRequest();
         validateOrderLineItems(requestOrderLineItems);
         List<OrderLineItem> orderLineItems = mapToOrderLineItems(requestOrderLineItems);
-        Order savedOrder = orderRepository.save(Order.of(orderTable, orderLineItems));
-
+        Order savedOrder = orderRepository.save(Order.of(request.getOrderTableId(), orderLineItems));
         return OrderResponse.from(savedOrder);
     }
 
@@ -82,11 +82,11 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_ORDER.getMessage(), orderId)));
 
-        savedOrder.changeOrderStatus(order.getOrderStatus());
+        savedOrder.changeOrderStatus(request.getOrderStatus());
 
         return OrderResponse.from(savedOrder);
     }

@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 
 public class OrderTableTestFixture {
 
-    public static OrderTableRequest 주문테이블(Long id, Long getTableGroupId, int numberOfGuests, boolean empty) {
+    public static OrderTableRequest 주문테이블(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         return OrderTableRequest.of(id, numberOfGuests, empty);
     }
 
-    public static OrderTableRequest 주문테이블(Long getTableGroupId, int numberOfGuests, boolean empty) {
+    public static OrderTableRequest 주문테이블(Long tableGroupId, int numberOfGuests, boolean empty) {
         return OrderTableRequest.of(null, numberOfGuests, empty);
     }
 

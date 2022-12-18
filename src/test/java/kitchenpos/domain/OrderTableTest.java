@@ -1,16 +1,10 @@
 package kitchenpos.domain;
 
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
-import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
-import static kitchenpos.fixture.OrderTableTestFixture.setMenuGroup;
 import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -92,25 +86,10 @@ class OrderTableTest {
     void changeEmptyWithException1() {
         // given
         OrderTable orderTable = OrderTable.of(10, true);
-        setMenuGroup(테이블그룹(), orderTable);
+        orderTable.group(1L);
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("빈좌석 상태 변경 작업할 때, 아직 완료되지 않은 주문이 있으면 IllegalArgumentException을 반환한다.")
-    @Test
-    void changeEmptyWithException2() {
-        // given
-        Order order = Order.of(
-                OrderTable.of(10, false),
-                Collections.singletonList(주문정보(1L, 1))
-        );
-        order.changeOrderStatus(OrderStatus.MEAL);
-
-        // when & then
-        assertThatThrownBy(() -> order.getOrderTable().changeEmpty(true))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,9 +101,9 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.of(10, true);
 
         // when
-        orderTable.group(expectedTableGroup);
+        orderTable.group(expectedTableGroup.getId());
 
         // then
-        assertThat(orderTable.getTableGroup()).isEqualTo(expectedTableGroup);
+        assertThat(orderTable.getTableGroupId()).isEqualTo(expectedTableGroup.getId());
     }
 }

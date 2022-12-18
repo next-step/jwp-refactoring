@@ -1,5 +1,8 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -16,9 +19,14 @@ import static kitchenpos.common.ErrorMessage.NOT_FOUND_ORDER_TABLE;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderTableRepository orderTableRepository, final OrderValidator orderValidator,
+                        final OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -38,7 +46,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = findById(orderTableId);
-
+        List<Order> orders = orderRepository.findAllByOrderTableId(orderTable.getId());
+        orderValidator.validateOrderStatus(orders);
         savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return OrderTableResponse.from(savedOrderTable);

@@ -9,17 +9,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.common.ErrorMessage.EMPTY_ORDER_TABLE;
-import static kitchenpos.common.ErrorMessage.EMPTY_ORDER_TABLE_LIST;
+import static kitchenpos.common.ErrorMessage.*;
 
 @Entity(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
@@ -30,18 +27,16 @@ public class Order {
     public Order() {
     }
 
-    public Order(final OrderTable orderTable, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
-        validateOrder(orderTable, orderLineItems);
-        this.orderTable = orderTable;
-        this.orderTable.addOrder(this);
+    public Order(final Long orderTableId, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
     }
 
-    public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+    public static Order of(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
     private void validateOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
@@ -58,19 +53,19 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException(EMPTY_ORDER_TABLE.getMessage());
-        }
+        validateOrderStatus();
         this.orderStatus = orderStatus;
+    }
+
+    public void validateOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException(COMPLETED_ORDER.getMessage());
+        }
     }
 
     public LocalDateTime getOrderedTime() {
@@ -79,5 +74,9 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 }

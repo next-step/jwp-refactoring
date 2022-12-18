@@ -1,11 +1,10 @@
 package kitchenpos.domain;
 
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +31,7 @@ class OrderTest {
         List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
 
         // when
-        Order order = Order.of(OrderTable.of(10, false), expectedOrderLineItems);
+        Order order = Order.of(1L, expectedOrderLineItems);
 
         // then
         assertAll(
@@ -53,7 +52,7 @@ class OrderTest {
         OrderLineItem 짜장면_탕수육_1인_메뉴_세트주문 = 주문정보(짜장면_탕수육_1인_메뉴_세트.getId(), 1);
         OrderLineItem 짬뽕_탕수육_1인_메뉴_세트주문 = 주문정보(짬뽕_탕수육_1인_메뉴_세트.getId(), 1);
         List<OrderLineItem> expectedOrderLineItems = Arrays.asList(짜장면_탕수육_1인_메뉴_세트주문, 짬뽕_탕수육_1인_메뉴_세트주문);
-        Order order = Order.of(OrderTable.of(10, false), expectedOrderLineItems);
+        Order order = Order.of(1L, expectedOrderLineItems);
 
         // when
         order.changeOrderStatus(expectedOrderStatus);

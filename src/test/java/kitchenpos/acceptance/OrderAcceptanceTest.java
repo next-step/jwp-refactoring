@@ -2,15 +2,14 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +30,9 @@ import static kitchenpos.acceptance.OrderTableAcceptanceStep.등록된_주문_�
 import static kitchenpos.acceptance.ProductAcceptanceStep.등록된_상품;
 import static kitchenpos.fixture.MenuGroupTestFixture.메뉴그룹;
 import static kitchenpos.fixture.MenuProductTestFixture.*;
-import static kitchenpos.fixture.MenuProductTestFixture.단무지메뉴상품요청;
 import static kitchenpos.fixture.MenuTestFixture.메뉴세트요청;
-import static kitchenpos.fixture.OrderLineItemTestFixture.*;
+import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
+import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보요청목록;
 import static kitchenpos.fixture.OrderTableTestFixture.주문테이블;
 import static kitchenpos.fixture.OrderTestFixture.주문;
 import static kitchenpos.fixture.ProductTestFixture.*;
@@ -113,11 +112,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void changeOrderStatus() {
         // given
         OrderResponse orderResponse = 등록된_주문(주문1).as(OrderResponse.class);
-        Order order = Order.of(
-                OrderTable.of(10, false),
+        Order order = Order.of(1L,
                 Collections.singletonList(짜장면_탕수육_1인_메뉴_세트주문)
         );
-        order.changeOrderStatus(OrderStatus.COMPLETION);
+        order.changeOrderStatus(OrderStatus.COOKING);
 
         // when
         ExtractableResponse<Response> response = 주문_상태_변경_요청(orderResponse.getId(), order);

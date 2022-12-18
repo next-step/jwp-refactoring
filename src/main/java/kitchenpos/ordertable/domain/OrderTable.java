@@ -1,13 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.order.domain.Order;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static kitchenpos.common.ErrorMessage.*;
@@ -17,12 +10,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
-    @JsonIgnore
-    @OneToMany(mappedBy = "orderTable")
-    private final List<Order> orders = new ArrayList<>();
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
@@ -67,42 +55,26 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException(ALREADY_TABLE_GROUP.getMessage());
-        }
-
-        if (isNotCompletedOrders()) {
-            throw new IllegalArgumentException(NOT_COMPLETED_ORDER.getMessage());
-        }
-
+        validateTableGroup();
         this.empty = empty;
     }
 
-    private boolean isNotCompletedOrders() {
-        return orders.stream().anyMatch(order -> isNotCompleted(order.getOrderStatus()));
+    private void validateTableGroup() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException(ALREADY_TABLE_GROUP.getMessage());
+        }
     }
 
-    private boolean isNotCompleted(final OrderStatus orderStatus) {
-        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void group(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void addOrder(final Order order) {
-        this.orders.add(order);
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public void unGroup() {
-        tableGroup = null;
+        tableGroupId = null;
+    }
+
+    public void group(final Long tableGroupId) {
+        validateTableGroup();
+        this.tableGroupId = tableGroupId;
     }
 }

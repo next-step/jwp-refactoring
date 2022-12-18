@@ -1,13 +1,13 @@
 package kitchenpos.fixture;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import org.springframework.util.ReflectionUtils;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 public class TableGroupTestFixture {
 
@@ -16,7 +16,13 @@ public class TableGroupTestFixture {
     }
 
     public static TableGroup 테이블그룹() {
-        OrderTables orderTables = OrderTables.from(Arrays.asList(OrderTable.of(10, true), OrderTable.of(10, true)));
-        return TableGroup.of(orderTables);
+        return TableGroup.of();
+    }
+
+    public static TableGroup setId(final long id, final TableGroup tableGroup) {
+        Field idField = Objects.requireNonNull(ReflectionUtils.findField(TableGroup.class, "id"));
+        ReflectionUtils.makeAccessible(idField);
+        ReflectionUtils.setField(idField, tableGroup, id);
+        return tableGroup;
     }
 }

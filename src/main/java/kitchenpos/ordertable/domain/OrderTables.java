@@ -1,21 +1,21 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.common.ErrorMessage.NEED_TWO_ORDER_TABLE;
-import static kitchenpos.common.ErrorMessage.VALIDATION_OF_GROUP;
+import static kitchenpos.common.ErrorMessage.*;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
@@ -36,7 +36,7 @@ public class OrderTables {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
                 throw new IllegalArgumentException(VALIDATION_OF_GROUP.getMessage());
             }
         }
@@ -46,14 +46,23 @@ public class OrderTables {
         return new OrderTables(orderTables);
     }
 
-    public void group(final TableGroup tableGroup) {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.changeEmpty(false);
-            orderTable.group(tableGroup);
-        }
-    }
-
     public List<OrderTable> value() {
         return orderTables;
+    }
+
+    public int size() {
+        return orderTables.size();
+    }
+
+    public void group(final Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.group(tableGroupId));
+    }
+
+    public void unGroup() {
+        orderTables.forEach(OrderTable::unGroup);
+    }
+
+    public List<OrderTable> findOrderTables() {
+        return Collections.unmodifiableList(orderTables);
     }
 }

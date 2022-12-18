@@ -1,8 +1,12 @@
 package kitchenpos.application;
 
+import kitchenpos.fixture.OrderLineItemTestFixture;
 import kitchenpos.order.domain.Order;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -19,9 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderLineItemTestFixture.주문정보;
 import static kitchenpos.fixture.OrderTableTestFixture.*;
-import static kitchenpos.fixture.TableGroupTestFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,6 +36,12 @@ class OrderTableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -87,7 +95,9 @@ class OrderTableServiceTest {
         // given
         주문테이블1.unGroup();
         주문테이블1.changeEmpty(true);
+        Order order = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(1L, 10)))));
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
+        when(orderRepository.findAllByOrderTableId(any())).thenReturn(Collections.singletonList(order));
 
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(주문테이블1.getId(), 주문테이블1);
@@ -101,24 +111,12 @@ class OrderTableServiceTest {
     void changeEmptyWithException1() {
         // given
         OrderTable orderTable = 그룹_있는_주문테이블_생성(주문테이블(null, 1L, 10, true));
-        setMenuGroup(테이블그룹(), orderTable);
+        orderTable.group(1L);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeEmpty(orderTable.getId(), orderTable));
-    }
-
-    @DisplayName("테이블의 빈좌석 상태를 변경할때, 테이블이 주문 상태가 조리중이거나 식사중이면 IllegalArgumentException을 반환한다.")
-    @Test
-    void changeEmptyWithException2() {
-        // given
-        Order.of(주문테이블1, Collections.singletonList(주문정보(1L, 1)));
-        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블1.getId(), 주문테이블1));
     }
 
     @DisplayName("주문 테이블 고객 인원 수에 대한 변경 작업을 성공한다.")
