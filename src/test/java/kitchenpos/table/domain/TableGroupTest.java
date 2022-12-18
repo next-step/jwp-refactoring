@@ -7,6 +7,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
@@ -15,11 +16,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("테이블 그룹(단체테이블) 도메인 테스트")
+@Import(TableGroupValidator.class)
 public class TableGroupTest extends JpaEntityTest {
     @Autowired
     private TableGroupRepository tableGroupRepository;
     @Autowired
     private OrderTableRepository orderTableRepository;
+    @Autowired
+    private TableGroupValidator validator;
 
     @DisplayName("단체테이블 객체 생성")
     @Test
@@ -32,7 +36,8 @@ public class TableGroupTest extends JpaEntityTest {
 
         // when
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
-        savedTableGroup.enGroup();
+        savedTableGroup.enGroup(validator);
+        orderTableRepository.saveAll(savedTableGroup.getOrderTables());
         flushAndClear();
 
         // then
@@ -54,10 +59,15 @@ public class TableGroupTest extends JpaEntityTest {
         OrderTable 테이블2 = new OrderTable(8, false);
         List<OrderTable> 테이블들 = Lists.newArrayList(테이블1, 테이블2);
         orderTableRepository.saveAll(테이블들);
+
+        // when
+        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
+        savedTableGroup.enGroup(validator);
+        orderTableRepository.saveAll(savedTableGroup.getOrderTables());
         flushAndClear();
 
-        // when / then
-        assertThatThrownBy(() -> new TableGroup(테이블들))
+        // then
+        assertThatThrownBy(() -> savedTableGroup.enGroup(validator))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -70,19 +80,24 @@ public class TableGroupTest extends JpaEntityTest {
         List<OrderTable> 테이블들 = Lists.newArrayList(테이블1, 테이블2);
         orderTableRepository.saveAll(테이블들);
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
+        savedTableGroup.enGroup(validator);
+        orderTableRepository.saveAll(savedTableGroup.getOrderTables());
         flushAndClear();
 
         // when
         TableGroup tableGroup = tableGroupRepository.getOne(savedTableGroup.getId());
-        tableGroup.unGroup();
+        tableGroup.unGroup(validator);
+        tableGroup = tableGroupRepository.save(tableGroup);
         flushAndClear();
 
         // then
         OrderTable table1 = orderTableRepository.getOne(테이블1.getId());
         OrderTable table2 = orderTableRepository.getOne(테이블2.getId());
+        TableGroup tableGroup1 = tableGroupRepository.getOne(tableGroup.getId());
         assertAll(
                 () -> assertThat(table1.isGrouping()).isFalse(),
-                () -> assertThat(table2.isGrouping()).isFalse()
+                () -> assertThat(table2.isGrouping()).isFalse(),
+                () -> assertThat(tableGroup1.getOrderTables()).hasSize(0)
         );
     }
 }

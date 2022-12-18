@@ -16,6 +16,10 @@ public class OrderTables {
         values = new ArrayList<>();
     }
 
+    public OrderTables(List<OrderTable> values) {
+        this.values = values;
+    }
+
     public void add(OrderTable orderTable) {
         values.add(orderTable);
     }
