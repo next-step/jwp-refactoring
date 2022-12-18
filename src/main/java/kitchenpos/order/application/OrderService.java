@@ -14,8 +14,12 @@ import kitchenpos.utils.OrderValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static kitchenpos.utils.Message.NOT_EXISTS_MENU;
+import static kitchenpos.utils.Message.NOT_EXISTS_ORDER;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,9 +38,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
+        orderValidator.validate(request.getOrderTableId());
         List<OrderLineItem> orderLineItems = toOrderLineItems(request);
-        OrderTable orderTable = findOrderTableById(request);
-        Order order = Order.of(orderTable, orderLineItems);
+        Order order = Order.of(request.getOrderTableId(), orderLineItems);
         return OrderResponse.from(orderRepository.save(order));
     }
 
@@ -52,11 +56,9 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = findOrderById(orderId);
-
         savedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.from(savedOrder);
-
     }
 
 
@@ -74,16 +76,11 @@ public class OrderService {
 
     private Menu findMenuById(Long id) {
         return menuRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private OrderTable findOrderTableById(OrderRequest request) {
-        return orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXISTS_MENU));
     }
 
     private Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXISTS_ORDER));
     }
 }

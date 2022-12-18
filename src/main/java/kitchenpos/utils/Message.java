@@ -26,4 +26,7 @@ public class Message {
 
     public static final String NOT_EXISTS_ORDER_TABLE = "해당 주문 테이블이 존재하지 않습니다.";
 
+    public static final String NOT_EXISTS_MENU = "해당 메뉴가 존재하지 않습니다.";
+    public static final String NOT_EXISTS_ORDER = "해당 주문이 존재하지 않습니다.";
+
 }
