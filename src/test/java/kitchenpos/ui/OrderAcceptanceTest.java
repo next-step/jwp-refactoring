@@ -2,16 +2,20 @@ package kitchenpos.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 @DisplayName("주문 인수 테스트")
 public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
@@ -71,54 +75,59 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
      *   Then  주문의 상태가 수정된다
      */
     @DisplayName("주문 상태를 수정한다")
-    @Test
-    void 주문_상태_수정() {
+    @TestFactory
+    Stream<DynamicTest> 주문_상태_수정() {
         // Given
         Order 등록된_주문 = 주문_등록_되어있음(주문);
+        return Stream.of(
+                dynamicTest("주문 상태를 조리에서 식사로 변경한다", () -> {
+                    // When
+                    // 조리 -> 식사
+                    주문.setOrderStatus(OrderStatus.MEAL.name());
+                    ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), 주문);
 
-        // When
-        // 조리 -> 식사
-        주문.setOrderStatus(OrderStatus.MEAL.name());
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), 주문);
+                    // Then
+                    주문_상태_수정됨(response);
 
-        // Then
-        주문_상태_수정됨(response);
+                    // Then
+                    Order 수정된_주문 = 주문정보(response);
+                    assertAll(
+                            () -> assertThat(수정된_주문.getId()).isEqualTo(등록된_주문.getId()),
+                            () -> assertThat(수정된_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
+                    );
+                }),
+                dynamicTest("주문 상태를 식사에서 조리로 변경한다", () -> {
+                    // When
+                    // 식사 -> 조리
+                    주문.setOrderStatus(OrderStatus.COOKING.name());
+                    ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), 주문);
 
-        // Then
-        Order 수정된_주문 = 주문정보(response);
-        assertAll(
-                () -> assertThat(수정된_주문.getId()).isEqualTo(등록된_주문.getId()),
-                () -> assertThat(수정된_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
-        );
+                    // Then
+                    주문_상태_수정됨(response);
 
-        // When
-        // 식사 -> 조리
-        주문.setOrderStatus(OrderStatus.COOKING.name());
-        response = 주문_상태_변경_요청(등록된_주문.getId(), 주문);
+                    // Then
+                    Order 수정된_주문2 = 주문정보(response);
+                    assertAll(
+                            () -> assertThat(수정된_주문2.getId()).isEqualTo(등록된_주문.getId()),
+                            () -> assertThat(수정된_주문2.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())
+                    );
+                }),
+                dynamicTest("주문 상태를 조리에서 계산 완료로 변경한다", () -> {
+                    // When
+                    // 조리 -> 계산 완료
+                    주문.setOrderStatus(OrderStatus.COMPLETION.name());
+                    ExtractableResponse<Response> response = 주문_상태_변경_요청(등록된_주문.getId(), 주문);
 
-        // Then
-        주문_상태_수정됨(response);
+                    // Then
+                    주문_상태_수정됨(response);
 
-        // Then
-        Order 수정된_주문2 = 주문정보(response);
-        assertAll(
-                () -> assertThat(수정된_주문2.getId()).isEqualTo(등록된_주문.getId()),
-                () -> assertThat(수정된_주문2.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())
-        );
-
-        // When
-        // 조리 -> 계산 완료
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        response = 주문_상태_변경_요청(등록된_주문.getId(), 주문);
-
-        // Then
-        주문_상태_수정됨(response);
-
-        // Then
-        Order 수정된_주문3 = 주문정보(response);
-        assertAll(
-                () -> assertThat(수정된_주문3.getId()).isEqualTo(등록된_주문.getId()),
-                () -> assertThat(수정된_주문3.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name())
+                    // Then
+                    Order 수정된_주문3 = 주문정보(response);
+                    assertAll(
+                            () -> assertThat(수정된_주문3.getId()).isEqualTo(등록된_주문.getId()),
+                            () -> assertThat(수정된_주문3.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name())
+                    );
+                })
         );
     }
 
