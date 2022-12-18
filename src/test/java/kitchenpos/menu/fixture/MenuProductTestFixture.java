@@ -52,4 +52,12 @@ public class MenuProductTestFixture {
         return MenuProduct.of(상품생성(짬뽕요청()), 1L);
     }
 
+    public static MenuProduct 단무지메뉴상품() {
+        return MenuProduct.of(상품생성(단무지요청()), 1L);
+    }
+
+    public static MenuProduct 탕수육메뉴상품() {
+        return MenuProduct.of(상품생성(탕수육요청()), 1L);
+    }
+
 }
