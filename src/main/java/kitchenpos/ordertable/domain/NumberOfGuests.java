@@ -1,10 +1,12 @@
 package kitchenpos.ordertable.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class NumberOfGuests {
 
+    @Column(precision = 11, nullable = false)
     private int numberOfGuests;
 
     protected NumberOfGuests() {

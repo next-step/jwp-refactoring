@@ -18,9 +18,11 @@ public class OrderTable {
     private Long tableGroupId;
 
     @Embedded
+    @Column(precision = 11, nullable = false)
     private NumberOfGuests numberOfGuests;
 
     @Embedded
+    @Column(nullable = false)
     private OrderTableEmpty empty;
 
     protected OrderTable() {

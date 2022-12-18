@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,9 +16,11 @@ public class Product {
     private Long id;
 
     @Embedded
+    @Column(length = 255, nullable = false)
     private ProductName name;
 
     @Embedded
+    @Column(precision = 19, scale = 2, nullable = false)
     private ProductPrice price;
 
     protected Product() {

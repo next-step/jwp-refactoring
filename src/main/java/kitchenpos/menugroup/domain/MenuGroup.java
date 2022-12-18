@@ -1,5 +1,6 @@
 package kitchenpos.menugroup.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ public class MenuGroup {
     private Long id;
 
     @Embedded
+    @Column(length = 255, nullable = false)
     private MenuGroupName name;
 
     protected MenuGroup() {

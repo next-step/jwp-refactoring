@@ -1,10 +1,12 @@
 package kitchenpos.ordertable.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class OrderTableEmpty {
 
+    @Column(nullable = false)
     private boolean empty;
 
     protected OrderTableEmpty() {

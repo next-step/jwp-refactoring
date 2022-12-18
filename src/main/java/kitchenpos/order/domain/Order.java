@@ -21,11 +21,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_table_id")
+    @Column(name = "order_table_id", nullable = false)
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus orderStatus;
+
+    @Column(nullable = false)
     private LocalDateTime orderedTime;
 
     @Embedded

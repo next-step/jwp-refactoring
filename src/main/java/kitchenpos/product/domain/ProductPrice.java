@@ -2,11 +2,13 @@ package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class ProductPrice {
 
+    @Column(precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
     protected ProductPrice() {

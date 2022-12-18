@@ -1,10 +1,12 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class OrderLineItemQuantity {
 
+    @Column(precision = 20, nullable = false)
     private long quantity;
 
     protected OrderLineItemQuantity() {

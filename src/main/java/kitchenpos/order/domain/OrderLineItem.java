@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,9 +21,11 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Column(nullable = false)
     private Long menuId;
 
     @Embedded
+    @Column(precision = 20, nullable = false)
     private OrderLineItemQuantity quantity;
 
     protected OrderLineItem() {

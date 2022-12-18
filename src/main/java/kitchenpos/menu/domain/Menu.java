@@ -17,12 +17,14 @@ public class Menu {
     private Long id;
 
     @Embedded
+    @Column(length = 255, nullable = false)
     private MenuName name;
 
     @Embedded
+    @Column(precision = 19, scale = 2, nullable = false)
     private MenuPrice price;
 
-    @Column(name = "menu_group_id")
+    @Column(name = "menu_group_id", length = 20)
     private Long menuGroupId;
 
     @Embedded
