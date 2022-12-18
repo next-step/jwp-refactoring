@@ -15,7 +15,7 @@ import java.util.Arrays;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹;
 import static kitchenpos.menu.domain.MenuProductTest.메뉴_상품;
 import static kitchenpos.menu.domain.MenuTest.메뉴;
-import static kitchenpos.order.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블_아이디_포함;
+import static kitchenpos.table.domain.OrderTableTest.두_명의_방문객이_존재하는_테이블_아이디_포함;
 import static kitchenpos.product.domain.ProductTest.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;

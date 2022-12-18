@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -37,7 +36,6 @@ public class Menu {
     }
 
     public static Menu of(Name name, Price price, Long menuGroupId, MenuProductBag menuProducts) {
-        checkValidPrice(price, menuProducts);
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
@@ -82,20 +80,8 @@ public class Menu {
         return Objects.hash(name, price, menuGroupId, menuProducts);
     }
 
-    public List<Product> productList() {
-        return this.menuProducts.productList();
-    }
-
-    private static void checkValidPrice(Price price, MenuProductBag menuProducts) {
-        Price sum = totalPrice(menuProducts);
-        if (price.moreThan(sum)) {
-            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총 합과 같거나 작아야합니다");
-        }
-    }
-
-    private static Price totalPrice(MenuProductBag menuProducts) {
-        return menuProducts.totalPrice();
-
+    public List<Long> productIds() {
+        return this.menuProducts.productIds();
     }
 
     public void updateMenuToMenuProducts() {

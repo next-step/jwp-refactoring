@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -23,19 +21,19 @@ public class MenuProduct {
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+
+    @Column(name = "product_id")
+    private Long productId;
     @Column
     private long quantity;
 
-    private MenuProduct(Product product, long quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     protected MenuProduct() {
@@ -50,12 +48,8 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public BigDecimal totalProductPrice() {
-        return this.product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
@@ -71,12 +65,12 @@ public class MenuProduct {
             return false;
         }
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(menu, that.menu) && Objects.equals(product,
-                that.product);
+        return quantity == that.quantity && Objects.equals(menu, that.menu) && Objects.equals(productId,
+                that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(menu, product, quantity);
+        return Objects.hash(menu, productId, quantity);
     }
 }

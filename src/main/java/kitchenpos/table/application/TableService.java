@@ -68,24 +68,4 @@ public class TableService {
             throw new IllegalArgumentException("요청 주문 테이블 id는 null이 아니어야 합니다");
         }
     }
-
-    public void group(List<OrderTable> orderTables, Long id) {
-        orderTables.forEach(it -> it.updateGroup(id));
-    }
-
-    public void unGroupTables(List<OrderTable> orderTableList) {
-        checkExistsByOrderTableIdInAndOrderStatusIn(
-                orderTableList.stream()
-                        .map(OrderTable::getId).collect(Collectors.toList()));
-        orderTableList.forEach(OrderTable::unGroup);
-    }
-
-    private void checkExistsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIsList) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIsList,
-                COULD_NOT_CHANGE_EMPTY_STATUSES)) {
-            throw new IllegalArgumentException("주문 상태는 " + COULD_NOT_CHANGE_EMPTY_STATUSES.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(",")) + "가 아니어야 합니다");
-        }
-    }
 }
