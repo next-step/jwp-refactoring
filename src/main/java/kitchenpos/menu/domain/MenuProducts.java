@@ -28,12 +28,6 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public BigDecimal totalAmount() {
-        return menuProducts.stream()
-                .map(MenuProduct::amount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     public void setup(Menu menu) {
         menuProducts.forEach(it -> it.updateMenu(menu));
     }

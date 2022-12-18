@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -14,6 +15,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import org.assertj.core.api.Assertions;
+import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,17 +24,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.utils.Message.INVALID_MENU_PRICE;
-import static kitchenpos.utils.Message.INVALID_PRICE;
+import static kitchenpos.utils.Message.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -42,15 +44,14 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private ProductRepository productRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
 
-    private MenuGroup premiumMenu;
     private Product honeycombo;
     private MenuProduct honeycomboChickenProduct;
     private Menu honeycomboChicken;
@@ -62,10 +63,9 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        premiumMenu = MenuGroup.of(1L, "premiumMenu");
         honeycombo = Product.of(1L, "honeycombo", BigDecimal.valueOf(18000));
-        honeycomboChickenProduct = MenuProduct.of( honeycombo, 2);
-        honeycomboChicken = Menu.of(1L, "honeycomboChicken", BigDecimal.valueOf(18000), premiumMenu, Arrays.asList(honeycomboChickenProduct));
+        honeycomboChickenProduct = MenuProduct.of(honeycombo.getId(), 2);
+        honeycomboChicken = Menu.of(1L, "honeycomboChicken", BigDecimal.valueOf(18000), 1L, Arrays.asList(honeycomboChickenProduct));
 
         List<MenuProductRequest> menuProductRequest = Arrays.asList(MenuProductRequest.of(1L, 2));
         menuRequest = MenuRequest.of("honeycomboChicken", BigDecimal.valueOf(16_000), 1L, menuProductRequest);
@@ -78,7 +78,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(premiumMenu));
+        doNothing().when(menuValidator).validate(any());
         when(productRepository.findById(any())).thenReturn(Optional.of(honeycombo));
         when(menuRepository.save(any())).thenReturn(honeycomboChicken);
 
@@ -94,19 +94,18 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격이 없으면(null) 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(premiumMenu));
+        doNothing().when(menuValidator).validate(any());
         when(productRepository.findById(any())).thenReturn(Optional.of(honeycombo));
 
         Assertions.assertThatThrownBy(() -> menuService.create(emptyPriceRequest))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(INVALID_PRICE);
-
     }
 
     @DisplayName("메뉴 가격이 음수면 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException2() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(premiumMenu));
+        doNothing().when(menuValidator).validate(any());
         when(productRepository.findById(any())).thenReturn(Optional.of(honeycombo));
 
         Assertions.assertThatThrownBy(() -> menuService.create(underZeroPriceMenuRequest))
@@ -117,27 +116,31 @@ class MenuServiceTest {
     @DisplayName("메뉴의 메뉴그룹이 존재하지 않으면 메뉴 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
+        doThrow(new EntityNotFoundException(NOT_EXISTS_MENU))
+                .when(menuValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> menuService.create(noMenuGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(NOT_EXISTS_MENU);
     }
 
     @DisplayName("상품에 등록되지 않은 메뉴 상품으로 메뉴를 생성 시 예외가 발생한다.")
     @Test
     void createException4() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(premiumMenu));
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
+        doThrow(new EntityNotFoundException(NOT_EXISTS_PRODUCT))
+                .when(menuValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(NOT_EXISTS_PRODUCT);
+
     }
 
     @DisplayName("메뉴의 가격이 메뉴 상품들의 가격의 합보다 크면 메뉴를 생성 시 예외가 발생한다.")
     @Test
     void createException5() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(premiumMenu));
-        when(productRepository.findById(any())).thenReturn(Optional.of(honeycombo));
+        doThrow(new BadRequestException(INVALID_MENU_PRICE))
+                .when(menuValidator).validate(any());
 
         Assertions.assertThatThrownBy(() -> menuService.create(overPriceMenuRequest))
                 .isInstanceOf(BadRequestException.class)

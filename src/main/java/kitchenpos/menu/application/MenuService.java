@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -17,26 +18,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
     private final MenuRepository menuRepository;
 
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository,
-                       MenuRepository menuRepository) {
-        this.menuGroupRepository = menuGroupRepository;
+    public MenuService(ProductRepository productRepository,
+                       MenuRepository menuRepository,
+                       MenuValidator menuValidator) {
         this.productRepository = productRepository;
         this.menuRepository = menuRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
-        List<MenuProduct> menuProducts = changeToMenuProducts(request.getMenuProducts());
-
-        Menu menu = request.toMenu(menuGroup, menuProducts);
+        menuValidator.validate(request);
+        List<MenuProduct> menuProducts = toMenuProducts(request);
+        Menu menu = request.toMenu(request.getMenuGroupId(), menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
     }
 
@@ -47,19 +48,15 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<MenuProduct> changeToMenuProducts(List<MenuProductRequest> menuProducts) {
-        return menuProducts.stream()
-                .map(it -> MenuProduct.of(findProductById(it.getProductId()), it.getQuantity()))
+    private List<MenuProduct> toMenuProducts(MenuRequest request) {
+        return request.getMenuProducts()
+                .stream()
+                .map(it -> MenuProduct.of(findProductById(it.getProductId()).getId(), it.getQuantity()))
                 .collect(Collectors.toList());
     }
 
     private Product findProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private MenuGroup findMenuGroupById(Long id) {
-        return menuGroupRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
     }
 

@@ -54,7 +54,7 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Menu  honeycomboChicken;
+    private Menu honeycomboChicken;
     private OrderTable orderTable;
     private OrderTable  emptyOrderTable;
     private Order order;
@@ -71,8 +71,8 @@ class OrderServiceTest {
         MenuGroup premiumMenu = MenuGroup.of(1L, "premiumMenu");
         Product honeycombo = Product.of(1L, "honeycombo", BigDecimal.valueOf(16_000));
 
-        List<MenuProduct> menuProductItem = Arrays.asList(MenuProduct.of(honeycombo, 2));
-         honeycomboChicken = Menu.of(1L, " honeycomboChicken", BigDecimal.valueOf(16_000), premiumMenu, menuProductItem);
+        List<MenuProduct> menuProductItem = Arrays.asList(MenuProduct.of(honeycombo.getId(), 2));
+         honeycomboChicken = Menu.of(1L, " honeycomboChicken", BigDecimal.valueOf(16_000), premiumMenu.getId(), menuProductItem);
 
          orderTable = OrderTable.of(1L, null, 3, false);
          emptyOrderTable = OrderTable.of(2L, null,2, true);

@@ -46,7 +46,7 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public Menu toMenu(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return Menu.of(name, price, menuGroup, menuProducts);
+    public Menu toMenu(Long menuGroupId, List<MenuProduct> menuProducts) {
+        return Menu.of(name, price, menuGroupId, menuProducts);
     }
 }
