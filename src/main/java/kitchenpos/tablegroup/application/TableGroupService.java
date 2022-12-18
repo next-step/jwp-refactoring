@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -20,30 +21,37 @@ public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    private final OrderValidator orderValidator;
+
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderValidator = orderValidator;
     }
 
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> savedOrderTables = findOrderTablesByIds(request.getOrderTableIds());
-        TableGroup saveTableGroup = tableGroupRepository.save(TableGroup.from(savedOrderTables));
-        return TableGroupResponse.from(saveTableGroup);
+        final OrderTables savedOrderTables = findOrderTablesByIds(request);
+        TableGroup saveTableGroup = tableGroupRepository.save(TableGroup.createEmpty());
+        savedOrderTables.registerTableGroup(saveTableGroup);
+        return TableGroupResponse.of(saveTableGroup, savedOrderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         OrderTables orderTables = OrderTables.from(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        orderValidator.checkCanBeUngrouped(orderTables.getOrderTableIds());
         orderTables.unGroup();
     }
 
-    private List<OrderTable> findOrderTablesByIds(List<Long> orderTableIdRequests) {
-        return orderTableIdRequests
-                .stream()
-                .map(this::findOrderTableById)
-                .collect(Collectors.toList());
+    private OrderTables findOrderTablesByIds(TableGroupRequest request) {
+        return OrderTables.from(
+                request.getOrderTableIds()
+                        .stream()
+                        .map(this::findOrderTableById)
+                        .collect(Collectors.toList())
+        );
     }
 
     private OrderTable findOrderTableById(Long id) {

@@ -36,7 +36,7 @@ class OrderTablesTest {
     @Test
     void registerTableGroupException2() {
         OrderTables orderTables = OrderTables.from(
-                Collections.singletonList(OrderTable.of(10, true))
+                Collections.singletonList(OrderTable.of(null, null,10, true))
         );
 
         Assertions.assertThatThrownBy(() -> orderTables.registerTableGroup(TableGroup.createEmpty()))
@@ -49,8 +49,8 @@ class OrderTablesTest {
     void registerTableGroupException3() {
         OrderTables orderTables = OrderTables.from(
                 Arrays.asList(
-                        OrderTable.of(10, false),
-                        OrderTable.of(10, true))
+                        OrderTable.of(null, null,10, false),
+                        OrderTable.of(null, null,10, true))
         );
 
         Assertions.assertThatThrownBy(() -> orderTables.registerTableGroup(TableGroup.createEmpty()))
@@ -77,8 +77,8 @@ class OrderTablesTest {
     void registerTableGroup() {
         OrderTables orderTables = OrderTables.from(
                 Arrays.asList(
-                        OrderTable.of(10, true),
-                        OrderTable.of(5, true)
+                        OrderTable.of(null, null,10, true),
+                        OrderTable.of(null, null,5, true)
                 )
         );
 

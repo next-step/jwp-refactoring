@@ -27,6 +27,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return OrderTable.of(numberOfGuests, empty);
+        return OrderTable.of(null, null, numberOfGuests, empty);
     }
 }

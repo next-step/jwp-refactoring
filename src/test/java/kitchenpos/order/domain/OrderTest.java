@@ -21,7 +21,7 @@ class OrderTest {
     @DisplayName("id가 같은 두 객체는 같다.")
     @Test
     void equalsTest() {
-        OrderTable orderTable = OrderTable.of(10, false);
+        OrderTable orderTable = OrderTable.of(null, null,10, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(menu, 2));
 
         Order order1 = Order.of(1L, orderTable.getId(), orderLineItems);
@@ -33,7 +33,7 @@ class OrderTest {
     @DisplayName("id가 다르면 두 객체는 다르다.")
     @Test
     void equalsTest2() {
-        OrderTable orderTable = OrderTable.of(10, false);
+        OrderTable orderTable = OrderTable.of(null ,null,10, false);
         List<OrderLineItem> orderLineItems = Arrays.asList(OrderLineItem.of(menu, 2));
 
         Order order1 = Order.of(1L, orderTable.getId(), orderLineItems);
@@ -45,7 +45,7 @@ class OrderTest {
     @DisplayName("주문항목이 비어있으면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException() {
-        OrderTable orderTable = OrderTable.of(10, false);
+        OrderTable orderTable = OrderTable.of(null, null,10, false);
         List<OrderLineItem> orderLineItems = Collections.emptyList();
 
         Assertions.assertThatThrownBy(() -> Order.of(orderTable.getId(), orderLineItems))

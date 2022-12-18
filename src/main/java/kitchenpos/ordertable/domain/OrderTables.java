@@ -10,19 +10,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static kitchenpos.utils.Message.*;
 
-@Embeddable
 public class OrderTables {
 
     private static final int MIN_ORDER_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
-
-    protected OrderTables() {
-    }
 
     private OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
@@ -40,19 +36,7 @@ public class OrderTables {
         checkOrderTableSize();
         checkAllOrderTablesAreEmpty();
         checkAllOrderTablesAreNotTableGroup();
-        orderTables.forEach(it -> it.registerTableGroup(tableGroup));
-    }
-
-    private void checkAllUnGroupableOrderStatus() {
-        if (anyMatchedBy(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new BadRequestException(INVALID_CANCEL_ORDER_TABLES_STATUS);
-        }
-    }
-
-    private boolean anyMatchedBy(List<OrderStatus> orderStatuses) {
-        return orderTables.stream()
-                .map(OrderTable::getOrders)
-                .anyMatch(it -> it.anyMatchedIn(orderStatuses));
+        orderTables.forEach(it -> it.registerTableGroup(tableGroup.getId()));
     }
 
     private void checkOrderTableSize() {
@@ -78,8 +62,13 @@ public class OrderTables {
     }
 
     public void unGroup() {
-        checkAllUnGroupableOrderStatus();
         orderTables.forEach(OrderTable::unGroup);
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -95,4 +84,6 @@ public class OrderTables {
     public int hashCode() {
         return Objects.hash(orderTables);
     }
+
+
 }

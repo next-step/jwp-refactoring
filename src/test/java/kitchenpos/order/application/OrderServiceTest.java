@@ -74,8 +74,8 @@ class OrderServiceTest {
         List<MenuProduct> menuProductItem = Arrays.asList(MenuProduct.of(honeycombo, 2));
          honeycomboChicken = Menu.of(1L, " honeycomboChicken", BigDecimal.valueOf(16_000), premiumMenu, menuProductItem);
 
-         orderTable = OrderTable.of(1L, 3, false);
-         emptyOrderTable = OrderTable.of(2L, 2, true);
+         orderTable = OrderTable.of(1L, null, 3, false);
+         emptyOrderTable = OrderTable.of(2L, null,2, true);
 
         orderItems = OrderLineItem.of(1L,  OrderMenu.of(honeycomboChicken.getId(), honeycomboChicken.getName(), honeycomboChicken.getPrice()), 2);
         List<OrderLineItem> orderItems_목록 = Arrays.asList(orderItems);

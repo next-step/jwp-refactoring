@@ -48,8 +48,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        notEmptyTable = OrderTable.of(null, 2, false);
-        emptyTable = OrderTable.of(null, 0, true);
+        notEmptyTable = OrderTable.of(null, null, 2, false);
+        emptyTable = OrderTable.of(null, null,0, true);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -139,7 +139,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         Long orderTableId = notEmptyTable.getId();
-        OrderTable orderTable = OrderTable.of(orderTableId, 4, notEmptyTable.isEmpty());
+        OrderTable orderTable = OrderTable.of(orderTableId, null, 4, notEmptyTable.isEmpty());
         int numberOfGuests = orderTable.getNumberOfGuests();
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests))
                 .isInstanceOf(IllegalArgumentException.class);
