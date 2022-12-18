@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,9 +13,8 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq", nullable = false, columnDefinition = "bigint(20)")
     private Long seq;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
+    @Column(name = "order_id", nullable = false, columnDefinition = "bigint(20)")
+    private Long orderId;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private Menu menu;
@@ -34,8 +33,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public Menu getMenu() {
@@ -46,8 +45,8 @@ public class OrderLineItem {
         return quantity.value();
     }
 
-    public void addedBy(Order order) {
-        this.order = order;
+    public void addedBy(Long orderId) {
+        this.orderId = orderId;
     }
 
     @Override
@@ -55,11 +54,11 @@ public class OrderLineItem {
         if (this == o) return true;
         if (!(o instanceof OrderLineItem)) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
+        return Objects.equals(getOrderId(), that.getOrderId()) && Objects.equals(getMenu(), that.getMenu()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, menu);
+        return Objects.hash(getOrderId(), getMenu(), getQuantity());
     }
 }
