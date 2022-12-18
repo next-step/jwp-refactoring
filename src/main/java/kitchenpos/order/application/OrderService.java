@@ -9,7 +9,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +21,14 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository,
             final MenuRepository menuRepository,
             final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
         this.menuRepository = menuRepository;
         this.orderValidator = orderValidator;
     }
