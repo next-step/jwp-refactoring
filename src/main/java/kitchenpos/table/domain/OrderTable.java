@@ -42,7 +42,7 @@ public class OrderTable {
         return orderId;
     }
 
-    public void ordered(Long orderId) {
+    public void orderedBy(Long orderId) {
         this.orderId = orderId;
     }
 

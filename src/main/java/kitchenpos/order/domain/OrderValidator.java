@@ -16,14 +16,14 @@ public class OrderValidator {
     }
 
     public void validate(Order order) {
-        validate(order, getOrderTable(order.getOrderTableId()));
+        validate(getOrderTable(order.getOrderTableId()));
     }
 
     private OrderTable getOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId).orElseThrow(NoResultException::new);
     }
 
-    private void validate(Order order, OrderTable orderTable) {
+    private void validate(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalStateException(EXCEPTION_MESSAGE_ORDER_TABLE_IS_EMPTY);
         }

@@ -56,6 +56,10 @@ public class Order {
         return orderLineItems.values();
     }
 
+    public void startOrder(OrderValidator orderValidator) {
+        orderValidator.validate(this);
+    }
+
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         for (OrderLineItem orderLineItem : orderLineItems) {
             addOrderLineItem(orderLineItem);
@@ -89,9 +93,5 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(orderStatus, getOrderedTime(), getOrderLineItems());
-    }
-
-    public void startOrder(OrderValidator orderValidator) {
-        orderValidator.validate(this);
     }
 }
