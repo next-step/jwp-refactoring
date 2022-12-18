@@ -40,20 +40,8 @@ public class OrderLineItem {
         }
     }
 
-    public Long getSeq() {
-        return id;
-    }
-
-    public void setSeq(final Long seq) {
-        this.id = seq;
-    }
-
     public Long getMenuId() {
         return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
     }
 
     public void setOrder(Orders order) {

@@ -47,10 +47,6 @@ public class MenuProduct {
         return id;
     }
 
-    public void setSeq(final Long id) {
-        this.id = id;
-    }
-
     public Product getProduct() {
         return this.product;
     }

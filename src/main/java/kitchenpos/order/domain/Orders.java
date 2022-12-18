@@ -74,10 +74,6 @@ public class Orders {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public void meal() {
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException(COMPLETION_CHANGE_EXCEPTION_MESSAGE);
@@ -95,10 +91,6 @@ public class Orders {
 
     public OrderTable getOrderTable() {
         return this.orderTable;
-    }
-
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

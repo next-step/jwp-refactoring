@@ -61,10 +61,6 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public void upGroup() {
         this.orderTables.unGroup();
     }

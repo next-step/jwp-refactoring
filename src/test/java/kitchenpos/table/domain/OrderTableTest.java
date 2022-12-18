@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static kitchenpos.order.domain.Orders.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
@@ -71,16 +72,16 @@ class OrderTableTest {
                 .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
     }
 
-//    @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
-//    @Test
-//    void changeNumberOfGuests_fail_orderTable() {
-//        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, false);
-//        orderTable.setTableGroup(null);
-//        assertThat(orderTable.getTableGroup()).isNull();
-//        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-//    }
+    @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
+    @Test
+    void changeNumberOfGuests_fail_orderTable() {
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(), new NumberOfGuests(1), false);
+        orderTable.setTableGroup(null);
+        assertThat(orderTable.getTableGroup()).isNull();
+        assertThatThrownBy(() -> orderTable.changeSitNumberOfGuest(new NumberOfGuests(2)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
+    }
 
     @DisplayName("테이블이 공석 상태면 손님수를 변경할 수 없다.")
     @Test

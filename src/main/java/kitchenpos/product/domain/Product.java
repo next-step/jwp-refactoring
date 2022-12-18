@@ -41,10 +41,6 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public BigDecimal getPrice() {
         return this.price.getPrice();
     }
