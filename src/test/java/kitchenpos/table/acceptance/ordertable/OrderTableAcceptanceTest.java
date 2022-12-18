@@ -41,7 +41,8 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * Given 수정할 테이블이 주문 불가 테이블이고
+	 * Given 테이블에 주문을 등록하고
+	 * Given 주문을 완료 상태로 변경하고
 	 * When 주문 테이블을 주문 불가 테이블로 수정을 요청하면
 	 * Then 주문 테이블 수정에 성공한다
 	 */
@@ -49,6 +50,9 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 	void 주문_테이블_주문_불가로_수정() {
 		// given
 		OrderTableRequest 주문_불가_테이블 = OrderTableFixture.주문_불가_테이블(주문_테이블);
+		OrderResponse 주문 = orders.등록되어_있음(주문_테이블);
+		orders.주문_상태_변경_요청(주문.getId(), OrderStatus.COMPLETION);
+
 		// when
 		ExtractableResponse<Response> 수정_요청_응답 = step.빈_주문_테이블_수정_요청(주문_테이블.getId(), 주문_불가_테이블);
 		// then
@@ -108,10 +112,12 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 		OrderTableRequest 주문불가_테이블 = OrderTableFixture.주문_테이블(1, false);
 		ExtractableResponse<Response> 등록_응답 = step.등록_요청(주문불가_테이블);
 		OrderTableResponse 등록된_테이블 = step.등록됨(등록_응답);
+		OrderTableRequest 수정된_주문_테이블 = OrderTableFixture.주문_테이블(3, true);
 
-		OrderTableRequest 수정된_주문_테이블 = OrderTableFixture.주문_테이블(3, false);
+		// when
 		ExtractableResponse<Response> 수정_응답 = step.손님_수_수정_요청(등록된_테이블.getId(), 수정된_주문_테이블);
 
+		// then
 		step.수정_실패함(수정_응답);
 	}
 

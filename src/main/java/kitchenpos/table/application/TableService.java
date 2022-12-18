@@ -6,16 +6,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.table.domain.EmptyTableValidator;
+import kitchenpos.table.domain.NumberOfGuestsValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.exception.AlreadyJoinedTableGroupException;
 
 @Service
 public class TableService {
 	private final OrderTableRepository orderTableRepository;
+	private final EmptyTableValidator emptyTableValidator;
+	private final NumberOfGuestsValidator numberOfGuestsValidator;
 
-	public TableService(OrderTableRepository orderTableRepository) {
+	public TableService(OrderTableRepository orderTableRepository,
+						EmptyTableValidator emptyTableValidator,
+						NumberOfGuestsValidator numberOfGuestsValidator) {
 		this.orderTableRepository = orderTableRepository;
+		this.emptyTableValidator = emptyTableValidator;
+		this.numberOfGuestsValidator = numberOfGuestsValidator;
 	}
 
 	@Transactional
@@ -28,26 +35,19 @@ public class TableService {
 	}
 
 	@Transactional
-	public OrderTable changeEmpty(Long orderTableId, OrderTable orderTable) {
-		OrderTable savedOrderTable = findById(orderTableId);
+	public OrderTable changeEmpty(Long orderTableId, Boolean empty) {
+		OrderTable orderTable = findById(orderTableId);
 
-		if (savedOrderTable.hasTableGroup()) {
-			throw new AlreadyJoinedTableGroupException();
-		}
+		orderTable.changeEmpty(empty, emptyTableValidator);
 
-		// TODO validate
-		// savedOrderTable.validateChangeEmpty();
-
-		savedOrderTable.changeEmpty(orderTable.isEmpty());
-
-		return orderTableRepository.save(savedOrderTable);
+		return orderTableRepository.save(orderTable);
 	}
 
 	@Transactional
 	public OrderTable changeNumberOfGuests(Long orderTableId, OrderTable orderTable) {
 		OrderTable savedOrderTable = findById(orderTableId);
 
-		savedOrderTable.changeNumberOfGuests(orderTable);
+		savedOrderTable.changeNumberOfGuests(orderTable, numberOfGuestsValidator);
 
 		return savedOrderTable;
 	}

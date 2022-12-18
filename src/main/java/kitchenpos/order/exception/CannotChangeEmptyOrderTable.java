@@ -6,9 +6,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class CannotChangeEmptyOrderTable extends RuntimeException {
 
-	private static final String MESSAGE = "완료되지 않은 주문이 있습니다";
+	public enum Type {
+		IN_TABLE_GROUP("테이블이 테이블 그룹에 존재합니다"),
+		NOT_COMPLETED_ORDER("완료되지 않은 주문이 있습니다");
 
-	public CannotChangeEmptyOrderTable() {
-		super(MESSAGE);
+		private final String message;
+
+		Type(String message) {
+			this.message = message;
+		}
+	}
+
+	public CannotChangeEmptyOrderTable(Type type) {
+		super(type.message);
 	}
 }

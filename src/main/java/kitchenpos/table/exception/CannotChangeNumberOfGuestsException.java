@@ -6,9 +6,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class CannotChangeNumberOfGuestsException extends RuntimeException {
 
-	private static final String MESSAGE = "손님의 수를 변경할 수 없는 테이블입니다";
+	public enum Type {
+		INVALID_NUMBER_OF_GUESTS("유효하지 않은 손님의 수 입니다."),
+		NOT_EMPTY("비어있지 않은 테이블입니다"),
+		;
 
-	public CannotChangeNumberOfGuestsException() {
-		super(MESSAGE);
+		public final String message;
+
+		Type(String message) {
+			this.message = message;
+		}
+	}
+
+	public CannotChangeNumberOfGuestsException(Type type) {
+		super(type.message);
 	}
 }

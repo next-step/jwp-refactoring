@@ -11,9 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
-import kitchenpos.table.exception.InvalidNumberOfGuestsException;
-
 @Entity
 @Table(name = "order_table")
 public class OrderTable {
@@ -72,26 +69,14 @@ public class OrderTable {
 		return Objects.nonNull(tableGroup);
 	}
 
-	public void changeEmpty(boolean empty) {
+	public void changeEmpty(boolean empty, EmptyTableValidator validator) {
+		validator.validate(this);
 		this.empty = empty;
 	}
 
-	public void changeNumberOfGuests(OrderTable other) {
-		other.validateNumberOfGuests();
-		validateNotEmptyTable();
+	public void changeNumberOfGuests(OrderTable other, NumberOfGuestsValidator validator) {
 		this.numberOfGuests = other.numberOfGuests;
-	}
-
-	public void validateNumberOfGuests() {
-		if (numberOfGuests < 0) {
-			throw new InvalidNumberOfGuestsException();
-		}
-	}
-
-	private void validateNotEmptyTable() {
-		if (!isEmpty()) {
-			throw new CannotChangeNumberOfGuestsException();
-		}
+		validator.validate(this);
 	}
 
 	public void changeTableGroup(TableGroup changingTableGroup) {
