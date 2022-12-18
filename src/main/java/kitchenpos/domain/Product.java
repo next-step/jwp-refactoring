@@ -49,7 +49,7 @@ public class Product {
     }
 
     private void validation(String name) {
-        if (name.isEmpty()) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRODUCT_NAME.getErrorMessage());
         }
     }

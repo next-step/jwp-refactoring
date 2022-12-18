@@ -26,7 +26,7 @@ public class MenuGroup {
     }
 
     private void validation(String name) {
-        if (name.isEmpty()) {
+        if (Objects.isNull(name) || name.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_GROUP_NAME.getErrorMessage());
         }
     }

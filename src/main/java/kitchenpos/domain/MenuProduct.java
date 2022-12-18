@@ -37,27 +37,30 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    private void validation(Menu menu, Product product, long quantity) {
-        if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU.getErrorMessage());
-        }
-        if (Objects.isNull(product)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRODUCT.getErrorMessage());
-        }
-        if (isNegative(quantity)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_QUANTITY.getErrorMessage());
-        }
-    }
-
-    private boolean isNegative(long quantity) {
-        return quantity < ZERO;
-    }
-
     public void updateMenu(Menu menu) {
         if(this.menu != menu) {
             this.menu = menu;
             menu.addMenuProduct(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MenuProduct that = (MenuProduct) o;
+        return Objects.equals(menu, that.menu) && Objects.equals(product, that.product);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menu, product);
     }
 
     public Long getProductId() {
@@ -82,5 +85,21 @@ public class MenuProduct {
 
     public BigDecimal calculateAmount() {
         return this.product.calculateAmount(quantity);
+    }
+
+    private void validation(Menu menu, Product product, long quantity) {
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU.getErrorMessage());
+        }
+        if (Objects.isNull(product)) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRODUCT.getErrorMessage());
+        }
+        if (isNegative(quantity)) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_QUANTITY.getErrorMessage());
+        }
+    }
+
+    private boolean isNegative(long quantity) {
+        return quantity < ZERO;
     }
 }

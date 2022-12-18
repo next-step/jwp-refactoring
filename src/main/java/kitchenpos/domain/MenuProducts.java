@@ -18,7 +18,7 @@ public class MenuProducts {
     @ReadOnlyProperty
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    protected MenuProducts() {}
+    public MenuProducts() {}
 
     public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
         if(hasMenuProduct(menuProduct)) {
