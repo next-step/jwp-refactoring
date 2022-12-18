@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.exception.BadRequestException;
 import kitchenpos.order.domain.Order;
@@ -9,6 +10,7 @@ import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.assertj.core.api.Assertions;
+import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import static kitchenpos.utils.Message.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @DisplayName("주문 테이블 서비스 테스트")
@@ -33,6 +36,9 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -97,27 +103,13 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리이면 주문 테이블의 빈 상태를 변경할 수 없다.")
     @Test
     void changeEmptyException3() {
-        Order.of(notEmptyTable, Arrays.asList(OrderLineItem.of(1L, 2)));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
+        doThrow(new BadRequestException(INVALID_CANCEL_ORDER_TABLES_STATUS))
+                .when(orderValidator).checkEmptyChangeable(any());
 
         boolean empty = notEmptyTable.isEmpty();
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(INVALID_CHANGE_TO_EMPTY_ORDER_STATUS);
-    }
-
-
-    @DisplayName("주문 상태가 식사이면 주문 테이블의 빈 상태를 변경할 수 없다.")
-    @Test
-    void changeEmptyException4() {
-        Order 주문 = Order.of(notEmptyTable, Arrays.asList(OrderLineItem.of(1L, 2)));
-        주문.changeOrderStatus(OrderStatus.MEAL);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(notEmptyTable));
-
-        boolean empty = notEmptyTable.isEmpty();
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, empty))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(INVALID_CHANGE_TO_EMPTY_ORDER_STATUS);
+                .hasMessageStartingWith(INVALID_CANCEL_ORDER_TABLES_STATUS);
     }
 
     @DisplayName("주문 테이블의 빈 상태를 변경할 수 있다.")
