@@ -100,7 +100,7 @@ class OrderAcceptanceTest extends AcceptanceTest2 {
 	 */
 	@Test
 	void 메뉴가_존재하지_않음() {
-		MenuResponse 존재하지_않는_메뉴 = MenuFixture.메뉴(-1L);
+		MenuResponse 존재하지_않는_메뉴 = MenuFixture.메뉴(-1L, 메뉴그룹);
 		ExtractableResponse<Response> 등록_요청_응답 =
 			step.등록_요청(OrderFixture.주문(주문_테이블, Lists.newArrayList(존재하지_않는_메뉴)));
 

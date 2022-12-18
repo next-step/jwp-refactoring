@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import kitchenpos.domain.menu.Menu;
 
 @Entity
 @Table(name = "order_line_item")
@@ -22,11 +25,11 @@ public class OrderLineItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
@@ -36,7 +39,7 @@ public class OrderLineItem {
 	}
 
 	public OrderLineItem(Order order, Menu menu, Integer quantity) {
-		changeOrder(order);
+		this.order = order;
 		this.menu = menu;
 		this.quantity = quantity;
 	}
@@ -49,23 +52,11 @@ public class OrderLineItem {
 	}
 
 	public String getMenuName() {
-		return menu.getName();
+		return menu.getName().toString();
 	}
 
 	public Integer getQuantity() {
 		return quantity;
-	}
-
-	public void changeOrder(Order newOrder) {
-		if (Objects.nonNull(order)) {
-			order.getOrderLineItems().remove(this);
-		}
-
-		order = newOrder;
-
-		if (!order.getOrderLineItems().contains(this)) {
-			order.getOrderLineItems().add(this);
-		}
 	}
 
 	@Override

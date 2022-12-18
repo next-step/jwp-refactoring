@@ -5,7 +5,7 @@ import static java.lang.String.format;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import kitchenpos.domain.Money;
+import kitchenpos.domain.menu.Money;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidMenuPriceException extends RuntimeException {

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import kitchenpos.exception.InvalidMenuPriceException;
 
 @Entity
@@ -29,15 +29,14 @@ public class Menu {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
+	@Embedded
+	private MenuName name;
 
 	@Embedded
 	@AttributeOverride(name = "value", column = @Column(name = "price"))
 	private Money price;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "menu_group_id")
-	private MenuGroup menuGroup;
+	private Long menuGroupId;
 
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -45,26 +44,23 @@ public class Menu {
 	protected Menu() {
 	}
 
-	public Menu(String name, Long price, MenuGroup menuGroup, List<Product> products) {
-		this.name = name;
-		this.price = Money.valueOf(price);
-		this.menuGroup = menuGroup;
-		addMenuProducts(toMenuProduct(products));
+	public Menu(String name2, Long price, Long menuGroupId, Map<Product, Integer> products) {
+		this(null, name2, price, menuGroupId, products);
 	}
 
-	public Menu(String name, Long price, MenuGroup menuGroup, Map<Product, Integer> productsCount) {
-		this.id = null;
-		this.name = name;
+	public Menu(Long id, String name, Long price, Long menuGroupId, Map<Product, Integer> products) {
+		this.id = id;
+		this.name = new MenuName(name);
 		this.price = Money.valueOf(price);
-		this.menuGroup = menuGroup;
-		addMenuProducts(toMenuProducts(productsCount));
+		this.menuGroupId = menuGroupId;
+		menuProducts.addAll(toMenuProducts(products));
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public String getName() {
+	public MenuName getName() {
 		return name;
 	}
 
@@ -76,8 +72,8 @@ public class Menu {
 		return price;
 	}
 
-	public MenuGroup getMenuGroup() {
-		return menuGroup;
+	public Long getMenuGroupId() {
+		return menuGroupId;
 	}
 
 	private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
@@ -85,21 +81,6 @@ public class Menu {
 			.stream()
 			.map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
 			.collect(Collectors.toList());
-	}
-
-	private List<MenuProduct> toMenuProduct(List<Product> products) {
-		return products.stream()
-			.map(product -> new MenuProduct(this, product, 1))
-			.collect(Collectors.toList());
-	}
-
-	private void addMenuProducts(List<MenuProduct> menuProducts) {
-		menuProducts.forEach(this::addMenuProduct);
-	}
-
-	private void addMenuProduct(MenuProduct addMenuProduct) {
-		this.menuProducts.add(addMenuProduct);
-		addMenuProduct.changeMenu(this);
 	}
 
 	public void validatePrice() {

@@ -1,15 +1,17 @@
 package kitchenpos.domain;
 
-import java.util.Objects;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.Money;
 
 @Entity
 @Table(name = "menu_product")
@@ -19,11 +21,11 @@ public class MenuProduct {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "product_id")
 	private Product product;
 
@@ -33,7 +35,7 @@ public class MenuProduct {
 	}
 
 	public MenuProduct(Menu menu, Product product, long quantity) {
-		changeMenu(menu);
+		this.menu = menu;
 		this.product = product;
 		this.quantity = quantity;
 	}
@@ -48,30 +50,5 @@ public class MenuProduct {
 
 	public Money totalPrice() {
 		return product.getPrice().multiply(quantity);
-	}
-
-	public void changeMenu(Menu newMenu) {
-		if (Objects.nonNull(menu)) {
-			menu.getMenuProducts().remove(this);
-		}
-		menu = newMenu;
-		if (!menu.getMenuProducts().contains(this)) {
-			menu.getMenuProducts().add(this);
-		}
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		MenuProduct that = (MenuProduct)o;
-		return seq.equals(that.seq);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(seq);
 	}
 }

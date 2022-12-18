@@ -3,7 +3,7 @@ package kitchenpos.ui.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.menu.MenuGroup;
 
 public class MenuGroupResponse {
 

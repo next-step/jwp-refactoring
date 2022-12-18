@@ -7,6 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -19,11 +21,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.Money;
 import kitchenpos.exception.InvalidMenuPriceException;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,15 +36,15 @@ class MenuServiceTest {
 	@InjectMocks
 	MenuService menuService;
 
+
+	long MENU_GROUP_ID = 1L;
 	Menu menu;
-	MenuGroup menuGroup;
-	List<Product> products;
+	Map<Product, Integer> products;
 
 	@BeforeEach
 	void setUp() {
 		products = createProducts(3);
-		menuGroup = new MenuGroup("menu-group");
-		menu = new Menu("menu", 3_000L, menuGroup, products);
+		menu = new Menu("menu", 3_000L, MENU_GROUP_ID, products);
 	}
 
 	@Test
@@ -60,16 +61,10 @@ class MenuServiceTest {
 	@DisplayName("메뉴의 가격이 상품목록 가격 합보다 클 경우 등록 실패")
 	void testCreateMenuWhenMenuPriceGreaterThanSumOfProductsPrice() {
 		Money invalidMenuPrice = sumProductsPrice(products).minus(1);
-		Menu invalidMenu = new Menu(menu.getName(), invalidMenuPrice.longValue(), menuGroup, products);
+		Menu invalidMenu = new Menu(menu.getName().value(), invalidMenuPrice.longValue(), MENU_GROUP_ID, products);
 
 		assertThatThrownBy(() -> menuService.create(invalidMenu))
 			.isInstanceOf(InvalidMenuPriceException.class);
-	}
-
-	private Money sumProductsPrice(List<Product> products) {
-		return products.stream()
-			.map(Product::getPrice)
-			.reduce(Money.ZERO, Money::add);
 	}
 
 	@Test
@@ -84,9 +79,15 @@ class MenuServiceTest {
 		verify(menuRepository, times(1)).findAll();
 	}
 
-	private List<Product> createProducts(int count) {
+	private Money sumProductsPrice(Map<Product, Integer> products) {
+		return products.keySet().stream()
+			.map(Product::getPrice)
+			.reduce(Money.ZERO, Money::add);
+	}
+
+	public static Map<Product, Integer> createProducts(int count) {
 		return LongStream.range(0, count)
 			.mapToObj(i -> new Product(i, "product-"+i, 1_000))
-			.collect(Collectors.toList());
+			.collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
 	}
 }

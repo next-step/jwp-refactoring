@@ -1,5 +1,7 @@
 package kitchenpos.exception;
 
+import static java.lang.String.format;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -10,5 +12,9 @@ public class EntityNotFoundException extends RuntimeException {
 
 	public EntityNotFoundException() {
 		super(MESSAGE);
+	}
+
+	public EntityNotFoundException(Long menuGroupId, Class<?> menuGroupClass) {
+		super(MESSAGE + format(", entity='%s', id='%s'", menuGroupId, menuGroupClass.getSimpleName()));
 	}
 }

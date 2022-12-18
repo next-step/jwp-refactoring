@@ -23,13 +23,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.exception.CannotChangeOrderStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +41,8 @@ class OrderServiceTest {
 
 	@Deprecated
 	static final List<Long> menusId = Lists.newArrayList(1L, 2L, 3L);
+
+	static final long MENU_GROUP_ID = 1L;
 
 	@Test
 	@DisplayName("주문 생성")
@@ -113,15 +113,16 @@ class OrderServiceTest {
 
 	private static Map<Menu, Integer> createMenus(int count) {
 		return LongStream.range(0, count)
-			.mapToObj(i -> createMenu())
+			.mapToObj(OrderServiceTest::createMenu)
 			.collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
 	}
 
-	private static Menu createMenu() {
-		return new Menu("menu",
+	private static Menu createMenu(long id) {
+		return new Menu(id,
+						"menu",
 						10_000L,
-						new MenuGroup("menu-group"),
-						Lists.newArrayList(new Product("product", 1_000L)));
+						MENU_GROUP_ID,
+						MenuServiceTest.createProducts(3));
 	}
 
 	private static OrderTable createOrderTable() {

@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.ui.dto.OrderRequest;
 import kitchenpos.ui.dto.OrderResponse;
 import kitchenpos.ui.dto.OrderStatusRequest;

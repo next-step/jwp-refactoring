@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.exception.CannotChangeOrderStatusException;
 import kitchenpos.exception.CannotStartOrderException;
 
@@ -50,7 +51,7 @@ public class Order {
 	public Order(OrderStatus orderStatus, OrderTable orderTable, Map<Menu, Integer> menus) {
 		this.orderStatus = orderStatus;
 		changeOrderTable(orderTable);
-		addOrderLineItems(OrderLineItem.of(this, menus));
+		orderLineItems.addAll(OrderLineItem.of(this, menus));
 	}
 
 	public Order(OrderTable orderTable, Map<Menu, Integer> menus) {
@@ -71,15 +72,6 @@ public class Order {
 
 	private void changeOrderTable(OrderTable newOrderTable) {
 		this.orderTable = newOrderTable;
-	}
-
-	private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-		orderLineItems.forEach(this::addOrderLineItem);
-	}
-
-	private void addOrderLineItem(OrderLineItem addOrderLineItem) {
-		orderLineItems.add(addOrderLineItem);
-		addOrderLineItem.changeOrder(this);
 	}
 
 	public void startOrder() {

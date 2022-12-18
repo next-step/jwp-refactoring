@@ -25,8 +25,8 @@ public class MenuFixture {
 		return new MenuRequest(메뉴명, price, menuGroup.getId(), products);
 	}
 
-	public static MenuResponse 메뉴(long id) {
-		return new MenuResponse(id, 메뉴명, 메뉴가격, "menuGroup", Collections.emptyList());
+	public static MenuResponse 메뉴(long id, MenuGroupResponse menuGroup) {
+		return new MenuResponse(id, 메뉴명, 메뉴가격, menuGroup.getId(), Collections.emptyList());
 	}
 
 	public static MenuRequest 유효하지_않은_가격_메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {

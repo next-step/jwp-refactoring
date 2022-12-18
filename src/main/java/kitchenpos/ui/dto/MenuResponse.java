@@ -3,35 +3,35 @@ package kitchenpos.ui.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.menu.Menu;
 
 public class MenuResponse {
 
 	private Long id;
 	private String name;
 	private Long price;
-	private String menuGroup;
+	private Long menuGroupId;
 	private List<MenuProductResponse> menuProducts;
 
-	public MenuResponse(Long id, String name, Long price, String menuGroup, List<MenuProductResponse> menuProducts) {
+	public MenuResponse(Long id, String name, Long price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
-		this.menuGroup = menuGroup;
+		this.menuGroupId = menuGroupId;
 		this.menuProducts = menuProducts;
+	}
+
+	public MenuResponse(Menu menu) {
+		this(menu.getId(), menu.getName().value(), menu.getPrice().longValue(),
+			 menu.getMenuGroupId(),
+			 MenuProductResponse.of(menu.getMenuProducts()));
 	}
 
 	public static List<MenuResponse> of(List<Menu> menus) {
 		return menus.stream()
-			.map(MenuResponse::of)
+			.map(MenuResponse::new)
 			.collect(Collectors.toList());
-	}
-
-	public static MenuResponse of(Menu menu) {
-		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().longValue(),
-								menu.getMenuGroup().getName(),
-								MenuProductResponse.of(menu.getMenuProducts()));
 	}
 
 	static class MenuProductResponse {
@@ -77,8 +77,8 @@ public class MenuResponse {
 		return price;
 	}
 
-	public String getMenuGroup() {
-		return menuGroup;
+	public Long getMenuGroupId() {
+		return menuGroupId;
 	}
 
 	public List<MenuProductResponse> getMenuProducts() {
