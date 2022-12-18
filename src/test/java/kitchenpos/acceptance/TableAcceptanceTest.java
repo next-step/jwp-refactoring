@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.ui.response.OrderTableResponse;
 
 @DisplayName("주문 테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {
@@ -42,7 +42,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 		// given
 		int numberOfGuests = 2;
 		boolean empty = false;
-		OrderTable orderTable = 주문_테이블_등록_되어_있음(numberOfGuests, empty);
+		주문_테이블_등록_되어_있음(numberOfGuests, empty);
 
 		// when
 		ExtractableResponse<Response> 주문_테이블_목록_조회_요청 = 주문_테이블_목록_조회_요청();
@@ -61,7 +61,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 	void changeEmptyTest() {
 		// given
 		boolean empty = true;
-		OrderTable orderTable = 주문_테이블_등록_되어_있음(2, false);
+		OrderTableResponse orderTable = 주문_테이블_등록_되어_있음(2, false);
 
 		// when
 		ExtractableResponse<Response> 빈_테이블로_수정_요청 = 빈_테이블로_수정_요청(orderTable.getId(), true);
@@ -80,7 +80,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 	void changeNumberOfGuestsTest() {
 		// given
 		int expectedNumber = 2;
-		OrderTable orderTable = 주문_테이블_등록_되어_있음(5, false);
+		OrderTableResponse orderTable = 주문_테이블_등록_되어_있음(5, false);
 
 		// when
 		ExtractableResponse<Response> 손님_수_수정_요청 = 손님_수_수정_요청(orderTable.getId(), expectedNumber);

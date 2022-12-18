@@ -1,24 +1,22 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.RestAssuredUtils.*;
-import static kitchenpos.generator.OrderGenerator.*;
-import static kitchenpos.generator.OrderLineItemGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.ui.response.MenuResponse;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.ui.request.OrderLineItemRequest;
+import kitchenpos.order.ui.request.OrderRequest;
+import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.response.OrderResponse;
 
 public class OrderAcceptanceUtils {
@@ -28,24 +26,23 @@ public class OrderAcceptanceUtils {
 	private OrderAcceptanceUtils() {
 	}
 
-	public static Order 주문_등록_되어_있음(OrderTable orderTable, Menu menu, int quantity) {
-		return 주문_등록_요청(orderTable, menu, quantity).as(Order.class);
+	public static Order 주문_등록_되어_있음(long tableId, long menuId, int quantity) {
+		return 주문_등록_요청(tableId, menuId, quantity).as(Order.class);
 	}
 
-	public static ExtractableResponse<Response> 주문_등록_요청(OrderTable orderTable, Menu menu, int quantity) {
-		return post(ORDERS_API_URL, orderCreateRequest(orderTable, menu, quantity)).extract();
+	public static ExtractableResponse<Response> 주문_등록_요청(long tableId, long menuId, int quantity) {
+		return post(ORDERS_API_URL, orderCreateRequest(tableId, menuId, quantity)).extract();
 	}
 
-	public static void 주문_등록_됨(ExtractableResponse<Response> response, int expectedQuantity, Menu expectedMenu) {
+	public static void 주문_등록_됨(ExtractableResponse<Response> response, int expectedQuantity,
+		MenuResponse expectedMenu) {
 		OrderResponse order = response.as(OrderResponse.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			() -> assertThat(order.getId()).isNotNull(),
 			() -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
 			() -> assertThat(order.getOrderedTime()).isEqualToIgnoringMinutes(LocalDateTime.now()),
 			() -> assertThat(order.getOrderLineItems()).first()
 				.satisfies(orderLineItem -> {
-					assertThat(orderLineItem.getSeq()).isNotNull();
 					assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenu.getId());
 					assertThat(orderLineItem.getQuantity()).isEqualTo(expectedQuantity);
 				})
@@ -59,7 +56,8 @@ public class OrderAcceptanceUtils {
 	public static void 주문_목록_조회_됨(ExtractableResponse<Response> response, Order expectedOrder) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.jsonPath().getList(".", Order.class)).extracting(Order::getId)
+			() -> assertThat(response.jsonPath().getList(".", OrderResponse.class))
+				.extracting(OrderResponse::getId)
 				.containsExactly(expectedOrder.getId())
 		);
 	}
@@ -69,23 +67,22 @@ public class OrderAcceptanceUtils {
 	}
 
 	public static void 주문_상태_변경_됨(ExtractableResponse<Response> response, OrderStatus expectedOrderStatus) {
-		Order order = response.as(Order.class);
+		OrderResponse order = response.as(OrderResponse.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(order.getOrderStatus()).isEqualTo(expectedOrderStatus.name())
 		);
 	}
 
-	private static Order orderStatusChangeRequest(OrderStatus orderStatus) {
-		return 주문(null, orderStatus, null);
+	private static OrderStatusRequest orderStatusChangeRequest(OrderStatus orderStatus) {
+		return new OrderStatusRequest(orderStatus.name());
 	}
 
-	private static Order orderCreateRequest(OrderTable orderTable, Menu menu, int quantity) {
-		return 주문(orderTable.getId(), OrderStatus.COOKING,
-			getOrderLineItems(menu, quantity));
+	private static OrderRequest orderCreateRequest(long tableId, long menuId, int quantity) {
+		return new OrderRequest(tableId, Collections.singletonList(orderLineItem(menuId, quantity)));
 	}
 
-	private static List<OrderLineItem> getOrderLineItems(Menu menu, int quantity) {
-		return Collections.singletonList(주문_품목(menu.getId(), quantity));
+	private static OrderLineItemRequest orderLineItem(long menuId, int quantity) {
+		return new OrderLineItemRequest(menuId, quantity);
 	}
 }

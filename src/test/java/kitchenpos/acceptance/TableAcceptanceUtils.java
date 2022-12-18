@@ -12,6 +12,10 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.ui.request.NumberOfGuestsRequest;
+import kitchenpos.order.ui.request.OrderTableRequest;
+import kitchenpos.order.ui.request.TableStatusRequest;
+import kitchenpos.order.ui.response.OrderTableResponse;
 
 public class TableAcceptanceUtils {
 
@@ -20,8 +24,8 @@ public class TableAcceptanceUtils {
 	private TableAcceptanceUtils() {
 	}
 
-	public static OrderTable 주문_테이블_등록_되어_있음(int numberOfGuests, boolean empty) {
-		return 주문_테이블_생성_요청(numberOfGuests, empty).as(OrderTable.class);
+	public static OrderTableResponse 주문_테이블_등록_되어_있음(int numberOfGuests, boolean empty) {
+		return 주문_테이블_생성_요청(numberOfGuests, empty).as(OrderTableResponse.class);
 	}
 
 	public static ExtractableResponse<Response> 주문_테이블_생성_요청(int numberOfGuests, boolean empty) {
@@ -32,9 +36,9 @@ public class TableAcceptanceUtils {
 		int expectedNumberOfGuests, boolean expectedEmpty) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			() -> assertThat(response.as(OrderTable.class))
+			() -> assertThat(response.as(OrderTableResponse.class))
 				.extracting(
-					OrderTable::getNumberOfGuests, OrderTable::isEmpty, OrderTable::getTableGroupId)
+					OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty, OrderTableResponse::getTableGroupId)
 				.containsExactly(expectedNumberOfGuests, expectedEmpty, null)
 		);
 	}
@@ -45,13 +49,13 @@ public class TableAcceptanceUtils {
 
 	public static void 주문_테이블_목록_조회됨(ExtractableResponse<Response> response,
 		int expectedNumberOfGuests, boolean expectedEmpty) {
-		List<OrderTable> orderTables = response.as(new TypeRef<List<OrderTable>>() {
+		List<OrderTableResponse> orderTables = response.as(new TypeRef<List<OrderTableResponse>>() {
 		});
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(orderTables)
 				.first()
-				.extracting(OrderTable::getNumberOfGuests, OrderTable::isEmpty)
+				.extracting(OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty)
 				.containsExactly(expectedNumberOfGuests, expectedEmpty)
 		);
 	}
@@ -71,12 +75,12 @@ public class TableAcceptanceUtils {
 		return put(TABLE_API_URL + "/" + id + "/number-of-guests", updateNumbersRequest(numberOfGuests)).extract();
 	}
 
-	private static OrderTable updateEmptyRequest(boolean empty) {
-		return new OrderTable(null, null, 0, empty);
+	private static TableStatusRequest updateEmptyRequest(boolean empty) {
+		return new TableStatusRequest(empty);
 	}
 
-	private static OrderTable updateNumbersRequest(int numberOfGuests) {
-		return new OrderTable(null, null, numberOfGuests, false);
+	private static NumberOfGuestsRequest updateNumbersRequest(int numberOfGuests) {
+		return new NumberOfGuestsRequest(numberOfGuests);
 	}
 
 	public static void 손님_수_수정됨(ExtractableResponse<Response> response, int expectedNumberOfGuests) {
@@ -86,7 +90,7 @@ public class TableAcceptanceUtils {
 		);
 	}
 
-	private static OrderTable createRequest(int numberOfGuests, boolean empty) {
-		return new OrderTable(null, null, numberOfGuests, empty);
+	private static OrderTableRequest createRequest(int numberOfGuests, boolean empty) {
+		return new OrderTableRequest(numberOfGuests, empty);
 	}
 }

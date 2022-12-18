@@ -12,15 +12,15 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
+import kitchenpos.menu.ui.response.MenuResponse;
+import kitchenpos.menu.ui.response.ProductResponse;
 
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
 
-	private MenuGroup 한마리메뉴;
-	private Product 간장치킨;
+	private MenuGroupResponse 한마리메뉴;
+	private ProductResponse 간장치킨;
 
 	@BeforeEach
 	public void setup() {
@@ -61,7 +61,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 		String name = "후라이드치킨";
 		BigDecimal price = BigDecimal.valueOf(16000);
 		int quantity = 1;
-		Menu 후라이드치킨 = 메뉴_등록_되어_있음(name, price, 한마리메뉴.getId(), 간장치킨.getId(), quantity);
+		MenuResponse 후라이드치킨 = 메뉴_등록_되어_있음(name, price, 한마리메뉴.getId(), 간장치킨.getId(), quantity);
 
 		// when
 		ExtractableResponse<Response> 메뉴_목록_조회_요청 = 메뉴_목록_조회_요청();

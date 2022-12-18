@@ -2,13 +2,13 @@ package kitchenpos.order.ui.request;
 
 public class TableStatusRequest {
 
-	private final String tableStatus;
+	private final boolean empty;
 
-	public TableStatusRequest(String tableStatus) {
-		this.tableStatus = tableStatus;
+	public TableStatusRequest(boolean empty) {
+		this.empty = empty;
 	}
 
-	public String getTableStatus() {
-		return tableStatus;
+	public boolean isEmpty() {
+		return empty;
 	}
 }

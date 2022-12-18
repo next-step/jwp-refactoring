@@ -16,6 +16,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.order.ui.response.TableGroupResponse;
 
 public class TableGroupAcceptanceUtils {
 
@@ -24,8 +26,8 @@ public class TableGroupAcceptanceUtils {
 	private TableGroupAcceptanceUtils() {
 	}
 
-	public static TableGroup 단체_지정_되어잇음(List<Long> orderTableIds) {
-		return 단체_지정_요청(orderTableIds).as(TableGroup.class);
+	public static TableGroupResponse 단체_지정_되어잇음(List<Long> orderTableIds) {
+		return 단체_지정_요청(orderTableIds).as(TableGroupResponse.class);
 	}
 
 	public static ExtractableResponse<Response> 단체_지정_요청(List<Long> orderTableIds) {
@@ -35,13 +37,12 @@ public class TableGroupAcceptanceUtils {
 	public static void 단체_지정_됨(ExtractableResponse<Response> response, List<Long> expectedOrderTableIds) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			() -> assertThat(response.as(TableGroup.class))
+			() -> assertThat(response.as(TableGroupResponse.class))
 				.satisfies(group -> {
-					assertThat(group.getId()).isNotNull();
 					assertThat(group.getCreatedDate())
 						.isEqualToIgnoringMinutes(LocalDateTime.now());
 					assertThat(group.getOrderTables())
-						.extracting(OrderTable::getId, OrderTable::getTableGroupId)
+						.extracting(OrderTableResponse::getId, OrderTableResponse::getTableGroupId)
 						.containsExactly(
 							expectedOrderTableIds
 								.stream()
@@ -57,13 +58,13 @@ public class TableGroupAcceptanceUtils {
 	}
 
 	public static void 단체_지정_해제_됨(ExtractableResponse<Response> response) {
-		List<OrderTable> orderTableResponse = TableAcceptanceUtils.주문_테이블_목록_조회_요청()
-			.as(new TypeRef<List<OrderTable>>() {
+		List<OrderTableResponse> orderTableResponse = TableAcceptanceUtils.주문_테이블_목록_조회_요청()
+			.as(new TypeRef<List<OrderTableResponse>>() {
 			});
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
 			() -> assertThat(orderTableResponse)
-				.extracting(OrderTable::getTableGroupId)
+				.extracting(OrderTableResponse::getTableGroupId)
 				.containsExactly(null, null)
 		);
 	}

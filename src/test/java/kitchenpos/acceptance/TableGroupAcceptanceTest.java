@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.order.ui.response.TableGroupResponse;
 
 @DisplayName("단체 지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -21,8 +21,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void createTableGroupTest() {
 		// given
-		OrderTable firstOrderTable = 주문_테이블_등록_되어_있음(2, true);
-		OrderTable secondOrderTable = 주문_테이블_등록_되어_있음(5, true);
+		OrderTableResponse firstOrderTable = 주문_테이블_등록_되어_있음(2, true);
+		OrderTableResponse secondOrderTable = 주문_테이블_등록_되어_있음(5, true);
 		List<Long> orderTableIds = Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId());
 
 		// when
@@ -36,9 +36,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 	@Test
 	void ungroupTest() {
 		// given
-		OrderTable firstOrderTable = 주문_테이블_등록_되어_있음(2, true);
-		OrderTable secondOrderTable = 주문_테이블_등록_되어_있음(5, true);
-		TableGroup tableGroup = 단체_지정_되어잇음(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
+		OrderTableResponse firstOrderTable = 주문_테이블_등록_되어_있음(2, true);
+		OrderTableResponse secondOrderTable = 주문_테이블_등록_되어_있음(5, true);
+		TableGroupResponse tableGroup = 단체_지정_되어잇음(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
 
 		// when
 		ExtractableResponse<Response> 단체_지정_해제_요청 = 단체_지정_해제_요청(tableGroup.getId());
