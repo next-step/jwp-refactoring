@@ -22,7 +22,7 @@ class OrderTableTest {
 
         assertAll(
                 () -> assertThat(orderTable.getTableGroup()).isNull(),
-                () -> assertThat(orderTable.getNumberOfGuests()).isZero(),
+                () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(0)),
                 () -> assertThat(orderTable.isEmpty()).isFalse()
         );
     }
@@ -58,15 +58,15 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuests_success() {
         OrderTable orderTable = notEmptyNotTableGroupOrderTable();
-        orderTable.changeNumberOfGuests(1);
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(1);
+        orderTable.changeNumberOfGuests(new NumberOfGuests(1));
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(1));
     }
 
     @DisplayName("손님수를 변경한다 / 0명보다 작을 수 없다.")
     @Test
     void changeNumberOfGuests_fail_minimumNumber() {
         OrderTable orderTable = notEmptyNotTableGroupOrderTable();
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(new NumberOfGuests(-1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
     }
@@ -86,7 +86,7 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuests_fail_empty() {
         OrderTable orderTable = emptyNotTableGroupOrderTable();
-        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(new NumberOfGuests(1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(EMPTY_EXCEPTION_MESSAGE);
     }

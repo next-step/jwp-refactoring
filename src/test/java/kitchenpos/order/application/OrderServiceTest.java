@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.repository.MenuGroupRepository;
@@ -129,7 +130,7 @@ class OrderServiceTest extends ServiceTest {
 
     private List<OrderLineItem> orderLineItemsA() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(null, menu.getId(), 3));
+        orderLineItems.add(new OrderLineItem(null, menu.getId(), new Quantity(3)));
         return orderLineItems;
     }
 }

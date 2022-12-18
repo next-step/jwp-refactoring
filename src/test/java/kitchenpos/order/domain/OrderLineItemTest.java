@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.Quantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ class OrderLineItemTest {
     @DisplayName("주문 항목을 생성한다. / 메뉴가 없을 수 없다.")
     @Test
     void create_fail_notMenu() {
-        assertThatThrownBy(() -> new OrderLineItem(null, null, 3))
+        assertThatThrownBy(() -> new OrderLineItem(null, null, new Quantity(1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_NULL_EXCEPTION_MESSAGE);
     }

@@ -15,18 +15,21 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
         this.empty = false;
+        this.numberOfGuests = new NumberOfGuests(0);
     }
 
     public OrderTable(boolean empty) {
         this.empty = empty;
+        this.numberOfGuests = new NumberOfGuests(0);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -44,14 +47,6 @@ public class OrderTable {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
@@ -73,13 +68,7 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER) {
-            throw new IllegalArgumentException(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
-        }
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException(NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
-        }
+    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
 //        if (Objects.isNull(tableGroup)) {
 //            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
 //        }
@@ -95,5 +84,9 @@ public class OrderTable {
 
     public void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    public NumberOfGuests getNumberOfGuests() {
+        return this.numberOfGuests;
     }
 }

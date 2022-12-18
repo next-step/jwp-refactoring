@@ -4,9 +4,10 @@ import kitchenpos.menu.domain.fixture.MenuProductFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
+import static kitchenpos.common.fixture.QuantityFixture.quantityMenuProductA;
 import static kitchenpos.menu.domain.MenuProduct.PRODUCT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.MenuProduct.QUANTITY_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
 import static kitchenpos.product.domain.fixture.ProductFixture.productA;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,7 +33,7 @@ class MenuProductTest {
     @DisplayName("메뉴 상품을 생성한다. / 상품을 필수로 갖는다.")
     @Test
     void create_fail_product() {
-        assertThatThrownBy(() -> new MenuProduct(menuA(), null, 1L))
+        assertThatThrownBy(() -> new MenuProduct(menuA(), null, quantityMenuProductA()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRODUCT_NULL_EXCEPTION_MESSAGE);
     }

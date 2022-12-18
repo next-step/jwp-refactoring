@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.Quantity;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,19 +15,19 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Orders order;
     private Long menuId;
-    private long quantity;
+    private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Orders order, Long menuId, int quantity) {
+    public OrderLineItem(Orders order, Long menuId, Quantity quantity) {
         validate(menuId);
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(long seq, Orders order, long menuId, long quantity) {
+    public OrderLineItem(long seq, Orders order, long menuId, Quantity quantity) {
         this.id = seq;
         this.order = order;
         this.menuId = menuId;
@@ -54,15 +56,11 @@ public class OrderLineItem {
         this.menuId = menuId;
     }
 
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
     public void setOrder(Orders order) {
         this.order = order;
+    }
+
+    public Quantity getQuantity() {
+        return this.quantity;
     }
 }

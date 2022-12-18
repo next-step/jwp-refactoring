@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
@@ -17,19 +18,20 @@ public class MenuProduct {
     private Menu menu;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Product product;
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, Long quantity) {
+    public MenuProduct(Menu menu, Product product, Quantity quantity) {
         validate(menu, product, quantity);
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    private static void validate(Menu menu, Product product, Long quantity) {
+    private static void validate(Menu menu, Product product, Quantity quantity) {
 //        if (Objects.isNull(menu)) {
 //            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
 //        }
@@ -49,15 +51,11 @@ public class MenuProduct {
         this.id = id;
     }
 
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
     public Product getProduct() {
         return this.product;
+    }
+
+    public long getQuantity() {
+        return this.quantity.getQuantity();
     }
 }

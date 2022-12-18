@@ -1,5 +1,6 @@
 package kitchenpos.order.domain.fixture;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 
@@ -9,7 +10,7 @@ public class OrderLineItemsFixture {
 
     public static OrderLineItems orderLineItemsA() {
         OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
+        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, new Quantity(1))));
         return orderLineItems;
     }
 }

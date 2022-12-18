@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.Quantity;
 import kitchenpos.common.fixture.PriceFixture;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.domain.fixture.MenuProductFixture;
@@ -126,7 +127,7 @@ class OrderStatusServiceTest extends ServiceTest {
 
     private void createOrder(OrderTable orderTable1, Menu menu) {
         OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(singletonList(new OrderLineItem(null, menu.getId(), 1)));
+        orderLineItems.addAll(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))));
         orderTable1.setEmpty(false);
         order = orderRepository.save(new Orders(orderTable1, orderLineItems));
     }
