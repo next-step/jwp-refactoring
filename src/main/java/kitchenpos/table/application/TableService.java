@@ -43,7 +43,7 @@ public class TableService {
             throw new IllegalArgumentException("테이블 그룹이 등록되어 있다면 테이블의 상태를 변경할 수 없다.");
         }
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(savedOrderTable, OrderStatus.notCompletion())) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId(), OrderStatus.notCompletion())) {
             throw new IllegalArgumentException("주문 테이블의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.");
         }
 
