@@ -62,7 +62,7 @@ class TableGroupServiceTest {
         orderTable1 = OrderTable.of(1L, 2, true);
         orderTable2 = OrderTable.of(2L, 2, true);
         orderTable3 = OrderTable.of(1L, 2, false);
-        orderTable4 = OrderTable.of(1L, 2, false);
+        orderTable4 = OrderTable.of(2L, 2, false);
 
         groupRequest = TableGroupRequest.from(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
     }
