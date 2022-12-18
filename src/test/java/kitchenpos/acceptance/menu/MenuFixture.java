@@ -3,6 +3,8 @@ package kitchenpos.acceptance.menu;
 import java.util.Collections;
 import java.util.List;
 
+import org.assertj.core.util.Lists;
+
 import kitchenpos.menu.ui.dto.MenuGroupResponse;
 import kitchenpos.menu.ui.dto.MenuRequest;
 import kitchenpos.menu.ui.dto.MenuResponse;
@@ -12,6 +14,10 @@ public class MenuFixture {
 
 	public static final long 메뉴가격 = 10_000L;
 	private static final String 메뉴명 = "메뉴 1";
+
+	public static MenuRequest 메뉴(ProductResponse product, MenuGroupResponse menuGroup) {
+		return 메뉴(Lists.newArrayList(product), menuGroup);
+	}
 
 	public static MenuRequest 메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {
 		Long productsPrice = products.stream()

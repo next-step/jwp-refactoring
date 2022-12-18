@@ -77,6 +77,25 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	}
 
 	/**
+	 * Given 메뉴가 등록되어 있고
+	 * When 상품이 존재하지 않을 경우
+	 * Than 메뉴 등록에 실패한다
+	 */
+	@Test
+	void 상품이_존재하지_않을_경우() {
+		// given
+		MenuGroupResponse 메뉴그룹 = 메뉴_그룹_등록되어_있음();
+		ProductResponse 존재하지_않는_상품 = ProductFixture.상품(-1L);
+		MenuRequest 메뉴 = MenuFixture.메뉴(존재하지_않는_상품, 메뉴그룹);
+
+		// when
+		ExtractableResponse<Response> 등록_요청_응답 = step.등록_요청(메뉴);
+
+		// then
+		step.등록_실패함(등록_요청_응답);
+	}
+
+	/**
 	 * When 메뉴의 가격이 상품의 가격의 합보다 작으면
 	 * Than 메뉴 등록에 실패한다
 	 */

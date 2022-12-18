@@ -17,8 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import kitchenpos.menu.exception.InvalidMenuPriceException;
-
 @Entity
 @Table(name = "menu")
 public class Menu {
@@ -42,14 +40,18 @@ public class Menu {
 	protected Menu() {
 	}
 
-	public Menu(String name2, Long price, Long menuGroupId, Map<Product, Integer> products) {
-		this(null, name2, price, menuGroupId, products);
+	public Menu(String name, Long price, Long menuGroupId, Map<Product, Integer> products) {
+		this(null, name, Money.valueOf(price), menuGroupId, products);
 	}
 
-	public Menu(Long id, String name, Long price, Long menuGroupId, Map<Product, Integer> products) {
+	public Menu(String name, Money price, Long menuGroupId, Map<Product, Integer> products) {
+		this(null, name, price, menuGroupId, products);
+	}
+
+	public Menu(Long id, String name, Money price, Long menuGroupId, Map<Product, Integer> products) {
 		this.id = id;
 		this.name = new Name(name);
-		this.price = Money.valueOf(price);
+		this.price = price;
 		this.menuGroupId = menuGroupId;
 		menuProducts.addAll(toMenuProducts(products));
 	}
@@ -81,14 +83,7 @@ public class Menu {
 			.collect(Collectors.toList());
 	}
 
-	public void validatePrice() {
-		Money allProductPrices = sumAllProductsPrice();
-		if (allProductPrices.isGreaterThan(price)) {
-			throw new InvalidMenuPriceException(price, allProductPrices);
-		}
-	}
-
-	private Money sumAllProductsPrice() {
+	public Money sumAllProductsPrice() {
 		return menuProducts.stream()
 			.map(MenuProduct::totalPrice)
 			.reduce(Money.ZERO, Money::add);

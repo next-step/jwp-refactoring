@@ -29,6 +29,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.exception.CannotChangeOrderStatusException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Money;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -58,7 +59,7 @@ class OrderServiceTest {
 	private static Menu createMenu(long id) {
 		return new Menu(id,
 						"menu",
-						10_000L,
+						Money.valueOf(10_000L),
 						MENU_GROUP_ID,
 						MenuServiceTest.createProducts(3));
 	}

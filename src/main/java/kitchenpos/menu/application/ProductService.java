@@ -36,7 +36,7 @@ public class ProductService {
 
 	private void validateIfExists(List<Product> products, List<Long> productsId) {
 		if (products.size() != new HashSet<>(productsId).size()) {
-			throw new EntityNotFoundException();
+			throw new EntityNotFoundException(Product.class, productsId);
 		}
 	}
 }
