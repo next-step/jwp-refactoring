@@ -56,6 +56,13 @@ public class Menu {
 		menuProducts.addAll(toMenuProducts(products));
 	}
 
+	public Menu(String name, long price, Long menuGroupId, List<Product> products) {
+		this.name = new Name(name);
+		this.price = Money.valueOf(price);
+		this.menuGroupId = menuGroupId;
+		this.menuProducts.addAll(MenuProduct.of(this, products));
+	}
+
 	public Long getId() {
 		return id;
 	}

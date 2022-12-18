@@ -1,6 +1,8 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.CascadeType;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,11 +20,11 @@ public class MenuProduct {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;
 
@@ -35,6 +37,12 @@ public class MenuProduct {
 		this.menu = menu;
 		this.product = product;
 		this.quantity = quantity;
+	}
+
+	public static List<MenuProduct> of(Menu menu, List<Product> products) {
+		return products.stream()
+					   .map(product -> new MenuProduct(menu, product, 1))
+					   .collect(Collectors.toList());
 	}
 
 	public Long getProductId() {

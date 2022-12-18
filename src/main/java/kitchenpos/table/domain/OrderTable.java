@@ -60,10 +60,6 @@ public class OrderTable {
 		return numberOfGuests;
 	}
 
-	public Boolean getEmpty() {
-		return empty;
-	}
-
 	public boolean isEmpty() {
 		return empty;
 	}
@@ -96,6 +92,14 @@ public class OrderTable {
 		if (!isEmpty()) {
 			throw new CannotChangeNumberOfGuestsException();
 		}
+	}
+
+	public void changeTableGroup(TableGroup changingTableGroup) {
+		if (Objects.nonNull(tableGroup)) {
+			tableGroup.getOrderTables().remove(this);
+		}
+		tableGroup = changingTableGroup;
+		tableGroup.getOrderTables().addIfNotExists(this);
 	}
 
 	@Override

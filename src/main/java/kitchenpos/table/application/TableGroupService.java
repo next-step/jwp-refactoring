@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.table.domain.GroupTablesValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.UnGroupTablesValidator;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,17 +19,24 @@ public class TableGroupService {
 
 	private final TableGroupRepository tableGroupRepository;
 	private final OrderTableRepository orderTableRepository;
+	private final GroupTablesValidator groupTablesValidator;
+	private final UnGroupTablesValidator unGroupTablesValidator;
 
-	public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository) {
+	public TableGroupService(TableGroupRepository tableGroupRepository,
+							 OrderTableRepository orderTableRepository,
+							 GroupTablesValidator groupTablesValidator,
+							 UnGroupTablesValidator unGroupTablesValidator) {
 		this.tableGroupRepository = tableGroupRepository;
 		this.orderTableRepository = orderTableRepository;
+		this.groupTablesValidator = groupTablesValidator;
+		this.unGroupTablesValidator = unGroupTablesValidator;
 	}
 
 	@Transactional
 	public TableGroup save(List<Long> orderTableId) {
 		List<OrderTable> orderTable = findAllOrderTables(orderTableId);
 
-		TableGroup tableGroup = TableGroup.create(orderTable);
+		TableGroup tableGroup = TableGroup.group(orderTable, groupTablesValidator);
 
 		return tableGroupRepository.save(tableGroup);
 	}
@@ -35,7 +44,7 @@ public class TableGroupService {
 	@Transactional
 	public void ungroup(Long tableGroupId) {
 		TableGroup savedTableGroup = findById(tableGroupId);
-		savedTableGroup.ungroup();
+		savedTableGroup.ungroup(unGroupTablesValidator);
 	}
 
 	private TableGroup findById(Long tableGroupId) {
