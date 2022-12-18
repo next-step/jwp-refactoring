@@ -30,7 +30,7 @@ class ProductServiceTest {
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test
-    void createProduct() {
+    void 본() {
         // given
         Product product = new Product(1L, "아메리카노", BigDecimal.valueOf(3_000));
         when(productDao.save(product)).thenReturn(product);
