@@ -1,7 +1,5 @@
 package kitchenpos.order.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -74,7 +72,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 		// then
 		OrderResponse 주문 = step.등록됨(등록_요청_응답);
 		// then
-		주문_상턔_확인(주문, OrderStatus.COOKING);
+		step.주문_상턔_확인(주문, OrderStatus.COOKING);
 		// when
 		OrderStatus 식사중 = OrderStatus.MEAL;
 		ExtractableResponse<Response> 주문_변경_요청_응답 = step.주문_상태_변경_요청(주문.getId(), 식사중);
@@ -153,8 +151,37 @@ class OrderAcceptanceTest extends AcceptanceTest {
 		step.등록_실패함(등록_응답);
 	}
 
-	private void 주문_상턔_확인(OrderResponse 주문, OrderStatus orderStatus) {
-		assertThat(주문.getOrderStatus()).isEqualTo(orderStatus.name());
+	/**
+	 * When 주문을 등록하면
+	 * Then 주문 테이블이 주문 불가 상태로 변경된다
+	 */
+	@Test
+	void 주문_등록시_테이블이_주문불가_상태로_변경() {
+		// when
+		step.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
+
+		boolean 주문_가능_상태 = false;
+		List<OrderTableResponse> 실제_테이블 = orderTables.목록_조회();
+		step.주문_테이블_상태_변경됨(주문_테이블.getId(), 주문_가능_상태, 실제_테이블);
+	}
+
+	/**
+	 * Given 주문을 등록하고
+	 * When 주문의 상태를 완료로 변경하면
+	 * Then 주문 테이블의 주문 가능 상태로 변경된다
+	 */
+	@Test
+	void 주문_완료시_테이블이_주문가능_상태로_변경() {
+		// given
+		OrderResponse 주문 = step.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
+
+		// when
+		step.주문_상태_변경_요청(주문.getId(), OrderStatus.COMPLETION);
+
+		// then
+		boolean 주문_가능_상태 = true;
+		List<OrderTableResponse> 실제_테이블 = orderTables.목록_조회();
+		step.주문_테이블_상태_변경됨(주문_테이블.getId(), 주문_가능_상태, 실제_테이블);
 	}
 }
 

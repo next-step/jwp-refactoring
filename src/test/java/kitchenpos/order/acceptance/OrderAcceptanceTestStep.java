@@ -3,6 +3,7 @@ package kitchenpos.order.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.ToLongFunction;
 
 import org.assertj.core.util.Lists;
@@ -33,8 +34,8 @@ public class OrderAcceptanceTestStep extends AcceptanceTestStep<OrderRequest, Or
 		assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 	}
 
-	public ExtractableResponse<Response> 주문_상태_변경_요청(Long id, OrderStatus 식사중) {
-		return 수정_요청(ORDER_STATUS_REQUEST_PATH, id, new OrderStatusRequest(식사중.name()));
+	public ExtractableResponse<Response> 주문_상태_변경_요청(Long id, OrderStatus orderStatus) {
+		return 수정_요청(ORDER_STATUS_REQUEST_PATH, id, new OrderStatusRequest(orderStatus.name()));
 	}
 
 	@Override
@@ -60,5 +61,18 @@ public class OrderAcceptanceTestStep extends AcceptanceTestStep<OrderRequest, Or
 		주문_조리중임(주문);
 
 		return 주문;
+	}
+
+	public void 주문_상턔_확인(OrderResponse 주문, OrderStatus orderStatus) {
+		assertThat(주문.getOrderStatus()).isEqualTo(orderStatus.name());
+	}
+
+	public void 주문_테이블_상태_변경됨(Long orderTableId, boolean empty, List<OrderTableResponse> allOrderTable) {
+		OrderTableResponse orderTable = allOrderTable.stream()
+															 .filter(it -> it.getId()
+																			 .equals(orderTableId))
+															 .findAny()
+															 .get();
+		assertThat(orderTable.getEmpty()).isEqualTo(empty);
 	}
 }
