@@ -30,12 +30,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public MenuProduct(Menu menu, Long productId, long quantity) {
-        this.menu = menu;
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
     public Long getSeq() {
         return seq;
     }

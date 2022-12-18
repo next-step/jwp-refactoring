@@ -8,11 +8,7 @@ import org.junit.jupiter.api.Test;
 class OrderTableTest {
     @Test
     void 생성() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setTableGroup(null);
-        orderTable.setNumberOfGuests(1);
-        orderTable.setEmpty(false);
+        OrderTable orderTable = new OrderTable(1L, null, 1, false);
 
         assertAll(
                 () -> assertThat(orderTable.getId()).isEqualTo(1L),

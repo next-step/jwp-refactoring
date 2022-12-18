@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -62,40 +61,20 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 
     public int getOrderLineItemsSize(){

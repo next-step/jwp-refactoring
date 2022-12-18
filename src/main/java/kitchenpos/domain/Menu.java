@@ -94,7 +94,4 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
 }

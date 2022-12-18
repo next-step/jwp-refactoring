@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 class OrderLineItemRepositoryTest {
     @Test
     void 생성() {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(1L);
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1);
 
         assertAll(
                 () -> assertThat(orderLineItem.getSeq()).isEqualTo(1L),

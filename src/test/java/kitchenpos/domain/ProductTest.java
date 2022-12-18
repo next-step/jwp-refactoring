@@ -12,12 +12,8 @@ import org.junit.jupiter.params.provider.NullSource;
 class ProductTest {
     @Test
     void 생성() {
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("후라이드");
-        product.setPrice(BigDecimal.valueOf(16000));
+        Product product = new Product("후라이드", BigDecimal.valueOf(16000));
 
-        assertThat(product.getId()).isEqualTo(1L);
         assertThat(product.getName()).isEqualTo("후라이드");
         assertThat(product.getPrice()).isEqualTo(BigDecimal.valueOf(16000));
     }
