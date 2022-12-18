@@ -51,11 +51,11 @@ class OrderStatusServiceTest extends ServiceTest {
     @Autowired
     private OrderService orderService;
 
-    private Order order;
+    private Orders order;
 
     @BeforeEach
-    void setUp() {
-
+    public void setUp() {
+        super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(new MenuProduct(null, ProductFixture.productA(), 1L))));
 
@@ -86,7 +86,7 @@ class OrderStatusServiceTest extends ServiceTest {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
         orderTable1.setEmpty(false);
-        order = orderRepository.save(new Order(orderTable1, orderLineItems));
+        order = orderRepository.save(new Orders(orderTable1, orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -123,7 +123,7 @@ class OrderStatusServiceTest extends ServiceTest {
     }
 
     private void 주문완료_검증됨() {
-        Order findOrder = orderRepository.findById(order.getId()).get();
+        Orders findOrder = orderRepository.findById(order.getId()).get();
         assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 }

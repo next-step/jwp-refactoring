@@ -12,7 +12,7 @@ public class MenuProduct {
     public static final String QUANTITY_NULL_EXCEPTION_MESSAGE = "갯수는 필수입니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -41,12 +41,12 @@ public class MenuProduct {
         }
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public void setSeq(final Long id) {
+        this.id = id;
     }
 
     public long getQuantity() {

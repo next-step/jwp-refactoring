@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -35,7 +35,7 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId) {
-        Order order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
+        Orders order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
         order.emptyTable();
         return order.getOrderTable();
     }

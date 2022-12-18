@@ -32,7 +32,8 @@ class ProductServiceTest extends ServiceTest {
     private ProductRepository productRepository;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         productService = new ProductService(productRepository);
     }
 

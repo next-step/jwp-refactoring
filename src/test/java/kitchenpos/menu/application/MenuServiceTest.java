@@ -13,7 +13,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("MenuService")
-@SpringBootTest
 class MenuServiceTest extends ServiceTest {
 
     @Autowired
@@ -59,7 +57,8 @@ class MenuServiceTest extends ServiceTest {
     private Product productA;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         productA = productRepository.save(new Product(nameProductA(), priceProductA()));
         menuProduct = menuProductRepository.save(menuProductA());

@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 
@@ -15,7 +15,7 @@ public class OrderResponse {
     private final Long orderTableId;
     private OrderStatus orderStatus;
 
-    public OrderResponse(Order order) {
+    public OrderResponse(Orders order) {
         this.orderId = order.getId();
         this.orderLineItems = order.getOrderLineItems();
         this.orderStatus = order.getOrderStatus();

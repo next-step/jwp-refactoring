@@ -5,7 +5,6 @@ import kitchenpos.common.Name;
 import kitchenpos.common.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
-import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -51,7 +50,7 @@ class TableGroupServiceTest extends ServiceTest {
 
     private TableGroup tableGroupA;
     private TableGroup tableGroupB;
-    private Order order;
+    private Orders order;
     private OrderTable orderTableA;
     private OrderTable orderTableB;
     private MenuGroup menuGroup;
@@ -60,7 +59,8 @@ class TableGroupServiceTest extends ServiceTest {
     private OrderLineItems orderLineItemsB;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(menuProductA())));
         tableGroupA = tableGroupRepository.save(new TableGroup());
@@ -71,7 +71,7 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroupB.setOrderTables(Collections.singletonList(orderTableB));
         orderLineItemsA = new OrderLineItems();
         orderLineItemsA.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
-        order = orderRepository.save(new Order(orderTableA, orderLineItemsA));
+        order = orderRepository.save(new Orders(orderTableA, orderLineItemsA));
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
@@ -106,7 +106,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         테이블_그룹_존재_검증(tableGroupB);
 
-        Order order = new Order(orderTableB, orderLineItemsA);
+        Orders order = new Orders(orderTableB, orderLineItemsA);
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -164,7 +164,7 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private void 주문_요리중_상태_변경() {
-        Order order1 = orderRepository.findById(order.getId()).get();
+        Orders order1 = orderRepository.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 

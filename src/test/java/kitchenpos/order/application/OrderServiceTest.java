@@ -59,8 +59,8 @@ class OrderServiceTest extends ServiceTest {
     private Menu menu;
 
     @BeforeEach
-    void setUp() {
-
+    public void setUp() {
+        super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.valueOf(2))), 1L));

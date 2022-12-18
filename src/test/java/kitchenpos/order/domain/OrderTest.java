@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
-import static kitchenpos.order.domain.Order.COMPLETION_CHANGE_EXCEPTION_MESSAGE;
-import static kitchenpos.order.domain.Order.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.order.domain.Orders.COMPLETION_CHANGE_EXCEPTION_MESSAGE;
+import static kitchenpos.order.domain.Orders.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문")
@@ -18,7 +18,7 @@ class OrderTest {
     @DisplayName("주문 항목이 비어있을 수 없다.")
     @Test
     void constructor_fail_orderItem() {
-        assertThatThrownBy(() -> new Order(new OrderTable(), new OrderLineItems()))
+        assertThatThrownBy(() -> new Orders(new OrderTable(), new OrderLineItems()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
     }
@@ -28,7 +28,7 @@ class OrderTest {
     void constructor_fail_orderTable() {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
-        assertThatThrownBy(() -> new Order(null, orderLineItems))
+        assertThatThrownBy(() -> new Orders(null, orderLineItems))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
     }
@@ -38,7 +38,7 @@ class OrderTest {
     void name() {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
-        assertThatNoException().isThrownBy(() -> new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems));
+        assertThatNoException().isThrownBy(() -> new Orders(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -46,7 +46,7 @@ class OrderTest {
     void changeMeal_success() {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
-        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
+        Orders order = new Orders(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
         order.meal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
@@ -56,7 +56,7 @@ class OrderTest {
     void changeMeal_fail_completion() {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
-        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
+        Orders order = new Orders(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
         assertThatThrownBy(order::meal)
@@ -69,7 +69,7 @@ class OrderTest {
     void nameCompletion() {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
-        Order order = new Order(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
+        Orders order = new Orders(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems);
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }

@@ -1,7 +1,7 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
@@ -28,13 +28,13 @@ public class OrderRestController {
     }
 
     @GetMapping("/api/orders")
-    public ResponseEntity<List<Order>> list() {
+    public ResponseEntity<List<Orders>> list() {
         return ResponseEntity.ok()
                 .body(orderService.list());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")
-    public ResponseEntity<Order> changeOrderStatus(@PathVariable final Long orderId, @RequestBody final OrderStatusChangeRequest request) {
+    public ResponseEntity<Orders> changeOrderStatus(@PathVariable final Long orderId, @RequestBody final OrderStatusChangeRequest request) {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, request));
     }
 }

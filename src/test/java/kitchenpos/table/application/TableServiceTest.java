@@ -55,7 +55,8 @@ class TableServiceTest extends ServiceTest {
     private TableGroup tableGroup;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(new OrderTable());
@@ -120,7 +121,7 @@ class TableServiceTest extends ServiceTest {
 
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menuGroupA.getId(), 1)));
-        Order order = new Order(orderTableA, orderLineItems);
+        Orders order = new Orders(orderTableA, orderLineItems);
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -133,7 +134,7 @@ class TableServiceTest extends ServiceTest {
 
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, orderTableB.getId(), 1)));
-        Order order = new Order(orderTableB, orderLineItems);
+        Orders order = new Orders(orderTableB, orderLineItems);
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -156,7 +157,7 @@ class TableServiceTest extends ServiceTest {
 
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menuGroupA.getId(), 1)));
-        Order order = new Order(orderTableA, orderLineItems);
+        Orders order = new Orders(orderTableA, orderLineItems);
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
@@ -176,12 +177,12 @@ class TableServiceTest extends ServiceTest {
         return orderTableRepository.save(orderTable1);
     }
 
-    private Order createOrder() {
+    private Orders createOrder() {
         Menu menu = menuRepository.save(menuA());
         OrderTable orderTable = orderTableRepository.save(new OrderTable());
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
-        return orderRepository.save(new Order(orderTable, orderLineItems));
+        return orderRepository.save(new Orders(orderTable, orderLineItems));
     }
 
     private void 테이블_공석_상태_확인됨() {

@@ -21,7 +21,8 @@ class MenuGroupServiceTest extends ServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
+        super.setUp();
         menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 

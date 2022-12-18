@@ -14,7 +14,7 @@ import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLET
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Orders {
     public static final String ORDER_TABLE_NULL_EXCEPTION_MESSAGE = "주문 테이블이 없습니다.";
     public static final String COMPLETION_CHANGE_EXCEPTION_MESSAGE = "완료일 경우 변경할 수 없습니다.";
     public static final String ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "주문 테이블은 비어있을 수 없습니다.";
@@ -30,7 +30,7 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+    public Orders(OrderTable orderTable, OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
         validateOrderLineItems(orderLineItems);
         this.orderTable = orderTable;
@@ -40,7 +40,7 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    public Order(long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Orders(long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
