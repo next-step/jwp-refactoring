@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
@@ -53,11 +54,10 @@ public class TableGroupService {
     }
 
     private List<OrderTable> getOrderTables(List<TableRequest> tableRequests) {
-        List<OrderTable> orderTables = new ArrayList<>();
-        for (TableRequest orderTable : tableRequests) {
-            orderTables.add(getOrderTable(orderTable));
-        }
-        return orderTables;
+        List<Long> orderTableIds = tableRequests.stream()
+                .map(TableRequest::getId)
+                .collect(Collectors.toList());
+        return orderTableDao.findAllByIdIn(orderTableIds);
     }
 
     @Transactional
@@ -76,11 +76,6 @@ public class TableGroupService {
 
     private TableGroup getTableGroup(Long tableGroupId) {
         return tableGroupDao.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private OrderTable getOrderTable(TableRequest orderTable) {
-        return orderTableDao.findById(orderTable.getId())
                 .orElseThrow(IllegalArgumentException::new);
     }
 }
