@@ -5,86 +5,191 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.common.TableStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Stream;
 
+import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_생성_요청;
+import static kitchenpos.order.acceptance.OrderRestAssured.주문_생성_요청;
+import static kitchenpos.ordertable.acceptance.OrderTableRestAssured.테이블_empty_수정_요청;
+import static kitchenpos.ordertable.acceptance.OrderTableRestAssured.테이블_생성_요청;
+import static kitchenpos.ordertable.acceptance.OrderTableRestAssured.테이블_손님수_수정_요청;
+import static kitchenpos.ordertable.acceptance.OrderTableRestAssured.테이블_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class OrderTableAcceptanceTest extends AcceptanceTest {
-
-    private OrderTable tableA;
-    private OrderTable tableA_A;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        tableA = OrderTableRestAssured.from(9L, 0, TableStatus.EMPTY.isTableEmpty());
-        tableA_A = OrderTableRestAssured.from(8L, 5, TableStatus.USING.isTableEmpty());
-    }
-
-    @DisplayName("테이블 생성 요청")
+    /**
+     * When 방문한 손님 수를 음수로 하여 주문 테이블 생성을 요청하면
+     * Then 주문 테이블을 생성할 수 없다.
+     */
+    @DisplayName("방문한 손님 수를 음수로 하여 주문 테이블을 생성한다.")
     @Test
-    void createOrderTable() {
-        ExtractableResponse<Response> response = OrderTableRestAssured.테이블_생성_요청(tableA);
+    void createTableWithNegativeNumberOfGuests() {
+        // when
+        ExtractableResponse<Response> response = 테이블_생성_요청(-5, true);
 
-        OrderTableRestAssured.테이블_생성됨(response);
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("테이블 정보 수정 요청 - empty 여부")
+    /**
+     * When 주문 테이블 생성을 요청하면
+     * Then 주문 테이블을 생성할 수 있다.
+     */
+    @DisplayName("주문 테이블을 생성한다.")
     @Test
-    void modifyOrderTable_empty() {
-        ExtractableResponse<Response> response = OrderTableRestAssured.테이블_empty_수정_요청(8L, tableA_A);
-        OrderTableRestAssured.테이블_정보_수정됨(response);
+    void createTable() {
+        // when
+        ExtractableResponse<Response> response = 테이블_생성_요청(0, true);
+
+        // then
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
-    @DisplayName("테이블 정보 수정 요청 예외 - 등록되지 않은 table인 경우")
+    /**
+     * When 주문 테이블 목록을 조회 요청하면
+     * Then 주문 테이블 목록을 조회할 있다.
+     */
+    @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
-    void makeExceptionOrderTableWhenModifyIsEmptyData() {
-        ExtractableResponse<Response> response = OrderTableRestAssured.테이블_empty_수정_요청(9L, tableA_A);
-        OrderTableRestAssured.테이블_정보_수정안됨(response);
+    void list() {
+        // given
+        테이블_생성_요청(0, true);
+
+        // when
+        ExtractableResponse<Response> response = 테이블_조회_요청();
+
+        // then
+        assertThat(response.jsonPath().getList(".", OrderTableResponse.class)).hasSize(1);
     }
 
-    @DisplayName("테이블 정보 수정 요청 - 손님숫자")
-    @TestFactory
-    Stream<DynamicTest> modifyOrderTable_numberOfGuests() {
-        return Stream.of(
-                DynamicTest.dynamicTest("empty 여부 using으로 수정", () -> {
-                    ExtractableResponse<Response> response = OrderTableRestAssured.테이블_empty_수정_요청(8L, tableA_A);
-                    OrderTableRestAssured.테이블_정보_수정됨(response);
-                }),
-                DynamicTest.dynamicTest("손님숫자 수정", () -> {
-                    ExtractableResponse<Response> response = OrderTableRestAssured.테이블_손님수_수정_요청(8L, tableA_A);
-                    OrderTableRestAssured.테이블_정보_수정됨(response);
-                })
-        );
-    }
-
-    @DisplayName("테이블 손님숫자 정보 수정 요청 예외 - 등록되지 않은 table인 경우")
+    /**
+     * When 등록되지 않은 주문 테이블을 빈 주문 테이블로 변경 요청하면
+     * Then 빈 주문 테이블로 변경할 수 없다.
+     */
+    @DisplayName("등록되지 않은 주문 테이블을 빈 주문 테이블로 변경한다.")
     @Test
-    void makeExceptionOrderTableWhenModifyTableNumberOfGuests_table() {
-        ExtractableResponse<Response> response = OrderTableRestAssured.테이블_empty_수정_요청(9L, tableA_A);
-        OrderTableRestAssured.테이블_정보_수정안됨(response);
+    void changeEmptyWithNullOrderTable() {
+        // when
+        ExtractableResponse<Response> response = 테이블_empty_수정_요청(-1L, true);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("테이블 손님숫자 정보 수정 요청 예외 - empty 인 경우")
+    /**
+     * Given 메뉴 그룹을 등록하고
+     * And 메뉴를 등록하고
+     * And 주문 테이블을 등록하고
+     * And 조리중이거나 식사중인 주문을 등록하고
+     * When 빈 주문 테이블로 변경 요청하면
+     * Then 빈 주문 테이블로 변경할 수 없다.
+     */
+    @DisplayName("조리중이거나 식사중인 주문 테이블을 빈 주문 테이블로 변경한다.")
     @Test
-    void makeExceptionOrderTableWhenModifyTableNumberOfGuests_empty() {
-        ExtractableResponse<Response> response = OrderTableRestAssured.테이블_empty_수정_요청(9L, tableA_A);
-        OrderTableRestAssured.테이블_정보_수정안됨(response);
+    void changeEmptyWithCookingOrEatingOrder() {
+        // given
+        MenuGroupResponse 양식 = 메뉴그룹_생성_요청("양식").as(MenuGroupResponse.class);
+        MenuResponse 양식_세트 = 메뉴_생성_요청("양식 세트", new BigDecimal(0), 양식.getId(),
+                Collections.emptyList()).as(MenuResponse.class);
+        OrderTableResponse 주문테이블 = 테이블_생성_요청(2, false).as(OrderTableResponse.class);
+        주문_생성_요청(주문테이블.getId(), Arrays.asList(new OrderLineItemRequest(양식_세트.getId(), 1L)))
+                .as(OrderResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 테이블_empty_수정_요청(주문테이블.getId(), true);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("테이블 조회 확인")
+    /**
+     * Given 주문 테이블을 등록하고
+     * When 빈 주문 테이블로 변경 요청하면
+     * Then 빈 주문 테이블로 변경할 수 있다.
+     */
+    @DisplayName("주문 테이블을 빈 주문 테이블로 변경한다.")
     @Test
-    void showTableTest() {
-        ExtractableResponse<Response> response = OrderTableRestAssured.테이블_조회_요청();
+    void changeEmpty() {
+        // given
+        OrderTableResponse 주문테이블 = 테이블_생성_요청(2, false)
+                .as(OrderTableResponse.class);
 
-        OrderTableRestAssured.테이블_조회_목록_응답됨(response);
-        OrderTableRestAssured.테이블_조회_목록_포함됨(response, Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L));
+        // when
+        OrderTableResponse changed = 테이블_empty_수정_요청(주문테이블.getId(), true)
+                .as(OrderTableResponse.class);
+
+        // then
+        assertTrue(changed.isEmpty());
+    }
+
+    /**
+     * When 등록되지 않은 주문 테이블을 방문자 손님 수를 변경 요청하면
+     * Then 방문자 손님 수를 변경할 수 없다.
+     */
+    @DisplayName("등록되지 않은 주문 테이블의 방문자 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuestsWithNullOrderTable() {
+        // when
+        ExtractableResponse<Response> response = 테이블_손님수_수정_요청(-1L, 3);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    /**
+     * Given 빈 주문 테이블을 등록하고
+     * When 방문자 손님 수를 변경 요청하면
+     * Then 방문자 손님 수를 변경할 수 없다.
+     */
+    @DisplayName("빈 주문 테이블의 방문자 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuestsWithEmptyTable() {
+        // given
+        OrderTableResponse 주문테이블 = 테이블_생성_요청(0, true)
+                .as(OrderTableResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 테이블_손님수_수정_요청(주문테이블.getId(), 2);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    /**
+     * Given 비어있지 않은 주문 테이블을 등록하고
+     * When 방문자 손님 수를 변경 요청하면
+     * Then 방문자 손님 수를 변경할 수 있다.
+     */
+    @DisplayName("비어있지 않은 주문 테이블의 방문자 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuests() {
+        // given
+        OrderTableResponse 주문테이블 = 테이블_생성_요청(0, false)
+                .as(OrderTableResponse.class);
+
+        // when
+        OrderTableResponse changed = 테이블_손님수_수정_요청(주문테이블.getId(), 2)
+                .as(OrderTableResponse.class);
+
+        // then
+        assertEquals(2, changed.getNumberOfGuests());
     }
 
 }

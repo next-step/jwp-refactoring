@@ -4,79 +4,99 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
+import static kitchenpos.product.acceptance.ProductRestAssured.상품_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProductAcceptanceTest extends AcceptanceTest {
 
-    private Product 피자;
-    private Product 파스타;
-    private Product 족발;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        피자 = ProductRestAssured.from("피자", 32000);
-        파스타 = ProductRestAssured.from("파스타", 26000);
-        족발 = ProductRestAssured.from("족발", 38000);
-
-        ProductRestAssured.상품_등록_되어_있음(피자);
-        ProductRestAssured.상품_등록_되어_있음(파스타);
-        ProductRestAssured.상품_등록_되어_있음(족발);
-    }
-
-    @DisplayName("상품 생성 요청")
+    /**
+     * When 상품 생성을 요청하면
+     * Then 상품이 생성된다.
+     */
+    @DisplayName("상품을 생성한다.")
     @Test
     void createProduct() {
-        Product 치킨 = ProductRestAssured.from("치킨", 16000);
+        // when
+        ExtractableResponse<Response> response =
+                상품_생성_요청("스테이크", new BigDecimal(25000));
 
-        ExtractableResponse<Response> response = ProductRestAssured.상품_생성_요청(치킨);
-
-        ProductRestAssured.상품_생성됨(response);
+        // then
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
-    @DisplayName("상품 생성 - 금액0")
+    /**
+     * When 상품의 이름을 빈 값으로 하여 상품 생성을 요청하면
+     * Then 상품을 생성할 수 없다.
+     */
+    @DisplayName("빈 값의 이름을 입력하여 상품을 생성한다.")
     @Test
-    void createProduct_priceIsZero() {
-        Product 치킨 = ProductRestAssured.from("치킨", 0);
+    void createProductWithNullName() {
+        // when
+        ExtractableResponse<Response> response =
+                상품_생성_요청(null, new BigDecimal(25000));
 
-        ExtractableResponse<Response> response = ProductRestAssured.상품_생성_요청(치킨);
-
-        ProductRestAssured.상품_생성됨(response);
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("상품 생성 예외 발생 확인 - 금액 -1")
+    /**
+     * When 상품의 가격을 빈 값으로 하여 상품 생성을 요청하면
+     * Then 상품을 생성할 수 없다.
+     */
+    @DisplayName("빈 값의 가격을 입력하여 상품을 생성한다.")
     @Test
-    void makeExceptionWhenCreateProduct_priceIsMinus() {
-        Product 치킨 = ProductRestAssured.from("치킨", -1);
+    void createProductWithNullPrice() {
+        // when
+        ExtractableResponse<Response> response =
+                상품_생성_요청("스테이크", null);
 
-        ExtractableResponse<Response> response = ProductRestAssured.상품_생성_요청(치킨);
-
-        ProductRestAssured.상품_생성_안됨(response);
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("상품 생성 예외 발생 확인 - 이름 null")
+    /**
+     * When 상품의 가격을 음수 값으로 하여 상품 생성을 요청하면
+     * Then 상품을 생성할 수 없다.
+     */
+    @DisplayName("음수 값의 가격을 입력하여 상품을 생성한다.")
     @Test
-    void makeExceptionWhenCreateProduct_nameIsNull() {
-        Product 치킨 = ProductRestAssured.from(null, -1);
+    void createProductWithNegativePrice() {
+        // when
+        ExtractableResponse<Response> response =
+                상품_생성_요청("스테이크", new BigDecimal(-25000));
 
-        ExtractableResponse<Response> response = ProductRestAssured.상품_생성_요청(치킨);
-
-        ProductRestAssured.상품_생성_안됨(response);
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("상품 조회")
+    /**
+     * Given 상품을 생성하고
+     * When 상품 목록을 조회하면
+     * Then 상품 목록이 조회된다.
+     */
+    @DisplayName("상품 목록을 조회한다.")
     @Test
-    void showProductList() {
-        ExtractableResponse<Response> response = ProductRestAssured.상품_조회_요청();
+    void list() {
+        // given
+        상품_생성_요청("스테이크", new BigDecimal(25000));
+        상품_생성_요청("스파게티", new BigDecimal(18000));
 
-        ProductRestAssured.상품_조회_목록_응답됨(response);
-        ProductRestAssured.상품_조회_목록_포함됨(response, Arrays.asList(피자.getName(), 파스타.getName(), 족발.getName()));
+        // when
+        ExtractableResponse<Response> response = 상품_조회_요청();
+
+        // then
+        assertThat(response.jsonPath().getList(".", ProductResponse.class)).hasSize(2);
     }
 }

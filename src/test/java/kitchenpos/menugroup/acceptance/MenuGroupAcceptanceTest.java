@@ -4,51 +4,68 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 옛날통닭파세트;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        옛날통닭파세트 = MenuGroupRestAssured.from("옛날통닭파세트");
-    }
-
-    @DisplayName("메뉴그룹 생성 요청")
+    /**
+     * When 메뉴 그룹 생성을 요청하면
+     * Then 메뉴 그룹이 생성된다.
+     */
+    @DisplayName("메뉴 그룹을 생성한다.")
     @Test
-    void createMenuGroup() {
-        MenuGroupRestAssured.메뉴그룹_생성됨(MenuGroupRestAssured.메뉴그룹_생성_요청(옛날통닭파세트));
+    void createMenu() {
+        // when
+        ExtractableResponse<Response> response = 메뉴그룹_생성_요청("양식");
+
+        // then
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
-    @DisplayName("메뉴 생성 예외 확인 - 이름 null")
+    /**
+     * When 메뉴 그룹의 이름을 빈 값으로 하여 메뉴 그룹 생성을 요청하면
+     * Then 메뉴 그룹을 생성할 수 없다.
+     */
+    @DisplayName("빈 값의 이름을 입력하여 메뉴 그룹을 생성한다.")
     @Test
-    void makeCreateMenuGroupException_nameIsNull() {
-        MenuGroup menuGroup = MenuGroupRestAssured.from(null);
-        MenuGroupRestAssured.메뉴그룹_생성_안됨(MenuGroupRestAssured.메뉴그룹_생성_요청(menuGroup));
+    void createMenuWithNullName() {
+        // when
+        ExtractableResponse<Response> response = 메뉴그룹_생성_요청(null);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
-    @DisplayName("메뉴그룹 생성 및 조회 확인")
-    @TestFactory
-    Stream<DynamicTest> createAndShowList() {
-        return Stream.of(
-                DynamicTest.dynamicTest("메뉴 생성 요청", () -> {
-                    MenuGroupRestAssured.메뉴그룹_생성됨(MenuGroupRestAssured.메뉴그룹_생성_요청(옛날통닭파세트));
-                }),
-                DynamicTest.dynamicTest("기존 메뉴그룹(두마리메뉴) 및 새로 생성한 메뉴(옛날통닭파세트) 조회 확인", () -> {
-                    ExtractableResponse<Response> response = MenuGroupRestAssured.메뉴그룹_조회_요청();
+    /**
+     * Given 메뉴 그룹을 등록하고
+     * When 메뉴 그룹 목록 조회를 요청하면
+     * Then 메뉴 그룹 목록이 조회된다.
+     */
+    @DisplayName("메뉴 그룹 목록을 조회한다.")
+    @Test
+    void list() {
+        // given
+        메뉴그룹_생성_요청("양식");
+        메뉴그룹_생성_요청("중식");
 
-                    MenuGroupRestAssured.메뉴그룹_조회_목록_응답됨(response);
-                    MenuGroupRestAssured.메뉴그룹_조회_목록_포함됨(response, Arrays.asList(옛날통닭파세트.getName(), "두마리메뉴"));
-                })
-        );
+        // when
+        ExtractableResponse<Response> response = 메뉴그룹_조회_요청();
+
+        // then
+        assertThat(response.jsonPath().getList(".", MenuGroupResponse.class)).hasSize(2);
     }
 }
