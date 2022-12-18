@@ -62,7 +62,6 @@ class MenuServiceTest extends ServiceTest {
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         productA = productRepository.save(new Product(nameProductA(), priceProductA()));
         menuProduct = menuProductRepository.save(menuProductA());
-//        new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroupA, Collections.singletonList(menuProduct))
         menuA = menuRepository.save(menuA());
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
     }
@@ -71,9 +70,7 @@ class MenuServiceTest extends ServiceTest {
     @ParameterizedTest
     @NullSource
     void create_fail_MenuGroupNull(BigDecimal price) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, menuGroupA.getId(), price, "A")))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProductsA(), menuGroupA.getId(), price, "A")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -82,20 +79,22 @@ class MenuServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"-1"})
     void create_fail_minimumPrice(BigDecimal price) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, menuGroupA.getId(), price, "A")))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProductsA(), menuGroupA.getId(), price, "A")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
+    }
+
+    private List<MenuProduct> menuProductsA() {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProducts.add(menuProduct);
+        return menuProducts;
     }
 
     @DisplayName("메뉴 그룹이 없을 경우 메뉴를 생성할 수 없다.")
     @ParameterizedTest
     @ValueSource(strings = {"1"})
     void create_fail_menuGroup(BigDecimal price) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, null, price, "menuA")))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProductsA(), null, price, "menuA")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
     }
@@ -104,9 +103,7 @@ class MenuServiceTest extends ServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"3"})
     void create_fail_priceSum(BigDecimal price) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(menuProduct);
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProducts, menuGroupA.getId(), price, "menuA")))
+        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(menuProductsA(), menuGroupA.getId(), price, "menuA")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_PRICE_EXCEPTION_MESSAGE);
     }

@@ -7,10 +7,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.product.domain.ProductFixture;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +20,7 @@ import java.util.List;
 
 import static kitchenpos.common.NameFixture.nameMenuGroupA;
 import static kitchenpos.order.application.OrderService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTableFixture.orderTableA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -59,8 +57,8 @@ class OrderStatusServiceTest extends ServiceTest {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(new MenuProduct(null, ProductFixture.productA(), 1L))));
 
-        OrderTable orderTable1 = orderTableRepository.save(new OrderTable(false));
-        OrderTable orderTable2 = orderTableRepository.save(new OrderTable(false));
+        OrderTable orderTable1 = orderTableRepository.save(orderTableA());
+        OrderTable orderTable2 = orderTableRepository.save(orderTableA());
 
         List<OrderTable> orderTables = new ArrayList<>();
 
@@ -80,13 +78,6 @@ class OrderStatusServiceTest extends ServiceTest {
 
         createOrder(orderTable1, menu);
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
-    }
-
-    private void createOrder(OrderTable orderTable1, Menu menu) {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
-        orderTable1.setEmpty(false);
-        order = orderRepository.save(new Orders(orderTable1, orderLineItems));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -125,5 +116,12 @@ class OrderStatusServiceTest extends ServiceTest {
     private void 주문완료_검증됨() {
         Orders findOrder = orderRepository.findById(order.getId()).get();
         assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+    }
+
+    private void createOrder(OrderTable orderTable1, Menu menu) {
+        OrderLineItems orderLineItems = new OrderLineItems();
+        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
+        orderTable1.setEmpty(false);
+        order = orderRepository.save(new Orders(orderTable1, orderLineItems));
     }
 }

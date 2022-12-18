@@ -1,11 +1,12 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -17,13 +18,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static kitchenpos.common.NameFixture.nameMenuGroupA;
-import static kitchenpos.menu.domain.MenuFixture.menuA;
+import static kitchenpos.order.domain.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTableFixture.orderTableA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -59,7 +60,7 @@ class TableServiceTest extends ServiceTest {
         super.setUp();
         tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        orderTableA = orderTableRepository.save(new OrderTable());
+        orderTableA = orderTableRepository.save(orderTableA());
         orderTableB = orderTableRepository.save(new OrderTable(tableGroup, false));
         tableService = new TableService(orderRepository, orderTableRepository);
     }
@@ -119,9 +120,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_success() {
 
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menuGroupA.getId(), 1)));
-        Orders order = new Orders(orderTableA, orderLineItems);
+        Orders order = new Orders(orderTableA, orderLineItemsA());
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -132,9 +131,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void changeEmpty_fail_notTableGroup() {
 
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, orderTableB.getId(), 1)));
-        Orders order = new Orders(orderTableB, orderLineItems);
+        Orders order = new Orders(orderTableB, orderLineItemsA());
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -155,9 +152,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_fail_meal() {
 
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menuGroupA.getId(), 1)));
-        Orders order = new Orders(orderTableA, orderLineItems);
+        Orders order = new Orders(orderTableA, orderLineItemsA());
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
@@ -178,11 +173,8 @@ class TableServiceTest extends ServiceTest {
     }
 
     private Orders createOrder() {
-        Menu menu = menuRepository.save(menuA());
         OrderTable orderTable = orderTableRepository.save(new OrderTable());
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
-        return orderRepository.save(new Orders(orderTable, orderLineItems));
+        return orderRepository.save(new Orders(orderTable, orderLineItemsA()));
     }
 
     private void 테이블_공석_상태_확인됨() {
