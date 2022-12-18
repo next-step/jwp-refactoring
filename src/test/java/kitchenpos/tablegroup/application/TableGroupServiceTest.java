@@ -110,12 +110,15 @@ public class TableGroupServiceTest {
     @Test
     void 주문_테이블이_이미_테이블_그룹으로_등록되어_있는_경우_테이블_그룹을_등록할_수_없다() {
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(orderTables));
+        when(orderTableRepository.findById(firstTable.getId())).thenReturn(Optional.of(firstTable));
+        when(orderTableRepository.findById(secondTable.getId())).thenReturn(Optional.of(secondTable));
+
         firstTable.setTableGroup(tableGroup);
-        List<Long> orderTableIds = Arrays.asList(firstTable.getId(), secondTable.getId());
-        TableGroupRequest request = TableGroupRequest.of(orderTableIds);
+        TableGroupRequest request = TableGroupRequest.of(Arrays.asList(firstTable.getId(), secondTable.getId()));
 
         assertThatThrownBy(() -> tableGroupService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.ALREADY_GROUP.message());
     }
 
     @Test

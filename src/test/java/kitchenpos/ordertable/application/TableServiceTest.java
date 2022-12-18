@@ -97,7 +97,8 @@ public class TableServiceTest {
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
 
         assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.ALREADY_GROUP.message());
     }
 
     @Test
@@ -109,7 +110,8 @@ public class TableServiceTest {
         given(orderRepository.findAllByOrderTableId(orderTable.getId())).willReturn(Arrays.asList(order));
 
         assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.NOT_PAYMENT_ORDER.message());
     }
 
     @Test

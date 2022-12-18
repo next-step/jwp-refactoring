@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -61,7 +62,8 @@ public class ProductServiceTest {
         ProductRequest product = ProductRequest.of("반반치킨", null);
 
         assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.PRICE_IS_NOT_NULL.message());
     }
 
     @ParameterizedTest
@@ -70,7 +72,8 @@ public class ProductServiceTest {
         ProductRequest product = ProductRequest.of("반반치킨", BigDecimal.valueOf(price));
 
         assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.PRICE_UNDER_ZERO.message());
     }
 
     @Test

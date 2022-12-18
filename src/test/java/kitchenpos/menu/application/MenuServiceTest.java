@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -94,21 +95,15 @@ class MenuServiceTest {
     @Test
     void 가격이_존재하지_않는_메뉴는_등록할_수_없다() {
         MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of("치킨 스파게티 더블세트 메뉴", null, 양식.getId(), new ArrayList<>());
+        given(menuGroupRepository.findById(치킨_스파게티_더블세트_메뉴.getMenuGroupId())).willReturn(Optional.of(양식));
 
         assertThatThrownBy(() -> menuService.create(치킨_스파게티_더블세트_메뉴))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.PRICE_IS_NOT_NULL.message());
     }
 
     @Test
-    void 가격이_0원_미만인_메뉴는_등록할_수_없다() {
-        MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of("치킨 스파게티 더블세트 메뉴", new BigDecimal(-1), 양식.getId(), new ArrayList<>());
-
-        assertThatThrownBy(() -> menuService.create(치킨_스파게티_더블세트_메뉴))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 메뉴_가격은_모든_메뉴_상품의_가격_곱하기_수량의_합보다_작거나_같아야_한다() {
+    void 메뉴_가격은_모든_메뉴_상품의_가격을_곱한_수량의_합보다_작거나_같아야_한다() {
         MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of("치킨 스파게티 더블세트 메뉴", new BigDecimal(60_000), 양식.getId(), new ArrayList<>());
         assertThatThrownBy(() -> menuService.create(치킨_스파게티_더블세트_메뉴))
                 .isInstanceOf(IllegalArgumentException.class);
