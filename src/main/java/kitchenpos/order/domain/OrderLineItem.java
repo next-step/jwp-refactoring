@@ -45,7 +45,6 @@ public class OrderLineItem {
         this.quantity = new OrderLineItemQuantity(quantity);
         this.orderLineItemMenuName = new OrderLineItemMenuName(menuName);
         this.orderLineItemMenuPrice = new OrderLineItemMenuPrice(menuPrice);
-
     }
 
     public void changeOrder(final Order order) {

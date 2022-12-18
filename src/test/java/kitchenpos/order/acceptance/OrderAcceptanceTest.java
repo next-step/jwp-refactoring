@@ -13,7 +13,6 @@ import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -47,7 +46,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     void 등록_된_메뉴만_지정할_수_있다() throws Exception {
         주문_테이블_등록(주문_테이블);
         OrderRequest 없는_메뉴가_포함된_주문 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
 
         ResultActions resultActions = 주문_등록(없는_메뉴가_포함된_주문);
 
@@ -57,7 +56,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void 등록_된_주문_테이블만_지정할_수_있다() throws Exception {
         OrderRequest 등록_되지_않은_주문테이블_지정 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
 
         ResultActions resultActions = 주문_등록(등록_되지_않은_주문테이블_지정);
 
@@ -68,7 +67,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     void 주문_테이블은_비어있으면_안된다() throws Exception {
         주문_테이블_등록(빈_주문_테이블);
         OrderRequest 빈_주문_테이블_지정 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
 
         ResultActions resultActions = 주문_등록(빈_주문_테이블_지정);
 
@@ -82,7 +81,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(주문_테이블);
         OrderRequest 주문 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
 
         ResultActions resultActions = 주문_등록(주문);
 
@@ -96,7 +95,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(주문_테이블);
         OrderRequest 주문 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
         주문_등록(주문);
 
         ResultActions resultActions = 주문_목록_조회();
@@ -140,7 +139,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
         메뉴_등록(후라이드치킨);
         주문_테이블_등록(주문_테이블);
         OrderRequest 주문 = new OrderRequest(1L,
-                Collections.singletonList(new OrderLineItemRequest(1L, 1l, "메뉴명", new BigDecimal(160000))));
+                Collections.singletonList(new OrderLineItemRequest(1L, 1l)));
         주문_등록(주문);
         return 주문;
     }
@@ -164,7 +163,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     private void 주문_목록_조회_성공(ResultActions resultActions, OrderRequest order) throws Exception {
-        OrderLineItem orderLineItems = order.getOrderLineItems().get(0);
+        OrderLineItemRequest orderLineItems = order.getOrderLineItems().get(0);
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(1L))
                 .andExpect(jsonPath("$.[0].orderTable.id").value(order.getOrderTableId()))
@@ -173,9 +172,9 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .andExpect(jsonPath("$.[0].orderLineItems[0].menuId").value(orderLineItems.getMenuId()))
                 .andExpect(jsonPath("$.[0].orderLineItems[0].quantity").value(orderLineItems.getQuantity()))
                 .andExpect(
-                        jsonPath("$.[0].orderLineItems[0].menuName").value(orderLineItems.getOrderLineItemMenuName()))
+                        jsonPath("$.[0].orderLineItems[0].menuName").value("후라이드치킨"))
                 .andExpect(jsonPath("$.[0].orderLineItems[0].menuPrice")
-                        .value(orderLineItems.getOrderLineItemMenuPrice().floatValue()));
+                        .value(new BigDecimal(16000.00).floatValue()));
     }
 
     private ResultActions 주문_목록_조회() throws Exception {
@@ -201,7 +200,7 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     private void 주문_등록_성공(ResultActions resultActions, OrderRequest 주문) throws Exception {
-        OrderLineItem orderLineItems = 주문.getOrderLineItems().get(0);
+        OrderLineItemRequest orderLineItems = 주문.getOrderLineItems().get(0);
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("orderTable.id").value(주문.getOrderTableId()))

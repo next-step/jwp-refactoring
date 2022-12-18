@@ -4,6 +4,7 @@ import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.order.mapper.OrderMapper;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidators;
@@ -17,18 +18,20 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderValidators orderValidators;
+    private final OrderMapper orderMapper;
 
     public OrderService(OrderRepository orderRepository,
                         OrderLineItemRepository orderLineItemRepository,
-                        OrderValidators orderValidators) {
+                        OrderValidators orderValidators, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderValidators = orderValidators;
+        this.orderMapper = orderMapper;
     }
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        Order order = new Order(orderRequest.getOrderTableId(), orderRequest.getOrderLineItems());
+        Order order = orderMapper.mapFrom(orderRequest);
         orderValidators.validateCreation(order);
 
         return orderRepository.save(order);
