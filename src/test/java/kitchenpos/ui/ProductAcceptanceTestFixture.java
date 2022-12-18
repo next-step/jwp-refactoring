@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

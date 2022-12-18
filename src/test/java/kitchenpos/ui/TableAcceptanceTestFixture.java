@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

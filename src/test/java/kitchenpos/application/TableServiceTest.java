@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class TableServiceTest {
     OrderTableDao orderTableDao;
 
     @InjectMocks
-    TableService tableService;
+    OrderTableService tableService;
 
     private Long 주문_테이블_1_id;
     private OrderTable 주문_테이블_1;
