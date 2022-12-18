@@ -3,7 +3,7 @@ package kitchenpos.menugroup.acceptance;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.fixture.MenuGroupFixture;

@@ -1,8 +1,12 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.application.TableService;
+import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -49,9 +53,15 @@ class TableServiceTest {
 
     private OrderTableCreateRequest request;
 
+    private List<OrderLineItem> orderLineItems;
+
     @BeforeEach
     void setUp() {
         request = new OrderTableCreateRequest(0, true);
+        MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
+        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
+        Menu menu = Menu.of("후라이드치킨", 15_000L, menuGroup, Arrays.asList(menuProduct));
+        orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
     }
 
     @Test
@@ -155,9 +165,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 이용 여부 변경시 테이블의 상태가 조리 또는 식사중인경우 변경에 실패한다")
     void changeOrderTableEmptyThrownByTableStateTest() {
         // given
-        OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, false);
-        OrderTable expectedOrderTable = OrderTable.of(0, true);
-        expectedOrderTable.addOrder(new Order(OrderStatus.COOKING));
+        OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, true);
+        OrderTable expectedOrderTable = OrderTable.of(0, false);
+
+        Order order = Order.cooking(expectedOrderTable, orderLineItems);
+        order.changeState(OrderStatus.COMPLETION);
+
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
 
         // when

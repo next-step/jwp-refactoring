@@ -1,18 +1,23 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.message.OrderTableMessage;
-import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.dto.TableRequest;
 import kitchenpos.tablegroup.message.TableGroupMessage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,6 +48,16 @@ class TableGroupServiceTest {
 
     @InjectMocks
     private TableGroupService tableGroupService;
+
+    private List<OrderLineItem> orderLineItems;
+
+    @BeforeEach
+    void setUp() {
+        MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
+        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
+        Menu menu = Menu.of("후라이드치킨", 15_000L, menuGroup, Arrays.asList(menuProduct));
+        orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
+    }
 
     @Test
     @DisplayName("테이블 그룹 지정시 성공하고 그룹 정보를 반환한다")
@@ -199,7 +214,9 @@ class TableGroupServiceTest {
         );
         TableGroup tableGroup = new TableGroup(orderTables);
         tableGroup.group();
-        orderTable.addOrder(new Order(OrderStatus.COOKING));
+
+        Order order = Order.cooking(orderTable, orderLineItems);
+        order.changeState(OrderStatus.COMPLETION);
 
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
 

@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos;
 
 import io.restassured.RestAssured;
 import kitchenpos.utils.DatabaseCleanup;

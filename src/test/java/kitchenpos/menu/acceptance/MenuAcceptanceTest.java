@@ -3,7 +3,7 @@ package kitchenpos.menu.acceptance;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -67,7 +67,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest {
     @DisplayName("메뉴 목록 조회 요청시 요청에 성공한다")
     void findAllMenusThenReturnMenuInfoResponses() {
         // given
-        MenuResponse menu = MenuRestAssured.메뉴_등록됨("후라이드치킨", product.getPrice(), menuGroup.getId(), menuProductRequests).as(MenuResponse.class);
+        MenuResponse menu = MenuRestAssured.메뉴_등록됨("후라이드치킨", product.getPrice(), menuGroup.getId(), menuProductRequests);
 
         // when
         ExtractableResponse<Response> response = MenuRestAssured.메뉴_목록_조회();

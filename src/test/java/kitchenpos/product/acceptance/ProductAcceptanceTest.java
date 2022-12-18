@@ -3,7 +3,7 @@ package kitchenpos.product.acceptance;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.fixture.ProductFixture;

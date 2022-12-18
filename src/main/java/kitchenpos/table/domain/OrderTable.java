@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.domain.Order;
+import kitchenpos.order.domain.Order;
 import kitchenpos.table.message.OrderTableMessage;
 import kitchenpos.tablegroup.domain.TableGroup;
 
@@ -72,13 +72,21 @@ public class OrderTable {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
         }
 
-        if(this.orders.stream().anyMatch(Order::isCookingOrMealState)) {
+        if(isCookingOrMealState()) {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message());
         }
     }
 
     public boolean isEnrolledGroup() {
         return tableGroup != null;
+    }
+
+    private boolean isCookingOrMealState() {
+        if(this.orders.isEmpty()) {
+            return false;
+        }
+
+        return this.orders.stream().noneMatch(Order::isCookingOrMealState);
     }
 
     public void changeNumberOfGuests(Integer numberOfGuests) {
@@ -110,12 +118,15 @@ public class OrderTable {
     }
 
     public void addOrder(Order order) {
+        if(this.orders.contains(order)) {
+            return;
+        }
         this.orders.add(order);
         order.enrollTable(this);
     }
 
     public void validateUpGroup() {
-        if(this.orders.stream().anyMatch(Order::isCookingOrMealState)) {
+        if(isCookingOrMealState()) {
             throw new IllegalArgumentException(OrderTableMessage.UN_GROUP_ERROR_INVALID_ORDER_STATE.message());
         }
     }

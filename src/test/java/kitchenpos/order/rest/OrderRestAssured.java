@@ -1,27 +1,26 @@
-package kitchenpos.rest;
+package kitchenpos.order.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderUpdateRequest;
 import kitchenpos.resource.UriResource;
 import org.springframework.http.MediaType;
 
-import java.util.List;
-
 public class OrderRestAssured {
 
-    public static ExtractableResponse<Response> 주문_등록됨(long orderTableId, List<OrderLineItem> orderLineItems) {
-            return 주문_등록_요청(orderTableId, orderLineItems);
+    public static OrderResponse 주문_등록됨(OrderCreateRequest request) {
+            return 주문_등록_요청(request).as(OrderResponse.class);
     }
 
-    public static ExtractableResponse<Response> 주문_등록_요청(long orderTableId, List<OrderLineItem> orderLineItems) {
+    public static ExtractableResponse<Response> 주문_등록_요청(OrderCreateRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new Order(orderTableId, orderLineItems))
+                .body(request)
                 .when().post(UriResource.주문_API.uri())
                 .then().log().all()
                 .extract();
@@ -40,7 +39,7 @@ public class OrderRestAssured {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new Order(orderStatus))
+                .body(new OrderUpdateRequest(orderStatus))
                 .when().put(UriResource.주문_API.uri() + "/{id}/order-status", id)
                 .then().log().all()
                 .extract();

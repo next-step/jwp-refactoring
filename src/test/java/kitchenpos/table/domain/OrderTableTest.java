@@ -1,10 +1,16 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.message.NumberOfGuestsMessage;
 import kitchenpos.table.message.OrderTableMessage;
 import kitchenpos.tablegroup.domain.TableGroup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderTableTest {
+
+    private List<OrderLineItem> orderLineItems;
+
+    @BeforeEach
+    void setUp() {
+        MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
+        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
+        Menu menu = Menu.of("후라이드치킨", 15_000L, menuGroup, Arrays.asList(menuProduct));
+        orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
+    }
 
     @Test
     @DisplayName("주문 테이블 생성에 성공한다")
@@ -75,7 +91,8 @@ class OrderTableTest {
     void changeOrderTableEmptyThrownByTableStateTest() {
         // given
         OrderTable orderTable = OrderTable.of(0, false);
-        orderTable.addOrder(new Order(OrderStatus.COOKING));
+        Order order = Order.cooking(orderTable, orderLineItems);
+        order.changeState(OrderStatus.COMPLETION);
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeEmpty(true))

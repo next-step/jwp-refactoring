@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.resource.UriResource;
 import org.springframework.http.MediaType;
 
@@ -13,8 +14,9 @@ import java.util.List;
 
 public class MenuRestAssured {
 
-    public static ExtractableResponse<Response> 메뉴_등록됨(String menuName, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
-        return 메뉴_등록_요청(new MenuCreateRequest(menuName, price, menuGroupId, menuProductRequests));
+    public static MenuResponse 메뉴_등록됨(String menuName, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return 메뉴_등록_요청(new MenuCreateRequest(menuName, price, menuGroupId, menuProductRequests))
+                .as(MenuResponse.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(MenuCreateRequest request) {

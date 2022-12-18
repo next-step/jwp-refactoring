@@ -2,10 +2,10 @@ package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.BaseAcceptanceTest;
-import kitchenpos.table.rest.TableRestAssured;
+import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.rest.TableRestAssured;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

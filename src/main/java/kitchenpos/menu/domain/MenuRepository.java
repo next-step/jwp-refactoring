@@ -12,6 +12,4 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
             "left join fetch m.menuGroup " +
             "left join fetch m.menuProducts.menuProductItems ")
     List<Menu> findAllWithGroupAndProducts();
-
-    long countByIdIn(List<Long> ids);
 }
