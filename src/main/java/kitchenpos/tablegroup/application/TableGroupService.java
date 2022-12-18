@@ -5,7 +5,7 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.event.TableGroupedEvent;
 import kitchenpos.tablegroup.event.TableUnGroupedEvent;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
-import kitchenpos.validator.tablegroup.TableGroupValidatorsImpl;
+import kitchenpos.tablegroup.validator.TableGroupValidatorsImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
