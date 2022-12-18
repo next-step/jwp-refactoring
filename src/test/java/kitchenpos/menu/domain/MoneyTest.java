@@ -31,7 +31,8 @@ class MoneyTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, Integer.MAX_VALUE})
 	void testValueOf(int price) {
-		assertThat(Money.valueOf(price).isEqualTo(price))
+		assertThat(Money.valueOf(price)
+						.isEqualTo(price))
 			.isTrue();
 	}
 

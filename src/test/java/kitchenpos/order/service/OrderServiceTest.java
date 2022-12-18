@@ -54,8 +54,8 @@ class OrderServiceTest {
 
 	private static Map<Menu, Integer> createMenus(int count) {
 		return LongStream.range(0, count)
-			.mapToObj(OrderServiceTest::createMenu)
-			.collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
+						 .mapToObj(OrderServiceTest::createMenu)
+						 .collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
 	}
 
 	private static Menu createMenu(long id) {

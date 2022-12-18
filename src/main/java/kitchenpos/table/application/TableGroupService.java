@@ -53,6 +53,6 @@ public class TableGroupService {
 
 	private TableGroup findById(Long tableGroupId) {
 		return tableGroupRepository.findById(tableGroupId)
-			.orElseThrow(EntityNotFoundException::new);
+								   .orElseThrow(EntityNotFoundException::new);
 	}
 }

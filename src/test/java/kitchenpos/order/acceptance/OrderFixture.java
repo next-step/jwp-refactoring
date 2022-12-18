@@ -13,7 +13,7 @@ public class OrderFixture {
 								  List<MenuResponse> menus) {
 		return new OrderRequest(orderTable.getId(),
 								menus.stream()
-									.collect(
-										Collectors.toMap(MenuResponse::getId, menu -> 1, Integer::sum)));
+									 .collect(
+										 Collectors.toMap(MenuResponse::getId, menu -> 1, Integer::sum)));
 	}
 }

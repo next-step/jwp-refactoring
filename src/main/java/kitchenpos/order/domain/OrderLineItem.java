@@ -46,13 +46,14 @@ public class OrderLineItem {
 
 	public static List<OrderLineItem> of(Order order, Map<Menu, Integer> menus) {
 		return menus.entrySet()
-			.stream()
-			.map(entry -> new OrderLineItem(order, entry.getKey(), entry.getValue()))
-			.collect(Collectors.toList());
+					.stream()
+					.map(entry -> new OrderLineItem(order, entry.getKey(), entry.getValue()))
+					.collect(Collectors.toList());
 	}
 
 	public String getMenuName() {
-		return menu.getName().toString();
+		return menu.getName()
+				   .toString();
 	}
 
 	public Integer getQuantity() {

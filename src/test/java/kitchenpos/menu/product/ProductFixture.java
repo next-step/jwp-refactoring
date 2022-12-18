@@ -22,7 +22,7 @@ public class ProductFixture {
 
 	public static List<ProductRequest> 상품목록(int count) {
 		return LongStream.range(0, count)
-			.mapToObj(i -> new ProductRequest(상품명 + i, 상품가격))
-			.collect(Collectors.toList());
+						 .mapToObj(i -> new ProductRequest(상품명 + i, 상품가격))
+						 .collect(Collectors.toList());
 	}
 }

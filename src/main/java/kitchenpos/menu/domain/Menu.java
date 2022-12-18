@@ -35,7 +35,7 @@ public class Menu {
 	private Long menuGroupId;
 
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<MenuProduct> menuProducts = new ArrayList<>();
+	private final List<MenuProduct> menuProducts = new ArrayList<>();
 
 	protected Menu() {
 	}
@@ -78,15 +78,15 @@ public class Menu {
 
 	private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
 		return productsCount.entrySet()
-			.stream()
-			.map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
-			.collect(Collectors.toList());
+							.stream()
+							.map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
+							.collect(Collectors.toList());
 	}
 
 	public Money sumAllProductsPrice() {
 		return menuProducts.stream()
-			.map(MenuProduct::totalPrice)
-			.reduce(Money.ZERO, Money::add);
+						   .map(MenuProduct::totalPrice)
+						   .reduce(Money.ZERO, Money::add);
 	}
 
 	@Override

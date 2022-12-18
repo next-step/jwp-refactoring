@@ -21,13 +21,17 @@ public class ProductResponse {
 	}
 
 	public ProductResponse(Product product) {
-		this(product.getId(), product.getName().value(), product.getPrice().longValue());
+		this(product.getId(),
+			 product.getName()
+					.value(),
+			 product.getPrice()
+					.longValue());
 	}
 
 	public static List<ProductResponse> of(List<Product> products) {
 		return products.stream()
-			.map(ProductResponse::new)
-			.collect(Collectors.toList());
+					   .map(ProductResponse::new)
+					   .collect(Collectors.toList());
 	}
 
 	public Long getId() {

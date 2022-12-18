@@ -32,7 +32,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		ProductRequest 상품 = ProductFixture.상품(상품명, 상품가격);
 		ExtractableResponse<Response> 상품_등록_응답 = step.등록_요청(상품);
 
-		상품_아이디 = step.등록됨(상품_등록_응답).getId();
+		상품_아이디 = step.등록됨(상품_등록_응답)
+					 .getId();
 	}
 
 	/**

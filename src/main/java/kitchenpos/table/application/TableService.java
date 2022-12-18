@@ -78,7 +78,7 @@ public class TableService {
 
 	public OrderTable findById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId)
-			.orElseThrow(EntityNotFoundException::new);
+								   .orElseThrow(EntityNotFoundException::new);
 	}
 
 	public List<OrderTable> findAllById(List<Long> orderTableId) {

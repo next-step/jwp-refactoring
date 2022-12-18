@@ -44,8 +44,8 @@ class MenuServiceTest {
 
 	public static Map<Product, Integer> createProducts(int count) {
 		return LongStream.range(0, count)
-			.mapToObj(i -> new Product(i, "product-" + i, 1_000))
-			.collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
+						 .mapToObj(i -> new Product(i, "product-" + i, 1_000))
+						 .collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
 	}
 
 	@BeforeEach

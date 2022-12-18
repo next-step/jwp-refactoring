@@ -141,7 +141,7 @@ class TableGroupServiceTest {
 
 	private List<OrderTable> createOrderTables(List<Long> orderTableIds, boolean isEmpty) {
 		return orderTableIds.stream()
-			.map(id -> getOrderTable(id, 1, isEmpty))
-			.collect(Collectors.toList());
+							.map(id -> getOrderTable(id, 1, isEmpty))
+							.collect(Collectors.toList());
 	}
 }

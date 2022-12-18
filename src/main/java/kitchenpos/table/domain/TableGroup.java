@@ -27,14 +27,12 @@ import kitchenpos.table.exception.CannotCreateGroupTableException;
 public class TableGroup {
 
 	public static final int MINIMUM_ORDER_TABLE_COUNT = 2;
+	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<OrderTable> orderTables = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private LocalDateTime createdDate;
-
-	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<OrderTable> orderTables = new ArrayList<>();
 
 	protected TableGroup() {
 	}
@@ -47,6 +45,39 @@ public class TableGroup {
 	public static TableGroup create(List<OrderTable> orderTable) {
 		validateCreateTableGroup(orderTable);
 		return new TableGroup(orderTable);
+	}
+
+	public static void validateCreateTableGroup(List<OrderTable> orderTables) {
+		if (hasNoOrderTables(orderTables)) {
+			throw new CannotCreateGroupTableException(HAS_NO_ORDER_TABLE);
+		}
+		if (isOrderTablesValidSize(orderTables)) {
+			throw new CannotCreateGroupTableException(INVALID_TABLE_COUNT);
+		}
+		if (isOrderTableNotEmpty(orderTables)) {
+			throw new CannotCreateGroupTableException(NOT_EMPTY_ORDER_TABLE);
+		}
+		if (hasOrderTableGroup(orderTables)) {
+			throw new CannotCreateGroupTableException(HAS_GROUP_TABLE);
+		}
+	}
+
+	private static boolean hasOrderTableGroup(List<OrderTable> orderTables) {
+		return orderTables.stream()
+						  .anyMatch(OrderTable::hasTableGroup);
+	}
+
+	private static boolean isOrderTableNotEmpty(List<OrderTable> orderTables) {
+		return orderTables.stream()
+						  .noneMatch(OrderTable::isEmpty);
+	}
+
+	private static boolean isOrderTablesValidSize(List<OrderTable> orderTables) {
+		return orderTables.size() < MINIMUM_ORDER_TABLE_COUNT;
+	}
+
+	private static boolean hasNoOrderTables(List<OrderTable> orderTables) {
+		return CollectionUtils.isEmpty(orderTables);
 	}
 
 	public Long getId() {
@@ -70,37 +101,6 @@ public class TableGroup {
 
 	public void ungroup() {
 		orderTables.forEach(OrderTable::detachTableGroup);
-	}
-
-	public static void validateCreateTableGroup(List<OrderTable> orderTables) {
-		if (hasNoOrderTables(orderTables)) {
-			throw new CannotCreateGroupTableException(HAS_NO_ORDER_TABLE);
-		}
-		if (isOrderTablesValidSize(orderTables)) {
-			throw new CannotCreateGroupTableException(INVALID_TABLE_COUNT);
-		}
-		if (isOrderTableNotEmpty(orderTables)) {
-			throw new CannotCreateGroupTableException(NOT_EMPTY_ORDER_TABLE);
-		}
-		if (hasOrderTableGroup(orderTables)) {
-			throw new CannotCreateGroupTableException(HAS_GROUP_TABLE);
-		}
-	}
-
-	private static boolean hasOrderTableGroup(List<OrderTable> orderTables) {
-		return orderTables.stream().anyMatch(OrderTable::hasTableGroup);
-	}
-
-	private static boolean isOrderTableNotEmpty(List<OrderTable> orderTables) {
-		return orderTables.stream().noneMatch(OrderTable::isEmpty);
-	}
-
-	private static boolean isOrderTablesValidSize(List<OrderTable> orderTables) {
-		return orderTables.size() < MINIMUM_ORDER_TABLE_COUNT;
-	}
-
-	private static boolean hasNoOrderTables(List<OrderTable> orderTables) {
-		return CollectionUtils.isEmpty(orderTables);
 	}
 
 	@Override

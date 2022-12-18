@@ -27,8 +27,8 @@ public abstract class AcceptanceTest {
 	public void setUp() {
 		RestAssured.port = port;
 		RestAssured.config = RestAssured.config()
-			.objectMapperConfig(
-				new ObjectMapperConfig().jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
+										.objectMapperConfig(
+											new ObjectMapperConfig().jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
 		databaseCleanup.cleanUp();
 	}
 }

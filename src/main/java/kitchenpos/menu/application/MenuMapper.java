@@ -31,11 +31,11 @@ public class MenuMapper {
 	private Map<Product, Integer> multiplyQuantity(MenuRequest menuRequest, List<Product> products) {
 		Map<Long, Integer> productsCount = menuRequest.toProducts();
 		return products.stream()
-			.collect(Collectors.toMap(
-				Function.identity(),
-				product -> productsCount.get(product.getId()),
-				Integer::sum
-			));
+					   .collect(Collectors.toMap(
+						   Function.identity(),
+						   product -> productsCount.get(product.getId()),
+						   Integer::sum
+					   ));
 	}
 
 }

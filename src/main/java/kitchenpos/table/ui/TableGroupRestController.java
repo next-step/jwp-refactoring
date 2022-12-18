@@ -25,12 +25,16 @@ public class TableGroupRestController {
 	public ResponseEntity<TableGroupResponse> create(@RequestBody TableGroupRequest request) {
 		TableGroupResponse created = tableGroupService.create(request.toOrderTableId());
 		URI uri = URI.create("/api/table-groups/" + created.getId());
-		return ResponseEntity.created(uri).body(created);
+		return ResponseEntity
+			.created(uri)
+			.body(created);
 	}
 
 	@DeleteMapping("/api/table-groups/{tableGroupId}")
 	public ResponseEntity<Void> ungroup(@PathVariable Long tableGroupId) {
 		tableGroupService.ungroup(tableGroupId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity
+			.noContent()
+			.build();
 	}
 }

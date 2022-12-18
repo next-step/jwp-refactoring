@@ -82,6 +82,6 @@ public class OrderService {
 
 	private Order findById(Long orderId) {
 		return orderRepository.findById(orderId)
-			.orElseThrow(IllegalArgumentException::new);
+							  .orElseThrow(IllegalArgumentException::new);
 	}
 }

@@ -39,14 +39,14 @@ public class MenuRequest {
 
 	public List<Long> toProductsId() {
 		return menuProducts.stream()
-			.map(MenuProductRequest::getProductId)
-			.collect(Collectors.toList());
+						   .map(MenuProductRequest::getProductId)
+						   .collect(Collectors.toList());
 	}
 
 	public Map<Long, Integer> toProducts() {
 		return menuProducts.stream()
-			.collect(Collectors.toMap(
-				MenuProductRequest::getProductId, it -> 1, Integer::sum));
+						   .collect(Collectors.toMap(
+							   MenuProductRequest::getProductId, it -> 1, Integer::sum));
 	}
 
 	public static class MenuProductRequest {
@@ -64,8 +64,8 @@ public class MenuRequest {
 
 		public static List<MenuProductRequest> of(List<ProductResponse> products) {
 			return products.stream()
-				.map(product -> new MenuProductRequest(product.getId(), 1))
-				.collect(Collectors.toList());
+						   .map(product -> new MenuProductRequest(product.getId(), 1))
+						   .collect(Collectors.toList());
 		}
 
 		public Long getProductId() {

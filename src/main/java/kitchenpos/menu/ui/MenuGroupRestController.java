@@ -33,9 +33,9 @@ public class MenuGroupRestController {
 	@GetMapping("/api/menu-groups")
 	public ResponseEntity<List<MenuGroupResponse>> list() {
 		return ResponseEntity.ok()
-			.body(
-				MenuGroupResponse.of(
-					menuGroupService.findAll()));
+							 .body(
+								 MenuGroupResponse.of(
+									 menuGroupService.findAll()));
 	}
 
 	private URI createUri(MenuGroup created) {

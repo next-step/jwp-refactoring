@@ -30,21 +30,17 @@ import kitchenpos.table.domain.OrderTable;
 @Table(name = "orders")
 public class Order {
 
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "order_table_id")
 	private OrderTable orderTable;
-
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus;
-
 	private LocalDateTime orderedTime;
-
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 	protected Order() {
 	}

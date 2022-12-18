@@ -21,8 +21,8 @@ public class MenuFixture {
 
 	public static MenuRequest 메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {
 		Long productsPrice = products.stream()
-			.map(ProductResponse::getPrice)
-			.reduce(0L, Long::sum);
+									 .map(ProductResponse::getPrice)
+									 .reduce(0L, Long::sum);
 
 		return 메뉴(products, menuGroup, productsPrice);
 	}

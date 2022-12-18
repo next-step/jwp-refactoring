@@ -24,17 +24,14 @@ import kitchenpos.table.exception.InvalidNumberOfGuestsException;
 @Table(name = "order_table")
 public class OrderTable {
 
+	@OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL)
+	private final List<Order> orderList = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "table_group_id")
 	private TableGroup tableGroup;
-
-	@OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL)
-	private final List<Order> orderList = new ArrayList<>();
-
 	private Integer numberOfGuests;
 
 	private Boolean empty;
@@ -59,14 +56,17 @@ public class OrderTable {
 
 	public void changeTableGroup(TableGroup newTableGroup) {
 		if (Objects.nonNull(tableGroup)) {
-			tableGroup.getOrderTables().remove(this);
+			tableGroup.getOrderTables()
+					  .remove(this);
 		}
 		tableGroup = newTableGroup;
 		if (Objects.isNull(tableGroup)) {
 			return;
 		}
-		if (!tableGroup.getOrderTables().contains(this)) {
-			tableGroup.getOrderTables().add(this);
+		if (!tableGroup.getOrderTables()
+					   .contains(this)) {
+			tableGroup.getOrderTables()
+					  .add(this);
 		}
 	}
 
@@ -126,7 +126,8 @@ public class OrderTable {
 	}
 
 	private boolean hasAnyNotCompletedOrder() {
-		return !orderList.isEmpty() && !orderList.stream().allMatch(Order::isCompleted);
+		return !orderList.isEmpty() && !orderList.stream()
+												 .allMatch(Order::isCompleted);
 	}
 
 	@Override

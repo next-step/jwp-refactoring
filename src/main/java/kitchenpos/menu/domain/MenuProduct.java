@@ -46,6 +46,7 @@ public class MenuProduct {
 	}
 
 	public Money totalPrice() {
-		return product.getPrice().multiply(quantity);
+		return product.getPrice()
+					  .multiply(quantity);
 	}
 }

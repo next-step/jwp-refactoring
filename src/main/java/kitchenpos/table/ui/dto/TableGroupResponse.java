@@ -18,7 +18,9 @@ public class TableGroupResponse {
 	}
 
 	public TableGroupResponse(TableGroup tableGroup) {
-		this(tableGroup.getId(), OrderTableResponse.of(tableGroup.getOrderTables()));
+		this(tableGroup.getId(),
+			 OrderTableResponse.of(
+				 tableGroup.getOrderTables()));
 	}
 
 	public Long getId() {

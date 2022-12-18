@@ -20,9 +20,9 @@ public class OrderRequest {
 	public OrderRequest(Long orderTableId, Map<Long, Integer> orderLineItems) {
 		this.orderTableId = orderTableId;
 		this.orderLineItems = orderLineItems.entrySet()
-			.stream()
-			.map(OrderLineItemRequest::new)
-			.collect(Collectors.toList());
+											.stream()
+											.map(OrderLineItemRequest::new)
+											.collect(Collectors.toList());
 	}
 
 	public Order toOrder(OrderTable orderTable, List<Menu> menus) {
@@ -31,21 +31,23 @@ public class OrderRequest {
 
 	private Map<Menu, Integer> getMenusWithQuantity(List<Menu> menus) {
 		return orderLineItems.stream()
-			.collect(Collectors.toMap(
-				orderLineItem -> getMenu(menus, orderLineItem.getMenuId()),
-				OrderLineItemRequest::getQuantity, Integer::sum));
+							 .collect(Collectors.toMap(
+								 orderLineItem -> getMenu(menus, orderLineItem.getMenuId()),
+								 OrderLineItemRequest::getQuantity, Integer::sum));
 	}
 
 	private Menu getMenu(List<Menu> menus, Long menuId) {
-		return menus.stream().filter(menu -> menu.getId().equals(menuId))
-			.findAny()
-			.orElseThrow(EntityNotFoundException::new);
+		return menus.stream()
+					.filter(menu -> menu.getId()
+										.equals(menuId))
+					.findAny()
+					.orElseThrow(EntityNotFoundException::new);
 	}
 
 	public List<Long> menuIdList() {
 		return orderLineItems.stream()
-			.map(OrderRequest.OrderLineItemRequest::getMenuId)
-			.collect(Collectors.toList());
+							 .map(OrderRequest.OrderLineItemRequest::getMenuId)
+							 .collect(Collectors.toList());
 	}
 
 	public Long getOrderTableId() {

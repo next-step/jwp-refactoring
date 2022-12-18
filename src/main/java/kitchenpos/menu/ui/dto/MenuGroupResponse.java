@@ -23,7 +23,9 @@ public class MenuGroupResponse {
 	}
 
 	public static List<MenuGroupResponse> of(List<MenuGroup> menuGroups) {
-		return menuGroups.stream().map(MenuGroupResponse::new).collect(Collectors.toList());
+		return menuGroups.stream()
+						 .map(MenuGroupResponse::new)
+						 .collect(Collectors.toList());
 	}
 
 	public Long getId() {

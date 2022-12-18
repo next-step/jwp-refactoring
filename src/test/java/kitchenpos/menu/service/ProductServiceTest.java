@@ -62,8 +62,8 @@ class ProductServiceTest {
 
 	private List<Product> createProductList(int count) {
 		return LongStream.range(0, count)
-			.mapToObj(id -> new Product(id, "product-" + id, Money.valueOf(1000)))
-			.collect(Collectors.toList());
+						 .mapToObj(id -> new Product(id, "product-" + id, Money.valueOf(1000)))
+						 .collect(Collectors.toList());
 	}
 
 }

@@ -125,11 +125,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
 	private List<OrderTableResponse> 주문_테이블_등록되어_있음(OrderTableRequest... orderTableRequests) {
 		List<ExtractableResponse<Response>> responses = Arrays.stream(orderTableRequests)
-			.map(orderTables::등록_요청)
-			.collect(Collectors.toList());
+															  .map(orderTables::등록_요청)
+															  .collect(Collectors.toList());
 		return responses.stream()
-			.map(orderTables::등록됨)
-			.collect(Collectors.toList());
+						.map(orderTables::등록됨)
+						.collect(Collectors.toList());
 	}
 
 	private void 테이블_그룹_해제됨(ExtractableResponse<Response> 해제_요청_응답) {

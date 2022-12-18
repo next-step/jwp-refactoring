@@ -53,8 +53,9 @@ class MenuValidatorTest {
 	}
 
 	private Money sumProductsPrice() {
-		return products.keySet().stream()
-			.map(Product::getPrice)
-			.reduce(Money.ZERO, Money::add);
+		return products.keySet()
+					   .stream()
+					   .map(Product::getPrice)
+					   .reduce(Money.ZERO, Money::add);
 	}
 }
