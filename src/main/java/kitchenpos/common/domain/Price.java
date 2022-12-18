@@ -18,6 +18,10 @@ public class Price {
         this.price = price;
     }
 
+    public Price(int price){
+        this.price = new BigDecimal(price);
+    }
+
     public boolean isNull(){
         return Objects.isNull(price);
     }

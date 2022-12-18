@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
@@ -44,12 +46,19 @@ public class OrderService {
 
         validator.validateCreate(orderLineItemRequests, orderTable);
 
-        Order order = new Order(orderTable);
+        List<OrderLineItem> orderLineItems = getOrderLineItems(orderLineItemRequests);
+
+        return orderDao.save(new Order(orderTable, orderLineItems));
+    }
+
+    private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        List<Menu> menus = getMenus(orderLineItemRequests);
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = getMenu(orderLineItemRequest.getMenuId());
-            order.addOrderLineItem(new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity()));
+            Menu menu = getMenu(menus, orderLineItemRequest.getMenuId());
+            orderLineItems.add(new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity()));
         }
-        return orderDao.save(order);
+        return orderLineItems;
     }
 
     public List<Order> list() {
@@ -70,8 +79,17 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private Menu getMenu(Long menuId) {
-        return menuDao.findById(menuId)
+    private List<Menu> getMenus(List<OrderLineItemRequest> orderLineItemRequests) {
+        List<Long> itemIds = orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
+        return menuDao.findAllById(itemIds);
+    }
+
+    private Menu getMenu(List<Menu> menus, Long menuId) {
+        return menus.stream()
+                .filter(menu -> menu.getId().equals(menuId))
+                .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
 

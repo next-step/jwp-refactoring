@@ -90,7 +90,7 @@ public class OrderTable {
         return this.tableGroup != null;
     }
 
-    public void upGroup(){
+    public void unGroup(){
         this.tableGroup = null;
     }
 

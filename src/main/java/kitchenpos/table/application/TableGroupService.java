@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
@@ -70,7 +69,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.upGroup();
+            orderTable.unGroup();
         }
     }
 

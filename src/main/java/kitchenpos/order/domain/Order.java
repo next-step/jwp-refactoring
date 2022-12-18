@@ -36,13 +36,18 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable){
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems){
         this.orderTable = orderTable;
         this.orderedTime = LocalDateTime.now();
         changeOrderStatus(COOKING);
+        addOrderLineItems(orderLineItems);
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
+    private void addOrderLineItems(List<OrderLineItem> orderLineItems){
+        orderLineItems.forEach(this::addOrderLineItem);
+    }
+
+    private void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
         orderLineItem.changeOrder(this);
     }
