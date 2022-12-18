@@ -19,9 +19,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -36,23 +35,23 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = OrderLineItems.from(orderLineItems);
-        checkOrderTableIsNotEmpty(orderTable);
-        orderTable.addOrder(this);
+//        checkOrderTableIsNotEmpty(orderTable);
+//        orderTable.addOrder(this);
         this.orderLineItems.setup(this);
     }
 
-    public static Order of(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderLineItems);
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderLineItems);
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, orderLineItems);
     }
 
     public Long getId() {
@@ -60,7 +59,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return orderTableId;
     }
 
     public String getOrderStatus() {
