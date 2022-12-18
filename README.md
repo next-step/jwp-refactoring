@@ -248,6 +248,10 @@ completePayment() vs setOrderState()
 <details>
 <summary> </summary>
 
+#### 구현
+- Order와 OrderTable 간의 순환참조 제거
+- OrderTable과 TableGroup 간의 순환참조 제거
+
 #### 요구사항
 이전 단계에서 객체 지향 설계를 의식하였다면 아래의 문제가 존재한다. 의존성 관점에서 설계를 검토해 본다.
 
