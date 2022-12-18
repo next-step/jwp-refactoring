@@ -6,7 +6,6 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.OrderTablesException;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,7 +33,7 @@ public class TableGroupRestControllerTest extends ControllerTest {
     @DisplayName("테이블그룹 생성을 요청하면 생성된 테이블그룹응답")
     @Test
     public void returnTableGroup() throws Exception {
-        TableGroupResponse tableGroup = getTableGroup();
+        TableGroupResponse tableGroup = TableGroupResponse.of(TableGroup.builder().id(1l).build());
         doReturn(tableGroup).when(tableGroupService).create(any(TableGroupRequest.class));
 
         webMvc.perform(post("/api/table-groups")
@@ -86,12 +85,6 @@ public class TableGroupRestControllerTest extends ControllerTest {
         webMvc.perform(delete("/api/table-groups/" + tableGroup.getId()))
                 .andExpect(status().isBadRequest());
     }
-
-    private TableGroupResponse getTableGroup() {
-        return TableGroupResponse.of(TableGroup.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .build());
-    }
-
 }
+
 

@@ -5,7 +5,6 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.persistence.MenuGroupRepository;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +31,7 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴그룹 추가할 경우 추가된 메뉴그룹정보를 반환")
     @Test
     public void returnMenuGroup() {
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(Arbitraries.strings().ofMinLength(1).ofMaxLength(10).sample());
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("menugroup");
         doReturn(menuGroupRequest.toMenuGroup()).when(menuGroupRepository).save(any(MenuGroup.class));
 
         assertThat(menuGroupService.create(menuGroupRequest).getName()).isEqualTo(menuGroupRequest.getName());

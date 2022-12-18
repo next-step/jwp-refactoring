@@ -9,9 +9,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuException;
-import kitchenpos.menu.exception.MenuExceptionType;
 import kitchenpos.menu.exception.MenuPriceException;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.ManagedList;
@@ -21,12 +19,12 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -50,8 +48,8 @@ public class MenuRestControllerTest extends ControllerTest {
                 .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
                 .menuProducts(MenuProducts.of(Collections.EMPTY_LIST)).price(BigDecimal.valueOf(1000)).build();
         MenuResponse menuResponse = MenuResponse.of(Menu.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .id(2l)
+                .name("menuTest")
                 .menuGroup(MenuGroup.builder().id(13l).name("menuGroupTest").build())
                 .menuProducts(MenuProducts.of(new ManagedList<>()))
                 .price(BigDecimal.valueOf(15000))
@@ -125,26 +123,22 @@ public class MenuRestControllerTest extends ControllerTest {
     }
 
     private MenuResponse getMenu() {
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.builder()
+                        .menu(Menu.builder().price(BigDecimal.valueOf(1500)).build())
+                        .seq(2l)
+                .build());
         return MenuResponse.of(Menu.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .id(2l)
+                .name("menuTest")
                 .price(BigDecimal.valueOf(15000))
-                .menuGroup(MenuGroup.builder().id(Arbitraries.longs().between(1, 50).sample()).build())
-                .menuProducts(MenuProducts.of(getMenuProducts()))
+                .menuGroup(MenuGroup.builder().id(3l).build())
+                .menuProducts(MenuProducts.of(menuProducts))
                 .build());
     }
 
     private List<MenuResponse> getMenus() {
         return IntStream.rangeClosed(1, 5)
                 .mapToObj(value -> getMenu())
-                .collect(Collectors.toList());
-    }
-
-    private List<MenuProduct> getMenuProducts() {
-        return IntStream.rangeClosed(1, 5)
-                .mapToObj(value -> MenuProduct.builder()
-                        .menu(Menu.builder().price(BigDecimal.valueOf(1500)).build())
-                        .seq(Arbitraries.longs().between(1, 20).sample()).build())
                 .collect(Collectors.toList());
     }
 }

@@ -2,14 +2,12 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.OrderTableException;
 import kitchenpos.table.persistence.OrderTableRepository;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,7 +127,7 @@ public class TableServiceTest {
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
         OrderTableRequest orderTable = new OrderTableRequest();
-        orderTable.setNumberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample());
+        orderTable.setNumberOfGuests(15);
 
         doReturn(Optional.empty()).when(orderTableRepository).findById(orderTable.getId());
 
@@ -142,7 +140,7 @@ public class TableServiceTest {
     public void throwsExceptionWhenEmptyTable() {
         OrderTableRequest orderTable = new OrderTableRequest();
         orderTable.setId(1l);
-        orderTable.setNumberOfGuests(Arbitraries.integers().greaterOrEqual(0).sample());
+        orderTable.setNumberOfGuests(10);
 
         doReturn(Optional.ofNullable(OrderTable.builder().empty(true).build())).when(orderTableRepository).findById(anyLong());
 

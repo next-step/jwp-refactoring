@@ -13,7 +13,6 @@ import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.persistence.ProductRepository;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -101,7 +100,7 @@ public class MenuServiceTest {
         List<MenuProduct> menuProducts = getMenuProducts(MenuProduct.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build(), 3);
         List<Menu> menus = getMenus(Menu.builder()
                 .price(BigDecimal.valueOf(1000))
-                .id(Arbitraries.longs().between(1, 1000l).sample())
+                .id(500l)
                 .menuProducts(MenuProducts.of(menuProducts))
                 .menuGroup(MenuGroup.builder().build())
                 .build(), 5);

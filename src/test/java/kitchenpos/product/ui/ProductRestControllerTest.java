@@ -7,7 +7,6 @@ import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.exception.ProductPriceException;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,12 +38,16 @@ public class ProductRestControllerTest extends ControllerTest {
     @DisplayName("상품생성을 요청하면 생성된 상품응답")
     @Test
     public void returnProduct() throws Exception {
-        ProductResponse product = getProductResponse();
+        ProductResponse product = ProductResponse.of(Product.builder()
+                .id(2l)
+                .name("testProduct")
+                .price(ProductPrice.of(BigDecimal.valueOf(20000)))
+                .build());
         doReturn(product).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                .content(mapper.writeValueAsString(new ProductRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(product.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(product.getName())))
                 .andExpect(jsonPath("$.price", is(product.getPrice().intValue())))
@@ -57,8 +60,8 @@ public class ProductRestControllerTest extends ControllerTest {
         doThrow(new IllegalArgumentException()).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                .content(mapper.writeValueAsString(new ProductRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
@@ -68,8 +71,8 @@ public class ProductRestControllerTest extends ControllerTest {
         doThrow(new ProductPriceException("상품가격은 0이상 이어야합니다")).when(productService).create(any(ProductRequest.class));
 
         webMvc.perform(post("/api/products")
-                .content(mapper.writeValueAsString(new ProductRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new ProductRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", is("상품가격은 0이상 이어야합니다")))
                 .andExpect(status().isBadRequest());
     }
@@ -78,12 +81,12 @@ public class ProductRestControllerTest extends ControllerTest {
     @Test
     public void returnProducts() throws Exception {
         Product product1 = Product.builder()
-                .id(Arbitraries.longs().between(1, 5).sample())
-                .price(ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
+                .id(1l)
+                .price(ProductPrice.of(BigDecimal.valueOf(1000)))
                 .build();
         Product product2 = Product.builder()
-                .id(Arbitraries.longs().between(1, 5).sample())
-                .price(ProductPrice.of(Arbitraries.bigDecimals().between(BigDecimal.valueOf(1000), BigDecimal.valueOf(1500)).sample()))
+                .id(2l)
+                .price(ProductPrice.of(BigDecimal.valueOf(2000)))
                 .build();
         List<Product> products = Arrays.asList(product1, product2);
         doReturn(products).when(productService).list();
@@ -91,13 +94,5 @@ public class ProductRestControllerTest extends ControllerTest {
         webMvc.perform(get("/api/products"))
                 .andExpect(jsonPath("$", hasSize(products.size())))
                 .andExpect(status().isOk());
-    }
-
-    private ProductResponse getProductResponse() {
-        return ProductResponse.of(Product.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
-                .price(ProductPrice.of(BigDecimal.valueOf(20000)))
-                .build());
     }
 }

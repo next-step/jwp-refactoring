@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.OrderTableException;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +54,7 @@ public class OrderTableTest {
     @DisplayName("손님수를 수정할경우 값이 변경")
     @Test
     public void returnNumberOfGuests() {
-        int numberOfGuests = Arbitraries.integers().between(2, 100).sample();
+        int numberOfGuests = 5;
         OrderTable orderTable = OrderTable.builder()
                 .numberOfGuests(2)
                 .empty(false).build();

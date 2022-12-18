@@ -10,10 +10,9 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderLineItemRepository;
 import kitchenpos.order.persistence.OrderRepository;
-import kitchenpos.table.validator.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.persistence.OrderTableRepository;
-import net.jqwik.api.Arbitraries;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,7 +65,7 @@ public class OrderServiceTest {
         orderRequest.setOrderTableId(13l);
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
         doThrow(new IllegalArgumentException())
-                .when(orderValidator).validateOrderCreate(any(),anyList());
+                .when(orderValidator).validateOrderCreate(any(), anyList());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -93,7 +92,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 추가할 경우 주문을 반환")
     @Test
     public void returnOrder() {
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(2l,3l);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(2l, 3l);
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderTableId(15l);
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
@@ -140,7 +139,7 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenCompleteOrder() {
         Order order = Order.builder()
-                .id(Arbitraries.longs().between(1, 1000).sample())
+                .id(3l)
                 .orderTableId(1l)
                 .orderStatus(OrderStatus.COMPLETION)
                 .build();
@@ -155,7 +154,7 @@ public class OrderServiceTest {
     @Test
     public void returnOrderWithChangedStatus() {
         Order order = Order.builder()
-                .id(Arbitraries.longs().between(1, 1000).sample())
+                .id(2l)
                 .orderTableId(1l)
                 .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
                 .orderStatus(OrderStatus.COOKING)
@@ -176,15 +175,6 @@ public class OrderServiceTest {
                         .orderStatus(order.getOrderStatus())
                         .orderLineItems(order.getOrderLineItems())
                         .build())
-                .collect(Collectors.toList());
-    }
-
-    private List<OrderLineItemRequest> getOrderLineItems() {
-        return IntStream.rangeClosed(1, 20)
-                .mapToObj(value -> {
-                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(10l,20l);
-                    return orderLineItemRequest;
-                })
                 .collect(Collectors.toList());
     }
 }

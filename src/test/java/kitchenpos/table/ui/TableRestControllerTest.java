@@ -3,11 +3,9 @@ package kitchenpos.table.ui;
 import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.OrderTableException;
-import net.jqwik.api.Arbitraries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -69,8 +67,8 @@ public class TableRestControllerTest extends ControllerTest {
         doThrow(new OrderTableException("테이블 그룹이 이미 존재합니다")).when(tableService).create(any(OrderTableRequest.class));
 
         webMvc.perform(post("/api/tables")
-                .content(mapper.writeValueAsString(new OrderTableRequest()))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(new OrderTableRequest()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", is("테이블 그룹이 이미 존재합니다")))
                 .andExpect(status().isBadRequest());
     }
@@ -89,9 +87,9 @@ public class TableRestControllerTest extends ControllerTest {
 
     private OrderTableResponse getOrderTableResponse() {
         return OrderTableResponse.of(OrderTable.builder()
-                .id(Arbitraries.longs().between(1, 100).sample())
-                .tableGroupId(Arbitraries.longs().between(1, 100).sample())
-                .numberOfGuests(Arbitraries.integers().between(2, 5).sample())
+                .id(1l)
+                .tableGroupId(2l)
+                .numberOfGuests(3)
                 .empty(true)
                 .build());
     }
