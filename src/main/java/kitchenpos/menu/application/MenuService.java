@@ -1,16 +1,14 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.ErrorMessage;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,27 +24,28 @@ import static kitchenpos.common.ErrorMessage.INVALID_PRODUCT_ID;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final ProductRepository productRepository,
+            final MenuValidator menuValidator
+
     ) {
-        this.menuGroupRepository = menuGroupRepository;
         this.menuRepository = menuRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         Long menuGroupId = request.getMenuGroupId();
-        MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_MENU_GROUP.getMessage(), menuGroupId)));
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProductsRequest()));
-        Menu menu = request.toMenu(menuGroup, menuProducts);
 
+        menuValidator.validateCreateMenu(request, menuProducts);
+
+        Menu menu = request.toMenu(menuGroupId, menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
     }
 

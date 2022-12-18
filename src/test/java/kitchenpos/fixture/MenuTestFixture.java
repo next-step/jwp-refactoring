@@ -37,7 +37,7 @@ public class MenuTestFixture {
 
     public static Menu 메뉴세트(MenuRequest request, long id) {
         List<MenuProduct> menuProducts = 메뉴세트목록(request.getName(), request.getPrice(), request.getMenuProductsRequest());
-        Menu menu = Menu.of(request.getName(), request.getPrice(), 중국집1인메뉴세트그룹(중국집1인메뉴세트그룹요청()), MenuProducts.from(menuProducts));
+        Menu menu = Menu.of(request.getName(), request.getPrice(), 1L, MenuProducts.from(menuProducts));
         setId(id, menu);
         return menu;
     }

@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.fixture.MenuGroupTestFixture.중국집1인메뉴세트그룹;
@@ -44,10 +43,10 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private ProductRepository productRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
@@ -79,7 +78,6 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(중국집1인메뉴세트그룹));
         when(menuRepository.save(any())).thenReturn(짜장면_탕수육_1인_메뉴_세트);
         Product 짜장면상품 = 상품생성(짜장면요청());
         setId(1L, 짜장면상품);
