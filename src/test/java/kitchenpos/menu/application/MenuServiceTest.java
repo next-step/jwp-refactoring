@@ -5,7 +5,7 @@ import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
 import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
 import static kitchenpos.menu.dto.MenuRequestTest.메뉴_요청_객체_생성;
 import static kitchenpos.menu.dto.MenuResponseTest.메뉴_응답_객체들_생성;
-import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.menu.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,13 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,10 +62,10 @@ public class MenuServiceTest {
         소머리국밥 = 상품_생성(2L, "소머리국밥", BigDecimal.valueOf(8000));
         식사_메뉴그룹 = 메뉴그룹_생성(1L, "식사");
 
-        미역국_메뉴상품 = 메뉴상품_생성(1L, null, 미역국, 1L);
+        미역국_메뉴상품 = 메뉴상품_생성(1L, 미역국, 1L);
         미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사_메뉴그룹, Arrays.asList(미역국_메뉴상품));
 
-        소머리국밥_메뉴상품 = 메뉴상품_생성(2L, null, 소머리국밥, 1L);
+        소머리국밥_메뉴상품 = 메뉴상품_생성(2L, 소머리국밥, 1L);
         소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사_메뉴그룹, Arrays.asList(소머리국밥_메뉴상품));
     }
 

@@ -6,13 +6,15 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id", nullable = false)
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {}
@@ -27,10 +29,6 @@ public class MenuProducts {
 
     public List<MenuProduct> readOnlyValue() {
         return Collections.unmodifiableList(menuProducts);
-    }
-
-    public void setMenu(Menu menu) {
-        menuProducts.stream().forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 
     public Price totalPrice() {

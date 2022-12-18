@@ -1,16 +1,13 @@
 package kitchenpos.order.domain;
 
+import java.math.BigDecimal;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 @Table(name = "order_line_item")
@@ -20,23 +17,17 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Embedded
+    private OrderMenu orderMenu;
 
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, OrderMenu orderMenu, long quantity) {
         this.seq = seq;
-        this.order = order;
-        this.menu = menu;
+        this.orderMenu = orderMenu;
         this.quantity = Quantity.from(quantity);
     }
 
@@ -44,12 +35,16 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public OrderMenu getOrderMenu() {
+        return orderMenu;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public String getMenuNameValue() {
+        return orderMenu.getMenuNameValue();
+    }
+
+    public BigDecimal getMenuPriceValue() {
+        return orderMenu.getMenuPriceValue();
     }
 
     public Quantity getQuantity() {
@@ -60,23 +55,14 @@ public class OrderLineItem {
         return quantity.value();
     }
 
-    public Long getOrderId() {
-        return order.getId();
-    }
-
     public Long getMenuId() {
-        return menu.getId();
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
+        return orderMenu.getMenuId();
     }
 
     public static class Builder {
 
         private Long seq;
-        private Order order;
-        private Menu menu;
+        private OrderMenu orderMenu;
         private long quantity;
 
         public Builder seq(Long seq) {
@@ -84,13 +70,8 @@ public class OrderLineItem {
             return this;
         }
 
-        public Builder order(Order order) {
-            this.order = order;
-            return this;
-        }
-
-        public Builder menu(Menu menu) {
-            this.menu = menu;
+        public Builder orderMenu(OrderMenu orderMenu) {
+            this.orderMenu = orderMenu;
             return this;
         }
 
@@ -100,7 +81,7 @@ public class OrderLineItem {
         }
 
         public OrderLineItem build() {
-            return new OrderLineItem(seq, order, menu, quantity);
+            return new OrderLineItem(seq, orderMenu, quantity);
         }
     }
 }

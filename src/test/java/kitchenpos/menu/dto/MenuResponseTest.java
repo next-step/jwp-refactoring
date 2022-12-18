@@ -8,12 +8,12 @@ import kitchenpos.menu.domain.Menu;
 
 public class MenuResponseTest {
 
-    public static MenuResponse 메뉴_응답_객체_생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
+    public static MenuResponse 메뉴_응답_객체_생성(Long id, String name, BigDecimal price, MenuGroupResponse menuGroup, List<MenuProductResponse> menuProducts) {
         return new MenuResponse.Builder()
                 .id(id)
                 .name(name)
                 .price(price)
-                .menuGroupId(menuGroupId)
+                .menuGroup(menuGroup)
                 .menuProducts(menuProducts)
                 .build();
     }

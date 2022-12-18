@@ -2,8 +2,9 @@ package kitchenpos.order.application;
 
 import static kitchenpos.menu.domain.MenuProductTest.메뉴상품_생성;
 import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
-import static kitchenpos.menugroup.domain.MenuGroupTest.메뉴그룹_생성;
+import static kitchenpos.menu.domain.MenuGroupTest.메뉴그룹_생성;
 import static kitchenpos.order.domain.OrderLineItemTest.주문_항목_생성;
+import static kitchenpos.order.domain.OrderMenuTest.주문메뉴_생성;
 import static kitchenpos.order.domain.OrderTest.주문_생성;
 import static kitchenpos.order.dto.OrderLineItemRequestTest.주문_항목_요청_객체_생성;
 import static kitchenpos.order.dto.OrderRequestTest.주문_요청_객체_생성;
@@ -18,9 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -71,16 +72,16 @@ class OrderServiceTest {
         소머리국밥 = 상품_생성(2L, "소머리국밥", BigDecimal.valueOf(8000));
         식사 = 메뉴그룹_생성(1L, "식사");
 
-        미역국_메뉴상품 = 메뉴상품_생성(null, null, 미역국, 1L);
+        미역국_메뉴상품 = 메뉴상품_생성(null, 미역국, 1L);
         미역국_메뉴 = 메뉴_생성(1L, "미역국", BigDecimal.valueOf(6000), 식사, Arrays.asList(미역국_메뉴상품));
 
-        소머리국밥_메뉴상품 = 메뉴상품_생성(null, null, 소머리국밥, 1L);
+        소머리국밥_메뉴상품 = 메뉴상품_생성(null, 소머리국밥, 1L);
         소머리국밥_메뉴 = 메뉴_생성(2L, "소머리국밥", BigDecimal.valueOf(8000), 식사, Arrays.asList(소머리국밥_메뉴상품));
 
-        주문_항목 = 주문_항목_생성(1L, null, 소머리국밥_메뉴, 2);
+        주문_항목 = 주문_항목_생성(1L, 주문메뉴_생성(소머리국밥_메뉴.getId(), 소머리국밥_메뉴.getNameValue(), 소머리국밥_메뉴.getPriceValue()), 2);
         주문_테이블 = 주문_테이블_생성(1L, null, 2, false);
 
-        주문 = 주문_생성(1L, 주문_테이블, Arrays.asList(주문_항목));
+        주문 = 주문_생성(1L, 주문_테이블.getId(), Arrays.asList(주문_항목));
     }
 
     @Test

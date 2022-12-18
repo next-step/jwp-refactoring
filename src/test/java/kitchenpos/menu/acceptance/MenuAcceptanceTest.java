@@ -1,7 +1,7 @@
 package kitchenpos.menu.acceptance;
 
 import static kitchenpos.menu.dto.MenuProductRequestTest.메뉴상품_요청_객체_생성;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

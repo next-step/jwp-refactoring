@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 @Table(name = "menu")
@@ -48,7 +47,6 @@ public class Menu {
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.from(menuProducts);
-        this.menuProducts.setMenu(this);
     }
 
     private static void validateNonNullMenuGroup(MenuGroup menuGroup) {

@@ -1,15 +1,13 @@
 package kitchenpos.order.application;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -33,12 +31,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
         List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest.getOrderLineItemRequests());
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
-        Order order = orderRepository.save(new Order.Builder()
-                .orderTable(orderTable)
-                .orderLineItems(orderLineItems)
-                .build());
+        OrderValidator.validateCreateOrder(orderTable, orderLineItems);
+        Order order = orderRepository.save(orderRequest.toOrder(orderLineItems));
         return OrderResponse.from(order);
     }
 
@@ -57,28 +53,28 @@ public class OrderService {
     }
 
     private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        Set<Menu> menuSet = new HashSet<>();
-        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = findMenuById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(new OrderLineItem.Builder()
-                    .menu(menu)
-                    .quantity(orderLineItemRequest.getQuantity())
-                    .build());
-            menuSet.add(menu);
-        }
-        validateOrderLineItemsSizeEqualsMenuSize(orderLineItems, menuSet);
-        return orderLineItems;
+        validateNotDuplicatedMenuIds(orderLineItemRequests);
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(findMenuById(orderLineItemRequest.getMenuId())))
+                .collect(Collectors.toList());
     }
 
-    private void validateOrderLineItemsSizeEqualsMenuSize(List<OrderLineItem> orderLineItems, Set<Menu> menuSet) {
-        if (orderLineItems.size() != menuSet.size()) {
-            throw new IllegalArgumentException();
+    private void validateNotDuplicatedMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
+        boolean duplicatedMenuIds = orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .distinct()
+                .count() != orderLineItemRequests.size();
+        if (duplicatedMenuIds) {
+            throw new IllegalArgumentException("메뉴가 중복되었습니다.");
         }
     }
 
     public Order findOrderById(Long id) {
         return orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+    }
+
+    public OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
     }
 
     public Menu findMenuById(Long id) {
