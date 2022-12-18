@@ -6,7 +6,6 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,7 +80,7 @@ class ProductServiceTest {
 
         // then
         assertAll(
-                () -> Assertions.assertThat(results).hasSize(1),
+                () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(product.getId()),
                 () -> assertThat(results.get(0).getName()).isEqualTo(product.getName().value()),
                 () -> assertThat(results.get(0).getPrice()).isEqualTo(product.getPrice().value())

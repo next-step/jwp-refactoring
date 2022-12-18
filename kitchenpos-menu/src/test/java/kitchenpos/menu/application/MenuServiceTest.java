@@ -14,7 +14,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -136,7 +135,7 @@ class MenuServiceTest {
 
         // then
         assertAll(
-                () -> Assertions.assertThat(results).hasSize(1),
+                () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(불고기정식.getId()),
                 () -> assertThat(results.get(0).getName()).isEqualTo(불고기정식.getName().value())
         );

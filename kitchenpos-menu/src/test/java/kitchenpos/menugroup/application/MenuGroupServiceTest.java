@@ -5,7 +5,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +57,7 @@ class MenuGroupServiceTest {
 
         // then
         assertAll(
-                () -> Assertions.assertThat(results).hasSize(1),
+                () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(한식.getId()),
                 () -> assertThat(results.get(0).getName()).isEqualTo(한식.getName().value())
         );

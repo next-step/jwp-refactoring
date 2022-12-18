@@ -9,7 +9,6 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +41,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        불고기 = ProductAcceptanceTest.상품_생성_요청(ProductRequest.of("불고기", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
-        김치 = ProductAcceptanceTest.상품_생성_요청(ProductRequest.of("김치", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
-        공기밥 = ProductAcceptanceTest.상품_생성_요청(ProductRequest.of("공기밥", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        불고기 = 상품_생성_요청(ProductRequest.of("불고기", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        김치 = 상품_생성_요청(ProductRequest.of("김치", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        공기밥 = 상품_생성_요청(ProductRequest.of("공기밥", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
         한식 = 메뉴그룹_생성_요청(MenuGroupRequest.of("한식")).as(MenuGroupResponse.class);
 
 

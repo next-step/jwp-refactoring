@@ -9,7 +9,6 @@ import kitchenpos.order.dto.UpdateEmptyRequest;
 import kitchenpos.order.dto.UpdateNumberOfGuestsRequest;
 import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.validator.OrderTableValidator;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,7 +68,7 @@ class TableServiceTest {
 
         // then
         assertAll(
-                () -> Assertions.assertThat(results).hasSize(1),
+                () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(orderTable.getId()),
                 () -> assertThat(results.get(0).getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests())
         );

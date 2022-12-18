@@ -17,11 +17,10 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.UpdateOrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.product.domain.Product;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,7 +114,7 @@ class OrderServiceTest {
 
         // then
         assertAll(
-                () -> Assertions.assertThat(results).hasSize(1),
+                () -> assertThat(results).hasSize(1),
                 () -> assertThat(results.get(0).getId()).isEqualTo(주문.getId()),
                 () -> assertThat(results.get(0).getOrderStatus()).isEqualTo(주문.getOrderStatus().name())
         );
