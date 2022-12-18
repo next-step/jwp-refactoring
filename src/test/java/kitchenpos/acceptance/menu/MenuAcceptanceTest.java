@@ -13,10 +13,10 @@ import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
 import kitchenpos.acceptance.menugroup.MenuGroupFixture;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
 import kitchenpos.acceptance.product.ProductFixture;
-import kitchenpos.ui.dto.MenuGroupResponse;
-import kitchenpos.ui.dto.MenuRequest;
-import kitchenpos.ui.dto.ProductRequest;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.menu.ui.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.dto.MenuRequest;
+import kitchenpos.menu.ui.dto.ProductRequest;
+import kitchenpos.menu.ui.dto.ProductResponse;
 
 @DisplayName("메뉴 관리")
 class MenuAcceptanceTest extends AcceptanceTest2 {
@@ -30,8 +30,8 @@ class MenuAcceptanceTest extends AcceptanceTest2 {
 	/**
 	 * Feature: 메뉴 관리 기능
 	 * Background
-	 *   When 상품목록 등록을 요청하면
-	 *   Then 상품목록 등록에 성공한다
+	 * When 상품목록 등록을 요청하면
+	 * Then 상품목록 등록에 성공한다
 	 */
 	@BeforeEach
 	void setup() {

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,9 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.Money;
 
 @Entity
 @Table(name = "menu_product")

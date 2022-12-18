@@ -3,8 +3,8 @@ package kitchenpos.acceptance.product;
 import java.util.function.ToLongFunction;
 
 import kitchenpos.AcceptanceTestStep;
-import kitchenpos.ui.dto.ProductRequest;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.menu.ui.dto.ProductRequest;
+import kitchenpos.menu.ui.dto.ProductResponse;
 
 public class ProductAcceptanceTestStep extends AcceptanceTestStep<ProductRequest, ProductResponse> {
 

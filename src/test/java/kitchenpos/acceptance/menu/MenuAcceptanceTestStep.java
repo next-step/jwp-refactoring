@@ -8,10 +8,10 @@ import kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestStep;
 import kitchenpos.acceptance.menugroup.MenuGroupFixture;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
 import kitchenpos.acceptance.product.ProductFixture;
-import kitchenpos.ui.dto.MenuGroupResponse;
-import kitchenpos.ui.dto.MenuRequest;
-import kitchenpos.ui.dto.MenuResponse;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.menu.ui.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.dto.MenuRequest;
+import kitchenpos.menu.ui.dto.MenuResponse;
+import kitchenpos.menu.ui.dto.ProductResponse;
 
 public class MenuAcceptanceTestStep extends AcceptanceTestStep<MenuRequest, MenuResponse> {
 

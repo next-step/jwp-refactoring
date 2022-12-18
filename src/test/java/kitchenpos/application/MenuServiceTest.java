@@ -21,11 +21,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.Money;
-import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Money;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.exception.InvalidMenuPriceException;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -36,10 +37,15 @@ class MenuServiceTest {
 	@InjectMocks
 	MenuService menuService;
 
-
 	long MENU_GROUP_ID = 1L;
 	Menu menu;
 	Map<Product, Integer> products;
+
+	public static Map<Product, Integer> createProducts(int count) {
+		return LongStream.range(0, count)
+			.mapToObj(i -> new Product(i, "product-" + i, 1_000))
+			.collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
+	}
 
 	@BeforeEach
 	void setUp() {
@@ -58,10 +64,13 @@ class MenuServiceTest {
 	}
 
 	@Test
-	@DisplayName("메뉴의 가격이 상품목록 가격 합보다 클 경우 등록 실패")
+	@DisplayName("메뉴의 가격이 상품목록 가격 합보다 작을 경우 등록 실패")
 	void testCreateMenuWhenMenuPriceGreaterThanSumOfProductsPrice() {
 		Money invalidMenuPrice = sumProductsPrice(products).minus(1);
-		Menu invalidMenu = new Menu(menu.getName().value(), invalidMenuPrice.longValue(), MENU_GROUP_ID, products);
+		Menu invalidMenu = new Menu(menu.getName().value(),
+									invalidMenuPrice.longValue(),
+									MENU_GROUP_ID,
+									products);
 
 		assertThatThrownBy(() -> menuService.create(invalidMenu))
 			.isInstanceOf(InvalidMenuPriceException.class);
@@ -83,11 +92,5 @@ class MenuServiceTest {
 		return products.keySet().stream()
 			.map(Product::getPrice)
 			.reduce(Money.ZERO, Money::add);
-	}
-
-	public static Map<Product, Integer> createProducts(int count) {
-		return LongStream.range(0, count)
-			.mapToObj(i -> new Product(i, "product-"+i, 1_000))
-			.collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
 	}
 }

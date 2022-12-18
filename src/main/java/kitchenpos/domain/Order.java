@@ -21,9 +21,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.exception.CannotChangeOrderStatusException;
 import kitchenpos.exception.CannotStartOrderException;
+import kitchenpos.menu.domain.Menu;
 
 @Entity
 @Table(name = "orders")

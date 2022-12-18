@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.menu.domain.Menu;
 
 @Entity
 @Table(name = "order_line_item")

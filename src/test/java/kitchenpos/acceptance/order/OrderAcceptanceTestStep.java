@@ -12,7 +12,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTestStep;
 import kitchenpos.acceptance.menu.MenuAcceptanceTestStep;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.ui.dto.MenuResponse;
+import kitchenpos.menu.ui.dto.MenuResponse;
 import kitchenpos.ui.dto.OrderRequest;
 import kitchenpos.ui.dto.OrderResponse;
 import kitchenpos.ui.dto.OrderStatusRequest;
@@ -27,6 +27,10 @@ public class OrderAcceptanceTestStep extends AcceptanceTestStep<OrderRequest, Or
 
 	public OrderAcceptanceTestStep() {
 		super(OrderResponse.class);
+	}
+
+	private static void 주문_조리중임(OrderResponse 주문) {
+		assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 	}
 
 	public ExtractableResponse<Response> 주문_상태_변경_요청(Long id, OrderStatus 식사중) {
@@ -56,9 +60,5 @@ public class OrderAcceptanceTestStep extends AcceptanceTestStep<OrderRequest, Or
 		주문_조리중임(주문);
 
 		return 주문;
-	}
-
-	private static void 주문_조리중임(OrderResponse 주문) {
-		assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 	}
 }

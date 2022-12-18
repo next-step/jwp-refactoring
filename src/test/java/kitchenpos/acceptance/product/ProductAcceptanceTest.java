@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
-import kitchenpos.ui.dto.ProductRequest;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.menu.ui.dto.ProductRequest;
+import kitchenpos.menu.ui.dto.ProductResponse;
 
 @DisplayName("상품목록 관리")
 class ProductAcceptanceTest extends AcceptanceTest2 {
@@ -26,8 +26,8 @@ class ProductAcceptanceTest extends AcceptanceTest2 {
 	/**
 	 * Feature: 상품목록 관리 기능
 	 * Background
-	 *   When 가격이 0원 이상인 상품을 등록을 요청하면
-	 *   Then 상품이 등록에 성공한다
+	 * When 가격이 0원 이상인 상품을 등록을 요청하면
+	 * Then 상품이 등록에 성공한다
 	 */
 	@BeforeEach
 	void setup() {

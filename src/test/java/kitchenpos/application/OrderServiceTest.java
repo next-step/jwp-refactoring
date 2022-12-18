@@ -27,22 +27,45 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.exception.CannotChangeOrderStatusException;
+import kitchenpos.menu.domain.Menu;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
+	@Deprecated
+	static final List<Long> menusId = Lists.newArrayList(1L, 2L, 3L);
+	static final long MENU_GROUP_ID = 1L;
 	@Mock
 	OrderRepository orderRepository;
-
 	@InjectMocks
 	OrderService orderService;
 
-	@Deprecated
-	static final List<Long> menusId = Lists.newArrayList(1L, 2L, 3L);
+	private static Order createOrder(OrderStatus orderStatus) {
+		return new Order(orderStatus, createOrderTable(), createMenus(3));
+	}
 
-	static final long MENU_GROUP_ID = 1L;
+	private static Order createOrder() {
+		return new Order(createOrderTable(), createMenus(3));
+	}
+
+	private static Map<Menu, Integer> createMenus(int count) {
+		return LongStream.range(0, count)
+			.mapToObj(OrderServiceTest::createMenu)
+			.collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
+	}
+
+	private static Menu createMenu(long id) {
+		return new Menu(id,
+						"menu",
+						10_000L,
+						MENU_GROUP_ID,
+						MenuServiceTest.createProducts(3));
+	}
+
+	private static OrderTable createOrderTable() {
+		return new OrderTable(10, true);
+	}
 
 	@Test
 	@DisplayName("주문 생성")
@@ -101,32 +124,6 @@ class OrderServiceTest {
 		// when
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, expectedStatus))
 			.isInstanceOf(CannotChangeOrderStatusException.class);
-	}
-
-	private static Order createOrder(OrderStatus orderStatus) {
-		return new Order(orderStatus, createOrderTable(), createMenus(3));
-	}
-
-	private static Order createOrder() {
-		return new Order(createOrderTable(), createMenus(3));
-	}
-
-	private static Map<Menu, Integer> createMenus(int count) {
-		return LongStream.range(0, count)
-			.mapToObj(OrderServiceTest::createMenu)
-			.collect(Collectors.toMap(Function.identity(), menu -> 1, Integer::sum));
-	}
-
-	private static Menu createMenu(long id) {
-		return new Menu(id,
-						"menu",
-						10_000L,
-						MENU_GROUP_ID,
-						MenuServiceTest.createProducts(3));
-	}
-
-	private static OrderTable createOrderTable() {
-		return new OrderTable(10, true);
 	}
 
 }

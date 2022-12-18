@@ -1,11 +1,8 @@
-package kitchenpos.ui.dto;
+package kitchenpos.menu.ui.dto;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import kitchenpos.domain.Product;
-import kitchenpos.domain.menu.Menu;
 
 public class MenuRequest {
 
@@ -38,10 +35,6 @@ public class MenuRequest {
 
 	public List<MenuProductRequest> getMenuProducts() {
 		return menuProducts;
-	}
-
-	public Menu toMenu(Map<Product, Integer> productsCount) {
-		return new Menu(name, price, menuGroupId, productsCount);
 	}
 
 	public List<Long> toProductsId() {

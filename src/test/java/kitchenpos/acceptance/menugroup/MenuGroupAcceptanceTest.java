@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest2;
-import kitchenpos.ui.dto.MenuGroupRequest;
+import kitchenpos.menu.ui.dto.MenuGroupRequest;
 
 @DisplayName("메뉴 그룹 관리")
 class MenuGroupAcceptanceTest extends AcceptanceTest2 {

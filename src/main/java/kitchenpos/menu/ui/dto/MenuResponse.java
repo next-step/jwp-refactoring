@@ -1,10 +1,10 @@
-package kitchenpos.ui.dto;
+package kitchenpos.menu.ui.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuResponse {
 
@@ -28,10 +28,33 @@ public class MenuResponse {
 			 MenuProductResponse.of(menu.getMenuProducts()));
 	}
 
+	private MenuResponse() {
+	}
+
 	public static List<MenuResponse> of(List<Menu> menus) {
 		return menus.stream()
 			.map(MenuResponse::new)
 			.collect(Collectors.toList());
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Long getPrice() {
+		return price;
+	}
+
+	public Long getMenuGroupId() {
+		return menuGroupId;
+	}
+
+	public List<MenuProductResponse> getMenuProducts() {
+		return menuProducts;
 	}
 
 	static class MenuProductResponse {
@@ -60,28 +83,5 @@ public class MenuResponse {
 		public Long getQuantity() {
 			return quantity;
 		}
-	}
-
-	private MenuResponse() {
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public Long getPrice() {
-		return price;
-	}
-
-	public Long getMenuGroupId() {
-		return menuGroupId;
-	}
-
-	public List<MenuProductResponse> getMenuProducts() {
-		return menuProducts;
 	}
 }

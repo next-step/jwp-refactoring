@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -7,14 +7,13 @@ import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
-import kitchenpos.exception.InvalidMoneyValueException;
+import kitchenpos.menu.exception.InvalidMoneyValueException;
 
 @Embeddable
 public class Money {
 
-	public static final Money ZERO = Money.valueOf(0);
 	private static final int SCALE = 0;
-
+	public static final Money ZERO = Money.valueOf(0);
 	private BigDecimal value;
 
 	protected Money() {

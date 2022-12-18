@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,11 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
 import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.ui.dto.ProductRequest;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,17 +20,8 @@ public class ProductService {
 	}
 
 	@Transactional
-	public ProductResponse create(ProductRequest productRequest) {
-		return new ProductResponse(create(productRequest.toProduct()));
-	}
-
-	@Transactional
 	public Product create(Product product) {
 		return productRepository.save(product);
-	}
-
-	public List<ProductResponse> list() {
-		return ProductResponse.of(productRepository.findAll());
 	}
 
 	public List<Product> findAll() {

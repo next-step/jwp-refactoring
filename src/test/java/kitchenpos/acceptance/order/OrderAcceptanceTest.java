@@ -22,11 +22,11 @@ import kitchenpos.acceptance.ordertable.OrderTableFixture;
 import kitchenpos.acceptance.product.ProductAcceptanceTestStep;
 import kitchenpos.acceptance.product.ProductFixture;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.ui.dto.MenuGroupResponse;
-import kitchenpos.ui.dto.MenuResponse;
+import kitchenpos.menu.ui.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.dto.MenuResponse;
+import kitchenpos.menu.ui.dto.ProductResponse;
 import kitchenpos.ui.dto.OrderResponse;
 import kitchenpos.ui.dto.OrderTableResponse;
-import kitchenpos.ui.dto.ProductResponse;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends AcceptanceTest2 {
@@ -45,10 +45,10 @@ class OrderAcceptanceTest extends AcceptanceTest2 {
 	/**
 	 * Feature: 주문 관리 기능
 	 * Background
-	 *   Given 상품을 등록되어 있음
-	 *   Given 메뉴 그룹 등록되어 있음
-	 *   Given 메뉴를 등록되어 있음
-	 *   Given 주문 테이블 등록되어 있음
+	 * Given 상품을 등록되어 있음
+	 * Given 메뉴 그룹 등록되어 있음
+	 * Given 메뉴를 등록되어 있음
+	 * Given 주문 테이블 등록되어 있음
 	 */
 	@BeforeEach
 	void setup() {

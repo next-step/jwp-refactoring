@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.menu.domain.Menu;
 
 public class OrderRequest {
 
@@ -48,6 +48,14 @@ public class OrderRequest {
 			.collect(Collectors.toList());
 	}
 
+	public Long getOrderTableId() {
+		return orderTableId;
+	}
+
+	public List<OrderLineItemRequest> getOrderLineItems() {
+		return orderLineItems;
+	}
+
 	public static class OrderLineItemRequest {
 		private Long menuId;
 		private Integer quantity;
@@ -71,13 +79,5 @@ public class OrderRequest {
 		public Integer getQuantity() {
 			return quantity;
 		}
-	}
-
-	public Long getOrderTableId() {
-		return orderTableId;
-	}
-
-	public List<OrderLineItemRequest> getOrderLineItems() {
-		return orderLineItems;
 	}
 }

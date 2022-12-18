@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 import java.util.Objects;
 
@@ -11,8 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.domain.menu.Money;
-
 @Entity
 @Table(name = "product")
 public class Product {
@@ -21,7 +19,8 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
+	@Embedded
+	private Name name;
 
 	@Embedded
 	@AttributeOverride(name = "value", column = @Column(name = "price"))
@@ -32,7 +31,7 @@ public class Product {
 
 	public Product(Long id, String name, Money price) {
 		this.id = id;
-		this.name = name;
+		this.name = new Name(name);
 		this.price = price;
 	}
 
@@ -56,7 +55,7 @@ public class Product {
 		return id;
 	}
 
-	public String getName() {
+	public Name getName() {
 		return name;
 	}
 
@@ -66,8 +65,10 @@ public class Product {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Product product = (Product)o;
 		return id.equals(product.id);
 	}

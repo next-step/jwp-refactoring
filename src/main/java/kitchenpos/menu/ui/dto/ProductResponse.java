@@ -1,9 +1,9 @@
-package kitchenpos.ui.dto;
+package kitchenpos.menu.ui.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 public class ProductResponse {
 
@@ -21,7 +21,7 @@ public class ProductResponse {
 	}
 
 	public ProductResponse(Product product) {
-		this(product.getId(), product.getName(), product.getPrice().longValue());
+		this(product.getId(), product.getName().value(), product.getPrice().longValue());
 	}
 
 	public static List<ProductResponse> of(List<Product> products) {

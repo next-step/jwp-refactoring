@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import kitchenpos.domain.menu.Money;
-import kitchenpos.exception.InvalidMoneyValueException;
+import kitchenpos.menu.domain.Money;
+import kitchenpos.menu.exception.InvalidMoneyValueException;
 
 class MoneyTest {
 
 	@DisplayName("금액은 0보다 작을 수 없다")
 	@ParameterizedTest
-	@ValueSource(ints ={-1, -100, Integer.MIN_VALUE})
+	@ValueSource(ints = {-1, -100, Integer.MIN_VALUE})
 	void testValidate(int price) {
 		assertThatThrownBy(() -> Money.valueOf(price))
 			.isInstanceOf(InvalidMoneyValueException.class);
@@ -24,7 +24,7 @@ class MoneyTest {
 	@DisplayName("금액은 null일 수 없다")
 	@Test
 	void testValidateNotNull() {
-		assertThatThrownBy(() ->Money.valueOf(null))
+		assertThatThrownBy(() -> Money.valueOf(null))
 			.isInstanceOf(InvalidMoneyValueException.class);
 	}
 

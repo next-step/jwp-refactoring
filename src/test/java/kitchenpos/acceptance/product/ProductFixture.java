@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import kitchenpos.ui.dto.ProductRequest;
+import kitchenpos.menu.ui.dto.ProductRequest;
 
 public class ProductFixture {
 
@@ -14,7 +14,7 @@ public class ProductFixture {
 
 	public static List<ProductRequest> 상품목록(int count) {
 		return LongStream.range(0, count)
-			.mapToObj(i -> new ProductRequest("product"+i, 1000L))
+			.mapToObj(i -> new ProductRequest("product" + i, 1000L))
 			.collect(Collectors.toList());
 	}
 }

@@ -17,52 +17,53 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
-import kitchenpos.domain.menu.Money;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Money;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
-    @Mock
-    ProductRepository productRepository;
+	@Mock
+	ProductRepository productRepository;
 
-    @InjectMocks
-    ProductService productService;
+	@InjectMocks
+	ProductService productService;
 
-    @Test
-    @DisplayName("상품목록 등록")
-    void testCreateProduct() {
-        Product product = new Product("스파게티", Money.valueOf(100));
+	@Test
+	@DisplayName("상품목록 등록")
+	void testCreateProduct() {
+		Product product = new Product("스파게티", Money.valueOf(100));
 
-        when(productRepository.save(any()))
-                .thenReturn(product);
+		when(productRepository.save(any()))
+			.thenReturn(product);
 
-        Product createdProduct = productService.create(product);
+		Product createdProduct = productService.create(product);
 
-        assertThat(product).isEqualTo(createdProduct);
-        verify(productRepository, times(1)).save(product);
-    }
+		assertThat(product).isEqualTo(createdProduct);
+		verify(productRepository, times(1)).save(product);
+	}
 
-    @Test
-    @DisplayName("상품목록 목록")
-    void testGetProductList() {
-        // given
-        List<Product> expectedProducts = createProductList(3);
-        when(productRepository.findAll()).thenReturn(expectedProducts);
+	@Test
+	@DisplayName("상품목록 목록")
+	void testGetProductList() {
+		// given
+		List<Product> expectedProducts = createProductList(3);
+		when(productRepository.findAll()).thenReturn(expectedProducts);
 
-        // when
-        List<Product> actualProducts = productService.findAll();
+		// when
+		List<Product> actualProducts = productService.findAll();
 
-        // then
-        assertThat(actualProducts).containsExactlyInAnyOrderElementsOf(expectedProducts);
-        verify(productRepository, times(1)).findAll();
-    }
+		// then
+		assertThat(actualProducts).containsExactlyInAnyOrderElementsOf(expectedProducts);
+		verify(productRepository, times(1)).findAll();
+	}
 
-    private List<Product> createProductList(int count) {
-        return LongStream.range(0, count)
-            .mapToObj(id -> new Product(id, "product-"+id, Money.valueOf(1000)))
-            .collect(Collectors.toList());
-    }
+	private List<Product> createProductList(int count) {
+		return LongStream.range(0, count)
+			.mapToObj(id -> new Product(id, "product-" + id, Money.valueOf(1000)))
+			.collect(Collectors.toList());
+	}
 
 }

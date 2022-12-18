@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
-import kitchenpos.exception.InvalidMenuPriceException;
+import kitchenpos.menu.exception.InvalidMenuPriceException;
 
 @Entity
 @Table(name = "menu")
@@ -30,7 +28,7 @@ public class Menu {
 	private Long id;
 
 	@Embedded
-	private MenuName name;
+	private Name name;
 
 	@Embedded
 	@AttributeOverride(name = "value", column = @Column(name = "price"))
@@ -50,7 +48,7 @@ public class Menu {
 
 	public Menu(Long id, String name, Long price, Long menuGroupId, Map<Product, Integer> products) {
 		this.id = id;
-		this.name = new MenuName(name);
+		this.name = new Name(name);
 		this.price = Money.valueOf(price);
 		this.menuGroupId = menuGroupId;
 		menuProducts.addAll(toMenuProducts(products));
@@ -60,7 +58,7 @@ public class Menu {
 		return id;
 	}
 
-	public MenuName getName() {
+	public Name getName() {
 		return name;
 	}
 

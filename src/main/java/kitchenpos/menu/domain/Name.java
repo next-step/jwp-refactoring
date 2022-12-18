@@ -1,18 +1,18 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class MenuName {
+public class Name {
 
 	private String name;
 
-	protected MenuName() {
+	protected Name() {
 	}
 
-	public MenuName(String name) {
+	public Name(String name) {
 		this.name = name;
 	}
 
@@ -26,8 +26,8 @@ public class MenuName {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		MenuName menuName = (MenuName)o;
-		return name.equals(menuName.name);
+		Name name = (Name)o;
+		return this.name.equals(name.name);
 	}
 
 	@Override

@@ -3,15 +3,15 @@ package kitchenpos.acceptance.menu;
 import java.util.Collections;
 import java.util.List;
 
-import kitchenpos.ui.dto.MenuGroupResponse;
-import kitchenpos.ui.dto.MenuRequest;
-import kitchenpos.ui.dto.MenuResponse;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.menu.ui.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.dto.MenuRequest;
+import kitchenpos.menu.ui.dto.MenuResponse;
+import kitchenpos.menu.ui.dto.ProductResponse;
 
 public class MenuFixture {
 
-	private static final String 메뉴명 = "메뉴 1";
 	public static final long 메뉴가격 = 10_000L;
+	private static final String 메뉴명 = "메뉴 1";
 
 	public static MenuRequest 메뉴(List<ProductResponse> products, MenuGroupResponse menuGroup) {
 		Long productsPrice = products.stream()

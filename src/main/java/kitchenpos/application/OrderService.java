@@ -9,7 +9,8 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.ui.dto.OrderRequest;
 import kitchenpos.ui.dto.OrderResponse;
 import kitchenpos.ui.dto.OrderStatusRequest;
@@ -46,7 +47,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order create( Order order) {
+	public Order create(Order order) {
 		order.startOrder();
 
 		return orderRepository.save(order);
