@@ -31,7 +31,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItem> orderLineItems = orderRequest.getOrderMenuRequests().stream()
+        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
                 .map(menuRequest -> {
                     Menu menu = menuRepository.findById(menuRequest.getMenuId()).orElseThrow(NoResultException::new);
                     Long quantity = menuRequest.getQuantity();
