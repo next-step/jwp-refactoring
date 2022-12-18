@@ -29,7 +29,7 @@ public class TableService {
 	}
 
 	@Transactional
-	public OrderTable create(final OrderTable orderTable) {
+	public OrderTable create( OrderTable orderTable) {
 		orderTable.detachTableGroup();
 		return orderTableRepository.save(orderTable);
 	}
@@ -49,7 +49,7 @@ public class TableService {
 
 	@Transactional
 	public OrderTable changeEmpty(Long orderTableId, OrderTable orderTable) {
-		final OrderTable savedOrderTable = findById(orderTableId);
+		OrderTable savedOrderTable = findById(orderTableId);
 
 		if (savedOrderTable.hasTableGroup()) {
 			throw new AlreadyJoinedTableGroupException();
@@ -69,7 +69,7 @@ public class TableService {
 
 	@Transactional
 	public OrderTable changeNumberOfGuests(Long orderTableId, OrderTable orderTable) {
-		final OrderTable savedOrderTable = findById(orderTableId);
+		OrderTable savedOrderTable = findById(orderTableId);
 
 		savedOrderTable.changeNumberOfGuests(orderTable);
 

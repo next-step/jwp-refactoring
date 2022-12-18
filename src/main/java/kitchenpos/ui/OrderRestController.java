@@ -20,14 +20,14 @@ import kitchenpos.ui.dto.OrderStatusRequest;
 public class OrderRestController {
 	private final OrderService orderService;
 
-	public OrderRestController(final OrderService orderService) {
+	public OrderRestController( OrderService orderService) {
 		this.orderService = orderService;
 	}
 
 	@PostMapping("/api/orders")
 	public ResponseEntity<OrderResponse> create(@RequestBody OrderRequest request) {
-		final OrderResponse created = orderService.create(request);
-		final URI uri = URI.create("/api/orders/" + created.getId());
+		OrderResponse created = orderService.create(request);
+		URI uri = URI.create("/api/orders/" + created.getId());
 		return ResponseEntity.created(uri).body(created);
 	}
 

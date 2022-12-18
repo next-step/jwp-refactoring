@@ -17,14 +17,14 @@ import kitchenpos.ui.dto.MenuResponse;
 public class MenuRestController {
 	private final MenuService menuService;
 
-	public MenuRestController(final MenuService menuService) {
+	public MenuRestController( MenuService menuService) {
 		this.menuService = menuService;
 	}
 
 	@PostMapping("/api/menus")
 	public ResponseEntity<MenuResponse> create(@RequestBody MenuRequest menuRequest) {
-		final MenuResponse created = menuService.create(menuRequest);
-		final URI uri = URI.create("/api/menus/" + created.getId());
+		MenuResponse created = menuService.create(menuRequest);
+		URI uri = URI.create("/api/menus/" + created.getId());
 		return ResponseEntity.created(uri).body(created);
 	}
 

@@ -19,14 +19,14 @@ import kitchenpos.ui.dto.OrderTableResponse;
 public class TableRestController {
 	private final TableService tableService;
 
-	public TableRestController(final TableService tableService) {
+	public TableRestController( TableService tableService) {
 		this.tableService = tableService;
 	}
 
 	@PostMapping("/api/tables")
 	public ResponseEntity<OrderTableResponse> create(@RequestBody OrderTableRequest request) {
-		final OrderTableResponse created = tableService.create(request);
-		final URI uri = URI.create("/api/tables/" + created.getId());
+		OrderTableResponse created = tableService.create(request);
+		URI uri = URI.create("/api/tables/" + created.getId());
 		return ResponseEntity.created(uri).body(created);
 	}
 
@@ -37,16 +37,16 @@ public class TableRestController {
 
 	@PutMapping("/api/tables/{orderTableId}/empty")
 	public ResponseEntity<OrderTableResponse> changeEmpty(
-		@PathVariable final Long orderTableId,
-		@RequestBody final OrderTableRequest request) {
+		@PathVariable Long orderTableId,
+		@RequestBody OrderTableRequest request) {
 		return ResponseEntity.ok()
 			.body(tableService.changeEmpty(orderTableId, request));
 	}
 
 	@PutMapping("/api/tables/{orderTableId}/number-of-guests")
 	public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
-		@PathVariable final Long orderTableId,
-		@RequestBody final OrderTableRequest request) {
+		@PathVariable Long orderTableId,
+		@RequestBody OrderTableRequest request) {
 		return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, request));
 	}
 }

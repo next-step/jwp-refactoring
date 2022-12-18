@@ -17,14 +17,14 @@ import kitchenpos.ui.dto.ProductResponse;
 public class ProductRestController {
 	private final ProductService productService;
 
-	public ProductRestController(final ProductService productService) {
+	public ProductRestController( ProductService productService) {
 		this.productService = productService;
 	}
 
 	@PostMapping("/api/products")
 	public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest productRequest) {
-		final ProductResponse created = productService.create(productRequest);
-		final URI uri = URI.create("/api/products/" + created.getId());
+		ProductResponse created = productService.create(productRequest);
+		URI uri = URI.create("/api/products/" + created.getId());
 		return ResponseEntity.created(uri).body(created);
 	}
 
