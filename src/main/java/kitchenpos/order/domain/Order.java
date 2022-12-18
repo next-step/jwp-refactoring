@@ -97,7 +97,7 @@ public class Order {
 
     private void validateChangeState() {
         if(this.orderStatus.isCompletion()) {
-            throw new IllegalArgumentException("변경 불가");
+            throw new IllegalArgumentException(OrderMessage.CHANGE_ERROR_STATE_IS_COMPLETION.message());
         }
     }
 
