@@ -96,7 +96,7 @@ public class Menu {
     }
 
     public Long getId() {
-        return getId();
+        return id;
     }
 
     public String getName() {
