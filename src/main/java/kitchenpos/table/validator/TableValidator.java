@@ -2,19 +2,16 @@ package kitchenpos.table.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.persistence.OrderRepository;
-import kitchenpos.table.persistence.TableGroupRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class TableValidator {
-    private final TableGroupRepository tableGroupRepository;
     private final OrderRepository orderRepository;
 
-    public TableValidator(OrderRepository orderRepository, TableGroupRepository tableGroupRepository) {
+    public TableValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.tableGroupRepository = tableGroupRepository;
     }
 
     public void validateTableEmpty(Long orderTableId) {
