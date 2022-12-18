@@ -16,16 +16,18 @@ public class Order {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Column(nullable = false)
     private LocalDateTime orderedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private OrderTable orderTable;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
@@ -85,8 +87,7 @@ public class Order {
     }
 
     public boolean isCookingOrMealState() {
-        boolean b = !this.orderStatus.isCompletion();
-        return b;
+        return !this.orderStatus.isCompletion();
     }
 
     public void changeState(OrderStatus orderStatus) {

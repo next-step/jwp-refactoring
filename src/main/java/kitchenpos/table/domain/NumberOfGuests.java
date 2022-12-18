@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class NumberOfGuests {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 11)
     private final Integer numberOfGuests;
 
     protected NumberOfGuests() {
