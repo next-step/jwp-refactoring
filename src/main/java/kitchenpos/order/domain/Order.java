@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -30,33 +31,19 @@ public class Order {
     private LocalDateTime orderedTime;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {}
 
     public Order(Long id,
                  OrderTable orderTable,
                  OrderStatus orderStatus,
-                 LocalDateTime orderedTime,
-                 List<OrderLineItem> orderLineItems) {
+                 LocalDateTime orderedTime) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        updateOrderLineItems(orderLineItems);
-    }
-
-    public Order(
-            OrderTable orderTable,
-            OrderStatus orderStatus,
-            LocalDateTime orderedTime,
-            List<OrderLineItem> orderLineItems
-    ) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        updateOrderLineItems(orderLineItems);
     }
 
     public Order(
@@ -64,9 +51,34 @@ public class Order {
             OrderStatus orderStatus,
             LocalDateTime orderedTime
     ) {
+        validate(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+    }
+
+    public Order(
+            OrderTable orderTable,
+            OrderStatus orderStatus,
+            LocalDateTime orderedTime,
+            OrderLineItems orderLineItems
+    ) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    private void validate(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
+        }
+    }
+
+    public void validateOrderStatusShouldComplete() {
+        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalArgumentException(ErrorEnum.NOT_PAYMENT_ORDER.message());
+        }
     }
 
     public Long getId() {
@@ -90,18 +102,22 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.get();
     }
 
-    private void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void updateOrderLineItems(OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
-        orderLineItems.forEach(item -> item.addOrder(this));
+        orderLineItems.setOrder(this);
     }
 
-    public void validateOrderStatusShouldComplete() {
-        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalArgumentException(ErrorEnum.NOT_PAYMENT_ORDER.message());
-        }
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+        orderLineItem.addOrder(this);
+    }
+
+    public void setOrderLineItems(OrderLineItems orderLineItems) {
+        this.orderLineItems = orderLineItems;
+        orderLineItems.setOrder(this);
     }
 
     @Override
@@ -111,14 +127,9 @@ public class Order {
         Order order = (Order) o;
         return Objects.equals(id, order.id);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-        orderLineItem.addOrder(this);
-    }
 }

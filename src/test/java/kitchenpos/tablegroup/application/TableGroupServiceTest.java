@@ -19,6 +19,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupTest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
@@ -123,13 +124,13 @@ public class TableGroupServiceTest {
 
     @Test
     void 테이블_그룹을_해제할_수_있다() {
-        Order fistOrder = new Order(firstTable, OrderStatus.COMPLETION, LocalDateTime.now());
-        Order secondorder = new Order(secondTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        Order fistOrder = TableGroupTest.createCompleteOrder();
+        Order secondOrder = TableGroupTest.createCompleteOrder();
         List<Long> orderTableIds = Arrays.asList(firstTable.getId(), secondTable.getId());
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(Arrays.asList(firstTable, secondTable)));
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(Arrays.asList(fistOrder, secondorder));
+        when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(Arrays.asList(fistOrder, secondOrder));
         when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
 
         // when
@@ -145,10 +146,11 @@ public class TableGroupServiceTest {
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_그룹을_해제할_수_없다() {
         // given
-        Order firstOrder = new Order(firstTable, OrderStatus.MEAL, LocalDateTime.now());
-        Order secondOrder = new Order(secondTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        Order firstOrder = TableGroupTest.createCompleteOrder();
+        Order secondOrder = TableGroupTest.createCompleteOrder();
         List<Long> orderTableIds = Arrays.asList(firstTable.getId(), secondTable.getId());
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(Arrays.asList(firstTable, secondTable)));
+        secondOrder.setOrderStatus(OrderStatus.MEAL);
 
         when(tableGroupRepository.findById(tableGroup.getId())).thenReturn(Optional.of(tableGroup));
         when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(Arrays.asList(firstOrder, secondOrder));

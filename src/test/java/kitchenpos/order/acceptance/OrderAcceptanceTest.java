@@ -28,6 +28,7 @@ import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -83,7 +84,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .as(OrderTable.class);
         두마리치킨세트_주문 = new OrderLineItem(null, new Quantity(1L), 순살치킨메뉴);
         두마리치킨세트_요청 = OrderLineItemRequest.of(두마리치킨세트_응답.getId(), 1L);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(두마리치킨세트_주문));
+        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(두마리치킨세트_주문)));
     }
 
     @Test

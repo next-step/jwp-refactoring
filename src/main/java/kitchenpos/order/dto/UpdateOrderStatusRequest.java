@@ -1,5 +1,7 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.OrderStatus;
+
 public class UpdateOrderStatusRequest {
     private String orderStatus;
 
@@ -13,7 +15,7 @@ public class UpdateOrderStatusRequest {
         return new UpdateOrderStatusRequest(orderStatus);
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public OrderStatus getOrderStatus() {
+        return OrderStatus.valueOf(orderStatus);
     }
 }

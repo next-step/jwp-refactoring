@@ -50,6 +50,10 @@ public class OrderLineItem {
         return order;
     }
 
+    public void setOrder(final Order order) {
+        this.order = order;
+    }
+
     public void addOrder(final Order order) {
         this.order = order;
     }

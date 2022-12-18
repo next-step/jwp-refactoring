@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
@@ -15,8 +16,8 @@ public class OrderTableTest {
     @Test
     void 주문_테이블의_비어있는_여부를_수정할_수_있다() {
         // given
-        boolean expectEmpty = false;
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        boolean expectEmpty = true;
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
@@ -33,12 +34,12 @@ public class OrderTableTest {
         OrderTable secondOrderTable = new OrderTable(new NumberOfGuests(4), true);
         TableGroup tableGroup = new TableGroup(
                 LocalDateTime.now(),
-                new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable)));
+                new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable))
+        );
         firstOrderTable.setTableGroup(tableGroup);
-        Order order = new Order(firstOrderTable, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when & then
-        assertThatThrownBy(() -> firstOrderTable.updateEmpty(false, Arrays.asList(order)))
+        assertThatThrownBy(() -> firstOrderTable.updateEmpty(true, new ArrayList<>()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.ALREADY_GROUP.message());
     }
@@ -46,7 +47,7 @@ public class OrderTableTest {
     @Test
     void 주문_테이블의_비어있는_여부를_수정할_때_주문의_상태가_계산완료가_아니라면_예외가_발생한다() {
         // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
 
         // when & then

@@ -12,24 +12,25 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class TableGroupTest {
     @Test
     void 단체_지정된_테이블을_해제할_수_있다() {
         // given
-        OrderTable firstOrderTable = new OrderTable(new NumberOfGuests(4), true);
-        OrderTable secondOrderTable = new OrderTable(new NumberOfGuests(4), true);
-        OrderTables orderTables = new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable));
+        Order order1 = createCompleteOrder();
+        Order order2 = createCompleteOrder();
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        OrderTable firstOrderTable = order1.getOrderTable();
+        OrderTable secondOrderTable = order2.getOrderTable();
+
+        TableGroup tableGroup = new TableGroup(
+                LocalDateTime.now(),
+                new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable))
+        );
+
         firstOrderTable.setTableGroup(tableGroup);
         secondOrderTable.setTableGroup(tableGroup);
-
-        Order order1 = new Order(firstOrderTable, OrderStatus.COMPLETION, LocalDateTime.now());
-        Order order2 = new Order(secondOrderTable, OrderStatus.COMPLETION, LocalDateTime.now());
-
         // when
         tableGroup.ungroup(Arrays.asList(order1, order2));
 
@@ -43,20 +44,26 @@ public class TableGroupTest {
     @Test
     void 단체_지정된_테이블을_해제할_때_주문상태가_결제완료가_아니면_예외를_발생한다() {
         // given
-        OrderTable orderTable1 = new OrderTable(new NumberOfGuests(4), true);
-        OrderTable orderTable2 = new OrderTable(new NumberOfGuests(4), true);
-        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
+        Order firstOrder = createCompleteOrder();
+        Order secondOrder = createCompleteOrder();
+        TableGroup tableGroup = new TableGroup(
+                LocalDateTime.now(),
+                new OrderTables(Arrays.asList(firstOrder.getOrderTable(), secondOrder.getOrderTable()))
+        );
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
-        orderTable1.setTableGroup(tableGroup);
-        orderTable2.setTableGroup(tableGroup);
-
-        Order order1 = new Order(orderTable1, OrderStatus.MEAL, LocalDateTime.now());
-        Order order2 = new Order(orderTable2, OrderStatus.COMPLETION, LocalDateTime.now());
+        firstOrder.setOrderStatus(OrderStatus.MEAL);
 
         // when & then
-        assertThatThrownBy(() -> tableGroup.ungroup(Arrays.asList(order1, order2)))
+        assertThatThrownBy(() -> tableGroup.ungroup(Arrays.asList(firstOrder, secondOrder)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.NOT_PAYMENT_ORDER.message());
     }
+
+    public static Order createCompleteOrder() {
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
+        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        orderTable.updateEmpty(true, Arrays.asList(order));
+        return order;
+    }
 }
+
