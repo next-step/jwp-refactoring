@@ -3,7 +3,10 @@ package kitchenpos.table.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.table.domain.OrderTable.*;
+import static kitchenpos.table.domain.OrderTable.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTable.EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -15,8 +18,7 @@ class OrderTableTest {
     @Test
     void create() {
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
+        OrderTable orderTable = notEmptyOrderTable();
 
         assertAll(
                 () -> assertThat(orderTable.getTableGroup()).isNull(),
@@ -39,11 +41,7 @@ class OrderTableTest {
     @DisplayName("공석 상태로 변경")
     @Test
     void empty_fail_cooking() {
-
-        OrderTable orderTable = new OrderTable();
-
-        assertThat(orderTable.isEmpty()).isFalse();
-
+        OrderTable orderTable = notEmptyOrderTable();
         orderTable.empty();
         assertThat(orderTable.isEmpty()).isTrue();
     }
@@ -51,8 +49,7 @@ class OrderTableTest {
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void ungroup() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, true);
-        assertThat(orderTable.getTableGroup()).isNotNull();
+        OrderTable orderTable = notEmptyNotTableGroupOrderTable();
         orderTable.unGroup();
         assertThat(orderTable.getTableGroup()).isNull();
     }
@@ -60,7 +57,7 @@ class OrderTableTest {
     @DisplayName("손님수를 변경한다.")
     @Test
     void changeNumberOfGuests_success() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, false);
+        OrderTable orderTable = notEmptyNotTableGroupOrderTable();
         orderTable.changeNumberOfGuests(1);
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(1);
     }
@@ -68,7 +65,7 @@ class OrderTableTest {
     @DisplayName("손님수를 변경한다 / 0명보다 작을 수 없다.")
     @Test
     void changeNumberOfGuests_fail_minimumNumber() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, false);
+        OrderTable orderTable = notEmptyNotTableGroupOrderTable();
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
@@ -88,7 +85,7 @@ class OrderTableTest {
     @DisplayName("테이블이 공석 상태면 손님수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuests_fail_empty() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 1, true);
+        OrderTable orderTable = emptyNotTableGroupOrderTable();
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(EMPTY_EXCEPTION_MESSAGE);

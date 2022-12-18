@@ -3,18 +3,18 @@ package kitchenpos.order.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.repository.OrderLineItemRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.common.NameFixture.nameMenuGroupA;
-import static kitchenpos.menu.domain.MenuFixture.menuA;
+import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
+import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -55,24 +56,23 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private MenuGroupRepository menuGroupRepository;
 
-    private Long orderTableId;
+    private OrderTable orderTable;
     private Menu menu;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        MenuGroup menuGroup = menuGroupRepository.save(menuGroupA());
         menu = menuRepository.save(menuA());
 
         List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(true));
-        orderTables.add(new OrderTable(true));
+        orderTables.add(emptyOrderTable());
+        orderTables.add(emptyOrderTable());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-        OrderTable orderTable = orderTableRepository.save(new OrderTable());
+        orderTable = orderTableRepository.save(new OrderTable());
         orderTable.setTableGroup(tableGroup);
 
-        OrderTable orderTable1 = orderTableRepository.save(orderTable);
-        orderTableId = orderTable1.getId();
+        orderTable = orderTableRepository.save(orderTable);
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
@@ -80,7 +80,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     void create_fail_orderLineItems() {
 
-        OrderCreateRequest request = new OrderCreateRequest(orderTableId, new ArrayList<>());
+        OrderCreateRequest request = new OrderCreateRequest(orderTable.getId(), new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -90,8 +90,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문을 생성한다. / 주문 항목의 수와 메뉴의 수는 같아야 한다.")
     @Test
     void create_fail_orderLineItemSize() {
-
-        assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(1L, orderLineItemsA())))
+        assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(orderTable.getId(), orderLineItemsA())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
     }
@@ -100,7 +99,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     void create_fail_orderTableEmpty() {
 
-        OrderCreateRequest request = new OrderCreateRequest(1L, orderLineItemsA());
+        OrderCreateRequest request = new OrderCreateRequest(orderTable.getId(), orderLineItemsA());
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -110,7 +109,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     void create() {
 
-        OrderResponse orderResponse = orderService.create(new OrderCreateRequest(orderTableId, orderLineItemsA()));
+        OrderResponse orderResponse = orderService.create(new OrderCreateRequest(orderTable.getId(), orderLineItemsA()));
 
         assertAll(
                 () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
@@ -124,7 +123,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문을 조회한다.")
     @Test
     void list() {
-        orderService.create(new OrderCreateRequest(orderTableId, orderLineItemsA()));
+        orderService.create(new OrderCreateRequest(orderTable.getId(), orderLineItemsA()));
         assertThat(orderService.list()).hasSize(1);
     }
 

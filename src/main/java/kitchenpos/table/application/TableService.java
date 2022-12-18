@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Orders;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

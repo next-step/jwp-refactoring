@@ -2,15 +2,15 @@ package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
-import static kitchenpos.common.NameFixture.nameMenuGroupA;
-import static kitchenpos.order.domain.OrderLineItemsFixture.orderLineItemsA;
+import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
+import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.OrderTableFixture.orderTableA;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -60,7 +60,7 @@ class TableServiceTest extends ServiceTest {
         super.setUp();
         tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        orderTableA = orderTableRepository.save(orderTableA());
+        orderTableA = orderTableRepository.save(notEmptyOrderTable());
         orderTableB = orderTableRepository.save(new OrderTable(tableGroup, false));
         tableService = new TableService(orderRepository, orderTableRepository);
     }

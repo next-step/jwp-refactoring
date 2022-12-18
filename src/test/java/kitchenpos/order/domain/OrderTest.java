@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.order.domain.Orders.COMPLETION_CHANGE_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Orders.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.*;
@@ -36,9 +37,7 @@ class OrderTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void name() {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, 1)));
-        assertThatNoException().isThrownBy(() -> new Orders(new OrderTable(1L, new TableGroup(), 1, false), orderLineItems));
+        assertThatNoException().isThrownBy(() -> new Orders(new OrderTable(1L, new TableGroup(), 1, false), orderLineItemsA()));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")

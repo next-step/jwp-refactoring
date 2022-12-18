@@ -3,7 +3,7 @@ package kitchenpos.product.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.common.Name;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.dto.ProductCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -3,7 +3,7 @@ package kitchenpos.menu.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.common.NameFixture.nameMenuGroupA;
+import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DisplayName("메뉴 그룹")

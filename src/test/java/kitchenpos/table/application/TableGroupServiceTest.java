@@ -3,13 +3,16 @@ package kitchenpos.table.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,14 +22,15 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.common.NameFixture.nameMenuGroupA;
-import static kitchenpos.menu.domain.MenuFixture.menuA;
+import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
+import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
+import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.OrderTableFixture.orderTableA;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.TableGroupFixture.tableGroupA;
-import static kitchenpos.table.domain.TableGroupFixture.tableGroupB;
+import static kitchenpos.table.domain.fixture.TableGroupFixture.tableGroupA;
+import static kitchenpos.table.domain.fixture.TableGroupFixture.tableGroupB;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -68,18 +72,18 @@ class TableGroupServiceTest extends ServiceTest {
         menu = menuRepository.save(menuA());
         tableGroupA = tableGroupRepository.save(tableGroupA());
         tableGroupB = tableGroupRepository.save(tableGroupB());
-        orderTableA = createOrderTable(tableGroupA);
-        orderTableB = createOrderTable(tableGroupB);
+        orderTableA = createNotEmptyOrderTable(tableGroupA);
+        orderTableB = createEmptyOrderTable(tableGroupB);
         tableGroupA.setOrderTables(singletonList(orderTableA));
         tableGroupB.setOrderTables(singletonList(orderTableB));
-        order = orderRepository.save(new Orders(orderTableA, OrderLineItemsFixture.orderLineItemsA()));
+        order = orderRepository.save(new Orders(orderTableA, orderLineItemsA()));
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        tableGroupA.setOrderTables(Arrays.asList(makeNullTableGroup(changeEmptyOrder()), makeNullTableGroup(changeEmptyOrder())));
+        tableGroupA.setOrderTables(Arrays.asList(makeNullTableGroupOrderTable(changeEmptyOrder()), makeNullTableGroupOrderTable((changeEmptyOrder()))));
         TableGroup saveTableGroup = tableGroupService.create(tableGroupA);
         assertThat(saveTableGroup.getCreatedDate()).isNotNull();
     }
@@ -142,13 +146,19 @@ class TableGroupServiceTest extends ServiceTest {
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }
 
-    private OrderTable makeNullTableGroup(OrderTable orderTable) {
+    private OrderTable makeNullTableGroupOrderTable(OrderTable orderTable) {
         orderTable.setTableGroup(null);
         return orderTableRepository.save(orderTable);
     }
 
-    private OrderTable createOrderTable(TableGroup tableGroup) {
-        OrderTable orderTable = orderTableRepository.save(orderTableA());
+    private OrderTable createNotEmptyOrderTable(TableGroup tableGroup) {
+        OrderTable orderTable = orderTableRepository.save(notEmptyOrderTable());
+        orderTable.setTableGroup(tableGroup);
+        return orderTableRepository.save(orderTable);
+    }
+
+    private OrderTable createEmptyOrderTable(TableGroup tableGroup) {
+        OrderTable orderTable = orderTableRepository.save(notEmptyOrderTable());
         orderTable.setTableGroup(tableGroup);
         return orderTableRepository.save(orderTable);
     }

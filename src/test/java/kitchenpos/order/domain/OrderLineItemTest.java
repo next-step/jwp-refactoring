@@ -3,8 +3,8 @@ package kitchenpos.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.menu.application.MenuService.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.OrderLineItem.MENU_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.order.domain.fixture.OrderLineItemFixture.OrderLineItem;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -16,7 +16,7 @@ class OrderLineItemTest {
     @Test
     void create() {
 
-        OrderLineItem orderLineItem = new OrderLineItem(null, 1L, 3);
+        OrderLineItem orderLineItem = OrderLineItem();
 
         assertAll(
                 () -> assertThat(orderLineItem.getMenuId()).isNotNull(),

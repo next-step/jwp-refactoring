@@ -1,4 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.fixture;
+
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 
 import java.util.Collections;
 

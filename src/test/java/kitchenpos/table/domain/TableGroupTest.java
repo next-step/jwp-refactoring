@@ -4,8 +4,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -17,10 +19,7 @@ class TableGroupTest {
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 1, true));
-        orderTables.add(new OrderTable(2L, null, 1, true));
-        assertThatNoException().isThrownBy(() -> new TableGroup(orderTables));
+        assertThatNoException().isThrownBy(() -> new TableGroup(Arrays.asList(emptyOrderTable(), emptyOrderTable())));
     }
 
     @DisplayName("주문 테이블이 비어있을 수 없다.")

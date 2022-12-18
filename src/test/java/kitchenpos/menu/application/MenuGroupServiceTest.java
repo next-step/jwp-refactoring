@@ -1,14 +1,14 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static kitchenpos.common.NameFixture.MENU_GROUP_A_NAME;
+import static kitchenpos.common.fixture.NameFixture.MENU_GROUP_A_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("MenuGroupServiceTest")
