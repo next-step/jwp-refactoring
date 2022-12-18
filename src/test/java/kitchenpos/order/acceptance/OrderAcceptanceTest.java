@@ -152,7 +152,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-
         List<OrderLineItemRequest> orderItems = Arrays.asList(OrderLineItemRequest.of(honeycomboChicken.getId(), 2));
         OrderRequest order = OrderRequest.of(orderTable.getId(), orderItems);
 

@@ -2,14 +2,12 @@ package kitchenpos.order.domain;
 
 
 import kitchenpos.exception.BadRequestException;
-import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.utils.Message.EMPTY_ORDER_TABLE;
 import static kitchenpos.utils.Message.INVALID_CHANGE_ORDER_STATUS;
 
 @Entity
@@ -60,8 +58,8 @@ public class Order {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus.name();
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -74,7 +72,7 @@ public class Order {
 
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.getOrderStatus())) {
             throw new BadRequestException(INVALID_CHANGE_ORDER_STATUS);
         }
         this.orderStatus = orderStatus;

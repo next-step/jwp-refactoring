@@ -170,7 +170,7 @@ class OrderServiceTest {
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
+                () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL)
         );
     }
 
