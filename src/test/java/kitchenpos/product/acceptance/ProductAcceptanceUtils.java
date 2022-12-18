@@ -1,13 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.MediaType;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class ProductAcceptanceUtils {
     private ProductAcceptanceUtils() {

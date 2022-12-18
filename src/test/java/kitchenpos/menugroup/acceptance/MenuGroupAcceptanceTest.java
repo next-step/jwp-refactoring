@@ -2,8 +2,9 @@ package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.MenuGroupRequest;
-import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.AcceptanceTest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.*;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

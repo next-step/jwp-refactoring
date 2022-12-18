@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceUtils.메뉴_등록되어_있음;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceUtils.메뉴_그룹_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderAcceptanceUtils.주문_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderAcceptanceUtils.주문_상태_변경_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceUtils.메뉴_그룹_등록되어_있음;
 import static kitchenpos.ordertable.acceptance.TableAcceptanceUtils.*;
 import static kitchenpos.product.acceptance.ProductAcceptanceUtils.상품_등록되어_있음;
 import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceUtils.단체_지정_등록되어_있음;

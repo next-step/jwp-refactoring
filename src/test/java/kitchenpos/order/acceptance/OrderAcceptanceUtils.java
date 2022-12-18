@@ -1,9 +1,9 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.OrderRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.springframework.http.MediaType;
 
 public class OrderAcceptanceUtils {

@@ -1,9 +1,9 @@
-package kitchenpos.acceptance;
+package kitchenpos.menugroup.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceUtils {
