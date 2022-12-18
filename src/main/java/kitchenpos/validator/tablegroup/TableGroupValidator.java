@@ -1,15 +1,9 @@
 package kitchenpos.validator.tablegroup;
 
-import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
 
-public abstract class TableGroupValidator {
+public interface TableGroupValidator {
 
-    protected void validate(OrderTable orderTable) {
-        throw new UnsupportedOperationException("지원하지 않는 기능입니다");
-    }
+    void validate(OrderTable orderTable);
 
-    protected void validate(List<OrderTable> orderTables) {
-        throw new UnsupportedOperationException("지원하지 않는 기능입니다");
-    }
 }

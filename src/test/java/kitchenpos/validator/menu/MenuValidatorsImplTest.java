@@ -5,9 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -33,13 +31,14 @@ class MenuValidatorsImplTest {
     @Mock
     private Menu menu;
     private MenuValidatorsImpl menuValidatorImpl;
-    private List<MenuValidator> menuValidators;
+    private MenuCreationValidator menuCreationValidator;
+    private MenuProductsPriceValidator menuProductsPriceValidator;
 
     @BeforeEach
     void setUp() {
-        menuValidators = Arrays.asList(new AlreadyGroupedMenuValidator(menuGroupRepository),
-                new ProductsPriceValidator(productRepository));
-        menuValidatorImpl = new MenuValidatorsImpl(menuValidators);
+        menuCreationValidator = new AlreadyGroupedMenuValidator(menuGroupRepository);
+        menuProductsPriceValidator = new ProductsPriceValidator(productRepository);
+        menuValidatorImpl = new MenuValidatorsImpl(menuCreationValidator, menuProductsPriceValidator);
     }
 
     @Test

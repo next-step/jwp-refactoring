@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupValidatorsImplTest {
@@ -31,25 +30,26 @@ class TableGroupValidatorsImplTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private ApplicationEventPublisher eventPublisher;
     private TableGroupValidatorsImpl tableGroupValidatorImpl;
+    private List<TableGroupValidator> tableGroupValidators;
+    private TablesGroupValidator tablesGroupValidator;
+    private TableUnGroupValidator tableUnGroupValidator;
 
     @BeforeEach
     void setUp() {
-        List<TableGroupValidator> tableGroupValidators = Arrays
-                .asList(new OrderTableEmptyValidator(), new AlreadyGroupedTableGroupValidator(),
-                        new OrderTablesSizeValidator(),
-                        new OrderStatusTableGroupValidator(orderRepository));
+        tableGroupValidators = Arrays.asList(new OrderTableEmptyValidator(), new AlreadyGroupedTableGroupValidator());
+        tablesGroupValidator = new OrderTablesSizeValidator();
+        tableUnGroupValidator = new OrderStatusTableGroupValidator(orderRepository);
 
-        tableGroupValidatorImpl = new TableGroupValidatorsImpl(orderTableRepository, tableGroupValidators);
+        tableGroupValidatorImpl = new TableGroupValidatorsImpl(orderTableRepository, tableGroupValidators,
+                tablesGroupValidator, tableUnGroupValidator);
     }
 
     @Test
     void 등록_된_주문_테이블에_대해서만_단체_지정이_가능하다() {
         given(orderTableRepository.findAllByIdIn(any())).willThrow(IllegalArgumentException.class);
 
-        ThrowingCallable 등록되지_않은_주문_테이블_단체_지정할_경우 = () -> tableGroupValidatorImpl
-                .validateCreation(1L, eventPublisher, null);
+        ThrowingCallable 등록되지_않은_주문_테이블_단체_지정할_경우 = () -> tableGroupValidatorImpl.validateCreation(null);
 
         assertThatIllegalArgumentException().isThrownBy(등록되지_않은_주문_테이블_단체_지정할_경우);
     }
@@ -59,8 +59,7 @@ class TableGroupValidatorsImplTest {
         OrderTable orderTable = new OrderTable(1, false);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Optional.of(Collections.singletonList(orderTable)));
 
-        ThrowingCallable 비어있지_않은_주문_테이블_단체_지정할_경우 = () -> tableGroupValidatorImpl
-                .validateCreation(1L, eventPublisher, null);
+        ThrowingCallable 비어있지_않은_주문_테이블_단체_지정할_경우 = () -> tableGroupValidatorImpl.validateCreation(null);
 
         assertThatIllegalArgumentException().isThrownBy(비어있지_않은_주문_테이블_단체_지정할_경우);
     }
@@ -71,8 +70,7 @@ class TableGroupValidatorsImplTest {
         orderTable.changeTableGroupId(1L);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Optional.of(Collections.singletonList(orderTable)));
 
-        ThrowingCallable 이미_단체_지정이_된_주문_테이블_단체_지정할_경우 = () -> tableGroupValidatorImpl
-                .validateCreation(1L, eventPublisher, null);
+        ThrowingCallable 이미_단체_지정이_된_주문_테이블_단체_지정할_경우 = () -> tableGroupValidatorImpl.validateCreation(null);
 
         assertThatIllegalArgumentException().isThrownBy(이미_단체_지정이_된_주문_테이블_단체_지정할_경우);
     }
@@ -82,7 +80,7 @@ class TableGroupValidatorsImplTest {
         OrderTable orderTable = new OrderTable(1, true);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Optional.of(Collections.singletonList(orderTable)));
 
-        ThrowingCallable 주문_테이블을_1개만_지정한_경우 = () -> tableGroupValidatorImpl.validateCreation(1L, eventPublisher, null);
+        ThrowingCallable 주문_테이블을_1개만_지정한_경우 = () -> tableGroupValidatorImpl.validateCreation(null);
 
         assertThatIllegalArgumentException().isThrownBy(주문_테이블을_1개만_지정한_경우);
     }

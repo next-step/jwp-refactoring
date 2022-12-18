@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.event.TableGroupedEvent;
 import kitchenpos.tablegroup.event.TableUnGroupedEvent;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import kitchenpos.validator.tablegroup.TableGroupValidatorsImpl;
@@ -28,7 +29,8 @@ public class TableGroupService {
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        tableGroupValidator.validateCreation(tableGroup.getId(), eventPublisher, tableGroupRequest.getOrderTableIds());
+        tableGroupValidator.validateCreation(tableGroupRequest.getOrderTableIds());
+        eventPublisher.publishEvent(new TableGroupedEvent(tableGroup.getId(), tableGroupRequest.getOrderTableIds()));
         return tableGroup;
     }
 

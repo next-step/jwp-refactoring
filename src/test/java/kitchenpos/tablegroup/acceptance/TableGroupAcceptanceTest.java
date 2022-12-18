@@ -129,8 +129,6 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
         TableGroupRequest tableGroup = 단체_지정_가능한_주문_테이블_등록();
         ResultActions resultActions = 단체_지정(tableGroup);
         단체_지정_성공(resultActions);
-//        주문_테이블_비어있음_여부_수정(주문_테이블);
-//        주문_테이블_비어있음_여부_수정(주문_테이블2);
         주문이_등록되어_있다(주문_테이블);
         주문이_등록되어_있다(주문_테이블2);
         return tableGroup;

@@ -50,10 +50,10 @@
 * [x] SRP, OCP 를 지킬 수 있도록 각 벨리데이션을 개별 클래스로 분리
 * [x] 순환참조 제거
   * Order - OrderValidator, OrderTable - OrderTableValidator, (패키지)Order - OrderTable
-* [ ] @TransactionalEventListener 적용
-* [ ] 이벤트 발행을 서비스에서 하도록 수정
-* [ ] 이벤트 객체에는 엔티티가 아닌 id 값만 전달 객체조회는 리스너에서 영속 캐시 사용
-* [ ] 검증기를 순서에 의존하지 않도록 수정
+* [x] @TransactionalEventListener 적용
+* [x] 이벤트 발행을 서비스에서 하도록 수정
+* [x] 이벤트 객체에는 엔티티가 아닌 id 값만 전달 객체조회는 리스너에서 영속 캐시 사용
+* [x] 검증기를 순서에 의존하지 않도록 수정
 
 
 

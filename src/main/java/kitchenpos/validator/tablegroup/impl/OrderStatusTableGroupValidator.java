@@ -7,12 +7,11 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.validator.tablegroup.TableGroupValidator;
+import kitchenpos.validator.tablegroup.TableUnGroupValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-@org.springframework.core.annotation.Order(4)
-public class OrderStatusTableGroupValidator extends TableGroupValidator {
+public class OrderStatusTableGroupValidator implements TableUnGroupValidator {
 
     private final OrderRepository orderRepository;
 
@@ -21,7 +20,7 @@ public class OrderStatusTableGroupValidator extends TableGroupValidator {
     }
 
     @Override
-    protected void validate(List<OrderTable> orderTables) {
+    public void validate(List<OrderTable> orderTables) {
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         orderTables.forEach(orderTable -> {
             Optional<Order> findSameStatus = orderRepository.findByOrderTableId(orderTable.getId())

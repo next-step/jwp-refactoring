@@ -20,6 +20,8 @@ import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.repository.TableGroupRepository;
 import kitchenpos.validator.tablegroup.TableGroupValidator;
 import kitchenpos.validator.tablegroup.TableGroupValidatorsImpl;
+import kitchenpos.validator.tablegroup.TableUnGroupValidator;
+import kitchenpos.validator.tablegroup.TablesGroupValidator;
 import kitchenpos.validator.tablegroup.impl.AlreadyGroupedTableGroupValidator;
 import kitchenpos.validator.tablegroup.impl.OrderStatusTableGroupValidator;
 import kitchenpos.validator.tablegroup.impl.OrderTableEmptyValidator;
@@ -53,15 +55,18 @@ class TableGroupServiceTest {
     private ApplicationEventPublisher eventPublisher;
     private TableGroupService tableGroupService;
     private TableGroupValidatorsImpl tableGroupValidatorImpl;
+    private List<TableGroupValidator> tableGroupValidators;
+    private TablesGroupValidator tablesGroupValidator;
+    private TableUnGroupValidator tableUnGroupValidator;
 
     @BeforeEach
     void setUp() {
-        List<TableGroupValidator> tableGroupValidators = Arrays
-                .asList(new OrderTableEmptyValidator(), new AlreadyGroupedTableGroupValidator(),
-                        new OrderTablesSizeValidator(),
-                        new OrderStatusTableGroupValidator(orderRepository));
+        tableGroupValidators = Arrays.asList(new OrderTableEmptyValidator(), new AlreadyGroupedTableGroupValidator());
+        tablesGroupValidator = new OrderTablesSizeValidator();
+        tableUnGroupValidator = new OrderStatusTableGroupValidator(orderRepository);
 
-        tableGroupValidatorImpl = new TableGroupValidatorsImpl(orderTableRepository, tableGroupValidators);
+        tableGroupValidatorImpl = new TableGroupValidatorsImpl(orderTableRepository, tableGroupValidators,
+                tablesGroupValidator, tableUnGroupValidator);
         tableGroupService = new TableGroupService(tableGroupRepository, tableGroupValidatorImpl, eventPublisher);
     }
 
@@ -86,7 +91,6 @@ class TableGroupServiceTest {
     @Test
     void 두개_이상의_주문_테이블만_단체_지정이_가능하다() {
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(tableGroup.getId()).willReturn(1L);
         given(orderTableRepository.findAllByIdIn(any()))
                 .willReturn(Optional.of(Collections.singletonList(orderTable)));
         given(orderTable.isEmpty()).willReturn(true);
@@ -112,7 +116,6 @@ class TableGroupServiceTest {
     @Test
     void 등록_된_주문_테이블만_단체_지정이_가능하다() {
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(tableGroup.getId()).willReturn(1L);
         given(orderTableRepository.findAllByIdIn(any()))
                 .willReturn(Optional.empty());
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
@@ -126,7 +129,6 @@ class TableGroupServiceTest {
     @Test
     void 빈_테이블이_아닌_주문_테이블은_단체_지정이_불가능하다() {
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(tableGroup.getId()).willReturn(1L);
         given(orderTableRepository.findAllByIdIn(any()))
                 .willReturn(Optional.of(Arrays.asList(orderTable, orderTable2)));
         given(orderTable.isEmpty()).willReturn(false);
@@ -141,7 +143,6 @@ class TableGroupServiceTest {
     @Test
     void 이미_단체_지정이_된_주문_테이블은_단체_지정이_불가능하다() {
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(tableGroup.getId()).willReturn(1L);
         given(orderTableRepository.findAllByIdIn(any()))
                 .willReturn(Optional.of(Arrays.asList(orderTable, orderTable2)));
         given(orderTable.isEmpty()).willReturn(true);

@@ -5,13 +5,11 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.repository.ProductRepository;
-import kitchenpos.validator.menu.MenuValidator;
-import org.springframework.core.annotation.Order;
+import kitchenpos.validator.menu.MenuProductsPriceValidator;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(2)
-public class ProductsPriceValidator extends MenuValidator {
+public class ProductsPriceValidator implements MenuProductsPriceValidator {
 
     private final ProductRepository productRepository;
 
@@ -20,7 +18,7 @@ public class ProductsPriceValidator extends MenuValidator {
     }
 
     @Override
-    protected void validate(Menu menu) {
+    public void validate(Menu menu) {
         BigDecimal price = menu.getPrice();
         List<MenuProduct> menuProducts = menu.getMenuProducts();
         BigDecimal sumMenuProductsPrice = makeSumMenuProductsPrice(menuProducts);

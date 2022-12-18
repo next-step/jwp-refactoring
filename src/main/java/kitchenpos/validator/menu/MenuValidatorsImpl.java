@@ -1,6 +1,5 @@
 package kitchenpos.validator.menu;
 
-import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.validator.MenuValidators;
 import org.springframework.stereotype.Component;
@@ -10,20 +9,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MenuValidatorsImpl implements MenuValidators {
 
-    private final List<MenuValidator> menuValidators;
+    private final MenuCreationValidator menuCreationValidator;
+    private final MenuProductsPriceValidator menuProductsPriceValidator;
 
-    public MenuValidatorsImpl(List<MenuValidator> menuValidators) {
-        this.menuValidators = menuValidators;
+    public MenuValidatorsImpl(MenuCreationValidator menuCreationValidator,
+                              MenuProductsPriceValidator menuProductsPriceValidator) {
+        this.menuProductsPriceValidator = menuProductsPriceValidator;
+        this.menuCreationValidator = menuCreationValidator;
     }
 
     @Transactional(readOnly = true)
     public void validateCreation(Long menuGroupId) {
-        menuValidators.get(0).validate(menuGroupId);
+        menuCreationValidator.validate(menuGroupId);
     }
 
     @Transactional(readOnly = true)
     public void validateProductsPrice(Menu menu) {
-        menuValidators.get(1).validate(menu);
+        menuProductsPriceValidator.validate(menu);
     }
 
 }

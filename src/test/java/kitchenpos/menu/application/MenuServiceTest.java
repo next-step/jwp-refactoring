@@ -21,7 +21,8 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
-import kitchenpos.validator.menu.MenuValidator;
+import kitchenpos.validator.menu.MenuCreationValidator;
+import kitchenpos.validator.menu.MenuProductsPriceValidator;
 import kitchenpos.validator.menu.MenuValidatorsImpl;
 import kitchenpos.validator.menu.impl.AlreadyGroupedMenuValidator;
 import kitchenpos.validator.menu.impl.ProductsPriceValidator;
@@ -44,14 +45,15 @@ class MenuServiceTest {
     private MenuMapper menuMapper;
     private MenuValidatorsImpl menuValidatorImpl;
     private MenuService menuService;
-    private List<MenuValidator> menuValidators;
+    private MenuCreationValidator menuCreationValidator;
+    private MenuProductsPriceValidator menuProductsPriceValidator;
 
     @BeforeEach
     void setUp() {
-        menuValidators = Arrays.asList(new AlreadyGroupedMenuValidator(menuGroupRepository),
-                new ProductsPriceValidator(productRepository));
+        menuCreationValidator = new AlreadyGroupedMenuValidator(menuGroupRepository);
+        menuProductsPriceValidator = new ProductsPriceValidator(productRepository);
         menuMapper = new MenuMapper(productRepository);
-        menuValidatorImpl = new MenuValidatorsImpl(menuValidators);
+        menuValidatorImpl = new MenuValidatorsImpl(menuCreationValidator, menuProductsPriceValidator);
         menuService = new MenuService(menuRepository, menuValidatorImpl, menuMapper);
     }
 
