@@ -26,7 +26,7 @@ public class MenuAcceptanceUtils {
 
 	public static final String MENU_API_URL = "/api/menus";
 
-	public static Menu 메뉴_등록_되어_있음(String name, BigDecimal price, Long groupMenuId, Long productId, Long quantity) {
+	public static Menu 메뉴_등록_되어_있음(String name, BigDecimal price, Long groupMenuId, Long productId, int quantity) {
 		return 메뉴_등록_요청(name, price, groupMenuId, productId, quantity).as(Menu.class);
 	}
 
@@ -35,7 +35,7 @@ public class MenuAcceptanceUtils {
 		BigDecimal price,
 		Long menuGroupId,
 		Long productId,
-		Long quantity
+		int quantity
 	) {
 		return post(MENU_API_URL, createRequest(name, price, menuGroupId, productId, quantity)).extract();
 	}
@@ -45,7 +45,7 @@ public class MenuAcceptanceUtils {
 	}
 
 	public static void 메뉴_등록_됨(ExtractableResponse<Response> response, String expectedName,
-		BigDecimal expectedPrice, Long expectedQuantity, MenuGroup menuGroup, Product product) {
+		BigDecimal expectedPrice, int expectedQuantity, MenuGroup menuGroup, Product product) {
 		Menu menu = response.as(Menu.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -78,7 +78,7 @@ public class MenuAcceptanceUtils {
 		);
 	}
 
-	private static Menu createRequest(String name, BigDecimal price, Long menuGroupId, Long productId, Long quantity) {
+	private static Menu createRequest(String name, BigDecimal price, Long menuGroupId, Long productId, int quantity) {
 		return MenuGenerator.메뉴(name, price, menuGroupId,
 			Collections.singletonList(메뉴_상품(1L, productId, quantity)));
 	}
