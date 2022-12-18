@@ -36,13 +36,6 @@ public class TableGroup {
         return new TableGroup(null, orderTables);
     }
 
-    private void addOrderTable(OrderTable orderTable) {
-        orderTable.validGroupingTableGroup();
-        orderTable.setTableGroup(this);
-        orderTable.notEmpty();
-        orderTables.add(orderTable);
-    }
-
     public void ungroup(List<Order> orders) {
         orders.forEach(Order::validIfNotCompletion);
         orderTables.ungroup();
@@ -64,5 +57,12 @@ public class TableGroup {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException("2개 이상부터 그룹 지정이 가능합니다.");
         }
+    }
+
+    private void addOrderTable(OrderTable orderTable) {
+        orderTable.validGroupingTableGroup();
+        orderTable.setTableGroup(this);
+        orderTable.notEmpty();
+        orderTables.add(orderTable);
     }
 }

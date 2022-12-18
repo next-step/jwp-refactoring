@@ -40,17 +40,6 @@ public class Menu {
         return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
-    private void validPrice() {
-        if (price.value().compareTo(menuProducts.totalPrice().value()) > 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 구성 상품의 총 합보다 클 수 없습니다.");
-        }
-    }
-
-    private void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
-    }
-
     public Long getId() {
         return id;
     }
@@ -69,5 +58,16 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
+    }
+
+    private void validPrice() {
+        if (price.value().compareTo(menuProducts.totalPrice().value()) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 구성 상품의 총 합보다 클 수 없습니다.");
+        }
+    }
+
+    private void addMenuProduct(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+        menuProduct.setMenu(this);
     }
 }
