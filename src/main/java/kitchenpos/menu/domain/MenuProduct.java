@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -33,10 +32,6 @@ public class MenuProduct {
 
     public MenuProduct(Product product, long quantity) {
         this(null, null, product, quantity);
-    }
-
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(null, menu, product, quantity);
     }
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
@@ -66,7 +61,7 @@ public class MenuProduct {
         return product;
     }
 
-    public BigDecimal calculatePrice(){
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    public BigDecimal calculatePrice() {
+        return product.getPrice().multiply(quantity);
     }
 }

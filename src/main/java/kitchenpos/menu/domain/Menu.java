@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import kitchenpos.common.domain.Price;
 
 @Entity
 @Table(name = "menu")
@@ -22,8 +24,8 @@ public class Menu {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
@@ -35,7 +37,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
 
         for (MenuProduct menuProduct : menuProducts) {
@@ -59,7 +61,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -71,7 +73,7 @@ public class Menu {
     }
 
     public void validatePrice() {
-        if(isPriceNull() || isPriceLessThanZero()){
+        if(price.isNull() || price.isLessThan(BigDecimal.ZERO)){
             throw new IllegalArgumentException();
         }
 
@@ -80,16 +82,8 @@ public class Menu {
             sum = sum.add(menuProduct.calculatePrice());
         }
 
-        if (price.compareTo(sum) > 0) {
+        if (!price.isLessThan(sum)) {
             throw new IllegalArgumentException();
         }
-    }
-
-    public boolean isPriceLessThanZero() {
-        return price.compareTo(BigDecimal.ZERO) < 0;
-    }
-
-    public boolean isPriceNull() {
-        return price == null;
     }
 }
