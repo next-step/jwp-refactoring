@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
+import static kitchenpos.common.NameFixture.nameMenuGroupA;
+import static kitchenpos.menu.domain.MenuProductFixture.menuProductA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
@@ -59,8 +61,8 @@ class TableGroupServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = menuGroupRepository.save(new MenuGroup("a"));
-        menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(new MenuProduct(null, ProductFixture.product(), 1L))));
+        menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(menuProductA())));
         tableGroupA = tableGroupRepository.save(new TableGroup());
         tableGroupB = tableGroupRepository.save(new TableGroup());
         orderTableA = createOrderTable(tableGroupA);

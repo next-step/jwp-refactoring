@@ -18,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.common.NameFixture.nameMenuGroupA;
 import static kitchenpos.order.application.OrderService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -55,8 +56,8 @@ class OrderStatusServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
 
-        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("a"));
-        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Arrays.asList(new MenuProduct(null, ProductFixture.product(), 1L))));
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroup, Collections.singletonList(new MenuProduct(null, ProductFixture.productA(), 1L))));
 
         OrderTable orderTable1 = orderTableRepository.save(new OrderTable(false));
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(false));
@@ -83,7 +84,7 @@ class OrderStatusServiceTest extends ServiceTest {
 
     private void createOrder(OrderTable orderTable1, Menu menu) {
         OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Arrays.asList(new OrderLineItem(null, menu.getId(), 1)));
+        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));
         orderTable1.setEmpty(false);
         order = orderRepository.save(new Order(orderTable1, orderLineItems));
     }

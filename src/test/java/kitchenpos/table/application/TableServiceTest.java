@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
-import kitchenpos.product.domain.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -16,10 +16,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static kitchenpos.common.NameFixture.nameMenuGroupA;
+import static kitchenpos.menu.domain.MenuFixture.menuA;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
@@ -56,7 +57,7 @@ class TableServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
-        menuGroupA = menuGroupRepository.save(new MenuGroup("a"));
+        menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(new OrderTable());
         orderTableB = orderTableRepository.save(new OrderTable(tableGroup, false));
         tableService = new TableService(orderRepository, orderTableRepository);
@@ -176,7 +177,7 @@ class TableServiceTest extends ServiceTest {
     }
 
     private Order createOrder() {
-        Menu menu = menuRepository.save(new Menu(new Name("menu"), new Price(BigDecimal.ONE), menuGroupA, Collections.singletonList(new MenuProduct(null, ProductFixture.product(), 1L))));
+        Menu menu = menuRepository.save(menuA());
         OrderTable orderTable = orderTableRepository.save(new OrderTable());
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, menu.getId(), 1)));

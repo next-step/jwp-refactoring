@@ -8,10 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.Collections;
 
+import static kitchenpos.common.NameFixture.nameMenuGroupA;
 import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
-import static kitchenpos.menu.domain.Menu.*;
+import static kitchenpos.menu.domain.Menu.MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.menu.domain.Menu.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,7 +24,7 @@ class MenuTest {
     @ParameterizedTest
     @ValueSource(strings = {"메뉴그룹 A"})
     void constructor(String name) {
-        assertThatNoException().isThrownBy(() -> new Menu(new Name(name), new Price(BigDecimal.ONE), MenuGroupFixture.menuGroup(), Arrays.asList(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.ONE)), 1L))));
+        assertThatNoException().isThrownBy(() -> new Menu(new Name(name), new Price(BigDecimal.ONE), MenuGroupFixture.menuGroup(), Collections.singletonList(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.ONE)), 1L))));
     }
 
     @DisplayName("메뉴 그룹이 없을 경우 메뉴를 생성할 수 없다.")
@@ -38,7 +40,7 @@ class MenuTest {
     @ParameterizedTest
     @ValueSource(strings = {"메뉴 A"})
     void constructor_fail_price(String name) {
-        assertThatThrownBy(() -> new Menu(new Name(name), null, new MenuGroup(1L, "메뉴그룹"), null))
+        assertThatThrownBy(() -> new Menu(new Name(name), null, new MenuGroup(1L, nameMenuGroupA()), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -47,7 +49,7 @@ class MenuTest {
     @ParameterizedTest
     @ValueSource(strings = {"메뉴 A"})
     void constructor_fail_price_negative(String name) {
-        assertThatThrownBy(() -> new Menu(new Name(name), new Price(BigDecimal.valueOf(-1)), new MenuGroup(1L, "메뉴그룹"), null))
+        assertThatThrownBy(() -> new Menu(new Name(name), new Price(BigDecimal.valueOf(-1)), new MenuGroup(1L, nameMenuGroupA()), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
     }

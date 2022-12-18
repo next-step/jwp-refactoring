@@ -10,15 +10,15 @@
     - [x] 상품 서비스 도메인 로직 이동
     - [x] 테이블그룹 서비스 도메인 로직 이동
     - [x] 테이블 서비스 도메인 로직 이동
-- [x] JPA 사용
+-[x] JPA 사용
     - [x] OrderDao -> OrderRepository 변경
     - [x] OrderTableDao -> OrderTableRepository 변경
     - [x] TableGroupDao -> TableGroupRepository 변경
     - [x] MenuGroupDao -> MenuGroupRepository 변경
 - [ ] Fixture
     - [ ] TableGroupFixture
-- [ ] TableGroup 파라미터 DTO 변경
-- [ ] OrderTables 일급 콜렉션
+- [ ] DTO 사용
+- [ ] 일급콜렉션 사용
 - [ ] spring.jpa.hibernate.ddl-auto=validate 추가
 - [ ] 무분별한 setter 삭제
 - [ ] indent(인덴트, 들여쓰기) depth를 2를 넘지 않도록 구현한다. 1까지만 허용한다.
@@ -29,12 +29,14 @@
 - [ ] 모든 원시 값과 문자열을 포장한다
     - [ ] MenuGroup Name
 - [ ] 일급 컬렉션을 쓴다.
+    - [ ] MenuProducts
 - [ ] 모든 엔티티를 작게 유지한다.
 - [ ] 3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.
 - [ ] OrderLineItems test
 
 - [ ] 테이블 그룹 생성 시 orderTable 의 테이블 그룹은 null 이어야 한다.
 - [ ] unGroup 도메인 테스트 수정
+
 ### 이름
 
 - [x] 이름을 생성한다.

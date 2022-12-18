@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kitchenpos.common.NameFixture.nameMenuGroupA;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,7 +61,7 @@ class OrderServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
 
-        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("A"));
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(null, new Product(new Name("A"), new Price(BigDecimal.valueOf(2))), 1L));
         menu = menuRepository.save(new Menu(new Name("A"), new Price(BigDecimal.valueOf(2)), menuGroup, menuProducts));

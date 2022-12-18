@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public class ProductFixture {
 
-    public static Product product() {
+    public static Product productA() {
         return new Product(new Name("A"), new Price(BigDecimal.ONE));
     }
 }
