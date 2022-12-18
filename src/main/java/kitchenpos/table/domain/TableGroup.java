@@ -34,11 +34,22 @@ public class TableGroup extends BaseTime {
         return orderTables.values();
     }
 
+    public void enGroup() {
+        for (OrderTable orderTable : orderTables.values()) {
+            orderTable.enGroupBy(id);
+        }
+    }
+
     private void enGroup(List<OrderTable> orderTables) {
         validateOrderTables(orderTables);
         for (OrderTable orderTable : orderTables) {
+            orderTable.validateIsEmptyTable();
             addOrderTable(orderTable);
         }
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        orderTable.validateIsEmptyTable();
     }
 
     public void unGroup() {
@@ -50,7 +61,6 @@ public class TableGroup extends BaseTime {
     }
 
     private void addOrderTable(OrderTable orderTable) {
-        orderTable.enGroupBy(this);
         this.orderTables.add(orderTable);
     }
 

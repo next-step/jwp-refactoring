@@ -239,9 +239,9 @@ How?
   - [x] MenuProduct --> Menu 의존성 제거 (간접참조)
 - [ ] Order 와 다른 패키지 / 객체 간 의존성 제거
   - [x] OrderLineItem --> Order 의존성 제거 (간접참조)
-  - [ ] Order --> OrderTable 의존성 제거 (간접참조)
-- [ ] Table 과 다른 패키지 / 객체 간 의존성 제거
-  - [ ] OrderTable --> TableGroup 의존성 제거 (간접참조)
+  - [ ] Order --> OrderTable 의존성 제거 (간접참조 + 의존성 역전 필요할 듯..)
+- [x] Table 과 다른 패키지 / 객체 간 의존성 제거
+  - [x] OrderTable --> TableGroup 의존성 제거 (간접참조)
 
 - 도메인 서비스가 필요한가 고민해볼 것 (OrderValidator 등등 ... )
 

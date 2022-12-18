@@ -18,9 +18,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id", columnDefinition = "bigint(20)", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id", columnDefinition = "bigint(20)")
+    private Long tableGroupId;
     @Column(nullable = false, columnDefinition = "int(11)")
     private int numberOfGuests;
     @Column(nullable = false, columnDefinition = "bit(1)")
@@ -45,8 +44,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -62,19 +61,19 @@ public class OrderTable {
     }
 
     public boolean isGrouping() {
-        return null != tableGroup;
+        return null != tableGroupId;
     }
 
-    public void enGroupBy(TableGroup tableGroup) {
+    public void enGroupBy(Long tableGroupId) {
         validateIsNotEmptyTable();
 
         changeEmpty(false);
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void unGroupBy() {
         if (isGrouping()) {
-            this.tableGroup = null;
+            this.tableGroupId = null;
         }
     }
 
@@ -95,12 +94,12 @@ public class OrderTable {
         if (this == o) return true;
         if (!(o instanceof OrderTable)) return false;
         OrderTable that = (OrderTable) o;
-        return getNumberOfGuests() == that.getNumberOfGuests() && isEmpty() == that.isEmpty() && Objects.equals(getId(), that.getId()) && Objects.equals(getTableGroup(), that.getTableGroup());
+        return getNumberOfGuests() == that.getNumberOfGuests() && isEmpty() == that.isEmpty() && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTableGroup(), getNumberOfGuests(), isEmpty());
+        return Objects.hash(getId(), getNumberOfGuests(), isEmpty());
     }
 
     private void validateNumberOfGuests(int numberOfGuests) {
