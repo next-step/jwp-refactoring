@@ -1,8 +1,12 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.exception.BadRequestException;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+
+import static kitchenpos.utils.Message.INVALID_MENU_PRICE;
 
 @Entity
 public class Menu {
@@ -23,7 +27,7 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    private Menu() {
+    protected Menu() {
     }
 
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -32,8 +36,15 @@ public class Menu {
         this.price = MenuPrice.from(price);
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.from(menuProducts);
-        this.price.checkLessOrEqualTotalAmount(this.menuProducts.totalAmount());
+
+        checkPrice(this.menuProducts.totalAmount());
         this.menuProducts.setup(this);
+    }
+
+    private void checkPrice(BigDecimal totalAmount) {
+        if (this.price.isLessOrEqualTotalAmount(totalAmount)) {
+            throw new BadRequestException(INVALID_MENU_PRICE);
+        }
     }
 
     public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {

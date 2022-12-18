@@ -30,7 +30,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = findMenuGroupById(request.getMenuGroupId());
-        List<MenuProduct> menuProducts = toMenuProducts(request.getMenuProducts());
+        List<MenuProduct> menuProducts = changeToMenuProducts(request.getMenuProducts());
 
         Menu menu = request.toMenu(menuGroup, menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
@@ -43,7 +43,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProducts) {
+    private List<MenuProduct> changeToMenuProducts(List<MenuProductRequest> menuProducts) {
         return menuProducts.stream()
                 .map(it -> MenuProduct.of(findProductById(it.getProductId()), it.getQuantity()))
                 .collect(Collectors.toList());

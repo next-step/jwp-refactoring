@@ -34,10 +34,8 @@ public class MenuPrice {
         return price;
     }
 
-    public void checkLessOrEqualTotalAmount(BigDecimal amount) {
-        if (price.compareTo(amount) > 0) {
-            throw new BadRequestException(INVALID_MENU_PRICE);
-        }
+    public boolean isLessOrEqualTotalAmount(BigDecimal amount) {
+        return price.compareTo(amount) > 0;
     }
 
 
