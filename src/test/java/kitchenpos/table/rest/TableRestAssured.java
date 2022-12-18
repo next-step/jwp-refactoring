@@ -1,4 +1,4 @@
-package kitchenpos.rest;
+package kitchenpos.table.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

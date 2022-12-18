@@ -1,9 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.rest.TableRestAssured;
+import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.table.rest.TableRestAssured;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;

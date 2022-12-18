@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.message.NumberOfGuestsMessage;
 import kitchenpos.table.message.OrderTableMessage;
 import kitchenpos.tablegroup.domain.TableGroup;

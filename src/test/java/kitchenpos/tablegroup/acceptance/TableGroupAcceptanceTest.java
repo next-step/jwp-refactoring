@@ -1,8 +1,9 @@
-package kitchenpos.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.rest.TableRestAssured;
+import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.table.rest.TableRestAssured;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;

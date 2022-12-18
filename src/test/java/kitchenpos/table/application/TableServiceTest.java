@@ -1,7 +1,7 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
