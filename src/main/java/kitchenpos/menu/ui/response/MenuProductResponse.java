@@ -1,21 +1,32 @@
 package kitchenpos.menu.ui.response;
 
+import java.util.List;
+
+import kitchenpos.menu.domain.MenuProduct;
+
 public class MenuProductResponse {
 
 	private final long seq;
 	private final long menuId;
 	private final long productId;
-	private final int quantity;
+	private final long quantity;
 
-	private MenuProductResponse(long seq, long menuId, long productId, int quantity) {
+	private MenuProductResponse(long seq, long menuId, long productId, long quantity) {
 		this.seq = seq;
 		this.menuId = menuId;
 		this.productId = productId;
 		this.quantity = quantity;
 	}
 
-	public static MenuProductResponse of(long seq, long menuId, long productId, int quantity) {
+	public static MenuProductResponse of(long seq, long menuId, long productId, long quantity) {
 		return new MenuProductResponse(seq, menuId, productId, quantity);
+	}
+
+	public static List<MenuProductResponse> listFrom(List<MenuProduct> menuProducts) {
+		return menuProducts.stream()
+			.map(menuProduct -> MenuProductResponse.of(menuProduct.getSeq(), menuProduct.getMenuId(),
+				menuProduct.getProductId(), menuProduct.getQuantity()))
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	public long getSeq() {
@@ -30,7 +41,7 @@ public class MenuProductResponse {
 		return productId;
 	}
 
-	public int getQuantity() {
+	public long getQuantity() {
 		return quantity;
 	}
 }

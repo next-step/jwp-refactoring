@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.generator.MenuGroupGenerator.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.generator.MenuGroupGenerator;
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.ui.request.MenuGroupRequest;
+import kitchenpos.menu.ui.response.MenuGroupResponse;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -28,13 +31,18 @@ class MenuGroupServiceTest {
 	@Test
 	void createMenuGroupTest() {
 		// given
-		MenuGroup menuGroup = 메뉴_그룹("한마리메뉴");
+		MenuGroupRequest request = new MenuGroupRequest("한마리메뉴");
+		given(menuGroupDao.save(any())).willReturn(MenuGroupGenerator.메뉴_그룹("한마리메뉴"));
 
 		// when
-		menuGroupService.create(menuGroup);
+		MenuGroupResponse response = menuGroupService.create(request);
 
 		// then
 		verify(menuGroupDao, only()).save(any());
+		assertAll(
+			() -> assertThat(response.getName()).isEqualTo(request.getName()),
+			() -> assertThat(response.getId()).isNotNull()
+		);
 	}
 
 	@DisplayName("메뉴 그룹들을 조회할 수 있다.")

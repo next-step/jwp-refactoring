@@ -3,6 +3,8 @@ package kitchenpos.menu.ui.request;
 import java.math.BigDecimal;
 import java.util.List;
 
+import kitchenpos.menu.domain.Menu;
+
 public class MenuRequest {
 
 	private final String name;
@@ -31,5 +33,10 @@ public class MenuRequest {
 
 	public List<MenuProductRequest> getMenuProductRequests() {
 		return menuProductRequests;
+	}
+
+	public Menu toEntity() {
+		// todo : 구현 필요
+		return null;
 	}
 }
