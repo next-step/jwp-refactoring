@@ -56,8 +56,6 @@ public class OrderServiceTest {
     public void throwsExceptionWhenEmptyOrderItems() {
         OrderRequest order = new OrderRequest();
         order.setOrderLineItems(Collections.EMPTY_LIST);
-        doThrow(new IllegalArgumentException())
-                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -70,7 +68,7 @@ public class OrderServiceTest {
         orderRequest.setOrderTableId(13l);
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
         doThrow(new IllegalArgumentException())
-                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
+                .when(orderValidator).validateOrderCreate(any(),anyList());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -80,9 +78,6 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
         OrderRequest order = new OrderRequest();
-        doThrow(new IllegalArgumentException())
-                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
-
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -92,8 +87,6 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenEmptyTable() {
         OrderRequest order = new OrderRequest();
-        doThrow(new IllegalArgumentException())
-                .when(orderValidator).validateOrderCreate(any(OrderRequest.class));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);

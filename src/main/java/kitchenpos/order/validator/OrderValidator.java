@@ -2,13 +2,10 @@ package kitchenpos.order.validator;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.persistence.MenuRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.persistence.OrderTableRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -24,16 +21,9 @@ public class OrderValidator {
         this.orderRepository = orderRepository;
     }
 
-    public void validateOrderCreate(OrderRequest orderRequest) {
-        validateOrderTable(orderRequest.getOrderTableId());
-        validateMenus(orderRequest.findMenuIds());
-        validateOrderLineItems(orderRequest.getOrderLineItems());
-    }
-
-    private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
+    public void validateOrderCreate(Long orderTableId, List<Long> meneIds) {
+        validateOrderTable(orderTableId);
+        validateMenus(meneIds);
     }
 
     private void validateOrderTable(Long orderTableId) {

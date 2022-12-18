@@ -2,12 +2,14 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +29,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderValidator.validateOrderCreate(orderRequest);
+        validateOrderLineItems(orderRequest.getOrderLineItems());
+        orderValidator.validateOrderCreate(orderRequest.getOrderTableId(),orderRequest.findMenuIds());
         Order order = orderRequest.toOrder(orderRequest.getOrderTableId(), OrderStatus.COOKING);
         return OrderResponse.of(orderRepository.save(order));
     }
@@ -44,5 +47,11 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         order.changeOrderStatus(status);
         return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
