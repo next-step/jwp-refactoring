@@ -26,8 +26,9 @@ public class TableGroupResponse {
     public static TableGroupResponse of(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup, Collections.EMPTY_LIST);
     }
+
     public static TableGroupResponse of(TableGroup tableGroup, OrderTables orderTables) {
-        return new TableGroupResponse(tableGroup,orderTables.getOrderTables());
+        return new TableGroupResponse(tableGroup, orderTables.getOrderTables());
     }
 
     public Long getId() {

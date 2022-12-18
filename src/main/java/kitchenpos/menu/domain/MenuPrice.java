@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.MenuPriceException;
-import kitchenpos.menu.exception.MenuPriceExceptionType;
 
 import javax.persistence.Column;
 import java.math.BigDecimal;

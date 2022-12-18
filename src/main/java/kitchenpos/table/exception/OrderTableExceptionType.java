@@ -8,7 +8,7 @@ public enum OrderTableExceptionType {
 
     public String message;
 
-    OrderTableExceptionType(String message){
+    OrderTableExceptionType(String message) {
         this.message = message;
     }
 

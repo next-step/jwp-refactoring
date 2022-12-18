@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.persistence.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -22,7 +21,7 @@ public class TableService {
     public TableService(final OrderRepository orderRepository,
                         final OrderTableRepository orderTableRepository,
                         final TableValidator tableValidator
-                        ) {
+    ) {
         this.tableValidator = tableValidator;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
