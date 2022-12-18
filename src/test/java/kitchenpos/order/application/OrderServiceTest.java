@@ -107,23 +107,25 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문 항목이 비어있으면 order 생성 시 예외가 발생한다.")
+    @DisplayName("주문 항목이 비어있으면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException() {
         Assertions.assertThatThrownBy(() -> orderService.create(noOrderItemRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageStartingWith(INVALID_EMPTY_LINE_ITEMS);
     }
 
-    @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 order 생성 시 예외가 발생한다.")
+    @DisplayName("주문 항목이 메뉴에 등록되어 있지 않다면 주문 생성 시 예외가 발생한다.")
     @Test
     void createException2() {
         when(menuRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> orderService.create(noMenuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(NOT_EXISTS_MENU);
     }
 
-    @DisplayName("주문 테이블이 등록되어 있지 않다면 order을 생성 시 예외가 발생한다.")
+    @DisplayName("주문 테이블이 등록되어 있지 않다면 주문을 생성 시 예외가 발생한다.")
     @Test
     void createException3() {
         doThrow(new EntityNotFoundException(NOT_EXISTS_ORDER_TABLE))
