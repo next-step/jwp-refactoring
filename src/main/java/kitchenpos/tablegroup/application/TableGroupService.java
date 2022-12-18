@@ -11,6 +11,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +57,6 @@ public class TableGroupService {
 
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_ORDER_TABLE));
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXISTS_ORDER_TABLE));
     }
 }
