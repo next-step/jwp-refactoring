@@ -19,6 +19,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.ui.response.OrderResponse;
 
 public class OrderAcceptanceUtils {
 
@@ -36,7 +37,7 @@ public class OrderAcceptanceUtils {
 	}
 
 	public static void 주문_등록_됨(ExtractableResponse<Response> response, int expectedQuantity, Menu expectedMenu) {
-		Order order = response.as(Order.class);
+		OrderResponse order = response.as(OrderResponse.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
 			() -> assertThat(order.getId()).isNotNull(),

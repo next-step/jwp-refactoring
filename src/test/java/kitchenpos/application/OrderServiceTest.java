@@ -24,7 +24,11 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.generator.OrderLineItemGenerator;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.ui.request.OrderLineItemRequest;
+import kitchenpos.order.ui.request.OrderRequest;
+import kitchenpos.order.ui.request.OrderStatusRequest;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -50,13 +54,19 @@ class OrderServiceTest {
 	void createOrderTest() {
 		// given
 		long orderTableId = 1L;
-		Order orderRequest = 주문(1L, orderTableId, OrderStatus.COOKING,
-			Collections.singletonList(OrderLineItemGenerator.주문_품목()));
+		long menuId = 1L;
+		long quantity = 1L;
+		OrderRequest orderRequest = new OrderRequest(orderTableId,
+			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
 		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
 		given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(비어있지_않은_5명_테이블()));
 
+
 		Order 조리중_주문 = 조리중_주문();
 		given(orderDao.save(any())).willReturn(조리중_주문);
+		OrderLineItem 주문_품목 = OrderLineItemGenerator.주문_품목();
+		주문_품목.setOrderId(조리중_주문.getId());
+		given(orderLineItemDao.save(any())).willReturn(주문_품목);
 
 		// when
 		orderService.create(orderRequest);
@@ -70,8 +80,7 @@ class OrderServiceTest {
 	void createOrderWithoutOrderLineItemsTest() {
 		// given
 		long orderTableId = 1L;
-		Order orderRequest = 주문(orderTableId, OrderStatus.COOKING,
-			Collections.emptyList());
+		OrderRequest orderRequest = new OrderRequest(orderTableId, Collections.emptyList());
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
@@ -85,8 +94,10 @@ class OrderServiceTest {
 	void createOrderWithoutMenuTest() {
 		// given
 		long orderTableId = 1L;
-		Order orderRequest = 주문(orderTableId, OrderStatus.COOKING,
-			Collections.singletonList(OrderLineItemGenerator.주문_품목()));
+		long menuId = 1L;
+		long quantity = 1L;
+		OrderRequest orderRequest = new OrderRequest(orderTableId,
+			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
 		given(menuDao.countByIdIn(anyList())).willReturn(0L);
 
 		// when
@@ -101,8 +112,11 @@ class OrderServiceTest {
 	void createOrderWithNotSavedTableTest() {
 		// given
 		long orderTableId = 1L;
-		Order orderRequest = 주문(orderTableId, OrderStatus.COOKING,
-			Collections.singletonList(OrderLineItemGenerator.주문_품목()));
+		long menuId = 1L;
+		long quantity = 1L;
+		OrderRequest orderRequest = new OrderRequest(orderTableId,
+			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
+
 		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
 		given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
 
@@ -118,8 +132,10 @@ class OrderServiceTest {
 	void createOrderWithEmptyTableTest() {
 		// given
 		long orderTableId = 1L;
-		Order orderRequest = 주문(orderTableId, OrderStatus.COOKING,
-			Collections.singletonList(OrderLineItemGenerator.주문_품목()));
+		long menuId = 1L;
+		long quantity = 1L;
+		OrderRequest orderRequest = new OrderRequest(orderTableId,
+			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
 		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
 		given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(비어있는_테이블()));
 
@@ -150,12 +166,12 @@ class OrderServiceTest {
 	void changeOrderStatusTest() {
 		// given
 		OrderStatus orderStatus = OrderStatus.MEAL;
-		Order orderUpdateRequest = orderUpdateRequest(orderStatus);
+		OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
 		Order order = 조리중_주문();
 		given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		orderService.changeOrderStatus(order.getId(), orderUpdateRequest);
+		orderService.changeOrderStatus(order.getId(), orderStatusRequest);
 
 		// then
 		주문_상태_변경됨(orderStatus);
@@ -166,11 +182,11 @@ class OrderServiceTest {
 	void changeOrderStatusWithNotSavedOrderTest() {
 		// given
 		OrderStatus orderStatus = OrderStatus.MEAL;
-		Order orderUpdateRequest = orderUpdateRequest(orderStatus);
+		OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
 		given(orderDao.findById(anyLong())).willReturn(Optional.empty());
 
 		// when
-		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(1L, orderUpdateRequest));
+		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(1L, orderStatusRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -181,12 +197,12 @@ class OrderServiceTest {
 	void changeOrderStatusWithCompletedOrderTest() {
 		// given
 		OrderStatus orderStatus = OrderStatus.MEAL;
-		Order orderUpdateRequest = orderUpdateRequest(orderStatus);
+		OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
 		Order order = 계산_완료_주문();
 		given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(1L, orderUpdateRequest));
+		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(1L, orderStatusRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);

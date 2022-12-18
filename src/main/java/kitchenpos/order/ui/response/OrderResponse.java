@@ -3,6 +3,8 @@ package kitchenpos.order.ui.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kitchenpos.order.domain.Order;
+
 public class OrderResponse {
 
 	private final long id;
@@ -23,6 +25,22 @@ public class OrderResponse {
 	public static OrderResponse of(long id, long orderTableId, String orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItemResponse> orderLineItems) {
 		return new OrderResponse(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+	}
+
+	public static OrderResponse from(Order order) {
+		return new OrderResponse(
+			order.getId(),
+			order.getOrderTableId(),
+			order.getOrderStatus(),
+			order.getOrderedTime(),
+			OrderLineItemResponse.listFrom(order.getOrderLineItems())
+		);
+	}
+
+	public static List<OrderResponse> listFrom(List<Order> orders) {
+		return orders.stream()
+			.map(OrderResponse::from)
+			.collect(java.util.stream.Collectors.toList());
 	}
 
 	public long getId() {
