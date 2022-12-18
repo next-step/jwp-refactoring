@@ -9,12 +9,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.testfixture.MenuProductTestFixture;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.testfixture.OrderMenuTestFixture;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.testfixture.ProductTestFixture;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,50 +30,43 @@ class OrderTableTest {
     private MenuProduct 하와이안피자상품;
     private Menu 하와이안피자세트;
     private OrderLineItem 하와이안피자세트주문;
+    private OrderMenu 주문메뉴;
 
     @BeforeEach
     void setUp() {
-        하와이안피자 = new Product("하와이안피자", BigDecimal.valueOf(15_000));
-        피자 = new MenuGroup("피자");
-        하와이안피자상품 = new MenuProduct(하와이안피자, 1);
-        하와이안피자세트 = new Menu("하와이안피자세트", BigDecimal.valueOf(15_000L), 피자,
+        하와이안피자 = ProductTestFixture.create("하와이안피자", BigDecimal.valueOf(15_000));
+        피자 = MenuGroupTestFixture.create("피자");
+        하와이안피자상품 = MenuProductTestFixture.create(하와이안피자, 1);
+        하와이안피자세트 = Menu.of("하와이안피자세트", BigDecimal.valueOf(15_000L), 피자.getId(),
             MenuProducts.from(Arrays.asList(하와이안피자상품)));
-        하와이안피자세트주문 = new OrderLineItem(하와이안피자세트, 1);
+        주문메뉴 = OrderMenuTestFixture.create(하와이안피자세트);
+        하와이안피자세트주문 = OrderLineItem.of(주문메뉴, 1);
     }
 
     @DisplayName("주문 테이블의 비어있는 상태를 수정한다.")
     @Test
     void updateEmpty() {
-        OrderTable orderTable = new OrderTable(4, true);
+        OrderTable orderTable = OrderTable.of(4, true);
 
-        orderTable.changeEmpty(false, Collections.emptyList());
+        orderTable.changeEmpty(false);
 
         assertThat(orderTable.isEmpty()).isFalse();
-    }
-
-    @DisplayName("완료되지 않은 주문이 있으면 주문 테이블의 비어있는 상태를 수정 시 에러가 발생한다.")
-    @Test
-    void validateHasTableGroupException() {
-        OrderTable orderTable = new OrderTable(4, false);
-        Order order = Order.of(orderTable, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문)));
-
-        assertThatThrownBy(() -> orderTable.changeEmpty(true, Collections.singletonList(order)))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블의 단체 지정을 해제한다.")
     @Test
     void ungroup() {
-        OrderTable orderTable1 = new OrderTable(4, false);
-        OrderTable orderTable2 = new OrderTable(6, true);
-        TableGroup tableGroup = new TableGroup(OrderTables.from(Arrays.asList(orderTable1, orderTable2)));
+        OrderTable orderTable1 = OrderTable.of(4, false);
+        OrderTable orderTable2 = OrderTable.of(6, true);
+        TableGroup tableGroup = TableGroup.from(1L);
+        OrderTables.from(Arrays.asList(orderTable1, orderTable2)).registerTableGroup(tableGroup.getId());
 
         orderTable2.ungroup();
 
         assertAll(
-            () -> assertThat(orderTable1.getTableGroup()).isNotNull(),
+            () -> assertThat(orderTable1.findTableGroupId()).isNotNull(),
             () -> assertThat(orderTable1.isNotNullTableGroup()).isTrue(),
-            () -> assertThat(orderTable2.getTableGroup()).isNull(),
+            () -> assertThat(orderTable2.findTableGroupId()).isNull(),
             () -> assertThat(orderTable2.isNotNullTableGroup()).isFalse()
         );
     }
@@ -78,7 +74,7 @@ class OrderTableTest {
     @DisplayName("주문 테이블의 손님 수를 수정한다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable orderTable = OrderTable.of(4, false);
 
         orderTable.changeNumberOfGuests(6);
 
@@ -88,7 +84,7 @@ class OrderTableTest {
     @DisplayName("비어있는 상태의 주문 테이블의 손님 수를 수정하면 에러가 발생한다.")
     @Test
     void validateOrderTableNotEmptyException() {
-        OrderTable orderTable = new OrderTable(4, true);
+        OrderTable orderTable = OrderTable.of(4, true);
 
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(6))
             .isInstanceOf(IllegalArgumentException.class);

@@ -1,14 +1,17 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -25,24 +28,24 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderValidator orderValidator
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        orderValidator.validator(orderRequest);
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findAllOrderLineItemByMenuId(orderLineItemRequests);
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        Order order = Order.of(orderTable, OrderLineItems.from(orderLineItems));
+        Order order = Order.of(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems));
         return OrderResponse.from(orderRepository.save(order));
     }
 
@@ -60,14 +63,12 @@ public class OrderService {
         return OrderResponse.from(order);
     }
 
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException());
-    }
-
     private List<OrderLineItem> findAllOrderLineItemByMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
-            .map(orderLineItemRequest -> orderLineItemRequest.toOrderLineItem(findMenuById(orderLineItemRequest.getMenuId())))
+            .map(orderLineItemRequest -> {
+                Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+                return orderLineItemRequest.toOrderLineItem(OrderMenu.from(menu));
+            })
             .collect(Collectors.toList());
     }
 

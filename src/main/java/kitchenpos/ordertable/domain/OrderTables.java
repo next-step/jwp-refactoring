@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 import kitchenpos.common.constant.ErrorCode;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
 public class OrderTables {
@@ -13,14 +12,14 @@ public class OrderTables {
     private static final int MIN_SIZE = 2;
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    private List<OrderTable> values;
 
     protected OrderTables() {}
 
     private OrderTables(List<OrderTable> orderTables) {
         validateOrderTableIsEmpty(orderTables);
         validateOrderTableMinSize(orderTables);
-        this.orderTables = orderTables;
+        this.values = orderTables;
     }
 
     public static OrderTables from(List<OrderTable> orderTables) {
@@ -39,20 +38,15 @@ public class OrderTables {
         }
     }
 
-    public boolean anyHasGroupId() {
-        return orderTables.stream()
-            .anyMatch(OrderTable::isNotNullTableGroup);
-    }
-
-    public void updateTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
-    }
-
     public void ungroupOrderTables() {
-        orderTables.forEach(OrderTable::ungroup);
+        values.forEach(OrderTable::ungroup);
+    }
+
+    public void registerTableGroup(Long tableGroupId) {
+        values.forEach(orderTable -> orderTable.registerTableGroup(tableGroupId));
     }
 
     public List<OrderTable> getOrderTables() {
-        return Collections.unmodifiableList(orderTables);
+        return Collections.unmodifiableList(values);
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.stream.Collectors;
+import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -9,6 +10,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -23,25 +25,19 @@ import java.util.List;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
 
+    private final MenuValidator menuValidator;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
-    ) {
+    public MenuService(final MenuRepository menuRepository, final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
-        MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        List<Product> products = findAllProductByIds(menuRequest.getMenuProductIds());
-        return MenuResponse.from(menuRepository.save(menuRequest.toMenu(menuGroup, products)));
+        menuValidator.validate(menuRequest);
+        Menu menu = menuRepository.save(menuRequest.toMenu());
+        return MenuResponse.from(menu);
     }
 
     public List<MenuResponse> list() {
@@ -49,21 +45,5 @@ public class MenuService {
             .stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
-    }
-
-    private MenuGroup findMenuGroupById (Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(() -> new NotFoundException());
-    }
-
-    private List<Product> findAllProductByIds(List<Long> ids) {
-        return ids.stream()
-            .map(this::findProductById)
-            .collect(Collectors.toList());
-    }
-
-    private Product findProductById(Long id) {
-        return productRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException());
     }
 }

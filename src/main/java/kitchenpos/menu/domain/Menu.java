@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,8 +29,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MenuGroup menuGroup;
+    @Column(nullable = false)
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -37,38 +38,21 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateMenuGroupNotEmpty(menuGroup);
-        validatePrice(Price.from(price), menuProducts.totalPrice());
-        menuProducts.setMenu(this);
-        this.name = Name.from(name);
-        this.price = Price.from(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-    }
-
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
-        MenuProducts menuProducts) {
-        validateMenuGroupNotEmpty(menuGroup);
-        validatePrice(Price.from(price), menuProducts.totalPrice());
+    private Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         menuProducts.setMenu(this);
         this.id = id;
         this.name = Name.from(name);
         this.price = Price.from(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    private void validatePrice(Price price, Price totalPrice) {
-        if (price.isBiggerThan(totalPrice)) {
-            throw new IllegalArgumentException(ErrorCode.MENU_PRICE_MORE_THAN_TOTAL_PRICE.getErrorMessage());
-        }
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroupId, MenuProducts.from(menuProducts));
     }
 
-    private void validateMenuGroupNotEmpty(MenuGroup menuGroup) {
-        if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException(ErrorCode.MENU_GROUP_NOT_EMPTY.getErrorMessage());
-        }
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
     public Long getId() {
@@ -83,8 +67,8 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {

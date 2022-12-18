@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
@@ -54,12 +55,11 @@ public class MenuRequest {
             .collect(Collectors.toList());
     }
 
-    public Menu toMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
-    }
-
-    public Menu toMenu(MenuGroup menuGroup, List<Product> products) {
-        return new Menu(name, price, menuGroup, createMenuProducts(products));
+    public Menu toMenu() {
+        List<MenuProduct> menuProducts = getMenuProducts().stream()
+            .map(MenuProductRequest::toMenuProduct)
+            .collect(Collectors.toList());
+        return Menu.of(name, price, menuGroupId, MenuProducts.from(menuProducts));
     }
 
     private MenuProducts createMenuProducts(List<Product> products) {

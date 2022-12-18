@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.constant.ErrorCode;
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.domain.NumberOfGuests;
@@ -22,8 +20,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -31,41 +28,47 @@ public class OrderTable {
     @Embedded
     private Empty empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
-        this.empty = Empty.from(empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = Empty.from(empty);
+    }
+
+    public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, numberOfGuests, empty);
+    }
+
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, numberOfGuests, empty);
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public boolean isEmpty() {
         return empty.isEmpty();
     }
 
-    public boolean isNotNullTableGroup() {
-        return tableGroup != null;
+    public boolean hasTableGroup() {
+        return tableGroupId != null;
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public boolean isNotNullTableGroup() {
+        return tableGroupId != null;
+    }
+
+    public void registerTableGroup(Long tableGroupId) {
+        validateHasTableGroup();
+        this.tableGroupId = tableGroupId;
         this.empty = Empty.IS_NOT_EMPTY;
     }
 
-    public void changeEmpty(boolean isEmpty, List<Order> orders) {
+    public void changeEmpty(boolean isEmpty) {
         validateHasTableGroup();
-        orders.forEach(Order::validateNotCompleteOrder);
         this.empty = Empty.from(isEmpty);
     }
 
@@ -87,18 +90,18 @@ public class OrderTable {
     }
 
     public Long findTableGroupId() {
-        if(tableGroup == null) {
+        if(tableGroupId == null) {
             return null;
         }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {

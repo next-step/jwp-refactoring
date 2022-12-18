@@ -22,12 +22,8 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse from(TableGroup tableGroup) {
-        List<OrderTableResponse> orderTables = tableGroup.getOrderTables()
-            .stream()
-            .map(OrderTableResponse::from)
-            .collect(Collectors.toList());
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTables);
+    public static TableGroupResponse from(TableGroup tableGroup, List<OrderTableResponse> orderTableResponses) {
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
     }
 
     public Long getId() {

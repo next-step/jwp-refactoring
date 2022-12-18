@@ -11,20 +11,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.testfixture.MenuProductTestFixture;
+import kitchenpos.menu.testfixture.MenuTestFixture;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.testfixture.OrderMenuTestFixture;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.testfixture.OrderTestFixture;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.testfixture.ProductTestFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +42,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 관련 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
+class OrderServiceTest {
 
     @Mock
     private MenuRepository menuRepository;
@@ -44,7 +51,7 @@ public class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -60,25 +67,27 @@ public class OrderServiceTest {
     private OrderTable 주문테이블;
     private Order 주문;
     private OrderLineItemRequest 하와이안피자세트주문;
+    private OrderMenu 주문메뉴;
 
     @BeforeEach
     void setUp() {
-        하와이안피자 = new Product(1L, "하와이안피자", BigDecimal.valueOf(15_000));
-        콜라 = new Product(2L, "콜라", BigDecimal.valueOf(2_000));
-        피클 = new Product(3L, "피클", BigDecimal.valueOf(1_000));
+        하와이안피자 = ProductTestFixture.create(1L, "하와이안피자", BigDecimal.valueOf(15_000));
+        콜라 = ProductTestFixture.create(2L, "콜라", BigDecimal.valueOf(2_000));
+        피클 = ProductTestFixture.create(3L, "피클", BigDecimal.valueOf(1_000));
 
-        피자 = new MenuGroup(1L, "피자");
+        피자 = MenuGroupTestFixture.create(1L, "피자");
 
-        하와이안피자상품 = new MenuProduct(1L, 하와이안피자세트, 하와이안피자, 1L);
-        콜라상품 = new MenuProduct(2L, 하와이안피자세트, 콜라, 1L);
-        피클상품 = new MenuProduct(3L, 하와이안피자세트, 피클, 1L);
+        하와이안피자상품 = MenuProductTestFixture.create(1L, 하와이안피자세트, 하와이안피자, 1L);
+        콜라상품 = MenuProductTestFixture.create(2L, 하와이안피자세트, 콜라, 1L);
+        피클상품 = MenuProductTestFixture.create(3L, 하와이안피자세트, 피클, 1L);
 
-        하와이안피자세트 = new Menu(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자,
-            MenuProducts.from(Arrays.asList(하와이안피자상품, 콜라상품, 피클상품)));
+        하와이안피자세트 = MenuTestFixture.create(1L, "하와이안피자세트", BigDecimal.valueOf(18_000L), 피자,
+            Arrays.asList(하와이안피자상품, 콜라상품, 피클상품));
+        주문메뉴 = OrderMenuTestFixture.create(하와이안피자세트);
 
-        주문테이블 = new OrderTable(1L, null, 0, false);
+        주문테이블 = OrderTableTestFixture.create(1L,  0, false);
         하와이안피자세트주문 = OrderLineItemRequest.from(하와이안피자세트.getId(), 1);
-        주문 = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+        주문 = OrderTestFixture.create(주문테이블, Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴)));
     }
 
     @DisplayName("주문을 생성한다.")
@@ -86,9 +95,8 @@ public class OrderServiceTest {
     void createOrder() {
         // given
         OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
-        Order order = Order.of(주문테이블, OrderLineItems.from(Collections.singletonList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))));
+        Order order = Order.of(주문테이블.getId(), OrderLineItems.from(Collections.singletonList(하와이안피자세트주문.toOrderLineItem(주문메뉴))));
         when(menuRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(하와이안피자세트));
-        when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderRepository.save(order)).thenReturn(order);
 
         // when
@@ -101,25 +109,11 @@ public class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문 테이블이 등록되지 않으면 예외가 발생한다.")
-    @Test
-    void crateOrderNotExistOrderTableException() {
-        // given
-        OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
-        when(menuRepository.findById(하와이안피자세트.getId())).thenReturn(Optional.of(하와이안피자세트));
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 항목 메뉴가 등록되지 않으면 예외가 발생한다.")
     @Test
     void createOrderNotExistOrderLineItemException() {
         // given
         OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문));
-        when(menuRepository.findById(하와이안피자세트주문.getMenuId())).thenReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -131,7 +125,7 @@ public class OrderServiceTest {
     void createOrderEmptyOrderLineItemException() {
         // given
         OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.COOKING, Collections.emptyList());
-        when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
+        // when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
 
         // when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -169,7 +163,7 @@ public class OrderServiceTest {
     @Test
     void updateOrderStatusCompleteException() {
         // given
-        Order order = Order.of(주문테이블, OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(하와이안피자세트))))
+        Order order = Order.of(주문테이블.getId(), OrderLineItems.from(Arrays.asList(하와이안피자세트주문.toOrderLineItem(주문메뉴))))
             .changeOrderStatus(OrderStatus.COMPLETION);
         OrderRequest orderRequest = OrderRequest.of(주문테이블.getId(), OrderStatus.MEAL, Collections.singletonList(하와이안피자세트주문));
         when(orderRepository.findById(order.getId())).thenReturn(Optional.of(order));

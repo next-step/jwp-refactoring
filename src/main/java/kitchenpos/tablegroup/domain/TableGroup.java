@@ -24,33 +24,22 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
+    protected TableGroup() {}
 
-    public TableGroup() {}
-
-    public TableGroup(OrderTables orderTables) {
-        validateOrderTableHasNotGroupId(orderTables);
-        orderTables.updateTableGroup(this);
-        this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
-    }
-
-    public TableGroup(Long id, OrderTables orderTables) {
-        validateOrderTableHasNotGroupId(orderTables);
-        orderTables.updateTableGroup(this);
+    private TableGroup(Long id) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
     }
 
-    private void validateOrderTableHasNotGroupId(OrderTables orderTables) {
-        if(orderTables.anyHasGroupId()) {
-            throw new IllegalArgumentException(ErrorCode.HAS_TABLE_GROUP.getErrorMessage());
-        }
+    public static TableGroup from() {
+        return new TableGroup(null);
     }
 
-    public void ungroup(List<Order> orders) {
+    public static TableGroup from(Long id) {
+        return new TableGroup(id);
+    }
+
+    public void ungroup(List<Order> orders, OrderTables orderTables) {
         orders.forEach(Order::validateNotCompleteOrder);
         orderTables.ungroupOrderTables();
     }
@@ -61,10 +50,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
     }
 
     @Override

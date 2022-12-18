@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("상품 관련 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceTest {
+class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;

@@ -14,7 +14,7 @@ class OrderTablesTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable(4, true);
+        주문테이블 = OrderTable.of(4, true);
     }
 
     @DisplayName("주문 테이블 목록에 주문 테이블이 없으면 에러가 발생한다.")
