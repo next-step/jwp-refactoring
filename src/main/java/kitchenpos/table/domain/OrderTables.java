@@ -4,17 +4,14 @@ import kitchenpos.ExceptionMessage;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
 
     public static final int MINIMUM_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -37,12 +34,6 @@ public class OrderTables {
 
     public void group(TableGroup tableGroup) {
         orderTables.forEach(orderTable -> orderTable.group(tableGroup));
-    }
-
-    public List<Long> getOrderTableIds() {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
     }
 
     public List<OrderTable> getValue() {
