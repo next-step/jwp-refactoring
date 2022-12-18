@@ -151,7 +151,7 @@ public class OrderServiceTest {
     void 주문_목록을_조회할_수_있다() {
         given(orderRepository.findAll()).willReturn(Arrays.asList(주문));
 
-        List<OrderResponse> orders = orderService.list();
+        List<OrderResponse> orders = orderService.findAll();
 
         assertAll(
                 () -> assertThat(orders).hasSize(1),

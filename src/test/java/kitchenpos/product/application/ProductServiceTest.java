@@ -80,7 +80,7 @@ public class ProductServiceTest {
     void 상품_목록을_조회할_수_있다() {
         given(productRepository.findAll()).willReturn(Arrays.asList(양념치킨, 후라이드치킨));
 
-        List<ProductResponse> products = productService.list();
+        List<ProductResponse> products = productService.findAll();
 
         assertThat(products).hasSize(2);
         assertThat(products.stream().map(ProductResponse::getId))

@@ -63,7 +63,7 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    public List<OrderResponse> list() {
+    public List<OrderResponse> findAll() {
         return orderRepository.findAll()
                 .stream()
                 .map(OrderResponse::from)
@@ -79,7 +79,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());
+        final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus().name());
         savedOrder.setOrderStatus(orderStatus);
 
         return OrderResponse.from(orderRepository.save(savedOrder));

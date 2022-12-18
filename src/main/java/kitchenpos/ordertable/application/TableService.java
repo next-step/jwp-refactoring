@@ -1,11 +1,8 @@
 package kitchenpos.ordertable.application;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -32,7 +29,7 @@ public class TableService {
         return OrderTableResponse.from(orderTable);
     }
 
-    public List<OrderTableResponse> list() {
+    public List<OrderTableResponse> findAll() {
         return orderTableRepository.findAll()
                 .stream()
                 .map(OrderTableResponse::from)

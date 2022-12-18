@@ -71,7 +71,7 @@ public class TableServiceTest {
     void 주문_테이블_목록을_조회할_수_있다() {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(firstTable, secondTable));
 
-        List<OrderTableResponse> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = tableService.findAll();
 
         assertThat(orderTables).hasSize(2);
         assertThat(orderTables.stream().map(OrderTableResponse::getId))
@@ -103,7 +103,7 @@ public class TableServiceTest {
 
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), true);
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(firstTable.isEmpty());
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
