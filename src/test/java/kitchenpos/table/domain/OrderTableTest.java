@@ -17,6 +17,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
 
@@ -24,7 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("테이블 도메인 테스트")
+@Import(TableGroupValidator.class)
 public class OrderTableTest extends JpaEntityTest {
+    @Autowired
+    private TableGroupValidator tableGroupValidator;
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -104,6 +108,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable 테이블1 = orderTableRepository.save(new OrderTable(1, true));
         OrderTable 테이블2 = orderTableRepository.save(new OrderTable(1, true));
         TableGroup 단체테이블 = tableGroupRepository.save(new TableGroup(Lists.newArrayList(테이블1, 테이블2)));
+        단체테이블.enGroup(tableGroupValidator);
         flushAndClear();
 
         // when / then
