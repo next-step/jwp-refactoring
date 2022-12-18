@@ -1,7 +1,10 @@
-package kitchenpos.domain.order;
+package kitchenpos.ordertable.domain;
 
-import kitchenpos.domain.product.TableGroup;
 import kitchenpos.exception.BadRequestException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

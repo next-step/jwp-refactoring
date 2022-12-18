@@ -1,8 +1,15 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.*;
+import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,9 +19,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.acceptance.MenuAcceptanceUtils.*;
-import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.메뉴_그룹_등록되어_있음;
-import static kitchenpos.acceptance.ProductAcceptanceUtils.상품_등록되어_있음;
+import static kitchenpos.menu.acceptance.MenuAcceptanceUtils.*;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceUtils.메뉴_그룹_등록되어_있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceUtils.상품_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
