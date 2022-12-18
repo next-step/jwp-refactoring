@@ -36,22 +36,10 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable){
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-                 List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderedTime = LocalDateTime.now();
+        changeOrderStatus(COOKING);
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
@@ -67,7 +55,7 @@ public class Order {
     }
 
     public boolean isDinning(){
-        return MEAL.equals(orderStatus) || COOKING.equals(orderStatus);
+        return !COMPLETION.equals(orderStatus);
     }
 
     public Long getId() {

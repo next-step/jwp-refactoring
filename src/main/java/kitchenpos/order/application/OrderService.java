@@ -44,7 +44,7 @@ public class OrderService {
 
         validator.validateCreate(orderLineItemRequests, orderTable);
 
-        Order order = OrderRequest.to(orderRequest, orderTable);
+        Order order = new Order(orderTable);
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu menu = getMenu(orderLineItemRequest.getMenuId());
             order.addOrderLineItem(new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity()));

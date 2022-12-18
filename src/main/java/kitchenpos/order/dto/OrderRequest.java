@@ -18,12 +18,6 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order to(OrderRequest orderRequest, OrderTable orderTable){
-        return new Order(orderTable,
-                OrderStatus.COOKING,
-                LocalDateTime.now());
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
     }
