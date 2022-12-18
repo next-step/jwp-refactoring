@@ -23,8 +23,8 @@
 > - [ ] 메뉴 목록 조회(GET /api/menus)
 
 ### 메뉴그룹(menu group)
-> - [ ] 메뉴 그룹 생성(POST /api/menu-groups)
-> - [ ] 메뉴 그룹 목록 조회(GET /api/menu-groups)
+> - [x] 메뉴 그룹 생성(POST /api/menu-groups)
+> - [x] 메뉴 그룹 목록 조회(GET /api/menu-groups)
 
 ### 주문 테이블(table)
 > - [ ] 주문 테이블을 생성(POST /api/tables)
