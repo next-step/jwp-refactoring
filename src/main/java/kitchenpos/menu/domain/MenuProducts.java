@@ -13,7 +13,7 @@ import kitchenpos.common.domain.Price;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "menu_id", nullable = false)
     private List<MenuProduct> menuProducts;
 
