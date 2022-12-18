@@ -10,6 +10,7 @@ import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.CreateTableGroupRequest;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -84,14 +85,14 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     void create() {
         tableGroupA.setOrderTables(Arrays.asList(makeNullTableGroupOrderTable(changeEmptyOrder()), makeNullTableGroupOrderTable((changeEmptyOrder()))));
-        TableGroup saveTableGroup = tableGroupService.create(tableGroupA);
+        TableGroup saveTableGroup = tableGroupService.create(new CreateTableGroupRequest(tableGroupA.getOrderTableIds()));
         assertThat(saveTableGroup.getCreatedDate()).isNotNull();
     }
 
     @DisplayName("테이블 그룹을 생성한다. / 주문 테이블의 갯수가 2보다 작을 수 없다.")
     @Test
     void create_fail_minimumSize() {
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupA))
+        assertThatThrownBy(() -> tableGroupService.create(new CreateTableGroupRequest(tableGroupA.getOrderTableIds())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
@@ -100,7 +101,7 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     void create_fail_orderTableEmpty() {
         TableGroup failTableGroup = tableGroupRepository.save(new TableGroup());
-        assertThatThrownBy(() -> tableGroupService.create(failTableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(new CreateTableGroupRequest(failTableGroup.getOrderTableIds())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
     }

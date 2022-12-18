@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.CreateTableGroupRequest;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -27,14 +28,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        return tableGroupRepository.save(new TableGroup(findOrderTables(tableGroup.getOrderTableIds())));
-    }
-
-    private List<OrderTable> findOrderTables(List<Long> orderTableIds) {
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
-        validateOrderTables(orderTableIds, savedOrderTables);
-        return savedOrderTables;
+    public TableGroup create(final CreateTableGroupRequest request) {
+        return tableGroupRepository.save(new TableGroup(findOrderTables(request.getOrderTableIds())));
     }
 
     @Transactional
@@ -42,6 +37,12 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);
         validateOrderStatus(tableGroup);
         tableGroup.upGroup();
+    }
+
+    private List<OrderTable> findOrderTables(List<Long> orderTableIds) {
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
+        validateOrderTables(orderTableIds, savedOrderTables);
+        return savedOrderTables;
     }
 
     private void validateOrderTables(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
