@@ -9,6 +9,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +19,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderValidator orderValidator;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderValidator = orderValidator;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -44,8 +43,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-        List<Order> orders = findAllOrderByOrderTableId(orderTable);
-        orderValidator.validateNotCompleteOrders(orders);
+        orderTableValidator.validator(orderTable);
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTable);
     }
@@ -60,9 +58,5 @@ public class TableService {
     private OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
             .orElseThrow(() -> new NotFoundException());
-    }
-
-    private List<Order> findAllOrderByOrderTableId(OrderTable orderTable) {
-        return orderRepository.findAllByOrderTableId(orderTable.getId());
     }
 }
