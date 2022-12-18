@@ -1,4 +1,4 @@
-package kitchenpos.order.validator;
+package kitchenpos.ordertable.validator;
 
 import kitchenpos.common.ErrorMessage;
 import kitchenpos.order.domain.Order;
@@ -27,13 +27,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class OrderValidatorTest {
+class OrderValidatorImplTest {
 
     @Mock
     OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    OrderValidator orderValidator;
+    OrderValidatorImpl orderValidator;
 
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
