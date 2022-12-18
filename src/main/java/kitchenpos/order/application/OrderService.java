@@ -23,11 +23,11 @@ import static kitchenpos.utils.Message.NOT_EXISTS_ORDER;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderValidatorImpl orderValidator;
+    private final OrderValidator orderValidator;
 
     public OrderService(MenuRepository menuRepository,
                         OrderRepository orderRepository,
-                        OrderValidatorImpl orderValidator) {
+                        OrderValidator orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
