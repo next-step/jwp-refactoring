@@ -64,6 +64,24 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 등록시 주문 항목은 모두 등록된 메뉴여야 한다.")
+    void createOrderByCreatedMenu() {
+        // given
+        OrderTable orderTable = orderTable(1L, null, 3, false);
+        OrderLineItemRequest orderLineItemRequest = orderLineItemRequest(1L, 1L);
+        OrderLineItemRequest orderLineItemRequest2 = orderLineItemRequest(2L, 1L);
+        OrderRequest orderRequest = orderRequest(orderTable.id(), Arrays.asList(orderLineItemRequest, orderLineItemRequest2));
+        given(menuRepository.countAllByIdIn(Arrays.asList(orderLineItemRequest.getMenuId(), orderLineItemRequest2.getMenuId())))
+                .willReturn(2L);
+        given(menuRepository.findById(orderLineItemRequest.getMenuId())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("메뉴가 존재하지 않습니다. ID : 1");
+    }
+
+    @Test
     @DisplayName("주문을 등록한다.")
     void createOrder() {
         // given
@@ -74,7 +92,9 @@ class OrderServiceTest {
         OrderLineItem orderLineItem = orderLineItem(1L, 짜장_탕수육_주문_세트, 1L);
         OrderLineItem orderLineItem2 = orderLineItem(2L, 짬뽕2_탕수육_주문_세트, 1L);
         Order order = order(1L, orderTable.id(), Arrays.asList(orderLineItem, orderLineItem2));
-        given(orderValidator.validate(orderRequest)).willReturn(Arrays.asList(orderLineItem, orderLineItem2));
+        given(menuRepository.countAllByIdIn(Arrays.asList(짜장_탕수육_주문_세트.id(), 짬뽕2_탕수육_주문_세트.id()))). willReturn(2L);
+        given(menuRepository.findById(짜장_탕수육_주문_세트.id())).willReturn(Optional.of(짜장_탕수육_세트));
+        given(menuRepository.findById(짬뽕2_탕수육_주문_세트.id())).willReturn(Optional.of(짬뽕2_탕수육_세트));
         given(orderRepository.save(any())).willReturn(order);
 
         // when

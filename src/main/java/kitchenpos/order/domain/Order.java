@@ -15,7 +15,7 @@ public class Order extends AbstractAggregateRoot<Order> {
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COMPLETION = "이미 완료된 주문입니다.";
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_COOKING = "주문 상태가 조리 중 입니다.";
     private static final String ERROR_MESSAGE_ORDER_STATUS_IS_MEAL = "주문 상태가 식사 중 입니다.";
-    private static final String ERROR_MESSATE_ORDER_TABLE_NOT_EXIST = "등록된 테이블이 존재하지 않습니다.";
+    private static final String ERROR_MESSAGE_ORDER_TABLE_NOT_EXIST = "등록된 테이블이 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class Order extends AbstractAggregateRoot<Order> {
 
     private void validateOrderTable(Long orderTableId) {
         if (orderTableId == null) {
-            throw new InvalidParameterException(ERROR_MESSATE_ORDER_TABLE_NOT_EXIST);
+            throw new InvalidParameterException(ERROR_MESSAGE_ORDER_TABLE_NOT_EXIST);
         }
     }
 
@@ -53,6 +53,10 @@ public class Order extends AbstractAggregateRoot<Order> {
 
     public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         return new Order(id, orderTableId, orderLineItems);
+    }
+
+    public void validate(OrderValidator orderValidator) {
+        orderValidator.validate(this);
     }
 
     private void validateCompletion() {

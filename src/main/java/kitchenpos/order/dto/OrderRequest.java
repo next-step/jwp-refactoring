@@ -1,6 +1,8 @@
 package kitchenpos.order.dto;
 
 import java.util.List;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderRequest {
     private final Long orderTableId;
@@ -17,5 +19,9 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public Order toEntity(List<OrderLineItem> orderLineItems) {
+        return Order.of(orderTableId, orderLineItems);
     }
 }
