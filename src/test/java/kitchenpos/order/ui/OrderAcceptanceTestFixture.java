@@ -1,9 +1,9 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
-import static kitchenpos.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음;
-import static kitchenpos.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
-import static kitchenpos.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
-import static kitchenpos.ui.TableAcceptanceTestFixture.주문_테이블_생성_되어있음;
+import static kitchenpos.menu.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음;
+import static kitchenpos.menugroup.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
+import static kitchenpos.ordertable.ui.OrderTableAcceptanceTestFixture.주문_테이블_생성_되어있음;
+import static kitchenpos.product.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;

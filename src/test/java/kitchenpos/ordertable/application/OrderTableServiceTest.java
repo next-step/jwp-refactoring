@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.ordertable.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,7 +12,6 @@ import java.util.Optional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -28,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 테이블 Business Object 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class OrderTableServiceTest {
 
     @Mock
     OrderRepository orderRepository;
@@ -73,8 +72,10 @@ class TableServiceTest {
 
         assertAll(
                 () -> assertThat(조회된_주문_테이블_목록.size()).isEqualTo(주문_테이블_목록.size()),
-                () -> assertThat(조회된_주문_테이블_목록.get(0).getNumberOfGuests()).isEqualTo(주문_테이블_목록.get(0).getNumberOfGuests()),
-                () -> assertThat(조회된_주문_테이블_목록.get(1).getNumberOfGuests()).isEqualTo(주문_테이블_목록.get(1).getNumberOfGuests())
+                () -> assertThat(조회된_주문_테이블_목록.get(0).getNumberOfGuests()).isEqualTo(
+                        주문_테이블_목록.get(0).getNumberOfGuests()),
+                () -> assertThat(조회된_주문_테이블_목록.get(1).getNumberOfGuests()).isEqualTo(
+                        주문_테이블_목록.get(1).getNumberOfGuests())
         );
     }
 

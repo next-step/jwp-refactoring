@@ -1,11 +1,11 @@
-package kitchenpos.ui;
+package kitchenpos.ordertable.ui;
 
-import static kitchenpos.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음;
-import static kitchenpos.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
-import static kitchenpos.ui.OrderAcceptanceTestFixture.주문_등록_되어있음;
-import static kitchenpos.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
-import static kitchenpos.ui.TableGroupAcceptanceTestFixture.createTableGroupRequest;
-import static kitchenpos.ui.TableGroupAcceptanceTestFixture.단체_지정_생성_요청;
+import static kitchenpos.menu.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음;
+import static kitchenpos.menugroup.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
+import static kitchenpos.order.ui.OrderAcceptanceTestFixture.주문_등록_되어있음;
+import static kitchenpos.product.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
+import static kitchenpos.tablegroup.ui.TableGroupAcceptanceTestFixture.createTableGroupRequest;
+import static kitchenpos.tablegroup.ui.TableGroupAcceptanceTestFixture.단체_지정_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 테이블 인수 테스트")
-public class TableAcceptanceTest extends TableAcceptanceTestFixture {
+public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
 
     /**
      *   When 주문 테이블을 생성하면

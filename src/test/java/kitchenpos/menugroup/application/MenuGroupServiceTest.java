@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menugroup.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

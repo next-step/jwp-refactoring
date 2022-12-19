@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

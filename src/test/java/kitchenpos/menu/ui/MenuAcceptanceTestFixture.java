@@ -1,7 +1,7 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
-import static kitchenpos.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
-import static kitchenpos.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
+import static kitchenpos.menugroup.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
+import static kitchenpos.product.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;

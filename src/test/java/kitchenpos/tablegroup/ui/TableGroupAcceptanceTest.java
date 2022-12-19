@@ -1,12 +1,12 @@
-package kitchenpos.ui;
+package kitchenpos.tablegroup.ui;
 
-import static kitchenpos.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음;
-import static kitchenpos.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
-import static kitchenpos.ui.OrderAcceptanceTestFixture.주문_등록_되어있음;
-import static kitchenpos.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
-import static kitchenpos.ui.TableAcceptanceTestFixture.빈_테이블_여부_수정_요청;
-import static kitchenpos.ui.TableAcceptanceTestFixture.주문_테이블_목록;
-import static kitchenpos.ui.TableAcceptanceTestFixture.주문_테이블_조회_요청;
+import static kitchenpos.menu.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음;
+import static kitchenpos.menugroup.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
+import static kitchenpos.order.ui.OrderAcceptanceTestFixture.주문_등록_되어있음;
+import static kitchenpos.ordertable.ui.OrderTableAcceptanceTestFixture.빈_테이블_여부_수정_요청;
+import static kitchenpos.ordertable.ui.OrderTableAcceptanceTestFixture.주문_테이블_목록;
+import static kitchenpos.ordertable.ui.OrderTableAcceptanceTestFixture.주문_테이블_조회_요청;
+import static kitchenpos.product.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

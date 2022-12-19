@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.ordertable.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class TableAcceptanceTestFixture extends AcceptanceTest {
+public class OrderTableAcceptanceTestFixture extends AcceptanceTest {
 
     public OrderTable 주문_테이블_1;
     public OrderTable 주문_테이블_2;

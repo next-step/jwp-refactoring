@@ -1,6 +1,6 @@
-package kitchenpos.ui;
+package kitchenpos.tablegroup.ui;
 
-import static kitchenpos.ui.TableAcceptanceTestFixture.주문_테이블_생성_되어있음;
+import static kitchenpos.ordertable.ui.OrderTableAcceptanceTestFixture.주문_테이블_생성_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
