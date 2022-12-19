@@ -7,39 +7,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.repository.MenuRepository;
 
 @Service
 public class MenuService {
-	private final MenuGroupService menuGroupService;
 	private final MenuRepository menuRepository;
-	private final ProductService productService;
+	private final MenuValidator menuValidator;
 
 	public MenuService(
 		MenuRepository menuRepository,
-		ProductService productService,
-		MenuGroupService menuGroupService
+		MenuValidator menuValidator
 	) {
 		this.menuRepository = menuRepository;
-		this.menuGroupService = menuGroupService;
-		this.productService = productService;
+		this.menuValidator = menuValidator;
 	}
 
 	@Transactional
 	public MenuResponse create(final MenuRequest menuRequest) {
-		MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
-		List<MenuProduct> menuProducts = menuRequest.getMenuProductRequests()
-			.stream()
-			.map(this::createMenuProduct)
-			.collect(Collectors.toList());
-		Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup, MenuProducts.of(menuProducts));
+		Menu menu = menuRequest.toEntity();
+		menuValidator.validate(menu);
 		return MenuResponse.of(menuRepository.save(menu));
 	}
 
@@ -50,8 +39,4 @@ public class MenuService {
 			.collect(Collectors.toList());
 	}
 
-	private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
-		Product product = productService.findProductById(menuProductRequest.getProductId());
-		return MenuProduct.of(product, menuProductRequest.getQuantity());
-	}
 }
