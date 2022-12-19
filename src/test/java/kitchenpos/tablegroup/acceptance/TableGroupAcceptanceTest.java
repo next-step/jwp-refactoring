@@ -1,4 +1,4 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import static kitchenpos.table.acceptance.TableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
@@ -19,8 +19,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.exception.CustomErrorResponse;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @DisplayName("주문 테이블 단체지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
