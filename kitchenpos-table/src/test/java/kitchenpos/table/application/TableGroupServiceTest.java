@@ -9,9 +9,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
