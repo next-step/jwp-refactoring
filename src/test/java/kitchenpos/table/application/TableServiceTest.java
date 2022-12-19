@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.OrderTableException;
@@ -28,26 +27,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderValidator orderValidator;
 
     @DisplayName("주문테이블을 생성할 경우 주문테이블을 반환")
     @Test
     public void returnOderTable() {
         OrderTable orderTable = OrderTable.builder()
-                .tableGroup(TableGroup.builder().id(443l).build())
+                .tableGroupId(2l)
                 .build();
         doReturn(orderTable).when(orderTableRepository).save(any(OrderTable.class));
 
-        assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(443l);
+        assertThat(tableService.create(new OrderTableRequest()).getTableGroupId()).isEqualTo(2l);
     }
 
     @DisplayName("주문테이블목록을 조회할경우 주문테이블목록 반환")
@@ -56,7 +55,7 @@ public class TableServiceTest {
         List<OrderTable> orderTables = getOrderTables(OrderTable
                 .builder()
                 .id(13l)
-                .tableGroup(TableGroup.builder().id(443l).build())
+                .tableGroupId(443l)
                 .empty(true)
                 .build(), 100);
         doReturn(orderTables).when(orderTableRepository).findAll();
@@ -68,7 +67,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 주문테이블이 등록안되있으면 예외발생")
     @Test
     public void throwsExceptionWhenGroupIdIsNull() {
-        OrderTable orderTable = OrderTable.builder().build();
+        OrderTable orderTable = OrderTable.builder().id(1l).build();
+        doNothing().when(orderValidator).validateOrderComplete(anyLong());
         doReturn(Optional.empty()).when(orderTableRepository).findById(orderTable.getId());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest())).isInstanceOf(IllegalArgumentException.class);
@@ -77,17 +77,14 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블그룹이 존재하면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroup() {
-        List<Order> orders = getOrders(Order.builder()
-                .orderTable(OrderTable.builder().build())
-                .orderStatus(OrderStatus.COOKING).build(), 5);
+        doNothing().when(orderValidator).validateOrderComplete(anyLong());
         OrderTable orderTable = OrderTable.builder()
-                .tableGroup(TableGroup.builder().id(13l).build())
+                .id(1l)
+                .tableGroupId(13l)
                 .build();
         doReturn(Optional.ofNullable(orderTable))
                 .when(orderTableRepository)
                 .findById(orderTable.getId());
-        doReturn(orders).when(orderRepository)
-                .findAllByOrderTable(orderTable);
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderTableException.class)
@@ -97,13 +94,8 @@ public class TableServiceTest {
     @DisplayName("주문테이블의 공석여부를 수정할 경우 테이블이 조리중이나 식사중이면 예외발생")
     @Test
     public void throwsExceptionWhenExistsTableGroupAndMillOrCook() {
-        List<Order> orders = getOrders(Order.builder()
-                .orderTable(OrderTable.builder().build())
-                .orderStatus(OrderStatus.COOKING).build(), 5);
-        OrderTable orderTable = OrderTable.builder().build();
-        doReturn(Optional.ofNullable(orderTable)).when(orderTableRepository).findById(orderTable.getId());
-        doReturn(orders).when(orderRepository)
-                .findAllByOrderTable(orderTable);
+        OrderTable orderTable = OrderTable.builder().id(1l).build();
+        doThrow(new OrderException("계산이 끝나지 않은 주문은 상태를 변경할 수 없습니다")).when(orderValidator).validateOrderComplete(anyLong());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest()))
                 .isInstanceOf(OrderException.class)
@@ -166,7 +158,7 @@ public class TableServiceTest {
         orderTable.setNumberOfGuests(15);
         OrderTable findTable = OrderTable.builder()
                 .numberOfGuests(5)
-                .tableGroup(TableGroup.builder().build())
+                .tableGroupId(1l)
                 .build();
         doReturn(Optional.ofNullable(findTable)).when(orderTableRepository).findById(orderTable.getId());
         doReturn(findTable).when(orderTableRepository).save(findTable);
@@ -179,7 +171,7 @@ public class TableServiceTest {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value -> Order.builder()
                         .id(order.getId())
-                        .orderTable(order.getOrderTable())
+                        .orderTableId(order.getOrderTableId())
                         .orderStatus(order.getOrderStatus())
                         .orderLineItems(order.getOrderLineItems())
                         .build())

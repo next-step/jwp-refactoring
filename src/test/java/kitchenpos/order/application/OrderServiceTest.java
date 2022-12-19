@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.persistence.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -11,6 +10,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderException;
 import kitchenpos.order.persistence.OrderLineItemRepository;
 import kitchenpos.order.persistence.OrderRepository;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.persistence.OrderTableRepository;
 import net.jqwik.api.Arbitraries;
@@ -21,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -46,6 +46,8 @@ public class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderValidatorImpl orderValidator;
 
     @DisplayName("주문을 추가할 경우 주문항목이 없으면 예외발생")
     @Test
@@ -63,10 +65,8 @@ public class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderTableId(13l);
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
-        doReturn(Optional.ofNullable(OrderTable.builder().build()))
-                .when(orderTableRepository).findById(orderRequest.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).build(), Menu.builder().price(BigDecimal.valueOf(1000)).build()))
-                .when(menuRepository).findAllById(anyList());
+        doThrow(new IllegalArgumentException())
+                .when(orderValidator).validateOrderCreate(any(),anyList());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -76,8 +76,6 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenNoneExistsTable() {
         OrderRequest order = new OrderRequest();
-        doReturn(Optional.empty())
-                .when(orderTableRepository).findById(order.getOrderTableId());
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -87,17 +85,9 @@ public class OrderServiceTest {
     @Test
     public void throwsExceptionWhenEmptyTable() {
         OrderRequest order = new OrderRequest();
-        order.setOrderTableId(15l);
-        order.setOrderLineItems(Arrays.asList(new OrderLineItemRequest()));
-        OrderTable orderTable = OrderTable.builder().empty(true).build();
-        doReturn(Optional.ofNullable(orderTable))
-                .when(orderTableRepository).findById(order.getOrderTableId());
-        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).build()))
-                .when(menuRepository).findAllById(anyList());
 
         assertThatThrownBy(() -> orderService.create(order))
-                .isInstanceOf(OrderException.class)
-                .hasMessageContaining("주문테이블이 존재하지 않습니다");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 추가할 경우 주문을 반환")
@@ -108,13 +98,9 @@ public class OrderServiceTest {
         orderRequest.setOrderTableId(15l);
         orderRequest.setOrderLineItems(Arrays.asList(orderLineItemRequest));
         OrderTable orderTable = OrderTable.builder().id(12l).build();
-        doReturn(Optional.ofNullable(orderTable))
-                .when(orderTableRepository).findById(anyLong());
-        doReturn(Arrays.asList(Menu.builder().price(BigDecimal.valueOf(1000)).id(2l).build()))
-                .when(menuRepository).findAllById(anyList());
         doReturn(Order.builder()
                 .id(13l)
-                .orderTable(orderTable)
+                .orderTableId(orderTable.getId())
                 .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
                 .build())
                 .when(orderRepository).save(any(Order.class));
@@ -128,8 +114,11 @@ public class OrderServiceTest {
     @Test
     public void returnOrders() {
         List<Order> orders = getOrders(Order.builder().id(150l)
-                .orderTable(OrderTable.builder().build())
-                .orderLineItems(Arrays.asList(OrderLineItem.builder().menu(Menu.builder().price(BigDecimal.valueOf(1000)).build()).build())).build(), 30);
+                .orderTableId(1l)
+                .orderLineItems(Arrays.asList(OrderLineItem
+                        .builder()
+                        .menuId(1l)
+                        .build())).build(), 30);
         doReturn(orders)
                 .when(orderRepository).findAll();
 
@@ -152,7 +141,7 @@ public class OrderServiceTest {
     public void throwsExceptionWhenCompleteOrder() {
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderStatus(OrderStatus.COMPLETION)
                 .build();
         doReturn(Optional.ofNullable(order)).when(orderRepository).findById(order.getId());
@@ -167,7 +156,7 @@ public class OrderServiceTest {
     public void returnOrderWithChangedStatus() {
         Order order = Order.builder()
                 .id(Arbitraries.longs().between(1, 1000).sample())
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .orderLineItems(Arrays.asList(OrderLineItem.builder().build()))
                 .orderStatus(OrderStatus.COOKING)
                 .build();
@@ -183,7 +172,7 @@ public class OrderServiceTest {
         return IntStream.rangeClosed(1, size)
                 .mapToObj(value -> Order.builder()
                         .id(order.getId())
-                        .orderTable(order.getOrderTable())
+                        .orderTableId(order.getOrderTableId())
                         .orderStatus(order.getOrderStatus())
                         .orderLineItems(order.getOrderLineItems())
                         .build())

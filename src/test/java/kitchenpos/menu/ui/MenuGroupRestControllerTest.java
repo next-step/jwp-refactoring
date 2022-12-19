@@ -1,9 +1,8 @@
 package kitchenpos.menu.ui;
 
-import com.navercorp.fixturemonkey.ArbitraryBuilder;
-import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import net.jqwik.api.Arbitraries;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -34,7 +34,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @DisplayName("메뉴그룹생성을 요청하면 생성된 메뉴그룹를 응답")
     @Test
     public void returnMenu() throws Exception {
-        MenuGroupResponse menuGroup = getMenuGroupBuilder().sample();
+        MenuGroupResponse menuGroup = getMenuGroupResponse();
         doReturn(menuGroup).when(menuGroupService).create(any(MenuGroupRequest.class));
 
         webMvc.perform(post("/api/menu-groups")
@@ -48,8 +48,7 @@ public class MenuGroupRestControllerTest extends ControllerTest {
     @DisplayName("메뉴그룹목록을 요청하면 메뉴그룹목록을 응답")
     @Test
     public void returnMenus() throws Exception {
-        List<MenuGroupResponse> menuGroups = getMenuGroupBuilder()
-                .sampleList(Arbitraries.integers().between(1, 50).sample());
+        List<MenuGroupResponse> menuGroups = Arrays.asList(getMenuGroupResponse(), getMenuGroupResponse());
         doReturn(menuGroups).when(menuGroupService).list();
 
         webMvc.perform(get("/api/menu-groups"))
@@ -57,11 +56,10 @@ public class MenuGroupRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private ArbitraryBuilder<MenuGroupResponse> getMenuGroupBuilder() {
-        return FixtureMonkey.builder()
-                .build()
-                .giveMeBuilder(MenuGroupResponse.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("name", Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample());
+    private MenuGroupResponse getMenuGroupResponse() {
+        return MenuGroupResponse.of(MenuGroup.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .name(Arbitraries.strings().ofMinLength(5).ofMaxLength(15).sample())
+                .build());
     }
 }

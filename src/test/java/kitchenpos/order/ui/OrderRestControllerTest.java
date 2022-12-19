@@ -1,7 +1,6 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.ControllerTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -18,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,12 +46,11 @@ public class OrderRestControllerTest extends ControllerTest {
         long orderTableId = 13;
         long orderId = 7;
         OrderRequest orderRequest = new OrderRequest(orderTableId, OrderStatus.COOKING, Arrays.asList(new OrderLineItemRequest(menuId, quantity)));
-        Menu menu = Menu.builder().price(BigDecimal.valueOf(1000)).id(menuId).build();
-        OrderLineItem orderLineItem = OrderLineItem.builder().menu(menu).build();
+        OrderLineItem orderLineItem = OrderLineItem.builder().menuId(menuId).build();
         OrderTable orderTable = OrderTable.builder().build();
         doReturn(OrderResponse.of(Order.builder().id(orderId)
                 .orderLineItems(Arrays.asList(orderLineItem))
-                .orderTable(orderTable)
+                .orderTableId(orderTable.getId())
                 .build())).when(orderService).create(any(OrderRequest.class));
 
         webMvc.perform(post("/api/orders")
@@ -92,11 +89,11 @@ public class OrderRestControllerTest extends ControllerTest {
     public void returnOrders() throws Exception {
         Order order1 = Order.builder().id(1l)
                 .orderLineItems(Collections.EMPTY_LIST)
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(1l)
                 .build();
         Order order2 = Order.builder().id(2l)
                 .orderLineItems(Collections.EMPTY_LIST)
-                .orderTable(OrderTable.builder().build())
+                .orderTableId(2l)
                 .build();
         List<OrderResponse> orders = Arrays.asList(new OrderResponse(order1), new OrderResponse(order2));
         doReturn(orders).when(orderService).list();

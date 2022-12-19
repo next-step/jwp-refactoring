@@ -1,12 +1,9 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -23,6 +20,14 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
+    }
+
+    public List<OrderLineItemRequest> getOrderLineItems() {
+        return orderLineItems;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public void setOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
@@ -45,14 +50,13 @@ public class OrderRequest {
         return orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(toList());
     }
 
-    public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<Menu> menus) {
+    public Order toOrder(Long orderTableId, OrderStatus orderStatus) {
         Order order = Order.builder()
                 .orderStatus(orderStatus)
-                .orderTable(orderTable)
+                .orderTableId(orderTableId)
                 .build();
         List<OrderLineItem> newOrderLineItems = orderLineItems.stream()
-                .filter(request -> menus.stream().anyMatch(menu -> menu.getId().equals(request.getMenuId())))
-                .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
+                .map(request -> request.toOrderLineItem(order))
                 .collect(toList());
         order.addOrderLineItems(newOrderLineItems);
         return order;

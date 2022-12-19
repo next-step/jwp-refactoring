@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.persistence.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.persistence.OrderTableRepository;
+import kitchenpos.table.validator.OrderValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository,
+                        final OrderValidator orderValidator
+    ) {
+        this.orderValidator = orderValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -35,12 +37,12 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        orderValidator.validateOrderComplete(orderTableId);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        List<Order> savedOrders = orderRepository.findAllByOrderTable(savedOrderTable);
-        savedOrderTable.changeEmpty(orderTable.isEmpty(),savedOrders);
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        orderTable.changeEmpty(orderTableRequest.isEmpty());
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     @Transactional

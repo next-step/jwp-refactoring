@@ -32,4 +32,16 @@ public class ProductResponse {
     public BigDecimal getPrice() {
         return price;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMoney(BigDecimal price) {
+        this.price = price;
+    }
 }

@@ -29,6 +29,14 @@ public class ProductRequest {
         return name;
     }
 
+    public BigDecimal getMoney() {
+        return price;
+    }
+
+    public void setMoney(BigDecimal price) {
+        this.price = price;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

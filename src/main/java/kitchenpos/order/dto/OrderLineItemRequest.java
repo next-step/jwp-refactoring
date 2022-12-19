@@ -1,10 +1,7 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-
-import java.util.List;
 
 public class OrderLineItemRequest {
     private Long menuId;
@@ -13,7 +10,7 @@ public class OrderLineItemRequest {
     public OrderLineItemRequest() {
     }
 
-    public OrderLineItemRequest(Long menuId, long quantity) {
+    public OrderLineItemRequest(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -30,11 +27,11 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public OrderLineItem toOrderLineItem(Order order, List<Menu> menus) {
+    public OrderLineItem toOrderLineItem(Order order) {
         return OrderLineItem.builder()
                 .order(order)
+                .menuId(menuId)
                 .quantity(quantity)
-                .menu(menus.stream().filter(menu -> menu.getId().equals(menuId)).findFirst().get())
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
-import com.navercorp.fixturemonkey.generator.BuilderArbitraryGenerator;
+
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -14,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,17 +42,16 @@ public class MenuGroupServiceTest {
     @Test
     public void returnMenuGroups() {
 
-        List<MenuGroup> mockMenuGroups = FixtureMonkey.builder()
-                .defaultGenerator(BuilderArbitraryGenerator.INSTANCE)
-                .build()
-                .giveMeBuilder(MenuGroup.class)
-                .set("id", Arbitraries.longs().between(1, 5))
-                .sampleList(5);
+        List<MenuGroup> mockMenuGroups = Arrays.asList(
+                MenuGroup.builder().id(1l).build(),
+                MenuGroup.builder().id(2l).build(),
+                MenuGroup.builder().id(3l).build());
+
         doReturn(mockMenuGroups).when(menuGroupRepository).findAll();
 
         List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         List<Long> menuGroupIds = menuGroups.stream().map(MenuGroupResponse::getId).collect(Collectors.toList());
-        assertAll(() -> assertThat(menuGroupIds).containsAnyOf(1l, 2l, 3l, 4l, 5l));
+        assertAll(() -> assertThat(menuGroupIds).containsAnyOf(1l, 2l, 3l));
     }
 }

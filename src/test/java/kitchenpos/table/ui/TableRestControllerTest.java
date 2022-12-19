@@ -1,6 +1,5 @@
 package kitchenpos.table.ui;
 
-import com.navercorp.fixturemonkey.FixtureMonkey;
 import kitchenpos.ControllerTest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
@@ -80,7 +79,7 @@ public class TableRestControllerTest extends ControllerTest {
     @Test
     public void returnTables() throws Exception {
         List<OrderTableResponse> orderTables = getOrderTables(OrderTable.builder().id(13l)
-                .tableGroup(TableGroup.builder().build()).build(), 100);
+                .tableGroupId(1l).build(), 100);
         doReturn(orderTables).when(tableService).list();
 
         webMvc.perform(get("/api/tables"))
@@ -89,13 +88,12 @@ public class TableRestControllerTest extends ControllerTest {
     }
 
     private OrderTableResponse getOrderTableResponse() {
-        return FixtureMonkey.create()
-                .giveMeBuilder(OrderTableResponse.class)
-                .set("id", Arbitraries.longs().between(1, 100))
-                .set("tableGroupId", Arbitraries.longs().between(1, 100))
-                .set("numberOfGuests", Arbitraries.integers().between(2, 5))
-                .set("empty", true)
-                .sample();
+        return OrderTableResponse.of(OrderTable.builder()
+                .id(Arbitraries.longs().between(1, 100).sample())
+                .tableGroupId(Arbitraries.longs().between(1, 100).sample())
+                .numberOfGuests(Arbitraries.integers().between(2, 5).sample())
+                .empty(true)
+                .build());
     }
 
     private List<OrderTableResponse> getOrderTables(OrderTable orderTable, int size) {
