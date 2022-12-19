@@ -68,7 +68,7 @@
 #### 요구사항 2
 - 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성한다. @SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성한다.
 #### 구현 리스트
-- [ ] 키친포스 요구 사항 정리
+- [x] 키친포스 요구 사항 정리
 * 최단 경로 조회 기능 구현하기 ( Outside In으로 구현 )
 1. Product
 - [x] 인수테스트 작성
@@ -88,3 +88,11 @@
 6. Order
 - [x] 인수테스트 작성
 - [x] 비즈니스 테스트 작성
+
+## Step1 - 서비스 리팩터링
+#### 리뷰어 리뷰사항 정리
+- [ ] 기본 접근 제어자 protected로 변경하기.
+- [ ] MenuService - price Null 체크하기.
+- [ ] OrderService - orderTable.isEmpty() 체크하기.
+- [ ] OrderService - OrderStatus.COMPLETION.name() 체크하기.
+- [ ] OrderServiceTest - 마지막에 newLine 넣기.
