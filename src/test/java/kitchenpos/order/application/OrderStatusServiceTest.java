@@ -63,10 +63,8 @@ class OrderStatusServiceTest extends ServiceTest {
         super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         Menu menu = menuRepository.save(new Menu(nameMenuA(), PriceFixture.priceMenuA(), menuGroup, new MenuProducts(singletonList(MenuProductFixture.menuProductA()))));
-        OrderTable orderTable1 = orderTableRepository.save(emptyOrderTable());
-        OrderTable orderTable2 = orderTableRepository.save(emptyOrderTable());
-        tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2))));
-        createOrder(orderTable1, menu);
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
+        createOrder(tableGroup.getOrderTables().get(0), menu);
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
