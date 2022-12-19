@@ -33,13 +33,12 @@ import java.util.NoSuchElementException;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.*;
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.common.fixture.PriceFixture.priceProductA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;

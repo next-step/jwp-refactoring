@@ -1,4 +1,4 @@
-package kitchenpos.common.fixture;
+package kitchenpos.table.domain.fixture;
 
 import kitchenpos.table.domain.NumberOfGuests;
 

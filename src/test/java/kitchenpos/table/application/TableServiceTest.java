@@ -35,7 +35,7 @@ import java.util.Collections;
 import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
 import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;

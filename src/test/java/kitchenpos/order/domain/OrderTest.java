@@ -1,16 +1,14 @@
 package kitchenpos.order.domain;
 
-import com.google.common.collect.ImmutableList;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.numberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.numberOfGuests;
 import static kitchenpos.common.fixture.QuantityFixture.quantityOrderLineItemA;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Orders.COMPLETION_CHANGE_EXCEPTION_MESSAGE;

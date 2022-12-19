@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -28,7 +28,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.menu.domain.fixture.MenuProductFixture.menuProductA;

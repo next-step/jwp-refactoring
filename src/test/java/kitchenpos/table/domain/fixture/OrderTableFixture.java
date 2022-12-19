@@ -3,8 +3,8 @@ package kitchenpos.table.domain.fixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
-import static kitchenpos.common.fixture.NumberOfGuestsFixture.numberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.numberOfGuests;
 
 public class OrderTableFixture {
 
