@@ -108,6 +108,17 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("메뉴생성 테스트 - 가격이 null인 경우")
+    @Test
+    void createMenuTest2() {
+        // given
+        삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", null, 한식.getId(), new ArrayList<>());
+
+        // when & then
+        assertThatThrownBy(() -> menuService.create(삼겹살세트메뉴))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("메뉴생성 테스트 - 메뉴 그룹이 없는 경우")
     @Test
     void createMenuTest3() {
