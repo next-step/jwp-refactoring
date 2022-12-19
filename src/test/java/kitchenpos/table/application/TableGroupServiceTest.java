@@ -11,11 +11,12 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class TableGroupServiceTest {
 
     private OrderTable 주문테이블1;
@@ -53,14 +54,16 @@ public class TableGroupServiceTest {
     private OrderLineItem 주문항목1;
     private OrderLineItem 주문항목2;
 
-    @Mock
+    @MockBean
     private OrderRepository orderRepository;
-    @Mock
+    @MockBean
     private OrderTableRepository orderTableRepository;
-    @Mock
+    @MockBean
     private TableGroupRepository tableGroupRepository;
+    @Autowired
+    private ApplicationEventPublisher publisher;
     private TableService tableService;
-    private TableGroupValidator tableGroupValidator;
+    private TableGroupHandler tableGroupHandler;
     private TableGroupService tableGroupService;
 
     @BeforeEach
@@ -89,29 +92,34 @@ public class TableGroupServiceTest {
         주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(2));
 
         tableService = new TableService(orderRepository, orderTableRepository);
-        tableGroupValidator = new TableGroupValidator(orderTableRepository, orderRepository);
-        tableGroupService = new TableGroupService(tableGroupValidator, tableGroupRepository);
+        tableGroupHandler = new TableGroupHandler(orderTableRepository, orderRepository);
+        tableGroupService = new TableGroupService(publisher, tableGroupRepository, tableService);
     }
 
     @DisplayName("테이블그룹 생성 테스트")
     @Test
     void createTableGroupTest() {
         //given
+        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now());
         final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(4), true);
         final OrderTable 주문테이블2 = new OrderTable(2L, null, new NumberOfGuests(4), true);
         final List<OrderTable> orderTables = Arrays.asList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now());
 
+        when(tableGroupRepository.save(any(TableGroup.class)))
+                .thenReturn(테이블그룹);
         for (OrderTable orderTable : orderTables) {
             when(orderTableRepository.findById(orderTable.getId()))
                     .thenReturn(Optional.ofNullable(orderTable));
         }
-        when(tableGroupRepository.save(any(TableGroup.class)))
-                .thenReturn(테이블그룹);
+        when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId()))
+                .thenReturn(orderTables);
 
         //when
+        List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
         final TableGroupResponse result = tableGroupService.create(
-                new TableGroupRequest(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList())));
+                new TableGroupRequest(orderTableIds));
 
         //then
         assertAll(

@@ -70,9 +70,8 @@ public class TableService {
         return orderRepository.findOrderByOrderTable(orderTable)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_ORDER_TABLE.getMessage()));
     }
-    public List<Order> findOrderByOrderTableIds(List<Long> orderTableIds) {
-        return orderTableIds.stream()
-                .map(this::findOrderByOrderTableId)
-                .collect(Collectors.toList());
+
+    public List<OrderTable> findAllByTableGroupId(Long id) {
+        return orderTableRepository.findAllByTableGroupId(id);
     }
 }
