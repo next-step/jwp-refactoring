@@ -4,11 +4,12 @@ import kitchenpos.JpaEntityTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ public class OrderTest extends JpaEntityTest {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
+    private OrderTableRepository orderTableRepository;
+    @Autowired
     private ProductRepository productRepository;
     @Autowired
     private MenuRepository menuRepository;
@@ -32,11 +35,12 @@ public class OrderTest extends JpaEntityTest {
     void createOrder() {
         // given
         Menu menu = createMenuFixture("순살후라이드치킨");
-        OrderTable 테이블 = new OrderTable(4, false);
+        OrderTable 테이블 = orderTableRepository.save(new OrderTable(4, false));
         OrderLineItem orderLineItem = new OrderLineItem(menu, 2L);
 
         // when
-        Order savedOrder = orderRepository.save(new Order(테이블, Lists.newArrayList(orderLineItem)));
+        Order savedOrder = orderRepository.save(new Order(테이블.getId()));
+        savedOrder.addOrderLineItems(Lists.newArrayList(orderLineItem));
         flushAndClear();
 
         // then
@@ -52,9 +56,10 @@ public class OrderTest extends JpaEntityTest {
     void updateOrderStatus() {
         // given
         Menu menu = createMenuFixture("순살후라이드치킨");
-        OrderTable 테이블 = new OrderTable(4, false);
+        OrderTable 테이블 = orderTableRepository.save(new OrderTable(4, false));
         OrderLineItem orderLineItem = new OrderLineItem(menu, 2L);
-        Order savedOrder = orderRepository.save(new Order(테이블, Lists.newArrayList(orderLineItem)));
+        Order savedOrder = orderRepository.save(new Order(테이블.getId()));
+        savedOrder.addOrderLineItems(Lists.newArrayList(orderLineItem));
         flushAndClear();
 
         // when
@@ -80,7 +85,10 @@ public class OrderTest extends JpaEntityTest {
         productRepository.save(product);
 
         MenuGroup menuGroup = new MenuGroup("한마리치킨");
-        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup, Lists.newArrayList(new MenuProduct(product, 1L)));
-        return menuRepository.save(menu);
+        Menu menu = new Menu(name, BigDecimal.valueOf(10_000), menuGroup);
+        Menu save = menuRepository.save(menu);
+        save.addMenuProducts(Lists.newArrayList(new MenuProduct(product, 1L)));
+
+        return save;
     }
 }

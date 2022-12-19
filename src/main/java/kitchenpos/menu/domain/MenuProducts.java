@@ -6,10 +6,11 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menuId", cascade = CascadeType.ALL)
     private List<MenuProduct> values;
 
     protected MenuProducts() {
@@ -22,5 +23,18 @@ public class MenuProducts {
 
     public List<MenuProduct> values() {
         return Collections.unmodifiableList(values);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MenuProducts)) return false;
+        MenuProducts that = (MenuProducts) o;
+        return Objects.equals(values, that.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(values);
     }
 }

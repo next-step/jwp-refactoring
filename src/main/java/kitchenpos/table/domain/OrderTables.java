@@ -9,11 +9,15 @@ import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL)
     private List<OrderTable> values;
 
     protected OrderTables() {
         values = new ArrayList<>();
+    }
+
+    public OrderTables(List<OrderTable> values) {
+        this.values = values;
     }
 
     public void add(OrderTable orderTable) {

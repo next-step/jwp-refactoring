@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,9 +17,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "order_table_id", nullable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    @Column(name = "order_table_id", nullable = false)
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
     private OrderStatus orderStatus;
@@ -33,26 +31,17 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        orderTable.validateIsEmptyTable();
-        assignOrderTable(orderTable);
+    public Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            addOrderLineItem(orderLineItem);
-        }
-    }
-
-    private void assignOrderTable(OrderTable orderTable) {
-        orderTable.ordered(this);
-        this.orderTable = orderTable;
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus status() {
@@ -67,8 +56,18 @@ public class Order {
         return orderLineItems.values();
     }
 
+    public void startOrder(OrderValidator orderValidator) {
+        orderValidator.validate(this);
+    }
+
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            addOrderLineItem(orderLineItem);
+        }
+    }
+
     private void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.addedBy(this);
+        orderLineItem.addedBy(this.id);
         orderLineItems.add(orderLineItem);
     }
 
@@ -83,20 +82,16 @@ public class Order {
         }
     }
 
-    public boolean isCooking() {
-        return OrderStatus.isCooking(orderStatus);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
-        Order entity = (Order) o;
-        return Objects.equals(orderTable, entity.orderTable) && Objects.equals(orderLineItems, entity.orderLineItems);
+        Order order = (Order) o;
+        return orderStatus == order.orderStatus && Objects.equals(getOrderedTime(), order.getOrderedTime()) && Objects.equals(getOrderLineItems(), order.getOrderLineItems());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTable, orderLineItems);
+        return Objects.hash(orderStatus, getOrderedTime(), getOrderLineItems());
     }
 }

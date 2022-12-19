@@ -32,6 +32,8 @@ public class TableGroupTest extends JpaEntityTest {
 
         // when
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
+        savedTableGroup.enGroup(getTableGroupValidator());
+        orderTableRepository.saveAll(savedTableGroup.getOrderTables());
         flushAndClear();
 
         // then
@@ -53,10 +55,13 @@ public class TableGroupTest extends JpaEntityTest {
         OrderTable 테이블2 = new OrderTable(8, false);
         List<OrderTable> 테이블들 = Lists.newArrayList(테이블1, 테이블2);
         orderTableRepository.saveAll(테이블들);
+
+        // when
+        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
         flushAndClear();
 
-        // when / then
-        assertThatThrownBy(() -> new TableGroup(테이블들))
+        // then
+        assertThatThrownBy(() -> savedTableGroup.enGroup(getTableGroupValidator()))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -69,19 +74,24 @@ public class TableGroupTest extends JpaEntityTest {
         List<OrderTable> 테이블들 = Lists.newArrayList(테이블1, 테이블2);
         orderTableRepository.saveAll(테이블들);
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(테이블들));
+        savedTableGroup.enGroup(getTableGroupValidator());
+        orderTableRepository.saveAll(savedTableGroup.getOrderTables());
         flushAndClear();
 
         // when
         TableGroup tableGroup = tableGroupRepository.getOne(savedTableGroup.getId());
-        tableGroup.unGroup();
+        tableGroup.unGroup(getTableGroupValidator());
+        tableGroup = tableGroupRepository.save(tableGroup);
         flushAndClear();
 
         // then
         OrderTable table1 = orderTableRepository.getOne(테이블1.getId());
         OrderTable table2 = orderTableRepository.getOne(테이블2.getId());
+        TableGroup tableGroup1 = tableGroupRepository.getOne(tableGroup.getId());
         assertAll(
                 () -> assertThat(table1.isGrouping()).isFalse(),
-                () -> assertThat(table2.isGrouping()).isFalse()
+                () -> assertThat(table2.isGrouping()).isFalse(),
+                () -> assertThat(tableGroup1.getOrderTables()).isEmpty()
         );
     }
 }

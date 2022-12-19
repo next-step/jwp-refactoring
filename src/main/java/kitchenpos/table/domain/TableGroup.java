@@ -1,29 +1,27 @@
 package kitchenpos.table.domain;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "table_group")
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup extends BaseTime {
-    private static final int GROUP_TABLE_MIN_SIZE = 2;
-    private static final String EXCEPTION_MESSAGE_MIN_GROUP_TABLE = "단체 테이블은 테이블" + GROUP_TABLE_MIN_SIZE + "개 이상 필요로 합니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "bigint(20)")
     private Long id;
     @Embedded
-    private final OrderTables orderTables = new OrderTables();
+    private OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
-        enGroup(orderTables);
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public Long getId() {
@@ -34,29 +32,26 @@ public class TableGroup extends BaseTime {
         return orderTables.values();
     }
 
-    private void enGroup(List<OrderTable> orderTables) {
-        validateOrderTables(orderTables);
-        for (OrderTable orderTable : orderTables) {
-            addOrderTable(orderTable);
+    public List<Long> getOrderTableIds() {
+        return orderTables.values().stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
+    public void enGroup(TableGroupValidator validator) {
+        validator.validateEnGroup(orderTables.values());
+
+        for (OrderTable orderTable : orderTables.values()) {
+            orderTable.enGroupBy(this.id);
         }
     }
 
-    public void unGroup() {
+    public void unGroup(TableGroupValidator validator) {
+        validator.validateUnGroup(getOrderTableIds());
+
         for (OrderTable orderTable : orderTables.values()) {
-            orderTable.validateOrderStatus();
             orderTable.unGroupBy();
         }
         orderTables.removeAll();
-    }
-
-    private void addOrderTable(OrderTable orderTable) {
-        orderTable.enGroupBy(this);
-        this.orderTables.add(orderTable);
-    }
-
-    private void validateOrderTables(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < GROUP_TABLE_MIN_SIZE) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_MIN_GROUP_TABLE);
-        }
     }
 }
