@@ -94,7 +94,7 @@ public class OrderServiceTest {
 
         menuValidator = new MenuValidator(menuRepository);
         tableValidator = new TableValidator(orderTableRepository);
-        orderService = new OrderService(publisher, orderRepository, orderLineItemRepository, tableValidator, menuValidator);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, tableValidator, menuValidator, publisher);
     }
 
     @DisplayName("주문생성 테스트")

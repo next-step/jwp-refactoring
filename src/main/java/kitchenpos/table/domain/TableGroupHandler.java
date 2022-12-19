@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import kitchenpos.ExceptionMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +14,11 @@ import java.util.stream.Collectors;
 public class TableGroupHandler {
 
     private OrderTableRepository orderTableRepository;
-    private OrderRepository orderRepository;
+    private OrderValidator orderValidator;
 
-    public TableGroupHandler(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableGroupHandler(OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
     }
 
     @EventListener
@@ -37,9 +38,7 @@ public class TableGroupHandler {
     public void ungroupOrderTables(TableUngroupedEvent event) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());
         for (OrderTable orderTable : orderTables) {
-            Order order = orderRepository.findOrderByOrderTable(orderTable)
-                    .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_ORDER.getMessage()));
-            order.checkCookingOrMeal();
+            orderValidator.checkCookingOrMeal(orderTable.getId());
             orderTable.ungroup();
         }
     }

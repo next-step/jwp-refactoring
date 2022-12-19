@@ -16,15 +16,15 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableGroupService {
 
-    private final ApplicationEventPublisher publisher;
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
+    private final ApplicationEventPublisher publisher;
 
-    public TableGroupService(final ApplicationEventPublisher publisher, final TableGroupRepository tableGroupRepository,
-                             final TableService tableService) {
-        this.publisher = publisher;
+    public TableGroupService(final TableGroupRepository tableGroupRepository,
+                             final TableService tableService, final ApplicationEventPublisher publisher) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
+        this.publisher = publisher;
     }
 
     @Transactional

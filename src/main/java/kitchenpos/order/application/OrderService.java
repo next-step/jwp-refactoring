@@ -32,17 +32,17 @@ public class OrderService {
     private final MenuValidator menuValidator;
 
     public OrderService(
-            final ApplicationEventPublisher publisher,
             final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
             final TableValidator tableValidator,
-            final MenuValidator menuValidator
+            final MenuValidator menuValidator,
+            final ApplicationEventPublisher publisher
             ) {
-        this.publisher = publisher;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.tableValidator = tableValidator;
         this.menuValidator = menuValidator;
+        this.publisher = publisher;
     }
 
     @Transactional

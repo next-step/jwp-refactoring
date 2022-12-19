@@ -4,6 +4,7 @@ import kitchenpos.ExceptionMessage;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -20,12 +21,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -51,7 +52,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, boolean empty) {
         final OrderTable savedOrderTable = findById(orderTableId);
-        final Order order = findOrderByOrderTableId(orderTableId);
+        final Order order = orderValidator.findOrderByOrderTableId(orderTableId);
         order.checkCookingOrMeal();
         savedOrderTable.changeEmpty(empty);
         return OrderTableResponse.of(savedOrderTable);
@@ -63,12 +64,6 @@ public class TableService {
         final NumberOfGuests newNumberOfGuests = new NumberOfGuests(numberOfGuests);
         savedOrderTable.changeNumberOfGuests(newNumberOfGuests);
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    public Order findOrderByOrderTableId(Long orderTableId) {
-        OrderTable orderTable = findById(orderTableId);
-        return orderRepository.findOrderByOrderTable(orderTable)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_ORDER_TABLE.getMessage()));
     }
 
     public List<OrderTable> findAllByTableGroupId(Long id) {

@@ -62,8 +62,8 @@ public class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
     @Autowired
     private ApplicationEventPublisher publisher;
+    private OrderValidator orderValidator;
     private TableService tableService;
-    private TableGroupHandler tableGroupHandler;
     private TableGroupService tableGroupService;
 
     @BeforeEach
@@ -91,9 +91,9 @@ public class TableGroupServiceTest {
         주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
         주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(2));
 
-        tableService = new TableService(orderRepository, orderTableRepository);
-        tableGroupHandler = new TableGroupHandler(orderTableRepository, orderRepository);
-        tableGroupService = new TableGroupService(publisher, tableGroupRepository, tableService);
+        orderValidator = new OrderValidator(orderRepository);
+        tableService = new TableService(orderTableRepository, orderValidator);
+        tableGroupService = new TableGroupService(tableGroupRepository, tableService, publisher);
     }
 
     @DisplayName("테이블그룹 생성 테스트")
@@ -261,7 +261,7 @@ public class TableGroupServiceTest {
 
         for(Long id : orderTableIds) {
             OrderTable orderTable = orderTableMap.get(id);
-            when(orderRepository.findOrderByOrderTable(orderTable))
+            when(orderRepository.findOrderByOrderTableId(orderTable.getId()))
                     .thenReturn(Optional.ofNullable(주문));
         }
 
@@ -288,7 +288,7 @@ public class TableGroupServiceTest {
         when(tableGroupRepository.findById(테이블그룹.getId()))
                 .thenReturn(Optional.ofNullable(테이블그룹));
 
-        when(orderRepository.findOrderByOrderTable(orderTables.get(0)))
+        when(orderRepository.findOrderByOrderTableId(orderTables.get(0).getId()))
                 .thenReturn(Optional.ofNullable(주문));
 
         //when

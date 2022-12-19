@@ -54,7 +54,7 @@ public class TableServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @InjectMocks
+    private OrderValidator orderValidator;
     private TableService tableService;
 
     @BeforeEach
@@ -79,6 +79,9 @@ public class TableServiceTest {
         주문테이블2 = new OrderTable(1L, null, new NumberOfGuests(4), false);
 
         주문 = new Order(1L, 주문테이블2.getId(), OrderStatus.COOKING, LocalDateTime.now());
+
+        orderValidator = new OrderValidator(orderRepository);
+        tableService = new TableService(orderTableRepository, orderValidator);
     }
 
     @DisplayName("테이블생성테스트")
@@ -113,7 +116,7 @@ public class TableServiceTest {
 
         when(orderTableRepository.findById(orderTable.getId()))
                 .thenReturn(Optional.ofNullable(orderTable));
-        when(orderRepository.findOrderByOrderTable(any(OrderTable.class)))
+        when(orderRepository.findOrderByOrderTableId(any(Long.class)))
                 .thenReturn(Optional.ofNullable(주문));
 
         //when
@@ -145,7 +148,7 @@ public class TableServiceTest {
 
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderRepository.findOrderByOrderTable(주문테이블1))
+        when(orderRepository.findOrderByOrderTableId(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문));
 
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블1.getId(), true))
