@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.ui.request.TableGroupRequest.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,6 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.ui.request.OrderTableRequest;
 import kitchenpos.order.ui.request.TableGroupRequest;
 import kitchenpos.order.ui.response.TableGroupResponse;
 

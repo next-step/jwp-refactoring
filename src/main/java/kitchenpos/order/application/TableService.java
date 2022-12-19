@@ -12,7 +12,6 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.ui.request.NumberOfGuestsRequest;
-import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.request.OrderTableRequest;
 import kitchenpos.order.ui.request.TableStatusRequest;
 import kitchenpos.order.ui.response.OrderTableResponse;

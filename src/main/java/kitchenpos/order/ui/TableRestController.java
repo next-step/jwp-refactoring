@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.ui.request.NumberOfGuestsRequest;
 import kitchenpos.order.ui.request.OrderTableRequest;
 import kitchenpos.order.ui.request.TableStatusRequest;

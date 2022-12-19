@@ -21,11 +21,6 @@ public class OrderLineItemRequest {
 	}
 
 	public OrderLineItem toEntity() {
-		return new OrderLineItem(null, null, menuId, quantity);
-
-	}
-
-	public void setOrderId(Long orderId) {
-
+		return OrderLineItem.of(menuId, quantity);
 	}
 }

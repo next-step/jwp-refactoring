@@ -1,6 +1,7 @@
 package kitchenpos.menu.ui.response;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.MenuGroup;
 
@@ -24,7 +25,7 @@ public class MenuGroupResponse {
 	public static List<MenuGroupResponse> listFrom(List<MenuGroup> menuGroups) {
 		return menuGroups.stream()
 			.map(MenuGroupResponse::from)
-			.collect(java.util.stream.Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 	public Long getId() {

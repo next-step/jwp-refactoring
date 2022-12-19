@@ -18,13 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.generator.OrderLineItemGenerator;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
@@ -38,10 +35,7 @@ class OrderServiceTest {
 	private MenuDao menuDao;
 
 	@Mock
-	private OrderDao orderDao;
-
-	@Mock
-	private OrderLineItemDao orderLineItemDao;
+	private OrderRepository orderRepository;
 
 	@Mock
 	private OrderTableDao orderTableDao;
@@ -61,12 +55,8 @@ class OrderServiceTest {
 		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
 		given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(비어있지_않은_5명_테이블()));
 
-
 		Order 조리중_주문 = 조리중_주문();
-		given(orderDao.save(any())).willReturn(조리중_주문);
-		OrderLineItem 주문_품목 = OrderLineItemGenerator.주문_품목();
-		주문_품목.setOrderId(조리중_주문.getId());
-		given(orderLineItemDao.save(any())).willReturn(주문_품목);
+		given(orderRepository.save(any())).willReturn(조리중_주문);
 
 		// when
 		orderService.create(orderRequest);
@@ -149,16 +139,11 @@ class OrderServiceTest {
 	@DisplayName("주문을 조회할 수 있다.")
 	@Test
 	void listOrderTest() {
-		// given
-		Order order = 조리중_주문();
-		given(orderDao.findAll()).willReturn(Collections.singletonList(order));
-
 		// when
 		orderService.list();
 
 		// then
-		verify(orderDao, only()).findAll();
-		verify(orderLineItemDao, only()).findAllByOrderId(order.getId());
+		verify(orderRepository, only()).findAll();
 	}
 
 	@DisplayName("주문 상태를 변경할 수 있다.")
@@ -168,13 +153,13 @@ class OrderServiceTest {
 		OrderStatus orderStatus = OrderStatus.MEAL;
 		OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
 		Order order = 조리중_주문();
-		given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
+		given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
 		orderService.changeOrderStatus(order.getId(), orderStatusRequest);
 
 		// then
-		주문_상태_변경됨(orderStatus);
+		verify(order, times(1)).updateStatus(orderStatus);
 	}
 
 	@DisplayName("이미 등록된 주문이 아니면 주문 상태를 변경할 수 없다.")
@@ -183,7 +168,7 @@ class OrderServiceTest {
 		// given
 		OrderStatus orderStatus = OrderStatus.MEAL;
 		OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
-		given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+		given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(1L, orderStatusRequest));
@@ -199,32 +184,21 @@ class OrderServiceTest {
 		OrderStatus orderStatus = OrderStatus.MEAL;
 		OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
 		Order order = 계산_완료_주문();
-		given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
+		given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(1L, orderStatusRequest));
+		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
 
-	private void 주문_상태_변경됨(OrderStatus orderStatus) {
-		ArgumentCaptor<Order> captor = ArgumentCaptor.forClass(Order.class);
-		verify(orderDao, times(1)).save(captor.capture());
-		Order savedOrder = captor.getValue();
-		assertThat(savedOrder.getOrderStatus()).isEqualTo(orderStatus.name());
-	}
-
-	private Order orderUpdateRequest(OrderStatus orderStatus) {
-		return 주문(1L, orderStatus, Collections.emptyList());
-	}
-
 	private void 주문_등록_됨(long orderTableId) {
 		ArgumentCaptor<Order> captor = ArgumentCaptor.forClass(Order.class);
-		verify(orderDao, only()).save(captor.capture());
+		verify(orderRepository, only()).save(captor.capture());
 		Order savedOrder = captor.getValue();
 		assertAll(
-			() -> assertThat(savedOrder.getId()).isEqualTo(orderTableId),
+			() -> assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTableId),
 			() -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
 			() -> assertThat(savedOrder.getOrderLineItems()).hasSize(1)
 		);

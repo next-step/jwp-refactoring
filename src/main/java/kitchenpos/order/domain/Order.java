@@ -3,28 +3,54 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
+@Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	private Long orderTableId;
-	private String orderStatus;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus = OrderStatus.COOKING;
+
+	@CreatedDate
+	@Column(nullable = false, updatable = false)
 	private LocalDateTime orderedTime;
-	private List<OrderLineItem> orderLineItems;
+
+	@Embedded
+	private OrderLineItems orderLineItems;
 
 	public Order() {
 	}
 
 	public Order(
-		Long id,
 		Long orderTableId,
-		String orderStatus,
-		LocalDateTime orderedTime,
-		List<OrderLineItem> orderLineItems
+		OrderLineItems orderLineItems
 	) {
-		this.id = id;
 		this.orderTableId = orderTableId;
-		this.orderStatus = orderStatus;
-		this.orderedTime = orderedTime;
 		this.orderLineItems = orderLineItems;
+	}
+
+	public static Order of(long orderTableId, OrderLineItems orderLineItems) {
+		return new Order(orderTableId, orderLineItems);
 	}
 
 	public Long getId() {
@@ -44,10 +70,10 @@ public class Order {
 	}
 
 	public String getOrderStatus() {
-		return orderStatus;
+		return orderStatus.name();
 	}
 
-	public void setOrderStatus(final String orderStatus) {
+	public void updateStatus(final OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
@@ -60,10 +86,10 @@ public class Order {
 	}
 
 	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
+		return orderLineItems.list();
 	}
 
-	public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+	public void setOrderLineItems(final OrderLineItems orderLineItems) {
 		this.orderLineItems = orderLineItems;
 	}
 }
