@@ -1,11 +1,9 @@
-package kitchenpos.order.repository;
+package kitchenpos.order.domain;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import kitchenpos.order.domain.Order;
-
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findOrdersByOrderTableId(Long orderTableId);
+	List<Order> findOrdersByOrderTableId(Long orderTableId);
 }
