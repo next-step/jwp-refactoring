@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
@@ -72,10 +73,7 @@ class OrderServiceTest extends ServiceTest {
         orderTables.add(emptyOrderTable());
         orderTables.add(emptyOrderTable());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(orderTables)));
-        orderTableA = orderTableRepository.save(new OrderTable());
-        orderTableA.setTableGroup(tableGroup);
-
-        orderTableA = orderTableRepository.save(orderTableA);
+        orderTableA = orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 

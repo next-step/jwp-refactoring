@@ -4,10 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static kitchenpos.order.domain.Orders.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.OrderTable.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.OrderTable.EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTable.*;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
-import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,16 +26,16 @@ class OrderTableTest {
         );
     }
 
-//    @DisplayName("공석 상태로 변경 / 테이블 그룹이 없을 수 없다.")
-//    @Test
-//    void empty_fail_tableGroup() {
-//
-//        OrderTable orderTable = new OrderTable();
-//
-//        assertThatThrownBy(orderTable::empty)
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(TABLE_GROUP_EMPTY_EXCEPTION_MESSAGE);
-//    }
+    @DisplayName("공석 상태로 변경 / 테이블 그룹이 없을 수 없다.")
+    @Test
+    void empty_fail_tableGroup() {
+
+        OrderTable orderTable = notEmptyOrderTable();
+
+        assertThatThrownBy(orderTable::empty)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+    }
 
     @DisplayName("공석 상태로 변경")
     @Test
@@ -75,7 +73,7 @@ class OrderTableTest {
     @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuests_fail_orderTable() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), new NumberOfGuests(1), false);
+        OrderTable orderTable = new OrderTable(new TableGroup(), new NumberOfGuests(1), false);
         orderTable.setTableGroup(null);
         assertThat(orderTable.getTableGroup()).isNull();
         assertThatThrownBy(() -> orderTable.changeSitNumberOfGuest(new NumberOfGuests(2)))

@@ -15,13 +15,14 @@ public class NumberOfGuests {
     }
 
     public NumberOfGuests(int numberOfGuests) {
+        validate(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private static void validate(int numberOfGuests) {
         if (numberOfGuests < CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER) {
             throw new IllegalArgumentException(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
         }
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException(NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
-        }
-        this.numberOfGuests = numberOfGuests;
     }
 
     @Override

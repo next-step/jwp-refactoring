@@ -31,8 +31,7 @@ public class Orders {
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Orders(OrderTable orderTable, OrderLineItems orderLineItems) {
-        validateOrderTable(orderTable);
-        validateOrderLineItems(orderLineItems);
+        validate(orderTable, orderLineItems);
         this.orderTable = orderTable;
         orderLineItems.mapOrder(this);
         this.orderLineItems = orderLineItems;
@@ -48,15 +47,28 @@ public class Orders {
     }
 
     private static void validateOrderTable(OrderTable orderTable) {
-        if (Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-        }
+        validateOrderTableNull(orderTable);
+        validateOrderTableEmpty(orderTable);
+    }
+
+    private static void validateOrderTableEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
     }
 
-    private void validateOrderLineItems(OrderLineItems orderLineItems) {
+    private static void validateOrderTableNull(OrderTable orderTable) {
+        if (Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
+        validateOrderTable(orderTable);
+        validateEmptyOrderLineItems(orderLineItems);
+    }
+
+    private void validateEmptyOrderLineItems(OrderLineItems orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
         }
@@ -94,20 +106,26 @@ public class Orders {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
-        }
+        validateCompleteOrderStatus();
         this.orderStatus = orderStatus;
     }
 
-    public void emptyTable() {
-        if (this.orderTable == null) {
-            throw new EntityNotFoundException("주문테이블이 존재하지 않습니다.");
+    private void validateCompleteOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
         }
+    }
+
+    public void emptyTable() {
+        validateOrderTableNull(orderTable);
+        validateNotCompleteOrderStatus();
+        this.orderTable.empty();
+    }
+
+    private void validateNotCompleteOrderStatus() {
         if (this.orderStatus.equals(OrderStatus.COOKING) || this.orderStatus.equals(OrderStatus.MEAL)) {
             throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
         }
-        this.orderTable.empty();
     }
 
     public OrderStatus getOrderStatus() {

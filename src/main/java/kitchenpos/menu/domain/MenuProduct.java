@@ -25,21 +25,26 @@ public class MenuProduct {
     }
 
     public MenuProduct(Menu menu, Product product, Quantity quantity) {
-        validate(menu, product, quantity);
+        validate(product, quantity);
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    private static void validate(Menu menu, Product product, Quantity quantity) {
-//        if (Objects.isNull(menu)) {
-//            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
-//        }
-        if (Objects.isNull(product)) {
-            throw new IllegalArgumentException(PRODUCT_NULL_EXCEPTION_MESSAGE);
-        }
+    private static void validate(Product product, Quantity quantity) {
+        validateNullProduct(product);
+        validateNullQuantity(quantity);
+    }
+
+    private static void validateNullQuantity(Quantity quantity) {
         if (Objects.isNull(quantity)) {
             throw new IllegalArgumentException(QUANTITY_NULL_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateNullProduct(Product product) {
+        if (Objects.isNull(product)) {
+            throw new IllegalArgumentException(PRODUCT_NULL_EXCEPTION_MESSAGE);
         }
     }
 

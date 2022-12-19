@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.fixture.NumberOfGuestsFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.repository.MenuGroupRepository;
@@ -26,6 +27,7 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 
 import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
+import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
@@ -207,11 +209,11 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private OrderTable emptyTableEmptyNotEmptyTableGroup(TableGroup tableGroup) {
-        return orderTableRepository.save(new OrderTable(tableGroup, true));
+        return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), true));
     }
 
     private OrderTable notEmptyTableEmptyNotEmptyTableGroup(TableGroup tableGroup) {
-        return orderTableRepository.save(new OrderTable(tableGroup, false));
+        return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
     }
 
     private void 주문_식사중_상태_변경() {

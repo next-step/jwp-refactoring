@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 
 import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
+import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
@@ -64,14 +65,14 @@ class TableServiceTest extends ServiceTest {
         tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(changeEmptyOrder(), changeEmptyOrder()))));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(notEmptyOrderTable());
-        orderTableB = orderTableRepository.save(new OrderTable(tableGroup, false));
+        orderTableB = orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
         tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void create() {
-        OrderTableResponse orderTable = tableService.create(new OrderTable());
+        OrderTableResponse orderTable = tableService.create(new OrderTable(null, initNumberOfGuests(), false));
         assertAll(
                 () -> assertThat(orderTable.getTableGroup()).isNull(),
 //                () -> assertThat(orderTable.getNumberOfGuests()).isZero(),
@@ -146,7 +147,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("공석 상태로 변경한다. / 요리중일 경우 변경할 수 없다.")
     @Test
     void empty_fail_cooking() {
-        assertThatThrownBy(() -> tableService.changeEmpty(createOrder().getOrderTable().getId()))
+        assertThatThrownBy(() -> tableService.changeEmpty(notEmptyOrder().getOrderTable().getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -171,12 +172,17 @@ class TableServiceTest extends ServiceTest {
     }
 
     private OrderTable changeEmptyOrder() {
-        OrderTable orderTable1 = orderTableRepository.save(new OrderTable(true));
+        OrderTable orderTable1 = orderTableRepository.save(new OrderTable(null, initNumberOfGuests(), true));
         return orderTableRepository.save(orderTable1);
     }
 
-    private Orders createOrder() {
-        OrderTable orderTable = orderTableRepository.save(new OrderTable());
+    private Orders notEmptyOrder() {
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, initNumberOfGuests(), false));
+        return orderRepository.save(new Orders(orderTable, orderLineItemsA()));
+    }
+
+    private Orders emptyOrder() {
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, initNumberOfGuests(), true));
         return orderRepository.save(new Orders(orderTable, orderLineItemsA()));
     }
 

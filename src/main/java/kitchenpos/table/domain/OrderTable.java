@@ -7,7 +7,6 @@ public class OrderTable {
     public static final String CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "변경하는 손님수는 0명보다 작을 수 없습니다.";
     public static final int CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER = 0;
     public static final String TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "테이블 그룹이 존재하지 않습니다.";
-    public static final String NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "0명보다 작을 수 없다.";
     public static final String EMPTY_EXCEPTION_MESSAGE = "공석일 경우 손님수를 변경할 수 없습니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,27 +18,10 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
-        this.empty = false;
-        this.numberOfGuests = new NumberOfGuests(0);
-    }
-
-    public OrderTable(boolean empty) {
-        this.empty = empty;
-        this.numberOfGuests = new NumberOfGuests(0);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public OrderTable(TableGroup tableGroup, boolean empty) {
-        this.tableGroup = tableGroup;
-        this.empty = empty;
-        this.numberOfGuests = new NumberOfGuests(0);
     }
 
     public Long getId() {
@@ -59,10 +41,14 @@ public class OrderTable {
     }
 
     public void empty() {
+        validateNotNullTableGroup();
+        this.empty = true;
+    }
+
+    private void validateNotNullTableGroup() {
         if (this.tableGroup != null) {
             throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
-        this.empty = true;
     }
 
     public void unGroup() {
@@ -70,13 +56,14 @@ public class OrderTable {
     }
 
     public void changeSitNumberOfGuest(NumberOfGuests numberOfGuests) {
-//        if (Objects.isNull(tableGroup)) {
-//            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-//        }
+        validateEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateEmpty() {
         if (isEmpty()) {
             throw new IllegalArgumentException(EMPTY_EXCEPTION_MESSAGE);
         }
-        this.numberOfGuests = numberOfGuests;
     }
 
     public TableGroup getTableGroup() {
