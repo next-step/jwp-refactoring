@@ -1,12 +1,11 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.core.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Product 클래스 테스트")
 class ProductTest {
@@ -31,6 +30,6 @@ class ProductTest {
     void failureCreateWithNegativePrice() {
         assertThatThrownBy(() -> {
             new Product("강정치킨", BigDecimal.valueOf(-1));
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(InvalidPriceException.class);
     }
 }

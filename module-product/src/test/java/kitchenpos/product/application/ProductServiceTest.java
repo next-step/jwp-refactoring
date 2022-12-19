@@ -1,18 +1,14 @@
-package kitchenpos.product;
+package kitchenpos.product.application;
 
-import kitchenpos.common.ServiceTest;
-
-import kitchenpos.product.application.ProductService;
+import kitchenpos.ServiceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.math.BigDecimal;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.assertj.core.api.Assertions.*;
 
 class ProductServiceTest extends ServiceTest {
 
