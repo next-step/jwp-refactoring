@@ -1,8 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.MenuErrorMessage;
-import kitchenpos.exception.MenuGroupErrorMessage;
-import kitchenpos.exception.ProductErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -16,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -53,11 +50,11 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         일식 = new MenuGroup("일식");
-        일식_세트 = new Menu("일식_세트", new BigDecimal(50_000), 일식);
+        일식_세트 = new Menu("일식_세트", 50000, 일식);
 
-        연어초밥 = new Product("연어초밥", new BigDecimal(20_000));
-        광어초밥 = new Product("광어초밥", new BigDecimal(20_000));
-        우동 = new Product("우동", new BigDecimal(5_000));
+        연어초밥 = new Product("연어초밥", 20000);
+        광어초밥 = new Product("광어초밥", 20000);
+        우동 = new Product("우동", 5000);
 
         ReflectionTestUtils.setField(일식, "id", 1L);
         ReflectionTestUtils.setField(일식_세트, "id", 1L);
@@ -89,14 +86,14 @@ public class MenuServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage(MenuErrorMessage.REQUIRED_PRICE.getMessage());
+                .withMessage(ErrorMessage.MENU_REQUIRED_PRICE.getMessage());
     }
 
     @DisplayName("상품의 가격은 0원 이상이어야 한다.")
     @Test
     void 상품의_가격은_0원_이상이어야_한다() {
         // given
-        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), BigDecimal.valueOf(-1), 일식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), -1, 일식.getId(), menuProducts);
 
         when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(일식));
         when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(연어초밥, 광어초밥, 우동));
@@ -104,7 +101,7 @@ public class MenuServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage(MenuErrorMessage.INVALID_PRICE.getMessage());
+                .withMessage(ErrorMessage.MENU_INVALID_PRICE.getMessage());
     }
 
     @DisplayName("메뉴 그룹 아이디가 존재하지 않으면 등록할 수 없다.")
@@ -113,12 +110,12 @@ public class MenuServiceTest {
         // given
         when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 일식_세트.getPrice(), 일식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 일식_세트.getPrice().intValue(), 일식.getId(), menuProducts);
 
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage(MenuGroupErrorMessage.NOT_FOUND_BY_ID.getMessage());
+                .withMessage(ErrorMessage.MENU_GROUP_NOT_FOUND_BY_ID.getMessage());
     }
 
     @DisplayName("메뉴 상품은 모두 등록된 상품이어야 한다.")
@@ -128,19 +125,19 @@ public class MenuServiceTest {
         when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(일식));
         when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(연어초밥, 광어초밥));
 
-        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 일식_세트.getPrice(), 일식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 일식_세트.getPrice().intValue(), 일식.getId(), menuProducts);
 
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage(ProductErrorMessage.NOT_FOUND_BY_ID.getMessage());
+                .withMessage(ErrorMessage.PRODUCT_NOT_FOUND_BY_ID.getMessage());
     }
 
     @DisplayName("메뉴의 가격은 메뉴 상품들의 가격의 총 가격보다 클 수 없다.")
     @Test
     void 메뉴의_가격은_메뉴_상품들의_가격의_총_가격보다_클_수_없다() {
         // given
-        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), BigDecimal.valueOf(50_001), 일식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 50001, 일식.getId(), menuProducts);
 
         when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(일식));
         when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(연어초밥, 광어초밥, 우동));
@@ -148,7 +145,7 @@ public class MenuServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage(MenuErrorMessage.INVALID_PRICE.getMessage());
+                .withMessage(ErrorMessage.MENU_INVALID_PRICE.getMessage());
     }
 
     @DisplayName("메뉴를 등록한다.")
@@ -159,7 +156,7 @@ public class MenuServiceTest {
         when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(연어초밥, 광어초밥, 우동));
         when(menuRepository.save(any(Menu.class))).thenReturn(일식_세트);
 
-        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 일식_세트.getPrice(), 일식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(일식_세트.getName(), 일식_세트.getPrice().intValue(), 일식.getId(), menuProducts);
 
         // when
         MenuResponse menuResponse = menuService.create(menuRequest);

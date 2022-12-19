@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,9 +32,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         양식 = MenuGroupAcceptance.create_menu_group("양식").as(MenuGroupResponse.class);
-        스테이크 = ProductAcceptance.create_product("스테이크", new BigDecimal(25_000)).as(ProductResponse.class);
-        스파게티 = ProductAcceptance.create_product("스파게티", new BigDecimal(18_000)).as(ProductResponse.class);
-        에이드 = ProductAcceptance.create_product("에이드", new BigDecimal(3_500)).as(ProductResponse.class);
+        스테이크 = ProductAcceptance.create_product("스테이크", 25_000).as(ProductResponse.class);
+        스파게티 = ProductAcceptance.create_product("스파게티", 18_000).as(ProductResponse.class);
+        에이드 = ProductAcceptance.create_product("에이드", 3_500).as(ProductResponse.class);
 
         menuProducts = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L),
                 new MenuProductRequest(스파게티.getId(), 1L),
@@ -53,7 +52,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenu() {
         // when
         ExtractableResponse<Response> response =
-                MenuAcceptance.create_menu("양식 세트", new BigDecimal(50_000), 양식.getId(), menuProducts);
+                MenuAcceptance.create_menu("양식 세트", 50_000, 양식.getId(), menuProducts);
 
         // then
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
@@ -69,7 +68,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuWithNullMenuGroup() {
         // when
         ExtractableResponse<Response> response =
-                MenuAcceptance.create_menu("양식 세트", new BigDecimal(50_000), null, menuProducts);
+                MenuAcceptance.create_menu("양식 세트", 50_000, null, menuProducts);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -89,7 +88,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response =
-                MenuAcceptance.create_menu("양식 세트", new BigDecimal(50_000), 양식.getId(), menuProducts);
+                MenuAcceptance.create_menu("양식 세트", 50_000, 양식.getId(), menuProducts);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -106,7 +105,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuWithNullName() {
         // when
         ExtractableResponse<Response> response =
-                MenuAcceptance.create_menu(null, new BigDecimal(50_000), 양식.getId(), menuProducts);
+                MenuAcceptance.create_menu(null, 50_000, 양식.getId(), menuProducts);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -140,7 +139,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuWithNegativePrice() {
         // when
         ExtractableResponse<Response> response =
-                MenuAcceptance.create_menu("양식 세트", new BigDecimal(-50_000), 양식.getId(), menuProducts);
+                MenuAcceptance.create_menu("양식 세트", -50_000, 양식.getId(), menuProducts);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -157,7 +156,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuWithInvalidPrice() {
         // when
         ExtractableResponse<Response> response =
-                MenuAcceptance.create_menu("양식 세트", new BigDecimal(60_000), 양식.getId(), menuProducts);
+                MenuAcceptance.create_menu("양식 세트", 60_000, 양식.getId(), menuProducts);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -173,7 +172,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        MenuAcceptance.create_menu("양식 세트", new BigDecimal(50_000), 양식.getId(), menuProducts);
+        MenuAcceptance.create_menu("양식 세트", 50_000, 양식.getId(), menuProducts);
 
         // when
         ExtractableResponse<Response> response = MenuAcceptance.menu_list_has_been_queried();

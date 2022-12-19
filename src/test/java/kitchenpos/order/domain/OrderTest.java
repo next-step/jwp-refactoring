@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,9 +27,9 @@ public class OrderTest {
     @BeforeEach
     void setUp() {
         중식 = new MenuGroup("중식");
-        중식_세트 = new Menu("중식_세트", new BigDecimal(22_000), 중식);
-        짜장면 = new Product("짜장면", new BigDecimal(7_000));
-        탕수육 = new Product("탕수육", new BigDecimal(15_000));
+        중식_세트 = new Menu("중식_세트", 22000, 중식);
+        짜장면 = new Product("짜장면", 7000);
+        탕수육 = new Product("탕수육", 15000);
         주문테이블_1 = new OrderTable(1, false);
 
         중식_세트.create(Arrays.asList(
@@ -44,7 +43,7 @@ public class OrderTest {
     void 주문_테이블이_존재하지_않으면_주문을_생성할_수_없습니다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(null, OrderStatus.COOKING))
-                .withMessage(OrderErrorMessage.REQUIRED_ORDER_TABLE.getMessage());
+                .withMessage(ErrorMessage.ORDER_REQUIRED_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("주문 테이블이 비어있으면 주문을 생성할 수 없습니다.")
@@ -54,7 +53,7 @@ public class OrderTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Order(빈_주문_테이블, OrderStatus.COOKING))
-                .withMessage(OrderErrorMessage.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
     }
 
     @DisplayName("주문 상품 생성에 성공한다.")
@@ -85,8 +84,8 @@ public class OrderTest {
     void 조리중이거나_식사중인_주문_테이블은_변경할_수_없습니다(OrderStatus orderStatus) {
         Order 주문 = new Order(주문테이블_1, orderStatus);
         assertThatIllegalArgumentException()
-                .isThrownBy(주문::isCookingOrMeal)
-                .withMessage(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+                .isThrownBy(주문::checkCookingOrMeal)
+                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
     }
 
     @DisplayName("이미 완료된 주문은 변경할 수 없다.")
@@ -96,6 +95,6 @@ public class OrderTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 주문.updateOrderStatus(OrderStatus.MEAL))
-                .withMessage(OrderErrorMessage.CANNOT_CHANGE_COMPLETION_ORDER.getMessage());
+                .withMessage(ErrorMessage.ORDER_CANNOT_CHANGE_COMPLETION_ORDER.getMessage());
     }
 }

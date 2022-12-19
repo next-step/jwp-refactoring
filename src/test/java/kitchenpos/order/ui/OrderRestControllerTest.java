@@ -20,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,10 +51,10 @@ public class OrderRestControllerTest extends ControllerTest {
     @BeforeEach
     public void setUp() {
         MenuGroup 한마리메뉴_메뉴그룹 = new MenuGroup("한마리메뉴");
-        Product 후라이드치킨_상품 = new Product("후라이드치킨", BigDecimal.valueOf(16_000L));
-        Product 콜라_상품 = new Product("콜라", BigDecimal.valueOf(2_000L));
-        Menu 후라이드치킨_메뉴 = new Menu("후라이드치킨", 후라이드치킨_상품.getPrice().value(), 한마리메뉴_메뉴그룹);
-        Menu 콜라_메뉴 = new Menu("콜라", 콜라_상품.getPrice().value(), 한마리메뉴_메뉴그룹);
+        Product 후라이드치킨_상품 = new Product("후라이드치킨", 16000);
+        Product 콜라_상품 = new Product("콜라", 2000);
+        Menu 후라이드치킨_메뉴 = new Menu("후라이드치킨", 후라이드치킨_상품.getPrice().value().intValue(), 한마리메뉴_메뉴그룹);
+        Menu 콜라_메뉴 = new Menu("콜라", 콜라_상품.getPrice().value().intValue(), 한마리메뉴_메뉴그룹);
 
         후라이드치킨_주문_테이블 = new OrderTable(4, false);
         양념치킨_주문_테이블 = new OrderTable(2, false);

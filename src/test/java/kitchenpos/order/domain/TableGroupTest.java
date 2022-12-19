@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderErrorMessage;
-import kitchenpos.exception.OrderTableErrorMessage;
-import kitchenpos.exception.TableGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +38,7 @@ public class TableGroupTest {
     void 주문_테이블_목록이_비어있으면_단체_테이블을_생성할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 우아한_테이블.group(Collections.emptyList()))
-                .withMessage(TableGroupErrorMessage.ORDER_TABLES_CANNOT_BE_EMPTY.getMessage());
+                .withMessage(ErrorMessage.TABLE_GROUP_ORDER_TABLES_CANNOT_BE_EMPTY.getMessage());
     }
 
     @DisplayName("주문 테이블 목록의 크기가 2개 보다 작으면 단체 테이블을 생성할 수 없다.")
@@ -48,7 +46,7 @@ public class TableGroupTest {
     void 주문_테이블_목록의_크기가_2개_보다_작으면_단체_테이블을_생성할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 우아한_테이블.group(Arrays.asList(우아한_주문_테이블_1)))
-                .withMessage(TableGroupErrorMessage.MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
+                .withMessage(ErrorMessage.TABLE_GROUP_MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
     }
 
     @DisplayName("다른 단체 테이블에 포함된 주문 테이블이 있으면 단체 테이블을 생성할 수 없다.")
@@ -62,7 +60,7 @@ public class TableGroupTest {
         TableGroup 다른_단체_테이블 = new TableGroup();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 다른_단체_테이블.group(Arrays.asList(우아한_주문_테이블_1, 우아한_주문_테이블_2)))
-                .withMessage(OrderTableErrorMessage.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("단체 테이블 생성한다.")
@@ -86,7 +84,7 @@ public class TableGroupTest {
                 .isThrownBy(() -> 우아한_테이블.ungroup(Arrays.asList(
                         new Order(우아한_주문_테이블_1, orderStatus),
                         new Order(우아한_주문_테이블_2, OrderStatus.COMPLETION))))
-                .withMessage(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
     }
 
     @DisplayName("단체 테이블 해제한다.")

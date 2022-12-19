@@ -1,6 +1,6 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.exception.ProductErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
@@ -22,7 +22,7 @@ public class MenuProductRequest {
         Product target = products.stream()
                 .filter(product -> product.getId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ProductErrorMessage.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.PRODUCT_NOT_FOUND_BY_ID.getMessage()));
 
         return new MenuProduct(menu, target, quantity);
     }

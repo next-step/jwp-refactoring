@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -37,8 +36,8 @@ public class ProductRestControllerTest extends ControllerTest {
 
     @BeforeEach
     public void setUp() {
-        후라이드치킨 = new Product("후라이드치킨", new BigDecimal(16_000));
-        양념치킨 = new Product("양념치킨", new BigDecimal(17_000));
+        후라이드치킨 = new Product("후라이드치킨", 16000);
+        양념치킨 = new Product("양념치킨", 17000);
 
         ReflectionTestUtils.setField(후라이드치킨, "id", 1L);
         ReflectionTestUtils.setField(양념치킨, "id", 2L);
@@ -61,7 +60,7 @@ public class ProductRestControllerTest extends ControllerTest {
         given(productService.create(any(ProductRequest.class))).willReturn(new ProductResponse(양념치킨));
 
         webMvc.perform(post("/api/products")
-                        .content(objectMapper.writeValueAsString(new ProductRequest("양념치킨", BigDecimal.valueOf(17_000))))
+                        .content(objectMapper.writeValueAsString(new ProductRequest("양념치킨", 17000)))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(양념치킨.getId().intValue())))

@@ -17,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,11 +47,11 @@ public class MenuRestControllerTest extends ControllerTest {
         super.setUp();
 
         양식 = new MenuGroup("양식");
-        양식_세트 = new Menu("양식_세트", new BigDecimal(40000), 양식);
+        양식_세트 = new Menu("양식_세트", 40000, 양식);
 
-        스테이크 = new Product("스테이크", new BigDecimal(20000));
-        스파게티 = new Product("스파게티", new BigDecimal(15000));
-        콜라 = new Product("콜라", new BigDecimal(2500));
+        스테이크 = new Product("스테이크", 20000);
+        스파게티 = new Product("스파게티", 15000);
+        콜라 = new Product("콜라", 2500);
 
         ReflectionTestUtils.setField(양식, "id", 1L);
         ReflectionTestUtils.setField(양식_세트, "id", 1L);
@@ -77,7 +76,7 @@ public class MenuRestControllerTest extends ControllerTest {
     void 메뉴_등록에_실패한다() throws Exception {
         given(menuService.create(any(MenuRequest.class))).willThrow(IllegalArgumentException.class);
 
-        MenuRequest menuRequest = new MenuRequest(양식_세트.getName(), 양식_세트.getPrice(), 양식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(양식_세트.getName(), 양식_세트.getPrice().intValue(), 양식.getId(), menuProducts);
 
         webMvc.perform(post("/api/menus")
                         .content(objectMapper.writeValueAsString(menuRequest))
@@ -90,7 +89,7 @@ public class MenuRestControllerTest extends ControllerTest {
     void 메뉴_등록에_성공한다() throws Exception {
         given(menuService.create(any(MenuRequest.class))).willReturn(new MenuResponse(양식_세트));
 
-        MenuRequest menuRequest = new MenuRequest(양식_세트.getName(), 양식_세트.getPrice(), 양식.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(양식_세트.getName(), 양식_세트.getPrice().intValue(), 양식.getId(), menuProducts);
 
         webMvc.perform(post("/api/menus")
                         .content(objectMapper.writeValueAsString(menuRequest))

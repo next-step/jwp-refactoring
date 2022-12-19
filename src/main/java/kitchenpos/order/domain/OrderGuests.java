@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class OrderGuests {
-    private static final int COMPARE_NUM = 0;
+    private static final int MIN_NUM = 0;
 
     @Column
     private int numberOfGuests;
@@ -21,14 +21,14 @@ public class OrderGuests {
     }
 
     private void validate(int numberOfGuests) {
-        if (numberOfGuests < COMPARE_NUM) {
-            throw new IllegalArgumentException(OrderTableErrorMessage.INVALID_NUMBER_OF_GUESTS.getMessage());
+        if (numberOfGuests < MIN_NUM) {
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_INVALID_NUMBER_OF_GUESTS.getMessage());
         }
     }
 
     public OrderGuests changeNumberOfGuests(int numberOfGuests, boolean empty) {
         if(empty) {
-            throw new IllegalArgumentException(OrderTableErrorMessage.NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
         }
         return new OrderGuests(numberOfGuests);
     }

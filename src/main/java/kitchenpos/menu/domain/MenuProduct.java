@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuProductErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -8,11 +8,11 @@ import java.util.Objects;
 
 @Entity
 public class MenuProduct {
-    private static final int COMPARE_NUM = 0;
+    private static final int MIN_NUM = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
@@ -34,13 +34,13 @@ public class MenuProduct {
 
     private void validate(Menu menu, Product product, long quantity) {
         if(Objects.isNull(menu)) {
-            throw new IllegalArgumentException(MenuProductErrorMessage.REQUIRED_MENU.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.MENU_PRODUCT_REQUIRED_MENU.getMessage());
         }
         if(Objects.isNull(product)) {
-            throw new IllegalArgumentException(MenuProductErrorMessage.REQUIRED_PRODUCT.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.MENU_PRODUCT_REQUIRED_PRODUCT.getMessage());
         }
-        if(quantity < COMPARE_NUM) {
-            throw new IllegalArgumentException(MenuProductErrorMessage.INVALID_QUANTITY.getMessage());
+        if(quantity < MIN_NUM) {
+            throw new IllegalArgumentException(ErrorMessage.MENU_PRODUCT_INVALID_QUANTITY.getMessage());
         }
     }
 
@@ -55,8 +55,8 @@ public class MenuProduct {
         return this.product.calculateAmount(quantity);
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Menu getMenu() {

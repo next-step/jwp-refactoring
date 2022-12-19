@@ -1,11 +1,9 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -22,10 +20,10 @@ public class MenuProductsTest {
     @BeforeEach
     void setUp() {
         양식 = new MenuGroup("양식");
-        양식_세트 = new Menu("양식 세트", new BigDecimal(50000), 양식);
-        스테이크 = new MenuProduct(양식_세트, new Product("스테이크", new BigDecimal(25000)), 1);
-        스파게티 = new MenuProduct(양식_세트, new Product("스파게티", new BigDecimal(18000)), 1);
-        에이드 = new MenuProduct(양식_세트, new Product("에이드", new BigDecimal(3500)), 2);
+        양식_세트 = new Menu("양식 세트", 50000, 양식);
+        스테이크 = new MenuProduct(양식_세트, new Product("스테이크", 25000), 1);
+        스파게티 = new MenuProduct(양식_세트, new Product("스파게티", 18000), 1);
+        에이드 = new MenuProduct(양식_세트, new Product("에이드", 3500), 2);
 
         양식_세트_목록 = new MenuProducts();
         양식_세트_목록.addMenuProduct(양식_세트, 스테이크);
@@ -53,6 +51,6 @@ public class MenuProductsTest {
     void 메뉴_상품의_총_금액의_합보다_메뉴의_가격이_클_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 양식_세트_목록.validatePrice(양식_세트.getPrice()))
-                .withMessage(MenuErrorMessage.INVALID_PRICE.getMessage());
+                .withMessage(ErrorMessage.MENU_INVALID_PRICE.getMessage());
     }
 }

@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,9 +38,9 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨_상품 = new Product("후라이드치킨", BigDecimal.valueOf(16_000L));
-        양념치킨_상품 = new Product("양념치킨", BigDecimal.valueOf(16_000L));
-        간장치킨_상품 = new Product("간장치킨", BigDecimal.valueOf(17_000L));
+        후라이드치킨_상품 = new Product("후라이드치킨", 16000);
+        양념치킨_상품 = new Product("양념치킨", 16000);
+        간장치킨_상품 = new Product("간장치킨", 17_000);
 
         ReflectionTestUtils.setField(후라이드치킨_상품, "id", 1L);
         ReflectionTestUtils.setField(양념치킨_상품, "id", 2L);
@@ -62,7 +61,7 @@ public class ProductServiceTest {
     @Test
     void 상품의_가격은_0원_이상이어야_한다() {
         // given
-        ProductRequest 햄버거 = new ProductRequest("햄버거", BigDecimal.valueOf(-1));
+        ProductRequest 햄버거 = new ProductRequest("햄버거", -1);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(햄버거));
@@ -75,7 +74,7 @@ public class ProductServiceTest {
         when(productRepository.save(any(Product.class))).thenReturn(후라이드치킨_상품);
 
         // when
-        ProductResponse productResponse = productService.create(new ProductRequest("후라이드치킨", BigDecimal.valueOf(16_000)));
+        ProductResponse productResponse = productService.create(new ProductRequest("후라이드치킨", 16000));
 
         // then
         assertThat(productResponse).satisfies(response -> {

@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderErrorMessage;
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ public class OrderTableTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 우아한_주문_테이블_1.checkOrderTableForTableGrouping())
-                .withMessage(OrderTableErrorMessage.NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("테이블 그룹을 해제한다.")
@@ -57,7 +56,7 @@ public class OrderTableTest {
     void 다른_테이블_그룹에_포함되어_있으면_빈_테이블로_변경할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 우아한_주문_테이블_1.changeEmpty(true, Collections.emptyList()))
-                .withMessage(OrderTableErrorMessage.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("요리중이거나 식사중인 주문이 있다면 빈 테이블로 변경할 수 없다.")
@@ -69,7 +68,7 @@ public class OrderTableTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 주문_테이블.changeEmpty(true, Arrays.asList(order)))
-                .withMessage(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
     }
 
     @DisplayName("빈 테이블로 변경한다.")
@@ -88,7 +87,7 @@ public class OrderTableTest {
     void 입력된_주문_테이블_방문자_수가_음수이면_테이블_방문자_수를_변경할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 우아한_주문_테이블_1.changeNumberOfGuests(-1))
-                .withMessage(OrderTableErrorMessage.INVALID_NUMBER_OF_GUESTS.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_INVALID_NUMBER_OF_GUESTS.getMessage());
     }
 
     @DisplayName("테이블 방문자 수 변경한다.")

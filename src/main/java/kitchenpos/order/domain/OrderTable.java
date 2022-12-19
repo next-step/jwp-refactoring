@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.*;
 import java.util.List;
@@ -32,9 +32,9 @@ public class OrderTable {
 
     public void changeEmpty(boolean empty, List<Order> orders) {
         if(Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException(OrderTableErrorMessage.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
         }
-        orders.forEach(Order::isCookingOrMeal);
+        orders.forEach(Order::checkCookingOrMeal);
         this.empty = this.empty.changeEmpty(empty);
     }
 

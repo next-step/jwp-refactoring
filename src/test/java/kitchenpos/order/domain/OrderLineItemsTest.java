@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,10 +26,10 @@ class OrderLineItemsTest {
     void setUp() {
         우아한_주문_테이블_1 = new OrderTable(1, false);
         첫번째_주문 = new Order(우아한_주문_테이블_1, OrderStatus.COOKING);
-        짬뽕 = new Product("짬뽕", new BigDecimal(8_000));
-        탕수육 = new Product("탕수육", new BigDecimal(18_000));
+        짬뽕 = new Product("짬뽕", 8000);
+        탕수육 = new Product("탕수육", 18000);
         중식 = new MenuGroup("중식");
-        중식_세트 = new Menu("중식 세트", new BigDecimal(26_000), 중식);
+        중식_세트 = new Menu("중식 세트", 26000, 중식);
         중식_세트_주문 = new OrderLineItem(첫번째_주문, 중식_세트, 1L);
         중식_세트.create(Arrays.asList(
                 new MenuProduct(중식_세트, 짬뽕, 1L),

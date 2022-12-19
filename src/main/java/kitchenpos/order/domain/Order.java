@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
-import kitchenpos.exception.OrderErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.*;
 import java.util.List;
@@ -35,23 +35,23 @@ public class Order extends BaseEntity {
 
     private void validate(OrderTable orderTable) {
         if(Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(OrderErrorMessage.REQUIRED_ORDER_TABLE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_REQUIRED_ORDER_TABLE.getMessage());
         }
         if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException(OrderErrorMessage.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
         }
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
         if (this.orderStatus.isCompletion()) {
-            throw new IllegalArgumentException(OrderErrorMessage.CANNOT_CHANGE_COMPLETION_ORDER.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_CANNOT_CHANGE_COMPLETION_ORDER.getMessage());
         }
         this.orderStatus = orderStatus;
     }
 
-    public void isCookingOrMeal() {
+    public void checkCookingOrMeal() {
         if(orderStatus.isCooking() || orderStatus.isMeal()) {
-            throw new IllegalArgumentException(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
         }
     }
 

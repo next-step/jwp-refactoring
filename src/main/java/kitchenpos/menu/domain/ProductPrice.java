@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.ProductErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,25 +9,29 @@ import java.util.Objects;
 
 @Embeddable
 public class ProductPrice {
-    private static final int COMPARE_NUM = 0;
+    private static final int MIN_NUM = 0;
 
     @Column(nullable = false)
     private BigDecimal price;
 
     protected ProductPrice() {}
 
-    public ProductPrice(BigDecimal price) {
+    public ProductPrice(Integer price) {
         validate(price);
-        this.price = price;
+        this.price = BigDecimal.valueOf(price);
     }
 
-    private void validate(BigDecimal price) {
+    private void validate(Integer price) {
         if (Objects.isNull(price)) {
-            throw new IllegalArgumentException(ProductErrorMessage.REQUIRED_PRICE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.PRODUCT_REQUIRED_PRICE.getMessage());
         }
-        if(price.compareTo(BigDecimal.ZERO) < COMPARE_NUM) {
-            throw new IllegalArgumentException(ProductErrorMessage.INVALID_PRICE.getMessage());
+        if(isNegativePrice(price)) {
+            throw new IllegalArgumentException(ErrorMessage.PRODUCT_INVALID_PRICE.getMessage());
         }
+    }
+
+    private boolean isNegativePrice(Integer price) {
+        return price < MIN_NUM;
     }
 
     public BigDecimal multiply(BigDecimal quantity) {

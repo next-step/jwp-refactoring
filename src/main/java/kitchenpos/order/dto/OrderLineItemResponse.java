@@ -7,7 +7,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class OrderLineItemResponse {
-    private Long seq;
+    private Long id;
     private Long orderId;
     private Long menuId;
     private long quantity;
@@ -15,7 +15,7 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {}
 
     public OrderLineItemResponse(OrderLineItem orderLineItem) {
-        this.seq = orderLineItem.getSeq();
+        this.id = orderLineItem.getId();
         this.orderId = orderLineItem.getOrder().getId();
         this.menuId = orderLineItem.getMenu().getId();
         this.quantity = orderLineItem.getQuantity();
@@ -27,8 +27,8 @@ public class OrderLineItemResponse {
                 .collect(toList());
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Long getOrderId() {

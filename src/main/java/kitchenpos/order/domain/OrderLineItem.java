@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderLineItemErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
@@ -8,11 +8,11 @@ import java.util.Objects;
 
 @Entity
 public class OrderLineItem {
-    private static final int COMPARE_NUM = 0;
+    private static final int MIN_NUM = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
@@ -35,13 +35,13 @@ public class OrderLineItem {
 
     private void validate(Order order, Menu menu, long quantity) {
         if (Objects.isNull(order)) {
-            throw new IllegalArgumentException(OrderLineItemErrorMessage.REQUIRED_ORDER.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_LINE_ITEM_REQUIRED_ORDER.getMessage());
         }
         if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(OrderLineItemErrorMessage.REQUIRED_MENU.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_LINE_ITEM_REQUIRED_MENU.getMessage());
         }
-        if (quantity < COMPARE_NUM) {
-            throw new IllegalArgumentException(OrderLineItemErrorMessage.INVALID_QUANTITY.getMessage());
+        if (quantity < MIN_NUM) {
+            throw new IllegalArgumentException(ErrorMessage.ORDER_LINE_ITEM_INVALID_QUANTITY.getMessage());
         }
     }
 
@@ -52,8 +52,8 @@ public class OrderLineItem {
         }
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Order getOrder() {

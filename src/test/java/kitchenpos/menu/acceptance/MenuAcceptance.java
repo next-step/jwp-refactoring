@@ -7,11 +7,10 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class MenuAcceptance {
-    public static ExtractableResponse<Response> create_menu(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public static ExtractableResponse<Response> create_menu(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         MenuRequest request = new MenuRequest(name, price, menuGroupId, menuProductRequests);
 
         return RestAssured.given().log().all()

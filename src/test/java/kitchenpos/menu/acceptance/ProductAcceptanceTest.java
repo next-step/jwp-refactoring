@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,7 +23,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     void createProduct() {
         // when
         ExtractableResponse<Response> response =
-                ProductAcceptance.create_product("스테이크", new BigDecimal(25_000));
+                ProductAcceptance.create_product("스테이크", 25_000);
 
         // then
         assertEquals(HttpStatus.CREATED.value(), response.statusCode());
@@ -40,7 +38,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     void createProductWithNullName() {
         // when
         ExtractableResponse<Response> response =
-                ProductAcceptance.create_product(null, new BigDecimal(25_000));
+                ProductAcceptance.create_product(null, 25_000);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -70,7 +68,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     void createProductWithNegativePrice() {
         // when
         ExtractableResponse<Response> response =
-                ProductAcceptance.create_product("스테이크", new BigDecimal(-25_000));
+                ProductAcceptance.create_product("스테이크", -25_000);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -85,8 +83,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        ProductAcceptance.create_product("스테이크", new BigDecimal(25_000));
-        ProductAcceptance.create_product("스파게티", new BigDecimal(18_000));
+        ProductAcceptance.create_product("스테이크", 25_000);
+        ProductAcceptance.create_product("스파게티", 18_000);
 
         // when
         ExtractableResponse<Response> response = ProductAcceptance.product_list_has_been_queried();

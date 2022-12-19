@@ -1,30 +1,27 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Embeddable
 public class MenuProducts {
-    private static final int COMPARE_NUM = 0;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private Set<MenuProduct> menuProducts = new HashSet<>();
 
     protected MenuProducts() {}
 
     public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
-        if(!isContains(menuProduct)) {
-            this.menuProducts.add(menuProduct);
-            menuProduct.updateMenu(menu);
-        }
+        this.menuProducts.add(menuProduct);
+        menuProduct.updateMenu(menu);
     }
 
     private boolean isContains(MenuProduct menuProduct) {
@@ -34,7 +31,7 @@ public class MenuProducts {
     public void validatePrice(BigDecimal price) {
         BigDecimal totalAmount = getTotalAmount();
         if(Objects.isNull(price) || isLessThanZero(price) || isMenuPriceGreaterThanTotalAmount(price, totalAmount)) {
-            throw new IllegalArgumentException(MenuErrorMessage.INVALID_PRICE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.MENU_INVALID_PRICE.getMessage());
         }
     }
 
@@ -45,15 +42,15 @@ public class MenuProducts {
     }
 
     private boolean isLessThanZero(BigDecimal price) {
-        return price.compareTo(BigDecimal.ZERO) < COMPARE_NUM;
+        return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     private boolean isMenuPriceGreaterThanTotalAmount(BigDecimal price, BigDecimal totalAmount) {
-        return price.compareTo(totalAmount) > COMPARE_NUM;
+        return price.compareTo(totalAmount) > 0;
     }
 
-    public List<MenuProduct> values() {
-        return Collections.unmodifiableList(menuProducts);
+    public Set<MenuProduct> values() {
+        return Collections.unmodifiableSet(menuProducts);
     }
 
     @Override

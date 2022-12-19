@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuProductErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,8 @@ public class MenuProductTest {
     @BeforeEach
     void setUp() {
         양식 = new MenuGroup("양식");
-        양식_세트 = new Menu("양식 세트", new BigDecimal(43000), 양식);
-        스테이크 = new Product("스테이크", new BigDecimal(25000));
+        양식_세트 = new Menu("양식 세트", 43000, 양식);
+        스테이크 = new Product("스테이크", 25000);
     }
 
     @DisplayName("메뉴, 상품, 수량이 동일하면 메뉴 상품은 동일하다.")
@@ -37,7 +37,7 @@ public class MenuProductTest {
     void 메뉴가_없는_메뉴_상품을_등록할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new MenuProduct(null, 스테이크, 1))
-                .withMessage(MenuProductErrorMessage.REQUIRED_MENU.getMessage());
+                .withMessage(ErrorMessage.MENU_PRODUCT_REQUIRED_MENU.getMessage());
     }
 
     @DisplayName("상품이 없는 메뉴 상품을 등록할 수 없다.")
@@ -45,7 +45,7 @@ public class MenuProductTest {
     void 상품이_없는_메뉴_상품을_등록할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new MenuProduct(양식_세트, null, 1))
-                .withMessage(MenuProductErrorMessage.REQUIRED_PRODUCT.getMessage());
+                .withMessage(ErrorMessage.MENU_PRODUCT_REQUIRED_PRODUCT.getMessage());
     }
 
     @DisplayName("수량이 음수인 메뉴 상품을 등록할 수 없다.")
@@ -53,7 +53,7 @@ public class MenuProductTest {
     void 수량이_음수인_메뉴_상품을_등록할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new MenuProduct(양식_세트, 스테이크, -1))
-                .withMessage(MenuProductErrorMessage.INVALID_QUANTITY.getMessage());
+                .withMessage(ErrorMessage.MENU_PRODUCT_INVALID_QUANTITY.getMessage());
     }
 
     @DisplayName("메뉴 상품의 총 금액을 계산한다.")

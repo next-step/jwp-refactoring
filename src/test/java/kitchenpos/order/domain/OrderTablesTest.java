@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderTableErrorMessage;
-import kitchenpos.exception.TableGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +50,7 @@ public class OrderTablesTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 주문_테이블_목록.group(우아한_단체_테이블, Collections.emptyList()))
-                .withMessage(TableGroupErrorMessage.ORDER_TABLES_CANNOT_BE_EMPTY.getMessage());
+                .withMessage(ErrorMessage.TABLE_GROUP_ORDER_TABLES_CANNOT_BE_EMPTY.getMessage());
     }
 
     @DisplayName("주문 테이블 목록의 크기가 2보다 작으면 테이블 그룹을 생성할 수 없다.")
@@ -61,7 +60,7 @@ public class OrderTablesTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 주문_테이블_목록.group(우아한_단체_테이블, Arrays.asList(단체_주문_테이블3)))
-                .withMessage(TableGroupErrorMessage.MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
+                .withMessage(ErrorMessage.TABLE_GROUP_MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
     }
 
     @DisplayName("다른 테이블 그룹에 포함되어 있으면 테이블 그룹을 생성할 수 없다.")
@@ -74,7 +73,7 @@ public class OrderTablesTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 주문_테이블_목록.group(우아한_단체_테이블, Arrays.asList(단체_주문_테이블1, 단체_주문_테이블3)))
-                .withMessage(OrderTableErrorMessage.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("테이블 그룹을 생성한다.")

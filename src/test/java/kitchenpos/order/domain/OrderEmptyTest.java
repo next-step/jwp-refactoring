@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +26,6 @@ class OrderEmptyTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(orderEmpty::validateForTableGrouping)
-                .withMessage(OrderTableErrorMessage.NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
     }
 }

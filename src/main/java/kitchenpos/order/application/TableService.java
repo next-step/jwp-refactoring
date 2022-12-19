@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -40,7 +40,7 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(OrderTableErrorMessage.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage()));
     }
 
     private List<Order> findAllByOrderTableId(Long orderTableId) {

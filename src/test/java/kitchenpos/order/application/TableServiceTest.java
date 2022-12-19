@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.OrderErrorMessage;
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -99,7 +98,7 @@ public class TableServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(첫번째_주문_테이블.getId(), new OrderEmpty(true)))
-                .withMessage(OrderTableErrorMessage.NOT_FOUND_BY_ID.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage());
     }
 
     @DisplayName("주문 테이블은 단체 지정이 되어 있지 않아야 한다.")
@@ -115,7 +114,7 @@ public class TableServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(첫번째_주문_테이블.getId(), new OrderEmpty(true)))
-                .withMessage(OrderTableErrorMessage.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("주문 테이블의 주문 상태는 조리 중이거나 식사 중이면 안된다.")
@@ -128,7 +127,7 @@ public class TableServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(첫번째_주문_테이블.getId(), new OrderEmpty(true)))
-                .withMessage(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
     }
 
     @DisplayName("주문 테이블이 비어있는지 여부를 변경할 수 있다.")
@@ -152,7 +151,7 @@ public class TableServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.create(new OrderTableRequest(-1, 첫번째_주문_테이블.isEmpty())))
-                .withMessage(OrderTableErrorMessage.INVALID_NUMBER_OF_GUESTS.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_INVALID_NUMBER_OF_GUESTS.getMessage());
     }
 
     @DisplayName("주문 테이블은 등록되어 있어야 한다.")
@@ -164,7 +163,7 @@ public class TableServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(첫번째_주문_테이블.getId(), new OrderGuests(2)))
-                .withMessage(OrderTableErrorMessage.NOT_FOUND_BY_ID.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage());
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 손님 수를 변경할 수 없다.")
@@ -177,7 +176,7 @@ public class TableServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(첫번째_주문_테이블.getId(), new OrderGuests(2)))
-                .withMessage(OrderTableErrorMessage.NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
     }
 
 

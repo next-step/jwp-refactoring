@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.ProductErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ public class Product {
 
     protected Product() {}
 
-    public Product(String name, BigDecimal price) {
+    public Product(String name, Integer price) {
         validate(name);
         this.name = name;
         this.price = new ProductPrice(price);
@@ -27,7 +27,7 @@ public class Product {
 
     private void validate(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw new IllegalArgumentException(ProductErrorMessage.REQUIRED_NAME.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.PRODUCT_REQUIRED_NAME.getMessage());
         }
     }
 

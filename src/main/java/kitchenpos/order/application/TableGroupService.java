@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.OrderTableErrorMessage;
-import kitchenpos.exception.TableGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -31,7 +30,7 @@ public class TableGroupService {
     private List<OrderTable> findAllOrderTableByIds(List<Long> orderTableIds) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         if (orderTableIds.size() != orderTables.size()) {
-            throw new IllegalArgumentException(OrderTableErrorMessage.NOT_FOUND_BY_ID.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage());
         }
         return orderTables;
     }
@@ -47,7 +46,7 @@ public class TableGroupService {
 
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(() -> new IllegalArgumentException(TableGroupErrorMessage.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.TABLE_GROUP_NOT_FOUND_BY_ID.getMessage()));
     }
 
     private List<Order> findAllOrderByOrderTableIds(List<Long> orderTableIds) {

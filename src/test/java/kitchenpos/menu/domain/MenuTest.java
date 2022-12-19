@@ -1,13 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,24 +17,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MenuTest {
     private MenuGroup 양식;
     private Menu 양식_세트;
-    private MenuProduct 스파게티;
     private MenuProduct 스테이크;
+    private MenuProduct 스파게티;
 
     @BeforeEach
     void setUp() {
         양식 = new MenuGroup("양식");
-        양식_세트 = new Menu("양식 세트", new BigDecimal(43000), 양식);
+        양식_세트 = new Menu("양식 세트", 43000, 양식);
 
-        스테이크 = new MenuProduct(양식_세트, new Product("스테이크", new BigDecimal(25000)), 1);
-        스파게티 = new MenuProduct(양식_세트, new Product("스파게티", new BigDecimal(18000)), 1);
+        스테이크 = new MenuProduct(양식_세트, new Product("스테이크", 25000), 1);
+        스파게티 = new MenuProduct(양식_세트, new Product("스파게티", 18000), 1);
     }
 
     @DisplayName("이름, 가격, 메뉴 그룹이 동일하면 메뉴는 동일하다.")
     @Test
     void 이름_가격_메뉴_그룹이_동일하면_메뉴는_동일하다() {
         assertEquals(
-                new Menu("양식 세트", new BigDecimal(50000), 양식),
-                new Menu("양식 세트", new BigDecimal(50000), 양식)
+                new Menu("양식 세트", 50000, 양식),
+                new Menu("양식 세트", 50000, 양식)
         );
     }
 
@@ -44,16 +43,16 @@ public class MenuTest {
     @NullAndEmptySource
     void 이름이_null이거나_빈값이면_메뉴를_생성할_수_없다(String name) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Menu(name, new BigDecimal(43000), 양식))
-                .withMessage(MenuErrorMessage.REQUIRED_NAME.getMessage());
+                .isThrownBy(() -> new Menu(name, 43000, 양식))
+                .withMessage(ErrorMessage.MENU_REQUIRED_NAME.getMessage());
     }
 
     @DisplayName("메뉴 그룹이 null이면 메뉴를 생성할 수 없다.")
     @Test
     void 메뉴_그룹이_null이면_메뉴를_생성할_수_없다() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Menu("양식 세트", new BigDecimal(43000), null))
-                .withMessage(MenuErrorMessage.REQUIRED_MENU_GROUP.getMessage());
+                .isThrownBy(() -> new Menu("양식 세트", 43000, null))
+                .withMessage(ErrorMessage.MENU_REQUIRED_MENU_GROUP.getMessage());
     }
 
     @DisplayName("메뉴 가격이 null이면 메뉴를 생성할 수 없다.")
@@ -61,15 +60,15 @@ public class MenuTest {
     void 메뉴_가격이_null이면_메뉴를_생성할_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Menu("양식 세트", null, 양식))
-                .withMessage(MenuErrorMessage.REQUIRED_PRICE.getMessage());
+                .withMessage(ErrorMessage.MENU_REQUIRED_PRICE.getMessage());
     }
 
     @DisplayName("메뉴 가격이 음수면 메뉴를 생성할 수 없다.")
     @Test
     void 메뉴_가격이_음수면_메뉴를_생성할_수_없다() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Menu("양식 세트", new BigDecimal(-1), 양식))
-                .withMessage(MenuErrorMessage.INVALID_PRICE.getMessage());
+                .isThrownBy(() -> new Menu("양식 세트", -1, 양식))
+                .withMessage(ErrorMessage.MENU_INVALID_PRICE.getMessage());
     }
 
     @DisplayName("메뉴 상품을 추가한다.")
@@ -92,10 +91,10 @@ public class MenuTest {
     @DisplayName("메뉴 상품 추가시 메뉴 상품의 총 금액의 합보다 메뉴의 가격이 클 수 없다.")
     @Test
     void 메뉴_상품_추가시_메뉴_상품의_총_금액의_합보다_메뉴의_가격이_클_수_없다() {
-        Menu 양식_세트 = new Menu("양식 세트", new BigDecimal(60000), 양식);
+        Menu 양식_세트 = new Menu("양식 세트", 60000, 양식);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 양식_세트.create(Arrays.asList(스테이크, 스파게티)))
-                .withMessage(MenuErrorMessage.INVALID_PRICE.getMessage());
+                .withMessage(ErrorMessage.MENU_INVALID_PRICE.getMessage());
     }
 }

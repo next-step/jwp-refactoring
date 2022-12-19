@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -61,8 +60,8 @@ public class OrderServiceTest {
         주문 = new Order(주문테이블_1, OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
-        양식_세트_1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);
-        양식_세트_2 = new Menu("양식 세트2", new BigDecimal(50000), 양식);
+        양식_세트_1 = new Menu("양식 세트1", 43000, 양식);
+        양식_세트_2 = new Menu("양식 세트2", 50000, 양식);
 
         ReflectionTestUtils.setField(주문테이블_1, "id", 1L);
         ReflectionTestUtils.setField(주문, "id", 1L);

@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,6 +27,6 @@ public class MenuGroupTest {
     void 이름이_null이거나_빈값이면_메뉴_그룹을_생성할_수_없다(String name) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new MenuGroup(name))
-                .withMessage(MenuGroupErrorMessage.REQUIRED_NAME.getMessage());
+                .withMessage(ErrorMessage.MENU_GROUP_REQUIRED_NAME.getMessage());
     }
 }

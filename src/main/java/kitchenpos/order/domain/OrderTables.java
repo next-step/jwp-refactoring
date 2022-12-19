@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.TableGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
@@ -33,10 +33,10 @@ public class OrderTables {
 
     private void validate(List<OrderTable> target) {
         if (CollectionUtils.isEmpty(target)) {
-            throw new IllegalArgumentException(TableGroupErrorMessage.ORDER_TABLES_CANNOT_BE_EMPTY.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.TABLE_GROUP_ORDER_TABLES_CANNOT_BE_EMPTY.getMessage());
         }
         if (target.size() < MIN_ORDER_TABLES_SIZE) {
-            throw new IllegalArgumentException(TableGroupErrorMessage.MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.TABLE_GROUP_MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
         }
     }
 

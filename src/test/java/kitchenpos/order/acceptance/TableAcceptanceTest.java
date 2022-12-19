@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -98,7 +97,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // given
         MenuGroupResponse 양식 = MenuGroupAcceptance.create_menu_group("양식")
                 .as(MenuGroupResponse.class);
-        MenuResponse 양식_세트 = MenuAcceptance.create_menu("양식 세트", new BigDecimal(0), 양식.getId(), Collections.emptyList())
+        MenuResponse 양식_세트 = MenuAcceptance.create_menu("양식 세트", 0, 양식.getId(), Collections.emptyList())
                 .as(MenuResponse.class);
         OrderTableResponse 주문테이블 = TableAcceptance.create_table(2, false)
                 .as(OrderTableResponse.class);

@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ class OrderGuestsTest {
     void 주문_테이블_방문자_수는_음수일_수_없다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new OrderGuests(-1))
-                .withMessage(OrderTableErrorMessage.INVALID_NUMBER_OF_GUESTS.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_INVALID_NUMBER_OF_GUESTS.getMessage());
     }
 
     @DisplayName("빈 주문 테이블이면 방문자 수를 변경할 수 없다.")
@@ -34,6 +34,6 @@ class OrderGuestsTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> guests.changeNumberOfGuests(5, true))
-                .withMessage(OrderTableErrorMessage.NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NUMBER_OF_GUESTS_CANNOT_BE_CHANGED.getMessage());
     }
 }

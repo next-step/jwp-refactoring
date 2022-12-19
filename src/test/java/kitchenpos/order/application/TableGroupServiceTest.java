@@ -1,8 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.OrderErrorMessage;
-import kitchenpos.exception.OrderTableErrorMessage;
-import kitchenpos.exception.TableGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -79,7 +77,7 @@ public class TableGroupServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .withMessage(TableGroupErrorMessage.MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
+                .withMessage(ErrorMessage.TABLE_GROUP_MUST_BE_GREATER_THAN_MINIMUM_SIZE.getMessage());
     }
 
     @DisplayName("주문 테이블들은 모두 등록된 주문 테이블이어야 한다.")
@@ -93,7 +91,7 @@ public class TableGroupServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .withMessage(OrderTableErrorMessage.NOT_FOUND_BY_ID.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage());
     }
 
     @DisplayName("주문 테이블들은 빈 테이블이어야 한다.")
@@ -107,7 +105,7 @@ public class TableGroupServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .withMessage(OrderTableErrorMessage.NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("이미 단체 지정된 주문 테이블은 단체 지정할 수 없다.")
@@ -125,7 +123,7 @@ public class TableGroupServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .withMessage(OrderTableErrorMessage.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
     }
 
     @DisplayName("단체 지정을 등록한다.")
@@ -159,7 +157,7 @@ public class TableGroupServiceTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.ungroup(우아한형제들_단체그룹.getId()))
-                .withMessage(OrderErrorMessage.CANNOT_BE_CHANGED.getMessage());
+                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
     }
 
     @DisplayName("단체 지정을 삭제할 수 있다.")

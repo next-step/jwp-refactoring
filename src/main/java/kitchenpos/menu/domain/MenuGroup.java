@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.MenuGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ public class MenuGroup {
 
     private void validate(String name) {
         if(Objects.isNull(name) || name.isEmpty()) {
-            throw new IllegalArgumentException(MenuGroupErrorMessage.REQUIRED_NAME.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.MENU_GROUP_REQUIRED_NAME.getMessage());
         }
     }
 

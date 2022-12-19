@@ -25,7 +25,7 @@ public class TableGroup extends BaseEntity {
     }
 
     public void ungroup(List<Order> orders) {
-        orders.forEach(Order::isCookingOrMeal);
+        orders.forEach(Order::checkCookingOrMeal);
         this.orderTables.ungroup();
     }
 

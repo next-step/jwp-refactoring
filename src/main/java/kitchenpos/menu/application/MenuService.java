@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.MenuGroupErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -26,7 +26,7 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException(MenuGroupErrorMessage.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.MENU_GROUP_NOT_FOUND_BY_ID.getMessage()));
 
         List<Long> productIds = request.getMenuProductRequests().stream()
                 .map(MenuProductRequest::getProductId)

@@ -1,8 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.MenuErrorMessage;
-import kitchenpos.exception.OrderErrorMessage;
-import kitchenpos.exception.OrderTableErrorMessage;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
@@ -37,13 +35,13 @@ public class OrderService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(OrderTableErrorMessage.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage()));
     }
 
     private List<Menu> findAllMenuById(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
         if(menuIds.size() != menus.size()) {
-            throw new IllegalArgumentException(MenuErrorMessage.NOT_FOUND_BY_ID.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.MENU_NOT_FOUND_BY_ID.getMessage());
         }
 
         return menus;
@@ -63,6 +61,6 @@ public class OrderService {
 
     private Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException(OrderErrorMessage.NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.ORDER_NOT_FOUND_BY_ID.getMessage()));
     }
 }

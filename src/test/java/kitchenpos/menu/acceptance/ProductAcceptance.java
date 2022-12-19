@@ -6,10 +6,8 @@ import io.restassured.response.Response;
 import kitchenpos.menu.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
-
 public class ProductAcceptance {
-    public static ExtractableResponse<Response> create_product(String name, BigDecimal price) {
+    public static ExtractableResponse<Response> create_product(String name, Integer price) {
         ProductRequest request = new ProductRequest(name, price);
 
         return RestAssured.given().log().all()
