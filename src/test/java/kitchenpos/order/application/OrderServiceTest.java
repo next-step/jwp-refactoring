@@ -64,8 +64,8 @@ class OrderServiceTest {
         );
         this.orderCreateRequest = new OrderCreateRequest(1L, orderLineItems);
         this.order = Order.cooking(1L, Arrays.asList(
-                OrderLineItem.of(menuId1, 1L),
-                OrderLineItem.of(menuId2, 1L)
+                OrderLineItem.of(menuId1, "후라이드치킨1", 16_000L, 1L),
+                OrderLineItem.of(menuId2, "강정치킨", 12_000L, 1L)
         ));
     }
 

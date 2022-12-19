@@ -64,6 +64,10 @@ public class OrderService {
     private OrderLineItem mapToOrderLineItem(OrderLineItemRequest item) {
         Menu menu = menuRepository.findById(item.getMenuId())
                 .orElseThrow(EntityNotFoundException::new);
-        return OrderLineItem.of(menu.getId(), item.getQuantity());
+        return OrderLineItem.of(
+                menu.getId(),
+                menu.getName(),
+                menu.getPrice(),
+                item.getQuantity());
     }
 }

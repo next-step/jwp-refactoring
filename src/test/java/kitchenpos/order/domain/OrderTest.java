@@ -19,8 +19,8 @@ class OrderTest {
     @BeforeEach
     void setUp() {
         this.orderLineItems = Arrays.asList(
-                OrderLineItem.of(1L, 1L),
-                OrderLineItem.of(1L, 1L)
+                OrderLineItem.of(1L, "후라이드치킨1", 16_000L, 1L),
+                OrderLineItem.of(2L, "강정치킨", 12_000L, 1L)
         );
     }
 
