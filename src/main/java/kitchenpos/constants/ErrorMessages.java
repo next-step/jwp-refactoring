@@ -19,4 +19,8 @@ public class ErrorMessages {
     public static final String MENU_GROUP_DOES_NOT_EXIST = "존재하지 않는 메뉴 그룹입니다.";
     public static final String ORDER_LINE_ITEM_EMPTY = "주문 항목이 누락되어 있습니다.";
     public static final String CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER = "계산 완료된 주문은 상태를 변경할 수 없습니다.";
+    public static final String GROUPED_ORDER_TABLE_CANNOT_CHANGE_EMPTY = "단체 지정된 주문 테이블은 빈 테이블 여부를 수정할 수 없습니다.";
+    public static final String CANNOT_CHANGE_EMPTY_IF_NOT_COMPLETED_ORDER_EXIST = "계산 완료되지 않은 주문은 빈 테이블 여부를 수정할 수 없습니다.";
+    public static final String NUMBER_OF_GUESTS_CANNOT_BE_LESS_THAN_ZERO = "방문한 손님 수는 0보다 작을 수 없습니다.";
+    public static final String CANNOT_CHANGE_NUMBER_OF_GUESTS_IF_ORDER_TABLE_EMPTY = "빈 테이블일 경우 방문한 손님 수를 수정할 수 없습니다.";
 }

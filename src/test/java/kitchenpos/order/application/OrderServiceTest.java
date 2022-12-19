@@ -14,11 +14,9 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -26,7 +24,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,13 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
     @Mock
     private OrderValidator orderValidator;
 
@@ -114,39 +105,6 @@ class OrderServiceTest {
                         .isEqualTo(주문_아이템_2.getQuantityValue())
         );
     }
-
-    /*@DisplayName("빈 테이블에 대한 주문 등록 요청 시 예외처리")
-    @Test
-    void 빈테이블_주문_등록_예외처리() {
-        OrderTable 빈_주문_테이블 = new OrderTable(1L, null, new NumberOfGuests(0), true);
-        Order 빈_테이블_주문 = new Order(빈_주문_테이블.getId(), OrderStatus.COOKING);
-        주문_아이템_목록.stream().forEach(빈_테이블_주문::addOrderLineItem);
-        when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
-        when(orderTableRepository.findById(빈_주문_테이블.getId())).thenReturn(Optional.of(빈_주문_테이블));
-
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(빈_테이블_주문))).isInstanceOf(
-                IllegalArgumentException.class);
-    }
-
-    @DisplayName("생성되지 않은 주문 테이블에 대한 주문 등록 요청 시 예외처리")
-    @Test
-    void 생성안된_주문_테이블_주문_등록_예외처리() {
-        when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
-        when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문))).isInstanceOf(
-                IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴와 수량 정보 없이 주문 등록 요청 시 예외처리")
-    @Test
-    void 메뉴와_수량_누락_주문_등록_예외처리() {
-        List<OrderLineItem> 빈_아이템_목록 = new ArrayList<>();
-        Order 주문_아이템_누락된_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.COOKING, null, 빈_아이템_목록);
-
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문_아이템_누락된_주문))).isInstanceOf(
-                IllegalArgumentException.class);
-    }*/
 
     @DisplayName("주문 조회")
     @Test

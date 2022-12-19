@@ -3,6 +3,7 @@ package kitchenpos.ordertable.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.constants.ErrorMessages;
 
 @Embeddable
 public class NumberOfGuests {
@@ -13,7 +14,14 @@ public class NumberOfGuests {
     public NumberOfGuests() {}
 
     public NumberOfGuests(int numberOfGuests) {
+        validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateNumberOfGuests(int number) {
+        if (number < 0) {
+            throw new IllegalArgumentException(ErrorMessages.NUMBER_OF_GUESTS_CANNOT_BE_LESS_THAN_ZERO);
+        }
     }
 
     public int getNumberOfGuests() {

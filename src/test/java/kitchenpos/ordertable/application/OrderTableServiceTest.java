@@ -3,21 +3,19 @@ package kitchenpos.ordertable.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,9 +29,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderTableServiceTest {
 
     @Mock
-    OrderRepository orderRepository;
-    @Mock
     OrderTableRepository orderTableRepository;
+    @Mock
+    OrderTableValidator orderTableValidator;
 
     @InjectMocks
     OrderTableService orderTableService;
@@ -85,13 +83,14 @@ class OrderTableServiceTest {
     void 빈_테이블_여부_수정() {
         OrderTableRequest 수정할_주문_테이블 = new OrderTableRequest(null, 0, false);
         when(orderTableRepository.findById(주문_테이블_1_id)).thenReturn(Optional.of(주문_테이블));
-        List<Order> orders = Collections.singletonList(new Order(주문_테이블_1_id, OrderStatus.COMPLETION));
-        when(orderRepository.findByOrderTableId(주문_테이블_1_id)).thenReturn(orders);
+        //List<Order> orders = Collections.singletonList(new Order(주문_테이블_1_id, OrderStatus.COMPLETION));
+        //when(orderRepository.findByOrderTableId(주문_테이블_1_id)).thenReturn(orders);
         when(orderTableRepository.save(주문_테이블)).thenReturn(주문_테이블);
 
         OrderTableResponse 수정된_주문_테이블 = orderTableService.changeEmpty(주문_테이블_1_id, 수정할_주문_테이블);
 
         //빈 테이블 -> 빈 테이블 아님
+        verify(orderTableValidator).validateEmptyChangable(any(OrderTable.class));
         assertAll(
                 () -> assertThat(수정된_주문_테이블.getId()).isEqualTo(주문_테이블_1_id),
                 () -> assertThat(수정된_주문_테이블.isEmpty()).isEqualTo(수정할_주문_테이블.isEmpty())
@@ -112,13 +111,13 @@ class OrderTableServiceTest {
     void 생성되지_않은_주문_테이블_빈_테이블_여부_수정_예외처리() {
         Long 수정할_주문_테이블_id = 3L;
         OrderTableRequest 수정할_주문_테이블 = new OrderTableRequest(null, 0, false);
-        when(orderTableRepository.findById(수정할_주문_테이블_id)).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(수정할_주문_테이블_id)).thenThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> orderTableService.changeEmpty(수정할_주문_테이블_id, 수정할_주문_테이블)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
-    @DisplayName("단체 지정되어 있는 경우 빈 테이블 여부 수정 요청 시 예외처리")
+    /*@DisplayName("단체 지정되어 있는 경우 빈 테이블 여부 수정 요청 시 예외처리")
     @Test
     void 단체_지정_주문_테이블_빈_테이블_여부_수정_예외처리() {
         TableGroup 단체 = new TableGroup(1L, null);
@@ -141,7 +140,7 @@ class OrderTableServiceTest {
 
         assertThatThrownBy(() -> orderTableService.changeEmpty(주문_테이블_1_id, 수정할_주문_테이블)).isInstanceOf(
                 IllegalArgumentException.class);
-    }
+    }*/
 
     @DisplayName("주문 테이블의 방문한 손님 수 수정")
     @Test

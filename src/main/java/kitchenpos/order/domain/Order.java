@@ -58,6 +58,12 @@ public class Order {
         this(id, orderTableId, orderStatus, orderedTime, new OrderLineItems(orderLineItems));
     }
 
+    public static Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTableId);
+        orderLineItems.forEach(order::addOrderLineItem);
+        return order;
+    }
+
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
         orderLineItem.addOrder(this);

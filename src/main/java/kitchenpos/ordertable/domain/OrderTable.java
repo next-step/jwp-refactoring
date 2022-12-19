@@ -20,7 +20,17 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
+    public static OrderTable createOrderTable(int numberOfGuests, boolean empty) {
+        return new OrderTable(new NumberOfGuests(numberOfGuests), empty);
+    }
+
     public OrderTable() {}
+
+    private OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
+        this.tableGroupId = null;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
 
     public OrderTable(Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
@@ -28,15 +38,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(tableGroupId, new NumberOfGuests(numberOfGuests), empty);
+    }
+
     public OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this(tableGroupId, new NumberOfGuests(numberOfGuests), empty);
     }
 
     public void checkOrderTableGroupSetAble() {
@@ -82,6 +92,7 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(NumberOfGuests numberOfGuests) {
+        checkNumberOfGuestsChangeAble();
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -89,11 +100,17 @@ public class OrderTable {
         updateNumberOfGuests(new NumberOfGuests(numberOfGuests));
     }
 
+    private void checkNumberOfGuestsChangeAble() {
+        if (empty) {
+            throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_NUMBER_OF_GUESTS_IF_ORDER_TABLE_EMPTY);
+        }
+    }
+
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void updateEmpty(final boolean empty) {
         this.empty = empty;
     }
 
@@ -113,5 +130,9 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+    }
+
+    public boolean isGrouped() {
+        return tableGroupId != null;
     }
 }
