@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MenuValidator {
 
-    private MenuGroupRepository menuGroupRepository;
-    private ProductRepository productRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuValidator(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
         this.menuGroupRepository = menuGroupRepository;

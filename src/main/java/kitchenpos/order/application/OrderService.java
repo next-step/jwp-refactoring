@@ -40,7 +40,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
-        orderValidator.checkOrderStatusChageAble(savedOrder);
+        orderValidator.checkOrderStatusChangeAble(savedOrder);
         savedOrder.updateOrderStatus(orderRequest.getOrderStatus());
         orderRepository.save(savedOrder);
         return OrderResponse.from(savedOrder);

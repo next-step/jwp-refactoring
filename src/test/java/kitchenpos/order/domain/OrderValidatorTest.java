@@ -120,7 +120,7 @@ public class OrderValidatorTest {
         Order 계산_완료된_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.COMPLETION, null, 주문_아이템_목록);
 
         assertThatThrownBy(
-                () -> orderValidator.checkOrderStatusChageAble(계산_완료된_주문)).isInstanceOf(
+                () -> orderValidator.checkOrderStatusChangeAble(계산_완료된_주문)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 

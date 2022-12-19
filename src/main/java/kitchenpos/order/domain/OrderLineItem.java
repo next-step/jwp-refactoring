@@ -29,13 +29,6 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Order order, Long menuId, OrderLineItemQuantity quantity) {
-        this.seq = seq;
-        this.order = order;
-        this.menuId = menuId;
-        this.quantity = quantity;
-    }
-
     public OrderLineItem(Long menuId, long quantity) {
         this(menuId, new OrderLineItemQuantity(quantity));
     }
@@ -48,10 +41,6 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Order getOrder() {
         return order;
     }
@@ -60,16 +49,8 @@ public class OrderLineItem {
         return order.getId();
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
     public Long getMenuId() {
         return menuId;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
     }
 
     public OrderLineItemQuantity getQuantity() {
@@ -78,10 +59,6 @@ public class OrderLineItem {
 
     public long getQuantityValue() {
         return quantity.getQuantity();
-    }
-
-    public void setQuantity(OrderLineItemQuantity quantity) {
-        this.quantity = quantity;
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MenuGroupService {
 
-    private MenuGroupRepository menuGroupRepository;
+    private final MenuGroupRepository menuGroupRepository;
 
     public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
         this.menuGroupRepository = menuGroupRepository;

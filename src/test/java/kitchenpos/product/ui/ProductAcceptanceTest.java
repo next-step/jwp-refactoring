@@ -44,9 +44,9 @@ public class ProductAcceptanceTest extends ProductAcceptanceTestFixture {
     @Test
     void 상품_목록_조회() {
         // Given
-         ProductResponse 생성된_상품_1 = 상품_생성_되어있음(떡볶이);
-         ProductResponse 생성된_상품_2 = 상품_생성_되어있음(튀김);
-         ProductResponse 생성된_상품_3 = 상품_생성_되어있음(순대);
+        ProductResponse 생성된_상품_1 = 상품_생성_되어있음(떡볶이);
+        ProductResponse 생성된_상품_2 = 상품_생성_되어있음(튀김);
+        ProductResponse 생성된_상품_3 = 상품_생성_되어있음(순대);
         // When
         ExtractableResponse<Response> response = 상품_조회_요청();
 

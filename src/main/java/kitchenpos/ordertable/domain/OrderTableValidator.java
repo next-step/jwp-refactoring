@@ -9,11 +9,9 @@ import org.springframework.stereotype.Component;
 public class OrderTableValidator {
 
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
 
-    public OrderTableValidator(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderTableValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     public void validateEmptyChangable(OrderTable orderTable) {

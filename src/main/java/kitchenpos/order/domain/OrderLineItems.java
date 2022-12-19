@@ -22,10 +22,6 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
     public int size() {
         return orderLineItems.size();
     }
@@ -40,10 +36,6 @@ public class OrderLineItems {
 
     public void add(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
-    }
-
-    public void addAll(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
     }
 
     public List<Long> getMenuIds() {

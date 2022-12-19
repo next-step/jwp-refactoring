@@ -10,14 +10,6 @@ public class Products {
 
     public Products() {}
 
-    public Products(List<Product> products) {
-        this.products = products;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
     public Stream<Product> stream() {
         return products.stream();
     }

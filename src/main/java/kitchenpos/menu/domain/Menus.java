@@ -18,8 +18,4 @@ public class Menus {
     public Stream<Menu> stream() {
         return menus.stream();
     }
-
-    public List<Menu> getMenus() {
-        return menus;
-    }
 }

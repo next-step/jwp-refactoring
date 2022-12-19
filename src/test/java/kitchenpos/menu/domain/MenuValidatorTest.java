@@ -98,7 +98,8 @@ public class MenuValidatorTest {
         when(productRepository.findById(순대.getId())).thenReturn(Optional.of(순대));
         Menu 초과_가격_메뉴 = new Menu(3L, "떡튀순", new MenuPrice(12000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
 
-        assertThatThrownBy(() -> menuValidator.validateBeforeCreateMenu(초과_가격_메뉴)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidator.validateBeforeCreateMenu(초과_가격_메뉴)).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @DisplayName("비어있는 이름으로 메뉴 생성 요청 시 예외처리")
@@ -106,7 +107,8 @@ public class MenuValidatorTest {
     void 비어있는_이름_예외처리() {
         Menu 비어있는_이름_메뉴 = new Menu(3L, "", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
 
-        assertThatThrownBy(() -> menuValidator.validateBeforeCreateMenu(비어있는_이름_메뉴)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidator.validateBeforeCreateMenu(비어있는_이름_메뉴)).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
 }

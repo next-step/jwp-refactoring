@@ -18,7 +18,7 @@ public class OrderResponse {
                 , order.getOrderTableId()
                 , order.getOrderStatusName()
                 , order.getOrderedTime()
-                ,getOrderLineItemResponses(order));
+                , getOrderLineItemResponses(order));
     }
 
     private static List<OrderLineItemResponse> getOrderLineItemResponses(Order order) {

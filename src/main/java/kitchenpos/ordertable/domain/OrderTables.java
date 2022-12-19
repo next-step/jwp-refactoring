@@ -19,8 +19,14 @@ public class OrderTables {
         this.orderTables.add(orderTable);
     }
 
-    public void addAll(List<OrderTable> orderTables) {
-        this.orderTables.addAll(orderTables);
+    public void groupOrderTables(Long tableGroupId) {
+        orderTables.forEach(
+                orderTable -> orderTable.groupOrderTable(tableGroupId)
+        );
+    }
+
+    public void ungroupOrderTables() {
+        orderTables.forEach(OrderTable::ungroupOrderTable);
     }
 
     public int size() {
@@ -43,15 +49,5 @@ public class OrderTables {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void groupOrderTables(Long tableGroupId) {
-        orderTables.forEach(
-                orderTable -> orderTable.groupOrderTable(tableGroupId)
-        );
-    }
-
-    public void ungroupOrderTables() {
-        orderTables.forEach(OrderTable::ungroupOrderTable);
     }
 }

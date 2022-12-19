@@ -6,9 +6,10 @@ public class MenuGroupRequest {
 
     private String name;
 
-    public static MenuGroupRequest from(MenuGroup menuGroup){
+    public static MenuGroupRequest from(MenuGroup menuGroup) {
         return new MenuGroupRequest(menuGroup.getName());
     }
+
     public MenuGroupRequest() {}
 
     public MenuGroupRequest(String name) {

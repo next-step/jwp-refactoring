@@ -45,7 +45,8 @@ public class OrderValidator {
             throw new IllegalArgumentException();
         }
     }
-    public void checkOrderStatusChageAble(Order savedOrder) {
+
+    public void checkOrderStatusChangeAble(Order savedOrder) {
         if (savedOrder.isOrderStatusComplete()) {
             throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER);
         }

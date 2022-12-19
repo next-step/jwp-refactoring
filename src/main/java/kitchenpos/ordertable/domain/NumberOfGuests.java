@@ -11,7 +11,9 @@ public class NumberOfGuests {
     @Column(nullable = false)
     private int numberOfGuests;
 
-    public NumberOfGuests() {}
+    public NumberOfGuests() {
+        this.numberOfGuests = 0;
+    }
 
     public NumberOfGuests(int numberOfGuests) {
         validateNumberOfGuests(numberOfGuests);

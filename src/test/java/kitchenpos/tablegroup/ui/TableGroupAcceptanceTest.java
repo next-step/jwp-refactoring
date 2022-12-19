@@ -54,7 +54,8 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
                 () -> assertThat(생성된_단체_지정.getId()).isNotNull(),
                 () -> 생성된_단체_지정.getOrderTableResponses()
                         .forEach((response2 -> assertThat(response2.getTableGroupId()).isEqualTo(생성된_단체_지정.getId()))),
-                () -> 생성된_단체_지정.getOrderTableResponses().forEach((response3 -> assertThat(response3.isEmpty()).isEqualTo(false)))
+                () -> 생성된_단체_지정.getOrderTableResponses()
+                        .forEach((response3 -> assertThat(response3.isEmpty()).isEqualTo(false)))
         );
     }
 
@@ -153,7 +154,7 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
         // Given
         TableGroupResponse 생성된_단체_지정 = 단체_지정_정보(단체_지정_생성_요청(단체_1));
 
-        MenuGroupResponse 세트 = 메뉴_그룹_생성되어있음(new MenuGroupRequest( "세트"));
+        MenuGroupResponse 세트 = 메뉴_그룹_생성되어있음(new MenuGroupRequest("세트"));
         ProductResponse 떡볶이 = 상품_생성_되어있음(new ProductRequest("떡볶이", BigDecimal.valueOf(4500)));
         ProductResponse 튀김 = 상품_생성_되어있음(new ProductRequest("튀김", BigDecimal.valueOf(2500)));
         ProductResponse 순대 = 상품_생성_되어있음(new ProductRequest("순대", BigDecimal.valueOf(4000)));
@@ -167,7 +168,8 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
         List<MenuProductRequest> 떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
 
         MenuResponse 떡튀순 = 메뉴_생성_되어있음(new MenuRequest("떡튀순", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_상품_목록));
-        MenuResponse 떡튀순_곱배기 = 메뉴_생성_되어있음(new MenuRequest("떡튀순_곱배기", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_곱배기_상품_목록));
+        MenuResponse 떡튀순_곱배기 = 메뉴_생성_되어있음(
+                new MenuRequest("떡튀순_곱배기", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_곱배기_상품_목록));
 
         OrderLineItemRequest 주문_아이템_1 = new OrderLineItemRequest(떡튀순.getId(), 2);
         OrderLineItemRequest 주문_아이템_2 = new OrderLineItemRequest(떡튀순_곱배기.getId(), 1);

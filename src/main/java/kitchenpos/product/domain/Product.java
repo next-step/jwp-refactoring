@@ -37,16 +37,8 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public ProductPrice getPrice() {
@@ -55,10 +47,6 @@ public class Product {
 
     public BigDecimal getPriceValue() {
         return productPrice.getPrice();
-    }
-
-    public void setPrice(ProductPrice productPrice) {
-        this.productPrice = productPrice;
     }
 
     @Override

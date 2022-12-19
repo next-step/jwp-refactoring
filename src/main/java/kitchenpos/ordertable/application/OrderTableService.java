@@ -42,20 +42,8 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        /*OrderTable orderTable = orderTableRequest.toOrderTable();
-        final int numberOfGuests = orderTable.getNumberOfGuestsValue();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }*/
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        /*if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }*/
-
         savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }

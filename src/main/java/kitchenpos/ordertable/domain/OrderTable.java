@@ -71,20 +71,8 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getTableGroupId() {
         return tableGroupId;
-    }
-
-    public void setTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public NumberOfGuests getNumberOfGuests() {
-        return numberOfGuests;
     }
 
     public int getNumberOfGuestsValue() {
@@ -106,12 +94,16 @@ public class OrderTable {
         }
     }
 
-    public boolean isEmpty() {
-        return empty;
-    }
-
     public void updateEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public boolean isGrouped() {
+        return tableGroupId != null;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     @Override
@@ -130,9 +122,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
-    }
-
-    public boolean isGrouped() {
-        return tableGroupId != null;
     }
 }

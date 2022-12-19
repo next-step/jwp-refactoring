@@ -41,8 +41,13 @@ public class ProductPrice implements Comparable<ProductPrice> {
         this.price = result;
     }
 
-    public int compareTo(BigDecimal val) {
-        return this.price.compareTo(val);
+    public BigDecimal multiply(BigDecimal val) {
+        return price.multiply(val);
+    }
+
+    public BigDecimal multiply(MenuProductQuantity quantity) {
+        long val = quantity.getQuantity();
+        return multiply(new BigDecimal(val));
     }
 
     @Override
@@ -69,14 +74,5 @@ public class ProductPrice implements Comparable<ProductPrice> {
     @Override
     public int hashCode() {
         return Objects.hash(price);
-    }
-
-    public BigDecimal multiply(BigDecimal val) {
-        return price.multiply(val);
-    }
-
-    public BigDecimal multiply(MenuProductQuantity quantity) {
-        long val = quantity.getQuantity();
-        return multiply(new BigDecimal(val));
     }
 }

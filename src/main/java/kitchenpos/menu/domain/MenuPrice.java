@@ -40,10 +40,6 @@ public class MenuPrice implements Comparable<MenuPrice> {
         this.price = result;
     }
 
-    public int compareTo(BigDecimal val) {
-        return this.price.compareTo(val);
-    }
-
     @Override
     public int compareTo(MenuPrice o) {
         return this.price.compareTo(o.price);
