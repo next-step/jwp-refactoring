@@ -20,6 +20,7 @@ public class Product {
     private Price price;
 
     public Product(Name name, Price price) {
+        validate(name, price);
         this.name = name;
         this.price = price;
     }
@@ -47,5 +48,22 @@ public class Product {
 
     public Name getName() {
         return this.name;
+    }
+
+    private void validate(Name name, Price price) {
+        validateNullName(name);
+        validateNullPrice(price);
+    }
+
+    private void validateNullName(Name name) {
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateNullPrice(Price price) {
+        if (Objects.isNull(price)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
