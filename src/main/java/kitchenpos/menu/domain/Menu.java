@@ -35,6 +35,7 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+        menuProducts.mapMenu(this);
     }
 
     private static void validate(Price price, MenuGroup menuGroup, MenuProducts menuProducts) {

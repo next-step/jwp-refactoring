@@ -68,7 +68,6 @@ class OrderServiceTest extends ServiceTest {
         super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(menuGroupA());
         menu = menuRepository.save(menuA());
-
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(emptyOrderTable());
         orderTables.add(emptyOrderTable());

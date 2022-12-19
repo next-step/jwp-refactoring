@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Quantity {
 
-    private int quantity;
+    private long quantity;
 
     protected Quantity() {
     }

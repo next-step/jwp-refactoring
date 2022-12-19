@@ -1,15 +1,20 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.fixture.NumberOfGuestsFixture;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -26,9 +31,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
+import static java.util.Collections.singletonList;
+import static kitchenpos.common.fixture.NameFixture.*;
 import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
-import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
+import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
+import static kitchenpos.common.fixture.PriceFixture.priceProductA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
@@ -57,6 +64,9 @@ class TableGroupServiceTest extends ServiceTest {
     private MenuRepository menuRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private MenuGroupRepository menuGroupRepository;
 
     private TableGroup tableGroupA;
@@ -72,16 +82,9 @@ class TableGroupServiceTest extends ServiceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        menu = menuRepository.save(menuA());
-//        orderTableA = createEmptyOrderTable(tableGroupB);
-//        orderTableB = createEmptyOrderTable(tableGroupB);
-//        tableGroupA = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, orderTableB))));
-//        tableGroupB = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, orderTableB))));
-//        orderTableA.setEmpty(false);
-//        orderTableB.setEmpty(false);
-//        order = orderRepository.save(new Orders(orderTableA, orderLineItemsA()));
-        orderLineItemsB = new OrderLineItems();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        Product product = productRepository.save(new Product(nameProductA(), priceProductA()));
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
         orderLineItemsA = orderLineItemsA();
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
@@ -134,7 +137,7 @@ class TableGroupServiceTest extends ServiceTest {
         테이블_그룹_존재_검증(tableGroup);
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, orderLineItemsA);
+        Orders order = new Orders(orderTableA, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 

@@ -27,8 +27,8 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(long seq, Orders order, long menuId, Quantity quantity) {
-        this.id = seq;
+    public OrderLineItem(long id, Orders order, long menuId, Quantity quantity) {
+        this.id = id;
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;

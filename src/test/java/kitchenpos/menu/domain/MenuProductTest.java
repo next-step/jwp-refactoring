@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import static kitchenpos.common.fixture.QuantityFixture.quantityMenuProductA;
 import static kitchenpos.menu.domain.MenuProduct.PRODUCT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.MenuProduct.QUANTITY_NULL_EXCEPTION_MESSAGE;
-import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
 import static kitchenpos.product.domain.fixture.ProductFixture.productA;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,7 +24,7 @@ class MenuProductTest {
 //    @DisplayName("메뉴 상품을 생성한다. / 메뉴를 필수로 갖는다.")
 //    @Test
 //    void create_fail_menu() {
-//        assertThatThrownBy(() -> new MenuProduct(null, 1L, 1L))
+//        assertThatThrownBy(() -> new MenuProduct(ProductFixture.productA(), QuantityFixture.quantityMenuProductA()))
 //                .isInstanceOf(IllegalArgumentException.class)
 //                .hasMessageContaining(MENU_NULL_EXCEPTION_MESSAGE);
 //    }
@@ -33,7 +32,7 @@ class MenuProductTest {
     @DisplayName("메뉴 상품을 생성한다. / 상품을 필수로 갖는다.")
     @Test
     void create_fail_product() {
-        assertThatThrownBy(() -> new MenuProduct(menuA(), null, quantityMenuProductA()))
+        assertThatThrownBy(() -> new MenuProduct(null, quantityMenuProductA()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRODUCT_NULL_EXCEPTION_MESSAGE);
     }
@@ -41,7 +40,7 @@ class MenuProductTest {
     @DisplayName("메뉴 상품을 생성한다. / 갯수를 필수로 갖는다.")
     @Test
     void create_fail_quantity() {
-        assertThatThrownBy(() -> new MenuProduct(menuA(), productA(), null))
+        assertThatThrownBy(() -> new MenuProduct(productA(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(QUANTITY_NULL_EXCEPTION_MESSAGE);
     }

@@ -1,29 +1,43 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.common.Quantity;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.fixture.ProductFixture;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
-import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Collections;
 
+import static java.util.Collections.singletonList;
+import static kitchenpos.common.fixture.NameFixture.nameMenuA;
 import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
 import static kitchenpos.common.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
+import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
@@ -46,6 +60,9 @@ class TableServiceTest extends ServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private OrderTableRepository orderTableRepository;
 
     @Autowired
@@ -58,10 +75,14 @@ class TableServiceTest extends ServiceTest {
     private OrderTable orderTableA;
     private OrderTable orderTableB;
     private TableGroup tableGroup;
+    private Menu menu;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
+        menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        Product product = productRepository.save(ProductFixture.productA());
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
         tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(changeEmptyOrder(), changeEmptyOrder()))));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(notEmptyOrderTable());
@@ -75,7 +96,7 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse orderTable = tableService.create(new OrderTable(null, initNumberOfGuests(), false));
         assertAll(
                 () -> assertThat(orderTable.getTableGroup()).isNull(),
-//                () -> assertThat(orderTable.getNumberOfGuests()).isZero(),
+                () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(0)),
                 () -> assertThat(orderTable.isEmpty()).isFalse()
         );
     }
@@ -124,7 +145,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_success() {
 
-        Orders order = new Orders(orderTableA, orderLineItemsA());
+        Orders order = new Orders(orderTableA, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 

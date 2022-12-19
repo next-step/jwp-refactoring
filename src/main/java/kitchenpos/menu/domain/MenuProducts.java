@@ -34,4 +34,10 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return this.menuProducts;
     }
+
+    public void mapMenu(Menu menu) {
+        for (MenuProduct menuProduct : this.menuProducts) {
+            menuProduct.mapMenu(menu);
+        }
+    }
 }

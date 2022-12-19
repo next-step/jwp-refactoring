@@ -30,7 +30,7 @@ class OrderTableTest {
     @Test
     void empty_fail_tableGroup() {
 
-        OrderTable orderTable = notEmptyOrderTable();
+        OrderTable orderTable = notEmptyNotTableGroupOrderTable();
 
         assertThatThrownBy(orderTable::empty)
                 .isInstanceOf(IllegalArgumentException.class)
