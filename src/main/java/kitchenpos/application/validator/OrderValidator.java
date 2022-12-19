@@ -12,6 +12,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.MenuRepository;
 import org.springframework.stereotype.Component;
@@ -27,10 +28,10 @@ public class OrderValidator {
         this.tableService = tableService;
     }
 
-    public void validateCreate(Order order) {
-        validateNullOrderLineItems(order.getOrderLineItems());
-        validateEmptyTrue(tableService.findById(order.getOrderTableId()));
-        validateOrderLineItems(order.getOrderLineItemsSize(), menuRepository.countByIdIn(order.getMenuIds()));
+    public void validateCreate(OrderRequest orderRequest) {
+        validateNullOrderLineItems(orderRequest.getOrderLineItems());
+        validateEmptyTrue(tableService.findById(orderRequest.getOrderTableId()));
+        validateOrderLineItems(orderRequest.getOrderLineItemsSize(), menuRepository.countByIdIn(orderRequest.getMenuIds()));
     }
 
     private void validateNullOrderLineItems(List<OrderLineItem> orderLineItems) {

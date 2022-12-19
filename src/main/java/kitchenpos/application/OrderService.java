@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import kitchenpos.application.validator.OrderValidator;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.OrderRepository;
@@ -27,10 +28,10 @@ public class OrderService {
         this.orderValidator = orderValidator;
     }
 
-    public OrderResponse create(final Order order) {
-        orderValidator.validateCreate(order);
+    public OrderResponse create(final OrderRequest orderRequest) {
+        orderValidator.validateCreate(orderRequest);
 
-        final Order savedOrder = orderRepository.save(order);
+        final Order savedOrder = orderRepository.save(orderRequest.toEntity());
 
         return OrderResponse.of(savedOrder);
     }

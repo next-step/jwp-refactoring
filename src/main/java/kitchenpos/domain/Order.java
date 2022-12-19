@@ -32,18 +32,26 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    private Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems){
+        return new Order(orderTableId, orderStatus, orderLineItems);
+    }
+
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems){
+        return new Order(orderTableId, orderLineItems);
     }
 
     public Long getId() {

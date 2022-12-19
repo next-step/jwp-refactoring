@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class OrderTest {
     @Test
     void 생성() {
-        Order order = new Order(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItem()));
+        Order order = Order.of(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItem()));
 
         assertAll(
                 () -> assertThat(order.getOrderTableId()).isEqualTo(1L),

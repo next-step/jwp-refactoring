@@ -26,6 +26,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.dto.request.OrderStatusRequest;
 import kitchenpos.exception.ErrorCode;
@@ -49,7 +50,7 @@ class OrderServiceTest {
     private OrderService orderService;
     private MenuProduct 메뉴_항목;
     private Menu 메뉴;
-    private Order 주문;
+    private OrderRequest 주문;
     private Order 주문_완료_상태;
     private OrderStatusRequest 주문_상태_변경;
     private OrderLineItem 주문_항목;
@@ -61,15 +62,15 @@ class OrderServiceTest {
         메뉴 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), null, Arrays.asList(메뉴_항목));
         주문_항목 = new OrderLineItem(1L, null, 메뉴.getId(), 1L);
         좌석 = new OrderTable(1L, null, 1, false);
-        주문 = new Order(좌석.getId(), Arrays.asList(주문_항목));
-        주문_완료_상태 = new Order(좌석.getId(), OrderStatus.COMPLETION, Arrays.asList(주문_항목));
+        주문 = new OrderRequest(좌석.getId(), Arrays.asList(주문_항목));
+        주문_완료_상태 = Order.of(좌석.getId(), OrderStatus.COMPLETION, Arrays.asList(주문_항목));
         주문_상태_변경 = new OrderStatusRequest(OrderStatus.COMPLETION);
     }
 
     @Test
     void 생성() {
         doNothing().when(orderValidator).validateCreate(any());
-        given(orderRepository.save(any())).willReturn(주문);
+        given(orderRepository.save(any())).willReturn(주문.toEntity());
 
         OrderResponse response = orderService.create(주문);
 
@@ -80,7 +81,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_항목이_empty인_경우() {
-        주문 = new Order(좌석.getId(), Collections.emptyList());
+        주문 = new OrderRequest(좌석.getId(), Collections.emptyList());
         doThrow(new KitchenposException(NOT_EXISTS_ORDER_LINE_ITEMS)).when(orderValidator).validateCreate(any());
 
         assertThatThrownBy(
@@ -116,7 +117,7 @@ class OrderServiceTest {
 
     @Test
     void 조회() {
-        given(orderRepository.findAll()).willReturn(Arrays.asList(주문));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(주문.toEntity()));
 
         List<OrderResponse> orders = orderService.list();
 
@@ -128,7 +129,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_상태_변경() {
-        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문.toEntity()));
 
         OrderResponse response = orderService.changeOrderStatus(anyLong(), 주문_상태_변경.getOrderStatus());
 
