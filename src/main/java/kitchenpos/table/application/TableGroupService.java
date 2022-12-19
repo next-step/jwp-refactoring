@@ -1,8 +1,6 @@
 package kitchenpos.table.application;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -18,12 +16,12 @@ public class TableGroupService {
     private static final String ERROR_MESSAGE_ORDER_TABLE_NOT_FOUND_FORMAT = "주문 테이블을 찾을 수 없습니다. ID : %d";
     private static final String ERROR_MESSAGE_NOT_FOUND_GROUP_TABLE = "존재하지 않는 단체 테이블입니다. ID : %d";
 
-    private final OrderRepository orderRepository;
+    private final OrderTablesValidator orderTablesValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderTablesValidator orderTablesValidator, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderTablesValidator = orderTablesValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -40,7 +38,7 @@ public class TableGroupService {
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
         OrderTables orderTables = tableGroup.orderTables();
-        validateCookingAndMeal(orderTables);
+        orderTables.validateCookingAndMeal(orderTablesValidator);
         orderTables.ungroup();
     }
 
@@ -53,17 +51,6 @@ public class TableGroupService {
         return orderTableIds.stream()
                 .map(this::findTableById)
                 .collect(Collectors.toList());
-    }
-
-    private List<Long> findOrderIds(OrderTables orderTables) {
-        return orderTables.list().stream()
-                .map(OrderTable::id)
-                .collect(Collectors.toList());
-    }
-
-    private void validateCookingAndMeal(OrderTables orderTables) {
-        List<Order> orders = orderRepository.findAllByOrderTableIdIn(findOrderIds(orderTables));
-        orders.forEach(Order::validateCookingAndMeal);
     }
 
     private OrderTable findTableById(Long id) {

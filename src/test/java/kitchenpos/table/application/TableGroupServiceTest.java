@@ -16,10 +16,10 @@ import java.util.Optional;
 import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTablesValidator;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -35,7 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTablesValidator orderTablesValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -136,25 +136,6 @@ class TableGroupServiceTest {
                 () -> assertThat(actual).isNotNull(),
                 () -> assertThat(actual).isInstanceOf(TableGroupResponse.class)
         );
-    }
-    
-    @Test
-    @DisplayName("단체 테이블 해제시 조리 중이거나 식사중인 테이블은 해제할 수 없다.")
-    void ungroupTableByOrderStatusCookingOrMeal() {
-        // given
-        OrderTable orderTable = orderTable(1L, null, 4, true);
-        OrderTable orderTable2 = orderTable(2L, null, 3, true);
-        TableGroup tableGroup = tableGroup(1L, Arrays.asList(orderTable, orderTable2));
-        Order order = order(1L, orderTable.id(), singletonList(짜장_탕수육_주문_항목));
-        Order order2 = order(2L, orderTable2.id(), singletonList(짜장_탕수육_주문_항목));
-        given(tableGroupRepository.findById(tableGroup.id())).willReturn(Optional.of(tableGroup));
-        given(orderRepository.findAllByOrderTableIdIn(Arrays.asList(orderTable.id(), orderTable2.id())))
-                .willReturn(Arrays.asList(order, order2));
-
-        // when
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.id()))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("주문 상태가 조리 중 입니다.");
     }
 
     @Test

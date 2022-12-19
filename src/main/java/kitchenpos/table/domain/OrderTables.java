@@ -54,6 +54,10 @@ public class OrderTables {
         return new OrderTables(tables);
     }
 
+    public void validateCookingAndMeal(OrderTablesValidator validator) {
+        validator.validateCookingAndMeal(this);
+    }
+
     public boolean validNotEmptyOrderTable() {
         return !tables.stream().allMatch(OrderTable::isEmpty);
     }
