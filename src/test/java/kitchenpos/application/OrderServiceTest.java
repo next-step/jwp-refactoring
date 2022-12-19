@@ -131,6 +131,23 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("주문 생성 테스트 - 오더 테이블이 Empty인 경우")
+    @Test
+    void createOrderTest5() {
+        // given
+        주문테이블 = new OrderTable(1L, null, 0, true);
+        List<Long> menuIds = 주문.getOrderLineItems()
+                .stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
+        when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
+
+        // when & then
+        assertThatThrownBy(() -> orderService.create(주문))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("주문 상태 수정 테스트")
     @Test
     void updateOrderStatus() {
@@ -173,6 +190,7 @@ class OrderServiceTest {
                 주문.getOrderedTime(),
                 주문.getOrderLineItems()
         );
+        when(orderDao.findById(주문.getId())).thenReturn(Optional.of(주문));
 
         // when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), updatedOrder))
