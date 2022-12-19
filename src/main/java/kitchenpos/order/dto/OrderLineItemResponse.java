@@ -1,7 +1,10 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
+
+import java.util.Map;
 
 public class OrderLineItemResponse {
 
@@ -16,9 +19,9 @@ public class OrderLineItemResponse {
     }
 
 
-    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem, Menu menu) {
         return new OrderLineItemResponse(orderLineItem.getSeq(),
-                MenuResponse.of(orderLineItem.getMenu()),
+                MenuResponse.of(menu),
                 orderLineItem.getQuantity().getValue());
     }
 

@@ -74,12 +74,11 @@ public class TableServiceTest {
         라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
         라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
 
-        주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-        주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(1));
+        주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
+        주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(1));
         주문테이블2 = new OrderTable(1L, null, new NumberOfGuests(4), false);
 
-        주문 = new Order(1L, 주문테이블2, OrderStatus.COOKING, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        주문 = new Order(1L, 주문테이블2.getId(), OrderStatus.COOKING, LocalDateTime.now());
     }
 
     @DisplayName("테이블생성테스트")
@@ -110,8 +109,7 @@ public class TableServiceTest {
     void changeEmptyTableTest() {
         //given
         final OrderTable orderTable = new OrderTable(1L, null, new NumberOfGuests(2), false);
-        Order 주문 = new Order(1L, 주문테이블2, OrderStatus.COMPLETION, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        Order 주문 = new Order(1L, 주문테이블2.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
 
         when(orderTableRepository.findById(orderTable.getId()))
                 .thenReturn(Optional.ofNullable(orderTable));
@@ -143,8 +141,7 @@ public class TableServiceTest {
     @ValueSource(strings = {"COOKING", "MEAL"})
     void cookingOrMealChangeEmptyTableExceptionTest(OrderStatus orderStatus) {
         //given
-        Order 주문 = new Order(1L, 주문테이블2, orderStatus, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        Order 주문 = new Order(1L, 주문테이블2.getId(), orderStatus, LocalDateTime.now());
 
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));

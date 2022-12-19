@@ -3,11 +3,9 @@ package kitchenpos.table.domain;
 import kitchenpos.ExceptionMessage;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.Embeddable;
 import java.util.Arrays;
 import java.util.List;
 
-@Embeddable
 public class OrderTables {
 
     public static final int MINIMUM_SIZE = 2;

@@ -13,23 +13,22 @@ public class OrderLineItem {
     @ManyToOne
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
-    @ManyToOne
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    private Long menuId;
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, Quantity quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
-        this.menu = menu;
+    public OrderLineItem(Order order, Long menuId, Quantity quantity) {
+        this.order = order;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -41,15 +40,12 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {
         return quantity;
     }
 
-    public void updateOrder(Order order) {
-        this.order = order;
-    }
 }

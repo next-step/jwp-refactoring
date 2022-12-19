@@ -15,36 +15,26 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
     @Enumerated(value = EnumType.STRING)
     @Column(name = "order_status")
     private OrderStatus orderStatus;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
-    @Embedded
-    private OrderLineItems orderLineItems;
 
     protected Order() {}
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus,
-                 LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ExceptionMessage.EMPTY_TABLE.getMessage());
-        }
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
     }
 
     public void checkCookingOrMeal() {
@@ -52,10 +42,6 @@ public class Order {
                 orderStatus.equals(OrderStatus.MEAL)) {
             throw new IllegalArgumentException(ExceptionMessage.COOKING_OR_MEAL.getMessage());
         }
-    }
-
-    public void updateOrder() {
-        orderLineItems.updateOrder(this);
     }
 
     public void change(OrderStatus orderStatus) {
@@ -69,8 +55,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -79,10 +65,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
     }
 
 }

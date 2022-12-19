@@ -88,8 +88,8 @@ public class TableGroupServiceTest {
         라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
         라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
 
-        주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-        주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(2));
+        주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
+        주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(2));
 
         tableService = new TableService(orderRepository, orderTableRepository);
         tableGroupHandler = new TableGroupHandler(orderTableRepository, orderRepository);
@@ -247,8 +247,7 @@ public class TableGroupServiceTest {
     @Test
     void unGroupTableTest() {
         //given
-        final Order 주문 = new Order(1L, 주문테이블1, OrderStatus.COMPLETION, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final Order 주문 = new Order(1L, 주문테이블1.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
 
         List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
@@ -281,8 +280,7 @@ public class TableGroupServiceTest {
     @ValueSource(strings = {"COOKING", "MEAL"})
     void createTableGroupContainCookingOrMealTableExceptionTest(OrderStatus orderStatus) {
         //given
-        final Order 주문 = new Order(1L, 주문테이블1, orderStatus, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final Order 주문 = new Order(1L, 주문테이블1.getId(), orderStatus, LocalDateTime.now());
 
         when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId()))
                 .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));

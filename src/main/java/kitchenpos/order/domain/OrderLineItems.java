@@ -27,7 +27,4 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void updateOrder(Order order) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
-    }
 }
