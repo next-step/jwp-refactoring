@@ -8,9 +8,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,8 +25,8 @@ public class TableGroupAcceptanceTestFixture extends AcceptanceTest {
     public OrderTable 주문_테이블_4;
     public List<OrderTable> 주문_테이블_목록;
     public List<OrderTable> 주문_테이블_목록_2;
-    public TableGroup 단체_1;
-    public TableGroup 단체_2;
+    public TableGroupRequest 단체_1;
+    public TableGroupRequest 단체_2;
 
     @BeforeEach
     public void setUp() {
@@ -33,30 +35,30 @@ public class TableGroupAcceptanceTestFixture extends AcceptanceTest {
         주문_테이블_1 = 주문_테이블_생성_되어있음(new OrderTable(null, null, 0, true));
         주문_테이블_2 = 주문_테이블_생성_되어있음(new OrderTable(null, null, 0, true));
         주문_테이블_목록 = Arrays.asList(주문_테이블_1, 주문_테이블_2);
-        단체_1 = new TableGroup(null, null, 주문_테이블_목록);
+        단체_1 = createTableGroupRequest(주문_테이블_목록);
 
         주문_테이블_3 = 주문_테이블_생성_되어있음(new OrderTable(null, null, 0, true));
         주문_테이블_4 = 주문_테이블_생성_되어있음(new OrderTable(null, null, 0, true));
         주문_테이블_목록_2 = Arrays.asList(주문_테이블_3, 주문_테이블_4);
-        단체_2 = new TableGroup(null, null, 주문_테이블_목록_2);
+        단체_2 = createTableGroupRequest(주문_테이블_목록_2);
     }
 
-    public static ExtractableResponse<Response> 단체_지정_생성_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_생성_요청(TableGroupRequest tableGroupRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(tableGroupRequest)
                 .when().post("/api/table-groups")
                 .then().log().all()
                 .extract();
     }
 
-    public static TableGroup 단체_지정_생성_되어있음(TableGroup tableGroup) {
-        return 단체_지정_정보(단체_지정_생성_요청(tableGroup));
+    public static TableGroupResponse 단체_지정_생성_되어있음(TableGroupRequest tableGroupRequest) {
+        return 단체_지정_정보(단체_지정_생성_요청(tableGroupRequest));
     }
 
-    public static TableGroup 단체_지정_정보(ExtractableResponse<Response> response) {
-        return response.jsonPath().getObject("", TableGroup.class);
+    public static TableGroupResponse 단체_지정_정보(ExtractableResponse<Response> response) {
+        return response.jsonPath().getObject("", TableGroupResponse.class);
     }
 
     public static void 단체_지정_생성됨(ExtractableResponse<Response> response) {
@@ -88,5 +90,11 @@ public class TableGroupAcceptanceTestFixture extends AcceptanceTest {
 
     public static boolean 주문_테이블_목록에_포함_확인(List<OrderTable> orderTables, Long orderTableId) {
         return orderTables.stream().anyMatch(orderTable -> orderTable.getId().equals(orderTableId));
+    }
+
+    public static TableGroupRequest createTableGroupRequest(List<OrderTable> orderTables) {
+        return new TableGroupRequest(orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList()));
     }
 }

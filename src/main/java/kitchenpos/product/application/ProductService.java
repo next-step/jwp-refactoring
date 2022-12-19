@@ -3,21 +3,25 @@ package kitchenpos.product.application;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @Transactional
-    public Product create(final Product product) {
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product product = productRequest.toProduct();
         if (product.getName().isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -28,10 +32,10 @@ public class ProductService {
             throw new IllegalArgumentException();
         }
 
-        return productDao.save(product);
+        return ProductResponse.from(productRepository.save(product));
     }
 
-    public List<Product> list() {
-        return productDao.findAll();
+    public List<ProductResponse> list() {
+        return ProductResponse.getProductResponses(productRepository.findAll());
     }
 }

@@ -1,21 +1,29 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import kitchenpos.ordertable.domain.OrderTable;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@EntityListeners(AuditingEntityListener.class)
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreatedDate
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
 
     public TableGroup() {}
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
     public Long getId() {
@@ -34,14 +42,6 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,12 +51,11 @@ public class TableGroup {
             return false;
         }
         TableGroup that = (TableGroup) o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate)
-                && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id, createdDate);
     }
 }

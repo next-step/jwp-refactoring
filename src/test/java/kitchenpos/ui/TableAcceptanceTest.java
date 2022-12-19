@@ -4,6 +4,7 @@ import static kitchenpos.ui.MenuAcceptanceTestFixture.메뉴_생성_되어있음
 import static kitchenpos.ui.MenuGroupAcceptanceTestFixture.메뉴_그룹_생성되어있음;
 import static kitchenpos.ui.OrderAcceptanceTestFixture.주문_등록_되어있음;
 import static kitchenpos.ui.ProductAcceptanceTestFixture.상품_생성_되어있음;
+import static kitchenpos.ui.TableGroupAcceptanceTestFixture.createTableGroupRequest;
 import static kitchenpos.ui.TableGroupAcceptanceTestFixture.단체_지정_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -13,15 +14,18 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -181,7 +185,7 @@ public class TableAcceptanceTest extends TableAcceptanceTestFixture {
         OrderTable 생성된_주문_테이블_1 = 주문_테이블_생성_되어있음(주문_테이블_1);
         OrderTable 생성된_주문_테이블_2 = 주문_테이블_생성_되어있음(주문_테이블_2);
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(생성된_주문_테이블_1, 생성된_주문_테이블_2);
-        TableGroup 단체_1 = new TableGroup(null, null, 주문_테이블_목록);
+        TableGroupRequest 단체_1 = createTableGroupRequest(주문_테이블_목록);
         단체_지정_생성_요청(단체_1);
 
         // When
@@ -205,26 +209,26 @@ public class TableAcceptanceTest extends TableAcceptanceTestFixture {
         // Given
         OrderTable 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
 
-        MenuGroup 세트 = 메뉴_그룹_생성되어있음(new MenuGroup(null, "세트"));
-        Product 떡볶이 = 상품_생성_되어있음(new Product(null, "떡볶이", BigDecimal.valueOf(4500)));
-        Product 튀김 = 상품_생성_되어있음(new Product(null, "튀김", BigDecimal.valueOf(2500)));
-        Product 순대 = 상품_생성_되어있음(new Product(null, "순대", BigDecimal.valueOf(4000)));
+        MenuGroupResponse 세트 = 메뉴_그룹_생성되어있음(new MenuGroupRequest("세트"));
+        ProductResponse 떡볶이 = 상품_생성_되어있음(new ProductRequest("떡볶이", BigDecimal.valueOf(4500)));
+        ProductResponse 튀김 = 상품_생성_되어있음(new ProductRequest("튀김", BigDecimal.valueOf(2500)));
+        ProductResponse 순대 = 상품_생성_되어있음(new ProductRequest("순대", BigDecimal.valueOf(4000)));
 
-        MenuProduct 떡튀순_상품_떡볶이 = new MenuProduct(null, null, 떡볶이.getId(), 1);
-        MenuProduct 떡튀순_상품_튀김 = new MenuProduct(null, null, 튀김.getId(), 1);
-        MenuProduct 떡튀순_상품_순대 = new MenuProduct(null, null, 순대.getId(), 1);
-        MenuProduct 떡튀순_곱배기_상품_떡볶이 = new MenuProduct(null, null, 떡볶이.getId(), 2);
+        MenuProductRequest 떡튀순_상품_떡볶이 = new MenuProductRequest(떡볶이.getId(), 1);
+        MenuProductRequest 떡튀순_상품_튀김 = new MenuProductRequest(튀김.getId(), 1);
+        MenuProductRequest 떡튀순_상품_순대 = new MenuProductRequest(순대.getId(), 1);
+        MenuProductRequest 떡튀순_곱배기_상품_떡볶이 = new MenuProductRequest(떡볶이.getId(), 2);
 
-        List<MenuProduct> 떡튀순_상품_목록 = Arrays.asList(떡튀순_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
-        List<MenuProduct> 떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
+        List<MenuProductRequest> 떡튀순_상품_목록 = Arrays.asList(떡튀순_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
+        List<MenuProductRequest> 떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
 
-        Menu 떡튀순 = 메뉴_생성_되어있음(new Menu(null, "떡튀순", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_상품_목록));
-        Menu 떡튀순_곱배기 = 메뉴_생성_되어있음(new Menu(null, "떡튀순_곱배기", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_곱배기_상품_목록));
+        MenuResponse 떡튀순 = 메뉴_생성_되어있음(new MenuRequest("떡튀순", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_상품_목록));
+        MenuResponse 떡튀순_곱배기 = 메뉴_생성_되어있음(new MenuRequest("떡튀순_곱배기", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_곱배기_상품_목록));
 
-        OrderLineItem 주문_아이템_1 = new OrderLineItem(null, null, 떡튀순.getId(), 2);
-        OrderLineItem 주문_아이템_2 = new OrderLineItem(null, null, 떡튀순_곱배기.getId(), 1);
-        List<OrderLineItem> 주문_아이템_목록 = Arrays.asList(주문_아이템_1, 주문_아이템_2);
-        Order 주문 = new Order(null, 생성된_주문_테이블.getId(), OrderStatus.COOKING.name(), null, 주문_아이템_목록);
+        OrderLineItemRequest 주문_아이템_1 = new OrderLineItemRequest(떡튀순.getId(), 2);
+        OrderLineItemRequest 주문_아이템_2 = new OrderLineItemRequest(떡튀순_곱배기.getId(), 1);
+        List<OrderLineItemRequest> 주문_아이템_목록 = Arrays.asList(주문_아이템_1, 주문_아이템_2);
+        OrderRequest 주문 = new OrderRequest(생성된_주문_테이블.getId(), OrderStatus.COOKING.name(), 주문_아이템_목록);
         주문_등록_되어있음(주문);
 
         // When

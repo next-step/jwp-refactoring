@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class ProductAcceptanceTest extends ProductAcceptanceTestFixture {
         상품_생성됨(response);
 
         // Then
-        Product 생성된_상품 = 상품(response);
+        ProductResponse 생성된_상품 = 상품(response);
         assertAll(
                 () -> assertThat(생성된_상품.getId()).isNotNull(),
                 () -> assertThat(생성된_상품.getName()).isEqualTo("떡볶이")
@@ -44,9 +44,9 @@ public class ProductAcceptanceTest extends ProductAcceptanceTestFixture {
     @Test
     void 상품_목록_조회() {
         // Given
-        Product 생성된_상품_1 = 상품_생성_되어있음(떡볶이);
-        Product 생성된_상품_2 = 상품_생성_되어있음(튀김);
-        Product 생성된_상품_3 = 상품_생성_되어있음(순대);
+         ProductResponse 생성된_상품_1 = 상품_생성_되어있음(떡볶이);
+         ProductResponse 생성된_상품_2 = 상품_생성_되어있음(튀김);
+         ProductResponse 생성된_상품_3 = 상품_생성_되어있음(순대);
         // When
         ExtractableResponse<Response> response = 상품_조회_요청();
 
@@ -54,7 +54,7 @@ public class ProductAcceptanceTest extends ProductAcceptanceTestFixture {
         상품_목록_조회됨(response);
 
         // Then
-        List<Product> 조회된_상품_목록 = 상품_목록(response);
+        List<ProductResponse> 조회된_상품_목록 = 상품_목록(response);
         assertThat(조회된_상품_목록).containsAll(Arrays.asList(생성된_상품_1, 생성된_상품_2, 생성된_상품_3));
     }
 }

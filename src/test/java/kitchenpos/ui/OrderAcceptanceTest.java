@@ -9,9 +9,10 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
         주문_등록됨(response);
 
         // Then
-        Order 등록된_주문 = 주문정보(response);
+        OrderResponse 등록된_주문 = 주문정보(response);
         assertAll(
                 () -> assertThat(등록된_주문.getId()).isNotNull(),
                 () -> assertThat(등록된_주문.getOrderedTime()).isNotNull(),
@@ -52,11 +53,11 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
     @Test
     void 주문_목록_조회() {
         // Given
-        OrderLineItem 주문_아이템_3 = new OrderLineItem(null, null, 떡튀순_곱배기.getId(), 2);
-        List<OrderLineItem> 주문_아이템_목록_2 = Arrays.asList(주문_아이템_1, 주문_아이템_3);
-        Order 주문_2 = new Order(null, 주문_테이블.getId(), OrderStatus.COOKING.name(), null, 주문_아이템_목록_2);
-        Order 등록된_주문 = 주문_등록_되어있음(주문);
-        Order 등록된_주문_2 = 주문_등록_되어있음(주문_2);
+        OrderLineItemRequest 주문_아이템_3 = new OrderLineItemRequest(떡튀순_곱배기.getId(), 2);
+        List<OrderLineItemRequest> 주문_아이템_목록_2 = Arrays.asList(주문_아이템_1, 주문_아이템_3);
+        OrderRequest 주문_2 = new OrderRequest(주문_테이블.getId(), OrderStatus.COOKING.name(), 주문_아이템_목록_2);
+        주문_등록_되어있음(주문);
+        주문_등록_되어있음(주문_2);
 
         // When
         ExtractableResponse<Response> response = 주문_조회_요청();
@@ -65,8 +66,8 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
         주문_목록_조회됨(response);
 
         // Then
-        List<Order> 조회된_주문_목록 = 주문_목록(response);
-        assertThat(조회된_주문_목록).containsAll(Arrays.asList(등록된_주문, 등록된_주문_2));
+        List<OrderResponse> 조회된_주문_목록 = 주문_목록(response);
+        assertThat(조회된_주문_목록).hasSize(2);
     }
 
     /**
@@ -78,7 +79,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
     @TestFactory
     Stream<DynamicTest> 주문_상태_수정() {
         // Given
-        Order 등록된_주문 = 주문_등록_되어있음(주문);
+        OrderResponse 등록된_주문 = 주문_등록_되어있음(주문);
         return Stream.of(
                 dynamicTest("주문 상태를 조리에서 식사로 변경한다", () -> {
                     // When
@@ -90,7 +91,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
                     주문_상태_수정됨(response);
 
                     // Then
-                    Order 수정된_주문 = 주문정보(response);
+                    OrderResponse 수정된_주문 = 주문정보(response);
                     assertAll(
                             () -> assertThat(수정된_주문.getId()).isEqualTo(등록된_주문.getId()),
                             () -> assertThat(수정된_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
@@ -106,7 +107,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
                     주문_상태_수정됨(response);
 
                     // Then
-                    Order 수정된_주문2 = 주문정보(response);
+                    OrderResponse 수정된_주문2 = 주문정보(response);
                     assertAll(
                             () -> assertThat(수정된_주문2.getId()).isEqualTo(등록된_주문.getId()),
                             () -> assertThat(수정된_주문2.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())
@@ -122,7 +123,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
                     주문_상태_수정됨(response);
 
                     // Then
-                    Order 수정된_주문3 = 주문정보(response);
+                    OrderResponse 수정된_주문3 = 주문정보(response);
                     assertAll(
                             () -> assertThat(수정된_주문3.getId()).isEqualTo(등록된_주문.getId()),
                             () -> assertThat(수정된_주문3.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name())
@@ -140,7 +141,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
     void 등록안된_주문_상태_수정() {
         // When
         주문.setOrderStatus(OrderStatus.MEAL.name());
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), 주문);
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(1L, 주문);
 
         // Then
         주문_상태_수정되지_않음(response);
@@ -155,7 +156,7 @@ public class OrderAcceptanceTest extends OrderAcceptanceTestFixture {
     @Test
     void 계산_완료_주문_상태_수정() {
         // Given
-        Order 등록된_주문 = 주문_등록_되어있음(주문);
+        OrderResponse 등록된_주문 = 주문_등록_되어있음(주문);
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
         주문_상태_변경_요청(등록된_주문.getId(), 주문);
 

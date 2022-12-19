@@ -1,17 +1,43 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+@EntityListeners(AuditingEntityListener.class)
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
+    @Column(nullable = false)
     private String orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {}
+
+    public Order(Long orderTableId, String orderStatus) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+    }
 
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
             List<OrderLineItem> orderLineItems) {
@@ -20,6 +46,11 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+        orderLineItem.addOrder(this);
     }
 
     public Long getId() {
@@ -34,7 +65,7 @@ public class Order {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
+    public void setOrderTableId(Long orderTableId) {
         this.orderTableId = orderTableId;
     }
 

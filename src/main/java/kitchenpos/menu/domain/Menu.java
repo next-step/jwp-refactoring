@@ -1,17 +1,38 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {}
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
 
     public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
@@ -19,6 +40,11 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
+        menuProduct.addMenu(this);
     }
 
     public Long getId() {
@@ -49,7 +75,7 @@ public class Menu {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
+    public void setMenuGroupId(Long menuGroupId) {
         this.menuGroupId = menuGroupId;
     }
 
@@ -71,7 +97,7 @@ public class Menu {
         }
         Menu menu = (Menu) o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-                && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId)
+                && (price.compareTo(menu.price) == 0) && Objects.equals(menuGroupId, menu.menuGroupId)
                 && Objects.equals(menuProducts, menu.menuProducts);
     }
 

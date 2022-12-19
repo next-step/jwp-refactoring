@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class MenuAcceptanceTest extends MenuAcceptanceTestFixture {
         메뉴_생성됨(response);
 
         // Then
-        Menu 생성된_메뉴 = 메뉴(response);
+        MenuResponse 생성된_메뉴 = 메뉴(response);
         assertAll(
                 () -> assertThat(생성된_메뉴.getId()).isNotNull(),
                 () -> assertThat(생성된_메뉴.getName()).isEqualTo("떡튀순")
@@ -44,8 +44,8 @@ public class MenuAcceptanceTest extends MenuAcceptanceTestFixture {
     @Test
     void 메뉴_목록_조회() {
         // Given
-        Menu 생성된_메뉴_1 = 메뉴_생성_되어있음(떡튀순);
-        Menu 생성된_메뉴_2 = 메뉴_생성_되어있음(떡튀순_곱배기);
+        MenuResponse 생성된_메뉴_1 = 메뉴_생성_되어있음(떡튀순);
+        MenuResponse 생성된_메뉴_2 = 메뉴_생성_되어있음(떡튀순_곱배기);
         // When
         ExtractableResponse<Response> response = 메뉴_조회_요청();
 
@@ -53,7 +53,7 @@ public class MenuAcceptanceTest extends MenuAcceptanceTestFixture {
         메뉴_목록_조회됨(response);
 
         // Then
-        List<Menu> 조회된_메뉴_목록 = 메뉴_목록(response);
+        List<MenuResponse> 조회된_메뉴_목록 = 메뉴_목록(response);
         assertThat(조회된_메뉴_목록).containsAll(Arrays.asList(생성된_메뉴_1, 생성된_메뉴_2));
     }
 }

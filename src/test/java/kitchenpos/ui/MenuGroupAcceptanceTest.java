@@ -7,7 +7,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ class MenuGroupAcceptanceTest extends MenuGroupAcceptanceTestFixture {
         메뉴_그룹_생성됨(response);
 
         // Then
-        MenuGroup 생성된_메뉴_그룹 = 메뉴_그룹(response);
+        MenuGroupResponse 생성된_메뉴_그룹 = 메뉴_그룹(response);
         assertAll(
                 () -> assertThat(생성된_메뉴_그룹.getId()).isNotNull(),
                 () -> assertThat(생성된_메뉴_그룹.getName()).isEqualTo("세트")
@@ -44,9 +45,9 @@ class MenuGroupAcceptanceTest extends MenuGroupAcceptanceTestFixture {
     @Test
     void 메뉴_그룹_목록_조회() {
         // Given
-        MenuGroup 단품 = new MenuGroup(null, "단품");
-        MenuGroup 생성된_메뉴_그룹_1 = 메뉴_그룹(메뉴_그룹_생성_요청(세트));
-        MenuGroup 생성된_메뉴_그룹_2 = 메뉴_그룹(메뉴_그룹_생성_요청(단품));
+        MenuGroupRequest 단품 = new MenuGroupRequest("단품");
+        MenuGroupResponse 생성된_메뉴_그룹_1 = 메뉴_그룹(메뉴_그룹_생성_요청(세트));
+        MenuGroupResponse 생성된_메뉴_그룹_2 = 메뉴_그룹(메뉴_그룹_생성_요청(단품));
 
         // When
         ExtractableResponse<Response> response = 메뉴_그룹_조회_요청();
@@ -55,7 +56,7 @@ class MenuGroupAcceptanceTest extends MenuGroupAcceptanceTestFixture {
         메뉴_그룹_목록_조회됨(response);
 
         // Then
-        List<MenuGroup> 조회된_메뉴_그룹_목록 = 메뉴_그룹_목록(response);
+        List<MenuGroupResponse> 조회된_메뉴_그룹_목록 = 메뉴_그룹_목록(response);
         assertThat(조회된_메뉴_그룹_목록).containsAll(Arrays.asList(생성된_메뉴_그룹_1, 생성된_메뉴_그룹_2));
     }
 
