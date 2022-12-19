@@ -152,4 +152,5 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.ungroup(단체그룹.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
 }

@@ -76,4 +76,5 @@ public class ProductServiceTest {
         assertThat(result).hasSize(1)
                 .containsExactly(product);
     }
+
 }

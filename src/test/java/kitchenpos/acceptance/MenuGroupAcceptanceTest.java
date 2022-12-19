@@ -88,4 +88,5 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultIds).containsAll(menuGroupIds);
     }
+
 }

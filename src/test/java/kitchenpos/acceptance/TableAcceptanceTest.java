@@ -154,4 +154,5 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 }

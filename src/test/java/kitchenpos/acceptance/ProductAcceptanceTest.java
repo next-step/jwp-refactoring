@@ -83,4 +83,5 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 }

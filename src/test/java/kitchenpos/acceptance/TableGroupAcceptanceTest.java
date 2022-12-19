@@ -79,4 +79,5 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 }

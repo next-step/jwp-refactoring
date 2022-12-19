@@ -184,4 +184,5 @@ class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), updateOrderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
 }

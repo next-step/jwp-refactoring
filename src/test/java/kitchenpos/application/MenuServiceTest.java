@@ -171,4 +171,5 @@ class MenuServiceTest {
         assertThat(result).hasSize(1)
                 .containsExactly(삼겹살세트메뉴);
     }
+
 }

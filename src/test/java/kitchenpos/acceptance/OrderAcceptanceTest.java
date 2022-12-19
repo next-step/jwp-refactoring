@@ -142,4 +142,5 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 }

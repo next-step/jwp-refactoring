@@ -104,4 +104,5 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 }

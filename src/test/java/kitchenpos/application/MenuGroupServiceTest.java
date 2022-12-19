@@ -61,4 +61,5 @@ class MenuGroupServiceTest {
         assertThat(results).hasSize(1)
                 .containsExactly(menuGroup);
     }
+
 }
