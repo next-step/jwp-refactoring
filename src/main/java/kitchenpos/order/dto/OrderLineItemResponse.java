@@ -12,7 +12,7 @@ public class OrderLineItemResponse {
         return new OrderLineItemResponse(orderLineItem.getSeq()
                 , orderLineItem.getOrderId()
                 , orderLineItem.getMenuId()
-                , orderLineItem.getQuantity());
+                , orderLineItem.getQuantityValue());
     }
 
     public OrderLineItemResponse(Long seq, Long orderId, Long menuId, long quantity) {

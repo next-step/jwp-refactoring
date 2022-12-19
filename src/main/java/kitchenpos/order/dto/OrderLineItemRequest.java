@@ -12,7 +12,7 @@ public class OrderLineItemRequest {
     }
 
     public OrderLineItemRequest(OrderLineItem orderLineItem) {
-        this(orderLineItem.getMenuId(), orderLineItem.getQuantity());
+        this(orderLineItem.getMenuId(), orderLineItem.getQuantityValue());
     }
 
     public OrderLineItem toOrderLineItem() {

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -43,12 +44,12 @@ public class TableGroupValidatorTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블_1 = new OrderTable(1L, null, 0, true);
-        주문_테이블_2 = new OrderTable(2L, null, 0, true);
+        주문_테이블_1 = new OrderTable(1L, null, new NumberOfGuests(0), true);
+        주문_테이블_2 = new OrderTable(2L, null, new NumberOfGuests(0), true);
         단체_지정_id = 1L;
         단체_2 = new TableGroup(단체_지정_id, null);
-        단체_지정된_주문_테이블_1 = new OrderTable(1L, 단체_2.getId(), 5, false);
-        단체_지정된_주문_테이블_2 = new OrderTable(2L, 단체_2.getId(), 4, false);
+        단체_지정된_주문_테이블_1 = new OrderTable(1L, 단체_2.getId(), new NumberOfGuests(5), false);
+        단체_지정된_주문_테이블_2 = new OrderTable(2L, 단체_2.getId(), new NumberOfGuests(4), false);
         단체_지정된_주문_테이블_목록 = Arrays.asList(단체_지정된_주문_테이블_1, 단체_지정된_주문_테이블_2);
     }
 
@@ -75,7 +76,7 @@ public class TableGroupValidatorTest {
     @DisplayName("빈 테이블이 아닌 주문 테이블에 대해 단체 지정 요청 시 예외처리")
     @Test
     void 비어있지_않은_주문_테이블_예외처리() {
-        OrderTable 비어있지_않은_테이블 = new OrderTable(3L, null, 0, false);
+        OrderTable 비어있지_않은_테이블 = new OrderTable(3L, null, new NumberOfGuests(0), false);
         List<Long> 비어있지_않은_주문_테이블_id_목록 = Arrays.asList(비어있지_않은_테이블.getId());
 
         assertThatThrownBy(
@@ -86,7 +87,7 @@ public class TableGroupValidatorTest {
     @DisplayName("이미 단체 지정된 주문 테이블에 대해 단체 지정 요청 시 예외처리")
     @Test
     void 중복_단체_지정_예외처리() {
-        OrderTable 단체_지정된_테이블 = new OrderTable(3L, 단체_2.getId(), 0, false);
+        OrderTable 단체_지정된_테이블 = new OrderTable(3L, 단체_2.getId(), new NumberOfGuests(0), false);
         List<OrderTable> 단체_지정된_주문_테이블_포함_목록 = Arrays.asList(단체_지정된_테이블, 주문_테이블_1);
         when(orderTableRepository.findByIdIn(주문_테이블_Id_목록(단체_지정된_주문_테이블_포함_목록))).thenReturn(단체_지정된_주문_테이블_포함_목록);
 
@@ -98,7 +99,7 @@ public class TableGroupValidatorTest {
     @DisplayName("계산 완료되지 않은 주문이 등록된 주문 테이블에 대해 단체 지정 해제")
     @Test
     void 단체_지정_해제_계산_미완료_예외처리() {
-        Order 계산_미완료된_주문 = new Order(단체_지정된_주문_테이블_1.getId(), OrderStatus.MEAL.name());
+        Order 계산_미완료된_주문 = new Order(단체_지정된_주문_테이블_1.getId(), OrderStatus.MEAL);
         when(orderRepository.findByOrderTableIdIn(주문_테이블_Id_목록(단체_지정된_주문_테이블_목록)))
                 .thenReturn(Collections.singletonList(계산_미완료된_주문));
 

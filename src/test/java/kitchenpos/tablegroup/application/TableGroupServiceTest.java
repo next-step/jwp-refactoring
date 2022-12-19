@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -47,13 +48,13 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블_1 = new OrderTable(1L, null, 0, true);
-        주문_테이블_2 = new OrderTable(2L, null, 0, true);
+        주문_테이블_1 = new OrderTable(1L, null, new NumberOfGuests(0), true);
+        주문_테이블_2 = new OrderTable(2L, null, new NumberOfGuests(0), true);
         주문_테이블_목록 = new OrderTables(Arrays.asList(주문_테이블_1, 주문_테이블_2));
         단체_지정_id = 1L;
         단체_2 = new TableGroup(단체_지정_id, null);
-        단체_지정된_주문_테이블_1 = new OrderTable(1L, 단체_2.getId(), 5, false);
-        단체_지정된_주문_테이블_2 = new OrderTable(2L, 단체_2.getId(), 4, false);
+        단체_지정된_주문_테이블_1 = new OrderTable(1L, 단체_2.getId(), new NumberOfGuests(5), false);
+        단체_지정된_주문_테이블_2 = new OrderTable(2L, 단체_2.getId(), new NumberOfGuests(4), false);
         단체_지정된_주문_테이블_목록 = new OrderTables(Arrays.asList(단체_지정된_주문_테이블_1, 단체_지정된_주문_테이블_2));
     }
 
@@ -66,7 +67,7 @@ class TableGroupServiceTest {
 
         TableGroupResponse 지정된_단체 = tableGroupService.create(createTableGroupRequest(주문_테이블_목록));
 
-        assertThat(지정된_단체.getOrderTables()).hasSize(주문_테이블_목록.size());
+        assertThat(지정된_단체.getOrderTableResponses()).hasSize(주문_테이블_목록.size());
     }
 
     @DisplayName("단체 지정 해제")
@@ -78,8 +79,8 @@ class TableGroupServiceTest {
 
         assertAll(
                 () -> 단체_지정된_주문_테이블_목록.stream().forEach(주문_테이블 -> assertThat(주문_테이블.getTableGroupId()).isNull()),
-                () -> assertThat(단체_지정된_주문_테이블_1.getNumberOfGuests()).isEqualTo(5),
-                () -> assertThat(단체_지정된_주문_테이블_2.getNumberOfGuests()).isEqualTo(4)
+                () -> assertThat(단체_지정된_주문_테이블_1.getNumberOfGuestsValue()).isEqualTo(5),
+                () -> assertThat(단체_지정된_주문_테이블_2.getNumberOfGuestsValue()).isEqualTo(4)
         );
     }
 

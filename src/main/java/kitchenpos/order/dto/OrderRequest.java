@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderRequest {
 
@@ -16,7 +17,7 @@ public class OrderRequest {
         List<OrderLineItemRequest> orderLineItemRequests = order.getOrderLineItems().stream()
                 .map(OrderLineItemRequest::new)
                 .collect(Collectors.toList());
-        return new OrderRequest(order.getOrderTableId(), order.getOrderStatus(), orderLineItemRequests);
+        return new OrderRequest(order.getOrderTableId(), order.getOrderStatusName(), orderLineItemRequests);
     }
 
     public OrderRequest(Long orderTableId, String orderStatus, List<OrderLineItemRequest> orderLineItems) {
@@ -26,7 +27,7 @@ public class OrderRequest {
     }
 
     public Order toOrder() {
-        Order order = new Order(orderTableId, orderStatus);
+        Order order = new Order(orderTableId, OrderStatus.valueOf(orderStatus));
         orderLineItems.stream()
                 .map(OrderLineItemRequest::toOrderLineItem)
                 .forEach(order::addOrderLineItem);

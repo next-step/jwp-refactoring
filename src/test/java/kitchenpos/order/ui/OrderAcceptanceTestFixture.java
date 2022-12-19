@@ -22,7 +22,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ public class OrderAcceptanceTestFixture extends AcceptanceTest {
     public MenuResponse 떡튀순;
     public MenuResponse 떡튀순_곱배기;
 
-    public OrderTable 주문_테이블;
+    public OrderTableResponse 주문_테이블;
     public OrderLineItemRequest 주문_아이템_1;
     public OrderLineItemRequest 주문_아이템_2;
     public List<OrderLineItemRequest> 주문_아이템_목록;
@@ -73,7 +74,7 @@ public class OrderAcceptanceTestFixture extends AcceptanceTest {
         떡튀순 = 메뉴_생성_되어있음(new MenuRequest("떡튀순", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_상품_목록));
         떡튀순_곱배기 = 메뉴_생성_되어있음(new MenuRequest("떡튀순_곱배기", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_곱배기_상품_목록));
 
-        주문_테이블 = 주문_테이블_생성_되어있음(new OrderTable(null, null, 0, false));
+        주문_테이블 = 주문_테이블_생성_되어있음(new OrderTableRequest(null, 0, false));
 
         주문_아이템_1 = new OrderLineItemRequest(떡튀순.getId(), 2);
         주문_아이템_2 = new OrderLineItemRequest(떡튀순_곱배기.getId(), 1);

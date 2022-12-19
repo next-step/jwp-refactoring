@@ -12,6 +12,7 @@ import java.util.Optional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -44,7 +45,7 @@ class OrderTableServiceTest {
     @BeforeEach
     void setUp() {
         주문_테이블_1_id = 1L;
-        주문_테이블 = new OrderTable(주문_테이블_1_id, null, 0, true);
+        주문_테이블 = new OrderTable(주문_테이블_1_id, null, new NumberOfGuests(0), true);
         주문_테이블_요청정보 = OrderTableRequest.from(주문_테이블);
     }
 
@@ -73,9 +74,9 @@ class OrderTableServiceTest {
         assertAll(
                 () -> assertThat(조회된_주문_테이블_목록.size()).isEqualTo(주문_테이블_목록.size()),
                 () -> assertThat(조회된_주문_테이블_목록.get(0).getNumberOfGuests()).isEqualTo(
-                        주문_테이블_목록.get(0).getNumberOfGuests()),
+                        주문_테이블_목록.get(0).getNumberOfGuestsValue()),
                 () -> assertThat(조회된_주문_테이블_목록.get(1).getNumberOfGuests()).isEqualTo(
-                        주문_테이블_목록.get(1).getNumberOfGuests())
+                        주문_테이블_목록.get(1).getNumberOfGuestsValue())
         );
     }
 
@@ -84,7 +85,7 @@ class OrderTableServiceTest {
     void 빈_테이블_여부_수정() {
         OrderTableRequest 수정할_주문_테이블 = new OrderTableRequest(null, 0, false);
         when(orderTableRepository.findById(주문_테이블_1_id)).thenReturn(Optional.of(주문_테이블));
-        List<Order> orders = Collections.singletonList(new Order(주문_테이블_1_id, OrderStatus.COMPLETION.name()));
+        List<Order> orders = Collections.singletonList(new Order(주문_테이블_1_id, OrderStatus.COMPLETION));
         when(orderRepository.findByOrderTableId(주문_테이블_1_id)).thenReturn(orders);
         when(orderTableRepository.save(주문_테이블)).thenReturn(주문_테이블);
 
@@ -122,7 +123,7 @@ class OrderTableServiceTest {
     void 단체_지정_주문_테이블_빈_테이블_여부_수정_예외처리() {
         TableGroup 단체 = new TableGroup(1L, null);
         Long 단체_지정된_주문_테이블_id = 2L;
-        OrderTable 단체_지정된_주문_테이블 = new OrderTable(단체_지정된_주문_테이블_id, 단체.getId(), 0, true);
+        OrderTable 단체_지정된_주문_테이블 = new OrderTable(단체_지정된_주문_테이블_id, 단체.getId(), new NumberOfGuests(0), true);
         OrderTableRequest 수정할_주문_테이블 = new OrderTableRequest(null, 0, false);
         when(orderTableRepository.findById(단체_지정된_주문_테이블_id)).thenReturn(Optional.of(단체_지정된_주문_테이블));
 
@@ -135,7 +136,7 @@ class OrderTableServiceTest {
     void 계산_완료_안된_주문_등록된_빈_테이블_여부_수정_예외처리() {
         OrderTableRequest 수정할_주문_테이블 = new OrderTableRequest(null, 0, false);
         when(orderTableRepository.findById(주문_테이블_1_id)).thenReturn(Optional.of(주문_테이블_요청정보.toOrderTable()));
-        List<Order> orders = Collections.singletonList(new Order(주문_테이블_1_id, OrderStatus.MEAL.name()));
+        List<Order> orders = Collections.singletonList(new Order(주문_테이블_1_id, OrderStatus.MEAL));
         when(orderRepository.findByOrderTableId(주문_테이블_1_id)).thenReturn(orders);
 
         assertThatThrownBy(() -> orderTableService.changeEmpty(주문_테이블_1_id, 수정할_주문_테이블)).isInstanceOf(
@@ -146,7 +147,7 @@ class OrderTableServiceTest {
     @Test
     void 주문_테이블_방문한_손님_수_수정() {
         Long 주문_테이블_2_id = 2L;
-        OrderTable 주문_테이블_2 = new OrderTable(주문_테이블_2_id, null, 0, false);
+        OrderTable 주문_테이블_2 = new OrderTable(주문_테이블_2_id, null, new NumberOfGuests(0), false);
         OrderTableRequest 수정할_테이블 = new OrderTableRequest(null, 5, false);
         when(orderTableRepository.findById(주문_테이블_2_id)).thenReturn(Optional.of(주문_테이블_2));
         when(orderTableRepository.save(주문_테이블_2)).thenReturn(주문_테이블_2);
@@ -184,7 +185,7 @@ class OrderTableServiceTest {
     @Test
     void 빈_테이블_방문한_손님_수_수정_예외처리() {
         Long 주문_테이블_2_id = 2L;
-        OrderTable 주문_테이블_2 = new OrderTable(주문_테이블_2_id, null, 0, true);
+        OrderTable 주문_테이블_2 = new OrderTable(주문_테이블_2_id, null, new NumberOfGuests(0), true);
         OrderTableRequest 수정할_테이블 = new OrderTableRequest(null, 5, false);
         when(orderTableRepository.findById(주문_테이블_2_id)).thenReturn(Optional.of(주문_테이블_2));
 

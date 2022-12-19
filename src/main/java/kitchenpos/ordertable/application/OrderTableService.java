@@ -48,8 +48,8 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }*/
         if (orderRepository.findByOrderTableId(orderTableId).stream()
-                .anyMatch(order -> (order.getOrderStatus().equals(OrderStatus.COOKING.name())
-                        || order.getOrderStatus().equals(OrderStatus.MEAL.name())))) {
+                .anyMatch(order -> (order.getOrderStatus().equals(OrderStatus.COOKING)
+                        || order.getOrderStatus().equals(OrderStatus.MEAL)))) {
             throw new IllegalArgumentException();
         }
 
@@ -61,7 +61,7 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableRequest.toOrderTable();
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+        final int numberOfGuests = orderTable.getNumberOfGuestsValue();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
@@ -74,7 +74,7 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.updateNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }

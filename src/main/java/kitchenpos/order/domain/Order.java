@@ -8,6 +8,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +28,8 @@ public class Order {
     private Long id;
     private Long orderTableId;
     @Column(nullable = false)
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -34,12 +37,12 @@ public class Order {
 
     public Order() {}
 
-    public Order(Long orderTableId, String orderStatus) {
+    public Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
             List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -54,7 +57,7 @@ public class Order {
     }
 
     public boolean isOrderNotComplete() {
-        return orderStatus.equals(OrderStatus.COOKING.name()) || orderStatus.equals(OrderStatus.MEAL.name());
+        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
     }
 
     public Long getId() {
@@ -73,11 +76,15 @@ public class Order {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public String getOrderStatusName() {
+        return orderStatus.name();
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

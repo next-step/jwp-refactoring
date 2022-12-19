@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 
 public class OrderTableResponse {
 
@@ -15,7 +16,7 @@ public class OrderTableResponse {
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId()
                 , orderTable.getTableGroupId()
-                , orderTable.getNumberOfGuests()
+                , orderTable.getNumberOfGuestsValue()
                 , orderTable.isEmpty());
     }
 
@@ -34,6 +35,11 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
+    public static List<OrderTableResponse> getOrderTableResponses(OrderTables orderTables) {
+        return orderTables.stream()
+                .map(OrderTableResponse::from)
+                .collect(Collectors.toList());
+    }
     public Long getId() {
         return id;
     }

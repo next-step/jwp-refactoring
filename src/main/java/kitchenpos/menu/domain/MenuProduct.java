@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.util.Objects;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,21 +19,25 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
     private Long productId;
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    private MenuProductQuantity quantity;
 
     public MenuProduct() {}
 
-    public MenuProduct(Long productId, long quantity) {
+    public MenuProduct(Long productId, MenuProductQuantity quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, MenuProductQuantity quantity) {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public MenuProduct(Long seq, Menu menu, Long productId, int quantity) {
+        this(seq, menu, productId, new MenuProductQuantity(quantity));
     }
 
     public void addMenu(Menu menu) {
@@ -68,11 +72,15 @@ public class MenuProduct {
         this.productId = productId;
     }
 
-    public long getQuantity() {
+    public MenuProductQuantity getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
+    public long getQuantityValue() {
+        return quantity.getQuantity();
+    }
+
+    public void setQuantity(MenuProductQuantity quantity) {
         this.quantity = quantity;
     }
 
@@ -85,8 +93,8 @@ public class MenuProduct {
             return false;
         }
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq)
-                && Objects.equals(productId, that.productId);
+        return Objects.equals(seq, that.seq)
+                && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class MenuValidator {
                 .forEach(menuProduct -> {
                     final Product product = productRepository.findById(menuProduct.getProductId())
                             .orElseThrow(IllegalArgumentException::new);
-                    sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+                    sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
                 });
 
         if (menuPrice.compareTo(sum) > 0) {

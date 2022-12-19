@@ -22,7 +22,7 @@ import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -46,7 +46,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
         주문_테이블_생성됨(response);
 
         // Then
-        OrderTable 생성된_주문_테이블 = 주문_테이블(response);
+        OrderTableResponse 생성된_주문_테이블 = 주문_테이블(response);
         assertAll(
                 () -> assertThat(생성된_주문_테이블.getId()).isNotNull(),
                 () -> assertThat(생성된_주문_테이블.getTableGroupId()).isEqualTo(주문_테이블_1.getTableGroupId()),
@@ -64,8 +64,8 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 주문_테이블_목록_조회() {
         // Given
-        OrderTable 생성된_주문_테이블_1 = 주문_테이블_생성_되어있음(주문_테이블_1);
-        OrderTable 생성된_주문_테이블_2 = 주문_테이블_생성_되어있음(주문_테이블_2);
+        OrderTableResponse 생성된_주문_테이블_1 = 주문_테이블_생성_되어있음(주문_테이블_1);
+        OrderTableResponse 생성된_주문_테이블_2 = 주문_테이블_생성_되어있음(주문_테이블_2);
         // When
         ExtractableResponse<Response> response = 주문_테이블_조회_요청();
 
@@ -73,7 +73,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
         주문_테이블_목록_조회됨(response);
 
         // Then
-        List<OrderTable> 조회된_주문_테이블_목록 = 주문_테이블_목록(response);
+        List<OrderTableResponse> 조회된_주문_테이블_목록 = 주문_테이블_목록(response);
         assertThat(조회된_주문_테이블_목록).containsAll(Arrays.asList(생성된_주문_테이블_1, 생성된_주문_테이블_2));
     }
 
@@ -86,7 +86,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 빈_테이블_비어있지_않음으로_수정() {
         // Given
-        OrderTable 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_1);
+        OrderTableResponse 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_1);
 
         // When
         주문_테이블_1.setEmpty(false);
@@ -96,7 +96,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
         빈_테이블_여부_수정됨(response);
 
         // Then
-        OrderTable 수정된_주문_테이블 = 주문_테이블(response);
+        OrderTableResponse 수정된_주문_테이블 = 주문_테이블(response);
         assertAll(
                 () -> assertThat(수정된_주문_테이블.getId()).isEqualTo(생성된_주문_테이블.getId()),
                 () -> assertThat(수정된_주문_테이블.isEmpty()).isEqualTo(false)
@@ -112,7 +112,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 주문_테이블_빈_테이블로_수정() {
         // Given
-        OrderTable 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
+        OrderTableResponse 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
 
         // When
         주문_테이블_3.setEmpty(true);
@@ -122,7 +122,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
         빈_테이블_여부_수정됨(response);
 
         // Then
-        OrderTable 수정된_주문_테이블 = 주문_테이블(response);
+        OrderTableResponse 수정된_주문_테이블 = 주문_테이블(response);
         assertAll(
                 () -> assertThat(수정된_주문_테이블.getId()).isEqualTo(생성된_주문_테이블.getId()),
                 () -> assertThat(수정된_주문_테이블.isEmpty()).isEqualTo(true)
@@ -138,17 +138,17 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 주문_테이블_방문한_손님_수_수정() {
         // Given
-        OrderTable 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
+        OrderTableResponse 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
 
         // When
-        주문_테이블_3.setNumberOfGuests(5);
+        주문_테이블_3.updateNumberOfGuests(5);
         ExtractableResponse<Response> response = 방문한_손님_수_수정_요청(생성된_주문_테이블.getId(), 주문_테이블_3);
 
         // Then
         방문한_손님_수_수정됨(response);
 
         // Then
-        OrderTable 수정된_주문_테이블 = 주문_테이블(response);
+        OrderTableResponse 수정된_주문_테이블 = 주문_테이블(response);
         assertAll(
                 () -> assertThat(수정된_주문_테이블.getId()).isEqualTo(생성된_주문_테이블.getId()),
                 () -> assertThat(수정된_주문_테이블.getNumberOfGuests()).isEqualTo(5)
@@ -165,7 +165,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     void 생성되지_않은_주문_테이블_빈_테이블_여부_수정() {
         // When
         주문_테이블_1.setEmpty(false);
-        ExtractableResponse<Response> response = 빈_테이블_여부_수정_요청(주문_테이블_1.getId(), 주문_테이블_1);
+        ExtractableResponse<Response> response = 빈_테이블_여부_수정_요청(1L, 주문_테이블_1);
 
         // Then
         빈_테이블_여부_수정되지_않음(response);
@@ -182,9 +182,9 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 단체_지정된_주문_테이블_빈_테이블로_수정() {
         // Given
-        OrderTable 생성된_주문_테이블_1 = 주문_테이블_생성_되어있음(주문_테이블_1);
-        OrderTable 생성된_주문_테이블_2 = 주문_테이블_생성_되어있음(주문_테이블_2);
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(생성된_주문_테이블_1, 생성된_주문_테이블_2);
+        OrderTableResponse 생성된_주문_테이블_1 = 주문_테이블_생성_되어있음(주문_테이블_1);
+        OrderTableResponse 생성된_주문_테이블_2 = 주문_테이블_생성_되어있음(주문_테이블_2);
+        List<OrderTableResponse> 주문_테이블_목록 = Arrays.asList(생성된_주문_테이블_1, 생성된_주문_테이블_2);
         TableGroupRequest 단체_1 = createTableGroupRequest(주문_테이블_목록);
         단체_지정_생성_요청(단체_1);
 
@@ -207,7 +207,7 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 주문_등록된_주문_테이블_빈_테이블로_수정() {
         // Given
-        OrderTable 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
+        OrderTableResponse 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
 
         MenuGroupResponse 세트 = 메뉴_그룹_생성되어있음(new MenuGroupRequest("세트"));
         ProductResponse 떡볶이 = 상품_생성_되어있음(new ProductRequest("떡볶이", BigDecimal.valueOf(4500)));
@@ -249,10 +249,10 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 잘_못된_방문한_손님_수() {
         // Given
-        OrderTable 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
+        OrderTableResponse 생성된_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_3);
 
         // When
-        주문_테이블_3.setNumberOfGuests(-1);
+        주문_테이블_3.updateNumberOfGuests(-1);
         ExtractableResponse<Response> response = 방문한_손님_수_수정_요청(생성된_주문_테이블.getId(), 주문_테이블_3);
 
         // Then
@@ -268,8 +268,8 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 생성되지_않은_주문_테이블_방문한_손님_수_수정() {
         // When
-        주문_테이블_1.setNumberOfGuests(2);
-        ExtractableResponse<Response> response = 방문한_손님_수_수정_요청(주문_테이블_1.getId(), 주문_테이블_1);
+        주문_테이블_1.updateNumberOfGuests(2);
+        ExtractableResponse<Response> response = 방문한_손님_수_수정_요청(1L, 주문_테이블_1);
 
         // Then
         방문한_손님_수_수정되지_않음(response);
@@ -285,10 +285,10 @@ public class OrderTableAcceptanceTest extends OrderTableAcceptanceTestFixture {
     @Test
     void 빈_테이블_방문한_손님_수_수정() {
         // Given
-        OrderTable 생성된_빈_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_1);
+        OrderTableResponse 생성된_빈_주문_테이블 = 주문_테이블_생성_되어있음(주문_테이블_1);
 
         // When
-        주문_테이블_1.setNumberOfGuests(2);
+        주문_테이블_1.updateNumberOfGuests(2);
         ExtractableResponse<Response> response = 방문한_손님_수_수정_요청(생성된_빈_주문_테이블.getId(), 주문_테이블_1);
 
         // Then

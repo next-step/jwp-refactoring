@@ -14,7 +14,7 @@ public class MenuProductResponse {
         return new MenuProductResponse(menuProduct.getSeq()
                 , menuProduct.getMenuId()
                 , menuProduct.getProductId()
-                , menuProduct.getQuantity());
+                , menuProduct.getQuantityValue());
     }
 
     public MenuProductResponse(Long seq, Long menuId, Long productId, long quantity) {

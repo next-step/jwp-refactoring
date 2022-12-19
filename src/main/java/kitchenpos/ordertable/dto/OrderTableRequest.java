@@ -10,7 +10,7 @@ public class OrderTableRequest {
 
     public static OrderTableRequest from(OrderTable orderTable) {
         return new OrderTableRequest(orderTable.getTableGroupId()
-                , orderTable.getNumberOfGuests()
+                , orderTable.getNumberOfGuestsValue()
                 , orderTable.isEmpty());
     }
 
@@ -23,7 +23,7 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(tableGroupId,numberOfGuests, empty);
+        return new OrderTable(tableGroupId, numberOfGuests, empty);
     }
 
     public Long getTableGroupId() {
@@ -36,5 +36,13 @@ public class OrderTableRequest {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public void updateNumberOfGuests(int i) {
+        numberOfGuests = i;
     }
 }

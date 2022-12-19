@@ -2,24 +2,27 @@ package kitchenpos.tablegroup.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupResponse {
 
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    private List<OrderTableResponse> orderTableResponses;
 
     public static TableGroupResponse of(TableGroup tableGroup, OrderTables orderTables) {
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTables.getOrderTables());
+        return new TableGroupResponse(tableGroup.getId()
+                , tableGroup.getCreatedDate()
+                , OrderTableResponse.getOrderTableResponses(orderTables)
+        );
     }
 
-    public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTableResponses) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
+        this.orderTableResponses = orderTableResponses;
     }
 
     public Long getId() {
@@ -30,11 +33,7 @@ public class TableGroupResponse {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public List<OrderTableResponse> getOrderTableResponses() {
+        return orderTableResponses;
     }
 }

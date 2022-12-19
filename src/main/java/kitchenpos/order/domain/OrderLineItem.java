@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.Objects;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -19,21 +19,25 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
     private Long menuId;
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    private OrderLineItemQuantity quantity;
 
     public OrderLineItem() {}
 
-    public OrderLineItem(Long menuId, long quantity) {
+    public OrderLineItem(Long menuId, OrderLineItemQuantity quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, OrderLineItemQuantity quantity) {
         this.seq = seq;
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public OrderLineItem(Long menuId, long quantity) {
+        this(menuId, new OrderLineItemQuantity(quantity));
     }
 
     public void addOrder(Order order) {
@@ -68,11 +72,15 @@ public class OrderLineItem {
         this.menuId = menuId;
     }
 
-    public long getQuantity() {
+    public OrderLineItemQuantity getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
+    public long getQuantityValue() {
+        return quantity.getQuantity();
+    }
+
+    public void setQuantity(OrderLineItemQuantity quantity) {
         this.quantity = quantity;
     }
 
@@ -85,8 +93,8 @@ public class OrderLineItem {
             return false;
         }
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq)
-                && Objects.equals(menuId, that.menuId);
+        return Objects.equals(seq, that.seq)
+                && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override

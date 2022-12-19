@@ -14,4 +14,6 @@ public class ErrorMessages {
     public static final String ORDER_TABLE_DOES_NOT_EXIST = "존재하지 않는 주문 테이블입니다.";
     public static final String ORDER_TABLE_TO_GROUP_CANNOT_BE_LESS_THAN_TWO = "단체 지정하려면 적어도 2개 이상의 주문 테이블을 지정해주셔야 합니다.";
     public static final String NOT_COMPLETED_ORDER_EXIST = "아직 계산 완료되지 않은 주문이 존재합니다.";
+    public static final String MENU_PRODUCT_QUANTITY_BELOW_ZERO = "메뉴 상품 수량은 0 보다 커야 합니다.";
+    public static final String ORDER_LINE_ITEM_QUANTITY_BELOW_ZERO = "주문 메뉴 아이템 수량은 0 보다 커야 합니다.";
 }

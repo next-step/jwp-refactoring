@@ -26,8 +26,8 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final OrderTables savedOrderTables = tableGroupValidator.getSavedOrderTablesIfValid(
-                tableGroupRequest.getOrderTableIds());
+        final OrderTables savedOrderTables
+                = tableGroupValidator.getSavedOrderTablesIfValid(tableGroupRequest.getOrderTableIds());
 
         TableGroup tableGroup = new TableGroup();
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);

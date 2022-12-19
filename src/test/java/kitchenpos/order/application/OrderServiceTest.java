@@ -23,6 +23,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -81,11 +82,11 @@ class OrderServiceTest {
                 new MenuProducts(떡튀순_곱배기_상품_목록));
 
         주문_id = 1L;
-        주문_테이블 = new OrderTable(1L, null, 0, false);
+        주문_테이블 = new OrderTable(1L, null, new NumberOfGuests(0), false);
         주문_아이템_1 = new OrderLineItem(떡튀순.getId(), 2);
         주문_아이템_2 = new OrderLineItem(떡튀순_곱배기.getId(), 1);
         주문_아이템_목록 = Arrays.asList(주문_아이템_1, 주문_아이템_2);
-        주문 = new Order(주문_테이블.getId(), OrderStatus.COOKING.name());
+        주문 = new Order(주문_테이블.getId(), OrderStatus.COOKING);
         주문_아이템_목록.forEach(orderLineItem -> 주문.addOrderLineItem(orderLineItem));
     }
 
@@ -106,19 +107,19 @@ class OrderServiceTest {
                 () -> assertThat(등록된_주문.getOrderLineItems().get(0).getMenuId())
                         .isEqualTo(주문_아이템_1.getMenuId()),
                 () -> assertThat(등록된_주문.getOrderLineItems().get(0).getQuantity())
-                        .isEqualTo(주문_아이템_1.getQuantity()),
+                        .isEqualTo(주문_아이템_1.getQuantityValue()),
                 () -> assertThat(등록된_주문.getOrderLineItems().get(1).getMenuId())
                         .isEqualTo(주문_아이템_2.getMenuId()),
                 () -> assertThat(등록된_주문.getOrderLineItems().get(1).getQuantity())
-                        .isEqualTo(주문_아이템_2.getQuantity())
+                        .isEqualTo(주문_아이템_2.getQuantityValue())
         );
     }
 
     @DisplayName("빈 테이블에 대한 주문 등록 요청 시 예외처리")
     @Test
     void 빈테이블_주문_등록_예외처리() {
-        OrderTable 빈_주문_테이블 = new OrderTable(1L, null, 0, true);
-        Order 빈_테이블_주문 = new Order(빈_주문_테이블.getId(), OrderStatus.COOKING.name());
+        OrderTable 빈_주문_테이블 = new OrderTable(1L, null, new NumberOfGuests(0), true);
+        Order 빈_테이블_주문 = new Order(빈_주문_테이블.getId(), OrderStatus.COOKING);
         주문_아이템_목록.stream().forEach(빈_테이블_주문::addOrderLineItem);
         when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
         when(orderTableRepository.findById(빈_주문_테이블.getId())).thenReturn(Optional.of(빈_주문_테이블));
@@ -141,7 +142,7 @@ class OrderServiceTest {
     @Test
     void 메뉴와_수량_누락_주문_등록_예외처리() {
         List<OrderLineItem> 빈_아이템_목록 = new ArrayList<>();
-        Order 주문_아이템_누락된_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.COOKING.name(), null, 빈_아이템_목록);
+        Order 주문_아이템_누락된_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.COOKING, null, 빈_아이템_목록);
 
         assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문_아이템_누락된_주문))).isInstanceOf(
                 IllegalArgumentException.class);
@@ -150,7 +151,7 @@ class OrderServiceTest {
     @DisplayName("주문 조회")
     @Test
     void 주문_조회() {
-        Order 주문2 = new Order(2L, 주문_테이블.getId(), OrderStatus.COOKING.name(), null, 주문_아이템_목록);
+        Order 주문2 = new Order(2L, 주문_테이블.getId(), OrderStatus.COOKING, null, 주문_아이템_목록);
         List<Order> 등록된_주문_목록 = Arrays.asList(주문, 주문2);
         when(orderRepository.findAll()).thenReturn(등록된_주문_목록);
         when(orderLineItemRepository.findByOrder(주문)).thenReturn(주문_아이템_목록);
@@ -164,30 +165,30 @@ class OrderServiceTest {
     @DisplayName("주문 상태변경")
     @Test
     void 주문_상태변경() {
-        Order 변경할_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.MEAL.name(), null, 주문_아이템_목록);
+        Order 변경할_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.MEAL, null, 주문_아이템_목록);
         when(orderRepository.findById(주문_id)).thenReturn(Optional.of(주문));
         when(orderLineItemRepository.findByOrder(주문)).thenReturn(주문_아이템_목록);
 
         //조리 -> 식사
         OrderResponse 상태_변경된_주문 = orderService.changeOrderStatus(주문_id, OrderRequest.from(변경할_주문));
-        assertThat(상태_변경된_주문.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus());
+        assertThat(상태_변경된_주문.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus().name());
 
         //식사 -> 조리
-        변경할_주문.setOrderStatus(OrderStatus.COOKING.name());
+        변경할_주문.setOrderStatus(OrderStatus.COOKING);
         OrderResponse 상태_변경된_주문2 = orderService.changeOrderStatus(주문_id, OrderRequest.from(변경할_주문));
-        assertThat(상태_변경된_주문2.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus());
+        assertThat(상태_변경된_주문2.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus().name());
 
         //조리 -> 계산 완료
-        변경할_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        변경할_주문.setOrderStatus(OrderStatus.COMPLETION);
         OrderResponse 상태_변경된_주문3 = orderService.changeOrderStatus(주문_id, OrderRequest.from(변경할_주문));
-        assertThat(상태_변경된_주문3.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus());
+        assertThat(상태_변경된_주문3.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus().name());
     }
 
     @DisplayName("등록되지 않은 주문의 상태변경 시 예외처리")
     @Test
     void 동록안된_주문_상태변경_예외처리() {
         Long 변경할_주문_id = 3L;
-        Order 변경할_주문 = new Order(변경할_주문_id, 주문_테이블.getId(), OrderStatus.MEAL.name(), null, 주문_아이템_목록);
+        Order 변경할_주문 = new Order(변경할_주문_id, 주문_테이블.getId(), OrderStatus.MEAL, null, 주문_아이템_목록);
         when(orderRepository.findById(변경할_주문_id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(변경할_주문_id, OrderRequest.from(변경할_주문))).isInstanceOf(
@@ -197,8 +198,8 @@ class OrderServiceTest {
     @DisplayName("계산 완료 상태인 주문 상태변경 시 예외처리")
     @Test
     void 계산_완료_주문_상태변경_예외처리() {
-        Order 계산_완료된_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.COMPLETION.name(), null, 주문_아이템_목록);
-        Order 변경할_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.MEAL.name(), null, 주문_아이템_목록);
+        Order 계산_완료된_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.COMPLETION, null, 주문_아이템_목록);
+        Order 변경할_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.MEAL, null, 주문_아이템_목록);
         when(orderRepository.findById(계산_완료된_주문.getId())).thenReturn(Optional.of(계산_완료된_주문));
 
         assertThatThrownBy(

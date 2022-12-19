@@ -2,6 +2,7 @@ package kitchenpos.ordertable.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,24 +15,28 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long tableGroupId;
-    @Column(nullable = false)
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     @Column(nullable = false)
     private boolean empty;
 
     public OrderTable() {}
 
-    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(tableGroupId, new NumberOfGuests(numberOfGuests), empty);
     }
 
     public void checkOrderTableGroupSetAble() {
@@ -68,12 +73,20 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public int getNumberOfGuestsValue() {
+        return numberOfGuests.getNumberOfGuests();
+    }
+
+    public void updateNumberOfGuests(NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void updateNumberOfGuests(int numberOfGuests) {
+        updateNumberOfGuests(new NumberOfGuests(numberOfGuests));
     }
 
     public boolean isEmpty() {
@@ -93,8 +106,8 @@ public class OrderTable {
             return false;
         }
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-                && Objects.equals(tableGroupId, that.tableGroupId);
+        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroupId,
+                that.tableGroupId) && Objects.equals(numberOfGuests, that.numberOfGuests);
     }
 
     @Override

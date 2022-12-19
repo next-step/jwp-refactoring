@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.constants.ErrorMessages;
+import kitchenpos.menu.domain.MenuProductQuantity;
 
 @Embeddable
 public class ProductPrice implements Comparable<ProductPrice> {
@@ -70,4 +71,8 @@ public class ProductPrice implements Comparable<ProductPrice> {
         return price.multiply(val);
     }
 
+    public BigDecimal multiply(MenuProductQuantity quantity) {
+        long val = quantity.getQuantity();
+        return multiply(new BigDecimal(val));
+    }
 }

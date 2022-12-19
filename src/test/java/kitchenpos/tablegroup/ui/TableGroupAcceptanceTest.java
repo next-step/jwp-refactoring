@@ -24,7 +24,8 @@ import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -51,9 +52,9 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
         TableGroupResponse 생성된_단체_지정 = 단체_지정_정보(response);
         assertAll(
                 () -> assertThat(생성된_단체_지정.getId()).isNotNull(),
-                () -> 생성된_단체_지정.getOrderTables()
-                        .forEach((테이블 -> assertThat(테이블.getTableGroupId()).isEqualTo(생성된_단체_지정.getId()))),
-                () -> 생성된_단체_지정.getOrderTables().forEach((테이블 -> assertThat(테이블.isEmpty()).isEqualTo(false)))
+                () -> 생성된_단체_지정.getOrderTableResponses()
+                        .forEach((response2 -> assertThat(response2.getTableGroupId()).isEqualTo(생성된_단체_지정.getId()))),
+                () -> 생성된_단체_지정.getOrderTableResponses().forEach((response3 -> assertThat(response3.isEmpty()).isEqualTo(false)))
         );
     }
 
@@ -75,8 +76,8 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
         단체_지정_해제됨(response);
 
         // Then
-        List<OrderTable> 조회된_주문_테이블_목록 = 주문_테이블_목록(주문_테이블_조회_요청());
-        List<OrderTable> 단체_지정되었던_주문_테이블_목록 = 조회된_주문_테이블_목록.stream()
+        List<OrderTableResponse> 조회된_주문_테이블_목록 = 주문_테이블_목록(주문_테이블_조회_요청());
+        List<OrderTableResponse> 단체_지정되었던_주문_테이블_목록 = 조회된_주문_테이블_목록.stream()
                 .filter(주문_테이블 -> 주문_테이블_목록에_포함_확인(주문_테이블_목록, 주문_테이블.getId()))
                 .collect(Collectors.toList());
         assertAll(
@@ -93,10 +94,10 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
     @Test
     void 생성되지_않은_주문_테이블_단체_지정() {
         // When
-        OrderTable 생성안된_주문_테이블_1 = new OrderTable(null, null, 0, true);
-        OrderTable 생성안된_주문_테이블_2 = new OrderTable(null, null, 0, true);
-        List<OrderTable> 생성안된_주문_테이블_목록 = Arrays.asList(생성안된_주문_테이블_1, 생성안된_주문_테이블_2);
-        TableGroupRequest 단체_3 =createTableGroupRequest(생성안된_주문_테이블_목록);
+        /*OrderTableRequest 생성안된_주문_테이블_1 = new OrderTableRequest(null, 0, true);
+        OrderTableRequest 생성안된_주문_테이블_2 = new OrderTableRequest(null, 0, true);*/
+        List<Long> 생성안된_주문_테이블_id_목록 = Arrays.asList(10L, 20L);
+        TableGroupRequest 단체_3 = new TableGroupRequest(생성안된_주문_테이블_id_목록);
         ExtractableResponse<Response> response = 단체_지정_생성_요청(단체_3);
 
         // Then
@@ -112,8 +113,8 @@ public class TableGroupAcceptanceTest extends TableGroupAcceptanceTestFixture {
     @Test
     void 비어있지_않은_주문_테이블_단체_지정() {
         // When
-        주문_테이블_1.setEmpty(false);
-        빈_테이블_여부_수정_요청(주문_테이블_1.getId(), 주문_테이블_1);
+        OrderTableRequest request = new OrderTableRequest(null, 0, false);
+        빈_테이블_여부_수정_요청(주문_테이블_1.getId(), request);
         TableGroupRequest 단체_3 = createTableGroupRequest(주문_테이블_목록);
         ExtractableResponse<Response> response = 단체_지정_생성_요청(단체_3);
 
