@@ -9,19 +9,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.application.validator.TableValidator;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderRepository orderRepository;
+    private TableValidator tableValidator;
     @InjectMocks
     private TableService tableService;
     private OrderTable 주문_좌석;
@@ -78,7 +79,7 @@ class TableServiceTest {
     @Test
     void 공석으로_변경() {
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_좌석));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        doNothing().when(tableValidator).validateChangeEmpty(any());
 
         OrderTableResponse response = tableService.changeEmpty(주문_좌석.getId(), true);
 
@@ -99,6 +100,7 @@ class TableServiceTest {
     @Test
     void 좌석_그룹으로_등록된_경우() {
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(공석_변경_요청));
+        doThrow(new KitchenposException(NOT_BEEN_UNGROUP)).when(tableValidator).validateChangeEmpty(any());
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(공석_변경_요청.getId(), true)
@@ -110,7 +112,7 @@ class TableServiceTest {
     @Test
     void 좌석_상태가_준비중이거나_식사중인_경우() {
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_좌석));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        doThrow(new KitchenposException(EXISTS_NOT_COMPLETION_STATUS)).when(tableValidator).validateChangeEmpty(any());
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(주문_좌석.getId(), true)
@@ -132,6 +134,7 @@ class TableServiceTest {
     @Test
     void 음수를_인원_변경을_요청한_경우() {
         인원_변경_요청 = new OrderTable(1L, null, -4, false);
+        doThrow(new KitchenposException(PEOPLE_LESS_THAN_ZERO)).when(tableValidator).validateNumberOfGuests(anyInt());
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
@@ -154,6 +157,7 @@ class TableServiceTest {
     @Test
     void 공석인_경우() {
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(공석_주문_좌석));
+        doThrow(new KitchenposException(TABLE_IS_EMPTY)).when(tableValidator).validateEmptyTrue(any());
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(주문_좌석.getId(), 인원_변경_요청)
