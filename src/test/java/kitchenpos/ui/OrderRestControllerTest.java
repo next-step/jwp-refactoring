@@ -5,6 +5,7 @@ import static kitchenpos.ui.MenuRestControllerTest.메뉴_생성_요청;
 import static kitchenpos.ui.ProductRestControllerTest.상품_생성_요청;
 import static kitchenpos.ui.TableRestControllerTest.좌석_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -56,7 +57,15 @@ class OrderRestControllerTest extends BaseTest {
     void 생성() {
         ResponseEntity<OrderResponse> response = 주문_생성_요청(주문);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertAll(
+                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(response.getBody().getOrderLineItems().get(0).getSeq())
+                        .isEqualTo(주문_항목들.get(0).getSeq()),
+                () -> assertThat(response.getBody().getOrderLineItems().get(0).getMenuId())
+                        .isEqualTo(주문_항목들.get(0).getMenuId()),
+                () -> assertThat(response.getBody().getOrderLineItems().get(0).getQuantity())
+                        .isEqualTo(주문_항목들.get(0).getQuantity())
+        );
     }
 
     @Test
