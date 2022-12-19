@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,12 +49,12 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        테이블1 = new OrderTable(1L, null, 0, true);
-        테이블2 = new OrderTable(2L, null, 0, true);
-        테이블3 = new OrderTable(3L, null, 0, true);
+        테이블1 = new OrderTable(1L, 0, true);
+        테이블2 = new OrderTable(2L, 0, true);
+        테이블3 = new OrderTable(3L, 0, true);
         단체1 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블1, 테이블2, 테이블3));
-        테이블_GUEST3_NOT_EMPTY = new OrderTable(4L, null, 3, false);
-        테이블_TABLEGROUP = new OrderTable(5L, 2L, 3, false);
+        테이블_GUEST3_NOT_EMPTY = new OrderTable(4L, 3, false);
+        테이블_TABLEGROUP = new OrderTable(5L, 3, false);
     }
 
     @Test
