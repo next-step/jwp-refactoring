@@ -22,12 +22,12 @@ public class MenuProductResponse {
 	public static MenuProductResponse of(MenuProduct menuProduct) {
 		return new MenuProductResponse(menuProduct.getSeq(),
 			menuProduct.getMenu().getId(),
-			menuProduct.getProduct().getId(),
+			menuProduct.getProductId(),
 			menuProduct.getQuantity().value());
 	}
 
 	public static List<MenuProductResponse> ofMenuProducts(MenuProducts menuProducts) {
-		return menuProducts.getMenuProducts()
+		return menuProducts.value()
 			.stream()
 			.map(MenuProductResponse::of)
 			.collect(Collectors.toList());

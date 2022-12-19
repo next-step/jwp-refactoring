@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
@@ -24,25 +23,28 @@ public class MenuProduct {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
 	private Menu menu;
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_product"))
-	private Product product;
+
+	private Long productId;
 	@Embedded
 	private Quantity quantity;
 
 	protected MenuProduct() {}
 
-	private MenuProduct(Product product, int quantity) {
-		this.product = product;
+	private MenuProduct(Long productId, int quantity) {
+		this.productId = productId;
 		this.quantity = Quantity.of(quantity);
 	}
 
-	public static MenuProduct of(Product product, int quantity) {
-		return new MenuProduct(product, quantity);
+	public static MenuProduct of(Long productId, int quantity) {
+		return new MenuProduct(productId, quantity);
 	}
 
-	public Price getTotalPrice() {
-		return product.getTotalPrice(quantity);
+	public void updateMenu(Menu menu) {
+		this.menu = menu;
+	}
+
+	public Price getTotalPrice(Price productPrice) {
+		return productPrice.multiply(quantity);
 	}
 
 	public Long getSeq() {
@@ -53,16 +55,12 @@ public class MenuProduct {
 		return menu;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Long getProductId() {
+		return productId;
 	}
 
 	public Quantity getQuantity() {
 		return quantity;
-	}
-
-	public void updateMenu(Menu menu) {
-		this.menu = menu;
 	}
 
 }

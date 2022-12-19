@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.Price;
-
 @Embeddable
 public class MenuProducts {
 
@@ -28,20 +26,8 @@ public class MenuProducts {
 		return new MenuProducts(menuProducts);
 	}
 
-	public List<MenuProduct> getMenuProducts() {
+	public List<MenuProduct> value() {
 		return menuProducts;
-	}
-
-	public Price totalPrice() {
-		Price total = Price.ZERO;
-		for (MenuProduct menuProduct : menuProducts) {
-			total = total.add(menuProduct.getTotalPrice());
-		}
-		return total;
-	}
-
-	public int getSize() {
-		return menuProducts.size();
 	}
 
 	public void updateMenu(Menu menu) {
