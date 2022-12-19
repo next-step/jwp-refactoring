@@ -2,6 +2,8 @@ package kitchenpos.table.application;
 
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
+import kitchenpos.product.domain.MenuProduct;
+import kitchenpos.product.domain.MenuProducts;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.*;

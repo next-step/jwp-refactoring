@@ -18,7 +18,7 @@ public class OrderEventHandler {
     }
 
     @EventListener
-    public void createOrder(OrderCreatedEvent event) {
+    public void createOrderLineItems(OrderCreatedEvent event) {
         final List<OrderLineItem> orderLineItemList = new ArrayList<>();
         for(OrderLineItemRequest orderLineItemRequest: event.getOrderLineItemRequests()) {
             final Quantity quantity = new Quantity(orderLineItemRequest.getQuantity());

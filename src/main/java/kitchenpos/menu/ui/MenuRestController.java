@@ -28,8 +28,8 @@ public class MenuRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<MenuResponse>> list() {
+    public ResponseEntity<List<MenuResponse>> findAll() {
         return ResponseEntity.ok()
-                .body(menuService.list());
+                .body(menuService.findAll());
     }
 }

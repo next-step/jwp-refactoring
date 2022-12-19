@@ -1,20 +1,20 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.ExceptionMessage;
+import kitchenpos.menu.domain.Quantity;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
-    protected MenuProducts() {
+    public MenuProducts() {
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException(ExceptionMessage.EMPTY_MENU_PRODUCTS.getMessage());
+        }
         this.menuProducts = new ArrayList<>();
     }
 

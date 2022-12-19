@@ -1,8 +1,7 @@
 package kitchenpos.menu;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.product.domain.MenuProduct;
+import kitchenpos.product.domain.MenuProducts;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;

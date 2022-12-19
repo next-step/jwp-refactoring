@@ -1,10 +1,8 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.product.domain.MenuProducts;
 import kitchenpos.product.domain.Price;
-import kitchenpos.product.dto.ProductResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,11 +24,11 @@ public class MenuResponse {
         this.menuProductResponses = menuProductResponses;
     }
 
-    public static MenuResponse of (Menu menu) {
+    public static MenuResponse of (Menu menu, MenuProducts menuProducts) {
         Price price = menu.getPrice();
         return new MenuResponse(menu.getId(), menu.getName(), price.getValue(),
                 MenuGroupResponse.of(menu.getMenuGroup()),
-                menuProductsToMenuProductResponses(menu.getMenuProducts()));
+                menuProductsToMenuProductResponses(menuProducts));
     }
 
     private static List<MenuProductResponse> menuProductsToMenuProductResponses(MenuProducts menuProducts) {

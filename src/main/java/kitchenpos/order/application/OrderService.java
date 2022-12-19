@@ -25,11 +25,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
 
-    private final ApplicationEventPublisher publisher;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final TableValidator tableValidator;
     private final MenuValidator menuValidator;
+    private final ApplicationEventPublisher publisher;
 
     public OrderService(
             final OrderRepository orderRepository,

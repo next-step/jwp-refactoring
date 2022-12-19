@@ -5,9 +5,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -57,8 +54,10 @@ public class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private MenuProductRepository menuProductRepository;
     private MenuGroupService menuGroupService;
-    private ProductService productService;
+    private MenuProductValidator menuProductValidator;
     private MenuService menuService;
 
     @BeforeEach
@@ -86,8 +85,8 @@ public class MenuServiceTest {
         쫄면세트 = new Menu(2L, "쫄면세트", new Price(new BigDecimal(14000)), 분식, 쫄면세트구성);
 
         menuGroupService = new MenuGroupService(menuGroupRepository);
-        productService = new ProductService(productRepository);
-        menuService = new MenuService(menuRepository, menuGroupService, productService);
+        menuProductValidator = new MenuProductValidator(menuProductRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupService, menuProductValidator);
     }
 
     @DisplayName("메뉴등록 테스트")
