@@ -1,30 +1,37 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.common.Quantity;
+import kitchenpos.common.fixture.PriceFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.fixture.MenuProductFixture;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
-import static kitchenpos.order.application.OrderStatusService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
+import static java.util.Collections.singletonList;
+import static kitchenpos.common.fixture.NameFixture.nameMenuA;
+import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
+import static kitchenpos.order.application.OrderService.COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -32,58 +39,33 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class OrderStatusServiceTest extends ServiceTest {
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
-
-
-    @Autowired
-    private MenuGroupDao menuGroupDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private MenuRepository menuRepository;
 
     @Autowired
-    private OrderLineItemDao orderLineItemDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Autowired
-    private OrderStatusService orderStatusService;
+    private OrderService orderService;
 
-    private Order order;
+    private Orders order;
 
     @BeforeEach
-    void setUp() {
-
-        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
-        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
-
-        OrderTable orderTable1 = orderTableDao.save(new OrderTable());
-        OrderTable orderTable2 = orderTableDao.save(new OrderTable());
-
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(orderTable1);
-        orderTables.add(orderTable2);
-
-        TableGroup tableGroup = tableGroupDao.save(new TableGroup(orderTables));
-
-        orderTable1.setTableGroupId(tableGroup.getId());
-        orderTable2.setTableGroupId(tableGroup.getId());
-        orderTableDao.save(orderTable1);
-        orderTableDao.save(orderTable2);
-
-        createOrder(orderTable1, menu);
-
-        orderStatusService = new OrderStatusService(orderDao, orderLineItemDao);
-    }
-
-    private void createOrder(OrderTable orderTable1, Menu menu) {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderDao.save(new Order(orderTable1.getId(), orderLineItems));
+    public void setUp() {
+        super.setUp();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        Menu menu = menuRepository.save(new Menu(nameMenuA(), PriceFixture.priceMenuA(), menuGroup, new MenuProducts(singletonList(MenuProductFixture.menuProductA()))));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
+        createOrder(tableGroup.getOrderTables().get(0), menu);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
@@ -92,8 +74,8 @@ class OrderStatusServiceTest extends ServiceTest {
 
         OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.MEAL);
 
-        assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
-                .isEqualTo(OrderStatus.MEAL.name());
+        assertThat(orderService.changeOrderStatus(order.getId(), request).getOrderStatus())
+                .isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
@@ -102,12 +84,12 @@ class OrderStatusServiceTest extends ServiceTest {
 
         OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.COMPLETION);
 
-        assertThat(orderStatusService.changeOrderStatus(order.getId(), request).getOrderStatus())
-                .isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(orderService.changeOrderStatus(order.getId(), request).getOrderStatus())
+                .isEqualTo(OrderStatus.COMPLETION);
 
         주문완료_검증됨();
 
-        assertThatThrownBy(() -> orderStatusService.changeOrderStatus(order.getId(), request))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
     }
@@ -115,12 +97,17 @@ class OrderStatusServiceTest extends ServiceTest {
     @DisplayName("주문상태를 완료로 변경한다.")
     @Test
     void name() {
-        orderStatusService.changeOrderStatus(order.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION));
+        orderService.changeOrderStatus(order.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION));
         주문완료_검증됨();
     }
 
     private void 주문완료_검증됨() {
-        Order findOrder = orderDao.findById(order.getId()).get();
-        assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        Orders findOrder = orderRepository.findById(order.getId()).get();
+        assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+    }
+
+    private void createOrder(OrderTable orderTable1, Menu menu) {
+        orderTable1.setEmpty(false);
+        order = orderRepository.save(new Orders(orderTable1, new OrderLineItems(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))))));
     }
 }

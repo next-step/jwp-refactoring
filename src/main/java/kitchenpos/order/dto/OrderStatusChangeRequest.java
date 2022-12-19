@@ -4,13 +4,13 @@ import kitchenpos.order.domain.OrderStatus;
 
 public class OrderStatusChangeRequest {
 
-    private String status;
+    private OrderStatus orderStatus;
 
-    public OrderStatusChangeRequest(OrderStatus status) {
-        this.status = status.name();
+    public OrderStatusChangeRequest(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
-    public String getOrderStatus() {
-        return this.status;
+    public OrderStatus getOrderStatus() {
+        return this.orderStatus;
     }
 }

@@ -1,9 +1,8 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderCreateRequest {
@@ -16,15 +15,11 @@ public class OrderCreateRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder() {
-        return new Order(this.orderTableId, this.orderLineItems);
-    }
-
     public Long getOrderTableId() {
         return this.orderTableId;
     }
 
-    public List<OrderLineItem> toOrderLineItems() {
-        return this.orderLineItems;
+    public OrderLineItems toOrderLineItems() {
+        return new OrderLineItems(this.orderLineItems);
     }
 }

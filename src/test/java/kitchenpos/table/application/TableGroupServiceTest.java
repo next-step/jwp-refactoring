@@ -1,29 +1,45 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.CreateTableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
+import static java.util.Collections.singletonList;
+import static kitchenpos.common.fixture.NameFixture.*;
+import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
+import static kitchenpos.common.fixture.PriceFixture.priceProductA;
+import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,68 +50,75 @@ class TableGroupServiceTest extends ServiceTest {
     private TableGroupService tableGroupService;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private ProductRepository productRepository;
 
-    private TableGroup tableGroup;
-    private Order order;
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    private TableGroup tableGroupA;
+    private TableGroup tableGroupB;
+    private Orders order;
+    private Menu menu;
+    private OrderLineItems orderLineItemsA;
 
     @BeforeEach
-    void setUp() {
-        MenuGroup menuGroup = menuGroupDao.save(new MenuGroup("a"));
-        Menu menu = menuDao.save(new Menu("menu", BigDecimal.ONE, menuGroup.getId()));
-        tableGroup = tableGroupDao.save(new TableGroup());
-        OrderTable orderTable = createOrderTable(tableGroup);
-        tableGroup.setOrderTables(Collections.singletonList(orderTable));
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(null, menu.getId(), 1));
-        order = orderDao.save(new Order(orderTable.getId(), orderLineItems));
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+    public void setUp() {
+        super.setUp();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
+        Product product = productRepository.save(new Product(nameProductA(), priceProductA()));
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
+        orderLineItemsA = orderLineItemsA();
+        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        tableGroup.setOrderTables(Arrays.asList(makeNullTableGroup(createOrderTable(tableGroup)), makeNullTableGroup(createOrderTable(tableGroup))));
-        TableGroup saveTableGroup = tableGroupService.create(tableGroup);
+        OrderTable orderTableA = emptyTableEmptyNotEmptyTableGroup(tableGroupB);
+        OrderTable orderTableB = emptyTableEmptyNotEmptyTableGroup(tableGroupB);
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, orderTableB))));
+        TableGroupResponse saveTableGroup = tableGroupService.create(new CreateTableGroupRequest(tableGroup.getOrderTableIds()));
         assertThat(saveTableGroup.getCreatedDate()).isNotNull();
     }
 
     @DisplayName("테이블 그룹을 생성한다. / 주문 테이블의 갯수가 2보다 작을 수 없다.")
     @Test
     void create_fail_minimumSize() {
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+
+        assertThatThrownBy(() -> {
+            TableGroup tableGroupC = tableGroupRepository.save(new TableGroup(new OrderTables(Collections.singletonList(emptyTableEmptyTableGroup()))));
+            tableGroupService.create(new CreateTableGroupRequest(tableGroupC.getOrderTableIds()));
+        })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
-    }
-
-    @DisplayName("테이블 그룹을 생성한다. / 주문 테이블이 비어있을 수 없다.")
-    @Test
-    void create_fail_orderTableEmpty() {
-        TableGroup failTableGroup = tableGroupDao.save(new TableGroup());
-        assertThatThrownBy(() -> tableGroupService.create(failTableGroup))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void unGroup_success() {
 
-        테이블_그룹_존재_검증(tableGroup);
+        OrderTable orderTableA = emptyTableEmptyTableGroup();
 
-        주문_완료_상태_변경();
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, emptyTableEmptyTableGroup()))));
+
+        테이블_그룹_존재_검증(tableGroup);
+        orderTableA.setEmpty(false);
+
+        Orders order = new Orders(orderTableA, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
+        order.setOrderStatus(OrderStatus.COMPLETION);
+        orderRepository.save(order);
 
         tableGroupService.ungroup(tableGroup.getId());
 
@@ -105,10 +128,19 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("테이블 그룹을 해제한다. / 요리중일 경우 해제할 수 없다.")
     @Test
     void unGroup_fail_cooking() {
+        OrderTable orderTableA = emptyTableEmptyTableGroup();
+
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, emptyTableEmptyTableGroup()))));
 
         테이블_그룹_존재_검증(tableGroup);
 
-        주문_요리중_상태_변경();
+        orderTableA.setEmpty(false);
+
+        Orders order = new Orders(orderTableA, orderLineItemsA);
+        order.setOrderStatus(OrderStatus.COOKING);
+        orderRepository.save(order);
+
+        주문_요리중_상태_검증(order);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -119,52 +151,47 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     void unGroup_fail_meal() {
 
+        OrderTable orderTableA = emptyTableEmptyTableGroup();
+
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, emptyTableEmptyTableGroup()))));
+
         테이블_그룹_존재_검증(tableGroup);
 
-        주문_식사중_상태_변경();
+        orderTableA.setEmpty(false);
+
+        Orders order = new Orders(orderTableA, orderLineItemsA);
+        order.setOrderStatus(OrderStatus.MEAL);
+        orderRepository.save(order);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }
 
-    private OrderTable makeNullTableGroup(OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-        return orderTableDao.save(orderTable);
+    private OrderTable emptyTableEmptyTableGroup() {
+        return orderTableRepository.save(emptyOrderTable());
     }
 
-    private OrderTable createOrderTable(TableGroup tableGroup) {
-        return orderTableDao.save(new OrderTable(tableGroup.getId(), true));
+    private OrderTable emptyTableEmptyNotEmptyTableGroup(TableGroup tableGroup) {
+        return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), true));
     }
 
-    private void 주문_식사중_상태_변경() {
-        order.setOrderStatus(OrderStatus.MEAL.name());
-        orderDao.save(order);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-    }
-
-    private void 주문_요리중_상태_변경() {
-        Order order1 = orderDao.findById(order.getId()).get();
-        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-    }
-
-    private void 주문_완료_상태_변경() {
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderDao.save(order);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+    private void 주문_요리중_상태_검증(Orders order) {
+        Orders order1 = orderRepository.findById(order.getId()).get();
+        assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     private void 테이블_그룹_존재_검증(TableGroup tableGroup) {
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
-            assertThat(find.getTableGroupId()).isNotNull();
+            OrderTable find = orderTableRepository.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
+            assertThat(find.getTableGroup()).isNotNull();
         }
     }
 
     private void 테이블_그룹_해제_검증됨(TableGroup tableGroup) {
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            OrderTable find = orderTableDao.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
-            assertThat(find.getTableGroupId()).isNull();
+            OrderTable find = orderTableRepository.findById(orderTable.getId()).orElseThrow(NoSuchElementException::new);
+            assertThat(find.getTableGroup()).isNull();
         }
     }
 }

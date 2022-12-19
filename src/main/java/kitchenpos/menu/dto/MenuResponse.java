@@ -13,11 +13,15 @@ public class MenuResponse {
     private BigDecimal price;
     private List<MenuProduct> menuProducts;
 
-    public MenuResponse(Menu menu) {
-        this.id = menu.getId();
-        this.name = menu.getName();
-        this.price = menu.getPrice();
-        this.menuProducts = menu.getMenuProducts();
+    public MenuResponse(Long id, String name, BigDecimal price, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuProducts = menuProducts;
+    }
+
+    public static MenuResponse of(Menu menu) {
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuProducts());
     }
 
     public Long getId() {

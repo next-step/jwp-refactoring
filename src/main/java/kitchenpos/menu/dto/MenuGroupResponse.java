@@ -7,9 +7,13 @@ public class MenuGroupResponse {
     private final String name;
     private final Long id;
 
-    public MenuGroupResponse(MenuGroup menuGroup) {
-        this.id = menuGroup.getId();
-        this.name = menuGroup.getName();
+    public MenuGroupResponse(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static MenuGroupResponse of(MenuGroup menuGroup) {
+        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 
     public Long getId() {

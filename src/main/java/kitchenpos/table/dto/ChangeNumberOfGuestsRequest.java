@@ -1,5 +1,7 @@
 package kitchenpos.table.dto;
 
+import kitchenpos.table.domain.NumberOfGuests;
+
 public class ChangeNumberOfGuestsRequest {
 
     private int numberOfGuests;
@@ -8,7 +10,7 @@ public class ChangeNumberOfGuestsRequest {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public int getNumberOfGuests() {
-        return this.numberOfGuests;
+    public NumberOfGuests getNumberOfGuests() {
+        return new NumberOfGuests(this.numberOfGuests);
     }
 }
