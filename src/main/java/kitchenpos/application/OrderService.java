@@ -6,6 +6,7 @@ import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_A
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.application.validator.OrderValidator;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -34,9 +35,10 @@ public class OrderService {
     }
 
     public OrderResponse create(final Order order) {
-        order.validateNullOrderLineItems();
-        validateOrderLineItems(order);
-        validateEmptyTrue(tableService.findById(order.getOrderTableId()));
+        OrderValidator.validateNullOrderLineItems(order.getOrderLineItems());
+        OrderValidator.validateOrderLineItems(
+                order.getOrderLineItemsSize(), menuRepository.countByIdIn(order.getMenuIds()));
+        OrderValidator.validateEmptyTrue(tableService.findById(order.getOrderTableId()));
 
         final Order savedOrder = orderRepository.save(order);
 
@@ -59,17 +61,5 @@ public class OrderService {
         final Order savedOrder = findById(orderId);
         savedOrder.changeOrderStatus(orderStatus);
         return OrderResponse.of(savedOrder);
-    }
-
-    private void validateOrderLineItems(Order order){
-        if (order.getOrderLineItemsSize() != menuRepository.countByIdIn(order.getMenuIds())) {
-            throw new KitchenposException(NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT);
-        }
-    }
-
-    private void validateEmptyTrue(OrderTable orderTable){
-        if (orderTable.isEmpty()) {
-            throw new KitchenposException(CAN_NOT_ORDER);
-        }
     }
 }
