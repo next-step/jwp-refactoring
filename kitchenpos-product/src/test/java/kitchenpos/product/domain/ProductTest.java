@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.product.domain.NameTest.EMPTY_NAME;
-import static kitchenpos.product.domain.PriceTest.MINUS_PRICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static kitchenpos.product.domain.NameTest.EMPTY_NAME;
+import static kitchenpos.product.domain.PriceTest.MINUS_PRICE;
 
 @DisplayName("상품 테스트")
 public class ProductTest {
@@ -48,7 +48,7 @@ public class ProductTest {
     }
 
     public static Product 상품(String name, BigDecimal price) {
-        return Product.of(Name.from(name), Price.from(price));
+        return Product.of(ProductName.from(name), Price.from(price));
     }
 
     public static Product 상품_통다리() {

@@ -40,18 +40,12 @@ public class ProductTest {
                 () -> productService.create(상품("이름", BigDecimal.valueOf(minusPrice))));
     }
 
-    /**
-     * source:
-     * INSERT INTO product (id, name, price) VALUES (1, '후라이드', 16000);
-     * INSERT INTO product (id, name, price) VALUES (2, '양념치킨', 16000);
-     * INSERT INTO product (id, name, price) VALUES (3, '반반치킨', 16000);
-     * INSERT INTO product (id, name, price) VALUES (4, '통구이', 16000);
-     * INSERT INTO product (id, name, price) VALUES (5, '간장치킨', 17000);
-     * INSERT INTO product (id, name, price) VALUES (6, '순살치킨', 17000);
-     */
     @DisplayName("목록 조회 성공")
     @Test
     void list_product_success() {
-        assertThat(productService.list()).hasSize(6);
+        //given:
+        productService.create(상품("상품"));
+        //when, then:
+        assertThat(productService.list()).isNotEmpty();
     }
 }

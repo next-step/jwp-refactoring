@@ -4,25 +4,20 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Name {
+public class ProductName implements Name {
+
     private String name;
 
-    public Name(String name) {
+    private ProductName(String name) {
+        validLength(name);
         this.name = name;
     }
 
-    public static Name from(String name) {
-        validLength(name);
-        return new Name(name);
+    public static ProductName from(String name) {
+        return new ProductName(name);
     }
 
-    private static void validLength(String name) {
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("이름은 한 글자 이상이어야 합니다");
-        }
-    }
-
-    protected Name() {
+    protected ProductName() {
     }
 
     public String getName() {
@@ -37,8 +32,8 @@ public class Name {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Name name1 = (Name) o;
-        return Objects.equals(name, name1.name);
+        ProductName that = (ProductName) o;
+        return Objects.equals(name, that.name);
     }
 
     @Override

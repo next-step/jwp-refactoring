@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,16 +11,23 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "product")
-public class Product {
+public class
+Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private Name name;
+    @Embedded
+    private ProductName name;
     @Column
     private Price price;
 
-    private Product(Name name, Price price) {
+    private Product(ProductName name, Price price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    private Product(Long id, ProductName name, Price price) {
+        this.id = id;
         this.name = name;
         this.price = price;
     }
@@ -27,15 +35,19 @@ public class Product {
     protected Product() {
     }
 
-    public static Product of(Name name, Price price) {
+    public static Product of(ProductName name, Price price) {
         return new Product(name, price);
+    }
+
+    public static Product of(Long id, ProductName name, Price price) {
+        return new Product(id, name, price);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Name getName() {
+    public ProductName getName() {
         return name;
     }
 
@@ -52,7 +64,7 @@ public class Product {
             return false;
         }
         Product product = (Product) o;
-        return Objects.equals(name, product.name) && Objects.equals(price.intValue(), product.price.intValue());
+        return name.equals(product.name) && price.equals(product.price);
     }
 
     @Override
