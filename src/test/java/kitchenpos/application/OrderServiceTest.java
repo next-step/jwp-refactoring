@@ -11,12 +11,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.application.validator.OrderValidator;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
@@ -39,11 +42,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
+    private OrderValidator orderValidator;
+    @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private MenuRepository menuRepository;
-    @Mock
-    private TableService tableService;
     @InjectMocks
     private OrderService orderService;
     private MenuProduct 메뉴_항목;
@@ -67,8 +68,7 @@ class OrderServiceTest {
 
     @Test
     void 생성() {
-        given(menuRepository.countByIdIn(anyList())).willReturn(1);
-        given(tableService.findById(anyLong())).willReturn(좌석);
+        doNothing().when(orderValidator).validateCreate(any());
         given(orderRepository.save(any())).willReturn(주문);
 
         OrderResponse response = orderService.create(주문);
@@ -81,6 +81,7 @@ class OrderServiceTest {
     @Test
     void 주문_항목이_empty인_경우() {
         주문 = new Order(좌석.getId(), Collections.emptyList());
+        doThrow(new KitchenposException(NOT_EXISTS_ORDER_LINE_ITEMS)).when(orderValidator).validateCreate(any());
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
@@ -91,7 +92,8 @@ class OrderServiceTest {
 
     @Test
     void 주문_항목의_수와_등록된_메뉴의_수가_같지_않은_경우() {
-        given(menuRepository.countByIdIn(anyList())).willReturn(0);
+        doThrow(new KitchenposException(NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT))
+                .when(orderValidator).validateCreate(any());
 
         assertThatThrownBy(
                 () -> orderService.create(주문)
@@ -103,8 +105,7 @@ class OrderServiceTest {
     @Test
     void 좌석이_공석인_경우() {
         좌석 = new OrderTable(1L, null, 1, true);
-        given(menuRepository.countByIdIn(anyList())).willReturn(1);
-        given(tableService.findById(anyLong())).willReturn(좌석);
+        doThrow(new KitchenposException(CAN_NOT_ORDER)).when(orderValidator).validateCreate(any());
 
         assertThatThrownBy(
                 () -> orderService.create(주문)

@@ -1,18 +1,14 @@
 package kitchenpos.application;
 
-import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
 import static kitchenpos.exception.ErrorCode.NOT_FOUND_ORDER;
-import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.application.validator.OrderValidator;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,25 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final TableService tableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final TableService tableService
+            final OrderValidator orderValidator
     ) {
-        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     public OrderResponse create(final Order order) {
-        OrderValidator.validateNullOrderLineItems(order.getOrderLineItems());
-        OrderValidator.validateOrderLineItems(
-                order.getOrderLineItemsSize(), menuRepository.countByIdIn(order.getMenuIds()));
-        OrderValidator.validateEmptyTrue(tableService.findById(order.getOrderTableId()));
+        orderValidator.validateCreate(order);
 
         final Order savedOrder = orderRepository.save(order);
 
