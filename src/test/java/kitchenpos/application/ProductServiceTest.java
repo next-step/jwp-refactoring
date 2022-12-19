@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -32,8 +33,8 @@ class ProductServiceTest {
     @Test
     void 본() {
         // given
-        Product product = new Product(1L, "아메리카노", BigDecimal.valueOf(3_000));
-        when(productDao.save(product)).thenReturn(product);
+        Product product = new Product("아메리카노", BigDecimal.valueOf(3_000));
+        when(productRepository.save(product)).thenReturn(product);
 
         // when
         Product result = productService.create(product);
@@ -50,7 +51,7 @@ class ProductServiceTest {
     @Test
     void createNullPriceProductionException() {
         // given
-        Product product = new Product(1L, "아메리카노", null);
+        Product product = new Product("아메리카노", null);
 
         // when & then
         assertThatThrownBy(() -> productService.create(product))
@@ -62,7 +63,7 @@ class ProductServiceTest {
     @ValueSource(ints = {-1, -1000, -20000})
     void createUnderZeroPriceProductionException(int input) {
         // given
-        Product product = new Product(1L, "아메리카노", BigDecimal.valueOf(input));
+        Product product = new Product("아메리카노", BigDecimal.valueOf(input));
 
         // when & then
         assertThatThrownBy(() -> productService.create(product))
@@ -73,8 +74,8 @@ class ProductServiceTest {
     @Test
     void findAllProduct() {
         // given
-        Product product = new Product(1L, "아메리카노", BigDecimal.valueOf(3_000));
-        when(productDao.findAll()).thenReturn(Arrays.asList(product));
+        Product product = new Product("아메리카노", BigDecimal.valueOf(3_000));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when
         List<Product> results = productService.list();

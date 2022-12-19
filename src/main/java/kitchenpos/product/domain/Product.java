@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import java.util.Objects;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -20,10 +21,16 @@ public class Product {
 
     }
 
-    public Product(Long id, String name, BigDecimal price) {
-        this.id = id;
+    public Product(String name, BigDecimal price) {
+        validatePrice(price);
         this.name = name;
         this.price = price;
+    }
+
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
