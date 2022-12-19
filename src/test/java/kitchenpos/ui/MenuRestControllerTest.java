@@ -12,7 +12,9 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.request.MenuProductRequest;
 import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.dto.request.ProductRequest;
 import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,14 +23,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 class MenuRestControllerTest extends BaseTest {
-    private final Product 상품 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-    private final MenuProductRequest 메뉴_항목 = new MenuProductRequest(상품.getId(), 1);
+    private final ProductRequest 상품 = new ProductRequest("후라이드", BigDecimal.valueOf(16000));
+    private MenuProductRequest 메뉴_항목;
     private final MenuGroup 메뉴_그룹 = new MenuGroup("한마리메뉴");
     private MenuRequest 메뉴_요청;
 
     @BeforeEach
     void beforeEach() {
-        상품_생성_요청(상품);
+        ResponseEntity<ProductResponse> productResponse = 상품_생성_요청(상품);
+        메뉴_항목 = new MenuProductRequest(productResponse.getBody().getId(), 1);
         ResponseEntity<MenuGroup> menuGroupResponse = 메뉴_그룹_생성_요청(메뉴_그룹);
         메뉴_요청 = new MenuRequest(
                         "후라이드치킨", BigDecimal.valueOf(16000), menuGroupResponse.getBody().getId(), Arrays.asList(메뉴_항목));
