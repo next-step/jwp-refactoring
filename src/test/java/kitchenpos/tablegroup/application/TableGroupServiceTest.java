@@ -6,7 +6,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -54,8 +53,8 @@ class TableGroupServiceTest {
     @BeforeEach
     void setUp() {
         MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
-        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
-        Menu menu = Menu.of("후라이드치킨", 15_000L, menuGroup, Arrays.asList(menuProduct));
+        MenuProduct menuProduct = MenuProduct.of(1L, 1L);
+        Menu menu = Menu.of("후라이드치킨", 15_000L, 1L, Arrays.asList(menuProduct));
         orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
     }
 

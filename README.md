@@ -71,6 +71,24 @@
     - 함께 생성되고 함께 삭제되는 객체들을 함께 묶어라
     - 불변식을 지켜야 하는 객체들을 함께 묶어라
     - 가능하면 분리하라
+    
+- 설계 재검토
+  - Aggregate Root가 되는 도메인들
+    - ```독립 적인 생명주기```를 가지는 도메인
+      - Product
+      - MenuGroup
+      - OrderTable
+    - ```다른 도메인 참조```가 필요한 도메인 
+      - Menu
+        - MenuGroup 참조
+        - MenuProduct 참조
+      - Order
+        - OrderLineItem 참조
+      - TableGroup
+        - OrderTable 참조
+  - ```부모 도메인에 포함되는``` 자식 도메인들
+    - MenuProduct
+    - OrderLineItem
 
 ## 용어 사전
 | 한글명      | 영문명              | 설명                            |

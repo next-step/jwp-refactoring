@@ -3,14 +3,11 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.fixture.ProductFixture;
+import kitchenpos.menu.message.MenuMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,14 +20,12 @@ import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,32 +35,25 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
 
-    private Long menuGroupId = 1L;
-    private Long productId1 = 1L;
+    private final Long menuGroupId = 1L;
     private List<MenuProductRequest> menuProductRequests;
-    private MenuGroup menuGroup;
     private Menu menu;
-    private Menu menu2;
     private List<Menu> menus;
 
     @BeforeEach
     void setUp() {
-        menuProductRequests = Arrays.asList(new MenuProductRequest(productId1, 1L));
-        menuGroup = new MenuGroup("한마리메뉴");
+        menuProductRequests = Arrays.asList(new MenuProductRequest(1L, 1L));
 
-        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(Product.of("후라이드", 16_000L), 1L));
-        menu = Menu.of("후라이드치킨", 16_000L, menuGroup, menuProducts);
+        List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(1L, 1L));
+        menu = Menu.of("후라이드치킨", 16_000L, 1L, menuProducts);
 
-        List<MenuProduct> menuProducts2 = Arrays.asList(MenuProduct.of(Product.of("간장치킨", 17_000L), 1L));
-        menu2 = Menu.of("간장치킨", 17_000L, menuGroup, menuProducts2);
+        List<MenuProduct> menuProducts2 = Arrays.asList(MenuProduct.of(2L, 1L));
+        Menu menu2 = Menu.of("간장치킨", 17_000L, 1L, menuProducts2);
 
         menus = Arrays.asList(menu, menu2);
     }
@@ -75,16 +63,14 @@ class MenuServiceTest {
     void createMenuThenReturnMenuInfoResponseTest() {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(16_000L), menuGroupId, menuProductRequests);
-        given(menuGroupRepository.findById(menuGroupId)).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(any())).willReturn(Optional.of(ProductFixture.후라이드));
+        willDoNothing().given(menuValidator).validate(any());
         given(menuRepository.save(any())).willReturn(menu);
 
         // when
         MenuResponse response = menuService.createMenu(menuCreateRequest);
 
         // then
-        then(menuGroupRepository).should(times(1)).findById(menuGroupId);
-        then(productRepository).should(times(1)).findById(productId1);
+        then(menuValidator).should(times(1)).validate(any());
         then(menuRepository).should(times(1)).save(any());
         assertThat(response).isNotNull();
     }
@@ -94,16 +80,14 @@ class MenuServiceTest {
     void createMenuThrownByEmptyPriceTest() {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", null, menuGroupId, menuProductRequests);
-        given(menuGroupRepository.findById(menuGroupId)).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(any())).willReturn(Optional.of(ProductFixture.후라이드));
+        willDoNothing().given(menuValidator).validate(any());
 
         // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
 
         // then
-        then(menuGroupRepository).should(times(1)).findById(any());
-        then(productRepository).should(times(1)).findById(any());
+        then(menuValidator).should(times(1)).validate(any());
     }
 
     @Test
@@ -111,61 +95,63 @@ class MenuServiceTest {
     void createMenuThrownByInValidPriceTest() {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(-1L), menuGroupId, menuProductRequests);
-        given(menuGroupRepository.findById(menuGroupId)).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(any())).willReturn(Optional.of(ProductFixture.후라이드));
+        willDoNothing().given(menuValidator).validate(any());
 
         // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
 
         // then
-        then(menuGroupRepository).should(times(1)).findById(any());
-        then(productRepository).should(times(1)).findById(any());
+        then(menuValidator).should(times(1)).validate(any());
     }
 
     @Test
     @DisplayName("메뉴 등록시 메뉴 그룹에 속해있지않은경우 예외처리되어 등록에 실패한다")
     void createMenuThrownByEmptyMenuGroupTest() {
         // given
+        willThrow(new IllegalArgumentException(MenuMessage.CREATE_MENU_ERROR_MENU_GROUP_MUST_BE_NON_NULL.message()))
+                .given(menuValidator).validate((any()));
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(16_000L), null, menuProductRequests);
 
-        // when & then
+        // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(MenuMessage.CREATE_MENU_ERROR_MENU_GROUP_MUST_BE_NON_NULL.message());
+
+        // then
+        then(menuValidator).should(times(1)).validate(any());
     }
 
     @Test
     @DisplayName("메뉴 등록시 메뉴에 있는 상품이 미등록인경우 예외처리되어 등록에 실패한다")
     void createMenuThrownByUnEnrolledProductTest() {
         // given
+        willThrow(new EntityNotFoundException()).given(menuValidator).validate((any()));
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(16_000L), menuGroupId, menuProductRequests);
-        given(menuGroupRepository.findById(menuGroupId)).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(any())).willReturn(Optional.empty());
 
         // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
                 .isInstanceOf(EntityNotFoundException.class);
 
         // then
-        then(menuGroupRepository).should(times(1)).findById(any());
-        then(productRepository).should(times(1)).findById(any());
+        then(menuValidator).should(times(1)).validate(any());
     }
 
     @Test
     @DisplayName("메뉴 등록시 메뉴 가격이 등록된 상품 요금의 합산된 금액보다 클경우 예외처리되어 등록에 실패한다")
     void addProductToMenuThrownByNotValidPriceTest() {
         // given
+        willThrow(new IllegalArgumentException(MenuMessage.ADD_PRODUCT_ERROR_IN_VALID_PRICE.message()))
+                .given(menuValidator).validate((any()));
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(20_000L), menuGroupId, menuProductRequests);
-        given(menuGroupRepository.findById(menuGroupId)).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(productId1)).willReturn(Optional.of(ProductFixture.후라이드));
 
         // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(MenuMessage.ADD_PRODUCT_ERROR_IN_VALID_PRICE.message());
 
         // then
-        then(menuGroupRepository).should(times(1)).findById(menuGroupId);
-        then(productRepository).should(times(1)).findById(productId1);
+        then(menuValidator).should(times(1)).validate(any());
     }
 
     @Test

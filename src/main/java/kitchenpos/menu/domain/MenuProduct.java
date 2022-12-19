@@ -1,8 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,9 +14,8 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -28,26 +24,22 @@ public class MenuProduct {
 
     }
 
-    public MenuProduct(Menu menu, Product product, Quantity quantity) {
+    public MenuProduct(Menu menu, Long productId, Quantity quantity) {
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, Long quantity) {
-        return new MenuProduct(null, product, Quantity.of(quantity));
+    public static MenuProduct of(Long productId, Long quantity) {
+        return new MenuProduct(null, productId, Quantity.of(quantity));
     }
 
     public Long getProductId() {
-        return this.product.getId();
+        return this.productId;
     }
 
     public Quantity getQuantity() {
         return this.quantity;
-    }
-
-    public Price getPrice() {
-        return this.product.getPrice().multiplyQuantity(this.quantity);
     }
 
     public void changeMenu(Menu menu) {
@@ -63,14 +55,14 @@ public class MenuProduct {
 
         if (!Objects.equals(seq, that.seq)) return false;
         if (!Objects.equals(menu, that.menu)) return false;
-        return Objects.equals(product, that.product);
+        return Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
         int result = seq != null ? seq.hashCode() : 0;
         result = 31 * result + (menu != null ? menu.hashCode() : 0);
-        result = 31 * result + (product != null ? product.hashCode() : 0);
+        result = 31 * result + (productId != null ? productId.hashCode() : 0);
         return result;
     }
 
@@ -79,7 +71,7 @@ public class MenuProduct {
         return "MenuProduct{" +
                 "seq=" + seq +
                 ", menu=" + menu +
-                ", product=" + product +
+                ", product=" + productId +
                 ", quantity=" + quantity +
                 '}';
     }

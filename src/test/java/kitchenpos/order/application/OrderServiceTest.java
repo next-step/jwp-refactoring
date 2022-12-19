@@ -12,7 +12,6 @@ import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,10 +62,10 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
-        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
-        MenuProduct menuProduct2 = MenuProduct.of(ProductFixture.강정치킨, 1L);
-        menu1 = Menu.of("후라이드치킨", 16_000L, menuGroup, Arrays.asList(menuProduct));
-        menu2 = Menu.of("강정치킨", 12_000L, menuGroup, Arrays.asList(menuProduct2));
+        MenuProduct menuProduct = MenuProduct.of(1L, 1L);
+        MenuProduct menuProduct2 = MenuProduct.of(2L, 1L);
+        menu1 = Menu.of("후라이드치킨", 16_000L, 1L, Arrays.asList(menuProduct));
+        menu2 = Menu.of("강정치킨", 12_000L, 1L, Arrays.asList(menuProduct2));
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(
                 new OrderLineItemRequest(menuId1, 1L),
                 new OrderLineItemRequest(menuId2, 1L)

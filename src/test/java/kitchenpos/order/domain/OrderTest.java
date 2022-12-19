@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.message.OrderMessage;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +27,10 @@ class OrderTest {
         this.orderTable = OrderTable.of(1, false);
 
         MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
-        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
-        MenuProduct menuProduct2 = MenuProduct.of(ProductFixture.강정치킨, 1L);
-        Menu menu1 = Menu.of("후라이드치킨", 16_000L, menuGroup, Arrays.asList(menuProduct));
-        Menu menu2 = Menu.of("강정치킨", 12_000L, menuGroup, Arrays.asList(menuProduct2));
+        MenuProduct menuProduct = MenuProduct.of(1L, 1L);
+        MenuProduct menuProduct2 = MenuProduct.of(2L, 1L);
+        Menu menu1 = Menu.of("후라이드치킨", 16_000L, 1L, Arrays.asList(menuProduct));
+        Menu menu2 = Menu.of("강정치킨", 12_000L, 1L, Arrays.asList(menuProduct2));
         this.orderLineItems = Arrays.asList(
                 OrderLineItem.of(menu1, 1L),
                 OrderLineItem.of(menu2, 1L)
