@@ -46,5 +46,4 @@ public class TableRestController {
 		@RequestBody final int guestCounts) {
 		return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, guestCounts));
 	}
-
 }

@@ -9,21 +9,22 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.common.Empty;
 import kitchenpos.common.GuestCount;
 import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ErrorMessage;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.repository.OrderTableRepository;
 
 @Service
 public class TableService {
-	private final OrderService orderService;
-	private final OrderTableRepository orderTableRepository;
 
-	public TableService(OrderService orderService, OrderTableRepository orderTableRepository) {
-		this.orderService = orderService;
+	private final OrderTableRepository orderTableRepository;
+	private final OrderValidator orderValidator;
+
+	public TableService(OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
+
 		this.orderTableRepository = orderTableRepository;
+		this.orderValidator = orderValidator;
 	}
 
 	@Transactional
@@ -43,11 +44,8 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final boolean empty) {
 		OrderTable saved = findOrderTableById(orderTableId);
-		boolean isAllFinished = orderService.isAllOrderFinished(orderTableId);
-		if (!isAllFinished) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED);
-		}
-		saved.updateEmptyStatus(Empty.of(empty));
+		orderValidator.changeEmptyOrderStatusValidate(orderTableId);
+		saved.updateEmptyStatus(Empty.EMPTY);
 		return OrderTableResponse.of(saved);
 	}
 
@@ -60,7 +58,7 @@ public class TableService {
 
 	public OrderTable findOrderTableById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId).orElseThrow(
-			() -> new EntityNotFoundException(ErrorMessage.notFoundEntity("주문테이블", orderTableId))
+			() -> new EntityNotFoundException(OrderTable.ENTITY_NAME, orderTableId)
 		);
 	}
 }

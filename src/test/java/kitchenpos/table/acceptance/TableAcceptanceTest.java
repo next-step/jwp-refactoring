@@ -2,7 +2,7 @@ package kitchenpos.table.acceptance;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.*;
-import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.*;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
