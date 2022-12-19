@@ -107,15 +107,6 @@ class TableGroupServiceTest extends ServiceTest {
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
 
-    @DisplayName("테이블 그룹을 생성한다. / 주문 테이블이 비어있을 수 없다.")
-    @Test
-    void create_fail_orderTableEmpty() {
-        TableGroup failTableGroup = tableGroupRepository.save(new TableGroup());
-        assertThatThrownBy(() -> tableGroupService.create(new CreateTableGroupRequest(failTableGroup.getOrderTableIds())))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
-    }
-
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void unGroup_success() {

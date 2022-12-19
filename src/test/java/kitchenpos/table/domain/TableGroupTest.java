@@ -23,15 +23,6 @@ class TableGroupTest {
         assertThatNoException().isThrownBy(() -> new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
     }
 
-    @DisplayName("주문 테이블이 비어있을 수 없다.")
-    @Test
-    void create_fail_orderTable() {
-        List<OrderTable> orderTables = new ArrayList<>();
-        assertThatThrownBy(() -> new TableGroup(new OrderTables(orderTables)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
-    }
-
     @DisplayName("주문 테이블의 갯수가 2보다 작을 수 없다.")
     @Test
     void name() {

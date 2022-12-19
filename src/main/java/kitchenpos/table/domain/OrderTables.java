@@ -16,11 +16,13 @@ public class OrderTables {
     public static final String ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "주문 테이블이 비어있을 수 없다.";
     public static final String ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE = "주문 테이블의 갯수가 2보다 작을 수 없다.";
     public static final int MINIMUM_SIZE = 2;
+    public static final String ORDER_TABLE_EMPTY_EXCEPTION_MESSAGE = "주문 테이블의 상태가 empty 가 아니면 안된다.";
+    public static final String TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "테이블 그룹이 있을 수 없다.";
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public OrderTables() {
+    protected OrderTables() {
 
     }
 
@@ -46,17 +48,10 @@ public class OrderTables {
     }
 
     private static void validate(List<OrderTable> orderTables) {
-        validateEmptyOrderTables(orderTables);
         validateOrderTablesSize(orderTables);
         for (final OrderTable orderTable : orderTables) {
             validateNotEmptyOrderTable(orderTable);
             validateNotNullOrderTable(orderTable);
-        }
-    }
-
-    private static void validateEmptyOrderTables(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables)) {
-            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
         }
     }
 
@@ -68,13 +63,13 @@ public class OrderTables {
 
     private static void validateNotEmptyOrderTable(OrderTable orderTable) {
         if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_TABLE_EMPTY_EXCEPTION_MESSAGE);
         }
     }
 
     private static void validateNotNullOrderTable(OrderTable orderTable) {
         if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
     }
 }
