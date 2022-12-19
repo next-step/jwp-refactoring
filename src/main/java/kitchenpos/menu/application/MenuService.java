@@ -33,7 +33,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
-        final MenuGroup menuGroup = findMenuGroupById(menuRequest);
+        final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
 
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
                 .stream()
@@ -53,8 +53,8 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuGroup findMenuGroupById(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
+    private MenuGroup findMenuGroupById(long id) {
+        return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
     }
 

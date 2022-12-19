@@ -61,7 +61,7 @@ public class TableGroup {
 
     private void addOrderTable(OrderTable orderTable) {
         orderTable.validGroupingTableGroup();
-        orderTable.setTableGroup(this);
+        orderTable.group(this);
         orderTable.notEmpty();
         orderTables.add(orderTable);
     }

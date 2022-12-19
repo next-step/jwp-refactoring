@@ -60,7 +60,7 @@ public class OrderTable {
         return tableGroup.getId();
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void group(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

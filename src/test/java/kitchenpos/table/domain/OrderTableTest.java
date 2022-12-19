@@ -59,7 +59,7 @@ class OrderTableTest {
         OrderTable orderTable2 = new OrderTable(1L, null, 0, true);
         TableGroup tableGroup = new TableGroup(1L, Arrays.asList(orderTable2, orderTable1));
         OrderTable orderTable = OrderTable.of(0, true);
-        orderTable.setTableGroup(tableGroup);
+        orderTable.group(tableGroup);
         //when & then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -75,7 +75,7 @@ class OrderTableTest {
         OrderTable orderTable2 = new OrderTable(1L, null, 0, true);
         TableGroup tableGroup = new TableGroup(1L, Arrays.asList(orderTable2, orderTable1));
         OrderTable orderTable = OrderTable.of(0, true);
-        orderTable.setTableGroup(tableGroup);
+        orderTable.group(tableGroup);
         //when
         Long tableGroupId = orderTable.findTableGroupId();
         //then
