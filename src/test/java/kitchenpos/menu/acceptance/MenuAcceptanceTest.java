@@ -1,7 +1,7 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.*;
-import static kitchenpos.menu.acceptance.ProductAcceptanceTest.*;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.*;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
@@ -22,10 +22,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.common.AcceptanceTest;
-import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
