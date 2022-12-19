@@ -13,7 +13,7 @@ public class ProductResponse {
     private BigDecimal price;
 
     public static ProductResponse from(Product product) {
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
+        return new ProductResponse(product.getId(), product.getName(), product.getPriceValue());
     }
 
     public static List<ProductResponse> getProductResponses(List<Product> products) {

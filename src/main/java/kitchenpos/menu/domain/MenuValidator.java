@@ -19,13 +19,11 @@ public class MenuValidator {
     }
 
     public void validate(Menu menu) {
-        if (menu.getName().isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        menu.validateName();
 
-        final Price price = menu.getPrice();
+        final MenuPrice menuPrice = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(menuPrice) || menuPrice.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
@@ -35,7 +33,7 @@ public class MenuValidator {
 
         final MenuProducts menuProducts = menu.getMenuProducts();
 
-        Price sum = new Price(BigDecimal.ZERO);
+        MenuPrice sum = new MenuPrice(BigDecimal.ZERO);
         menuProducts.stream()
                 .forEach(menuProduct -> {
                     final Product product = productRepository.findById(menuProduct.getProductId())
@@ -43,7 +41,7 @@ public class MenuValidator {
                     sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
                 });
 
-        if (price.compareTo(sum) > 0) {
+        if (menuPrice.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
     }

@@ -3,10 +3,12 @@ package kitchenpos.product.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.constants.ErrorMessages;
 
 @Entity
 public class Product {
@@ -15,20 +17,20 @@ public class Product {
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private ProductPrice productPrice;
 
     public Product() {}
 
-    public Product(String name, BigDecimal price) {
+    public Product(String name, ProductPrice productPrice) {
         this.name = name;
-        this.price = price;
+        this.productPrice = productPrice;
     }
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(Long id, String name, ProductPrice productPrice) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.productPrice = productPrice;
     }
 
     public Long getId() {
@@ -47,12 +49,16 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public ProductPrice getPrice() {
+        return productPrice;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public BigDecimal getPriceValue() {
+        return productPrice.getPrice();
+    }
+
+    public void setPrice(ProductPrice productPrice) {
+        this.productPrice = productPrice;
     }
 
     @Override
@@ -65,11 +71,17 @@ public class Product {
         }
         Product product = (Product) o;
         return Objects.equals(id, product.id) && Objects.equals(name, product.name)
-                && (price.compareTo(product.price) == 0);
+                && Objects.equals(productPrice, product.productPrice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price);
+        return Objects.hash(id, name, productPrice);
+    }
+
+    public void validateName() {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessages.PRODUCT_NAME_CANNOT_BE_EMPTY);
+        }
     }
 }

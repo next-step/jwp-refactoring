@@ -60,7 +60,7 @@ public class MenuGroup {
         return Objects.hash(id, name);
     }
 
-    public void validate() {
+    public void validateName() {
         if (name.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessages.MENU_GROUP_NAME_CANNOT_BE_EMPTY);
         }

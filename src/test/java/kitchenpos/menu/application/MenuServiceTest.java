@@ -10,15 +10,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,9 +57,9 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        떡볶이 = new Product(1L, "떡볶이", BigDecimal.valueOf(4500));
-        튀김 = new Product(2L, "튀김", BigDecimal.valueOf(2500));
-        순대 = new Product(3L, "순대", BigDecimal.valueOf(4000));
+        떡볶이 = new Product(1L, "떡볶이", new ProductPrice(4500));
+        튀김 = new Product(2L, "튀김", new ProductPrice(2500));
+        순대 = new Product(3L, "순대", new ProductPrice(4000));
 
         떡튀순_상품_떡볶이 = new MenuProduct(1L, null, 떡볶이.getId(), 1);
         떡튀순_상품_튀김 = new MenuProduct(2L, null, 튀김.getId(), 1);
@@ -69,8 +70,8 @@ class MenuServiceTest {
         떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
 
         세트 = new MenuGroup(1L, "세트");
-        떡튀순 = new Menu(1L, "떡튀순", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
-        떡튀순_곱배기 = new Menu(2L, "떡튀순_곱배기", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_곱배기_상품_목록));
+        떡튀순 = new Menu(1L, "떡튀순", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+        떡튀순_곱배기 = new Menu(2L, "떡튀순_곱배기", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_곱배기_상품_목록));
 
         떡튀순_상품_떡볶이.setMenu(떡튀순);
         떡튀순_상품_튀김.setMenu(떡튀순);

@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -7,25 +7,28 @@ import javax.persistence.Embeddable;
 import kitchenpos.constants.ErrorMessages;
 
 @Embeddable
-public class Price implements Comparable<Price> {
+public class ProductPrice implements Comparable<ProductPrice> {
 
-    @Column(nullable = false)
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    public Price() {}
+    public ProductPrice() {}
 
-    public Price(BigDecimal price) {
+    public ProductPrice(BigDecimal price) {
         validatePriceNotNegative(price);
         this.price = price;
     }
 
-    public Price(int i) {
+    public ProductPrice(int i) {
         this(new BigDecimal(i));
     }
 
     private void validatePriceNotNegative(BigDecimal val) {
+        if (Objects.isNull(val)) {
+            throw new IllegalArgumentException(ErrorMessages.PRODUCT_PRICE_IS_NULL);
+        }
         if (val.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(ErrorMessages.MENU_PRICE_CANNOT_BE_LESS_THAN_ZERO);
+            throw new IllegalArgumentException(ErrorMessages.PRODUCT_PRICE_CANNOT_BE_LESS_THAN_ZERO);
         }
     }
 
@@ -38,8 +41,8 @@ public class Price implements Comparable<Price> {
     }
 
     @Override
-    public int compareTo(Price o) {
-        return this.price.compareTo(o.price);
+    public int compareTo(ProductPrice o) {
+        return 0;
     }
 
     public BigDecimal getPrice() {
@@ -54,12 +57,17 @@ public class Price implements Comparable<Price> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Price price1 = (Price) o;
-        return Objects.equals(price, price1.price);
+        ProductPrice productPrice1 = (ProductPrice) o;
+        return Objects.equals(price, productPrice1.price);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(price);
     }
+
+    public BigDecimal multiply(BigDecimal val) {
+        return price.multiply(val);
+    }
+
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.domain.MenuPrice;
 
 public class MenuRequest {
     private String name;
@@ -27,7 +27,7 @@ public class MenuRequest {
     }
 
     public Menu toMenu() {
-        Menu menu = new Menu(name, new Price(price), menuGroupId);
+        Menu menu = new Menu(name, new MenuPrice(price), menuGroupId);
         menuProducts.stream()
                 .map(MenuProductRequest::toMenuProduct)
                 .forEach(menu::addMenuProduct);

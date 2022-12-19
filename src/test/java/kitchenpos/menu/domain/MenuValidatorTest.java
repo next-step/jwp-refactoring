@@ -3,13 +3,13 @@ package kitchenpos.menu.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,9 +48,9 @@ public class MenuValidatorTest {
 
     @BeforeEach
     void setUp() {
-        떡볶이 = new Product(1L, "떡볶이", BigDecimal.valueOf(4500));
-        튀김 = new Product(2L, "튀김", BigDecimal.valueOf(2500));
-        순대 = new Product(3L, "순대", BigDecimal.valueOf(4000));
+        떡볶이 = new Product(1L, "떡볶이", new ProductPrice(4500));
+        튀김 = new Product(2L, "튀김", new ProductPrice(2500));
+        순대 = new Product(3L, "순대", new ProductPrice(4000));
 
         떡튀순_상품_떡볶이 = new MenuProduct(1L, null, 떡볶이.getId(), 1);
         떡튀순_상품_튀김 = new MenuProduct(2L, null, 튀김.getId(), 1);
@@ -61,8 +61,8 @@ public class MenuValidatorTest {
         떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
 
         세트 = new MenuGroup(1L, "세트");
-        떡튀순 = new Menu(1L, "떡튀순", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
-        떡튀순_곱배기 = new Menu(2L, "떡튀순_곱배기", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_곱배기_상품_목록));
+        떡튀순 = new Menu(1L, "떡튀순", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+        떡튀순_곱배기 = new Menu(2L, "떡튀순_곱배기", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_곱배기_상품_목록));
 
         떡튀순_상품_떡볶이.setMenu(떡튀순);
         떡튀순_상품_튀김.setMenu(떡튀순);
@@ -96,7 +96,7 @@ public class MenuValidatorTest {
         when(productRepository.findById(떡볶이.getId())).thenReturn(Optional.of(떡볶이));
         when(productRepository.findById(튀김.getId())).thenReturn(Optional.of(튀김));
         when(productRepository.findById(순대.getId())).thenReturn(Optional.of(순대));
-        Menu 초과_가격_메뉴 = new Menu(3L, "떡튀순", new Price(12000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+        Menu 초과_가격_메뉴 = new Menu(3L, "떡튀순", new MenuPrice(12000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
 
         assertThatThrownBy(() -> menuValidator.validate(초과_가격_메뉴)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -104,7 +104,7 @@ public class MenuValidatorTest {
     @DisplayName("비어있는 이름으로 메뉴 생성 요청 시 예외처리")
     @Test
     void 비어있는_이름_예외처리() {
-        Menu 비어있는_이름_메뉴 = new Menu(3L, "", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+        Menu 비어있는_이름_메뉴 = new Menu(3L, "", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
 
         assertThatThrownBy(() -> menuValidator.validate(비어있는_이름_메뉴)).isInstanceOf(IllegalArgumentException.class);
     }

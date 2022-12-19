@@ -5,17 +5,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -27,6 +26,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,9 +63,9 @@ class OrderServiceTest {
 
         Long 떡튀순_id = 1L;
         Long 떡튀순_곱배기_id = 2L;
-        Product 떡볶이 = new Product(1L, "떡볶이", BigDecimal.valueOf(4500));
-        Product 튀김 = new Product(2L, "튀김", BigDecimal.valueOf(2500));
-        Product 순대 = new Product(3L, "순대", BigDecimal.valueOf(4000));
+        Product 떡볶이 = new Product(1L, "떡볶이", new ProductPrice(4500));
+        Product 튀김 = new Product(2L, "튀김", new ProductPrice(2500));
+        Product 순대 = new Product(3L, "순대", new ProductPrice(4000));
 
         MenuProduct 떡튀순_상품_떡볶이 = new MenuProduct(1L, null, 떡볶이.getId(), 1);
         MenuProduct 떡튀순_상품_튀김 = new MenuProduct(2L, null, 튀김.getId(), 1);
@@ -76,8 +76,9 @@ class OrderServiceTest {
         List<MenuProduct> 떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
 
         MenuGroup 세트 = new MenuGroup(1L, "세트");
-        Menu 떡튀순 = new Menu(떡튀순_id, "떡튀순", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
-        Menu 떡튀순_곱배기 = new Menu(떡튀순_곱배기_id, "떡튀순_곱배기", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_곱배기_상품_목록));
+        Menu 떡튀순 = new Menu(떡튀순_id, "떡튀순", new MenuPrice(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+        Menu 떡튀순_곱배기 = new Menu(떡튀순_곱배기_id, "떡튀순_곱배기", new MenuPrice(10000), 세트.getId(),
+                new MenuProducts(떡튀순_곱배기_상품_목록));
 
         주문_id = 1L;
         주문_테이블 = new OrderTable(1L, null, 0, false);
