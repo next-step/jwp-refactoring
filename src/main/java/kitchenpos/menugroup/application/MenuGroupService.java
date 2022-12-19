@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menugroup.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,12 +6,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ErrorMessage;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,10 +31,5 @@ public class MenuGroupService {
 			.stream()
 			.map(MenuGroupResponse::from)
 			.collect(Collectors.toList());
-	}
-
-	public MenuGroup findMenuGroupById(Long id) {
-		return menuGroupRepository.findById(id)
-			.orElseThrow(() -> new EntityNotFoundException(ErrorMessage.notFoundEntity("메뉴그룹", id)));
 	}
 }

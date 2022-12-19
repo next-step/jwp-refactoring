@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menugroup.domain;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,6 +10,7 @@ import kitchenpos.common.Name;
 
 @Entity
 public class MenuGroup {
+	public static String ENTITY_NAME = "메뉴그룹";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
