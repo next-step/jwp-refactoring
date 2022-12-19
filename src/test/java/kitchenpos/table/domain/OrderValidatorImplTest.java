@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import static kitchenpos.menu.domain.MenuTestFixture.*;
 import static kitchenpos.order.domain.OrderLineItemTestFixture.orderLineItem;
@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.common.exception.InvalidParameterException;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,11 +22,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 유효성 검사 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderValidatorTest {
+class OrderValidatorImplTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private OrderValidator orderValidator;
+    private OrderValidatorImpl orderValidatorImpl;
 
     @Test
     @DisplayName("주문 등록시 주문 테이블은 등록된 테이블이어야 한다.")
@@ -39,7 +39,7 @@ class OrderValidatorTest {
         Order order = order(null, orderTable.id(), Arrays.asList(orderLineItem, orderLineItem2));
 
         // when & then
-        assertThatThrownBy(() -> order.validate(orderValidator))
+        assertThatThrownBy(() -> order.validate(orderValidatorImpl))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("존재하지 않는 주문 테이블입니다. ID : 1");
     }
@@ -55,7 +55,7 @@ class OrderValidatorTest {
         Order order = order(null, emptyTable.id(), Arrays.asList(orderLineItem, orderLineItem2));
 
         // when & then
-        assertThatThrownBy(() -> order.validate(orderValidator))
+        assertThatThrownBy(() -> order.validate(orderValidatorImpl))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("비어있는 테이블입니다.");
     }
