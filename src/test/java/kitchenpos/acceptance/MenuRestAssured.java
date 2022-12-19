@@ -17,6 +17,11 @@ public class MenuRestAssured {
     public static ExtractableResponse<Response> 메뉴_생성_요청(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menus = createMenu(id, name, price, menuGroupId, menuProducts);
 
+        return 메뉴_생성_요청(menus);
+    }
+
+    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menus) {
+
         return RestAssured.given().log().all()
                 .body(menus)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
