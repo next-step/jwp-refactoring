@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'java-test-fixtures'
 }
 
 group = 'camp.nextstep.edu'
@@ -13,13 +14,66 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation project(':module-core')
+    implementation project(':module-product')
+    implementation project(':module-menu')
+    implementation project(':module-menugroup')
+    implementation project(':module-order')
+    implementation project(':module-table')
+    implementation project(':module-tablegroup')
 }
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'java-test-fixtures'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}
+
+subprojects.findAll { it.name != 'module-core' }.forEach({
+    project("${it.name}") {
+        dependencies {
+            implementation project(':module-core')
+        }
+    }
+})
+
+subprojects.findAll { it.name != 'module-test' }.forEach({
+    project("${it.name}") {
+        dependencies {
+            testFixturesApi(testFixtures(project(':module-test')))
+        }
+    }
+})
 
 test {
     useJUnitPlatform()
