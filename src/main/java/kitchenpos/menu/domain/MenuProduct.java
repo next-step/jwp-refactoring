@@ -35,15 +35,15 @@ public class MenuProduct {
         validateNullQuantity(quantity);
     }
 
-    private static void validateNullQuantity(Quantity quantity) {
-        if (Objects.isNull(quantity)) {
-            throw new IllegalArgumentException(QUANTITY_NULL_EXCEPTION_MESSAGE);
-        }
-    }
-
     private static void validateNullProduct(Product product) {
         if (Objects.isNull(product)) {
             throw new IllegalArgumentException(PRODUCT_NULL_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateNullQuantity(Quantity quantity) {
+        if (Objects.isNull(quantity)) {
+            throw new IllegalArgumentException(QUANTITY_NULL_EXCEPTION_MESSAGE);
         }
     }
 

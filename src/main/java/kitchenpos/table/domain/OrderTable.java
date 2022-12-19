@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -40,30 +41,18 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void unGroup() {
+        this.tableGroup = null;
+    }
+
     public void empty() {
         validateNotNullTableGroup();
         this.empty = true;
     }
 
-    private void validateNotNullTableGroup() {
-        if (this.tableGroup != null) {
-            throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
-        }
-    }
-
-    public void unGroup() {
-        this.tableGroup = null;
-    }
-
     public void changeSitNumberOfGuest(NumberOfGuests numberOfGuests) {
         validateEmpty();
         this.numberOfGuests = numberOfGuests;
-    }
-
-    private void validateEmpty() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException(EMPTY_EXCEPTION_MESSAGE);
-        }
     }
 
     public TableGroup getTableGroup() {
@@ -76,5 +65,17 @@ public class OrderTable {
 
     public NumberOfGuests getNumberOfGuests() {
         return this.numberOfGuests;
+    }
+
+    private void validateNotNullTableGroup() {
+        if (!Objects.isNull(this.tableGroup)) {
+            throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void validateEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException(EMPTY_EXCEPTION_MESSAGE);
+        }
     }
 }

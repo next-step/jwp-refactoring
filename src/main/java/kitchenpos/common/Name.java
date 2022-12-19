@@ -15,6 +15,11 @@ public class Name {
     protected Name() {
     }
 
+    public Name(String name) {
+        validateName(name);
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -26,11 +31,6 @@ public class Name {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public Name(String name) {
-        validateName(name);
-        this.name = name;
     }
 
     private static void validateName(String name) {

@@ -27,13 +27,6 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(long id, Orders order, long menuId, Quantity quantity) {
-        this.id = id;
-        this.order = order;
-        this.menuId = menuId;
-        this.quantity = quantity;
-    }
-
     private void validate(Long menuId) {
         if (Objects.isNull(menuId)) {
             throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);

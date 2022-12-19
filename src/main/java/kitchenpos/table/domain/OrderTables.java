@@ -29,39 +29,6 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    private static void validate(List<OrderTable> orderTables) {
-        validateEmptyOrderTables(orderTables);
-        validateOrderTablesSize(orderTables);
-        for (final OrderTable orderTable : orderTables) {
-            validateNotEmptyOrderTable(orderTable);
-            validateNotNullOrderTable(orderTable);
-        }
-    }
-
-    private static void validateNotNullOrderTable(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private static void validateNotEmptyOrderTable(OrderTable orderTable) {
-        if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private static void validateOrderTablesSize(List<OrderTable> orderTables) {
-        if (orderTables.size() < MINIMUM_SIZE) {
-            throw new IllegalArgumentException(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private static void validateEmptyOrderTables(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables)) {
-            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
-        }
-    }
-
     public List<OrderTable> getOrderTables() {
         return this.orderTables;
     }
@@ -76,5 +43,38 @@ public class OrderTables {
         return orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
+    }
+
+    private static void validate(List<OrderTable> orderTables) {
+        validateEmptyOrderTables(orderTables);
+        validateOrderTablesSize(orderTables);
+        for (final OrderTable orderTable : orderTables) {
+            validateNotEmptyOrderTable(orderTable);
+            validateNotNullOrderTable(orderTable);
+        }
+    }
+
+    private static void validateEmptyOrderTables(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables)) {
+            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateOrderTablesSize(List<OrderTable> orderTables) {
+        if (orderTables.size() < MINIMUM_SIZE) {
+            throw new IllegalArgumentException(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateNotEmptyOrderTable(OrderTable orderTable) {
+        if (!orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static void validateNotNullOrderTable(OrderTable orderTable) {
+        if (Objects.nonNull(orderTable.getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
     }
 }

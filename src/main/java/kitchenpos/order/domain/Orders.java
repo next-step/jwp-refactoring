@@ -38,42 +38,6 @@ public class Orders {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
-
-    public Orders(long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    private static void validateOrderTable(OrderTable orderTable) {
-        validateOrderTableNull(orderTable);
-        validateOrderTableEmpty(orderTable);
-    }
-
-    private static void validateOrderTableEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private static void validateOrderTableNull(OrderTable orderTable) {
-        if (Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
-        validateOrderTable(orderTable);
-        validateEmptyOrderLineItems(orderLineItems);
-    }
-
-    private void validateEmptyOrderLineItems(OrderLineItems orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -110,22 +74,10 @@ public class Orders {
         this.orderStatus = orderStatus;
     }
 
-    private void validateCompleteOrderStatus() {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
-        }
-    }
-
     public void emptyTable() {
         validateOrderTableNull(orderTable);
         validateNotCompleteOrderStatus();
         this.orderTable.empty();
-    }
-
-    private void validateNotCompleteOrderStatus() {
-        if (this.orderStatus.equals(OrderStatus.COOKING) || this.orderStatus.equals(OrderStatus.MEAL)) {
-            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
-        }
     }
 
     public OrderStatus getOrderStatus() {
@@ -134,5 +86,46 @@ public class Orders {
 
     public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+
+    private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
+        validateOrderTable(orderTable);
+        validateEmptyOrderLineItems(orderLineItems);
+    }
+
+    private static void validateOrderTable(OrderTable orderTable) {
+        validateOrderTableNull(orderTable);
+        validateOrderTableEmpty(orderTable);
+    }
+
+    private void validateEmptyOrderLineItems(OrderLineItems orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateOrderTableNull(OrderTable orderTable) {
+        if (Objects.isNull(orderTable)) {
+            throw new IllegalArgumentException(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateOrderTableEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void validateCompleteOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void validateNotCompleteOrderStatus() {
+        if (this.orderStatus.equals(OrderStatus.COOKING) || this.orderStatus.equals(OrderStatus.MEAL)) {
+            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
+        }
     }
 }

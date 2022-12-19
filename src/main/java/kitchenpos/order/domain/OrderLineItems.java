@@ -15,7 +15,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
+    protected OrderLineItems() {
 
     }
 
@@ -44,13 +44,13 @@ public class OrderLineItems {
         }
     }
 
+    public boolean isEmpty() {
+        return this.orderLineItems.isEmpty();
+    }
+
     private static void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
         }
-    }
-
-    public boolean isEmpty() {
-        return this.orderLineItems.isEmpty();
     }
 }

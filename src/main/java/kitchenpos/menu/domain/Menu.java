@@ -45,15 +45,9 @@ public class Menu {
         validatePrice(price, menuProducts);
     }
 
-    private static void validatePrice(Price price, MenuProducts menuProducts) {
-        if (price.getPrice().compareTo(menuProducts.sum()) > 0) {
-            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private static void validateEmptyMenuProducts(MenuProducts menuProducts) {
-        if (menuProducts.isEmpty()) {
-            throw new IllegalArgumentException("메뉴 상품이 없습니다.");
+    private static void validateNullMenuGroup(MenuGroup menuGroup) {
+        if (Objects.isNull(menuGroup)) {
+            throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -63,9 +57,15 @@ public class Menu {
         }
     }
 
-    private static void validateNullMenuGroup(MenuGroup menuGroup) {
-        if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+    private static void validateEmptyMenuProducts(MenuProducts menuProducts) {
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException("메뉴 상품이 없습니다.");
+        }
+    }
+
+    private static void validatePrice(Price price, MenuProducts menuProducts) {
+        if (price.getPrice().compareTo(menuProducts.sum()) > 0) {
+            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
         }
     }
 

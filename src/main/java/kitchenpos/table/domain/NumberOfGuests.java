@@ -19,12 +19,6 @@ public class NumberOfGuests {
         this.numberOfGuests = numberOfGuests;
     }
 
-    private static void validate(int numberOfGuests) {
-        if (numberOfGuests < CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER) {
-            throw new IllegalArgumentException(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -36,5 +30,11 @@ public class NumberOfGuests {
     @Override
     public int hashCode() {
         return Objects.hash(numberOfGuests);
+    }
+
+    private static void validate(int numberOfGuests) {
+        if (numberOfGuests < CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER) {
+            throw new IllegalArgumentException(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
+        }
     }
 }
