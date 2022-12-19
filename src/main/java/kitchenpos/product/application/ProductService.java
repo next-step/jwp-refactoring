@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.product.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,12 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.exception.ErrorMessage;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
-import kitchenpos.menu.repository.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.repository.ProductRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,8 +31,4 @@ public class ProductService {
 			.collect(Collectors.toList());
 	}
 
-	public Product findProductById(Long id) {
-		return productRepository.findById(id)
-			.orElseThrow(() -> new EntityNotFoundException(ErrorMessage.notFoundEntity("상품", id)));
-	}
 }

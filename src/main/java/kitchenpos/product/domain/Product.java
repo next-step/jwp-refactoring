@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 
@@ -10,10 +10,10 @@ import javax.persistence.Id;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.common.Quantity;
 
 @Entity
 public class Product {
+	public static String ENTITY_NAME = "상품";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -43,9 +43,5 @@ public class Product {
 
 	public Price getPrice() {
 		return price;
-	}
-
-	public Price getTotalPrice(Quantity quantity) {
-		return price.multiply(quantity);
 	}
 }

@@ -1,4 +1,4 @@
-package kitchenpos.menu.unit;
+package kitchenpos.product.unit;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,16 +10,17 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 
 @DisplayName("상품 도메인 테스트")
 public class ProductTest {
 	@DisplayName("상품을 정상 생성한다.")
 	@Test
 	void create_success() {
-		// when
+		// given
 		String 상품_이름 = "짜장면";
 		BigDecimal 가격 = BigDecimal.valueOf(10_000);
+		// when
 		Product 짜장면 = Product.of(상품_이름, 가격);
 		// then
 		assertAll(
