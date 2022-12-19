@@ -17,8 +17,10 @@ import static org.mockito.Mockito.doThrow;
 import java.util.Arrays;
 import kitchenpos.application.validator.TableGroupValidator;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.dto.response.TableGroupResponse;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.OrderRepository;
@@ -72,7 +74,7 @@ class TableGroupServiceTest {
         TableGroupResponse response = tableGroupService.create(좌석_그룹_요청);
 
         assertAll(
-                () -> assertThat(response.getOrderTables()).containsExactly(주문_좌석_1, 주문_좌석_2)
+                () -> assertThat(response.getOrderTables().size()).isEqualTo(2)
         );
     }
 

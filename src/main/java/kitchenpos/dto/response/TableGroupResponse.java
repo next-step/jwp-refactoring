@@ -8,18 +8,18 @@ import kitchenpos.domain.TableGroup;
 public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    private List<OrderTableResponse> orderTables;
 
     public TableGroupResponse() {
     }
 
-    private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables){
+    public static TableGroupResponse of(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables){
         return new TableGroupResponse(id, createdDate, orderTables);
     }
 
@@ -35,7 +35,7 @@ public class TableGroupResponse {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public List<OrderTableResponse> getOrderTables() {
         return orderTables;
     }
 }

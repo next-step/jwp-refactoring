@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.application.validator.TableGroupValidator;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.dto.response.TableGroupResponse;
@@ -39,17 +39,8 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        tableGroupValidator.existsByCookingAndMeal(getOrderTableIds(orderTables));
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-        }
-    }
-
-    private List<Long> getOrderTableIds(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        final OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        tableGroupValidator.existsByCookingAndMeal(orderTables.getOrderTableIds());
+        orderTables.ungroup();
     }
 }
