@@ -7,7 +7,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Empty {
-
+	public static final Empty EMPTY = Empty.of(true);
+	public static final Empty NOT_EMPTY = Empty.of(false);
 	@Column(name = "empty", nullable = false)
 	private boolean value;
 

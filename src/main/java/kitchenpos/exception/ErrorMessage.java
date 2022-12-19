@@ -14,7 +14,7 @@ public class ErrorMessage {
 	public static final String CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED = "단체지정이 된 경우 주문테이블의 비움상태를 변경할 수 없다.";
 	public static final String CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED = "주문이 조리중이거나 식사중인 경우 주문 테이블의 비움상태를 변경하 수 없다.";
 	public static final String CANNOT_CHANGE_NUMBER_OF_GUESTS_WHEN_TABLE_IS_EMPTY = "빈 테이블의 손님수는 변경할 수 없다.";
-	public static final String CANNOT_TABLE_GROUP_WHEN_IS_NOT_ALL_EMPTY = "빈테이블이 있는 경우 단체지정을 할 수 없다.";
+	public static final String CANNOT_TABLE_GROUP_WHEN_IS_NOT_ALL_EMPTY = "채워진 테이블이 있는 경우 단체지정을 할 수 없다.";
 	public static final String CANNOT_TABLE_GROUP_WHEN_SIZE_SIZE_IS_TOO_SMALL = "대상 테이블이 2개 미만일때 단체지정 할 수 없다.";
 	public static final String CANNOT_TABLE_GROUP_WHEN_ALREADY_GROUPED = "이미 단체지정된 테이블은 단체지정을 할 수없다.";
 	public static final String CANNOT_UNGROUP_WHEN_ORDER_NOT_COMPLETED = "아직 조리 및 식사가 안끝난 테이블이 있는 경우 단체지정 해제를 할 수 없다.";

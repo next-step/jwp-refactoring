@@ -22,7 +22,6 @@ public class Quantity {
 		if (quantity < 0) {
 			throw new IllegalArgumentException(ErrorMessage.cannotBeNegative(PROPERTY_NAME));
 		}
-
 	}
 
 	public static Quantity of(int quantity) {

@@ -1,7 +1,8 @@
 package kitchenpos.exception;
 
 public class EntityNotFoundException extends CustomException {
-	public EntityNotFoundException(String errorMessage) {
-		super(errorMessage);
+
+	public EntityNotFoundException(String entityName, Long entityId) {
+		super(ErrorMessage.notFoundEntity(entityName, entityId));
 	}
 }

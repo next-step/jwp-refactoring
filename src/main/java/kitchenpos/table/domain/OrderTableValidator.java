@@ -31,7 +31,7 @@ public class OrderTableValidator implements OrderValidator {
 	@Override
 	public void changeEmptyOrderStatusValidate(Long orderTableId) {
 		if (!isAllFinished(orderTableId)) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_UNGROUP_WHEN_ORDER_NOT_COMPLETED);
+			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED);
 		}
 	}
 
