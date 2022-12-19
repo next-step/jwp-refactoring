@@ -33,14 +33,13 @@ import java.util.NoSuchElementException;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.*;
-import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.common.fixture.PriceFixture.priceProductA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
-import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -111,14 +110,8 @@ class TableGroupServiceTest extends ServiceTest {
     void unGroup_success() {
 
         OrderTable orderTableA = emptyTableEmptyTableGroup();
-        OrderTable orderTableB = emptyTableEmptyTableGroup();
 
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, orderTableB))));
-
-        orderTableA.setTableGroup(tableGroup);
-        orderTableB.setTableGroup(tableGroup);
-
-        orderTableRepository.saveAll(Arrays.asList(orderTableA, orderTableB));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, emptyTableEmptyTableGroup()))));
 
         테이블_그룹_존재_검증(tableGroup);
         orderTableA.setEmpty(false);
@@ -136,14 +129,8 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     void unGroup_fail_cooking() {
         OrderTable orderTableA = emptyTableEmptyTableGroup();
-        OrderTable orderTableB = emptyTableEmptyTableGroup();
 
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, orderTableB))));
-
-        orderTableA.setTableGroup(tableGroup);
-        orderTableB.setTableGroup(tableGroup);
-
-        orderTableRepository.saveAll(Arrays.asList(orderTableA, orderTableB));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, emptyTableEmptyTableGroup()))));
 
         테이블_그룹_존재_검증(tableGroup);
 
@@ -165,14 +152,8 @@ class TableGroupServiceTest extends ServiceTest {
     void unGroup_fail_meal() {
 
         OrderTable orderTableA = emptyTableEmptyTableGroup();
-        OrderTable orderTableB = emptyTableEmptyTableGroup();
 
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, orderTableB))));
-
-        orderTableA.setTableGroup(tableGroup);
-        orderTableB.setTableGroup(tableGroup);
-
-        orderTableRepository.saveAll(Arrays.asList(orderTableA, orderTableB));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTableA, emptyTableEmptyTableGroup()))));
 
         테이블_그룹_존재_검증(tableGroup);
 
@@ -187,12 +168,6 @@ class TableGroupServiceTest extends ServiceTest {
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }
 
-    private OrderTable notEmptyTableNotEmptyTableGroup(TableGroup tableGroup) {
-        OrderTable orderTable = orderTableRepository.save(notEmptyOrderTable());
-        orderTable.setTableGroup(tableGroup);
-        return orderTableRepository.save(orderTable);
-    }
-
     private OrderTable emptyTableEmptyTableGroup() {
         return orderTableRepository.save(emptyOrderTable());
     }
@@ -201,25 +176,9 @@ class TableGroupServiceTest extends ServiceTest {
         return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), true));
     }
 
-    private OrderTable notEmptyTableEmptyNotEmptyTableGroup(TableGroup tableGroup) {
-        return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
-    }
-
-    private void 주문_식사중_상태_변경() {
-        order.setOrderStatus(OrderStatus.MEAL);
-        orderRepository.save(order);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-    }
-
     private void 주문_요리중_상태_변경(Orders order) {
         Orders order1 = orderRepository.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-    }
-
-    private void 주문_완료_상태_변경() {
-        order.setOrderStatus(OrderStatus.COMPLETION);
-        orderRepository.save(order);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     private void 테이블_그룹_존재_검증(TableGroup tableGroup) {
