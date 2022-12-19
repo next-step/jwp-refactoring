@@ -24,10 +24,6 @@ public class MenuProducts {
         menuProduct.updateMenu(menu);
     }
 
-    private boolean isContains(MenuProduct menuProduct) {
-        return this.menuProducts.contains(menuProduct);
-    }
-
     public void validatePrice(BigDecimal price) {
         BigDecimal totalAmount = getTotalAmount();
         if(Objects.isNull(price) || isLessThanZero(price) || isMenuPriceGreaterThanTotalAmount(price, totalAmount)) {
