@@ -11,6 +11,10 @@ public class Price {
     @Column(nullable = false)
     private BigDecimal price;
 
+    protected Price(){
+
+    }
+
     public Price(BigDecimal price) {
         this.price = price;
         validateCreate();
