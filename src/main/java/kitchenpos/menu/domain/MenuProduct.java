@@ -62,4 +62,8 @@ public class MenuProduct {
     public void mapMenu(Menu menu) {
         this.menu = menu;
     }
+
+    public Menu getMenu() {
+        return this.menu;
+    }
 }
