@@ -9,9 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.dto.MenuQuantityPair;
-import kitchenpos.product.domain.Name;
+import kitchenpos.order.dto.MenuIdQuantityPair;
 
 @Embeddable
 public class OrderLineItems {
@@ -25,23 +23,10 @@ public class OrderLineItems {
         }
     }
 
-    public List<MenuQuantityPair> getMenuQuantityPairs(List<Menu> menus) {
+    public List<MenuIdQuantityPair> getMenuQuantityPairs() {
         return this.orderLineItems.stream()
-            .map(orderLineItem -> new MenuQuantityPair(findMenuName(menus, orderLineItem),
-                orderLineItem.getQuantity()))
+            .map(orderLineItem -> new MenuIdQuantityPair(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
             .collect(toList());
-    }
-
-    private Name findMenuName(List<Menu> menus, OrderLineItem orderLineItem) {
-        return findMenuById(orderLineItem.getMenuId(), menus)
-            .getName();
-    }
-
-    public Menu findMenuById(Long menuId, List<Menu> menus) {
-        return menus.stream()
-            .filter(menu -> menu.getId().equals(menuId))
-            .findFirst()
-            .orElseThrow(RuntimeException::new);
     }
 
 }

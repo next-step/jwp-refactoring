@@ -8,6 +8,7 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.Name;
 
 public class OrderResponse {
     private Long id;
@@ -31,13 +32,14 @@ public class OrderResponse {
     public static OrderResponse of(Order order, List<Menu> menus) {
         return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
             order.getOrderedTime(),
-            createOrderLineItemResponses(order.getMenuQuantityPairs(menus)));
+            createOrderLineItemResponses(order.getMenuIdQuantityPairs(), menus));
     }
 
-    private static List<OrderLineItemResponse> createOrderLineItemResponses(List<MenuQuantityPair> pairs) {
+    private static List<OrderLineItemResponse> createOrderLineItemResponses(List<MenuIdQuantityPair> pairs,
+        List<Menu> menus) {
         return pairs.stream()
-            .map(menuQuantityPair -> new OrderLineItemResponse(menuQuantityPair.getMenuName(),
-                menuQuantityPair.getQuantity()))
+            .map(menuIdQuantityPair -> new OrderLineItemResponse(findMenuName(menus, menuIdQuantityPair.getMenuId()),
+                menuIdQuantityPair.getQuantity()))
             .collect(toList());
     }
 
@@ -60,4 +62,13 @@ public class OrderResponse {
     public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
+
+    private static Name findMenuName(List<Menu> menus, Long menuId) {
+        return menus.stream()
+            .filter(menu -> menu.getId().equals(menuId))
+            .findFirst()
+            .orElseThrow(RuntimeException::new)
+            .getName();
+    }
+
 }

@@ -1,17 +1,15 @@
 package kitchenpos.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-
 import kitchenpos.order.domain.ItemQuantity;
 
-public class OrderLineItemRequest {
+public class MenuIdQuantityPair {
     private Long menuId;
     private ItemQuantity quantity;
 
-    public OrderLineItemRequest() {
+    public MenuIdQuantityPair() {
     }
 
-    public OrderLineItemRequest(Long menuId, ItemQuantity quantity) {
+    public MenuIdQuantityPair(Long menuId, ItemQuantity quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -22,10 +20,5 @@ public class OrderLineItemRequest {
 
     public ItemQuantity getQuantity() {
         return quantity;
-    }
-
-    @JsonGetter("quantity")
-    public Long quantity() {
-        return quantity.value();
     }
 }

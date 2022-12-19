@@ -29,6 +29,7 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Quantity;
+import kitchenpos.order.domain.ItemQuantity;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -70,7 +71,7 @@ class OrderRestControllerTest extends IntegrationTest {
         this.menu = menuRepository.save(
             new Menu(new Price(BigDecimal.valueOf(10L)), new Name("test"), menuGroup,
                 Collections.singletonList(new MenuProduct(product, new Quantity(1L)))));
-        orderLineItemRequests.add(new OrderLineItemRequest(this.menu.getId(), new Quantity(1L)));
+        orderLineItemRequests.add(new OrderLineItemRequest(this.menu.getId(), new ItemQuantity(1L)));
     }
 
     @DisplayName("주문을 등록한다")

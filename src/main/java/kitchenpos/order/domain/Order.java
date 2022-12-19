@@ -18,8 +18,7 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.dto.MenuQuantityPair;
+import kitchenpos.order.dto.MenuIdQuantityPair;
 import kitchenpos.order.exception.AtLeastOneOrderLineItemException;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 
@@ -84,8 +83,8 @@ public class Order {
         return orderStatus == COOKING || orderStatus == OrderStatus.MEAL;
     }
 
-    public List<MenuQuantityPair> getMenuQuantityPairs(List<Menu> menus) {
-        return this.orderLineItems.getMenuQuantityPairs(menus);
+    public List<MenuIdQuantityPair> getMenuIdQuantityPairs() {
+        return this.orderLineItems.getMenuQuantityPairs();
     }
 
     public void changeStatus(OrderStatus status) {

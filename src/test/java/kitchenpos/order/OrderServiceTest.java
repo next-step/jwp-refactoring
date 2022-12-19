@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.exception.NotExistIdException;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.ItemQuantity;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -42,7 +42,7 @@ class OrderServiceTest {
         when(menuRepository.findAllById(any())).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(new OrderRequest(
-            Collections.singletonList(new OrderLineItemRequest(1L, new Quantity(1L))))))
+            Collections.singletonList(new OrderLineItemRequest(1L, new ItemQuantity(1L))))))
             .isInstanceOf(MenuFindException.class);
     }
 
