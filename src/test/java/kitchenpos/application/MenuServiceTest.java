@@ -1,17 +1,22 @@
 package kitchenpos.application;
 
+import static kitchenpos.exception.ErrorCode.PRICE_GREATER_THAN_SUM;
 import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.application.validator.MenuValidator;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.request.MenuProductRequest;
@@ -33,16 +38,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
+    private MenuValidator menuValidator;
+    @Mock
     private MenuRepository menuRepository;
     @Mock
     private MenuGroupService menuGroupService;
-    @Mock
-    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
     private Product 후라이드;
     private MenuProductRequest 메뉴에_등록된_상품;
-//    private Menu 메뉴;
     private MenuRequest 메뉴;
     private MenuGroup 메뉴_그룹;
 
@@ -51,7 +55,6 @@ class MenuServiceTest {
         후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
         메뉴에_등록된_상품 = new MenuProductRequest(후라이드.getId(), 1);
         메뉴_그룹 = new MenuGroup(1L, "한마리메뉴");
-//        메뉴 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), 메뉴_그룹.getId(), Arrays.asList(메뉴에_등록된_상품));
         메뉴 = new MenuRequest(
                 "후라이드치킨", BigDecimal.valueOf(16000), 메뉴_그룹.getId(), Arrays.asList(메뉴에_등록된_상품));
     }
@@ -59,7 +62,7 @@ class MenuServiceTest {
     @Test
     void 생성() {
         given(menuGroupService.findById(anyLong())).willReturn(메뉴_그룹);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(후라이드));
+        doNothing().when(menuValidator).validateCreate(any());
         given(menuRepository.save(any())).willReturn(메뉴.toEntity());
 
         MenuResponse response = menuService.create(메뉴);
@@ -74,6 +77,7 @@ class MenuServiceTest {
 
     @Test
     void 메뉴_가격이_0미만인_경우() {
+        doThrow(new KitchenposException(PRICE_IS_NULL_OR_MINUS)).when(menuValidator).validateCreate(any());
         메뉴 = new MenuRequest(
                 "양념치킨", BigDecimal.valueOf(-5000), 메뉴_그룹.getId(), Arrays.asList(메뉴에_등록된_상품));
 
@@ -87,6 +91,8 @@ class MenuServiceTest {
     @ParameterizedTest
     @NullSource
     void 메뉴_가격이_null인_경우(BigDecimal price) {
+        given(menuGroupService.findById(anyLong())).willReturn(메뉴_그룹);
+        doThrow(new KitchenposException(PRICE_IS_NULL_OR_MINUS)).when(menuValidator).validateCreate(any());
         메뉴 = new MenuRequest("양념치킨", price, 메뉴_그룹.getId(), Arrays.asList(메뉴에_등록된_상품));
 
         assertThatThrownBy(
@@ -100,13 +106,13 @@ class MenuServiceTest {
     void 메뉴의_가격이_등록된_상품의_가격보다_큰_경우() {
         후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(6000));
         given(menuGroupService.findById(anyLong())).willReturn(메뉴_그룹);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(후라이드));
+        doThrow(new KitchenposException(PRICE_GREATER_THAN_SUM)).when(menuValidator).validateCreate(any());
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
         )
                 .isInstanceOf(KitchenposException.class)
-                .hasMessageContaining(ErrorCode.PRICE_GREATER_THAN_SUM.getDetail());
+                .hasMessageContaining(PRICE_GREATER_THAN_SUM.getDetail());
     }
 
     @Test
@@ -115,13 +121,13 @@ class MenuServiceTest {
         메뉴 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(16000), 메뉴_그룹.getId(), Arrays.asList(메뉴에_등록된_상품));
 
         given(menuGroupService.findById(anyLong())).willReturn(메뉴_그룹);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(후라이드));
+        doThrow(new KitchenposException(PRICE_GREATER_THAN_SUM)).when(menuValidator).validateCreate(any());
 
         assertThatThrownBy(
                 () -> menuService.create(메뉴)
         )
                 .isInstanceOf(KitchenposException.class)
-                .hasMessageContaining(ErrorCode.PRICE_GREATER_THAN_SUM.getDetail());
+                .hasMessageContaining(PRICE_GREATER_THAN_SUM.getDetail());
     }
 
     @Test
