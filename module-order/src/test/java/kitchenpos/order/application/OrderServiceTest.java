@@ -1,15 +1,16 @@
-package kitchenpos.order;
+package kitchenpos.order.application;
 
-
-import kitchenpos.common.ServiceTest;
-import kitchenpos.menu.MenuServiceTestSupport;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ServiceTest;
+import kitchenpos.menu.domain.MenuServiceTestSupport;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.EmptyOrderLineItemsException;
+import kitchenpos.order.exception.InvalidOrderException;
+import kitchenpos.order.exception.NotFoundOrderException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderServiceTest extends ServiceTest {
@@ -65,7 +67,8 @@ class OrderServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> {
             service.create(orderRequest);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(EmptyOrderLineItemsException.class)
+        .hasMessageContaining("주문 항목이 비었습니다.");
     }
 
     @DisplayName("없는 메뉴로 주문을 생성한다.")
@@ -77,7 +80,7 @@ class OrderServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> {
             service.create(orderRequest);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(InvalidOrderException.class)
         .hasMessageContaining("존재하지 않는 메뉴가 있습니다.");
     }
 
@@ -89,7 +92,7 @@ class OrderServiceTest extends ServiceTest {
 
         assertThatThrownBy(() -> {
             service.create(orderRequest);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isInstanceOf(InvalidOrderException.class)
         .hasMessageContaining("빈 테이블 입니다.");
     }
 
@@ -105,12 +108,13 @@ class OrderServiceTest extends ServiceTest {
         assertThat(changeResponse.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
-    @DisplayName("주문상태를 변경한다.")
+    @DisplayName("존재하지 않는 주문의 주문상태를 변경한다.")
     @Test
     void changeStatusWithNotFoundOrder() {
         Long 존재하지_않는_주문_id = Long.MAX_VALUE;
         assertThatThrownBy(() -> {
             service.changeOrderStatus(존재하지_않는_주문_id, new OrderStatusRequest(OrderStatus.COMPLETION.name()));
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundOrderException.class)
+        .hasMessageContaining("주문을 찾을 수 없습니다.");
     }
 }

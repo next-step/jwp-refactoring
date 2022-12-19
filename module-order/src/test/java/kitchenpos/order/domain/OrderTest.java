@@ -1,22 +1,22 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.FixtureMenu;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.exception.CannotChangeOrderStatusException;
+import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Order 클래스 테스트")
 class OrderTest {
 
-    Menu menu = new Menu(1L, "강정치킨", BigDecimal.valueOf(15_000), 1L);
+    private final Menu menu = new FixtureMenu("강정치킨");
     private final List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu.toOrderedMenu(), 1L));
 
     @DisplayName("주문을 생성한다.")
@@ -60,7 +60,8 @@ class OrderTest {
 
         assertThatThrownBy(() -> {
             order.addOrderLineItems(Collections.emptyList());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(EmptyOrderLineItemsException.class)
+        .hasMessageContaining("주문 항목이 비었습니다.");
     }
 
     @DisplayName("주문의 상태를 변경한다.")
@@ -81,6 +82,7 @@ class OrderTest {
 
         assertThatThrownBy(() -> {
             order.changeOrderStatus(OrderStatus.COMPLETION);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotChangeOrderStatusException.class)
+        .hasMessageContaining("주문 상태를 변경할 수 없습니다.");
     }
 }

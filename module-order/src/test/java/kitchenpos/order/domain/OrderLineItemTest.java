@@ -1,18 +1,17 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.core.exception.InvalidQuantityException;
+import kitchenpos.menu.domain.FixtureMenu;
 import kitchenpos.menu.domain.Menu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("OrderLineItem 클래스 테스트")
 class OrderLineItemTest {
 
-    Menu menu = new Menu(1L, "강정치킨", BigDecimal.valueOf(15_000), 1L);
+    private Menu menu = new FixtureMenu("강정치킨");
 
     @DisplayName("OrderLineItem 생성한다.")
     @Test
@@ -34,6 +33,6 @@ class OrderLineItemTest {
     void failureCreateWithNegativeQuantity() {
         assertThatThrownBy(() -> {
             new OrderLineItem(menu.toOrderedMenu(), -1);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(InvalidQuantityException.class);
     }
 }

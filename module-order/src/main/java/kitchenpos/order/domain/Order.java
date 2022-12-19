@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.CannotChangeOrderStatusException;
+import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,14 +41,14 @@ public class Order {
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderLineItemsException();
         }
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         requireNonNull(orderStatus, "orderStatus");
         if (isCompleted()) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeOrderStatusException();
         }
         this.orderStatus = orderStatus;
     }

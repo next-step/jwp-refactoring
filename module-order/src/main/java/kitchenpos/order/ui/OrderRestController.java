@@ -40,4 +40,3 @@ public class OrderRestController {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, request));
     }
 }
-
