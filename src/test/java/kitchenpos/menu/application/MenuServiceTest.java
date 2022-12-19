@@ -32,7 +32,6 @@ import static kitchenpos.menu.application.MenuService.MENU_GROUP_NOT_EXIST_EXCEP
 import static kitchenpos.menu.application.MenuService.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.Menu.MENU_PRICE_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
-import static kitchenpos.product.domain.fixture.ProductFixture.productA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -57,16 +56,14 @@ class MenuServiceTest extends ServiceTest {
     private ProductRepository productRepository;
 
     private MenuGroup menuGroupA;
-    private MenuProduct menuProduct;
     private Menu menuA;
-    private Product productA;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        productA = productRepository.save(new Product(nameProductA(), priceProductA()));
-        menuA = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(productA(), new Quantity(1))))));
+        Product productA = productRepository.save(new Product(nameProductA(), priceProductA()));
+        menuA = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(productA, new Quantity(1))))));
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
     }
 

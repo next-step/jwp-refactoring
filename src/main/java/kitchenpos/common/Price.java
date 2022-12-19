@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Price {
     public static final String PRICE_MINIMUM_EXCEPTION_MESSAGE = "0원 이하일 수 없습니다.";
     public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
+    public static final int MINIMUM_PRICE = 0;
     private BigDecimal price;
 
     protected Price() {
@@ -25,7 +26,7 @@ public class Price {
     }
 
     private static void validateMinimumPrice(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
+        if (price.compareTo(BigDecimal.ZERO) < MINIMUM_PRICE) {
             throw new IllegalArgumentException(PRICE_MINIMUM_EXCEPTION_MESSAGE);
         }
     }

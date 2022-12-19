@@ -72,12 +72,8 @@ class TableGroupServiceTest extends ServiceTest {
     private TableGroup tableGroupA;
     private TableGroup tableGroupB;
     private Orders order;
-    private OrderTable orderTableA;
-    private OrderTable orderTableB;
-    private MenuGroup menuGroup;
     private Menu menu;
     private OrderLineItems orderLineItemsA;
-    private OrderLineItems orderLineItemsB;
 
     @BeforeEach
     public void setUp() {

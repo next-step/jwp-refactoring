@@ -70,17 +70,6 @@ class OrderTableTest {
                 .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
     }
 
-    @DisplayName("주문테이블이 없을 경우 손님수를 변경할 수 없다.")
-    @Test
-    void changeNumberOfGuests_fail_orderTable() {
-        OrderTable orderTable = new OrderTable(new TableGroup(), new NumberOfGuests(1), false);
-        orderTable.setTableGroup(null);
-        assertThat(orderTable.getTableGroup()).isNull();
-        assertThatThrownBy(() -> orderTable.changeSitNumberOfGuest(new NumberOfGuests(2)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
-    }
-
     @DisplayName("테이블이 공석 상태면 손님수를 변경할 수 없다.")
     @Test
     void changeNumberOfGuests_fail_empty() {

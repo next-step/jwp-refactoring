@@ -29,7 +29,9 @@
 - [x] 모든 엔티티를 작게 유지한다. 
 - [x] 3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.
 - [x] spring.jpa.hibernate.ddl-auto=validate 추가 
-- [ ] 상수 체크
+- [x] 상수 사용
+
+
 - [ ] 테이블 그룹 생성 시 orderTable 의 테이블 그룹은 null 이어야 한다.
 - [ ] unGroup 도메인 테스트 수정
 - [ ] MenuGroup Name
