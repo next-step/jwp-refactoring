@@ -202,11 +202,6 @@ class TableServiceTest extends ServiceTest {
         return orderRepository.save(new Orders(orderTable, orderLineItemsA()));
     }
 
-    private Orders emptyOrder() {
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, initNumberOfGuests(), true));
-        return orderRepository.save(new Orders(orderTable, orderLineItemsA()));
-    }
-
     private void 테이블_공석_상태_확인됨() {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableA.getId())
                 .orElseThrow(IllegalArgumentException::new);
