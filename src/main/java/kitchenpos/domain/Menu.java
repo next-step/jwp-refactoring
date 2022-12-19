@@ -1,19 +1,14 @@
 package kitchenpos.domain;
 
-import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import kitchenpos.exception.ErrorCode;
-import kitchenpos.exception.KitchenposException;
 
 @Entity
 public class Menu {
@@ -52,26 +47,6 @@ public class Menu {
     private List<MenuProduct> setMenu(List<MenuProduct> menuProducts, Menu menu){
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
         return menuProducts;
-    }
-
-    public void validatePrice() {
-        if(validatePriceNull() || validatePriceLessThanZero()){
-            throw new KitchenposException(PRICE_IS_NULL_OR_MINUS);
-        }
-    }
-
-    public boolean validatePriceNull(){
-        return Objects.isNull(price);
-    }
-
-    public boolean validatePriceLessThanZero(){
-        return this.price.compareTo(BigDecimal.ZERO) < 0;
-    }
-
-    public void validatePriceGreaterThanSum(BigDecimal sum) {
-        if (this.price.compareTo(sum) > 0) {
-            throw new KitchenposException(ErrorCode.PRICE_GREATER_THAN_SUM);
-        }
     }
 
     public Long getId() {
