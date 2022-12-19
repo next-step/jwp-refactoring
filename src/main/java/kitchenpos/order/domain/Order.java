@@ -6,49 +6,41 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
 public class Order {
+
+	public static String ENTITY_NAME = "주문";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_order_to_order_table"))
-	private OrderTable orderTable;
+
+	private Long orderTableId;
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
 	@Embedded
 	private OrderLineItems orderLineItems = new OrderLineItems();
 
-	protected Order() {
-	}
+	protected Order() {}
 
-	private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-		this.orderTable = orderTable;
+	private Order(Long orderTableId, OrderLineItems orderLineItems) {
+		orderLineItems.updateOrder(this);
+		this.orderTableId = orderTableId;
 		this.orderedTime = LocalDateTime.now();
 		this.orderLineItems = orderLineItems;
 		this.orderStatus = OrderStatus.COOKING;
 	}
 
-	public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
-		validateOrderTableEmpty(orderTable);
-		Order order = new Order(orderTable, orderLineItems);
-		order.orderLineItems.updateOrder(order);
-
-		return order;
+	public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
+		return new Order(orderTableId, orderLineItems);
 	}
 
 	public void updateOrderStatus(OrderStatus orderStatus) {
@@ -64,10 +56,6 @@ public class Order {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
-	}
-
 	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
@@ -80,10 +68,8 @@ public class Order {
 		return orderLineItems;
 	}
 
-	private static void validateOrderTableEmpty(OrderTable orderTable) {
-		if (orderTable.isEmpty()) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_ORDER_WHEN_TABLE_IS_EMPTY);
-		}
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	private void validateCurrentOrderStatus() {

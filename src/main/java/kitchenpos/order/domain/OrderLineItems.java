@@ -31,9 +31,7 @@ public class OrderLineItems {
 	}
 
 	public void updateOrder(Order order) {
-		orderLineItems.forEach(
-			orderLineItem -> orderLineItem.updateOrder(order)
-		);
+		orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
 	}
 
 	public int getSize() {
