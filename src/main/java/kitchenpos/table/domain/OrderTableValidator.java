@@ -24,16 +24,16 @@ public class OrderTableValidator {
     }
 
     public void validateChangeEmpty(OrderTable orderTable) {
-        isOrderStatusNotCompletion(orderTable);
-        isAlreadyGrouping(orderTable);
+        validateOrderStatusNotCompletion(orderTable);
+        validateAlreadyGrouping(orderTable);
     }
 
     public void validateChangeNumberOfGuests(OrderTable orderTable, int numberOfGuests) {
-        isEmpty(orderTable);
+        validateEmpty(orderTable);
         validateNumberOfGuests(numberOfGuests);
     }
 
-    private void isEmpty(OrderTable orderTable) {
+    private void validateEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalStateException(EXCEPTION_MESSAGE_IS_EMPTY_TABLE);
         }
@@ -45,13 +45,13 @@ public class OrderTableValidator {
         }
     }
 
-    private void isOrderStatusNotCompletion(OrderTable orderTable) {
+    private void validateOrderStatusNotCompletion(OrderTable orderTable) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException(EXCEPTION_MESSAGE_ALREADY_COOKING_OR_MEAL);
         }
     }
 
-    private void isAlreadyGrouping(OrderTable orderTable) {
+    private void validateAlreadyGrouping(OrderTable orderTable) {
         if (null != orderTable.getTableGroupId()) {
             throw new IllegalStateException(EXCEPTION_MESSAGE_ALREADY_IS_TABLE_GROUP);
         }
