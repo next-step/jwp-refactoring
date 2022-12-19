@@ -4,6 +4,8 @@ import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 
+import java.util.Objects;
+
 public class OrderTableResponse {
 
     private final TableGroupResponse tableGroup;
@@ -15,7 +17,7 @@ public class OrderTableResponse {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        if (tableGroup == null) {
+        if (Objects.isNull(tableGroup)) {
             this.tableGroup = null;
             return;
         }
