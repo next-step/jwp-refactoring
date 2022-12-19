@@ -73,10 +73,6 @@ public class Menu {
     }
 
     public void validatePrice() {
-        if(price.isNull() || price.isLessThan(BigDecimal.ZERO)){
-            throw new IllegalArgumentException();
-        }
-
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.calculatePrice());

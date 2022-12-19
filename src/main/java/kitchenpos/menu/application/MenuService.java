@@ -73,7 +73,7 @@ public class MenuService {
 
     private Product getProduct(List<Product> products, Long productId) {
         return products.stream()
-                .filter(product -> product.getId().equals(productId))
+                .filter(product -> product.isId(productId))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
