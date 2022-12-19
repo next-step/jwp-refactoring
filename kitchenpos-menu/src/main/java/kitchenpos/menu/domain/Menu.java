@@ -84,12 +84,4 @@ public class Menu {
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
-
-    public void create(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(this::addMenuProduct);
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.addMenuProduct(this, menuProduct);
-    }
 }
