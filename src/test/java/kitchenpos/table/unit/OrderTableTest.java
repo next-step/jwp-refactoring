@@ -3,8 +3,6 @@ package kitchenpos.table.unit;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +10,6 @@ import kitchenpos.common.Empty;
 import kitchenpos.common.GuestCount;
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
 
 @DisplayName("주문테이블 관련 단위테스트")
 public class OrderTableTest {
@@ -60,19 +56,6 @@ public class OrderTableTest {
 		assertThatThrownBy(() -> 빈_테이블.updateNumberOfGuest(GuestCount.of(3)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage(ErrorMessage.CANNOT_CHANGE_NUMBER_OF_GUESTS_WHEN_TABLE_IS_EMPTY);
-	}
-
-	@DisplayName("이미 단체지정된 테이블의 비움상태를 변경할때 예외가 발생한다.")
-	@Test
-	void updateEmptyStatus_when_grouped_exception() {
-		// given
-		OrderTable 빈_테이블_A = OrderTable.of(2, true);
-		OrderTable 빈_테이블_B = OrderTable.of(2, true);
-		TableGroup.of(OrderTables.of(Arrays.asList(빈_테이블_A, 빈_테이블_B)));
-		// when - then
-		assertThatThrownBy(() -> 빈_테이블_A.updateEmptyStatus(Empty.of(false)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED);
 	}
 
 }
