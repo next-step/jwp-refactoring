@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.constants.ErrorMessages;
 
 @Entity
 public class MenuGroup {
@@ -57,5 +58,11 @@ public class MenuGroup {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public void validate() {
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessages.MENU_GROUP_NAME_CANNOT_BE_EMPTY);
+        }
     }
 }

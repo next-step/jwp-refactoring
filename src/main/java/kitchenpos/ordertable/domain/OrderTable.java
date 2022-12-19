@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.constants.ErrorMessages;
 
 @Entity
 public class OrderTable {
@@ -31,6 +32,24 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public void checkOrderTableGroupSetAble() {
+        if (!empty) {
+            throw new IllegalArgumentException(ErrorMessages.NOT_EMPTY_TABLE_CAN_SET_GROUP);
+        }
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException(ErrorMessages.TABLE_ALREADY_SET_GROUP);
+        }
+    }
+
+    public void groupOrderTable(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+        this.empty = false;
+    }
+
+    public void ungroupOrderTable() {
+        this.tableGroupId = null;
     }
 
     public Long getId() {

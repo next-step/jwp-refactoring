@@ -21,16 +21,11 @@ public class MenuGroupService {
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
         MenuGroup menuGroup = menuGroupRequest.toMenuGroup();
-        if (menuGroup.getName().isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        menuGroup.validate();
         return MenuGroupResponse.from(menuGroupRepository.save(menuGroup));
     }
 
     public List<MenuGroupResponse> list() {
-        List<MenuGroup> menuGroups = menuGroupRepository.findAll();
-        return MenuGroupResponse.getMenuGroupResponses(menuGroups);
+        return MenuGroupResponse.getMenuGroupResponses(menuGroupRepository.findAll());
     }
-
-
 }

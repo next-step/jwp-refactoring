@@ -53,6 +53,10 @@ public class Order {
         orderLineItem.addOrder(this);
     }
 
+    public boolean isOrderNotComplete() {
+        return orderStatus.equals(OrderStatus.COOKING.name()) || orderStatus.equals(OrderStatus.MEAL.name());
+    }
+
     public Long getId() {
         return id;
     }
