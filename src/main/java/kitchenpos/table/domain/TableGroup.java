@@ -12,9 +12,8 @@ import java.util.Objects;
 
 @Entity
 public class TableGroup {
-    public static final String ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE = "주문 테이블이 비어있을 수 없다.";
-    public static final String ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE = "주문 테이블의 갯수가 2보다 작을 수 없다.";
-    public static final int MINIMUM_SIZE = 2;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,36 +24,13 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables)) {
-            throw new IllegalArgumentException(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
-        }
-        if (orderTables.size() < MINIMUM_SIZE) {
-            throw new IllegalArgumentException(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
-        }
-        for (final OrderTable savedOrderTable : orderTables) {
-            if (!savedOrderTable.isEmpty()) {
-                throw new IllegalArgumentException();
-            }
-            if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
+    public TableGroup(OrderTables orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables.addAll(orderTables);
-    }
-
-    public TableGroup(long id, LocalDateTime createdDate) {
-        this.id = id;
-        this.createdDate = createdDate;
+        this.orderTables = orderTables;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -71,9 +47,5 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return this.orderTables.getOrderTables();
-    }
-
-    public void setOrderTables(List<OrderTable> orderTables) {
-        this.orderTables.addAll(orderTables);
     }
 }

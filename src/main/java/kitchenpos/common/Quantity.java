@@ -11,10 +11,14 @@ public class Quantity {
     }
 
     public Quantity(int quantity) {
+        validate(quantity);
+        this.quantity = quantity;
+    }
+
+    private static void validate(int quantity) {
         if (quantity < 0) {
             throw new IllegalArgumentException();
         }
-        this.quantity = quantity;
     }
 
     public long getQuantity() {

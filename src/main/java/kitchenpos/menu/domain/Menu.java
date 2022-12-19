@@ -29,35 +29,43 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+    public Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(price, menuGroup, menuProducts);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    private static void validate(Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateNullMenuGroup(menuGroup);
+        validateNullPrice(price);
+        validateEmptyMenuProducts(menuProducts);
+        validatePrice(price, menuProducts);
+    }
+
+    private static void validatePrice(Price price, MenuProducts menuProducts) {
+        if (price.getPrice().compareTo(menuProducts.sum()) > 0) {
+            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
         }
-        if (Objects.isNull(price)) {
-            throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
-        }
-        BigDecimal sum = BigDecimal.ZERO;
+    }
+
+    private static void validateEmptyMenuProducts(MenuProducts menuProducts) {
         if (menuProducts.isEmpty()) {
             throw new IllegalArgumentException("메뉴 상품이 없습니다.");
         }
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.getPrice().compareTo(sum) > 0) {
-            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
-        }
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts.addAll(menuProducts);
     }
 
-    public Menu(long id, Name name, Price price, MenuGroup menuGroup) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
+    private static void validateNullPrice(Price price) {
+        if (Objects.isNull(price)) {
+            throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateNullMenuGroup(MenuGroup menuGroup) {
+        if (Objects.isNull(menuGroup)) {
+            throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+        }
     }
 
     public Long getId() {

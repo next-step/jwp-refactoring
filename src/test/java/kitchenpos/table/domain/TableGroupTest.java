@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
-import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
-import static kitchenpos.table.domain.TableGroup.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -19,14 +19,14 @@ class TableGroupTest {
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(() -> new TableGroup(Arrays.asList(emptyOrderTable(), emptyOrderTable())));
+        assertThatNoException().isThrownBy(() -> new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
     }
 
     @DisplayName("주문 테이블이 비어있을 수 없다.")
     @Test
     void create_fail_orderTable() {
         List<OrderTable> orderTables = new ArrayList<>();
-        assertThatThrownBy(() -> new TableGroup(orderTables))
+        assertThatThrownBy(() -> new TableGroup(new OrderTables(orderTables)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NOT_EMPTY_EXCEPTION_MESSAGE);
     }
@@ -36,7 +36,7 @@ class TableGroupTest {
     void name() {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable());
-        assertThatThrownBy(() -> new TableGroup(orderTables))
+        assertThatThrownBy(() -> new TableGroup(new OrderTables(orderTables)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }

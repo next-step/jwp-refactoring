@@ -3,24 +3,32 @@ package kitchenpos.order.application;
 import kitchenpos.ServiceTest;
 import kitchenpos.common.Quantity;
 import kitchenpos.common.fixture.PriceFixture;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.fixture.MenuProductFixture;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import org.assertj.core.api.ArraySortedAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -62,20 +70,14 @@ class OrderStatusServiceTest extends ServiceTest {
     public void setUp() {
         super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        Menu menu = menuRepository.save(new Menu(nameMenuA(), PriceFixture.priceMenuA(), menuGroup, singletonList(MenuProductFixture.menuProductA())));
-
+        Menu menu = menuRepository.save(new Menu(nameMenuA(), PriceFixture.priceMenuA(), menuGroup, new MenuProducts(singletonList(MenuProductFixture.menuProductA()))));
         OrderTable orderTable1 = orderTableRepository.save(emptyOrderTable());
         OrderTable orderTable2 = orderTableRepository.save(emptyOrderTable());
-
-        List<OrderTable> orderTables = new ArrayList<>();
 
         orderTable1.empty();
         orderTable2.empty();
 
-        orderTables.add(orderTable1);
-        orderTables.add(orderTable2);
-
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2))));
 
         orderTable1.setTableGroup(tableGroup);
         orderTable2.setTableGroup(tableGroup);
@@ -126,9 +128,7 @@ class OrderStatusServiceTest extends ServiceTest {
     }
 
     private void createOrder(OrderTable orderTable1, Menu menu) {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))));
         orderTable1.setEmpty(false);
-        order = orderRepository.save(new Orders(orderTable1, orderLineItems));
+        order = orderRepository.save(new Orders(orderTable1, new OrderLineItems(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))))));
     }
 }

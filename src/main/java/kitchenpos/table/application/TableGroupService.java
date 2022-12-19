@@ -1,12 +1,13 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.CreateTableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +41,10 @@ public class TableGroupService {
         tableGroup.upGroup();
     }
 
-    private List<OrderTable> findOrderTables(List<Long> orderTableIds) {
+    private OrderTables findOrderTables(List<Long> orderTableIds) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
         validateOrderTables(orderTableIds, savedOrderTables);
-        return savedOrderTables;
+        return new OrderTables(savedOrderTables);
     }
 
     private void validateOrderTables(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {

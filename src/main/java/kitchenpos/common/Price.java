@@ -19,13 +19,21 @@ public class Price {
     }
 
     private void validate(BigDecimal price) {
-        if (Objects.isNull(price)) {
-            throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
-        }
+        validateNullPrice(price);
+        validateMinimumPrice(price);
+        this.price = price;
+    }
+
+    private static void validateMinimumPrice(BigDecimal price) {
         if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException(PRICE_MINIMUM_EXCEPTION_MESSAGE);
         }
-        this.price = price;
+    }
+
+    private static void validateNullPrice(BigDecimal price) {
+        if (Objects.isNull(price)) {
+            throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
+        }
     }
 
     public BigDecimal getPrice() {

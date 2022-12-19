@@ -9,8 +9,6 @@ import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTab
 public class OrderTablesFixture {
 
     public static OrderTables orderTablesA() {
-        OrderTables orderTables = new OrderTables();
-        orderTables.addAll(Collections.singletonList(notEmptyOrderTable()));
-        return new OrderTables();
+        return new OrderTables(Collections.singletonList(notEmptyOrderTable()));
     }
 }

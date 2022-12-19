@@ -13,6 +13,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -70,7 +71,7 @@ class OrderServiceTest extends ServiceTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(emptyOrderTable());
         orderTables.add(emptyOrderTable());
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(orderTables)));
         orderTableA = orderTableRepository.save(new OrderTable());
         orderTableA.setTableGroup(tableGroup);
 

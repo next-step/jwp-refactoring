@@ -20,8 +20,6 @@ public class OrderCreateRequest {
     }
 
     public OrderLineItems toOrderLineItems() {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(this.orderLineItems);
-        return orderLineItems;
+        return new OrderLineItems(this.orderLineItems);
     }
 }

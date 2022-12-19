@@ -9,8 +9,6 @@ import java.util.Collections;
 public class OrderLineItemsFixture {
 
     public static OrderLineItems orderLineItemsA() {
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addAll(Collections.singletonList(new OrderLineItem(null, 1L, new Quantity(1))));
-        return orderLineItems;
+        return new OrderLineItems(Collections.singletonList(new OrderLineItem(null, 1L, new Quantity(1))));
     }
 }

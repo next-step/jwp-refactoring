@@ -9,6 +9,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -60,7 +61,7 @@ class TableServiceTest extends ServiceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(changeEmptyOrder(), changeEmptyOrder())));
+        tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(changeEmptyOrder(), changeEmptyOrder()))));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(notEmptyOrderTable());
         orderTableB = orderTableRepository.save(new OrderTable(tableGroup, false));

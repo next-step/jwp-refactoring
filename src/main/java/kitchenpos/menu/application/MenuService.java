@@ -5,6 +5,7 @@ import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,23 +39,24 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
-
-        final List<MenuProduct> menuProducts = request.getMenuProducts();
-        validateExistMenuProducts(menuProducts);
-
+        MenuProducts menuProducts = createMenuProducts(request.getMenuProducts());
         Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), findMenuGroup(request), menuProducts);
-
         return MenuResponse.of(menuRepository.save(menu));
     }
 
     private MenuGroup findMenuGroup(MenuCreateRequest request) {
-        if (request.getMenuGroupId() == null) {
+        if (Objects.isNull(request.getMenuGroupId())) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
         }
         return menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(EntityNotFoundException::new);
     }
 
-    private void validateExistMenuProducts(List<MenuProduct> menuProducts) {
+    private MenuProducts createMenuProducts(List<MenuProduct> menuProducts) {
+        validateExistProduct(menuProducts);
+        return new MenuProducts(menuProducts);
+    }
+
+    private void validateExistProduct(List<MenuProduct> menuProducts) {
         for (final MenuProduct menuProduct : menuProducts) {
             productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
