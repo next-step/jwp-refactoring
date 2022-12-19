@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.message.OrderMessage;
-import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,9 +22,8 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderedTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
@@ -34,26 +32,19 @@ public class Order {
 
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrderTable(orderTable);
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         validateOrderLineItems(orderLineItems);
 
-        enrollTable(orderTable);
+        this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         this.orderLineItems.forEach(item -> item.changeOrder(this));
     }
 
-    public static Order cooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTable, orderLineItems);
+    public static Order cooking(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTableId, orderLineItems);
         order.orderStatus = OrderStatus.COOKING;
         order.orderedTime = LocalDateTime.now();
         return order;
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException(OrderMessage.CREATE_ERROR_ORDER_TABLE_IS_EMPTY.message());
-        }
     }
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -76,14 +67,6 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems;
-    }
-
-    public void enrollTable(OrderTable orderTable) {
-        if(this.orderTable != null && this.orderTable.equals(orderTable)) {
-            return;
-        }
-        this.orderTable = orderTable;
-        orderTable.addOrder(this);
     }
 
     public boolean isCookingOrMealState() {
