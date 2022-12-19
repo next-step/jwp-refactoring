@@ -29,10 +29,6 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return this.orderTables;
-    }
-
     public void unGroup() {
         for (OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(null);
@@ -43,6 +39,10 @@ public class OrderTables {
         return orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return this.orderTables;
     }
 
     private static void validate(List<OrderTable> orderTables) {

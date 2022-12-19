@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Quantity {
 
+    public static final int QUANTITY_MINIMUM_SIZE = 0;
     private long quantity;
 
     protected Quantity() {
@@ -16,7 +17,7 @@ public class Quantity {
     }
 
     private static void validate(int quantity) {
-        if (quantity < 0) {
+        if (quantity < QUANTITY_MINIMUM_SIZE) {
             throw new IllegalArgumentException();
         }
     }

@@ -8,6 +8,8 @@ import static kitchenpos.table.domain.OrderTable.*;
 @Embeddable
 public class NumberOfGuests {
 
+    public static final int CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER = 0;
+
     private int numberOfGuests;
 
     protected NumberOfGuests() {
