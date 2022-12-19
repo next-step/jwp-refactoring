@@ -1,12 +1,12 @@
-package kitchenpos.product.dao;
+package kitchenpos.menu.dao;
 
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.product.domain.Product;
-import org.assertj.core.api.Assertions;
+import kitchenpos.menu.dao.ProductDao;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

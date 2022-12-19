@@ -12,7 +12,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;

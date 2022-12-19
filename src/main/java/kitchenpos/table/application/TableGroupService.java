@@ -65,7 +65,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         for (OrderTable orderTable : orderTables) {
-            tableValidator.validateDinning(orderDao.findAllByOrderTable(orderTable));
+            tableValidator.validateDinning(orderDao.findAllByOrderTableId(orderTable.getId()));
         }
 
         for (final OrderTable orderTable : orderTables) {

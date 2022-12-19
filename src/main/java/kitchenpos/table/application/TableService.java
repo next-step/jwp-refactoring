@@ -35,7 +35,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
-        List<Order> orders = orderDao.findAllByOrderTable(savedOrderTable);
+        List<Order> orders = orderDao.findAllByOrderTableId(savedOrderTable.getId());
         validator.validateChangeEmpty(savedOrderTable, orders);
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
