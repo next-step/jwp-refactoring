@@ -46,6 +46,8 @@ project(':kitchenpos-app') {
         compile project(':kitchenpos-common')
         compile project(':kitchenpos-product')
         compile project(':kitchenpos-menu')
+        compile project(':kitchenpos-table')
+        compile project(':kitchenpos-order')
     }
 }
 
@@ -70,5 +72,13 @@ project(':kitchenpos-menu') {
 project(':kitchenpos-table') {
     dependencies {
         compile project(':kitchenpos-common')
+    }
+}
+
+project(':kitchenpos-order') {
+    dependencies {
+        compile project(':kitchenpos-common')
+        compile project(':kitchenpos-menu')
+        compile project(':kitchenpos-table')
     }
 }
