@@ -1,16 +1,16 @@
-package kitchenpos.tablegroup.event;
+package kitchenpos.table.tablegroup.event;
 
-import kitchenpos.table.event.AllocatedGroupEvent;
+import org.springframework.context.ApplicationEvent;
 
 import java.util.List;
 
-public class AllocatedGroupEventImpl extends AllocatedGroupEvent {
+public class AllocatedGroupEvent extends ApplicationEvent {
 
     private static final long serialVersionUID = 5998927563816950725L;
     private final List<Long> orderTableIds;
     private final long tableGroupId;
 
-    public AllocatedGroupEventImpl(Object source, List<Long> orderTableIds, Long tableGroupId) {
+    public AllocatedGroupEvent(Object source, List<Long> orderTableIds, Long tableGroupId) {
         super(source);
         this.orderTableIds = orderTableIds;
         this.tableGroupId = tableGroupId;

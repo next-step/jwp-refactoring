@@ -1,13 +1,13 @@
-package kitchenpos.tablegroup.event;
+package kitchenpos.table.tablegroup.event;
 
-import kitchenpos.table.event.DeAllocatedGroupEvent;
+import org.springframework.context.ApplicationEvent;
 
-public class DeAllocatedGroupEventImpl extends DeAllocatedGroupEvent {
+public class DeAllocatedGroupEvent extends ApplicationEvent {
 
     private static final long serialVersionUID = 350968960613003553L;
     private final long tableGroupId;
 
-    public DeAllocatedGroupEventImpl(Object source, long tableGroupId) {
+    public DeAllocatedGroupEvent(Object source, long tableGroupId) {
         super(source);
         this.tableGroupId = tableGroupId;
     }

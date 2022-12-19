@@ -1,12 +1,13 @@
-package kitchenpos.table.event;
+package kitchenpos.table.ordertable.event;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.ordertable.domain.OrderTable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import kitchenpos.table.ordertable.domain.OrderTableRepository;
+import kitchenpos.table.tablegroup.event.DeAllocatedGroupEvent;
 
 import java.util.List;
 
