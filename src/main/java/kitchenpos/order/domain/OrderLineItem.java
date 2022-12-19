@@ -15,8 +15,6 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq", nullable = false, columnDefinition = "bigint(20)")
     private Long seq;
-    @Column(name = "order_id", nullable = false, columnDefinition = "bigint(20)")
-    private Long orderId;
     @Column(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
     private Long menuId;
     @AttributeOverride(name = "name", column = @Column(name = "menu_name", nullable = false))
@@ -40,10 +38,6 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }
@@ -60,20 +54,16 @@ public class OrderLineItem {
         return quantity.value();
     }
 
-    public void addedBy(Long orderId) {
-        this.orderId = orderId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof OrderLineItem)) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(getOrderId(), that.getOrderId()) && Objects.equals(getMenuId(), that.getMenuId()) && Objects.equals(getMenuName(), that.getMenuName()) && Objects.equals(getMenuPrice(), that.getMenuPrice()) && Objects.equals(getQuantity(), that.getQuantity());
+        return Objects.equals(getMenuId(), that.getMenuId()) && Objects.equals(getMenuName(), that.getMenuName()) && Objects.equals(getMenuPrice(), that.getMenuPrice()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderId(), getMenuId(), getMenuName(), getMenuPrice(), getQuantity());
+        return Objects.hash(getMenuId(), getMenuName(), getMenuPrice(), getQuantity());
     }
 }

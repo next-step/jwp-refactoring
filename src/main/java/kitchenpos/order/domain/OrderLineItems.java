@@ -9,7 +9,7 @@ import java.util.List;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "seq", cascade = CascadeType.ALL)
     private List<OrderLineItem> values;
 
     protected OrderLineItems() {

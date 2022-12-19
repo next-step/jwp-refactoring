@@ -272,7 +272,7 @@ How?
 ### 3단계 피드백
 - [x] ```OrderTableValidator.isEmpty``` 의 메소드명을 적절하게 변경(validation 종류)  
 - [x] ```OrderTableValidator.isOrderStatusNotCompletion``` 의 메소드명을 적절하게 변경(validation 종류)
-- [ ] ```OrderLineItem```에서 `Order` 로의 방향이 필요한가?
+- [x] ```OrderLineItem```에서 `Order` 로의 방향이 필요한가?
   - 시스템의 최초 진입은 `Order`에서 시작할 가능성이 높다.  
     따라서 `OrderLineItem` -> `Order` 의 방향은 사용하는 경우가 극히 드물 것으로 예상됨  
     객체의 양방향 의존성을 피하는 방향으로 구현해야 하므로, 이 의존성은 제거하는 편이 좋을 듯 합니다.
