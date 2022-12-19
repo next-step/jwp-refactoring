@@ -57,7 +57,7 @@ class TableGroupUngroupEventHandlerTest {
         given(orderTableRepository.findAllByTableGroupId(anyLong()))
             .willReturn(Arrays.asList(orderTable1, orderTable2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
 
         // when
         tableGroupUngroupEventHandler.handle(tableGroupUngroupEvent);
