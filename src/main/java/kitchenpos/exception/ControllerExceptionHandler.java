@@ -22,3 +22,4 @@ public class ControllerExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 }
+
