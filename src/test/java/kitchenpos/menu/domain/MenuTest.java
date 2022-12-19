@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
 import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.Menu.MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.Menu.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
+import static kitchenpos.menu.domain.fixture.MenuProductFixture.menuProductA;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -23,6 +25,13 @@ class MenuTest {
     @Test
     void constructor() {
         assertThatNoException().isThrownBy(MenuFixture::menuA);
+    }
+
+    @DisplayName("이름이 없을 수 없다.")
+    @Test
+    void name() {
+        assertThatThrownBy(() -> new Menu(null, priceMenuA(), menuGroupA(), new MenuProducts(singletonList(menuProductA()))))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 그룹이 없을 경우 메뉴를 생성할 수 없다.")

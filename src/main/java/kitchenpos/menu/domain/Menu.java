@@ -30,7 +30,7 @@ public class Menu {
     private MenuProducts menuProducts = new MenuProducts();
 
     public Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(price, menuGroup, menuProducts);
+        validate(name, price, menuGroup, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -38,11 +38,18 @@ public class Menu {
         menuProducts.mapMenu(this);
     }
 
-    private static void validate(Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private static void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateNullName(name);
         validateNullMenuGroup(menuGroup);
         validateNullPrice(price);
         validateEmptyMenuProducts(menuProducts);
         validatePrice(price, menuProducts);
+    }
+
+    private static void validateNullName(Name name) {
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private static void validateNullMenuGroup(MenuGroup menuGroup) {
