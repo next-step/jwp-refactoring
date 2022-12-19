@@ -91,8 +91,8 @@
 
 ## Step1 - 서비스 리팩터링
 #### 리뷰어 리뷰사항 정리
-- [ ] 기본 접근 제어자 protected로 변경하기.
-- [ ] MenuService - price Null 체크하기.
-- [ ] OrderService - orderTable.isEmpty() 체크하기.
-- [ ] OrderService - OrderStatus.COMPLETION.name() 체크하기.
-- [ ] OrderServiceTest - 마지막에 newLine 넣기.
+- [x] 기본 접근 제어자 protected로 변경하기.
+- [x] MenuService - price Null 체크하기.
+- [x] OrderService - orderTable.isEmpty() 체크하기.
+- [x] OrderService - OrderStatus.COMPLETION.name() 체크하기.
+- [x] 마지막에 newLine 넣기.
