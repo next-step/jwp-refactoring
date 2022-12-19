@@ -15,6 +15,10 @@ public class ProductRestAssured {
     public static ExtractableResponse<Response> 상품_생성_요청(Long id, String name, BigDecimal price) {
         Product product = createProduct(id, name, price);
 
+        return 상품_생성_요청(product);
+    }
+
+    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
         return RestAssured.given().log().all()
                 .body(product)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
