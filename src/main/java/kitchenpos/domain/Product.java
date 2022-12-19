@@ -4,6 +4,7 @@ import static kitchenpos.exception.ErrorCode.PRICE_NOT_EXISTS_OR_LESS_THAN_ZERO;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,20 +17,21 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
 
     public Product(String name, BigDecimal price) {
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     public Long getId() {
@@ -41,20 +43,6 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void validatePrice() {
-        if (isPriceNull(this.price) || isLessThanZero()) {
-            throw new KitchenposException(PRICE_NOT_EXISTS_OR_LESS_THAN_ZERO);
-        }
-    }
-
-    private boolean isPriceNull(BigDecimal price){
-        return Objects.isNull(price);
-    }
-
-    private boolean isLessThanZero(){
-        return this.price.compareTo(BigDecimal.ZERO) < 0;
+        return this.price.getPrice();
     }
 }

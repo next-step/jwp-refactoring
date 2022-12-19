@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import kitchenpos.domain.Product;
 
 public class ProductResponse {
-    private final Long id;
-    private final String name;
-    private final BigDecimal price;
+    private Long id;
+    private String name;
+    private BigDecimal price;
+
+    public ProductResponse() {
+    }
 
     private ProductResponse(Long id, String name, BigDecimal price) {
         this.id = id;
