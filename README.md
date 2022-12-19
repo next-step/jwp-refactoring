@@ -27,16 +27,16 @@
 > - [x] 메뉴 그룹 목록 조회(GET /api/menu-groups)
 
 ### 주문 테이블(table)
-> - [ ] 주문 테이블을 생성(POST /api/tables)
-> - [ ] 주문 테이블 목록 조회(GET /api/tables)
-> - [ ] 주문 테이블 상태 변경(PUT /api/tables/{orderTableId}/empty)
->   - [ ] 주문 테이블은 미등록 되어 있지 않아야 한다.
->   - [ ] 주문 테이블은 단체 지정이 되어 있지 않아야 한다.
->   - [ ] 주문 테이블의 주문 상태는 조리 중 이거나 식사 중이면 안된다.
-> - [ ] 주문 테이블 방문한 손님 수 변경(PUT /api/tables/{orderTableId}/number-of-guests)
->   - [ ] 주문 테이블의 방문한 손님 수가 0명 이상이어야 한다.
->   - [ ] 주문 테이블은 등록되어 있어야 한다.
->   - [ ] 주문 테이블은 빈 테이블이 아니어야 한다.
+> - [x] 주문 테이블을 생성(POST /api/tables)
+> - [x] 주문 테이블 목록 조회(GET /api/tables)
+> - [x] 주문 테이블 상태 변경(PUT /api/tables/{orderTableId}/empty)
+>   - [x] 주문 테이블은 미등록 되어 있지 않아야 한다.
+>   - [x] 주문 테이블은 단체 지정이 되어 있지 않아야 한다.
+>   - [x] 주문 테이블의 주문 상태는 조리 중 이거나 식사 중이면 안된다.
+> - [x] 주문 테이블 방문한 손님 수 변경(PUT /api/tables/{orderTableId}/number-of-guests)
+>   - [x] 주문 테이블의 방문한 손님 수가 0명 이상이어야 한다.
+>   - [x] 주문 테이블은 등록되어 있어야 한다.
+>   - [x] 주문 테이블은 빈 테이블이 아니어야 한다.
 
 ### 단체 지정(table group)
 > - [ ] 단체 지정 등록(POST /api/table-groups)
