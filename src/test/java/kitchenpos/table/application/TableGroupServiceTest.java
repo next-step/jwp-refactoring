@@ -140,7 +140,7 @@ class TableGroupServiceTest extends ServiceTest {
         order.setOrderStatus(OrderStatus.COOKING);
         orderRepository.save(order);
 
-        주문_요리중_상태_변경(order);
+        주문_요리중_상태_검증(order);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -176,7 +176,7 @@ class TableGroupServiceTest extends ServiceTest {
         return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), true));
     }
 
-    private void 주문_요리중_상태_변경(Orders order) {
+    private void 주문_요리중_상태_검증(Orders order) {
         Orders order1 = orderRepository.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
