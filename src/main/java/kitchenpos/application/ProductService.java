@@ -18,7 +18,6 @@ public class ProductService {
     }
 
     public ProductResponse create(final Product product) {
-        product.validatePrice();
         return ProductResponse.of(productRepository.save(product));
     }
 

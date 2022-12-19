@@ -45,7 +45,7 @@ class MenuRestControllerTest extends BaseTest {
     void 조회() {
         메뉴_생성_요청(메뉴_요청);
 
-        ResponseEntity<List<Menu>> response = 조회_요청();
+        ResponseEntity<List<MenuResponse>> response = 조회_요청();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().size()).isEqualTo(1);
@@ -55,11 +55,11 @@ class MenuRestControllerTest extends BaseTest {
         return testRestTemplate.postForEntity(basePath + "/api/menus", menuRequest, MenuResponse.class);
     }
 
-    private ResponseEntity<List<Menu>> 조회_요청() {
+    private ResponseEntity<List<MenuResponse>> 조회_요청() {
         return testRestTemplate.exchange(
                 basePath + "/api/menus",
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<Menu>>() {});
+                new ParameterizedTypeReference<List<MenuResponse>>() {});
     }
 }
