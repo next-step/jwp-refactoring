@@ -44,4 +44,8 @@ public class OrderLineItem {
     public Quantity getQuantity() {
         return this.quantity;
     }
+
+    public Orders getOrder() {
+        return this.order;
+    }
 }

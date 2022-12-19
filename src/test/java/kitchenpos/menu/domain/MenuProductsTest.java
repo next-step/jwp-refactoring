@@ -27,11 +27,18 @@ class MenuProductsTest {
         assertThat(menuProducts.sum()).isEqualTo(BigDecimal.valueOf(2));
     }
 
-    @DisplayName("메뉴 상품 일급 콜렉션의 empty 여부를 반환한다.")
+    @DisplayName("메뉴 상품 일급 콜렉션의 empty 여부를 반환한다. / false")
     @Test
-    void isEmpty() {
+    void isEmpty_false() {
         MenuProducts menuProducts = new MenuProducts(Collections.singletonList(menuProductA()));
-        assertThat(menuProducts.isEmpty()).isEqualTo(false);
+        assertThat(menuProducts.isEmpty()).isFalse();
+    }
+
+    @DisplayName("메뉴 상품 일급 콜렉션의 empty 여부를 반환한다. / true")
+    @Test
+    void isEmpty_true() {
+        MenuProducts menuProducts = new MenuProducts();
+        assertThat(menuProducts.isEmpty()).isTrue();
     }
 
     @DisplayName("메뉴와 매핑한다.")

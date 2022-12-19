@@ -20,15 +20,6 @@ class MenuProductTest {
         assertThatNoException().isThrownBy(MenuProductFixture::menuProductA);
     }
 
-//    @Deprecated
-//    @DisplayName("메뉴 상품을 생성한다. / 메뉴를 필수로 갖는다.")
-//    @Test
-//    void create_fail_menu() {
-//        assertThatThrownBy(() -> new MenuProduct(ProductFixture.productA(), QuantityFixture.quantityMenuProductA()))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(MENU_NULL_EXCEPTION_MESSAGE);
-//    }
-
     @DisplayName("메뉴 상품을 생성한다. / 상품을 필수로 갖는다.")
     @Test
     void create_fail_product() {
