@@ -1,9 +1,6 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -20,13 +17,13 @@ public class TableGroupService {
 
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final OrderRepository orderRepository;
+    private final ExistsOrderPort existsOrderPort;
 
     public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository,
-            final OrderRepository orderRepository) {
+            ExistsOrderPort existsOrderPort) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.orderRepository = orderRepository;
+        this.existsOrderPort = existsOrderPort;
     }
 
     @Transactional
@@ -41,7 +38,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        boolean completedOrderTable = existsByOrderTableIdInAndOrderStatusIn(tableGroup.getOrderTableIds());
+        boolean completedOrderTable = existsOrderStatusCookingOrMeal(tableGroup.getOrderTableIds());
         TableGroupUnGroupValidator.validate(completedOrderTable);
         tableGroup.ungroup();
     }
@@ -55,7 +52,7 @@ public class TableGroupService {
                 .orElseThrow(() -> new IllegalArgumentException("단체가 존재하지 않습니다."));
     }
 
-    private boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+    private boolean existsOrderStatusCookingOrMeal(List<Long> orderTableIds) {
+        return existsOrderPort.existsOrderStatusCookingOrMeal(orderTableIds);
     }
 }

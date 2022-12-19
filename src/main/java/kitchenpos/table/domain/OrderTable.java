@@ -43,7 +43,7 @@ public class OrderTable {
 
     private void validateOrderStatusIsNotComplete(boolean exists) {
         if (exists) {
-            throw new IllegalArgumentException("이미 계산이 완료되었습니다.");
+            throw new IllegalArgumentException("계산이 완료되지 않았습니다.");
         }
     }
 

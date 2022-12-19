@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -35,7 +36,7 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private ExistsOrderPort existsOrderPort;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -76,7 +77,7 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(단체));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(false);
+        when(existsOrderPort.existsOrderStatusCookingOrMeal(anyList())).thenReturn(false);
 
         // when
         tableGroupService.ungroup(단체.getId());
