@@ -27,7 +27,13 @@ public class OrderRequest {
     }
 
     public Order toOrder() {
-        Order order = new Order(orderTableId, OrderStatus.valueOf(orderStatus));
+        Order order = createOrder();
+        order.updateOrderStatus(OrderStatus.valueOf(orderStatus));
+        return order;
+    }
+
+    public Order createOrder() {
+        Order order = new Order(orderTableId);
         orderLineItems.stream()
                 .map(OrderLineItemRequest::toOrderLineItem)
                 .forEach(order::addOrderLineItem);

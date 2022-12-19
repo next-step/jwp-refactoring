@@ -1,29 +1,19 @@
-package kitchenpos.order.application;
+package kitchenpos.order.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -37,9 +27,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("주문 Business Object 테스트")
+@DisplayName("주문 validation service 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+public class OrderValidatorTest {
 
     @Mock
     private MenuRepository menuRepository;
@@ -49,11 +39,9 @@ class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private OrderValidator orderValidator;
 
     @InjectMocks
-    private OrderService orderService;
+    private OrderValidator orderValidator;
 
     Long 주문_id;
     OrderTable 주문_테이블;
@@ -93,29 +81,7 @@ class OrderServiceTest {
         주문_아이템_목록.forEach(orderLineItem -> 주문.addOrderLineItem(orderLineItem));
     }
 
-    @DisplayName("주문 등록")
-    @Test
-    void 주문_등록() {
-        OrderRequest request = OrderRequest.from(주문);
-        when(orderRepository.save(request.toOrder())).thenReturn(request.toOrder());
-
-        OrderResponse 등록된_주문 = orderService.create(request);
-
-        verify(orderValidator).validateBeforeCreateOrder(any(Order.class));
-        assertAll(
-                () -> assertThat(등록된_주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(등록된_주문.getOrderLineItems().get(0).getMenuId())
-                        .isEqualTo(주문_아이템_1.getMenuId()),
-                () -> assertThat(등록된_주문.getOrderLineItems().get(0).getQuantity())
-                        .isEqualTo(주문_아이템_1.getQuantityValue()),
-                () -> assertThat(등록된_주문.getOrderLineItems().get(1).getMenuId())
-                        .isEqualTo(주문_아이템_2.getMenuId()),
-                () -> assertThat(등록된_주문.getOrderLineItems().get(1).getQuantity())
-                        .isEqualTo(주문_아이템_2.getQuantityValue())
-        );
-    }
-
-    /*@DisplayName("빈 테이블에 대한 주문 등록 요청 시 예외처리")
+    @DisplayName("빈 테이블에 대한 주문 등록 요청 시 예외처리")
     @Test
     void 빈테이블_주문_등록_예외처리() {
         OrderTable 빈_주문_테이블 = new OrderTable(1L, null, new NumberOfGuests(0), true);
@@ -124,7 +90,7 @@ class OrderServiceTest {
         when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
         when(orderTableRepository.findById(빈_주문_테이블.getId())).thenReturn(Optional.of(빈_주문_테이블));
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(빈_테이블_주문))).isInstanceOf(
+        assertThatThrownBy(() -> orderValidator.validateBeforeCreateOrder(빈_테이블_주문)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -134,7 +100,7 @@ class OrderServiceTest {
         when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
         when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문))).isInstanceOf(
+        assertThatThrownBy(() -> orderValidator.validateBeforeCreateOrder(주문)).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -144,50 +110,23 @@ class OrderServiceTest {
         List<OrderLineItem> 빈_아이템_목록 = new ArrayList<>();
         Order 주문_아이템_누락된_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.COOKING, null, 빈_아이템_목록);
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문_아이템_누락된_주문))).isInstanceOf(
+        assertThatThrownBy(() -> orderValidator.validateBeforeCreateOrder(주문_아이템_누락된_주문)).isInstanceOf(
                 IllegalArgumentException.class);
-    }*/
-
-    @DisplayName("주문 조회")
-    @Test
-    void 주문_조회() {
-        Order 주문2 = new Order(2L, 주문_테이블.getId(), OrderStatus.COOKING, null, 주문_아이템_목록);
-        List<Order> 등록된_주문_목록 = Arrays.asList(주문, 주문2);
-        when(orderRepository.findAll()).thenReturn(등록된_주문_목록);
-
-        List<OrderResponse> 조회된_주문_목록 = orderService.list();
-
-        assertThat(조회된_주문_목록).hasSize(등록된_주문_목록.size());
     }
 
-    @DisplayName("주문 상태변경")
+    @DisplayName("계산 완료 상태인 주문 상태변경 시 예외처리")
     @Test
-    void 주문_상태변경() {
-        Order 변경할_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.MEAL, null, 주문_아이템_목록);
-        when(orderRepository.findById(주문_id)).thenReturn(Optional.of(주문));
+    void 계산_완료_주문_상태변경_예외처리() {
+        Order 계산_완료된_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.COMPLETION, null, 주문_아이템_목록);
 
-        //조리 -> 식사
-        OrderResponse 상태_변경된_주문 = orderService.changeOrderStatus(주문_id, OrderRequest.from(변경할_주문));
-        assertThat(상태_변경된_주문.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus().name());
-
-        //식사 -> 조리
-        변경할_주문.updateOrderStatus(OrderStatus.COOKING);
-        OrderResponse 상태_변경된_주문2 = orderService.changeOrderStatus(주문_id, OrderRequest.from(변경할_주문));
-        assertThat(상태_변경된_주문2.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus().name());
-
-        //조리 -> 계산 완료
-        변경할_주문.updateOrderStatus(OrderStatus.COMPLETION);
-        OrderResponse 상태_변경된_주문3 = orderService.changeOrderStatus(주문_id, OrderRequest.from(변경할_주문));
-        assertThat(상태_변경된_주문3.getOrderStatus()).isEqualTo(변경할_주문.getOrderStatus().name());
+        assertThatThrownBy(
+                () -> orderValidator.checkOrderStatusChageAble(계산_완료된_주문)).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
-    @DisplayName("등록되지 않은 주문의 상태변경 시 예외처리")
-    @Test
-    void 동록안된_주문_상태변경_예외처리() {
-        Long 변경할_주문_id = 3L;
-        Order 변경할_주문 = new Order(변경할_주문_id, 주문_테이블.getId(), OrderStatus.MEAL, null, 주문_아이템_목록);
-
-        assertThatThrownBy(() -> orderService.changeOrderStatus(변경할_주문_id, OrderRequest.from(변경할_주문))).isInstanceOf(
-                IllegalArgumentException.class);
+    private List<Long> 메뉴_Id_목록(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 }

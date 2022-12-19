@@ -87,7 +87,7 @@ class MenuServiceTest {
 
         MenuResponse 생성된_메뉴 = menuService.create(request);
 
-        verify(menuValidator).validate(any(Menu.class));
+        verify(menuValidator).validateBeforeCreateMenu(any(Menu.class));
         assertAll(
                 () -> assertThat(생성된_메뉴.getName()).isEqualTo("떡튀순"),
                 () -> assertThat(생성된_메뉴.getPrice()).isEqualTo(BigDecimal.valueOf(10000))

@@ -16,4 +16,7 @@ public class ErrorMessages {
     public static final String NOT_COMPLETED_ORDER_EXIST = "아직 계산 완료되지 않은 주문이 존재합니다.";
     public static final String MENU_PRODUCT_QUANTITY_BELOW_ZERO = "메뉴 상품 수량은 0 보다 커야 합니다.";
     public static final String ORDER_LINE_ITEM_QUANTITY_BELOW_ZERO = "주문 메뉴 아이템 수량은 0 보다 커야 합니다.";
+    public static final String MENU_GROUP_DOES_NOT_EXIST = "존재하지 않는 메뉴 그룹입니다.";
+    public static final String ORDER_LINE_ITEM_EMPTY = "주문 항목이 누락되어 있습니다.";
+    public static final String CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER = "계산 완료된 주문은 상태를 변경할 수 없습니다.";
 }

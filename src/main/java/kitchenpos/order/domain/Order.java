@@ -1,20 +1,17 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,10 +29,15 @@ public class Order {
     private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {}
+
+    public Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+    }
 
     public Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
@@ -43,7 +45,7 @@ public class Order {
     }
 
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
-            List<OrderLineItem> orderLineItems) {
+            OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -51,13 +53,22 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+            List<OrderLineItem> orderLineItems) {
+        this(id, orderTableId, orderStatus, orderedTime, new OrderLineItems(orderLineItems));
+    }
+
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
         orderLineItem.addOrder(this);
     }
 
-    public boolean isOrderNotComplete() {
+    public boolean isOrderStatusNotComplete() {
         return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
+    }
+
+    public boolean isOrderStatusComplete() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
     }
 
     public Long getId() {
@@ -84,8 +95,12 @@ public class Order {
         return orderStatus.name();
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public void updateOrderStatus(String orderStatus) {
+        updateOrderStatus(OrderStatus.valueOf(orderStatus));
     }
 
     public LocalDateTime getOrderedTime() {
@@ -96,12 +111,16 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems.addAll(orderLineItems);
     }
 
     @Override
@@ -114,8 +133,8 @@ public class Order {
         }
         Order order = (Order) o;
         return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
-                && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderedTime,
-                order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+                && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime)
+                && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override

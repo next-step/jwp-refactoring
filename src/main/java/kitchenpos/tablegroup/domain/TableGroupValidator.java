@@ -42,7 +42,7 @@ public class TableGroupValidator {
     public void validateBeforeUngroup(OrderTables orderTables) {
         final List<Long> orderTableIds = orderTables.getOrderTableIds();
         if (orderRepository.findByOrderTableIdIn(orderTableIds).stream()
-                .anyMatch(Order::isOrderNotComplete)) {
+                .anyMatch(Order::isOrderStatusNotComplete)) {
             throw new IllegalArgumentException(ErrorMessages.NOT_COMPLETED_ORDER_EXIST);
         }
     }

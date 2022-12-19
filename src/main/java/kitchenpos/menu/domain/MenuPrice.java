@@ -12,10 +12,12 @@ public class MenuPrice implements Comparable<MenuPrice> {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    public MenuPrice() {}
+    public MenuPrice() {
+        this.price = BigDecimal.ZERO;
+    }
 
     public MenuPrice(BigDecimal price) {
-        validatePriceNotNegative(price);
+        validatePrice(price);
         this.price = price;
     }
 
@@ -23,7 +25,7 @@ public class MenuPrice implements Comparable<MenuPrice> {
         this(new BigDecimal(i));
     }
 
-    private void validatePriceNotNegative(BigDecimal val) {
+    private void validatePrice(BigDecimal val) {
         if (Objects.isNull(val)) {
             throw new IllegalArgumentException(ErrorMessages.MENU_PRICE_IS_NULL);
         }
@@ -33,7 +35,9 @@ public class MenuPrice implements Comparable<MenuPrice> {
     }
 
     public void add(BigDecimal val) {
-        this.price = this.price.add(val);
+        BigDecimal result = this.price.add(val);
+        validatePrice(result);
+        this.price = result;
     }
 
     public int compareTo(BigDecimal val) {

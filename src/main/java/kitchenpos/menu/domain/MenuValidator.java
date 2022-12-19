@@ -1,9 +1,10 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import java.util.Objects;
+import kitchenpos.constants.ErrorMessages;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
@@ -18,31 +19,37 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void validate(Menu menu) {
+    public void validateBeforeCreateMenu(Menu menu) {
         menu.validateName();
+        checkMenuGroupExist(menu);
+        validateMenuPrice(getMenuProductPriceSum(menu.getMenuProducts()), menu.getPrice());
+    }
 
-        final MenuPrice menuPrice = menu.getPrice();
-
-        if (Objects.isNull(menuPrice) || menuPrice.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
+    private void checkMenuGroupExist(Menu menu) {
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+            throw new IllegalArgumentException(ErrorMessages.MENU_GROUP_DOES_NOT_EXIST);
+        }
+    }
+
+    private void validateMenuPrice(MenuPrice menuProductPriceSum, MenuPrice menuPrice) {
+        if (menuPrice.compareTo(menuProductPriceSum) > 0) {
             throw new IllegalArgumentException();
         }
+    }
 
-        final MenuProducts menuProducts = menu.getMenuProducts();
-
+    private MenuPrice getMenuProductPriceSum(MenuProducts menuProducts) {
         MenuPrice sum = new MenuPrice(BigDecimal.ZERO);
         menuProducts.stream()
                 .forEach(menuProduct -> {
-                    final Product product = productRepository.findById(menuProduct.getProductId())
-                            .orElseThrow(IllegalArgumentException::new);
-                    sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
+                    ProductPrice productPrice = findProductAndGetPrice(menuProduct);
+                    sum.add(productPrice.multiply(menuProduct.getQuantity()));
                 });
+        return sum;
+    }
 
-        if (menuPrice.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+    private ProductPrice findProductAndGetPrice(MenuProduct menuProduct) {
+        final Product product = productRepository.findById(menuProduct.getProductId())
+                .orElseThrow(IllegalArgumentException::new);
+        return product.getPrice();
     }
 }
