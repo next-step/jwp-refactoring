@@ -77,4 +77,8 @@ public class OrderTable {
             throw new IllegalArgumentException(EMPTY_EXCEPTION_MESSAGE);
         }
     }
+
+    public void mapTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
 }

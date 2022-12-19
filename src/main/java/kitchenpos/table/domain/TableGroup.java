@@ -26,6 +26,7 @@ public class TableGroup {
 
     public TableGroup(OrderTables orderTables) {
         this.createdDate = LocalDateTime.now();
+        orderTables.mapTableGroup(this);
         this.orderTables = orderTables;
     }
 

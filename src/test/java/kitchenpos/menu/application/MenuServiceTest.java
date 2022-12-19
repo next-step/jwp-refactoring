@@ -50,9 +50,6 @@ class MenuServiceTest extends ServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Autowired
-    private MenuProductRepository menuProductRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
     private MenuGroup menuGroupA;

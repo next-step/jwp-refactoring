@@ -14,22 +14,18 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
-import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
-import org.assertj.core.api.ArraySortedAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
@@ -48,7 +44,6 @@ class OrderStatusServiceTest extends ServiceTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
 
-
     @Autowired
     private MenuGroupRepository menuGroupRepository;
 
@@ -57,9 +52,6 @@ class OrderStatusServiceTest extends ServiceTest {
 
     @Autowired
     private TableGroupRepository tableGroupRepository;
-
-    @Autowired
-    private OrderLineItemRepository orderLineItemRepository;
 
     @Autowired
     private OrderService orderService;
@@ -73,18 +65,7 @@ class OrderStatusServiceTest extends ServiceTest {
         Menu menu = menuRepository.save(new Menu(nameMenuA(), PriceFixture.priceMenuA(), menuGroup, new MenuProducts(singletonList(MenuProductFixture.menuProductA()))));
         OrderTable orderTable1 = orderTableRepository.save(emptyOrderTable());
         OrderTable orderTable2 = orderTableRepository.save(emptyOrderTable());
-
-        orderTable1.empty();
-        orderTable2.empty();
-
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2))));
-
-        orderTable1.setTableGroup(tableGroup);
-        orderTable2.setTableGroup(tableGroup);
-
-        orderTableRepository.save(orderTable1);
-        orderTableRepository.save(orderTable2);
-
+        tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2))));
         createOrder(orderTable1, menu);
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }

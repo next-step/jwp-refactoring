@@ -47,11 +47,16 @@ public class OrderTables {
         return this.orderTables;
     }
 
+    public void mapTableGroup(TableGroup tableGroup) {
+        for (OrderTable orderTable : this.orderTables) {
+            orderTable.mapTableGroup(tableGroup);
+        }
+    }
+
     private static void validate(List<OrderTable> orderTables) {
         validateOrderTablesSize(orderTables);
         for (final OrderTable orderTable : orderTables) {
             validateNotEmptyOrderTable(orderTable);
-            validateNotNullOrderTable(orderTable);
         }
     }
 
@@ -64,12 +69,6 @@ public class OrderTables {
     private static void validateNotEmptyOrderTable(OrderTable orderTable) {
         if (!orderTable.isEmpty()) {
             throw new IllegalArgumentException(ORDER_TABLE_EMPTY_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private static void validateNotNullOrderTable(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
     }
 }

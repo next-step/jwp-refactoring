@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.domain.fixture.TableGroupFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import java.util.Collections;
 
 import static kitchenpos.table.domain.OrderTables.*;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
+import static kitchenpos.table.domain.fixture.TableGroupFixture.tableGroupA;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문 테이블 일급 콜렉션")
@@ -43,14 +45,6 @@ class OrderTablesTest {
                 .hasMessageContaining(ORDER_TABLE_EMPTY_EXCEPTION_MESSAGE);
     }
 
-    @DisplayName("테이블 그룹이 있을 수 없다.")
-    @Test
-    void create_tableGroup() {
-        assertThatThrownBy(() -> new OrderTables(Arrays.asList(emptyNotTableGroupOrderTable(), emptyOrderTable())))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
-    }
-
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void upGroup() {
@@ -75,5 +69,18 @@ class OrderTablesTest {
     void orderTablesIds() {
         OrderTables orderTables = new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()));
         assertThat(orderTables.getOrderTableIds()).hasSize(2);
+    }
+
+    @DisplayName("테이블 그룹을 매핑한다.")
+    @Test
+    void name() {
+        TableGroup tableGroup = tableGroupA();
+        OrderTables orderTables = new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()));
+        //when
+        orderTables.mapTableGroup(tableGroup);
+        //then
+        for (OrderTable orderTable : orderTables.getOrderTables()) {
+            assertThat(orderTable.getTableGroup().getCreatedDate()).isEqualTo(tableGroup.getCreatedDate());
+        }
     }
 }
