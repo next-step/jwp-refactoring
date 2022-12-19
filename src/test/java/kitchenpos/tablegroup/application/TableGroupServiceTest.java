@@ -1,13 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidator;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.message.OrderTableMessage;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -16,7 +12,6 @@ import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.dto.TableRequest;
 import kitchenpos.tablegroup.message.TableGroupMessage;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,10 +25,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,18 +38,11 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    @Mock
+    private OrderTableValidator orderTableValidator;
+
     @InjectMocks
     private TableGroupService tableGroupService;
-
-    private List<OrderLineItem> orderLineItems;
-
-    @BeforeEach
-    void setUp() {
-        MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
-        MenuProduct menuProduct = MenuProduct.of(1L, 1L);
-        Menu menu = Menu.of("후라이드치킨", 15_000L, 1L, Arrays.asList(menuProduct));
-        orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
-    }
 
     @Test
     @DisplayName("테이블 그룹 지정시 성공하고 그룹 정보를 반환한다")
@@ -72,7 +58,7 @@ class TableGroupServiceTest {
                 new TableRequest(2L),
                 new TableRequest(3L)
         ));
-        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup tableGroup = TableGroup.empty();
         given(orderTableRepository.findAllById(any())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
@@ -82,11 +68,9 @@ class TableGroupServiceTest {
         // then
         then(orderTableRepository).should(times(1)).findAllById(any());
         then(tableGroupRepository).should(times(1)).save(any());
+
         boolean isNotEmptyAllTables = response.getOrderTables().stream().noneMatch(OrderTableResponse::isEmpty);
-        assertAll(
-                () -> assertThat(isNotEmptyAllTables).isTrue(),
-                () -> assertThat(tableGroup.getOrderTables().getAll()).containsAll(orderTables)
-        );
+        assertThat(isNotEmptyAllTables).isTrue();
     }
 
     @Test
@@ -96,14 +80,16 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(OrderTable.of(1, true));
         TableGroupCreateRequest request = new TableGroupCreateRequest(Arrays.asList(new TableRequest(1L)));
         given(orderTableRepository.findAllById(any())).willReturn(orderTables);
+        given(tableGroupRepository.save(any())).willReturn(TableGroup.empty());
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(TableGroupMessage.CREATE_ERROR_MORE_THAN_TWO_ORDER_TABLES.message());
+                .hasMessage(OrderTableMessage.GROUP_ERROR_MORE_THAN_TWO_ORDER_TABLES.message());
 
         // then
         then(orderTableRepository).should(times(1)).findAllById(any());
+        then(tableGroupRepository).should(times(1)).save(any());
     }
 
     @Test
@@ -143,6 +129,7 @@ class TableGroupServiceTest {
                 new TableRequest(2L)
         ));
         given(orderTableRepository.findAllById(any())).willReturn(orderTables);
+        given(tableGroupRepository.save(any())).willReturn(TableGroup.empty());
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -151,6 +138,7 @@ class TableGroupServiceTest {
 
         // then
         then(orderTableRepository).should(times(1)).findAllById(any());
+        then(tableGroupRepository).should(times(1)).save(any());
     }
 
     @Test
@@ -158,12 +146,12 @@ class TableGroupServiceTest {
     void createTableGroupThrownByEnrolledOtherGroupTest() {
         // given
         OrderTable orderTable = OrderTable.of(1, true);
-        List<OrderTable> otherOrderTables = Arrays.asList(
+        OrderTables otherOrderTables = new OrderTables(Arrays.asList(
                 orderTable,
                 OrderTable.of(2, true)
-        );
-        TableGroup otherTableGroup = new TableGroup(otherOrderTables);
-        otherTableGroup.group();
+        ));
+        otherOrderTables.groupBy(1L);
+
         List<OrderTable> orderTables = Arrays.asList(
                 orderTable,
                 OrderTable.of(2, true)
@@ -173,51 +161,53 @@ class TableGroupServiceTest {
                 new TableRequest(2L)
         ));
         given(orderTableRepository.findAllById(any())).willReturn(orderTables);
+        given(tableGroupRepository.save(any())).willReturn(TableGroup.empty());
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(TableGroupMessage.CREATE_ERROR_OTHER_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
+                .hasMessage(OrderTableMessage.GROUP_ERROR_OTHER_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
 
         // then
         then(orderTableRepository).should(times(1)).findAllById(any());
+        then(tableGroupRepository).should(times(1)).save(any());
     }
 
     @Test
     @DisplayName("테이블 그룹 해지에 성공한다")
     void unGroupTablesTest() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(
+        List<OrderTable> orderTableItems = Arrays.asList(
                 OrderTable.of(1, true),
                 OrderTable.of(2, true)
         );
-        TableGroup tableGroup = new TableGroup(orderTables);
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
+        OrderTables orderTables = new OrderTables(orderTableItems);
+        orderTables.groupBy(1L);
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.empty()));
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTableItems);
+        willDoNothing().given(orderTableValidator).validateUnGroup(orderTables);
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
         then(tableGroupRepository).should(times(1)).findById(any());
-        assertThat(orderTables.stream().noneMatch(OrderTable::isEnrolledGroup)).isTrue();
+        then(orderTableRepository).should(times(1)).findAllByTableGroupId(any());
+        then(orderTableValidator).should(times(1)).validateUnGroup(any());
     }
 
     @Test
     @DisplayName("테이블 그룹 해지시 속해져있는 테이블중 조리 또는 식사 상태인경우 예외처리되어 해지에 실패한다")
     void unGroupTablesThrownByCookingOrMealOrderStatesTest() {
         // given
-        OrderTable orderTable = OrderTable.of(1, true);
-        List<OrderTable> orderTables = Arrays.asList(
-                orderTable,
+        List<OrderTable> orderTableItems = Arrays.asList(
+                OrderTable.of(1, true),
                 OrderTable.of(2, true)
         );
-        TableGroup tableGroup = new TableGroup(orderTables);
-        tableGroup.group();
-
-        Order order = Order.cooking(orderTable, orderLineItems);
-        order.changeState(OrderStatus.COMPLETION);
-
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.empty()));
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTableItems);
+        willThrow(new IllegalArgumentException(OrderTableMessage.UN_GROUP_ERROR_INVALID_ORDER_STATE.message()))
+                .given(orderTableValidator).validateUnGroup(any());
 
         // when
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
@@ -226,5 +216,7 @@ class TableGroupServiceTest {
 
         // then
         then(tableGroupRepository).should(times(1)).findById(any());
+        then(orderTableRepository).should(times(1)).findAllByTableGroupId(any());
+        then(orderTableValidator).should(times(1)).validateUnGroup(any());
     }
 }

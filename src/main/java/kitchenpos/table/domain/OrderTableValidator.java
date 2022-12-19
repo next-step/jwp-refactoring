@@ -19,21 +19,17 @@ public class OrderTableValidator {
     }
 
     public void validateChangeEmpty(OrderTable orderTable) {
-        if(isCookingOrMealState(orderTable.getId())) {
+        if(isCookingOrMealState(Arrays.asList(orderTable.getId()))) {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message());
         }
     }
 
-    private boolean isCookingOrMealState(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, INVALID_ORDER_STATUS);
+    private boolean isCookingOrMealState(List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, INVALID_ORDER_STATUS);
     }
 
-    public void validateGroup(OrderTable orderTable) {
-
-    }
-
-    public void validateUnGroup(OrderTable orderTable) {
-        if(isCookingOrMealState(orderTable.getId())) {
+    public void validateUnGroup(OrderTables orderTable) {
+        if(isCookingOrMealState(orderTable.getIds())) {
             throw new IllegalArgumentException(OrderTableMessage.UN_GROUP_ERROR_INVALID_ORDER_STATE.message());
         }
     }

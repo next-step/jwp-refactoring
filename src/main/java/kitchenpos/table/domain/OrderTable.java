@@ -50,6 +50,10 @@ public class OrderTable {
         return empty;
     }
 
+    public boolean isNotEmpty() {
+        return !this.empty;
+    }
+
     public void changeEmpty(boolean empty) {
         if(isGrouped()) {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());

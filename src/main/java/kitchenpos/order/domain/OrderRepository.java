@@ -12,10 +12,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "left join fetch o.orderLineItems")
     List<Order> findAllWithLineItems();
 
+    @Query("select distinct o " +
+            "from Order o " +
+            "left join fetch o.orderLineItems " +
+            "where o.orderTable = :orderTableId "
+    )
+    List<Order> findAllWithLineItemsByOrderTableId(Long orderTableId);
+
     @Query("select  o " +
             "from Order o " +
             "left join fetch o.orderLineItems " +
             "where o.id = :id"
     )
     Optional<Order> findWithLineItemById(Long id);
+
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableId, List<OrderStatus> invalidOrderStatus);
 }
