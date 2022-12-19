@@ -7,13 +7,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
-import kitchenpos.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
 
 @DisplayName("상품 인수 테스트")
-class ProductAcceptanceTest extends AcceptanceTest {
+class ProductAcceptanceTest extends kitchenpos.ProductAcceptanceTest {
     @DisplayName("상품 인수 테스트")
     @TestFactory
     Stream<DynamicNode> productAcceptance() {
