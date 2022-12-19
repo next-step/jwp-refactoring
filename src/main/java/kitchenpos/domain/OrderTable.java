@@ -1,15 +1,11 @@
 package kitchenpos.domain;
 
-import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
-
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.exception.KitchenposException;
 
 @Entity
 public class OrderTable {
@@ -56,12 +52,6 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void isNullTableGroup() {
-        if (Objects.nonNull(this.tableGroup)) {
-            throw new KitchenposException(NOT_BEEN_UNGROUP);
-        }
     }
 
     public void ungroup() {
