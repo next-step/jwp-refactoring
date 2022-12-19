@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,16 +36,15 @@ class OrderTablesTest {
                 OrderTable.of(2, true),
                 OrderTable.of(3, true)
         );
-        TableGroup tableGroup = new TableGroup(orderTableItems);
         OrderTables orderTables = new OrderTables(orderTableItems);
 
         // when
-        orderTables.group(tableGroup);
+        orderTables.groupBy(1L);
 
         // then
         boolean groupByGivenTableGroup = orderTables.getAll()
                 .stream()
-                .allMatch(table -> table.isGroupBy(tableGroup));
+                .allMatch(OrderTable::isGrouped);
         assertThat(groupByGivenTableGroup).isTrue();
     }
 
@@ -59,9 +57,8 @@ class OrderTablesTest {
                 OrderTable.of(2, true),
                 OrderTable.of(3, true)
         );
-        TableGroup tableGroup = new TableGroup(orderTableItems);
         OrderTables orderTables = new OrderTables(orderTableItems);
-        orderTables.group(tableGroup);
+        orderTables.groupBy(1L);
 
         // when
         orderTables.unGroup();
@@ -69,7 +66,7 @@ class OrderTablesTest {
         // then
         boolean unGroupByGivenTableGroup = orderTables.getAll()
                 .stream()
-                .noneMatch(OrderTable::isEnrolledGroup);
+                .noneMatch(OrderTable::isGrouped);
         assertThat(unGroupByGivenTableGroup).isTrue();
     }
 }
