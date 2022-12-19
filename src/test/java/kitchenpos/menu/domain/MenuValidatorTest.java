@@ -1,24 +1,16 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
+import java.util.Optional;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,17 +19,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("메뉴 Business Object 테스트")
+@DisplayName("메뉴 validation service 테스트")
 @ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
+public class MenuValidatorTest {
 
     @Mock
-    private MenuRepository menuRepository;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuValidator menuValidator;
+    private ProductRepository productRepository;
 
     @InjectMocks
-    private MenuService menuService;
+    private MenuValidator menuValidator;
 
     private Product 떡볶이;
     private Product 튀김;
@@ -78,36 +70,43 @@ class MenuServiceTest {
         떡튀순_곱배기_상품_떡볶이.setMenu(떡튀순_곱배기);
     }
 
-    @DisplayName("메뉴 생성")
+    @DisplayName("존재하지 않는 메뉴 그룹에 속하는 메뉴 생성 요청 시 예외처리")
     @Test
-    void 메뉴_생성() {
-        MenuRequest request = MenuRequest.from(떡튀순);
-        when(menuRepository.save(request.toMenu())).thenReturn(request.toMenu());
+    void 존재하지_않는_메뉴_그룹의_메뉴_생성() {
+        when(menuGroupRepository.existsById(1L)).thenReturn(false);
 
-        MenuResponse 생성된_메뉴 = menuService.create(request);
-
-        verify(menuValidator).validate(any(Menu.class));
-        assertAll(
-                () -> assertThat(생성된_메뉴.getName()).isEqualTo("떡튀순"),
-                () -> assertThat(생성된_메뉴.getPrice()).isEqualTo(BigDecimal.valueOf(10000))
-        );
+        assertThatThrownBy(() -> menuValidator.validate(떡튀순))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 조회")
+    @DisplayName("존재하지 않는 상품으로 구성된 메뉴 생성 요청 시 예외처리")
     @Test
-    void 메뉴_조회() {
-        List<Menu> 등록된_메뉴_목록 = Arrays.asList(떡튀순, 떡튀순_곱배기);
-        when(menuRepository.findAll()).thenReturn(등록된_메뉴_목록);
+    void 존재하지_않는_상품_메뉴_생성() {
+        when(menuGroupRepository.existsById(1L)).thenReturn(true);
+        when(productRepository.findById(떡볶이.getId())).thenThrow(IllegalArgumentException.class);
 
-        List<MenuResponse> 조회된_메뉴_목록 = menuService.list();
+        assertThatThrownBy(() -> menuValidator.validate(떡튀순))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
-        assertAll(
-                () -> assertThat(조회된_메뉴_목록.size()).isEqualTo(등록된_메뉴_목록.size()),
-                () -> assertThat(조회된_메뉴_목록.get(0).getName()).isEqualTo(등록된_메뉴_목록.get(0).getName()),
-                () -> assertThat(조회된_메뉴_목록.get(1).getName()).isEqualTo(등록된_메뉴_목록.get(1).getName()),
-                () -> assertThat(조회된_메뉴_목록.get(0).getPrice()).isEqualTo(등록된_메뉴_목록.get(0).getPriceValue()),
-                () -> assertThat(조회된_메뉴_목록.get(1).getPrice()).isEqualTo(등록된_메뉴_목록.get(1).getPriceValue())
-        );
+    @DisplayName("각 상품 가격의 합보다 큰 가격의 메뉴 생성 요청 시 예외처리")
+    @Test
+    void 초과_가격_예외처리() {
+        when(menuGroupRepository.existsById(1L)).thenReturn(true);
+        when(productRepository.findById(떡볶이.getId())).thenReturn(Optional.of(떡볶이));
+        when(productRepository.findById(튀김.getId())).thenReturn(Optional.of(튀김));
+        when(productRepository.findById(순대.getId())).thenReturn(Optional.of(순대));
+        Menu 초과_가격_메뉴 = new Menu(3L, "떡튀순", new Price(12000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+
+        assertThatThrownBy(() -> menuValidator.validate(초과_가격_메뉴)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("비어있는 이름으로 메뉴 생성 요청 시 예외처리")
+    @Test
+    void 비어있는_이름_예외처리() {
+        Menu 비어있는_이름_메뉴 = new Menu(3L, "", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+
+        assertThatThrownBy(() -> menuValidator.validate(비어있는_이름_메뉴)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

@@ -13,7 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -74,8 +76,8 @@ class OrderServiceTest {
         List<MenuProduct> 떡튀순_곱배기_상품_목록 = Arrays.asList(떡튀순_곱배기_상품_떡볶이, 떡튀순_상품_튀김, 떡튀순_상품_순대);
 
         MenuGroup 세트 = new MenuGroup(1L, "세트");
-        Menu 떡튀순 = new Menu(떡튀순_id, "떡튀순", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_상품_목록);
-        Menu 떡튀순_곱배기 = new Menu(떡튀순_곱배기_id, "떡튀순_곱배기", BigDecimal.valueOf(10000), 세트.getId(), 떡튀순_곱배기_상품_목록);
+        Menu 떡튀순 = new Menu(떡튀순_id, "떡튀순", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_상품_목록));
+        Menu 떡튀순_곱배기 = new Menu(떡튀순_곱배기_id, "떡튀순_곱배기", new Price(10000), 세트.getId(), new MenuProducts(떡튀순_곱배기_상품_목록));
 
         주문_id = 1L;
         주문_테이블 = new OrderTable(1L, null, 0, false);
@@ -120,7 +122,8 @@ class OrderServiceTest {
         when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
         when(orderTableRepository.findById(빈_주문_테이블.getId())).thenReturn(Optional.of(빈_주문_테이블));
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(빈_테이블_주문))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.from(빈_테이블_주문))).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @DisplayName("생성되지 않은 주문 테이블에 대한 주문 등록 요청 시 예외처리")
@@ -129,7 +132,8 @@ class OrderServiceTest {
         when(menuRepository.countByIdIn(메뉴_Id_목록(주문_아이템_목록))).thenReturn(주문_아이템_목록.size());
         when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문))).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴와 수량 정보 없이 주문 등록 요청 시 예외처리")
@@ -138,7 +142,8 @@ class OrderServiceTest {
         List<OrderLineItem> 빈_아이템_목록 = new ArrayList<>();
         Order 주문_아이템_누락된_주문 = new Order(주문_id, 주문_테이블.getId(), OrderStatus.COOKING.name(), null, 빈_아이템_목록);
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문_아이템_누락된_주문))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.from(주문_아이템_누락된_주문))).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @DisplayName("주문 조회")
@@ -195,7 +200,8 @@ class OrderServiceTest {
         Order 변경할_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.MEAL.name(), null, 주문_아이템_목록);
         when(orderRepository.findById(계산_완료된_주문.getId())).thenReturn(Optional.of(계산_완료된_주문));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(계산_완료된_주문.getId(), OrderRequest.from(변경할_주문))).isInstanceOf(
+        assertThatThrownBy(
+                () -> orderService.changeOrderStatus(계산_완료된_주문.getId(), OrderRequest.from(변경할_주문))).isInstanceOf(
                 IllegalArgumentException.class);
     }
 

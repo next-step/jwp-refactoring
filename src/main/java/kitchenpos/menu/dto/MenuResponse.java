@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Menus;
 
 public class MenuResponse {
 
@@ -15,8 +16,14 @@ public class MenuResponse {
     private List<MenuProductResponse> menuProducts;
 
     public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId()
-        , getMenuProductResponses(menu));
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPriceValue(), menu.getMenuGroupId()
+                , getMenuProductResponses(menu));
+    }
+
+    public static List<MenuResponse> getMenuResponses(Menus menus) {
+        return menus.stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 
     private static List<MenuProductResponse> getMenuProductResponses(Menu menu) {
