@@ -18,4 +18,13 @@ public class OrderTableGenerator {
 	public static OrderTable 비어있는_테이블() {
 		return 주문테이블(null, 0, true);
 	}
+
+	public static OrderTable 빈_두명_테이블() {
+		return 주문테이블(null, 2, true);
+	}
+
+	public static OrderTable 빈_한명_테이블() {
+		return 주문테이블(null, 1, true);
+	}
+
 }

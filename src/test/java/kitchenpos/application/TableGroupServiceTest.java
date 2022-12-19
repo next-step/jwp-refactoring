@@ -25,6 +25,9 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.application.TableGroupService;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.ui.request.TableGroupRequest;
+import kitchenpos.order.ui.request.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.order.ui.response.TableGroupResponse;
 
 @DisplayName("단체 지정 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -39,15 +42,15 @@ class TableGroupServiceTest {
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
-	
+
 	private OrderTable 주문테이블1;
 	private OrderTable 주문테이블2;
 	private TableGroup 단체지정;
-	
+
 	@BeforeEach
 	void setUp() {
-		주문테이블1 = 주문테이블(null, 5, true);;
-		주문테이블2 = 주문테이블(null, 2, true);;
+		주문테이블1 = 주문테이블(null, 5, true);
+		주문테이블2 = 주문테이블(null, 2, true);
 		단체지정 = 단체_지정(Arrays.asList(주문테이블1, 주문테이블2));
 	}
 
@@ -58,14 +61,17 @@ class TableGroupServiceTest {
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 		given(tableGroupDao.save(any(TableGroup.class))).willReturn(단체지정);
 
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(
+			Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
+
 		// when
-		TableGroup savedTableGroup = tableGroupService.create(단체지정);
+		TableGroupResponse response = tableGroupService.create(tableGroupRequest);
 
 		// then
 		verify(tableGroupDao, only()).save(any(TableGroup.class));
 		assertAll(
 			() -> assertThat(단체지정.getOrderTables()).hasSize(2),
-			() -> assertThat(단체지정.getId()).isEqualTo(savedTableGroup.getId())
+			() -> assertThat(단체지정.getId()).isEqualTo(response.getId())
 		);
 	}
 
@@ -73,11 +79,11 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupWithOneOrderTableTest() {
 		// given
-		주문테이블1 = 주문테이블(null, 2, true);
-		단체지정 = 단체_지정(Collections.singletonList(주문테이블1));
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(
+			Collections.singletonList(new OrderTableIdRequest(1L)));
 
 		// when
-		Throwable throwable = catchThrowable(() -> tableGroupService.create(단체지정));
+		Throwable throwable = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -87,12 +93,14 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupWithNotEmptyOrderTableTest() {
 		// given
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(
+			Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
 		주문테이블1 = 주문테이블(null, 2, false);
 
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블1));
+		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
 		// when
-		Throwable throwable = catchThrowable(() -> tableGroupService.create(단체지정));
+		Throwable throwable = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -104,12 +112,14 @@ class TableGroupServiceTest {
 		// given
 		주문테이블1 = 주문테이블(1L, 2, true);
 		주문테이블2 = 주문테이블(null, 5, true);
-		TableGroup 단체지정 = 단체_지정(Arrays.asList(주문테이블1, 주문테이블2));
 
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(
+			Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
+
 		// when
-		Throwable throwable = catchThrowable(() -> tableGroupService.create(단체지정));
+		Throwable throwable = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -137,7 +147,7 @@ class TableGroupServiceTest {
 	@DisplayName("주문 상태가 식사중, 조리중이면 테이블을 단체 지정에서 제외할 수 없다.")
 	@Test
 	void ungroupWithNotCompletionOrderTableTest() {
-			// given
+		// given
 		List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문테이블1, 주문테이블2);
 
 		given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(주문_테이블_목록);
@@ -145,7 +155,6 @@ class TableGroupServiceTest {
 
 		// when
 		Throwable throwable = catchThrowable(() -> tableGroupService.ungroup(1L));
-
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);

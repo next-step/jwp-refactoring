@@ -3,6 +3,8 @@ package kitchenpos.order.ui.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kitchenpos.order.domain.TableGroup;
+
 public class TableGroupResponse {
 
 	private final long id;
@@ -17,6 +19,11 @@ public class TableGroupResponse {
 
 	public static TableGroupResponse of(long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
 		return new TableGroupResponse(id, createdDate, orderTables);
+	}
+
+	public static TableGroupResponse from(TableGroup savedTableGroup) {
+		return new TableGroupResponse(savedTableGroup.getId(), savedTableGroup.getCreatedDate(),
+				OrderTableResponse.listOf(savedTableGroup.getOrderTables()));
 	}
 
 	public long getId() {
