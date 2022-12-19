@@ -72,7 +72,7 @@
 ## 1단계 - 테스트를 통한 코드 보호
 ### 요구 사항
 * [x] kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md에 작성한다.
-* [ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다.
+* [x] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다.
   * 모든 Business Object에 대한 테스트 코드를 작성한다.
   * @SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성한다.
   * [x] 상품 관련 비즈니스 테스트
@@ -82,3 +82,52 @@
   * [x] 메뉴 관련 비즈니스 테스트
   * [x] 주문 관련 비즈니스 테스트
 * Lombok을 사용하지 않는다
+
+## 2단계 - 서비스 리팩터링
+### 요구 사항
+* `spring.jpa.hibernate.ddl-auto=validate` 옵션 사용
+* DB 형상 관리
+
+### 프로그래밍 요구사항
+* Lombok을 쓰지 않는다
+* 무분별한 setter 사용하지 않기
+* 자바 코드 컨벤션 지키기
+  * 단, 들여쓰기는 `4 space`
+* indent의 deps는 1까지만 허용한다.
+* 3항 연산자를 쓰지 않는다.
+* else, switch/case 예약어를 쓰지 않는다.
+* 모든 기능을 TDD로 구현해 단위 테스트가 존재해야 한다
+  * 핵심 로직을 구현하는 코드와 UI를 담당하는 로직을 구분한다.
+  * UI 로직을 InputView, ResultView와 같은 클래스를 추가해 분리한다.
+* 함수(또는 메서드)의 길이가 10라인을 넘어가지 않도록 구현한다.
+  * 함수(또는 메소드)가 한 가지 일만 하도록 최대한 작게 만들어라.
+* 배열 대신 컬렉션을 사용한다.
+* 모든 원시 값과 문자열을 포장한다
+* 줄여 쓰지 않는다(축약 금지).
+* 일급 컬렉션을 쓴다.
+* 모든 엔티티를 작게 유지한다.
+* 3개 이상의 인스턴스 변수를 가진 클래스를 쓰지 않는다.
+
+### 진행 사항
+* [x] 요구사항 정의
+* [x] 패키기 구조 변경
+* [x] jpa 종속성 추가
+* [x] 도메인을 Entity화
+* [x] Service에서 DAO대신 Repository로 사용으로 변경
+* [x] 종속성 관계 추가
+* [x] OrderStatus enum 추가
+* [x] Request, Response TDO 적용
+  * [x] Menu
+  * [x] MenuGroup
+  * [x] Product
+  * [x] Order
+  * [x] TableGroup
+  * [x] orderLineItem
+* [ ] 일급 객체, 일급 컬렉션 추출
+  * [x] Price를 일급 객체로 추출, 도메인 테스트
+  * [x] MenuProduct를 일급 컬렉션으로 추출
+  * [x] NumberOfGuests를 일급 객체로 추출, 도메인 테스트
+  * [x] OrderTable을 일급 컬렉션으로 추출
+  * [x] Quantity를 일급 객체로 추출, 도메인 테스트
+  * [x] Name을 일급 객체로 추출, 도메인 테스트
+  * 
