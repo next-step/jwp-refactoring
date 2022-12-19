@@ -6,6 +6,7 @@ import kitchenpos.table.message.OrderTableMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -19,7 +20,7 @@ public class OrderTableValidator {
     }
 
     public void validateChangeEmpty(OrderTable orderTable) {
-        if(isCookingOrMealState(Arrays.asList(orderTable.getId()))) {
+        if(isCookingOrMealState(Collections.singletonList(orderTable.getId()))) {
             throw new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message());
         }
     }
