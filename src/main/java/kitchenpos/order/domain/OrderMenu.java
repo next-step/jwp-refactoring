@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.global.domain.Price;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;

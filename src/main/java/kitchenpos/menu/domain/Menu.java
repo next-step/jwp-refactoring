@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.global.domain.Price;
 
 import javax.persistence.*;
 import java.util.List;

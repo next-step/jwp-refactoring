@@ -1,10 +1,10 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.global.domain.Price;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.message.MenuMessage;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 

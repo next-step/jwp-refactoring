@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.global.domain;
 
 import kitchenpos.menu.message.QuantityMessage;
 
