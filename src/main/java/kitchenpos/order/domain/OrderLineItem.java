@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.menu.domain.MenuName;
+import kitchenpos.menu.domain.MenuPrice;
 
 @Entity
 public class OrderLineItem {
@@ -27,11 +29,11 @@ public class OrderLineItem {
 
     @Embedded
     @Column(name = "menu_name", length = 255, nullable = false)
-    private OrderLineItemMenuName orderLineItemMenuName;
+    private MenuName orderLineItemMenuName;
 
     @Embedded
     @Column(name = "menu_price", precision = 19, scale = 2, nullable = false)
-    private OrderLineItemMenuPrice orderLineItemMenuPrice;
+    private MenuPrice orderLineItemMenuPrice;
 
     @Embedded
     @Column(precision = 20, nullable = false)
@@ -43,8 +45,8 @@ public class OrderLineItem {
     public OrderLineItem(Long menuId, long quantity, String menuName, BigDecimal menuPrice) {
         this.menuId = menuId;
         this.quantity = new OrderLineItemQuantity(quantity);
-        this.orderLineItemMenuName = new OrderLineItemMenuName(menuName);
-        this.orderLineItemMenuPrice = new OrderLineItemMenuPrice(menuPrice);
+        this.orderLineItemMenuName = new MenuName(menuName);
+        this.orderLineItemMenuPrice = new MenuPrice(menuPrice);
     }
 
     public void changeOrder(final Order order) {
@@ -63,11 +65,11 @@ public class OrderLineItem {
         return quantity.getQuantity();
     }
 
-    public String getOrderLineItemMenuName() {
-        return orderLineItemMenuName.getMenuName();
+    public MenuName getOrderLineItemMenuName() {
+        return orderLineItemMenuName;
     }
 
-    public BigDecimal getOrderLineItemMenuPrice() {
-        return orderLineItemMenuPrice.getMenuPrice();
+    public MenuPrice getOrderLineItemMenuPrice() {
+        return orderLineItemMenuPrice;
     }
 }

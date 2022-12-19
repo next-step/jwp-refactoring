@@ -1,6 +1,8 @@
 package kitchenpos.order.dto;
 
 import java.math.BigDecimal;
+import kitchenpos.menu.domain.MenuName;
+import kitchenpos.menu.domain.MenuPrice;
 
 public class OrderLineItemResponse {
 
@@ -13,12 +15,12 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long seq, Long menuId, long quantity, String menuName, BigDecimal menuPrice) {
+    public OrderLineItemResponse(Long seq, Long menuId, long quantity, MenuName menuName, MenuPrice menuPrice) {
         this.seq = seq;
         this.menuId = menuId;
         this.quantity = quantity;
-        this.menuName = menuName;
-        this.menuPrice = menuPrice;
+        this.menuName = menuName.getName();
+        this.menuPrice = menuPrice.getPrice();
     }
 
     public Long getSeq() {

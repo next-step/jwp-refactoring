@@ -1,2 +1,2 @@
-alter table order_line_item add menu_name VARCHAR(255) NOT NULL;
-alter table order_line_item add menu_price DECIMAL(19, 2) NOT NULL;
+ALTER TABLE order_line_item ADD name VARCHAR(255) NOT NULL default '';
+ALTER TABLE order_line_item ADD price DECIMAL(19, 2) NOT NULL default '';
