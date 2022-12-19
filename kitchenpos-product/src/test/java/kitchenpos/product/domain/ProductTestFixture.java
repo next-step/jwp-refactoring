@@ -1,7 +1,6 @@
 package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
-import kitchenpos.product.dto.ProductRequest;
 
 public class ProductTestFixture {
     public static final Product 짜장면 = product(1L, "짜장면", BigDecimal.valueOf(7_000L));

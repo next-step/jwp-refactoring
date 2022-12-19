@@ -47,6 +47,17 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
 
     implementation project(':kitchenpos-common')
+    implementation project(':kitchenpos-product')
 
     testImplementation project(':kitchenpos-common').sourceSets.test.output
+    testImplementation project(':kitchenpos-product').sourceSets.test.output
 }
+
+subprojects.findAll { it.name != 'kitchenpos-common' }.forEach({
+    project("${it.name}") {
+        dependencies {
+            implementation project(':kitchenpos-common')
+            testImplementation project(':kitchenpos-common').sourceSets.test.output
+        }
+    }
+})
