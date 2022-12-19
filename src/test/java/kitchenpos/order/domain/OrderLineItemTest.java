@@ -32,4 +32,11 @@ class OrderLineItemTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_NULL_EXCEPTION_MESSAGE);
     }
+
+    @DisplayName("주문 항목을 생성한다. / 갯수가 없을 수 없다.")
+    @Test
+    void create_fail_notQuantity() {
+        assertThatThrownBy(() -> new OrderLineItem(null, null, null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

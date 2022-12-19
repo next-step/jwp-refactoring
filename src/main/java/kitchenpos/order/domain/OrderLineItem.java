@@ -21,16 +21,10 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Orders order, Long menuId, Quantity quantity) {
-        validate(menuId);
+        validate(menuId, quantity);
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
-    }
-
-    private void validate(Long menuId) {
-        if (Objects.isNull(menuId)) {
-            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
-        }
     }
 
     public Long getMenuId() {
@@ -47,5 +41,22 @@ public class OrderLineItem {
 
     public Orders getOrder() {
         return this.order;
+    }
+
+    private void validate(Long menuId, Quantity quantity) {
+        validateNullMenuId(menuId);
+        validateNullQuantity(quantity);
+    }
+
+    private static void validateNullQuantity(Quantity quantity) {
+        if (Objects.isNull(quantity)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static void validateNullMenuId(Long menuId) {
+        if (Objects.isNull(menuId)) {
+            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
+        }
     }
 }
