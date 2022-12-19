@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
@@ -37,7 +38,8 @@ class TableGroupUngroupEventHandlerTest {
         TableGroupUngroupEvent tableGroupUngroupEvent = tableGroupUngroupEvent(1L);
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(
             Collections.singletonList(savedOrderTable(1L, 1L)));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Collections.singletonList(1L),
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableGroupUngroupEventHandler.handle(tableGroupUngroupEvent))
@@ -54,7 +56,8 @@ class TableGroupUngroupEventHandlerTest {
 
         given(orderTableRepository.findAllByTableGroupId(anyLong()))
             .willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         // when
         tableGroupUngroupEventHandler.handle(tableGroupUngroupEvent);
