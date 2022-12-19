@@ -25,10 +25,14 @@ public class TableGroupCreateEventHandler {
     public void handle(final TableGroupCreateEvent event) {
         final List<Long> orderTableIds = event.getOrderTableIds();
         final Long tableGroupId = event.getTableGroupId();
-        final OrderTables savedOrderTables = OrderTables.from(orderTableRepository.findAllByIdIn(orderTableIds));
+        final OrderTables savedOrderTables = findOrderTables(orderTableIds);
 
         validate(orderTableIds, savedOrderTables);
         savedOrderTables.group(tableGroupId);
+    }
+
+    private OrderTables findOrderTables(List<Long> orderTableIds) {
+        return OrderTables.from(orderTableRepository.findAllByIdIn(orderTableIds));
     }
 
     private void validate(final List<Long> orderTableIds, final OrderTables savedOrderTables) {
@@ -44,7 +48,6 @@ public class TableGroupCreateEventHandler {
         if (savedOrderTables.hasAnyNotEmpty()) {
             throw new IllegalArgumentException("모든 주문 테이블은 빈 테이블 상태이어야 합니다.");
         }
-
         if (savedOrderTables.hasAnyTableGroupRegistered()) {
             throw new IllegalArgumentException("이미 단체 지정되어있는 테이블이 존재합니다.");
         }

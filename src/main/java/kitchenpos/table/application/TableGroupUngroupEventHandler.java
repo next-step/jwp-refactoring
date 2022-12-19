@@ -26,10 +26,15 @@ public class TableGroupUngroupEventHandler {
     @EventListener
     @Transactional
     public void handle(final TableGroupUngroupEvent event) {
-        final OrderTables orderTables = OrderTables.from(
-            orderTableRepository.findAllByTableGroupId(event.getTableGroupId()));
+        final Long tableGroupId = event.getTableGroupId();
+        final OrderTables orderTables = findOrderTables(tableGroupId);
+
         validate(orderTables);
         orderTables.ungroup();
+    }
+
+    private OrderTables findOrderTables(Long tableGroupId) {
+        return OrderTables.from(orderTableRepository.findAllByTableGroupId(tableGroupId));
     }
 
     private void validate(OrderTables orderTables) {

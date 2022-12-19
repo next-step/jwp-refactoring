@@ -18,10 +18,14 @@ public class OrderLineItemGenerator {
     public OrderLineItemGenerator(MenuRepository menuRepository) {this.menuRepository = menuRepository;}
 
     public List<OrderLineItem> generate(List<OrderLineItemRequest> orderLineItemRequests) {
-        Menus menus = Menus.from(menuRepository.findAllById(toMenuIds(orderLineItemRequests)));
+        Menus menus = findMenus(toMenuIds(orderLineItemRequests));
         return orderLineItemRequests.stream()
             .map(orderLineItemRequest -> generateOrderLineItem(menus, orderLineItemRequest))
             .collect(Collectors.toList());
+    }
+
+    private Menus findMenus(List<Long> menuIds) {
+        return Menus.from(menuRepository.findAllById(menuIds));
     }
 
     private List<Long> toMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {

@@ -16,11 +16,14 @@ public class OrderValidator {
     }
 
     public void validateSave(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블 ID 입니다."));
-
+        final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         validateOrderLineItemsEmpty(orderRequest);
         validateOrderTableIsEmpty(orderTable);
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문 테이블 ID 입니다."));
     }
 
     private void validateOrderLineItemsEmpty(final OrderRequest orderRequest) {

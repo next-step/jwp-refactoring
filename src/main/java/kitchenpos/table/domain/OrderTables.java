@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 public class OrderTables {
     private final List<OrderTable> orderTables;
 
-    protected OrderTables(List<OrderTable> orderTables) {
+    private OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 
