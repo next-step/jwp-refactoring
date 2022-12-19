@@ -1,1 +1,11 @@
 rootProject.name = 'kitchenpos'
+
+include 'kitchenpos-menu',
+        'kitchenpos-product',
+        'kitchenpos-order',
+        'kitchenpos-orderstatus',
+        'kitchenpos-table'
+
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+}

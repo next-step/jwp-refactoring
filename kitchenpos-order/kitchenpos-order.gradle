@@ -1,0 +1,12 @@
+dependencies {
+    implementation project(':kitchenpos-menu')
+    implementation project(':kitchenpos-table')
+    implementation project(':kitchenpos-orderstatus')
+    testImplementation(testFixtures(project(':kitchenpos-menu')))
+    testImplementation(testFixtures(project(':kitchenpos-product')))
+    testImplementation(testFixtures(project(':kitchenpos-table')))
+    testImplementation(testFixtures(project(':kitchenpos-orderstatus')))
+}
+
+bootJar { enabled = false }
+jar { enabled = true }

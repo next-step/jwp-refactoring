@@ -1,0 +1,11 @@
+plugins {
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    implementation project(':kitchenpos-product')
+    testImplementation(testFixtures(project(':kitchenpos-product')))
+}
+
+bootJar { enabled = false }
+jar { enabled = true }
