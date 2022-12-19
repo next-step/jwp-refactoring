@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
 
 @DisplayName("단체 지정 생성 이벤트 헨들러")
 @ExtendWith(MockitoExtension.class)

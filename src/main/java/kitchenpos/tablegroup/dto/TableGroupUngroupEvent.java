@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.dto;
 
 public class TableGroupUngroupEvent {
     private final Long tableGroupId;

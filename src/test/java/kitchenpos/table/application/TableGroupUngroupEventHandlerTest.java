@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
 
 @DisplayName("단체 지정 해제 이벤트 헨들러")
 @ExtendWith(MockitoExtension.class)

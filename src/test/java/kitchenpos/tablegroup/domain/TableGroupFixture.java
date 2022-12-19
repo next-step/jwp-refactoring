@@ -3,8 +3,9 @@ package kitchenpos.tablegroup.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
 
 public class TableGroupFixture {
     private TableGroupFixture() {

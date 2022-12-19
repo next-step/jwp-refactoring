@@ -10,7 +10,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
 
 @Component
 public class TableGroupUngroupEventHandler {

@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.domain.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 

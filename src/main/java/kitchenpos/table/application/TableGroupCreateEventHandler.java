@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
 
 @Component
 public class TableGroupCreateEventHandler {
