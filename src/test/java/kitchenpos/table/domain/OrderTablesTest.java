@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;

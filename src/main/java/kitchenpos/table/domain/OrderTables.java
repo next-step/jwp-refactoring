@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 import org.springframework.util.CollectionUtils;
@@ -16,7 +16,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected OrderTables() {}
+    public OrderTables() {}
 
     public void ungroup() {
         orderTables.forEach(OrderTable::ungroup);
@@ -24,11 +24,8 @@ public class OrderTables {
 
     public void group(TableGroup tableGroup, List<OrderTable> target) {
         validate(target);
-        target.forEach(orderTable -> {
-            orderTable.checkOrderTableForTableGrouping();
-            orderTable.changeEmpty(false, Collections.emptyList());
-            addOrderTable(tableGroup, orderTable);
-        });
+        target.forEach(OrderTable::group);
+        target.forEach(orderTable -> addOrderTable(tableGroup, orderTable));
     }
 
     private void validate(List<OrderTable> target) {

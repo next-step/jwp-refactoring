@@ -1,9 +1,8 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,11 +29,7 @@ public class OrderTable {
         this.empty = new OrderEmpty(empty);
     }
 
-    public void changeEmpty(boolean empty, List<Order> orders) {
-        if(Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
-        }
-        orders.forEach(Order::checkCookingOrMeal);
+    public void changeEmpty(boolean empty) {
         this.empty = this.empty.changeEmpty(empty);
     }
 
@@ -49,8 +44,18 @@ public class OrderTable {
         }
     }
 
-    public void checkOrderTableForTableGrouping() {
-        this.empty.validateForTableGrouping();
+    public void group() {
+        checkForTableGrouping();
+        changeEmpty(false);
+    }
+
+    private void checkForTableGrouping() {
+        if (hasTableGroup()) {
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
+        }
+        if (!isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
+        }
     }
 
     public void ungroup() {
@@ -59,6 +64,10 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty.isEmpty();
+    }
+
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroup);
     }
 
     public Long getId() {

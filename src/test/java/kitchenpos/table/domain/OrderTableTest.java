@@ -1,15 +1,12 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -39,7 +36,7 @@ public class OrderTableTest {
         우아한_주문_테이블_1.ungroup();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> 우아한_주문_테이블_1.checkOrderTableForTableGrouping())
+                .isThrownBy(() -> 우아한_주문_테이블_1.group())
                 .withMessage(ErrorMessage.ORDER_TABLE_NON_EMPTY_ORDER_TABLE_CANNOT_BE_INCLUDED_IN_TABLE_GROUP.getMessage());
     }
 
@@ -51,33 +48,12 @@ public class OrderTableTest {
         assertThat(우아한_주문_테이블_1.getTableGroup()).isNull();
     }
 
-    @DisplayName("다른 테이블 그룹에 포함되어 있으면 빈 테이블로 변경할 수 없다.")
-    @Test
-    void 다른_테이블_그룹에_포함되어_있으면_빈_테이블로_변경할_수_없다() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> 우아한_주문_테이블_1.changeEmpty(true, Collections.emptyList()))
-                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
-    }
-
-    @DisplayName("요리중이거나 식사중인 주문이 있다면 빈 테이블로 변경할 수 없다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"COOKING", "MEAL"})
-    void 요리중이거나_식사중인_주문이_있다면_빈_테이블로_변경할_수_없다(OrderStatus orderStatus) {
-        OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, orderStatus);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> 주문_테이블.changeEmpty(true, Arrays.asList(order)))
-                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
-    }
-
     @DisplayName("빈 테이블로 변경한다.")
     @Test
     void 빈_테이블로_변경() {
         OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, OrderStatus.COMPLETION);
 
-        주문_테이블.changeEmpty(true, Arrays.asList(order));
+        주문_테이블.changeEmpty(true);
 
         assertThat(주문_테이블.isEmpty()).isTrue();
     }
