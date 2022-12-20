@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +25,7 @@ public class MenuProducts {
     }
 
     public Price totalMenuPrice() {
-        Price total = new Price(BigDecimal.valueOf(0));
+        Price total = new Price(Price.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
             total = total.add(menuProduct.calculatePrice());
         }

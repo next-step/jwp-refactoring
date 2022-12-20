@@ -7,6 +7,7 @@ import kitchenpos.common.error.ErrorEnum;
 
 @Embeddable
 public class Price {
+    public static final BigDecimal ZERO = new BigDecimal(0);
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -29,7 +30,7 @@ public class Price {
     }
 
     private void validatePriceUnderZero(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
+        if (price.compareTo(ZERO) < 0) {
             throw new IllegalArgumentException(ErrorEnum.PRICE_UNDER_ZERO.message());
         }
     }
