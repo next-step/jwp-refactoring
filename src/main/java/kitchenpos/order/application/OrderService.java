@@ -48,7 +48,7 @@ public class OrderService {
 
         List<Menu> menus = menuRepository.findAllById(menuIds);
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menus.size()) {
             throw new IllegalArgumentException();
         }
 

@@ -98,7 +98,6 @@ public class OrderServiceTest {
     @Test
     void 주문을_등록할_수_있다() {
         when(menuRepository.findAllById(menuIds)).thenReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴));
-        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문_테이블));
         when(orderRepository.save(주문)).thenReturn(주문);
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
@@ -140,8 +139,6 @@ public class OrderServiceTest {
     void 주문_테이블이_비어있는_경우_주문을_등록할_수_없다() {
         주문_테이블.setEmpty(true);
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
-        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
-        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문_테이블));
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
