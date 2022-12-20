@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.domain.OrderStatus;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -50,14 +48,10 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         requireNonNull(orderStatus, "orderStatus");
-        if (isCompleted()) {
-            throw new IllegalArgumentException("주문 상태를 변경할 수 없습니다.");
+        if (this.orderStatus.isCompleted()) {
+            throw new IllegalStateException("이미 완료된 주문입니다.");
         }
         this.orderStatus = orderStatus;
-    }
-
-    private boolean isCompleted() {
-        return OrderStatus.COMPLETION == this.orderStatus;
     }
 
     public Long getId() {
