@@ -46,15 +46,11 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void changeEmpty(boolean isEmpty, List<Order> order) {
+    public void changeEmpty(boolean isEmpty) {
         validCheckIsNotNullTableGroup();
-        validCheckIsOrderStatusInCookingAndMeal(order);
         this.isEmpty = isEmpty;
     }
 
-    private void validCheckIsOrderStatusInCookingAndMeal(List<Order> order) {
-        order.forEach(Order::validCheckOrderStatusIsCookingAndMeal);
-    }
 
     private void validCheckIsNotNullTableGroup() {
         if (Objects.nonNull(this.tableGroup)) {
@@ -80,10 +76,6 @@ public class OrderTable {
         if (numberOfGuests < 0 || Objects.isNull(numberOfGuests)) {
             throw new IllegalArgumentException(GUEST_NOT_NULL_AND_ZERO.getMessage());
         }
-    }
-
-    public void setTableGroupNull() {
-        this.tableGroup = null;
     }
 
     public Long getId() {

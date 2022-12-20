@@ -17,18 +17,6 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public MenuProduct makeMenuProduct(List<Product> product) {
-        Product targetProduct = findProduct(product);
-        return new MenuProduct(targetProduct, quantity);
-    }
-
-    private Product findProduct(List<Product> products) {
-        return products.stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PRODUCT.getMessage()));
-    }
-
     public Long getProductId() {
         return productId;
     }

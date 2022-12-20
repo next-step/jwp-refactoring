@@ -7,15 +7,12 @@ import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.port.OrderPort;
 import kitchenpos.port.OrderTablePort;
 import kitchenpos.port.TableGroupPort;
-import kitchenpos.domain.type.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -44,7 +41,8 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupPort.findById(tableGroupId);
         final List<Order> order = orderPort.findAllByOrderTableIdIn(tableGroup.getOrderTablesId());
+        order.forEach(Order::validUngroupable);
 
-        tableGroup.ungroup(order);
+        tableGroup.ungroup();
     }
 }

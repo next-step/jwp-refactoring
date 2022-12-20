@@ -29,7 +29,6 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<Product> list() {
-        List<Product> all = productPort.findAll();
         return productPort.findAll();
     }
 }

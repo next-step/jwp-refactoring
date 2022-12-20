@@ -16,18 +16,18 @@ class TableGroupTest {
         // given
         OrderTable orderTableA = new OrderTable(2, false);
         Order orderA = new Order(orderTableA, OrderStatus.COMPLETION);
-        orderTableA.changeEmpty(true, Arrays.asList(orderA));
+        orderTableA.changeEmpty(true);
 
         OrderTable orderTableB = new OrderTable(4, false);
         Order orderB = new Order(orderTableB, OrderStatus.COMPLETION);
-        orderTableB.changeEmpty(true, Arrays.asList(orderB));
+        orderTableB.changeEmpty(true);
 
         OrderTable orderTable1 = orderA.getOrderTable();
         OrderTable orderTable2 = orderB.getOrderTable();
         TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
         orderTable1.addTableGroup(tableGroup);
 
-        tableGroup.ungroup(Arrays.asList(orderA));
+        tableGroup.ungroup();
 
         assertThat(orderTable1.getTableGroup()).isNull();
         assertThat(orderTable2.getTableGroup()).isNull();

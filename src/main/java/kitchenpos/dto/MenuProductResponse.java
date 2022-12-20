@@ -39,8 +39,4 @@ public class MenuProductResponse {
     public Long getQuantity() {
         return quantity;
     }
-
-    public static <R> R getProduct(MenuProduct menuProduct) {
-        return null;
-    }
 }

@@ -43,8 +43,7 @@ public class TableGroup {
 
 
 
-    public void ungroup(List<Order> order) {
-        order.forEach(Order::validCheckOrderStatusIsCookingAndMeal);
+    public void ungroup() {
         orderTables.ungroup();
     }
 

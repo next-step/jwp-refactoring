@@ -42,9 +42,4 @@ public class MenuRequest {
         return menuProduct;
     }
 
-    public MenuProducts makeMenuProducts(List<Product> product) {
-        return new MenuProducts(menuProduct.stream()
-                .map(menuProduct -> menuProduct.makeMenuProduct(product))
-                .collect(Collectors.toList()));
-    }
 }

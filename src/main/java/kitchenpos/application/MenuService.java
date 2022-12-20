@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.constants.ErrorCodeType.NOT_FOUND_PRODUCT;
+
 @Service
 @Transactional
 public class MenuService {
@@ -32,10 +34,10 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupPort.findById(request.getMenuGroupId());
-        List<Product> product = productPort.findAllByIdIn(getProductId(request));
+        List<Product> products = productPort.findAllByIdIn(getProductIds(request));
         Menu menu = new Menu(request.getName(), new Price(request.getPrice()), menuGroup);
 
-        MenuProducts menuProducts = request.makeMenuProducts(product);
+        MenuProducts menuProducts = makeMenuProducts(products, request);
 
         menu.addMenuProducts(menuProducts);
         Menu saveMenu = menuPort.save(menu);
@@ -43,7 +45,18 @@ public class MenuService {
         return MenuResponse.from(saveMenu);
     }
 
-    private List<Long> getProductId(MenuRequest request) {
+    private MenuProduct makeMenuProduct(List<Product> product, MenuProductRequest request) {
+        Product targetProduct = findProduct(product, request.getProductId());
+        return new MenuProduct(targetProduct, request.getQuantity());
+    }
+
+    private MenuProducts makeMenuProducts(List<Product> product, MenuRequest request) {
+        return new MenuProducts(request.getMenuProduct().stream()
+                .map(menuProduct -> makeMenuProduct(product, menuProduct))
+                .collect(Collectors.toList()));
+    }
+
+    private List<Long> getProductIds(MenuRequest request) {
         return request.getMenuProduct()
                 .stream()
                 .map(MenuProductRequest::getProductId)
@@ -57,5 +70,12 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private Product findProduct(List<Product> products, Long productId) {
+        return products.stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PRODUCT.getMessage()));
     }
 }

@@ -33,11 +33,10 @@ class OrderTableTest {
     @Test
     @DisplayName("단체 지정할 수 있는지 확인할 때 비어 있는 상태라면 예외가 발생한다")
     void groupIsEmptyException() {
-        OrderTable orderTable = new OrderTable(5, false);
-        Order 주문 = new Order(orderTable, OrderStatus.COOKING, null);
+        OrderTable orderTable = new OrderTable(new TableGroup(new OrderTables()), 5, false);
 
         assertThatThrownBy(
-                () -> orderTable.changeEmpty(true, Arrays.asList(주문)))
+                () -> orderTable.changeEmpty(true))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

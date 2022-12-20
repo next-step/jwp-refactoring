@@ -13,4 +13,6 @@ public interface OrderPort {
     List<Order> findAll();
 
     List<Order> findAllByOrderTableIdIn(List<Long> orderTablesId);
+
+    List<Order> findByOrderTableId(Long orderTableID);
 }

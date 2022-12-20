@@ -39,12 +39,7 @@ public class MenuJpaAdapter implements MenuPort {
     }
 
     @Override
-    public List<Menu> findAllByMenuId(List<Long> id) {
-        return menuJpaRepository.findAllByIdIn(id);
-    }
-
-    @Override
-    public long countByIdIn(List<Long> ids) {
-        return menuJpaRepository.countByIdIn(ids);
+    public List<Menu> findAllByMenuId(List<Long> menuIds) {
+        return menuJpaRepository.findAllByIdIn(menuIds);
     }
 }

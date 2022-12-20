@@ -119,9 +119,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 상태를 변경 할 수 있다.")
     void changeOrderStatus() {
-
         given(orderPort.findById(1L)).willReturn(주문);
-        given(orderPort.save(any())).willReturn(주문);
 
         orderService.changeOrderStatus(주문.getId(), new ChangeOrderStatusRequest(OrderStatus.COMPLETION));
 

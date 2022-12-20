@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static kitchenpos.constants.ErrorCodeType.*;
 
@@ -53,22 +52,15 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void validCheckOrderStatusIsCookingAndMeal() {
+    public void validUngroupable() {
         if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(this.orderStatus)) {
             throw new IllegalArgumentException(COOKING_MEAL_NOT_UNGROUP.getMessage());
         }
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItem, List<Menu> menu) {
-        validCheckOrderLineItemSizeIsSameMenuSize(orderLineItem, menu);
         this.orderLineItems = new OrderLineItems(orderLineItem);
         orderLineItems.setOrderLineItem(this);
-    }
-
-    private void validCheckOrderLineItemSizeIsSameMenuSize(List<OrderLineItem> orderLineItem, List<Menu> menu) {
-        if (orderLineItem.size() != menu.size()) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEM_MENU_SIZE_DIFFERENT.getMessage());
-        }
     }
 
     public Long getId() {

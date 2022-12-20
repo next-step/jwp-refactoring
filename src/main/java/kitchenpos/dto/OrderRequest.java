@@ -16,10 +16,6 @@ public class OrderRequest {
     protected OrderRequest() {}
 
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequest) {
-        if (Objects.isNull(orderLineItemRequest)) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
-        }
-
         this.orderTableId = orderTableId;
         this.orderLineItemRequest = orderLineItemRequest;
     }
@@ -28,22 +24,10 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public List<Long> getMenuId() {
+    public List<Long> getMenuIds() {
         return orderLineItemRequest.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
-    }
-
-    public Order makeOrder(OrderTable orderTable, List<Menu> menus) {
-        Order order = new Order(orderTable, OrderStatus.COOKING);
-
-        List<OrderLineItem> orderLineItems = getOrderLineItemRequest().stream()
-                .map(item -> item.createOrderLineItemRequest(menus))
-                .collect(Collectors.toList());
-
-        order.addOrderLineItems(orderLineItems, menus);
-
-        return order;
     }
 
     public List<OrderLineItemRequest> getOrderLineItemRequest() {

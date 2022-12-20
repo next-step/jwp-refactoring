@@ -67,7 +67,7 @@ class TableServiceTest {
         Order order = new Order(주문테이블, OrderStatus.COMPLETION);
 
         given(orderTablePort.findById(any())).willReturn(주문테이블);
-        given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(order));
+        given(orderPort.findByOrderTableId(any())).willReturn(Arrays.asList(order));
 
         TableResponse result = tableService.changeEmpty(1L, new ChangeEmptyRequest(true));
 
@@ -81,7 +81,7 @@ class TableServiceTest {
         Order 주문 = new Order(주문테이블, OrderStatus.COOKING, null);
 
         given(orderTablePort.findById(1L)).willReturn(주문테이블);
-        given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(주문));
+        given(orderPort.findByOrderTableId(any())).willReturn(Arrays.asList(주문));
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new ChangeEmptyRequest(true)))

@@ -39,29 +39,17 @@ public class Menu {
     }
 
 
-    private static void validCheckMeuProductPrice(List<MenuProduct> menuProducts, Price price) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getProduct()
-                    .getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        validCheckMenuPrice(sum, price);
-    }
-
-    private static void validCheckMenuPrice(BigDecimal sumPrice, Price requestPrice) {
-        if (requestPrice.getPrice().compareTo(sumPrice) > 0) {
+    private static void validCheckMeuProductPrice(BigDecimal sumPrice, Price price) {
+        if (price.getPrice().compareTo(sumPrice) > 0) {
             throw new IllegalArgumentException(MENU_PRICE_NOT_OVER_SUM_PRICE.getMessage());
         }
     }
 
     public void addMenuProducts(MenuProducts menuProducts) {
-        validCheckMeuProductPrice(menuProducts.getList(), price);
+        validCheckMeuProductPrice(menuProducts.getSumPrice(), price);
 
         this.menuProducts = menuProducts;
-
-        menuProducts.getList()
-                .forEach(menuProduct -> menuProduct.setMenu(this));
+        menuProducts.setMenu(this);
     }
 
     public Long getId() {
@@ -82,18 +70,5 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getList();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }

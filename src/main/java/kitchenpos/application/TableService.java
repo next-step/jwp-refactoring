@@ -11,7 +11,6 @@ import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,6 @@ public class TableService {
 
     public TableResponse create(final TableRequest request) {
         final OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
-        orderTable.setTableGroupNull();
 
         final OrderTable saveOrderTable = orderTablePort.save(orderTable);
 
@@ -46,9 +44,10 @@ public class TableService {
 
     public TableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
         final OrderTable savedOrderTable = orderTablePort.findById(orderTableId);
-        final List<Order> order = orderPort.findAllByOrderTableIdIn(Arrays.asList(orderTableId));
+        final List<Order> order = orderPort.findByOrderTableId(orderTableId);
+        order.forEach(Order::validUngroupable);
 
-        savedOrderTable.changeEmpty(request.isEmpty(), order);
+        savedOrderTable.changeEmpty(request.isEmpty());
 
         return TableResponse.from(savedOrderTable);
     }
