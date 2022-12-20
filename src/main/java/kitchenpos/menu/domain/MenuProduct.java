@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
@@ -14,7 +12,6 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
     private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,10 +24,8 @@ public class MenuProduct {
     }
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this(menu, product, quantity);
         this.seq = seq;
-        this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
     }
 
     public MenuProduct(Menu menu, Product product, long quantity) {
@@ -47,10 +42,6 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public Menu getMenu() {
         return menu;
     }
@@ -64,10 +55,9 @@ public class MenuProduct {
     }
 
     public void updateMenu(Menu menu) {
-        if(this.menu != menu) {
+        if (this.menu != menu) {
             this.menu = menu;
             menu.addMenuProduct(this);
         }
     }
-
 }

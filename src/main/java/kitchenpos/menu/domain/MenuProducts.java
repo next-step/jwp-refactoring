@@ -1,8 +1,5 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
@@ -11,8 +8,7 @@ import java.util.List;
 
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
 
@@ -27,16 +23,10 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-
     public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
-        if(!menuProducts.contains(menuProduct)) {
+        if (!menuProducts.contains(menuProduct)) {
             this.menuProducts.add(menuProduct);
             menuProduct.updateMenu(menu);
         }
     }
-
 }

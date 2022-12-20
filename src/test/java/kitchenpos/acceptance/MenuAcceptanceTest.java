@@ -42,7 +42,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", BigDecimal.valueOf(8_000), 한식);
         삼겹살메뉴싱품 = new MenuProduct(1L, 삼겹살세트메뉴, 삼겹살, 1L);
         김치상품 = new MenuProduct(2L, 삼겹살세트메뉴, 김치, 1L);
-        삼겹살세트메뉴.getMenuProducts().setMenuProducts(Arrays.asList(삼겹살메뉴싱품, 김치상품));
     }
 
     @DisplayName("메뉴를 생성한다.")

@@ -19,14 +19,10 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
 
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
@@ -42,7 +38,6 @@ public class Menu {
             throw new IllegalArgumentException();
         }
 
-        this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -94,5 +89,4 @@ public class Menu {
     public void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.addMenuProduct(this, menuProduct);
     }
-
 }
