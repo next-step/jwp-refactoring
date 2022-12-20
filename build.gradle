@@ -48,7 +48,7 @@ subprojects {
 
 dependencies {
     implementation 'org.flywaydb:flyway-core'
-    implementation project(':kitchenpos-common')
+    implementation project('sub-modules:kitchenpos-common')
 
-    testImplementation project(':kitchenpos-common').sourceSets.test.output
+    testImplementation project('sub-modules:kitchenpos-common').sourceSets.test.output
 }
