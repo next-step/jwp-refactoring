@@ -3,12 +3,13 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private OrderTable 테이블;
     private OrderTable 빈_테이블;
     private MenuResponse 메뉴_파닭치킨;
-    private Order 주문;
+    private OrderResponse 주문;
 
     @DisplayName("주문 관련 기능 테스트")
     @TestFactory
@@ -55,7 +56,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
                 주문_생성됨(response);
                 주문_생성시_조리상태_확인(response);
-                주문 = response.as(Order.class);
+                주문 = response.as(OrderResponse.class);
             }),
             dynamicTest("주문 항목 없이 주문을 등록한다.", () -> {
                 ExtractableResponse<Response> response = 주문_생성_요청(테이블);
@@ -79,25 +80,22 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 주문_목록_주문에_주문_항목이_포함됨(response, 메뉴_파닭치킨);
             }),
             dynamicTest("주문의 상태를 변경한다. (조리 -> 식사)", () -> {
-                ExtractableResponse<Response> response = 주문_상태_변경_요청(주문, OrderStatus.MEAL);
+                ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), OrderStatus.MEAL);
 
                 주문_상태_변경됨(response);
             }),
             dynamicTest("주문의 상태를 변경한다. (식사 -> 계산 완료)", () -> {
-                ExtractableResponse<Response> response = 주문_상태_변경_요청(주문, OrderStatus.COMPLETION);
+                ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), OrderStatus.COMPLETION);
 
                 주문_상태_변경됨(response);
             }),
             dynamicTest("주문의 상태를 변경한다. (계산 완료 -> 계산 완료)", () -> {
-                ExtractableResponse<Response> response = 주문_상태_변경_요청(주문, OrderStatus.COMPLETION);
+                ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), OrderStatus.COMPLETION);
 
                 주문_상태_변경_실패됨(response);
             }),
             dynamicTest("존재하지 않는 주문의 상태를 변경한다.", () -> {
-                Order 존재하지_않는_주문 = new Order();
-                존재하지_않는_주문.setId(Long.MAX_VALUE);
-
-                ExtractableResponse<Response> response = 주문_상태_변경_요청(존재하지_않는_주문, OrderStatus.MEAL);
+                ExtractableResponse<Response> response = 주문_상태_변경_요청(Long.MAX_VALUE, OrderStatus.MEAL);
 
                 주문_상태_변경_실패됨(response);
             })
@@ -107,7 +105,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, MenuResponse... menuResponses) {
         Map<String, Object> request = new HashMap<>();
         request.put("orderTableId", orderTable.getId());
-        request.put("orderLineItems", toOrderLoneItems(menuResponses));
+        request.put("orderLineItems", toOrderLoneItemRequests(menuResponses));
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -117,16 +115,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private static List<OrderLineItem> toOrderLoneItems(MenuResponse[] menuResponses) {
+    private static List<OrderLineItemRequest> toOrderLoneItemRequests(MenuResponse[] menuResponses) {
         if (ObjectUtils.isEmpty(menuResponses)) {
             return Collections.emptyList();
         }
         return Arrays.stream(menuResponses)
             .map(m -> {
-                OrderLineItem orderLineItem = new OrderLineItem();
-                orderLineItem.setMenuId(m.getId());
-                orderLineItem.setQuantity(1L);
-                return orderLineItem;
+                OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(m.getId(), 1L);
+                return orderLineItemRequest;
             })
             .collect(Collectors.toList());
     }
@@ -139,14 +135,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(Order order, OrderStatus status) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, OrderStatus status) {
         Map<String, Object> request = new HashMap<>();
         request.put("orderStatus", status.name());
         return RestAssured
             .given().log().all()
             .body(request)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put("/api/orders/{orderId}/order-status", order.getId())
+            .when().put("/api/orders/{orderId}/order-status", orderId)
             .then().log().all()
             .extract();
     }
@@ -156,7 +152,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_생성시_조리상태_확인(ExtractableResponse<Response> response) {
-        Order order = response.as(Order.class);
+        OrderResponse order = response.as(OrderResponse.class);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
@@ -177,10 +173,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_목록_주문에_주문_항목이_포함됨(ExtractableResponse<Response> response, MenuResponse... menuResponses) {
-        List<Long> menuIds = response.jsonPath().getList(".", Order.class)
+        List<Long> menuIds = response.jsonPath().getList(".", OrderResponse.class)
             .stream()
             .flatMap(o -> o.getOrderLineItems().stream())
-            .map(OrderLineItem::getMenuId)
+            .map(OrderLineItemResponse::getMenuId)
+            .distinct()
             .collect(Collectors.toList());
 
         List<Long> expectedIds = Arrays.stream(menuResponses)
