@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.order.fixture.OrderLineItemTestFixture;
 import kitchenpos.tablegroup.fixture.TableGroupTestFixture;
 import kitchenpos.order.domain.Order;
@@ -20,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -131,8 +133,8 @@ class TableGroupServiceTest {
         TableGroupTestFixture.setId(1L, tableGroup);
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
         when(orderTableRepository.findAllByTableGroupId(단체1.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        Order 주문1 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(1L, 10)))));
-        Order 주문2 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(2L, 10)))));
+        Order 주문1 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(1L, 10, "메뉴이름", Price.from(BigDecimal.ONE))))));
+        Order 주문2 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(2L, 10, "메뉴이름", Price.from(BigDecimal.ONE))))));
         when(orderRepository.findAllByOrderTableIdIn(any())).thenReturn(Arrays.asList(주문1, 주문2));
         // when
         tableGroupService.ungroup(단체1.getId());

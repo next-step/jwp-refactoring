@@ -1,6 +1,9 @@
 package kitchenpos.order.application;
 
 import kitchenpos.common.ErrorMessage;
+import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -18,13 +21,16 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final MenuRepository menuRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
+            final MenuRepository menuRepository,
             final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
+        this.menuRepository = menuRepository;
         this.orderValidator = orderValidator;
     }
 
@@ -39,7 +45,12 @@ public class OrderService {
 
     private List<OrderLineItem> mapToOrderLineItems(final List<OrderLineItemRequest> requestOrderLineItems) {
         return requestOrderLineItems.stream()
-                .map(orderLineItem -> OrderLineItem.of(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
+                .map(orderLineItem -> {
+                    Menu menu = findMenuById(orderLineItem.getMenuId());
+                    return OrderLineItem.of(
+                            menu.getId(), orderLineItem.getQuantity(), menu.getName(), Price.from(menu.getPrice())
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
@@ -47,6 +58,11 @@ public class OrderService {
         return orderRepository.findAll().stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Menu findMenuById(Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.NOT_FOUND_MENU.getMessage(), id)));
     }
 
     @Transactional

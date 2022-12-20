@@ -85,6 +85,7 @@ class OrderServiceTest {
     void create() {
         // given
         when(orderRepository.save(any())).thenReturn(주문1);
+        when(menuRepository.findById(any())).thenReturn(Optional.of(짜장면_탕수육_1인_메뉴_세트));
 
         // when
         OrderResponse order = orderService.create(주문1_요청);

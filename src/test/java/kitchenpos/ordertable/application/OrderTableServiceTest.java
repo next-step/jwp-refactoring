@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.order.fixture.OrderLineItemTestFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -94,7 +96,7 @@ class OrderTableServiceTest {
         // given
         주문테이블1.unGroup();
         주문테이블1.changeEmpty(true);
-        Order order = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(1L, 10)))));
+        Order order = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(1L, 10, "메뉴이름", Price.from(BigDecimal.ONE))))));
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
         when(orderRepository.findAllByOrderTableId(any())).thenReturn(Collections.singletonList(order));
 

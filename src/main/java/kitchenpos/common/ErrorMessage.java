@@ -13,6 +13,7 @@ public enum ErrorMessage {
     INVALID_PRICE("가격이 존재하지 않습니다."),
     COMPLETED_ORDER("이미 완료된 주문입니다."),
     NOT_COMPLETED_ORDER("주문상태가 완료되지 않은 주문이 포함되어 있습니다."),
+    NOT_FOUND_MENU("%d에 해당하는 메뉴을 찾을 수 없습니다."),
     NOT_FOUND_MENU_GROUP("%d에 해당하는 메뉴그룹을 찾을 수 없습니다."),
     NOT_FOUND_TABLE_GROUP("%d에 해당하는 테이블그룹을 찾을 수 없습니다."),
     NOT_FOUND_PRODUCT("%d에 해당하는 상품을 찾을 수 없습니다."),
