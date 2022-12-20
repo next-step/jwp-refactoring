@@ -20,6 +20,10 @@ public class MenuGroupRequest {
         return new MenuGroup(name);
     }
 
+    public MenuGroup createMenuGroup() {
+        return MenuGroup.create(name);
+    }
+
     public String getName() {
         return name;
     }

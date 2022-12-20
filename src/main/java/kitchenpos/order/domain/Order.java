@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.constants.ErrorMessages;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -94,11 +95,18 @@ public class Order {
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
+        checkOrderStatusChangeAble();
         this.orderStatus = orderStatus;
     }
 
     public void updateOrderStatus(String orderStatus) {
         updateOrderStatus(OrderStatus.valueOf(orderStatus));
+    }
+
+    private void checkOrderStatusChangeAble() {
+        if (isOrderStatusComplete()) {
+            throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER);
+        }
     }
 
     public LocalDateTime getOrderedTime() {

@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import kitchenpos.constants.ErrorMessages;
 
 @Embeddable
 public class OrderLineItems {
@@ -42,6 +43,12 @@ public class OrderLineItems {
         return orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
+    }
+
+    public void checkOrderLineItemEmpty() {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessages.ORDER_LINE_ITEM_EMPTY);
+        }
     }
 
     @Override

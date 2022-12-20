@@ -27,7 +27,12 @@ public class MenuGroup {
         this.name = name;
     }
 
-    public void validateName() {
+    public static MenuGroup create(String name) {
+        validateName(name);
+        return new MenuGroup(name);
+    }
+
+    private static void validateName(String name) {
         if (name.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessages.MENU_GROUP_NAME_CANNOT_BE_EMPTY);
         }
