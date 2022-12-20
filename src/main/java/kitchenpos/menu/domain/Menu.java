@@ -31,10 +31,8 @@ public class Menu {
     protected Menu() {}
 
     public Menu(Long id, Name name, Price price, MenuGroup menuGroup) {
+        this(name, price, menuGroup);
         this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
     }
 
     public Menu(Name name, Price price, MenuGroup menuGroup) {
@@ -45,10 +43,6 @@ public class Menu {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Name getName() {
