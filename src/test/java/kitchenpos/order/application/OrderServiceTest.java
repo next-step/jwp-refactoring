@@ -64,7 +64,7 @@ class OrderServiceTest {
 
         후라이드세트 = MenuFactory.create(1L, "후라이드세트", BigDecimal.valueOf(16000), 메뉴분류세트, Arrays.asList(후라이드메뉴상품, 콜라메뉴상품));
         주문테이블 = OrderTableFactory.create(1L, null, 4, false);
-        OrderLineItem 후라이드세트주문항목 = new OrderLineItem(1L, 주문, 후라이드세트, 1L);
+        OrderLineItem 후라이드세트주문항목 = new OrderLineItem(1L, 주문, 후라이드세트.getId(), 1L);
         주문 = OrderFactory.create(1L, 주문테이블.getId(), Collections.singletonList(후라이드세트주문항목));
         주문항목요청 = new OrderLineItemRequest(후라이드세트.getId(), 1L);
     }
@@ -74,7 +74,6 @@ class OrderServiceTest {
     void create() {
         //given
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(menuRepository.findById(후라이드세트.getId())).willReturn(Optional.ofNullable(후라이드세트));
         given(orderRepository.save(any())).willReturn(주문);
         //when
         OrderResponse orderResponse = orderService.create(주문요청);
@@ -87,29 +86,6 @@ class OrderServiceTest {
                 () -> assertThat(orderResponse.getOrderLineItems().size()).isEqualTo(1)
         );
 
-    }
-
-    @DisplayName("주문을 생성 요청시 주문 항목이 없으면 에러가 발생한다.")
-    @Test
-    void createOrderLineItems() {
-        //given
-        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.emptyList());
-
-        //when & then
-        assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목에 등록되지 않은 메뉴가 있으면 에러가 발생한다.")
-    @Test
-    void createOrderItemCount() {
-        //given
-        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(menuRepository.findById(any())).willReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 목록을 조회할 수 있다.")

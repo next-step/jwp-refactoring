@@ -46,14 +46,4 @@ class OrderTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
-
-    @DisplayName("주문항목이 비어 있으면 주문을 생성할 수 없다.")
-    @Test
-    void validOrderLineItems() {
-        //when & then
-        assertThatThrownBy(() -> OrderFactory.create(1L, 주문테이블.getId(), Collections.emptyList()))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-
 }

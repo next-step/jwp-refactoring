@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.util.CollectionUtils;
 
 @Table(name = "orders")
 @Entity
@@ -32,7 +31,6 @@ public class Order {
     }
 
     protected Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        validOrderLineItems(orderLineItems);
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
@@ -82,9 +80,4 @@ public class Order {
         orderLineItem.setOrder(this);
     }
 
-    private void validOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("비어있는 주문항목은 등록할 수 없습니다.");
-        }
-    }
 }

@@ -2,8 +2,6 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -15,30 +13,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderValidator orderValidator) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderValidator.validCreate(orderRequest.getOrderTableId());
-
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
-                .stream()
-                .map(i -> OrderLineItem.of(findMenuById(i.getMenuId()), i.getQuantity()))
-                .collect(Collectors.toList());
-
+        List<OrderLineItem> orderLineItems = mapToOrderLineItems(orderRequest);
+        orderValidator.validCreate(orderRequest.getOrderTableId(), orderLineItems);
         Order savedOrder = orderRepository.save(Order.of(orderRequest.getOrderTableId(), orderLineItems));
-
         return OrderResponse.from(savedOrder);
     }
 
+    private List<OrderLineItem> mapToOrderLineItems(OrderRequest orderRequest) {
+        return orderRequest.getOrderLineItems()
+                .stream()
+                .map(i -> OrderLineItem.of(i.getMenuId(), i.getQuantity()))
+                .collect(Collectors.toList());
+    }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
@@ -62,8 +58,5 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private Menu findMenuById(long menuId) {
-        return menuRepository.findById(menuId)
-                .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다."));
-    }
+
 }
