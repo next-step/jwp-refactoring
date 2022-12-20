@@ -1,19 +1,44 @@
 package kitchenpos.order.domain;
 
-public class OrderTable {
-	private Long id;
-	private Long tableGroupId;
-	private int numberOfGuests;
-	private boolean empty;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-	public OrderTable() {
+import org.springframework.util.Assert;
+
+@Entity
+public class OrderTable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@ManyToOne
+	@JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_to_table_group"))
+	private TableGroup tableGroup;
+
+	@Embedded
+	private NumberOfGuests numberOfGuests;
+
+	@Embedded
+	private TableEmpty tableEmpty;
+
+	protected OrderTable() {
 	}
 
-	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.id = id;
-		this.tableGroupId = tableGroupId;
+	private OrderTable(NumberOfGuests numberOfGuests, TableEmpty tableEmpty) {
+		Assert.notNull(numberOfGuests, "인원수는 필수입니다.");
+		Assert.notNull(tableEmpty, "테이블 상태는 필수입니다.");
 		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
+		this.tableEmpty = tableEmpty;
+	}
+
+	public static OrderTable of(NumberOfGuests numberOfGuests, TableEmpty tableEmpty) {
+		return new OrderTable(numberOfGuests, tableEmpty);
 	}
 
 	public Long getId() {
@@ -25,26 +50,37 @@ public class OrderTable {
 	}
 
 	public Long getTableGroupId() {
-		return tableGroupId;
+		return tableGroup.getId();
 	}
 
-	public void setTableGroupId(final Long tableGroupId) {
-		this.tableGroupId = tableGroupId;
+	public boolean hasTableGroup() {
+		return tableGroup != null;
 	}
 
 	public int getNumberOfGuests() {
-		return numberOfGuests;
-	}
-
-	public void setNumberOfGuests(final int numberOfGuests) {
-		this.numberOfGuests = numberOfGuests;
+		return numberOfGuests.value();
 	}
 
 	public boolean isEmpty() {
-		return empty;
+		return tableEmpty.isEmpty();
 	}
 
-	public void setEmpty(final boolean empty) {
-		this.empty = empty;
+	public void updateEmpty(boolean empty) {
+		if (hasTableGroup()) {
+			throw new IllegalArgumentException("테이블 그룹에 속한 테이블은 상태를 변경할 수 없습니다.");
+		}
+		this.tableEmpty = TableEmpty.from(empty);
+	}
+
+	public NumberOfGuests numberOfGuests() {
+		return numberOfGuests;
+	}
+
+	public void updateNumberOfGuests(int numberOfGuests) {
+		if (isEmpty()) {
+			throw new IllegalArgumentException("빈 테이블은 인원수를 변경할 수 없습니다.");
+		}
+		this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
+
 	}
 }

@@ -2,42 +2,76 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private LocalDateTime createdDate;
-	private List<OrderTable> orderTables;
 
-	public TableGroup() {
+	@CreatedDate
+	private LocalDateTime createdDate;
+
+	@Embedded
+	private OrderTables orderTables;
+
+	protected TableGroup() {
 	}
 
-	public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-		this.id = id;
-		this.createdDate = createdDate;
+	private TableGroup(OrderTables orderTables) {
 		this.orderTables = orderTables;
+	}
+
+	public static TableGroup from(OrderTables orderTables) {
+		return new TableGroup(orderTables);
+	}
+
+	public static TableGroup from(List<OrderTable> orderTables) {
+		return new TableGroup(OrderTables.from(orderTables));
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(final LocalDateTime createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public List<OrderTable> getOrderTables() {
+	public OrderTables getOrderTables() {
 		return orderTables;
 	}
 
-	public void setOrderTables(final List<OrderTable> orderTables) {
-		this.orderTables = orderTables;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		TableGroup that = (TableGroup)o;
+		return Objects.equals(orderTables, that.orderTables);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(orderTables);
+	}
+
+	public List<OrderTable> orderTables() {
+		return orderTables.list();
 	}
 }

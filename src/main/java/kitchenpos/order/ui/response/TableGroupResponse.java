@@ -21,9 +21,9 @@ public class TableGroupResponse {
 		return new TableGroupResponse(id, createdDate, orderTables);
 	}
 
-	public static TableGroupResponse from(TableGroup savedTableGroup) {
-		return new TableGroupResponse(savedTableGroup.getId(), savedTableGroup.getCreatedDate(),
-				OrderTableResponse.listOf(savedTableGroup.getOrderTables()));
+	public static TableGroupResponse from(TableGroup tableGroup) {
+		return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(),
+				OrderTableResponse.listFrom(tableGroup.orderTables()));
 	}
 
 	public long getId() {

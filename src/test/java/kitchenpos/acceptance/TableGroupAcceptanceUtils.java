@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.RestAssuredUtils.*;
+import static kitchenpos.order.ui.request.TableGroupRequest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,8 +15,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.ui.request.TableGroupRequest;
 import kitchenpos.order.ui.response.OrderTableResponse;
 import kitchenpos.order.ui.response.TableGroupResponse;
 
@@ -69,13 +69,9 @@ public class TableGroupAcceptanceUtils {
 		);
 	}
 
-	private static TableGroup tableGroupRequest(List<Long> orderTableIds) {
-		return new TableGroup(null, LocalDateTime.now(), orderTableIds.stream()
-			.map(TableGroupAcceptanceUtils::orderTableRequest)
+	private static TableGroupRequest tableGroupRequest(List<Long> orderTableIds) {
+		return new TableGroupRequest(orderTableIds.stream()
+			.map(OrderTableIdRequest::new)
 			.collect(Collectors.toList()));
-	}
-
-	private static OrderTable orderTableRequest(Long orderTableId) {
-		return new OrderTable(orderTableId, null, 0, true);
 	}
 }

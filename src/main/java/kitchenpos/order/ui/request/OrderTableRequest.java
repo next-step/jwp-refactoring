@@ -1,6 +1,8 @@
 package kitchenpos.order.ui.request;
 
+import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableEmpty;
 
 public class OrderTableRequest {
 	private final int numberOfGuests;
@@ -20,6 +22,6 @@ public class OrderTableRequest {
 	}
 
 	public OrderTable toEntity() {
-		return new OrderTable(null, null, numberOfGuests, empty);
+		return OrderTable.of(NumberOfGuests.from(numberOfGuests), TableEmpty.from(empty));
 	}
 }

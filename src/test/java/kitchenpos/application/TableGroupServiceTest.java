@@ -49,8 +49,8 @@ class TableGroupServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		주문테이블1 = 주문테이블(null, 5, true);
-		주문테이블2 = 주문테이블(null, 2, true);
+		주문테이블1 = 주문테이블(5, true);
+		주문테이블2 = 주문테이블(2, true);
 		단체지정 = 단체_지정(Arrays.asList(주문테이블1, 주문테이블2));
 	}
 
@@ -70,7 +70,7 @@ class TableGroupServiceTest {
 		// then
 		verify(tableGroupDao, only()).save(any(TableGroup.class));
 		assertAll(
-			() -> assertThat(단체지정.getOrderTables()).hasSize(2),
+			() -> assertThat(단체지정.getOrderTables().list()).hasSize(2),
 			() -> assertThat(단체지정.getId()).isEqualTo(response.getId())
 		);
 	}
@@ -95,7 +95,7 @@ class TableGroupServiceTest {
 		// given
 		TableGroupRequest tableGroupRequest = new TableGroupRequest(
 			Arrays.asList(new OrderTableIdRequest(1L), new OrderTableIdRequest(2L)));
-		주문테이블1 = 주문테이블(null, 2, false);
+		주문테이블1 = 주문테이블(2, false);
 
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
@@ -110,8 +110,8 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupWithAlreadyGroupedOrderTableTest() {
 		// given
-		주문테이블1 = 주문테이블(1L, 2, true);
-		주문테이블2 = 주문테이블(null, 5, true);
+		주문테이블1 = 주문테이블(2, true);
+		주문테이블2 = 주문테이블(5, true);
 
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 

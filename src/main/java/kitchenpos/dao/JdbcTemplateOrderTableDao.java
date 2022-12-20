@@ -89,18 +89,18 @@ public class JdbcTemplateOrderTableDao implements OrderTableDao {
                 " number_of_guests = (:numberOfGuests), empty = (:empty) WHERE id = (:id)";
         final SqlParameterSource parameters = new MapSqlParameterSource()
                 .addValue("tableGroupId", entity.getTableGroupId())
-                .addValue("numberOfGuests", entity.getNumberOfGuests())
+                // .addValue("numberOfGuests", entity.getNumberOfGuests())
                 .addValue("empty", entity.isEmpty())
                 .addValue("id", entity.getId());
         jdbcTemplate.update(sql, parameters);
     }
 
     private OrderTable toEntity(final ResultSet resultSet) throws SQLException {
-        final OrderTable entity = new OrderTable();
-        entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setTableGroupId(resultSet.getObject("table_group_id", Long.class));
-        entity.setNumberOfGuests(resultSet.getInt("number_of_guests"));
-        entity.setEmpty(resultSet.getBoolean("empty"));
-        return entity;
+        // final OrderTable entity = new OrderTable();
+        // entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
+        // entity.setTableGroupId(resultSet.getObject("table_group_id", Long.class));
+        // entity.setNumberOfGuests(resultSet.getInt("number_of_guests"));
+        // entity.setEmpty(resultSet.getBoolean("empty"));
+        return null;
     }
 }

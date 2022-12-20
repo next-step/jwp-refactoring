@@ -88,4 +88,8 @@ public class OrderService {
         savedOrder.updateStatus(request.status());
         return OrderResponse.from(savedOrder);
     }
+
+    public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, asList);
+    }
 }

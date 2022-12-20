@@ -1,6 +1,5 @@
 package kitchenpos.generator;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import kitchenpos.order.domain.OrderTable;
@@ -12,6 +11,6 @@ public class TableGroupGenerator {
 	}
 
 	public static TableGroup 단체_지정(List<OrderTable> orderTables) {
-		return new TableGroup(1L, LocalDateTime.now(), orderTables);
+		return TableGroup.from(orderTables);
 	}
 }

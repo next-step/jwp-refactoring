@@ -20,22 +20,22 @@ public class OrderTableResponse {
 		this.tableGroupId = tableGroupId;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
-
 	}
+
 
 	public static OrderTableResponse of(long id, Long tableGroupId, int numberOfGuests, boolean empty) {
 		return new OrderTableResponse(id, tableGroupId, numberOfGuests, empty);
 	}
 
-	public static List<OrderTableResponse> listOf(List<OrderTable> orderTables) {
-		return orderTables.stream()
-			.map(orderTable -> OrderTableResponse.of(orderTable.getId(), orderTable.getTableGroupId(),
-				orderTable.getNumberOfGuests(), orderTable.isEmpty()))
-			.collect(Collectors.toList());
+	public static OrderTableResponse of(long id,  int numberOfGuests, boolean empty) {
+		return new OrderTableResponse(id, null, numberOfGuests, empty);
 	}
-
 	public static OrderTableResponse from(OrderTable orderTable) {
-		return OrderTableResponse.of(orderTable.getId(), orderTable.getTableGroupId(),
+		if (orderTable.hasTableGroup()) {
+			return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
+				orderTable.numberOfGuests().value(), orderTable.isEmpty());
+		}
+		return OrderTableResponse.of(orderTable.getId(),
 			orderTable.getNumberOfGuests(), orderTable.isEmpty());
 	}
 

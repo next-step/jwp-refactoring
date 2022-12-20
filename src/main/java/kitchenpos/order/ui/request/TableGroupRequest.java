@@ -1,10 +1,12 @@
 package kitchenpos.order.ui.request;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.order.domain.TableEmpty;
 import kitchenpos.order.domain.TableGroup;
 
 public class TableGroupRequest {
@@ -19,9 +21,9 @@ public class TableGroupRequest {
 	}
 
 	public TableGroup toEntity() {
-		return new TableGroup(null, LocalDateTime.now(), orderTables.stream()
+		return TableGroup.from(OrderTables.from(orderTables.stream()
 			.map(OrderTableIdRequest::toEntity)
-			.collect(Collectors.toList()));
+			.collect(Collectors.toList())));
 	}
 
 	public static class OrderTableIdRequest {
@@ -36,7 +38,7 @@ public class TableGroupRequest {
 		}
 
 		public OrderTable toEntity() {
-			return new OrderTable(id, null, 0, false);
+			return OrderTable.of(NumberOfGuests.from(0), TableEmpty.from(true));
 		}
 	}
 
