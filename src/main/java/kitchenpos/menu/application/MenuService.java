@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.menu.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.stereotype.Service;
@@ -73,7 +73,7 @@ public class MenuService {
 
     private Product getProduct(List<Product> products, Long productId) {
         return products.stream()
-                .filter(product -> product.getId().equals(productId))
+                .filter(product -> product.isId(productId))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

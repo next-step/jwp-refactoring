@@ -12,10 +12,22 @@ public class PriceTest {
     @DisplayName("null 체크 테스트")
     void nullTest(){
         // given
-        Price price = new Price();
 
         // when & then
-        assertThat(price.isNull()).isTrue();
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> new Price(null)
+        );
+    }
+
+    @Test
+    @DisplayName("음수 체크 테스트")
+    void negativeTest(){
+        // given
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> new Price(new BigDecimal(-100))
+        );
     }
 
     @Test

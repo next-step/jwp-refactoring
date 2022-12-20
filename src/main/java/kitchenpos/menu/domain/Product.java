@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -32,8 +32,6 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = new Price(price);
-
-        validatePrice();
     }
 
     public Long getId() {
@@ -48,9 +46,7 @@ public class Product {
         return price;
     }
 
-    private void validatePrice() {
-        if (price.isNull() || price.isLessThan(BigDecimal.ZERO)) {
-            throw new IllegalArgumentException();
-        }
+    public boolean isId(Long productId) {
+        return this.id.equals(productId);
     }
 }

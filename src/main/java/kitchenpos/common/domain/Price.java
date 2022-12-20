@@ -11,18 +11,26 @@ public class Price {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public Price() {
+    protected Price(){
+
     }
 
     public Price(BigDecimal price) {
         this.price = price;
+        validateCreate();
+    }
+
+    private void validateCreate() {
+        if(isNull() || isLessThan(BigDecimal.ZERO)){
+            throw new IllegalArgumentException();
+        }
     }
 
     public Price(int price){
         this.price = new BigDecimal(price);
     }
 
-    public boolean isNull(){
+    private boolean isNull(){
         return Objects.isNull(price);
     }
 

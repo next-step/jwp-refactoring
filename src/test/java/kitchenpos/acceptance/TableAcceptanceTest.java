@@ -10,7 +10,7 @@ import java.util.Arrays;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableRequest;

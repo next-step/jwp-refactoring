@@ -19,7 +19,7 @@ public class OrderTest {
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1);
 
         // when
-        Order order = new Order(orderTable, Arrays.asList(
+        Order order = new Order(orderTable.getId(), Arrays.asList(
                 orderLineItem1, orderLineItem2
         ));
 
@@ -36,7 +36,7 @@ public class OrderTest {
         OrderTable orderTable = new OrderTable(true);
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1);
-        Order order = new Order(orderTable, Arrays.asList(
+        Order order = new Order(orderTable.getId(), Arrays.asList(
                 orderLineItem1, orderLineItem2
         ));
 
@@ -55,7 +55,7 @@ public class OrderTest {
         OrderTable orderTable = new OrderTable(true);
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1);
-        Order order = new Order(orderTable, Arrays.asList(
+        Order order = new Order(orderTable.getId(), Arrays.asList(
                 orderLineItem1, orderLineItem2
         ));
 
@@ -74,7 +74,7 @@ public class OrderTest {
         OrderTable orderTable = new OrderTable(true);
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1);
-        Order order = new Order(orderTable, Arrays.asList(
+        Order order = new Order(orderTable.getId(), Arrays.asList(
                 orderLineItem1, orderLineItem2
         ));
         order.changeOrderStatus(OrderStatus.COMPLETION);

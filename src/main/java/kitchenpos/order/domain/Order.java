@@ -6,27 +6,24 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
 public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+
+    @Column(name = "order_table_id")
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
@@ -36,8 +33,8 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems){
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems){
+        this.orderTableId = orderTableId;
         this.orderedTime = LocalDateTime.now();
         changeOrderStatus(COOKING);
         addOrderLineItems(orderLineItems);
@@ -79,7 +76,7 @@ public class Order {
         return orderLineItems;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 }

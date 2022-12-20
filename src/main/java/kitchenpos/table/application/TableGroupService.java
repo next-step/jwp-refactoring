@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -63,10 +64,14 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = getTableGroup(tableGroupId);
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
+        List<Long> tableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
 
-        for (OrderTable orderTable : orderTables) {
-            tableValidator.validateDinning(orderDao.findAllByOrderTable(orderTable));
+        if(orderDao.existsByOrderTableIdInAndOrderStatusNot(tableIds, OrderStatus.COMPLETION)){
+            throw new IllegalArgumentException();
         }
+
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.unGroup();

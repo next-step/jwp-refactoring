@@ -1,7 +1,7 @@
 package kitchenpos.order.validator;
 
 import java.util.List;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -9,10 +9,18 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class OrderValidator {
 
-    public void validateCreate(List<OrderLineItemRequest> orderLineItemRequests, OrderTable orderTable){
+    private OrderTableService orderTableService;
+
+    public OrderValidator(OrderTableService orderTableService) {
+        this.orderTableService = orderTableService;
+    }
+
+    public void validateCreate(List<OrderLineItemRequest> orderLineItemRequests, Long orderTableId){
+        boolean isTableEmpty = orderTableService.isTableEmpty(orderTableId);
+
         if (CollectionUtils.isEmpty(orderLineItemRequests) ||
                 existsMenuIdIsNull(orderLineItemRequests) ||
-                orderTable.isEmpty()
+                isTableEmpty
         ) {
             throw new IllegalArgumentException();
         }

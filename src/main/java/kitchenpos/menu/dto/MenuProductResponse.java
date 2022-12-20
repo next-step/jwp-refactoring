@@ -2,15 +2,15 @@ package kitchenpos.menu.dto;
 
 public class MenuProductResponse {
     private Long seq;
-    private String productName;
+    private Long productId;
     private long quantity;
 
     public MenuProductResponse() {
     }
 
-    public MenuProductResponse(Long seq, String productName, long quantity) {
+    public MenuProductResponse(Long seq, Long productId, long quantity) {
         this.seq = seq;
-        this.productName = productName;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -18,8 +18,8 @@ public class MenuProductResponse {
         return seq;
     }
 
-    public String getProductName() {
-        return productName;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
