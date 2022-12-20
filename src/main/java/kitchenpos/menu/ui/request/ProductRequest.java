@@ -2,6 +2,7 @@ package kitchenpos.menu.ui.request;
 
 import java.math.BigDecimal;
 
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 
 public class ProductRequest {
@@ -23,6 +24,6 @@ public class ProductRequest {
 	}
 
 	public Product toEntity() {
-		return new Product(null, name, price);
+		return Product.of(name, Price.from(price));
 	}
 }

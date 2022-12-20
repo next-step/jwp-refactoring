@@ -1,6 +1,7 @@
 package kitchenpos.menu.ui.response;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.MenuProducts;
 
@@ -26,7 +27,7 @@ public class MenuProductResponse {
 		return menuProducts.list().stream()
 			.map(menuProduct -> MenuProductResponse.of(menuProduct.getSeq(), menuProduct.getMenuId(),
 				menuProduct.getProductId(), menuProduct.getQuantity()))
-			.collect(java.util.stream.Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 	public long getSeq() {

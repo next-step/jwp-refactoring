@@ -1,7 +1,10 @@
 package kitchenpos.generator;
 
+import static org.mockito.Mockito.*;
+
 import java.math.BigDecimal;
 
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 
 public class ProductGenerator {
@@ -10,10 +13,25 @@ public class ProductGenerator {
 	}
 
 	public static Product 상품(String name) {
-		return new Product(1L, name, BigDecimal.ONE);
+		return Product.of(name, Price.from(BigDecimal.ONE));
 	}
 
 	public static Product 상품(String name, BigDecimal price) {
-		return new Product(1L, name, price);
+		return Product.of(name, Price.from(price));
+	}
+
+	public static Product 후라이드_치킨() {
+		Product 후라이드 =
+			// spy(
+			Product.of("후라이드", Price.from(BigDecimal.ONE));
+		// );
+		// lenient().when(후라이드.getId()).thenReturn(1L);
+		return 후라이드;
+	}
+
+	public static Product 양념_치킨() {
+		Product 양념 = spy(Product.of("양념", Price.from(BigDecimal.ONE)));
+		lenient().when(양념.getId()).thenReturn(2L);
+		return 양념;
 	}
 }

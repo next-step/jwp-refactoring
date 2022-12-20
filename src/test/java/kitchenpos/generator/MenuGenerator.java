@@ -23,7 +23,7 @@ public class MenuGenerator {
 
 	public static Menu 후라이드_세트() {
 		Menu 후라이드_세트 = spy(메뉴("후라이드 세트", Price.from(BigDecimal.valueOf(16000)), 한마리_메뉴(), MenuProducts.from(
-			Arrays.asList(후라이드_세트_상품(), 양념_세트_상품()))));
+			Arrays.asList(후라이드_세트_상품(), 후라이드_세트_상품2()))));
 		lenient().when(후라이드_세트.getId()).thenReturn(1L);
 		return 후라이드_세트;
 	}
