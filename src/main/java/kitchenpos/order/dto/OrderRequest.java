@@ -34,11 +34,6 @@ public class OrderRequest {
     }
 
     public Order createOrder() {
-        /*Order order = new Order(orderTableId);
-        orderLineItems.stream()
-                .map(OrderLineItemRequest::toOrderLineItem)
-                .forEach(order::addOrderLineItem);
-        return order;*/
         List<OrderLineItem> orderLineItems1 = orderLineItems.stream()
                 .map(OrderLineItemRequest::toOrderLineItem)
                 .collect(Collectors.toList());
