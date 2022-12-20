@@ -9,7 +9,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +23,14 @@ import static kitchenpos.common.ErrorMessage.INVALID_PRODUCT_ID;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final ProductRepository productRepository;
     private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final ProductRepository productRepository,
             final MenuValidator menuValidator
 
     ) {
         this.menuRepository = menuRepository;
-        this.productRepository = productRepository;
         this.menuValidator = menuValidator;
     }
 
@@ -77,6 +73,6 @@ public class MenuService {
                 .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
 
-        return productRepository.findAllByIdIn(productIds);
+        return menuValidator.findAllByIdIn(productIds);
     }
 }

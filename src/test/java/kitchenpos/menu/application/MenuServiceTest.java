@@ -84,7 +84,7 @@ class MenuServiceTest {
         setId(2L, 탕수육상품);
         Product 단무지상품 = 상품생성(단무지요청());
         setId(4L, 단무지상품);
-        when(productRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
+        when(menuValidator.findAllByIdIn(any())).thenReturn(Arrays.asList(짜장면상품, 탕수육상품, 단무지상품));
 
         // when
         MenuResponse saveMenu = menuService.create(짜장면_탕수육_1인_메뉴_세트_요청);
