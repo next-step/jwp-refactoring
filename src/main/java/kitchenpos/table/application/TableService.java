@@ -1,8 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.validator.TableValidator;
@@ -13,12 +11,10 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
     private final TableValidator validator;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableValidator validator) {
-        this.orderDao = orderDao;
+    public TableService(final OrderTableDao orderTableDao, final TableValidator validator) {
         this.orderTableDao = orderTableDao;
         this.validator = validator;
     }
@@ -35,8 +31,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
-        List<Order> orders = orderDao.findAllByOrderTableId(savedOrderTable.getId());
-        validator.validateChangeEmpty(savedOrderTable, orders);
+        validator.validateChangeEmpty(savedOrderTable);
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

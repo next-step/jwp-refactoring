@@ -1,6 +1,7 @@
 package kitchenpos.order.validator;
 
 import java.util.List;
+import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,15 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class OrderValidator {
 
-    public void validateCreate(List<OrderLineItemRequest> orderLineItemRequests, OrderTable orderTable){
+    private OrderTableDao orderTableDao;
+
+    public OrderValidator(OrderTableDao orderTableDao) {
+        this.orderTableDao = orderTableDao;
+    }
+
+    public void validateCreate(List<OrderLineItemRequest> orderLineItemRequests, Long orderTableId){
+        OrderTable orderTable = getOrderTable(orderTableId);
+
         if (CollectionUtils.isEmpty(orderLineItemRequests) ||
                 existsMenuIdIsNull(orderLineItemRequests) ||
                 orderTable.isEmpty()
@@ -21,5 +30,10 @@ public class OrderValidator {
     private boolean existsMenuIdIsNull(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
                 .anyMatch(orderLineItemRequest -> orderLineItemRequest.getMenuId() == null);
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

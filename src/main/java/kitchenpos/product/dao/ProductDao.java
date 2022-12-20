@@ -1,7 +1,7 @@
-package kitchenpos.menu.dao;
+package kitchenpos.product.dao;
 
 import java.util.List;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

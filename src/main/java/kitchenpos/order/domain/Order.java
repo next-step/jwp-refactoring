@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -34,8 +33,8 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems){
-        this.orderTableId = orderTable.getId();
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems){
+        this.orderTableId = orderTableId;
         this.orderedTime = LocalDateTime.now();
         changeOrderStatus(COOKING);
         addOrderLineItems(orderLineItems);

@@ -1,7 +1,7 @@
 package kitchenpos.menu.validator;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.dao.ProductDao;
+import kitchenpos.product.dao.ProductDao;
 import org.springframework.stereotype.Component;
 
 @Component
