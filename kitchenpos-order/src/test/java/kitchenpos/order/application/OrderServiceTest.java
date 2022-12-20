@@ -1,11 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.domain.Name;
+import kitchenpos.TestMenuGroupFactory;
+import kitchenpos.TestMenuProductFactory;
+import kitchenpos.TestProductFactory;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.fixture.TestMenuFactory;
 import kitchenpos.fixture.TestOrderFactory;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -69,13 +70,14 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        불고기 = new Product(1L, new Name("불고기"), new Price(BigDecimal.valueOf(10_000)));
-        김치 = new Product(2L, new Name("김치"), new Price(BigDecimal.valueOf(1_000)));
-        공기밥 = new Product(3L, new Name("공기밥"), new Price(BigDecimal.valueOf(1_000)));
-        한식 = new MenuGroup(1L, new Name("한식"));
-        불고기상품 = new MenuProduct(1L, new Quantity(1L), 불고기);
-        김치상품 = new MenuProduct(2L, new Quantity(1L), 김치);
-        공기밥상품 = new MenuProduct(3L, new Quantity(1L), 공기밥);
+        불고기 = TestProductFactory.create(1L, "불고기", BigDecimal.valueOf(10_000));
+        김치 = TestProductFactory.create(2L, "김치", BigDecimal.valueOf(1_000));
+        공기밥 = TestProductFactory.create(3L, "공기밥", BigDecimal.valueOf(1_000));
+        한식 = TestMenuGroupFactory.create(1L, "한식");
+
+        불고기상품 = TestMenuProductFactory.create(1L, 1L, 불고기);
+        김치상품 = TestMenuProductFactory.create(2L, 1L, 김치);
+        공기밥상품 = TestMenuProductFactory.create(3L, 1L, 공기밥);
         불고기정식 = TestMenuFactory.create("불고기정식", BigDecimal.valueOf(12_000L), 한식.getId(), Arrays.asList(불고기상품, 김치상품, 공기밥상품));
 
 

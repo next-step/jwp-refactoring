@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.TestMenuGroupFactory;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.fixture.TestMenuFactory;
@@ -21,7 +22,7 @@ class OrderLineItemsTest {
     @Test
     void setOrder() {
         // given
-        MenuGroup menuGroup = new MenuGroup(1L, new Name("한식"));
+        MenuGroup menuGroup = TestMenuGroupFactory.create(1L, "한식");
         Menu menu = TestMenuFactory.create("불고기", BigDecimal.valueOf(12_000), menuGroup.getId(), new ArrayList<>());
 
         OrderLineItem orderLineItem = new OrderLineItem(new Quantity(1L), menu);
