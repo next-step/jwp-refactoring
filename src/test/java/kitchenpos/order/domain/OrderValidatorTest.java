@@ -114,16 +114,6 @@ public class OrderValidatorTest {
                 IllegalArgumentException.class);
     }
 
-    @DisplayName("계산 완료 상태인 주문 상태변경 시 예외처리")
-    @Test
-    void 계산_완료_주문_상태변경_예외처리() {
-        Order 계산_완료된_주문 = new Order(2L, 주문_테이블.getId(), OrderStatus.COMPLETION, null, 주문_아이템_목록);
-
-        assertThatThrownBy(
-                () -> orderValidator.checkOrderStatusChangeAble(계산_완료된_주문)).isInstanceOf(
-                IllegalArgumentException.class);
-    }
-
     private List<Long> 메뉴_Id_목록(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
