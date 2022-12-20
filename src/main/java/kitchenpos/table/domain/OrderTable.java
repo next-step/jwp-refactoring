@@ -1,50 +1,88 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.table.domain.TableGroup;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
+
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
+
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
         this.id = id;
-        this.tableGroupId = tableGroupId;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.tableGroup = null;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public void checkOrderTableIsEmpty() {
+        if (!empty) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        if (this.tableGroup != tableGroup) {
+            this.tableGroup = tableGroup;
+            tableGroup.addOrderTable(this);
+        }
+    }
+
+    public void changeEmpty(boolean empty, List<Order> orders) {
+        if (Objects.nonNull(this.tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+        orders.forEach(Order::checkOngoingOrderTable);
+        this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 }

@@ -63,4 +63,11 @@ public class MenuProduct {
         return quantity;
     }
 
+    public void updateMenu(Menu menu) {
+        if(this.menu != menu) {
+            this.menu = menu;
+            menu.addMenuProduct(this);
+        }
+    }
+
 }

@@ -31,4 +31,12 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
+
+    public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
+        if(!menuProducts.contains(menuProduct)) {
+            this.menuProducts.add(menuProduct);
+            menuProduct.updateMenu(menu);
+        }
+    }
+
 }

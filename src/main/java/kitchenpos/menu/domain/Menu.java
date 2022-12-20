@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -85,4 +86,13 @@ public class Menu {
     public int hashCode() {
         return Objects.hash(name, price, menuGroup, menuProducts);
     }
+
+    public void create(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct) {
+        this.menuProducts.addMenuProduct(this, menuProduct);
+    }
+
 }

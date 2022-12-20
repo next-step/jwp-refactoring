@@ -25,8 +25,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = new OrderTable(null, null, 1,  false);
-        주문테이블2 = new OrderTable(null, null, 2,  false);
+        주문테이블1 = new OrderTable(1L, 0, false);
+        주문테이블2 = new OrderTable(1L, 2, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -59,7 +59,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void updateOrderTableEmpty() {
         // given
         OrderTable orderTable = 주문_테이블_생성_요청(주문테이블1).as(OrderTable.class);
-        OrderTable updateOrderTable = new OrderTable(주문테이블1.getId(), 주문테이블1.getTableGroupId(), 주문테이블1.getNumberOfGuests(), !orderTable.isEmpty());
+        OrderTable updateOrderTable = new OrderTable(주문테이블1.getId(), 주문테이블1.getNumberOfGuests(), !orderTable.isEmpty());
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_빈_여부_변경_요청(orderTable.getId(), updateOrderTable);
@@ -73,7 +73,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void updateOrderTableNumberOfGuests() {
         // given
         OrderTable orderTable = 주문_테이블_생성_요청(주문테이블1).as(OrderTable.class);
-        OrderTable updateOrderTable = new OrderTable(주문테이블1.getId(), 주문테이블1.getTableGroupId(), 10, orderTable.isEmpty());
+        OrderTable updateOrderTable = new OrderTable(주문테이블1.getId(), 10, orderTable.isEmpty());
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_방문_손님_수_변경_요청(orderTable.getId(), updateOrderTable);

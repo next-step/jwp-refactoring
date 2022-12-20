@@ -34,12 +34,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private Product 삼겹살;
     private Product 김치;
     private MenuGroup 한식;
-    private Menu 삼겹살세트메뉴;
+    private Menu 삼겹살세트메뉴1;
+    private Menu 삼겹살세트메뉴2;
     private MenuProduct 삼겹살메뉴싱품;
     private MenuProduct 김치상품;
     private OrderTable 주문테이블;
     private Order 주문;
-    private OrderLineItem 삼겹살세트메뉴주문;
+    private OrderLineItem 삼겹살세트메뉴주문1;
+    private OrderLineItem 삼겹살세트메뉴주문2;
 
     @BeforeEach
     public void setUp() {
@@ -47,13 +49,17 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         삼겹살 = 상품_생성_요청(new Product(1L, "삼겹살", BigDecimal.valueOf(5_000))).as(Product.class);
         김치 = 상품_생성_요청(new Product(2L, "김치", BigDecimal.valueOf(3_000))).as(Product.class);
         한식 = 메뉴_그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
-        삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", BigDecimal.valueOf(8_000), 한식);
-        삼겹살메뉴싱품 = new MenuProduct(1L, 삼겹살세트메뉴, 삼겹살, 1L);
-        김치상품 = new MenuProduct(2L, 삼겹살세트메뉴, 김치, 1L);
-        삼겹살세트메뉴.getMenuProducts().setMenuProducts(Arrays.asList(삼겹살메뉴싱품, 김치상품));
-        주문테이블 = 주문_테이블_생성_요청(new OrderTable(null, null, 0, false)).as(OrderTable.class);
-        삼겹살세트메뉴주문 = new OrderLineItem(null, null, 삼겹살세트메뉴.getId(), 1);
-        주문 = new Order(null, 주문테이블.getId(), null, null, Arrays.asList(삼겹살세트메뉴주문));
+        삼겹살세트메뉴1 = new Menu(1L, "삼겹살세트메뉴1", BigDecimal.valueOf(8_000), 한식);
+        삼겹살세트메뉴2 = new Menu(1L, "삼겹살세트메뉴2", BigDecimal.valueOf(8_000), 한식);
+
+        주문테이블 = 주문_테이블_생성_요청(new OrderTable(1L, 0, false)).as(OrderTable.class);
+
+        주문 = new Order(주문테이블, OrderStatus.COOKING);
+
+        삼겹살세트메뉴주문1 = new OrderLineItem(1L, 주문, 삼겹살세트메뉴1, 1);
+        삼겹살세트메뉴주문2 = new OrderLineItem(1L, 주문, 삼겹살세트메뉴2, 1);
+
+        주문.order(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2));
     }
 
     @DisplayName("주문을 생성한다.")
@@ -86,7 +92,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // given
         String expectOrderStatus = OrderStatus.MEAL.name();
         Order order = 주문_생성_요청(주문).as(Order.class);
-        Order changeOrder = new Order(주문.getId(), 주문.getOrderTableId(), expectOrderStatus, 주문.getOrderedTime(), 주문.getOrderLineItems());
+        Order changeOrder = new Order(주문.getOrderTable(), 주문.getOrderStatus());
 
         // when
         ExtractableResponse<Response> response = 주문_상태_수정_요청(order.getId(), changeOrder);

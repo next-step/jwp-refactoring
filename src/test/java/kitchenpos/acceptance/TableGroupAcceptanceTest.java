@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_생성_요청;
@@ -25,9 +26,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = 주문_테이블_생성_요청(new OrderTable(null, null, 1, true)).as(OrderTable.class);
-        주문테이블2 = 주문_테이블_생성_요청(new OrderTable(null, null, 2, true)).as(OrderTable.class);
-        단체 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
+        주문테이블1 = 주문_테이블_생성_요청(new OrderTable(1L, 4, true)).as(OrderTable.class);
+        주문테이블2 = 주문_테이블_생성_요청(new OrderTable(2L, 4, true)).as(OrderTable.class);
+        단체 = new TableGroup(1L, LocalDateTime.now());
+        단체.group(Arrays.asList(주문테이블1, 주문테이블2));
     }
 
     @DisplayName("주문 테이블의 단체를 지정한다.")

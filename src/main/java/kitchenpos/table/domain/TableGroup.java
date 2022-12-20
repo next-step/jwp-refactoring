@@ -1,43 +1,62 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.Order;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
+
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
+    }
+
+    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
+        this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public void addOrderTable(OrderTable orderTable) {
+        this.orderTables.addOrderTable(this, orderTable);
+    }
+
+    public void group(List<OrderTable> target) {
+        orderTables.group(this, target);
+    }
+
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::checkOngoingOrderTable);
+        this.orderTables.ungroup();
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 }
