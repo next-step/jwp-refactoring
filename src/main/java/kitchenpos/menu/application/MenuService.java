@@ -40,11 +40,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        Long menuGroupId = request.getMenuGroupId();
         MenuProducts menuProducts = MenuProducts.from(findAllMenuProductsByProductId(request.getMenuProductsRequest()));
-
         menuValidator.validateCreateMenu(request, menuProducts);
-
+        Long menuGroupId = request.getMenuGroupId();
         Menu menu = request.toMenu(menuGroupId, menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
     }
