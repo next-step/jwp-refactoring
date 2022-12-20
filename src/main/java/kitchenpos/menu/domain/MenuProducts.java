@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -21,13 +19,6 @@ public class MenuProducts {
 
     public MenuProducts(List<MenuProduct> menuProductItems) {
         this.menuProductItems = new ArrayList<>(menuProductItems);
-    }
-
-    public Price totalPrice() {
-        return this.menuProductItems.stream()
-                .map(MenuProduct::getPrice)
-                .reduce(Price::add)
-                .orElse(Price.zero());
     }
 
     public List<MenuProduct> getAll() {

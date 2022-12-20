@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +17,8 @@ class MenuProductsTest {
     @BeforeEach
     void setUp() {
         menuProductItems = Arrays.asList(
-                MenuProduct.of(ProductFixture.후라이드, 1L),
-                MenuProduct.of(ProductFixture.강정치킨, 1L)
+                MenuProduct.of(1L, 1L),
+                MenuProduct.of(2L, 1L)
         );
         menuProducts = new MenuProducts(menuProductItems);
     }
@@ -33,15 +31,5 @@ class MenuProductsTest {
 
         // then
         assertThat(menuProducts).isEqualTo(new MenuProducts(menuProductItems));
-    }
-
-    @Test
-    @DisplayName("상품 목록의 총 가격을 반환한다")
-    void getTotalPriceTest() {
-        // when
-        Price totalPrice = menuProducts.totalPrice();
-
-        // then
-        assertThat(totalPrice).isEqualTo(Price.of(28_000L));
     }
 }

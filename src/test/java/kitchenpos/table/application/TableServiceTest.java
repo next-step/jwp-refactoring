@@ -1,12 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.product.fixture.ProductFixture;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -15,7 +9,6 @@ import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.message.NumberOfGuestsMessage;
 import kitchenpos.table.message.OrderTableMessage;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,20 +40,17 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderValidator validator;
+
     @InjectMocks
     private TableService tableService;
 
     private OrderTableCreateRequest request;
 
-    private List<OrderLineItem> orderLineItems;
-
     @BeforeEach
     void setUp() {
         request = new OrderTableCreateRequest(0, true);
-        MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
-        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
-        Menu menu = Menu.of("후라이드치킨", 15_000L, menuGroup, Arrays.asList(menuProduct));
-        orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
     }
 
     @Test
@@ -114,6 +103,7 @@ class TableServiceTest {
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, !currentEmpty);
         OrderTable expectedOrderTable = OrderTable.of(0, currentEmpty);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
+        willDoNothing().given(validator).validateChangeTableEmpty(any());
 
         // when
         OrderTableResponse orderTableResponse = tableService.changeEmpty(1L, changeRequest);
@@ -121,6 +111,7 @@ class TableServiceTest {
         // then
         assertThat(orderTableResponse.isEmpty()).isEqualTo(expectedEmpty);
         then(orderTableRepository).should(times(1)).findById(any());
+        then(validator).should(times(1)).validateChangeTableEmpty(any());
     }
 
     @Test
@@ -143,14 +134,10 @@ class TableServiceTest {
     void changeOrderTableEmptyThrownByEnrolledTableGroupTest() {
         // given
         OrderTable orderTable = OrderTable.of(0, true);
-        List<OrderTable> orderTables = Arrays.asList(
-                orderTable,
-                OrderTable.of(2, true)
-        );
-        TableGroup tableGroup = new TableGroup(orderTables);
-        tableGroup.group();
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        willThrow(new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message()))
+                .given(validator).validateChangeTableEmpty(any());
 
         // when
         assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
@@ -159,6 +146,7 @@ class TableServiceTest {
 
         // then
         then(orderTableRepository).should(times(1)).findById(any());
+        then(validator).should(times(1)).validateChangeTableEmpty(any());
     }
 
     @Test
@@ -166,12 +154,10 @@ class TableServiceTest {
     void changeOrderTableEmptyThrownByTableStateTest() {
         // given
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, true);
-        OrderTable expectedOrderTable = OrderTable.of(0, false);
-
-        Order order = Order.cooking(expectedOrderTable, orderLineItems);
-        order.changeState(OrderStatus.COMPLETION);
-
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
+        OrderTable orderTable = OrderTable.of(0, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        willThrow(new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message()))
+                .given(validator).validateChangeTableEmpty(any());
 
         // when
         assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
@@ -180,6 +166,7 @@ class TableServiceTest {
 
         // then
         then(orderTableRepository).should(times(1)).findById(any());
+        then(validator).should(times(1)).validateChangeTableEmpty(any());
     }
 
     @Test

@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableChangeRequest;
@@ -15,9 +16,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderTableRepository orderTableRepository,
+                        final OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -33,6 +37,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangeRequest request) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(EntityNotFoundException::new);
+        orderValidator.validateChangeTableEmpty(orderTable);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTable);
     }

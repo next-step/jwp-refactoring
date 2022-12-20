@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.message.MenuMessage;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Price;
+import kitchenpos.global.domain.Price;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,9 +19,7 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -32,39 +28,20 @@ public class Menu {
 
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(price, menuGroup, menuProducts);
-
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         addMenuProducts(menuProducts);
     }
 
-    public static Menu of(String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, Price.of(price), menuGroup, new MenuProducts(menuProducts));
+    public static Menu of(String name, Long price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, Price.of(price), menuGroupId, new MenuProducts(menuProducts));
     }
 
     private void addMenuProducts(MenuProducts menuProducts) {
         this.menuProducts = menuProducts;
         menuProducts.changeMenu(this);
-    }
-
-    private void validate(Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateMenuGroup(menuGroup);
-        validateMenuProducts(price, menuProducts);
-    }
-
-    private void validateMenuGroup(MenuGroup menuGroup) {
-        if(menuGroup == null) {
-            throw new IllegalArgumentException(MenuMessage.CREATE_MENU_ERROR_MENU_GROUP_MUST_BE_NON_NULL.message());
-        }
-    }
-
-    private void validateMenuProducts(Price price, MenuProducts menuProducts) {
-        if(price.isGreaterThan(menuProducts.totalPrice())) {
-            throw new IllegalArgumentException(MenuMessage.ADD_PRODUCT_ERROR_IN_VALID_PRICE.message());
-        }
     }
 
     public Long getId() {
@@ -80,7 +57,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return this.menuGroup.getId();
+        return this.menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
@@ -111,7 +88,7 @@ public class Menu {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", menuGroup=" + menuGroup +
+                ", menuGroupId=" + menuGroupId +
                 ", menuProducts=" + menuProducts +
                 '}';
     }

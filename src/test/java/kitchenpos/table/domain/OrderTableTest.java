@@ -1,36 +1,14 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.table.message.NumberOfGuestsMessage;
 import kitchenpos.table.message.OrderTableMessage;
-import kitchenpos.tablegroup.domain.TableGroup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderTableTest {
-
-    private List<OrderLineItem> orderLineItems;
-
-    @BeforeEach
-    void setUp() {
-        MenuGroup menuGroup = new MenuGroup("한가지 메뉴");
-        MenuProduct menuProduct = MenuProduct.of(ProductFixture.후라이드, 1L);
-        Menu menu = Menu.of("후라이드치킨", 15_000L, menuGroup, Arrays.asList(menuProduct));
-        orderLineItems = Arrays.asList(OrderLineItem.of(menu, 1L));
-    }
 
     @Test
     @DisplayName("주문 테이블 생성에 성공한다")
@@ -73,31 +51,12 @@ class OrderTableTest {
     void changeOrderTableEmptyThrownByEnrolledTableGroupTest() {
         // given
         OrderTable orderTable = OrderTable.of(0, true);
-        List<OrderTable> orderTables = Arrays.asList(
-                orderTable,
-                OrderTable.of(2, true)
-        );
-        TableGroup tableGroup = new TableGroup(orderTables);
-        tableGroup.group();
+        orderTable.groupBy(1L);
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeEmpty(false))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
-    }
-
-    @Test
-    @DisplayName("주문 테이블의 이용 여부 변경시 테이블의 상태가 조리 또는 식사중인경우 변경에 실패한다")
-    void changeOrderTableEmptyThrownByTableStateTest() {
-        // given
-        OrderTable orderTable = OrderTable.of(0, false);
-        Order order = Order.cooking(orderTable, orderLineItems);
-        order.changeState(OrderStatus.COMPLETION);
-
-        // when & then
-        assertThatThrownBy(() -> orderTable.changeEmpty(true))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message());
     }
 
     @Test

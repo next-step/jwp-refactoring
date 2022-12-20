@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.dto;
 
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 
@@ -20,11 +21,11 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup) {
+    public static TableGroupResponse of(TableGroup tableGroup, OrderTables orderTables) {
         return new TableGroupResponse(
                 tableGroup.getId(),
                 tableGroup.getCreatedDate(),
-                OrderTableResponse.list(tableGroup.getOrderTables().getAll())
+                OrderTableResponse.list(orderTables.getAll())
         );
     }
 

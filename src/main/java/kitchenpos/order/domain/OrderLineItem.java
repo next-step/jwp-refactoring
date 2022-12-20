@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.global.domain.Price;
+import kitchenpos.global.domain.Quantity;
 
 import javax.persistence.*;
 
@@ -16,9 +16,8 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    @Embedded
+    private OrderMenu menu;
 
     @Embedded
     private Quantity quantity;
@@ -27,21 +26,30 @@ public class OrderLineItem {
 
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
+    public OrderLineItem(Order order, OrderMenu menu, Quantity quantity) {
+        this.order = order;
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Menu menu, Long quantity) {
-        return new OrderLineItem(menu, Quantity.of(quantity));
+    public static OrderLineItem of(Long menuId, String menuName, Long price, Long quantity) {
+        return of(menuId, menuName, Price.of(price), quantity);
+    }
+
+    public static OrderLineItem of(Long menuId, String menuName, Price price, Long quantity) {
+        return new OrderLineItem(
+                null,
+                OrderMenu.of(menuId, menuName, price),
+                Quantity.of(quantity)
+        );
     }
 
     public void changeOrder(Order order) {
         this.order = order;
     }
 
-    public Menu getMenu() {
-        return this.menu;
+    public Long getMenuId() {
+        return this.menu.getId();
     }
 
     public Quantity getQuantity() {
