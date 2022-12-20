@@ -26,7 +26,7 @@ class OrderTest {
     void changeStatus() {
         //given
         OrderStatus 식사중 = OrderStatus.MEAL;
-        Order order = OrderFactory.create(1L, 주문테이블, Collections.singletonList(주문항목));
+        Order order = OrderFactory.create(1L, 주문테이블.getId(), Collections.singletonList(주문항목));
         //when
         order.changeStatus(식사중);
         //then
@@ -39,7 +39,7 @@ class OrderTest {
     void changeStatusCompletion() {
         //given
         OrderStatus 식사중 = OrderStatus.MEAL;
-        Order order = OrderFactory.create(1L, 주문테이블, Collections.singletonList(주문항목));
+        Order order = OrderFactory.create(1L, 주문테이블.getId(), Collections.singletonList(주문항목));
         order.changeStatus(OrderStatus.COMPLETION);
         //when & then
         assertThatThrownBy(() -> order.changeStatus(식사중))
@@ -51,18 +51,9 @@ class OrderTest {
     @Test
     void validOrderLineItems() {
         //when & then
-        assertThatThrownBy(() -> OrderFactory.create(1L, 주문테이블, Collections.emptyList()))
+        assertThatThrownBy(() -> OrderFactory.create(1L, 주문테이블.getId(), Collections.emptyList()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문테이블이 비어 있으면 주문을 생성할 수 없다.")
-    @Test
-    void validOrderTable() {
-        //given
-        OrderTable 빈주문테이블 = OrderTableFactory.create(1L, null, 0, true);
-        //when & then
-        assertThatThrownBy(() -> OrderFactory.create(1L, 빈주문테이블, Collections.singletonList(주문항목)))
-                .isInstanceOf(IllegalArgumentException.class);
 
-    }
 }

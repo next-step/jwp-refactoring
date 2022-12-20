@@ -46,13 +46,13 @@ class TableGroupTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, null, null, 1L);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, null, null, 1L);
         OrderTable orderTable1 = new OrderTable(1L, null, 0, true);
-        OrderTable orderTable2 = new OrderTable(1L, null, 0, true);
+        OrderTable orderTable2 = new OrderTable(2L, null, 0, true);
 
         TableGroup tableGroup = TableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
-        Order order1 = Order.of(orderTable1, Collections.singletonList(orderLineItem1));
+        Order order1 = Order.of(1L, Collections.singletonList(orderLineItem1));
         order1.changeStatus(OrderStatus.COMPLETION);
-        Order order2 = Order.of(orderTable1, Collections.singletonList(orderLineItem2));
+        Order order2 = Order.of(2L, Collections.singletonList(orderLineItem2));
         order2.changeStatus(OrderStatus.COMPLETION);
         List<Order> orders = Arrays.asList(order1, order2);
 
@@ -69,13 +69,13 @@ class TableGroupTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, null, null, 1L);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, null, null, 1L);
         OrderTable orderTable1 = new OrderTable(1L, null, 0, true);
-        OrderTable orderTable2 = new OrderTable(1L, null, 0, true);
+        OrderTable orderTable2 = new OrderTable(2L, null, 0, true);
 
         TableGroup tableGroup = TableGroup.from(Arrays.asList(orderTable1, orderTable2));
 
-        Order order1 = Order.of(orderTable1, Collections.singletonList(orderLineItem1));
+        Order order1 = Order.of(1L, Collections.singletonList(orderLineItem1));
         order1.changeStatus(OrderStatus.MEAL);
-        Order order2 = Order.of(orderTable1, Collections.singletonList(orderLineItem2));
+        Order order2 = Order.of(2L, Collections.singletonList(orderLineItem2));
         order2.changeStatus(OrderStatus.MEAL);
         List<Order> orders = Arrays.asList(order1, order2);
         //when & then

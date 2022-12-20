@@ -23,12 +23,12 @@ import kitchenpos.order.domain.OrderFactory;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableFactory;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
     @Mock
-    OrderTableRepository orderTableRepository;
+    OrderValidator orderValidator;
 
     @InjectMocks
     OrderService orderService;
@@ -65,7 +65,7 @@ class OrderServiceTest {
         후라이드세트 = MenuFactory.create(1L, "후라이드세트", BigDecimal.valueOf(16000), 메뉴분류세트, Arrays.asList(후라이드메뉴상품, 콜라메뉴상품));
         주문테이블 = OrderTableFactory.create(1L, null, 4, false);
         OrderLineItem 후라이드세트주문항목 = new OrderLineItem(1L, 주문, 후라이드세트, 1L);
-        주문 = OrderFactory.create(1L, 주문테이블, Collections.singletonList(후라이드세트주문항목));
+        주문 = OrderFactory.create(1L, 주문테이블.getId(), Collections.singletonList(후라이드세트주문항목));
         주문항목요청 = new OrderLineItemRequest(후라이드세트.getId(), 1L);
     }
 
@@ -74,7 +74,6 @@ class OrderServiceTest {
     void create() {
         //given
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
         given(menuRepository.findById(후라이드세트.getId())).willReturn(Optional.ofNullable(후라이드세트));
         given(orderRepository.save(any())).willReturn(주문);
         //when
@@ -90,24 +89,11 @@ class OrderServiceTest {
 
     }
 
-    @DisplayName("주문 테이블이 존재하지 않으면 에러가 발생한다.")
-    @Test
-    void createOrderTable() {
-        //given
-        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.empty());
-
-        //when & then
-        assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문을 생성 요청시 주문 항목이 없으면 에러가 발생한다.")
     @Test
     void createOrderLineItems() {
         //given
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.emptyList());
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
 
         //when & then
         assertThatThrownBy(() -> orderService.create(주문요청))
@@ -119,29 +105,12 @@ class OrderServiceTest {
     void createOrderItemCount() {
         //given
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
         given(menuRepository.findById(any())).willReturn(Optional.empty());
 
         //when & then
         assertThatThrownBy(() -> orderService.create(주문요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-
-    @DisplayName("주문 테이블이 비어 있으면 에러가 발생한다.")
-    @Test
-    void createOrderTableEmpty() {
-        //given
-        OrderTable 빈주문테이블 = OrderTableFactory.create(1L, null, 0, true);
-        OrderRequest 주문요청 = new OrderRequest(빈주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(orderTableRepository.findById(빈주문테이블.getId())).willReturn(Optional.of(빈주문테이블));
-        given(menuRepository.findById(후라이드세트.getId())).willReturn(Optional.ofNullable(후라이드세트));
-
-        //when & then
-        assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
 
     @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
