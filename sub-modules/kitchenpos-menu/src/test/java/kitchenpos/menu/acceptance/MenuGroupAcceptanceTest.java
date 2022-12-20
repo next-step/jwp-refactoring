@@ -3,14 +3,14 @@ package kitchenpos.menu.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.MenuAcceptanceConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static kitchenpos.menu.fixture.MenuGroupTestFixture.*;
 
 @DisplayName("메뉴그룹 관련 인수 테스트")
-public class MenuGroupAcceptanceTest extends AcceptanceTest {
+public class MenuGroupAcceptanceTest extends MenuAcceptanceConfig {
 
     /**
      * When : 메뉴 그룹 생성을 요청한다.

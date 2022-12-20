@@ -3,7 +3,7 @@ package kitchenpos.menu.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.MenuAcceptanceConfig;
 import kitchenpos.menu.dto.MenuProductRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,7 @@ import static kitchenpos.product.fixture.ProductTestFixture.상품_생성_요청
 import static kitchenpos.product.fixture.ProductTestFixture.상품_생성됨;
 
 @DisplayName("메뉴 관련 인수 테스트")
-public class MenuAcceptanceTest extends AcceptanceTest {
+public class MenuAcceptanceTest extends MenuAcceptanceConfig {
 
     /**
      * Given : 메뉴그룹과 상품이 생성되어 있다.

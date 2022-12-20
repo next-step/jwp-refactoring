@@ -2,12 +2,10 @@ package kitchenpos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableJpaAuditing
 @SpringBootApplication
-public class ProductApplication {
+public class MenuApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ProductApplication.class, args);
+        SpringApplication.run(MenuApplication.class, args);
     }
 }

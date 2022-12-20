@@ -49,9 +49,11 @@ subprojects {
 
 dependencies {
     implementation project(':sub-modules:kitchenpos-common')
+    implementation project(':sub-modules:kitchenpos-menu')
     implementation project(':sub-modules:kitchenpos-product')
 
     testImplementation project(':sub-modules:kitchenpos-common').sourceSets.test.output
+    testImplementation project(':sub-modules:kitchenpos-menu').sourceSets.test.output
     testImplementation project(':sub-modules:kitchenpos-product').sourceSets.test.output
 }
 
@@ -60,5 +62,15 @@ project(':sub-modules:kitchenpos-product') {
         implementation project(':sub-modules:kitchenpos-common')
 
         testImplementation project(':sub-modules:kitchenpos-common').sourceSets.test.output
+    }
+}
+
+project(':sub-modules:kitchenpos-menu') {
+    dependencies {
+        implementation project(':sub-modules:kitchenpos-common')
+        implementation project(':sub-modules:kitchenpos-product')
+
+        testImplementation project(':sub-modules:kitchenpos-common').sourceSets.test.output
+        testImplementation project(':sub-modules:kitchenpos-product').sourceSets.test.output
     }
 }
