@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
@@ -46,7 +47,12 @@ class OrderTest {
 							   new Product("닭", 10_000L)
 			));
 
-		menu = menus.save(new Menu("양념치킨", 1_000L, menuGroup.getId(), productList));
+		menu = menus.save(
+			new Menu(
+				"양념치킨",
+				1_000L,
+				menuGroup.getId(),
+				MenuProduct.of(productList)));
 	}
 
 	@Test
@@ -55,10 +61,10 @@ class OrderTest {
 			Lists.newArrayList(new OrderLineItem(menu.getId(), 3))
 		);
 		Order actualOrder = orders.save(new Order(orderTable.getId(), orderLineItems));
-		OrderLineItems actualOrderLineItems = actualOrder.getOrderLineItems();
+		List<OrderLineItem> actualOrderLineItems = actualOrder.getOrderLineItems().toList();
 
-		assertThat(actualOrderLineItems.isEmpty()).isFalse();
-		assertThat(actualOrderLineItems.toList())
+		assertThat(actualOrderLineItems).isNotEmpty();
+		assertThat(actualOrderLineItems)
 			.extracting(OrderLineItem::getMenuId)
 			.containsExactly(menu.getId());
 	}

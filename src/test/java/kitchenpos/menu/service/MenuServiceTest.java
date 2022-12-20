@@ -6,8 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -22,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.domain.Product;
@@ -40,12 +39,16 @@ class MenuServiceTest {
 
 	long MENU_GROUP_ID = 1L;
 	Menu menu;
-	Map<Product, Integer> products;
+	List<MenuProduct> products;
 
-	public static Map<Product, Integer> createProducts(int count) {
+	public static List<MenuProduct> createProducts(int count) {
 		return LongStream.range(0, count)
-						 .mapToObj(i -> new Product(i, "product-" + i, 1_000))
-						 .collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
+						 .mapToObj(id ->
+									   new MenuProduct(
+										   id,
+										   new Product(id, "product-" + id, 1_000),
+										   1L))
+						 .collect(Collectors.toList());
 	}
 
 	@BeforeEach

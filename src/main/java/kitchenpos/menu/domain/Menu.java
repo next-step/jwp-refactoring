@@ -2,9 +2,7 @@ package kitchenpos.menu.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
@@ -14,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -34,34 +33,18 @@ public class Menu {
 
 	private Long menuGroupId;
 
-	// TODO remove bidirection
-	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "menu_id")
 	private final List<MenuProduct> menuProducts = new ArrayList<>();
 
 	protected Menu() {
 	}
 
-	public Menu(String name, Long price, Long menuGroupId, Map<Product, Integer> products) {
-		this(null, name, Money.valueOf(price), menuGroupId, products);
-	}
-
-	public Menu(String name, Money price, Long menuGroupId, Map<Product, Integer> products) {
-		this(null, name, price, menuGroupId, products);
-	}
-
-	public Menu(Long id, String name, Money price, Long menuGroupId, Map<Product, Integer> products) {
-		this.id = id;
-		this.name = new Name(name);
-		this.price = price;
-		this.menuGroupId = menuGroupId;
-		menuProducts.addAll(toMenuProducts(products));
-	}
-
-	public Menu(String name, long price, Long menuGroupId, List<Product> products) {
+	public Menu(String name, Long price, Long menuGroupId, List<MenuProduct> menuProducts) {
 		this.name = new Name(name);
 		this.price = Money.valueOf(price);
 		this.menuGroupId = menuGroupId;
-		this.menuProducts.addAll(MenuProduct.of(this, products));
+		this.menuProducts.addAll(menuProducts);
 	}
 
 	public Long getId() {
@@ -82,13 +65,6 @@ public class Menu {
 
 	public Long getMenuGroupId() {
 		return menuGroupId;
-	}
-
-	private List<MenuProduct> toMenuProducts(Map<Product, Integer> productsCount) {
-		return productsCount.entrySet()
-							.stream()
-							.map(entry -> new MenuProduct(this, entry.getKey(), entry.getValue()))
-							.collect(Collectors.toList());
 	}
 
 	public Money sumAllProductsPrice() {
