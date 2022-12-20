@@ -37,32 +37,24 @@ public class Order {
                  OrderTable orderTable,
                  OrderStatus orderStatus,
                  LocalDateTime orderedTime) {
-        validate(orderTable);
+        this(orderTable, orderStatus, orderedTime);
         this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
     }
 
-    public Order(
-            OrderTable orderTable,
-            OrderStatus orderStatus,
-            LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable,
+                 OrderStatus orderStatus,
+                 LocalDateTime orderedTime) {
         validate(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public Order(
-            OrderTable orderTable,
-            OrderStatus orderStatus,
-            LocalDateTime orderedTime,
-            OrderLineItems orderLineItems) {
-        validate(orderTable);
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+    public Order(OrderTable orderTable,
+                OrderStatus orderStatus,
+                LocalDateTime orderedTime,
+                OrderLineItems orderLineItems) {
+        this(orderTable, orderStatus, orderedTime);
         this.orderLineItems = orderLineItems;
     }
 
