@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 
@@ -27,10 +26,10 @@ public class OrderRequest {
                 .collect(Collectors.toList());
     }
 
-    public Order toOrder(Long orderTableId, List<Menu> menus) {
+    public Order toOrder(Long orderTableId, List<Long> menuIds) {
         Order order = new Order(orderTableId);
         List<OrderLineItem> items = orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
+                .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menuIds))
                 .collect(toList());
         order.order(items);
 

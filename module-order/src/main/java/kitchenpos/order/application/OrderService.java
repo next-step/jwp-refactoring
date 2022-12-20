@@ -1,15 +1,11 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.event.OrderCreateEvent;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,32 +17,18 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final MenuRepository menuRepository;
-    private final ApplicationEventPublisher eventPublisher;
+    private final OrderValidator orderValidator;
 
-    public OrderService(OrderRepository orderRepository, MenuRepository menuRepository,
-                        ApplicationEventPublisher eventPublisher) {
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.eventPublisher = eventPublisher;
-        this.menuRepository = menuRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        eventPublisher.publishEvent(new OrderCreateEvent(request.getOrderTableId()));
-
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        Order saveOrder = request.toOrder(request.getOrderTableId(), menus);
-
+        orderValidator.validate(request);
+        Order saveOrder = request.toOrder(request.getOrderTableId(), request.findAllMenuIds());
         return OrderResponse.from(orderRepository.save(saveOrder));
-    }
-
-    private List<Menu> findAllMenuById(List<Long> menuIds) {
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-        if (menuIds.size() != menus.size()) {
-            throw new IllegalArgumentException("주문 항목의 메뉴의 개수가 일치하지 않습니다.");
-        }
-        return menus;
     }
 
     public List<OrderResponse> list() {

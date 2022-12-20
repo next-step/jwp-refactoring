@@ -2,10 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.fixture.*;
 import kitchenpos.menu.domain.*;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -25,6 +22,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +49,9 @@ class OrderServiceTest {
 
     @Mock
     private ApplicationEventPublisher eventPublisher;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     private OrderTable 주문_테이블;
     private Order 주문;
@@ -91,7 +92,6 @@ class OrderServiceTest {
         // given
         OrderRequest request = new OrderRequest(주문_테이블.getId(), OrderLineItemRequest.list(Arrays.asList(주문_메뉴)));
 
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
         when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
         // when
@@ -101,45 +101,6 @@ class OrderServiceTest {
         assertThat(주문_등록.getOrderLineItems()).hasSize(주문.getOrderLineItems().size());
     }
 
-    @DisplayName("주문 항목이 없으면 주문할 수 없다.")
-    @Test
-    void create_error_without_order_item() {
-        // given && when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목의 메뉴의 개수가 일치하지 않으면 주문 할 수 없다.")
-    @Test
-    void create_error_duplicated_order_item() {
-        // given
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴, 메뉴));
-
-        // when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블의 값이 저장되어 있지 않으면 주문 할 수 없다.")
-    @Test
-    void create_error_order_table_empty() {
-
-        // when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블의 값이 비어있다면 주문 할 수 없다.")
-    @Test
-    void create_error_order_table_value_empty() {
-        // given
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
-        주문_요청 = new OrderRequest(null, Arrays.asList(new OrderLineItemRequest(1L, 1)));
-
-        // when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 
     @DisplayName("주문의 목록을 조회할 수 있다.")
     @Test
