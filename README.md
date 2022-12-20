@@ -123,11 +123,10 @@
   * [x] Order
   * [x] TableGroup
   * [x] orderLineItem
-* [ ] 일급 객체, 일급 컬렉션 추출
+* [x] 일급 객체, 일급 컬렉션 추출
   * [x] Price를 일급 객체로 추출, 도메인 테스트
   * [x] MenuProduct를 일급 컬렉션으로 추출
   * [x] NumberOfGuests를 일급 객체로 추출, 도메인 테스트
   * [x] OrderTable을 일급 컬렉션으로 추출
   * [x] Quantity를 일급 객체로 추출, 도메인 테스트
   * [x] Name을 일급 객체로 추출, 도메인 테스트
-  * 
