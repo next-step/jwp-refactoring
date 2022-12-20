@@ -10,12 +10,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableFactory;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupFactory;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    OrderRepository orderRepository;
+    TableValidator tableValidator;
     @Mock
     OrderTableRepository orderTableRepository;
 

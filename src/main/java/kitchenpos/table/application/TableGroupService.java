@@ -2,12 +2,11 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -17,13 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final  OrderRepository orderRepository, final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository,
+                             TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -32,23 +32,15 @@ public class TableGroupService {
         List<OrderTable> orderTables = findOrderTablesByIds(orderTableIds);
 
         TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
+        orderTables.forEach(i->i.group(savedTableGroup.getId()));
         return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        tableGroup.ungroup(findOrdersByOrderTableIds(tableGroup));
-    }
-
-    private List<Order> findOrdersByOrderTableIds(TableGroup tableGroup) {
-        List<Long> orderTableIds = tableGroup.getOrderTables()
-                .getUnmodifiableOrderTables()
-                .stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
+        tableValidator.validOrdersCompletionByTableGroup(tableGroup);
+        tableGroup.ungroup();
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
