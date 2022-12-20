@@ -35,7 +35,7 @@ public class MenuService {
         MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
         Menu menu = new Menu(menuRequest.getName(), new BigDecimal(menuRequest.getPrice()), menuGroup);
         List<MenuProduct> menuProducts = generateMenuProducts(menuRequest, menu);
-        menu.addMenuProduct(menuProducts);
+        menu.addMenuProducts(menuProducts);
         final Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.of(savedMenu);

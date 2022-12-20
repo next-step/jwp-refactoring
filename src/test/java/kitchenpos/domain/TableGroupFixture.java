@@ -1,8 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class TableGroupFixture {

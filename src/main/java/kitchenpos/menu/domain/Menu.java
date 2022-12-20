@@ -47,7 +47,7 @@ public class Menu {
         }
     }
 
-    public void addMenuProduct(List<MenuProduct> menuProductList) {
+    public void addMenuProducts(List<MenuProduct> menuProductList) {
         menuProducts.addList(menuProductList);
         validateMenuPrice();
     }
