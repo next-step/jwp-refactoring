@@ -7,10 +7,10 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,8 +63,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 주문_생성_실패됨(response);
             }),
             dynamicTest("존재하지 않는 메뉴가 포함된 주문 항목으로 주문을 등록한다.", () -> {
-                MenuResponse 존재하지_않는_메뉴 = MenuResponse.from(new Menu(Long.MAX_VALUE));
-                ExtractableResponse<Response> response = 주문_생성_요청(테이블, 존재하지_않는_메뉴);
+                ExtractableResponse<Response> response = 주문_생성_요청(테이블, null);
 
                 주문_생성_실패됨(response);
             }),
@@ -118,6 +118,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private static List<OrderLineItem> toOrderLoneItems(MenuResponse[] menuResponses) {
+        if (ObjectUtils.isEmpty(menuResponses)) {
+            return Collections.emptyList();
+        }
         return Arrays.stream(menuResponses)
             .map(m -> {
                 OrderLineItem orderLineItem = new OrderLineItem();

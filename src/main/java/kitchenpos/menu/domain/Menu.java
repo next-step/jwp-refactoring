@@ -28,12 +28,7 @@ public class Menu {
 
     protected Menu() {
     }
-
-    //TODO 임시 추가
-    public Menu(Long id) {
-        this.id = id;
-    }
-
+    
     public Menu(String name, BigDecimal price, Long menuGroupId) {
         validateName(name);
         validatePrice(price);
