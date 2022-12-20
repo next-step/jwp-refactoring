@@ -31,4 +31,8 @@ public class MenuProducts {
         }
         return total;
     }
+
+    public void setMenu(Menu menu) {
+        this.get().forEach(menuProduct -> menuProduct.setMenu(menu));
+    }
 }

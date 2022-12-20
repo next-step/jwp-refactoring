@@ -77,8 +77,7 @@ public class Menu {
 
     public void setMenuProducts(MenuProducts menuProducts) {
         validatePrice(menuProducts.totalMenuPrice());
-        this.menuProducts = menuProducts;
-        menuProducts.get().forEach(menuProduct -> menuProduct.setMenu(this));
+        menuProducts.setMenu(this);
     }
 
     private void validatePrice(Price totalPrice) {
