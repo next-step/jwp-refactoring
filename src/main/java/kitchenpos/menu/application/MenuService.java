@@ -1,11 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,12 +29,11 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest request) {
-
+    public MenuResponse create(final MenuRequest request) {
         validateMenuGroup(request);
         Menu savedMenu = menuRepository.save(request.toMenu());
         savedMenu.addMenuProduct(toMenuProducts(request));
-        return savedMenu;
+        return MenuResponse.from(savedMenu);
     }
 
     private void validateMenuGroup(MenuRequest request) {
@@ -51,7 +51,9 @@ public class MenuService {
         return menuProducts;
     }
 
-    public List<Menu> list() {
-        return menuRepository.findAll();
+    public List<MenuResponse> list() {
+        return menuRepository.findAll().stream()
+            .map(MenuResponse::from)
+            .collect(Collectors.toList());
     }
 }

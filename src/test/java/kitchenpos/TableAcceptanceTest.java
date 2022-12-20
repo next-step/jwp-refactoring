@@ -3,8 +3,8 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -193,7 +193,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static OrderTable 주문이_들어간_테이블_가져오기() {
         OrderTable 주문이_들어간_테이블 = 테이블_생성_요청(false, 5).as(OrderTable.class);
-        Menu 등록된_메뉴 = 메뉴_등록_요청().as(Menu.class);
+        MenuResponse 등록된_메뉴 = 메뉴_등록_요청().as(MenuResponse.class);
 
         주문_생성_요청(주문이_들어간_테이블, 등록된_메뉴);
 

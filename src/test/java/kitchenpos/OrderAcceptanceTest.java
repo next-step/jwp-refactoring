@@ -3,12 +3,13 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -36,7 +37,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 테이블;
     private OrderTable 빈_테이블;
-    private Menu 메뉴_파닭치킨;
+    private MenuResponse 메뉴_파닭치킨;
     private Order 주문;
 
     @DisplayName("주문 관련 기능 테스트")
@@ -46,7 +47,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             dynamicTest("데이터를 세팅한다.", () -> {
                 테이블 = 테이블_생성_요청(false, 5).as(OrderTable.class);
                 빈_테이블 = 테이블_생성_요청(true, 0).as(OrderTable.class);
-                메뉴_파닭치킨 = 메뉴_등록_요청().as(Menu.class);
+                메뉴_파닭치킨 = 메뉴_등록_요청().as(MenuResponse.class);
             }),
             dynamicTest("주문을 등록한다.", () -> {
                 ExtractableResponse<Response> response = 주문_생성_요청(테이블, 메뉴_파닭치킨);
@@ -61,9 +62,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 주문_생성_실패됨(response);
             }),
             dynamicTest("존재하지 않는 메뉴가 포함된 주문 항목으로 주문을 등록한다.", () -> {
-                Menu 존재하지_않는_메뉴 = new Menu();
-                존재하지_않는_메뉴.setId(Long.MAX_VALUE);
-
+                MenuResponse 존재하지_않는_메뉴 = MenuResponse.from(new Menu(Long.MAX_VALUE));
                 ExtractableResponse<Response> response = 주문_생성_요청(테이블, 존재하지_않는_메뉴);
 
                 주문_생성_실패됨(response);
@@ -105,10 +104,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, Menu... menus) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, MenuResponse... menuResponses) {
         Map<String, Object> request = new HashMap<>();
         request.put("orderTableId", orderTable.getId());
-        request.put("orderLineItems", toOrderLoneItems(menus));
+        request.put("orderLineItems", toOrderLoneItems(menuResponses));
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -118,8 +117,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private static List<OrderLineItem> toOrderLoneItems(Menu[] menus) {
-        return Arrays.stream(menus)
+    private static List<OrderLineItem> toOrderLoneItems(MenuResponse[] menuResponses) {
+        return Arrays.stream(menuResponses)
             .map(m -> {
                 OrderLineItem orderLineItem = new OrderLineItem();
                 orderLineItem.setMenuId(m.getId());
@@ -174,15 +173,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    public static void 주문_목록_주문에_주문_항목이_포함됨(ExtractableResponse<Response> response, Menu... menus) {
+    public static void 주문_목록_주문에_주문_항목이_포함됨(ExtractableResponse<Response> response, MenuResponse... menuResponses) {
         List<Long> menuIds = response.jsonPath().getList(".", Order.class)
             .stream()
             .flatMap(o -> o.getOrderLineItems().stream())
             .map(OrderLineItem::getMenuId)
             .collect(Collectors.toList());
 
-        List<Long> expectedIds = Arrays.stream(menus)
-            .map(Menu::getId)
+        List<Long> expectedIds = Arrays.stream(menuResponses)
+            .map(MenuResponse::getId)
             .collect(Collectors.toList());
         assertThat(menuIds).containsExactlyElementsOf(expectedIds);
     }

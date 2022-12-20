@@ -3,9 +3,9 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -86,7 +86,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 단체_지정_해지됨(response);
             }),
             dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
-                주문_생성_요청(테이블3, 메뉴_등록_요청().as(Menu.class));
+                주문_생성_요청(테이블3, 메뉴_등록_요청().as(MenuResponse.class));
 
                 ExtractableResponse<Response> response = 단체_지정_해지_요청(단체_지정2);
 

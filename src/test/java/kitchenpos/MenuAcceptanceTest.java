@@ -3,9 +3,9 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -113,14 +113,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private static List<MenuProduct> toMenuProducts(Product... products) {
+    private static List<MenuProductRequest> toMenuProducts(Product... products) {
         return Arrays.stream(products)
-            .map(p -> {
-                MenuProduct menuProduct = new MenuProduct();
-                menuProduct.setProductId(p.getId());
-                menuProduct.setQuantity(1L);
-                return menuProduct;
-            }).collect(Collectors.toList());
+            .map(p -> new MenuProductRequest(p.getId(), 1))
+            .collect(Collectors.toList());
     }
 
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
@@ -144,20 +140,20 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_목록_확인됨(ExtractableResponse<Response> response, String... names) {
-        List<Menu> menus = response.jsonPath().getList(".", Menu.class);
+        List<MenuResponse> menuResponses = response.jsonPath().getList(".", MenuResponse.class);
 
-        List<String> productNames = menus.stream()
-            .map(Menu::getName)
+        List<String> productNames = menuResponses.stream()
+            .map(MenuResponse::getName)
             .collect(Collectors.toList());
         assertThat(productNames).containsExactly(names);
     }
 
     public static void 메뉴_목록_메뉴에_메뉴_상품이_포함됨(ExtractableResponse<Response> response, Product... products) {
-        List<Menu> menus = response.jsonPath().getList(".", Menu.class);
+        List<MenuResponse> menuResponses = response.jsonPath().getList(".", MenuResponse.class);
 
-        List<Long> actualProductIds = menus.stream()
+        List<Long> actualProductIds = menuResponses.stream()
             .flatMap(menu -> menu.getMenuProducts().stream())
-            .map(MenuProduct::getProductId)
+            .map(x -> x.getProductId())
             .collect(Collectors.toList());
 
         List<Long> expectedProductIds = Arrays.stream(products)
