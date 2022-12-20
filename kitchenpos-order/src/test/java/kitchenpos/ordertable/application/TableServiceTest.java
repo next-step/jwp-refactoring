@@ -25,6 +25,7 @@ import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.ordertable.validator.OrderTableValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,7 +99,7 @@ class TableServiceTest {
         List<OrderTableResponse> result = tableService.list();
 
         assertAll(
-            () -> assertThat(result).hasSize(1),
+            () -> Assertions.assertThat(result).hasSize(1),
             () -> assertThat(result.stream().map(OrderTableResponse::getId)).containsExactly(orderTableRequest.toOrderTable().getId())
         );
     }

@@ -32,6 +32,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -184,7 +185,7 @@ class OrderServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(result).hasSize(1),
+            () -> Assertions.assertThat(result).hasSize(1),
             () -> assertThat(result.stream().map(OrderResponse::getId)).containsExactly(주문.getId())
         );
     }
