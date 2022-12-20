@@ -14,7 +14,7 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(final String name, final BigDecimal price) {

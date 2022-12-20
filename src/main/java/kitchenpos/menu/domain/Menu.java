@@ -17,7 +17,7 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
     private Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {

@@ -20,7 +20,7 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public static TableGroup of() {

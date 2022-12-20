@@ -16,7 +16,7 @@ public class OrderLineItem {
     @Embedded
     private Quantity quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     private OrderLineItem(Long menuId, long quantity) {
