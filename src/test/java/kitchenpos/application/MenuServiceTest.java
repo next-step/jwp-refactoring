@@ -3,12 +3,12 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -83,8 +83,8 @@ class MenuServiceTest {
 
     private void settingMockInfoForCreateMenu() {
         when(menuGroupDao.existsById(삼겹살세트메뉴.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(삼겹살메뉴상품.getProductId())).thenReturn(Optional.of(삼겹살));
-        when(productDao.findById(김치메뉴상품.getProductId())).thenReturn(Optional.of(김치));
+        when(productRepository.findById(삼겹살메뉴상품.getProductId())).thenReturn(Optional.of(삼겹살));
+        when(productRepository.findById(김치메뉴상품.getProductId())).thenReturn(Optional.of(김치));
         when(menuDao.save(삼겹살세트메뉴)).thenReturn(삼겹살세트메뉴);
         when(menuProductDao.save(삼겹살메뉴상품)).thenReturn(삼겹살메뉴상품);
         when(menuProductDao.save(김치메뉴상품)).thenReturn(김치메뉴상품);
@@ -149,8 +149,8 @@ class MenuServiceTest {
         // given
         삼겹살세트메뉴.setPrice(BigDecimal.valueOf(10_000));
         when(menuGroupDao.existsById(삼겹살세트메뉴.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(김치메뉴상품.getProductId())).thenReturn(Optional.of(김치));
-        when(productDao.findById(삼겹살메뉴상품.getProductId())).thenReturn(Optional.of(삼겹살));
+        when(productRepository.findById(김치메뉴상품.getProductId())).thenReturn(Optional.of(김치));
+        when(productRepository.findById(삼겹살메뉴상품.getProductId())).thenReturn(Optional.of(삼겹살));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(삼겹살세트메뉴))
