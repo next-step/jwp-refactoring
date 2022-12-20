@@ -1,2 +1,7 @@
 bootJar { enabled = false }
 jar { enabled = true }
+
+configurations {
+    compile.exclude group: 'org.springframework.boot:spring-boot-starter-actuator'
+    compile.exclude group: 'org.springframework.boot:spring-boot-starter-web'
+}
