@@ -6,10 +6,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.domain.MenuProduct;
-import kitchenpos.product.domain.MenuProducts;
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.*;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 
@@ -51,6 +48,7 @@ public class OrderServiceTest {
     private static MenuProducts 라볶이세트구성;
     private static Menu 라볶이세트;
     private static Map<Long, Menu> menus = new HashMap<>();
+    private static Map<Long, List<MenuProduct>> menuProductsMap = new HashMap<>();
 
     public static OrderLineItem 주문항목1;
     public static OrderLineItem 주문항목2;
@@ -66,10 +64,15 @@ public class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
     @MockBean
     private OrderTableRepository orderTableRepository;
+    @MockBean
+    private MenuProductRepository menuProductRepository;
+    @MockBean
+    private ProductRepository productRepository;
     @Autowired
     private ApplicationEventPublisher publisher;
     private MenuValidator menuValidator;
     private TableValidator tableValidator;
+    private MenuProductValidator menuProductValidator;
     private OrderService orderService;
 
     @BeforeEach
@@ -80,13 +83,16 @@ public class OrderServiceTest {
 
         분식 = new MenuGroup(1L, "분식");
 
-        라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-        라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-        라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식);
+
+        라볶이세트참치김밥 = new MenuProduct(라볶이세트.getId(), 참치김밥, new Quantity(1));
+        라볶이세트라볶이 = new MenuProduct(라볶이세트.getId(), 라볶이, new Quantity(1));
+        라볶이세트돈까스 = new MenuProduct(라볶이세트.getId(), 돈까스, new Quantity(1));
 
         라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
+
         menus.put(라볶이세트.getId(), 라볶이세트);
+        menuProductsMap.put(라볶이세트.getId(), 라볶이세트구성.getValue());
 
         주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
         주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(1));
@@ -96,7 +102,9 @@ public class OrderServiceTest {
 
         menuValidator = new MenuValidator(menuRepository);
         tableValidator = new TableValidator(orderTableRepository);
-        orderService = new OrderService(orderRepository, orderLineItemRepository, tableValidator, menuValidator, publisher);
+        menuProductValidator = new MenuProductValidator(menuProductRepository, productRepository);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, tableValidator, menuValidator,
+                menuProductValidator, publisher);
     }
 
     @DisplayName("주문생성 테스트")
@@ -113,6 +121,10 @@ public class OrderServiceTest {
                 .thenReturn(Optional.ofNullable(주문테이블));
         when(menuRepository.findAllById(orderLineItemsToMenuIds(주문항목들)))
                 .thenReturn(orderLineItemsToMenus(주문항목들));
+        for (Long id : orderLineItemsToMenuIds(주문항목들)) {
+            when(menuProductRepository.findAllByMenuId(id))
+                    .thenReturn(menuProductsMap.get(id));
+        }
 
         //when
         final List<OrderLineItemRequest> orderLineItemRequests =
@@ -256,6 +268,10 @@ public class OrderServiceTest {
                 .thenReturn(Optional.ofNullable(주문테이블));
         when(menuRepository.findAllById(orderLineItemsToMenuIds(주문항목들)))
                 .thenReturn(orderLineItemsToMenus(주문항목들));
+        for (Long id : orderLineItemsToMenuIds(주문항목들)) {
+            when(menuProductRepository.findAllByMenuId(id))
+                    .thenReturn(menuProductsMap.get(id));
+        }
 
 
         //when
@@ -279,6 +295,10 @@ public class OrderServiceTest {
                 .thenReturn(Optional.ofNullable(주문테이블));
         when(menuRepository.findAllById(orderLineItemsToMenuIds(주문항목들)))
                 .thenReturn(orderLineItemsToMenus(주문항목들));
+        for (Long id : orderLineItemsToMenuIds(주문항목들)) {
+            when(menuProductRepository.findAllByMenuId(id))
+                    .thenReturn(menuProductsMap.get(id));
+        }
 
         //when
         final OrderResponse result = orderService.changeOrderStatus(주문.getId(), OrderStatus.MEAL);

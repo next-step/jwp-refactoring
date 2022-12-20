@@ -3,8 +3,7 @@ package kitchenpos.order.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.MenuProducts;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 
@@ -31,10 +30,11 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order, List<OrderLineItem> orderLineItems, Map<Long, Menu> menus,
-                                   OrderTable orderTable) {
+                                   OrderTable orderTable, Map<Long, MenuProducts> menuProducts) {
         List<OrderLineItemResponse> orderLineItemResponses = orderLineItems
                 .stream()
-                .map(orderLineItem -> OrderLineItemResponse.of(orderLineItem, menus.get(orderLineItem.getMenuId())))
+                .map(orderLineItem -> OrderLineItemResponse.of(orderLineItem,
+                        menus.get(orderLineItem.getMenuId()), menuProducts.get(orderLineItem.getMenuId())))
                 .collect(Collectors.toList());
 
         return new OrderResponse(order.getId(),

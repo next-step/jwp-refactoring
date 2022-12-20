@@ -81,14 +81,15 @@ public class TableGroupServiceTest {
         라볶이 = new Product(2L, "라볶이", new Price(new BigDecimal(4500)));
         돈까스 = new Product(3L, "돈까스", new Price(new BigDecimal(7000)));
 
-        라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-        라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-        라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
+        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식);
+
+        라볶이세트참치김밥 = new MenuProduct(라볶이세트.getId(), 참치김밥, new Quantity(1));
+        라볶이세트라볶이 = new MenuProduct(라볶이세트.getId(), 라볶이, new Quantity(1));
+        라볶이세트돈까스 = new MenuProduct(라볶이세트.getId(), 돈까스, new Quantity(1));
 
         분식 = new MenuGroup(1L, "분식");
 
         라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
 
         주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
         주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(2));

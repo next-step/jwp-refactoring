@@ -34,12 +34,12 @@ public class MenuProductsTest {
         int product1PriceValue = 3000;
         int product1Quantity = 3;
         Product product1 = new Product("김밥", new Price(new BigDecimal(product1PriceValue)));
-        final MenuProduct menuProduct1 = new MenuProduct(product1, new Quantity(product1Quantity));
+        final MenuProduct menuProduct1 = new MenuProduct(1L, 1L, product1, new Quantity(product1Quantity));
 
         int product2PriceValue = 5000;
         int product2Quantity = 4;
         Product product2 = new Product("라볶이", new Price(new BigDecimal(product2PriceValue)));
-        final MenuProduct menuProduct2 = new MenuProduct(product2, new Quantity(product2Quantity));
+        final MenuProduct menuProduct2 = new MenuProduct(1L, 1L, product2, new Quantity(product2Quantity));
 
         int totalProductPriceSum = product1PriceValue * product1Quantity + product2PriceValue * product2Quantity;
 

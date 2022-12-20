@@ -5,7 +5,9 @@ import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,5 +48,15 @@ public class MenuProductValidator {
 
     public MenuProducts getMenuProductByMenuId(Long menuId) {
         return new MenuProducts(menuProductRepository.findAllByMenuId(menuId));
+    }
+
+    public Map<Long, MenuProducts> getMenuProductByMenuIds(List<Long> menuIds) {
+        Map<Long, MenuProducts> menuProductsMap = new HashMap<>();
+        for (Long id : menuIds) {
+            List<MenuProduct> menuProductList = menuProductRepository.findAllByMenuId(id);
+            MenuProducts menuProducts = new MenuProducts(menuProductList);
+            menuProductsMap.put(id, menuProducts);
+        }
+        return menuProductsMap;
     }
 }

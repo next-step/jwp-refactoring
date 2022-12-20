@@ -1,22 +1,19 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ExceptionMessage;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
+import kitchenpos.product.domain.MenuProductValidator;
+import kitchenpos.product.domain.MenuProducts;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableValidator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +26,7 @@ public class OrderService {
     private final OrderLineItemRepository orderLineItemRepository;
     private final TableValidator tableValidator;
     private final MenuValidator menuValidator;
+    private final MenuProductValidator menuProductValidator;
     private final ApplicationEventPublisher publisher;
 
     public OrderService(
@@ -36,12 +34,14 @@ public class OrderService {
             final OrderLineItemRepository orderLineItemRepository,
             final TableValidator tableValidator,
             final MenuValidator menuValidator,
+            final MenuProductValidator menuProductValidator,
             final ApplicationEventPublisher publisher
             ) {
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.tableValidator = tableValidator;
         this.menuValidator = menuValidator;
+        this.menuProductValidator = menuProductValidator;
         this.publisher = publisher;
     }
 
@@ -74,7 +74,8 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         Map<Long, Menu> menus = menuValidator.checkExistMenuIds(menuIds);
-        return OrderResponse.of(order, orderLineItems, menus, orderTable);
+        Map<Long, MenuProducts> menuProducts = menuProductValidator.getMenuProductByMenuIds(menuIds);
+        return OrderResponse.of(order, orderLineItems, menus, orderTable, menuProducts);
     }
 
     public Order findById(Long id) {

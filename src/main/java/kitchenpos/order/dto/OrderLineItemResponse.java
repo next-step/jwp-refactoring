@@ -3,7 +3,9 @@ package kitchenpos.order.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.product.domain.MenuProducts;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class OrderLineItemResponse {
@@ -19,9 +21,9 @@ public class OrderLineItemResponse {
     }
 
 
-    public static OrderLineItemResponse of(OrderLineItem orderLineItem, Menu menu) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem, Menu menu, MenuProducts menuProducts) {
         return new OrderLineItemResponse(orderLineItem.getSeq(),
-                MenuResponse.of(menu),
+                MenuResponse.of(menu, menuProducts),
                 orderLineItem.getQuantity().getValue());
     }
 
