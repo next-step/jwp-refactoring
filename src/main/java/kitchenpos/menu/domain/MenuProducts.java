@@ -4,21 +4,35 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
     }
 
-    public void add(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public void addAll(Menu menu, List<MenuProduct> menuProducts) {
+        requireNonNull(menu, "menu");
+        requireNonNull(menuProducts, "menuProducts");
+        for (MenuProduct menuProduct : menuProducts) {
+            add(menu, menuProduct);
+        }
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+    private void add(Menu menu, MenuProduct menuProduct) {
+        if (!this.menuProducts.contains(menuProduct)) {
+            menuProducts.add(menuProduct);
+        }
+        menuProduct.bindTo(menu);
+    }
+
+    public List<MenuProduct> get() {
+        return Collections.unmodifiableList(menuProducts);
     }
 }

@@ -24,7 +24,7 @@ public class Menu {
     @Column(nullable = false)
     private Long menuGroupId;
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -63,7 +63,7 @@ public class Menu {
 
     public void addMenuProduct(List<MenuProduct> menuProducts) {
         validateSumOfPrice(menuProducts);
-        this.menuProducts.add(menuProducts);
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     private void validateSumOfPrice(List<MenuProduct> menuProducts) {
@@ -96,6 +96,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+        return menuProducts.get();
     }
 }
