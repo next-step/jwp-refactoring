@@ -3,7 +3,6 @@ package kitchenpos.menu.acceptance;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
 import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
-import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -18,6 +17,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.product.acceptance.ProductRestAssured;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,9 +41,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        하와이안피자 = 상품_생성_요청(ProductRequest.of("하와이안피자", BigDecimal.valueOf(15_000))).as(ProductResponse.class);
-        콜라 = 상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
-        피클 = 상품_생성_요청(ProductRequest.of( "피클", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
+        하와이안피자 = ProductRestAssured.상품_생성_요청(ProductRequest.of("하와이안피자", BigDecimal.valueOf(15_000))).as(ProductResponse.class);
+        콜라 = ProductRestAssured.상품_생성_요청(ProductRequest.of("콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
+        피클 = ProductRestAssured.상품_생성_요청(ProductRequest.of( "피클", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
 
         피자 = 메뉴_그룹_생성_요청(MenuGroupRequest.from("피자")).as(MenuGroupResponse.class);
 

@@ -23,6 +23,7 @@ import kitchenpos.menugroup.testfixture.MenuGroupTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.testfixture.ProductTestFixture;
 import kitchenpos.product.repository.ProductRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -121,7 +122,7 @@ class MenuServiceTest {
         List<MenuResponse> result = menuService.list();
 
         assertAll(
-            () -> assertThat(result).hasSize(1),
+            () -> Assertions.assertThat(result).hasSize(1),
             () -> assertThat(result.stream().map(MenuResponse::getName))
                 .containsExactly(하와이안피자세트.getName().value())
         );

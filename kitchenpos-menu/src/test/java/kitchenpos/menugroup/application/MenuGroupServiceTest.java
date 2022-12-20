@@ -11,6 +11,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +59,7 @@ class MenuGroupServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(result).hasSize(1),
+            () -> Assertions.assertThat(result).hasSize(1),
             () -> assertThat(result.stream().map(MenuGroupResponse::getName))
                 .containsExactly(menuGroup.getName().value())
         );
