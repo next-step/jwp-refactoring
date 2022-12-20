@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 
@@ -12,7 +12,7 @@ public class OrderEmpty {
     @Column
     private boolean empty;
 
-    protected OrderEmpty() {}
+    public OrderEmpty() {}
 
     public OrderEmpty(boolean empty) {
         this.empty = empty;

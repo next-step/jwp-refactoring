@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 
@@ -13,7 +13,7 @@ public class OrderGuests {
     @Column
     private int numberOfGuests;
 
-    protected OrderGuests() {}
+    public OrderGuests() {}
 
     public OrderGuests(int numberOfGuests) {
         validate(numberOfGuests);
