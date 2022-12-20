@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -28,14 +29,29 @@ public class TableGroup {
     protected TableGroup() {}
 
     public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        orderTables.validateGroup();
+        validateTableGroup(orderTables);
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
+    private void validateTableGroup(OrderTables orderTables) {
+        boolean hasNotEmpty = orderTables.get().stream()
+                .anyMatch(orderTable -> !orderTable.isEmpty());
+        if (hasNotEmpty) {
+            throw new IllegalArgumentException(ErrorEnum.EXISTS_NOT_EMPTY_ORDER_TABLE.message());
+        }
+
+        boolean hasGroup = orderTables.get().stream()
+                .anyMatch(orderTable -> orderTable.getTableGroup() != null);
+        if (hasGroup) {
+            throw new IllegalArgumentException(ErrorEnum.ALREADY_GROUP.message());
+        }
+
+    }
+
     public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
-        orderTables.validateGroup();
+        validateTableGroup(orderTables);
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }

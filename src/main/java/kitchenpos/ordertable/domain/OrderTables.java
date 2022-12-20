@@ -32,28 +32,7 @@ public class OrderTables {
             throw new IllegalArgumentException(ErrorEnum.NOT_EXISTS_ORDER_TABLE_LIST.message());
         }
     }
-    public void validateGroup() {
-        validateShouldEmpty();
-        validateHasNotGroup();
-    }
 
-    private void validateShouldEmpty() {
-        boolean hasNotEmpty = orderTables.stream()
-                .anyMatch(orderTable -> !orderTable.isEmpty());
-
-        if (hasNotEmpty) {
-            throw new IllegalArgumentException(ErrorEnum.EXISTS_NOT_EMPTY_ORDER_TABLE.message());
-        }
-    }
-
-    private void validateHasNotGroup() {
-        boolean hasGroup = orderTables.stream()
-                .anyMatch(orderTable -> orderTable.getTableGroup() != null);
-
-        if (hasGroup) {
-            throw new IllegalArgumentException(ErrorEnum.ALREADY_GROUP.message());
-        }
-    }
     private void validateMinimumSize(List<OrderTable> orderTables) {
         if (orderTables.size() < MINIMUM_ORDER_SIZE) {
             throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_TWO_OVER.message());

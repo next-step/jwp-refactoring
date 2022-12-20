@@ -37,7 +37,7 @@ public class OrderTablesTest {
         OrderTables orderTables = new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable));
 
         // when & then
-        assertThatThrownBy(() -> orderTables.validateGroup())
+        assertThatThrownBy(() -> new TableGroup(LocalDateTime.now(), orderTables))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.EXISTS_NOT_EMPTY_ORDER_TABLE.message());
     }
@@ -52,7 +52,7 @@ public class OrderTablesTest {
         firstOrderTable.setTableGroup(tableGroup);
 
         // when & then
-        assertThatThrownBy(() -> orderTables.validateGroup())
+        assertThatThrownBy(() -> new TableGroup(LocalDateTime.now(), orderTables))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.ALREADY_GROUP.message());
     }
