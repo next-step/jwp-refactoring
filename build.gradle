@@ -41,6 +41,12 @@ allprojects {
     }
 }
 
+project(':kitchenpos-product') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+    }
+}
 
 project(':kitchenpos-menu') {
     dependencies {
@@ -49,15 +55,6 @@ project(':kitchenpos-menu') {
 
         testCompile project(':kitchenpos-common').sourceSets.test.output
         testCompile project(':kitchenpos-product').sourceSets.test.output
-    }
-}
-
-
-
-project(':kitchenpos-product') {
-    dependencies {
-        implementation project(':kitchenpos-common')
-        testCompile project(':kitchenpos-common').sourceSets.test.output
     }
 }
 
@@ -72,4 +69,3 @@ project(':kitchenpos-order') {
         testCompile project(':kitchenpos-product').sourceSets.test.output
     }
 }
-

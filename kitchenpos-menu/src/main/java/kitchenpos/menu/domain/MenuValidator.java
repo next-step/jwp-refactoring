@@ -3,9 +3,9 @@ package kitchenpos.menu.domain;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
+import product.domain.Product;
+import product.domain.ProductRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;

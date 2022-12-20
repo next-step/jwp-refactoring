@@ -8,12 +8,12 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import product.dto.ProductRequest;
+import product.dto.ProductResponse;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
