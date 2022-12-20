@@ -5,7 +5,6 @@ import kitchenpos.exception.ErrorMessage;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -14,10 +13,7 @@ public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -27,19 +23,9 @@ public class Order extends BaseEntity {
 
     protected Order() {}
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        validate(orderTable);
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-    }
-
-    private void validate(OrderTable orderTable) {
-        if(Objects.isNull(orderTable)) {
-            throw new IllegalArgumentException(ErrorMessage.ORDER_REQUIRED_ORDER_TABLE.getMessage());
-        }
-        if(orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.ORDER_TABLE_CANNOT_BE_EMPTY.getMessage());
-        }
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
@@ -67,8 +53,8 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

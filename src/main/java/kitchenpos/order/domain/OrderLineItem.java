@@ -1,14 +1,11 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.ErrorMessage;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.table.domain.OrderLineItemQuantity;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class OrderLineItem {
-    private static final int MIN_NUM = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,32 +14,16 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
+    private Long menuId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
-
-    private long quantity;
+    private OrderLineItemQuantity quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        validate(order, menu, quantity);
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    private void validate(Order order, Menu menu, long quantity) {
-        if (Objects.isNull(order)) {
-            throw new IllegalArgumentException(ErrorMessage.ORDER_LINE_ITEM_REQUIRED_ORDER.getMessage());
-        }
-        if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(ErrorMessage.ORDER_LINE_ITEM_REQUIRED_MENU.getMessage());
-        }
-        if (quantity < MIN_NUM) {
-            throw new IllegalArgumentException(ErrorMessage.ORDER_LINE_ITEM_INVALID_QUANTITY.getMessage());
-        }
+    public OrderLineItem(Order order, Long menuId, long quantity) {
+        updateOrder(order);
+        this.menuId = menuId;
+        this.quantity = new OrderLineItemQuantity(quantity);
     }
 
     public void updateOrder(Order order) {
@@ -60,11 +41,11 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.value();
     }
 }
