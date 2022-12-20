@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
