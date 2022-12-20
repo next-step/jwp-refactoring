@@ -40,15 +40,9 @@ public class OrderValidator {
 
     private void checkOrderTableExist(Order order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.ORDER_TABLE_DOES_NOT_EXIST));
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public void checkOrderStatusChangeAble(Order savedOrder) {
-        if (savedOrder.isOrderStatusComplete()) {
-            throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER);
+            throw new IllegalArgumentException(ErrorMessages.CANNOT_CREATE_ORDER_WHEN_ORDER_TABLE_EMPTY);
         }
     }
 }

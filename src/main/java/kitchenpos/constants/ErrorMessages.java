@@ -23,4 +23,5 @@ public class ErrorMessages {
     public static final String CANNOT_CHANGE_EMPTY_IF_NOT_COMPLETED_ORDER_EXIST = "계산 완료되지 않은 주문은 빈 테이블 여부를 수정할 수 없습니다.";
     public static final String NUMBER_OF_GUESTS_CANNOT_BE_LESS_THAN_ZERO = "방문한 손님 수는 0보다 작을 수 없습니다.";
     public static final String CANNOT_CHANGE_NUMBER_OF_GUESTS_IF_ORDER_TABLE_EMPTY = "빈 테이블일 경우 방문한 손님 수를 수정할 수 없습니다.";
+    public static final String CANNOT_CREATE_ORDER_WHEN_ORDER_TABLE_EMPTY = "빈 테이블에는 주문을 등록할 수 없습니다.";
 }

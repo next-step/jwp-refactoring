@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
+import kitchenpos.constants.ErrorMessages;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTableValidator;
@@ -33,8 +34,7 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = getSavedOrderTable(orderTableId);
         orderTableValidator.validateEmptyChangable(savedOrderTable);
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
@@ -42,9 +42,13 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = getSavedOrderTable(orderTableId);
         savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    }
+
+    private OrderTable getSavedOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.ORDER_TABLE_DOES_NOT_EXIST));
     }
 }
