@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.message.OrderTableMessage;
@@ -39,7 +39,7 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -185,7 +185,7 @@ class TableGroupServiceTest {
         orderTables.groupBy(1L);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.empty()));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTableItems);
-        willDoNothing().given(orderTableValidator).validateUnGroup(orderTables);
+        willDoNothing().given(orderValidator).validateUnGroup(orderTables);
 
         // when
         tableGroupService.ungroup(1L);
@@ -193,7 +193,7 @@ class TableGroupServiceTest {
         // then
         then(tableGroupRepository).should(times(1)).findById(any());
         then(orderTableRepository).should(times(1)).findAllByTableGroupId(any());
-        then(orderTableValidator).should(times(1)).validateUnGroup(any());
+        then(orderValidator).should(times(1)).validateUnGroup(any());
     }
 
     @Test
@@ -207,7 +207,7 @@ class TableGroupServiceTest {
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.empty()));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTableItems);
         willThrow(new IllegalArgumentException(OrderTableMessage.UN_GROUP_ERROR_INVALID_ORDER_STATE.message()))
-                .given(orderTableValidator).validateUnGroup(any());
+                .given(orderValidator).validateUnGroup(any());
 
         // when
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
@@ -217,6 +217,6 @@ class TableGroupServiceTest {
         // then
         then(tableGroupRepository).should(times(1)).findById(any());
         then(orderTableRepository).should(times(1)).findAllByTableGroupId(any());
-        then(orderTableValidator).should(times(1)).validateUnGroup(any());
+        then(orderValidator).should(times(1)).validateUnGroup(any());
     }
 }

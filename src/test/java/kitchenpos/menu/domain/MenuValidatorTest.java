@@ -56,7 +56,7 @@ class MenuValidatorTest {
         given(menuGroupRepository.existsById(any())).willReturn(false);
 
         // when
-        assertThatThrownBy(() -> menuValidator.validate(menuCreateRequest))
+        assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(MenuMessage.CREATE_MENU_ERROR_MENU_GROUP_MUST_BE_NON_NULL.message());
 
@@ -74,7 +74,7 @@ class MenuValidatorTest {
 
         // when
         // 메뉴 가격 - 19,000, 등록 된 상품 요금합 - 18,000
-        assertThatThrownBy(() -> menuValidator.validate(menuCreateRequest))
+        assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(MenuMessage.ADD_PRODUCT_ERROR_IN_VALID_PRICE.message());
 
@@ -91,7 +91,7 @@ class MenuValidatorTest {
         given(productRepository.findById(any())).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> menuValidator.validate(menuCreateRequest))
+        assertThatThrownBy(() -> menuValidator.validateCreateMenu(menuCreateRequest))
                 .isInstanceOf(EntityNotFoundException.class);
 
         // then

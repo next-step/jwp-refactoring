@@ -23,7 +23,7 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void validate(MenuCreateRequest request) {
+    public void validateCreateMenu(MenuCreateRequest request) {
         validateMenuGroup(request.getMenuGroupId());
         validateMenuProducts(request.toPrice(), request.getMenuProducts());
     }

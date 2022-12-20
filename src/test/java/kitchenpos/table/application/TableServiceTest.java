@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableChangeRequest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -41,7 +41,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderTableValidator validator;
+    private OrderValidator validator;
 
     @InjectMocks
     private TableService tableService;
@@ -103,7 +103,7 @@ class TableServiceTest {
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, !currentEmpty);
         OrderTable expectedOrderTable = OrderTable.of(0, currentEmpty);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
-        willDoNothing().given(validator).validateChangeEmpty(any());
+        willDoNothing().given(validator).validateChangeTableEmpty(any());
 
         // when
         OrderTableResponse orderTableResponse = tableService.changeEmpty(1L, changeRequest);
@@ -111,7 +111,7 @@ class TableServiceTest {
         // then
         assertThat(orderTableResponse.isEmpty()).isEqualTo(expectedEmpty);
         then(orderTableRepository).should(times(1)).findById(any());
-        then(validator).should(times(1)).validateChangeEmpty(any());
+        then(validator).should(times(1)).validateChangeTableEmpty(any());
     }
 
     @Test
@@ -137,7 +137,7 @@ class TableServiceTest {
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         willThrow(new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message()))
-                .given(validator).validateChangeEmpty(any());
+                .given(validator).validateChangeTableEmpty(any());
 
         // when
         assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
@@ -146,7 +146,7 @@ class TableServiceTest {
 
         // then
         then(orderTableRepository).should(times(1)).findById(any());
-        then(validator).should(times(1)).validateChangeEmpty(any());
+        then(validator).should(times(1)).validateChangeTableEmpty(any());
     }
 
     @Test
@@ -157,7 +157,7 @@ class TableServiceTest {
         OrderTable orderTable = OrderTable.of(0, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         willThrow(new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message()))
-                .given(validator).validateChangeEmpty(any());
+                .given(validator).validateChangeTableEmpty(any());
 
         // when
         assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
@@ -166,7 +166,7 @@ class TableServiceTest {
 
         // then
         then(orderTableRepository).should(times(1)).findById(any());
-        then(validator).should(times(1)).validateChangeEmpty(any());
+        then(validator).should(times(1)).validateChangeTableEmpty(any());
     }
 
     @Test

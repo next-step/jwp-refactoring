@@ -63,14 +63,14 @@ class MenuServiceTest {
     void createMenuThenReturnMenuInfoResponseTest() {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(16_000L), menuGroupId, menuProductRequests);
-        willDoNothing().given(menuValidator).validate(any());
+        willDoNothing().given(menuValidator).validateCreateMenu(any());
         given(menuRepository.save(any())).willReturn(menu);
 
         // when
         MenuResponse response = menuService.createMenu(menuCreateRequest);
 
         // then
-        then(menuValidator).should(times(1)).validate(any());
+        then(menuValidator).should(times(1)).validateCreateMenu(any());
         then(menuRepository).should(times(1)).save(any());
         assertThat(response).isNotNull();
     }
@@ -80,14 +80,14 @@ class MenuServiceTest {
     void createMenuThrownByEmptyPriceTest() {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", null, menuGroupId, menuProductRequests);
-        willDoNothing().given(menuValidator).validate(any());
+        willDoNothing().given(menuValidator).validateCreateMenu(any());
 
         // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
 
         // then
-        then(menuValidator).should(times(1)).validate(any());
+        then(menuValidator).should(times(1)).validateCreateMenu(any());
     }
 
     @Test
@@ -95,14 +95,14 @@ class MenuServiceTest {
     void createMenuThrownByInValidPriceTest() {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(-1L), menuGroupId, menuProductRequests);
-        willDoNothing().given(menuValidator).validate(any());
+        willDoNothing().given(menuValidator).validateCreateMenu(any());
 
         // when
         assertThatThrownBy(() -> menuService.createMenu(menuCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class);
 
         // then
-        then(menuValidator).should(times(1)).validate(any());
+        then(menuValidator).should(times(1)).validateCreateMenu(any());
     }
 
     @Test
@@ -110,7 +110,7 @@ class MenuServiceTest {
     void createMenuThrownByEmptyMenuGroupTest() {
         // given
         willThrow(new IllegalArgumentException(MenuMessage.CREATE_MENU_ERROR_MENU_GROUP_MUST_BE_NON_NULL.message()))
-                .given(menuValidator).validate((any()));
+                .given(menuValidator).validateCreateMenu((any()));
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(16_000L), null, menuProductRequests);
 
         // when
@@ -119,14 +119,14 @@ class MenuServiceTest {
                 .hasMessage(MenuMessage.CREATE_MENU_ERROR_MENU_GROUP_MUST_BE_NON_NULL.message());
 
         // then
-        then(menuValidator).should(times(1)).validate(any());
+        then(menuValidator).should(times(1)).validateCreateMenu(any());
     }
 
     @Test
     @DisplayName("메뉴 등록시 메뉴에 있는 상품이 미등록인경우 예외처리되어 등록에 실패한다")
     void createMenuThrownByUnEnrolledProductTest() {
         // given
-        willThrow(new EntityNotFoundException()).given(menuValidator).validate((any()));
+        willThrow(new EntityNotFoundException()).given(menuValidator).validateCreateMenu((any()));
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(16_000L), menuGroupId, menuProductRequests);
 
         // when
@@ -134,7 +134,7 @@ class MenuServiceTest {
                 .isInstanceOf(EntityNotFoundException.class);
 
         // then
-        then(menuValidator).should(times(1)).validate(any());
+        then(menuValidator).should(times(1)).validateCreateMenu(any());
     }
 
     @Test
@@ -142,7 +142,7 @@ class MenuServiceTest {
     void addProductToMenuThrownByNotValidPriceTest() {
         // given
         willThrow(new IllegalArgumentException(MenuMessage.ADD_PRODUCT_ERROR_IN_VALID_PRICE.message()))
-                .given(menuValidator).validate((any()));
+                .given(menuValidator).validateCreateMenu((any()));
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("후라이드치킨", BigDecimal.valueOf(20_000L), menuGroupId, menuProductRequests);
 
         // when
@@ -151,7 +151,7 @@ class MenuServiceTest {
                 .hasMessage(MenuMessage.ADD_PRODUCT_ERROR_IN_VALID_PRICE.message());
 
         // then
-        then(menuValidator).should(times(1)).validate(any());
+        then(menuValidator).should(times(1)).validateCreateMenu(any());
     }
 
     @Test

@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -20,14 +20,14 @@ import java.util.List;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableValidator orderTableValidator;
+    private final OrderValidator orderValidator;
 
     public TableGroupService(final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository,
-                             final OrderTableValidator orderTableValidator) {
+                             final OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.orderTableValidator = orderTableValidator;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -45,7 +45,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(EntityNotFoundException::new);
         OrderTables orderTables = findAllOrderTablesByTableGroupId(tableGroup.getId());
-        orderTableValidator.validateUnGroup(orderTables);
+        orderValidator.validateUnGroup(orderTables);
         orderTables.unGroup();
     }
 
