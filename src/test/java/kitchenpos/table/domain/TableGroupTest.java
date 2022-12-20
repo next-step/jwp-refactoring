@@ -1,11 +1,9 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.exception.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -74,26 +72,11 @@ public class TableGroupTest {
         });
     }
 
-    @DisplayName("조리중이거나 식사중인 주문 테이블이 있으면 단체 테이블을 해제할 수 없다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"COOKING", "MEAL"})
-    void 조리중이거나_식사중인_주문_테이블이_있으면_단체_테이블을_해제할_수_없다(OrderStatus orderStatus) {
-        우아한_테이블.group(Arrays.asList(우아한_주문_테이블_1, 우아한_주문_테이블_2));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> 우아한_테이블.ungroup(Arrays.asList(
-                        new Order(우아한_주문_테이블_1, orderStatus),
-                        new Order(우아한_주문_테이블_2, OrderStatus.COMPLETION))))
-                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
-    }
-
     @DisplayName("단체 테이블 해제한다.")
     @Test
     void 단체_테이블_해제한다() {
         우아한_테이블.group(Arrays.asList(우아한_주문_테이블_1, 우아한_주문_테이블_2));
-        우아한_테이블.ungroup(Arrays.asList(
-                new Order(우아한_주문_테이블_1, OrderStatus.COMPLETION),
-                new Order(우아한_주문_테이블_2, OrderStatus.COMPLETION)));
+        우아한_테이블.ungroup();
 
         assertAll(() -> {
             assertThat(우아한_주문_테이블_1.getTableGroup()).isNull();

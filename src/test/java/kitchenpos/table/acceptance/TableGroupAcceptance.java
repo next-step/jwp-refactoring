@@ -1,9 +1,9 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.table.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 import java.util.List;

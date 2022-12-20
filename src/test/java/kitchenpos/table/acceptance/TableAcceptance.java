@@ -1,11 +1,11 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.table.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderEmpty;
-import kitchenpos.order.domain.OrderGuests;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.table.domain.OrderEmpty;
+import kitchenpos.table.domain.OrderGuests;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableAcceptance {

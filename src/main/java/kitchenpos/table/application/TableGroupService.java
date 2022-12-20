@@ -1,9 +1,12 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,14 +15,14 @@ import java.util.List;
 @Service
 @Transactional
 public class TableGroupService {
+    private final TableValidator tableValidator;
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
 
-    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableGroupService(TableValidator tableValidator, TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository) {
+        this.tableValidator = tableValidator;
         this.tableGroupRepository = tableGroupRepository;
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
     }
 
     public TableGroupResponse create(TableGroupRequest request) {
@@ -36,20 +39,14 @@ public class TableGroupService {
     }
 
     public void ungroup(Long tableGroupId) {
-        TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTableIds());
-
-        tableGroup.ungroup(orders);
-
-        tableGroupRepository.save(tableGroup);
+        TableGroup saveTableGroup = findTableGroupById(tableGroupId);
+        tableValidator.validateUngroup(saveTableGroup.getOrderTableIds());
+        saveTableGroup.ungroup();
+        tableGroupRepository.save(saveTableGroup);
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.TABLE_GROUP_NOT_FOUND_BY_ID.getMessage()));
-    }
-
-    private List<Order> findAllOrderByOrderTableIds(List<Long> orderTableIds) {
-        return orderRepository.findAllByOrderTableIds(orderTableIds);
     }
 }

@@ -1,9 +1,9 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,9 +30,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("주문 테이블 비즈니스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-
-    @Mock
-    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -101,50 +97,6 @@ public class TableServiceTest {
                 .withMessage(ErrorMessage.ORDER_TABLE_NOT_FOUND_BY_ID.getMessage());
     }
 
-    @DisplayName("주문 테이블은 단체 지정이 되어 있지 않아야 한다.")
-    @Test
-    void 주문_테이블은_단체_지정이_되어_있지_않아야_한다() {
-        // given
-        ReflectionTestUtils.setField(첫번째_주문_테이블, "empty", new OrderEmpty(true));
-        ReflectionTestUtils.setField(두번째_주문_테이블, "empty", new OrderEmpty(true));
-        우아한형제들_단체그룹.group(Arrays.asList(첫번째_주문_테이블, 두번째_주문_테이블));
-
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(첫번째_주문_테이블));
-
-        // when, then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(첫번째_주문_테이블.getId(), new OrderEmpty(true)))
-                .withMessage(ErrorMessage.ORDER_TABLE_ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getMessage());
-    }
-
-    @DisplayName("주문 테이블의 주문 상태는 조리 중이거나 식사 중이면 안된다.")
-    @Test
-    void 주문_테이블의_주문_상태는_조리_중이거나_식사_중이면_안된다() {
-        // given
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(첫번째_주문_테이블));
-        when(orderRepository.findAllByOrderTableId(any())).thenReturn(Arrays.asList(new Order(첫번째_주문_테이블, OrderStatus.COOKING)));
-
-        // when, then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(첫번째_주문_테이블.getId(), new OrderEmpty(true)))
-                .withMessage(ErrorMessage.ORDER_CANNOT_BE_CHANGED.getMessage());
-    }
-
-    @DisplayName("주문 테이블이 비어있는지 여부를 변경할 수 있다.")
-    @Test
-    void 주문_테이블이_비어있는지_여부를_변경할_수_있다() {
-        // given
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(첫번째_주문_테이블));
-        when(orderRepository.findAllByOrderTableId(any())).thenReturn(Arrays.asList(new Order(첫번째_주문_테이블, OrderStatus.COMPLETION)));
-        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(첫번째_주문_테이블);
-
-        // when
-        OrderTableResponse orderTableResponse = tableService.changeEmpty(첫번째_주문_테이블.getId(), new OrderEmpty(true));
-
-        // then
-        assertThat(orderTableResponse.isEmpty()).isTrue();
-    }
-
     @DisplayName("주문 테이블의 방문한 손님 수가 0명 이상이어야 한다.")
     @Test
     void 주문_테이블의_방문한_손님_수가_0명_이상이어야_한다() {
@@ -170,7 +122,7 @@ public class TableServiceTest {
     @Test
     void 주문_테이블이_빈_테이블이면_손님_수를_변경할_수_없다() {
         // given
-        첫번째_주문_테이블.changeEmpty(true, Collections.emptyList());
+        첫번째_주문_테이블.changeEmpty(true);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(첫번째_주문_테이블));
 
         // when, then

@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import kitchenpos.common.BaseEntity;
 
@@ -24,8 +24,7 @@ public class TableGroup extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::checkCookingOrMeal);
+    public void ungroup() {
         this.orderTables.ungroup();
     }
 
