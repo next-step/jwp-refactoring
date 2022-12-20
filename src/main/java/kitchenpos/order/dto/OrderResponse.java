@@ -1,12 +1,15 @@
 package kitchenpos.order.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.stream.Collectors.toList;
 
+@JsonInclude(NON_NULL)
 public class OrderResponse {
     private Long id;
     private Long orderTableId;
