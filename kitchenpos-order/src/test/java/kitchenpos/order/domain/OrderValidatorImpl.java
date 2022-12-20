@@ -1,11 +1,6 @@
-package kitchenpos.utils;
+package kitchenpos.order.domain;
 
 
-import kitchenpos.exception.BadRequestException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;

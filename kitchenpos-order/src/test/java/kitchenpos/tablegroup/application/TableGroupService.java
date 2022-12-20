@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.utils.Message.NOT_EXISTS_ORDER_TABLE;
