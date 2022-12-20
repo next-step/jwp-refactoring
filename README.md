@@ -136,6 +136,24 @@ PRIMARY KEY (id)
   - 직접 참조 (객체 참조를 이용한 연관 관계)
   - 간접 참조 (리포지토리를 통한 탐색)
 
+## 4단계 - 멀티 모듈 적용
+
+### 요구 사항
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+  - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+  - 계층 간의 독립된 모듈로 만들 수 있다.
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+### 힌트
+- [Gradle 멀티 프로젝트 관리](https://jojoldu.tistory.com/123)
+- [Gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
+
+### 모듈 설명
+- **kitchenpos-common**: 다른 모듈에서 공통적으로 쓰이는 모듈 
+- **kitchenpos-menu**: Menu 관련 모듈로 Menu, MenuGroup 클래스 존재
+- **kitchenpos-order**: Order 관련 모듈로 Order, OrderTable, TableGroup 클래스 존재
+- **kitchenpos-product**: product 관련 모듈로 Product 클래스 존재
+
 # 키친포스
 
 ## 요구 사항
