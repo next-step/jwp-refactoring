@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':module-core')
+    implementation project(':module-product')
+    implementation project(':module-menu')
+    implementation project(':module-menugroup')
+    implementation project(':module-order')
+    implementation project(':module-table')
+    implementation project(':module-tablegroup')
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

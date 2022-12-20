@@ -1,0 +1,4 @@
+dependencies {
+    testFixturesApi(testFixtures(project(':module-menu')))
+    testFixturesApi(testFixtures(project(':module-order')))
+}

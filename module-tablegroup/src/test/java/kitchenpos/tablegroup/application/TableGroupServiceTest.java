@@ -1,0 +1,95 @@
+package kitchenpos.tablegroup.application;
+
+import kitchenpos.ServiceTest;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class TableGroupServiceTest extends ServiceTest {
+
+    @Autowired
+    private TableGroupService service;
+
+    private OrderTable 빈테이블1;
+    private OrderTable 빈테이블2;
+
+    @BeforeEach
+    public void setUp(@Autowired OrderTableRepository orderTableRepository) {
+        빈테이블1 = orderTableRepository.save(new OrderTable(0, true));
+        빈테이블2 = orderTableRepository.save(new OrderTable(0, true));
+    }
+
+    @DisplayName("단체 지정을 생성한다.")
+    @Test
+    void create() {
+        TableGroupResponse response = createTableGroup(빈테이블1, 빈테이블2);
+
+        assertAll(
+                () -> assertThat(response.getId()).isNotNull(),
+                () -> assertThat(response.getCreatedDate()).isNotNull(),
+                () -> assertThat(response.getOrderTables()).element(0).satisfies(this::assertGroupedTable),
+                () ->  assertThat(response.getOrderTables()).element(1).satisfies(this::assertGroupedTable)
+        );
+    }
+
+    @DisplayName("테이블 없이 단체 지정을 생성한다.")
+    @Test
+    void createWithEmpty() {
+        TableGroupRequest request = new TableGroupRequest(Collections.emptyList());
+
+        assertThatThrownBy(() -> {
+            service.create(request);
+        }).isInstanceOf(InvalidTableGroupException.class)
+        .hasMessageContaining("단체 지정할 테이블이 없습니다.");
+    }
+
+    private TableGroupResponse createTableGroup(OrderTable... orderTables) {
+        TableGroupRequest request = new TableGroupRequest(Arrays.stream(orderTables)
+                                                                .map(it -> new OrderTableIdRequest(it.getId()))
+                                                                .collect(Collectors.toList()));
+        TableGroupResponse response = service.create(request);
+        return response;
+    }
+
+    private void assertGroupedTable(OrderTableResponse it) {
+        assertThat(it.getTableGroupId()).isNotNull();
+        assertThat(it.isEmpty()).isFalse();
+    }
+
+    @DisplayName("단체 지정을 해지한다.")
+    @Test
+    void ungroup() {
+        TableGroupResponse tableGroup = createTableGroup(빈테이블1, 빈테이블2);
+
+        assertThatNoException().isThrownBy(() -> {
+            service.ungroup(tableGroup.getId());
+        });
+    }
+
+    @DisplayName("존재하지 않는 단체 지정을 해지한다.")
+    @Test
+    void ungroupWithNotFoundTableGroup() {
+        Long 존재하지_않는_단체_지정_id = Long.MAX_VALUE;
+
+        assertThatThrownBy(() -> {
+            service.ungroup(존재하지_않는_단체_지정_id);
+        }).isInstanceOf(NotFoundTableGroupException.class)
+        .hasMessageContaining("단체 지정을 찾을 수 없습니다.");
+    }
+}
