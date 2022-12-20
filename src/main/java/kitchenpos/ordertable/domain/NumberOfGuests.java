@@ -8,6 +8,7 @@ import kitchenpos.constants.ErrorMessages;
 @Embeddable
 public class NumberOfGuests {
 
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
     @Column(nullable = false)
     private int numberOfGuests;
 
@@ -21,7 +22,7 @@ public class NumberOfGuests {
     }
 
     private void validateNumberOfGuests(int number) {
-        if (number < 0) {
+        if (number < MIN_NUMBER_OF_GUESTS) {
             throw new IllegalArgumentException(ErrorMessages.NUMBER_OF_GUESTS_CANNOT_BE_LESS_THAN_ZERO);
         }
     }

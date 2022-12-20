@@ -8,6 +8,7 @@ import kitchenpos.constants.ErrorMessages;
 @Embeddable
 public class MenuProductQuantity {
 
+    private static final long MIN_QUANTITY = 1;
     @Column(name = "quantity", nullable = false)
     private long quantity;
 
@@ -19,7 +20,7 @@ public class MenuProductQuantity {
     }
 
     private void validateQuantity(long quantity) {
-        if (quantity <= 0) {
+        if (quantity < MIN_QUANTITY) {
             throw new IllegalArgumentException(ErrorMessages.MENU_PRODUCT_QUANTITY_BELOW_ZERO);
         }
     }
