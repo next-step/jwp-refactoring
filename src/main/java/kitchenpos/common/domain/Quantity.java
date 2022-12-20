@@ -5,6 +5,8 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import kitchenpos.menu.domain.Price;
+
 @Embeddable
 public class Quantity {
 
@@ -41,5 +43,9 @@ public class Quantity {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(value);
+	}
+
+	public Price multiply(Price price) {
+		return price.multiply(value);
 	}
 }

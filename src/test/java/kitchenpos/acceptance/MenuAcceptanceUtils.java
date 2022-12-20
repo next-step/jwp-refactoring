@@ -50,15 +50,14 @@ public class MenuAcceptanceUtils {
 		MenuResponse menu = response.as(MenuResponse.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			() -> assertThat(menu.getName()).isEqualTo(expectedName),
-			() -> assertThat(menu.getPrice().intValue()).isEqualTo(expectedPrice.intValue()),
-			() -> assertThat(menu.getMenuGroupId()).isEqualTo(menuGroup.getId()),
+			() -> assertThat(menu.name()).isEqualTo(expectedName),
+			() -> assertThat(menu.price().intValue()).isEqualTo(expectedPrice.intValue()),
+			() -> assertThat(menu.menuGroupId()).isEqualTo(menuGroup.getId()),
 			() -> assertThat(menu.getMenuProducts())
 				.first()
 				.satisfies(menuProduct -> {
 					assertThat(menuProduct.getQuantity()).isEqualTo(expectedQuantity);
-					assertThat(menuProduct.getProductId()).isEqualTo(product.getId());
-					assertThat(menuProduct.getMenuId()).isEqualTo(menu.getId());
+					assertThat(menuProduct.getProductId()).isEqualTo(product.id());
 				})
 		);
 	}
@@ -73,9 +72,9 @@ public class MenuAcceptanceUtils {
 			() -> assertThat(response.jsonPath().getList(".", MenuResponse.class))
 				.first()
 				.satisfies(menu -> {
-					assertThat(menu.getName()).isEqualTo(expectedMenu.getName());
-					assertThat(menu.getPrice().intValue()).isEqualTo(expectedMenu.getPrice().intValue());
-					assertThat(menu.getMenuGroupId()).isEqualTo(menuGroup.getId());
+					assertThat(menu.name()).isEqualTo(expectedMenu.name());
+					assertThat(menu.price().intValue()).isEqualTo(expectedMenu.price().intValue());
+					assertThat(menu.menuGroupId()).isEqualTo(menuGroup.getId());
 				})
 		);
 	}

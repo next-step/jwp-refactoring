@@ -37,8 +37,8 @@ public class ProductAcceptanceUtils {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
 			() -> assertThat(product).isNotNull(),
-			() -> assertThat(product.getName()).isEqualTo(expectedName),
-			() -> assertThat(product.getPrice().intValue()).isEqualTo(expectedPrice.intValue())
+			() -> assertThat(product.name()).isEqualTo(expectedName),
+			() -> assertThat(product.price().intValue()).isEqualTo(expectedPrice.intValue())
 		);
 	}
 
@@ -50,8 +50,8 @@ public class ProductAcceptanceUtils {
 			() -> assertThat(response.jsonPath().getList(".", Product.class)).isNotNull(),
 			() -> assertThat(products)
 				.first()
-				.extracting(ProductResponse::getName)
-				.isEqualTo(expectedProduct.getName())
+				.extracting(ProductResponse::name)
+				.isEqualTo(expectedProduct.name())
 		);
 	}
 

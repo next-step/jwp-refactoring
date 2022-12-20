@@ -1,5 +1,7 @@
 package kitchenpos.menu.ui.request;
 
+import kitchenpos.common.domain.Quantity;
+
 public class MenuProductRequest {
 
 	private final long productId;
@@ -10,11 +12,11 @@ public class MenuProductRequest {
 		this.quantity = quantity;
 	}
 
-	public long getProductId() {
+	public long productId() {
 		return productId;
 	}
 
-	public long getQuantity() {
-		return quantity;
+	public Quantity quantity() {
+		return Quantity.from(quantity);
 	}
 }

@@ -22,7 +22,7 @@ public class ProductResponse {
 	}
 
 	public static ProductResponse from(Product product) {
-		return new ProductResponse(product.getId(), product.getName(), product.getPrice());
+		return new ProductResponse(product.id(), product.name(), product.price().value());
 	}
 
 	public static List<ProductResponse> listFrom(List<Product> products) {
@@ -31,15 +31,15 @@ public class ProductResponse {
 			.collect(java.util.stream.Collectors.toList());
 	}
 
-	public Long getId() {
+	public Long id() {
 		return id;
 	}
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
+	public BigDecimal price() {
 		return price;
 	}
 

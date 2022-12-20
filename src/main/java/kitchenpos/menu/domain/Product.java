@@ -1,8 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,32 +35,15 @@ public class Product {
         return new Product(name, price);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getValue();
-    }
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Product product = (Product) o;
-        return Objects.equals(id, product.id) && Objects.equals(name, product.name)
-            && Objects.equals(price, product.price);
+    public Price price() {
+        return price;
     }
 
     @Override

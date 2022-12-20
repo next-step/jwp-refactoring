@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.util.Assert;
+
 import kitchenpos.common.domain.Quantity;
 
 @Entity
@@ -34,6 +36,8 @@ public class MenuProduct {
 	}
 
 	private MenuProduct(Product product, Quantity quantity) {
+		Assert.notNull(product, "상품은 필수입니다.");
+		Assert.notNull(quantity, "수량은 필수입니다.");
 		this.product = product;
 		this.quantity = quantity;
 	}
@@ -42,23 +46,27 @@ public class MenuProduct {
 		return new MenuProduct(product, quantity);
 	}
 
-	public Long getSeq() {
+	public Long seq() {
 		return seq;
 	}
 
-	public Long getMenuId() {
-		return menu.getId();
-	}
-	public Product getProduct() {
+	public Product product() {
 		return product;
 	}
 
-	public long getProductId() {
-		return product.getId();
+	public long productId() {
+		return product.id();
 	}
 
+	public Price price() {
+		return quantity.multiply(product.price());
+	}
 
-	public long getQuantity() {
+	public long quantity() {
 		return quantity.value();
+	}
+
+	public void updateMenu(Menu menu) {
+		this.menu = menu;
 	}
 }

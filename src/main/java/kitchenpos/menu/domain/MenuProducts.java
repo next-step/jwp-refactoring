@@ -35,10 +35,21 @@ public class MenuProducts {
 		return Collections.unmodifiableList(menuProducts);
 	}
 
+	public Price totalPrice() {
+		return menuProducts.stream()
+			.map(MenuProduct::price)
+			.reduce(Price::sum)
+			.orElse(Price.ZERO);
+	}
+
 	@Override
 	public String toString() {
 		return "MenuProducts{" +
 			"menuProducts=" + menuProducts +
 			'}';
+	}
+
+	public void updateMenu(Menu menu) {
+		menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
 	}
 }

@@ -5,7 +5,7 @@ import static kitchenpos.generator.MenuProductGenerator.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.Collections;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -22,9 +22,13 @@ public class MenuGenerator {
 	}
 
 	public static Menu 후라이드_세트() {
-		Menu 후라이드_세트 = spy(메뉴("후라이드 세트", Price.from(BigDecimal.valueOf(16000)), 한마리_메뉴(), MenuProducts.from(
-			Arrays.asList(후라이드_세트_상품(), 후라이드_세트_상품2()))));
-		lenient().when(후라이드_세트.getId()).thenReturn(1L);
+		Menu 후라이드_세트 = spy(메뉴(
+			"후라이드 세트",
+			Price.from(BigDecimal.TEN),
+			한마리_메뉴(),
+			MenuProducts.from(
+				Collections.singletonList(후라이드_세트_상품()))));
+		lenient().when(후라이드_세트.id()).thenReturn(1L);
 		return 후라이드_세트;
 	}
 }

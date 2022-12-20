@@ -1,30 +1,27 @@
 package kitchenpos.application;
 
 import static kitchenpos.generator.MenuGenerator.*;
+import static kitchenpos.generator.MenuGroupGenerator.*;
 import static kitchenpos.generator.ProductGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.generator.MenuGenerator;
-import kitchenpos.generator.MenuProductGenerator;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
 import kitchenpos.menu.ui.request.MenuRequest;
@@ -52,12 +49,14 @@ class MenuServiceTest {
 		MenuRequest menuRequest = new MenuRequest("후라이드 세트", BigDecimal.ONE, 1L,
 			Collections.singletonList(menuProductRequest));
 
-		Menu 후라이드_세트 = MenuGenerator.후라이드_세트();
-		given(menuGroupRepository.existsById(menuRequest.getMenuGroupId())).willReturn(true);
-		given(productRepository.findById(menuProductRequest.getProductId()))
-			.willReturn(Optional.of(후라이드_치킨()));
+		MenuGroup 한마리_메뉴 = 한마리_메뉴();
+		given(menuGroupRepository.menuGroup(anyLong())).willReturn(한마리_메뉴);
+
+		Product 후라이드_치킨 = 후라이드_치킨();
+		given(productRepository.product(menuProductRequest.productId())).willReturn(후라이드_치킨);
+
+		Menu 후라이드_세트 = 후라이드_세트();
 		given(menuRepository.save(any())).willReturn(후라이드_세트);
-		MenuProduct 후라이드_한마리 = MenuProductGenerator.후라이드_세트_상품();
 
 		// when
 		MenuResponse menuResponse = menuService.create(menuRequest);
@@ -65,15 +64,11 @@ class MenuServiceTest {
 		// then
 		verify(menuRepository, times(1)).save(any());
 		assertThat(menuResponse).satisfies(response -> {
-			assertThat(response.getId()).isEqualTo(후라이드_세트.getId());
-			assertThat(response.getName()).isEqualTo(후라이드_세트.getName());
-			assertThat(response.getPrice()).isEqualTo(후라이드_세트.getPrice());
-			assertThat(response.getMenuGroupId()).isEqualTo(후라이드_세트.getMenuGroup().getId() );
+			assertThat(response.id()).isEqualTo(후라이드_세트.id());
+			assertThat(response.name()).isEqualTo(후라이드_세트.name());
+			assertThat(response.price()).isEqualTo(후라이드_세트.price());
+			assertThat(response.menuGroupId()).isEqualTo(후라이드_세트.menuGroup().getId() );
 			assertThat(response.getMenuProducts()).hasSize(1);
-			assertThat(response.getMenuProducts().get(0).getProductId())
-				.isEqualTo(후라이드_한마리.getProduct());
-			assertThat(response.getMenuProducts().get(0).getQuantity())
-				.isEqualTo(후라이드_한마리.getQuantity());
 		});
 	}
 
@@ -115,8 +110,6 @@ class MenuServiceTest {
 		MenuRequest menuRequest = new MenuRequest("후라이드 세트", BigDecimal.valueOf(20000), 1L,
 			Collections.singletonList(menuProductRequest));
 
-		when(menuGroupRepository.existsById(menuRequest.getMenuGroupId())).thenReturn(true);
-		when(productRepository.findById(anyLong())).thenReturn(Optional.of(후라이드_치킨()));
 
 		// when
 		Throwable actual = catchThrowable(() -> menuService.create(menuRequest));
@@ -133,8 +126,6 @@ class MenuServiceTest {
 		MenuRequest menuRequest = new MenuRequest("후라이드 세트", BigDecimal.valueOf(20000), 1L,
 			Collections.singletonList(menuProductRequest));
 
-		given(menuGroupRepository.existsById(anyLong())).willReturn(false);
-
 		// when
 		Throwable actual = catchThrowable(() -> menuService.create(menuRequest));
 
@@ -149,8 +140,6 @@ class MenuServiceTest {
 		MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
 		MenuRequest menuRequest = new MenuRequest("후라이드 세트", BigDecimal.valueOf(20000), 1L,
 			Collections.singletonList(menuProductRequest));
-		given(menuGroupRepository.existsById(menuRequest.getMenuGroupId())).willReturn(true);
-		given(productRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when
 		Throwable actual = catchThrowable(() -> menuService.create(menuRequest));
@@ -167,29 +156,9 @@ class MenuServiceTest {
 		given(menuRepository.findAll()).willReturn(Collections.singletonList(후라이드_세트));
 
 		// when
-		List<MenuResponse> actual = menuService.list();
+		menuService.list();
 
 		// then
 		verify(menuRepository, only()).findAll();
-		// verify(menuproductRepository, only()).findAllByMenuId(후라이드_세트.getId());
-		// assertThat(actual).containsExactly(MenuResponse.from(후라이드_세트));
-	}
-
-	private void 메뉴_상품_저장됨(MenuProductRequest expectedMenuProduct) {
-		ArgumentCaptor<MenuProduct> captor = ArgumentCaptor.forClass(MenuProduct.class);
-		// verify(menuproductRepository, only()).save(captor.capture());
-		assertThat(captor.getValue())
-			.extracting(MenuProduct::getQuantity)
-			.isEqualTo(expectedMenuProduct.getQuantity());
-
-	}
-
-	private void 메뉴_저장됨(MenuRequest menuRequest) {
-		ArgumentCaptor<Menu> menuCaptor = ArgumentCaptor.forClass(Menu.class);
-		verify(menuRepository, only()).save(menuCaptor.capture());
-		assertThat(menuCaptor.getValue())
-			.extracting(Menu::getName, Menu::getPrice)
-			.containsExactly(menuRequest.getName(), menuRequest.getPrice());
-		;
 	}
 }

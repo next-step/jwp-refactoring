@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.util.Assert;
+
 @Entity
 public class Menu {
 	@Id
@@ -33,9 +35,11 @@ public class Menu {
 	}
 
 	private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+		validate(name, price, menuGroup, menuProducts);
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
+		menuProducts.updateMenu(this);
 		this.menuProducts = menuProducts;
 	}
 
@@ -43,31 +47,32 @@ public class Menu {
 		return new Menu(name, price, menuGroup, menuProducts);
 	}
 
-	public Long getId() {
+	public Long id() {
 		return id;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	public BigDecimal price() {
+		return price.value();
 	}
 
-	public BigDecimal getPrice() {
-		return price.getValue();
-	}
-
-	public MenuGroup getMenuGroup() {
+	public MenuGroup menuGroup() {
 		return menuGroup;
 	}
 
-	public MenuProducts getMenuProducts() {
+	public MenuProducts menuProducts() {
 		return menuProducts;
+	}
+
+	private void validate(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+		Assert.notNull(name, "메뉴 이름은 필수입니다.");
+		Assert.notNull(price, "메뉴 가격은 필수입니다.");
+		Assert.notNull(menuGroup, "메뉴 그룹은 필수입니다.");
+		Assert.notNull(menuProducts, "메뉴 상품은 필수입니다.");
+		Price totalPrice = menuProducts.totalPrice();
+		Assert.isTrue(totalPrice.graterThanOrEqualTo(price), "메뉴 가격은 메뉴 상품의 총 가격보다 작거나 같아야 합니다.");
 	}
 }

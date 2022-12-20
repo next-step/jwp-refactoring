@@ -25,11 +25,11 @@ public class MenuResponse {
 
 	public static MenuResponse from(Menu menu) {
 		return new MenuResponse(
-			menu.getId(),
-			menu.getName(),
-			menu.getPrice(),
-			menu.getMenuGroup().getId(),
-			MenuProductResponse.listFrom(menu.getMenuProducts())
+			menu.id(),
+			menu.name(),
+			menu.price(),
+			menu.menuGroup().getId(),
+			MenuProductResponse.listFrom(menu.menuProducts())
 		);
 	}
 
@@ -39,19 +39,19 @@ public class MenuResponse {
 			.collect(Collectors.toList());
 	}
 
-	public Long getId() {
+	public Long id() {
 		return id;
 	}
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
+	public BigDecimal price() {
 		return price;
 	}
 
-	public Long getMenuGroupId() {
+	public Long menuGroupId() {
 		return menuGroupId;
 	}
 

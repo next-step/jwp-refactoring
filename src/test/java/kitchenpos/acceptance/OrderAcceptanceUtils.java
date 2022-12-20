@@ -43,7 +43,7 @@ public class OrderAcceptanceUtils {
 			() -> assertThat(order.getOrderedTime()).isEqualToIgnoringMinutes(LocalDateTime.now()),
 			() -> assertThat(order.getOrderLineItems()).first()
 				.satisfies(orderLineItem -> {
-					assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenu.getId());
+					assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenu.id());
 					assertThat(orderLineItem.getQuantity()).isEqualTo(expectedQuantity);
 				})
 		);

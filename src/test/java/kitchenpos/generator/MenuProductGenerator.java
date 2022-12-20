@@ -17,16 +17,14 @@ public class MenuProductGenerator {
 	}
 
 	public static MenuProduct 후라이드_세트_상품() {
-		MenuProduct menuProduct = spy(MenuProduct.of(양념_치킨(), Quantity.from(2L)));
-		when(menuProduct.getSeq()).thenReturn(1L);
-		when(menuProduct.getMenuId()).thenReturn(1L);
+		MenuProduct menuProduct = spy(MenuProduct.of(후라이드_치킨(), Quantity.from(2L)));
+		lenient().when(menuProduct.seq()).thenReturn(1L);
 		return menuProduct;
 	}
 
 	public static MenuProduct 후라이드_세트_상품2() {
 		MenuProduct menuProduct = spy(MenuProduct.of(양념_치킨(), Quantity.from(2L)));
-		when(menuProduct.getSeq()).thenReturn(2L);
-		when(menuProduct.getMenuId()).thenReturn(1L);
+		when(menuProduct.seq()).thenReturn(2L);
 		return menuProduct;
 	}
 
