@@ -3,10 +3,12 @@ package kitchenpos.product.application;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -18,12 +20,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final ProductRequest request) {
-        return productRepository.save(request.toProduct());
+    public ProductResponse create(final ProductRequest request) {
+        return ProductResponse.from(productRepository.save(request.toProduct()));
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        return productRepository.findAll().stream()
+            .map(ProductResponse::from)
+            .collect(Collectors.toList());
     }
 
     public Product findById(Long productId) {

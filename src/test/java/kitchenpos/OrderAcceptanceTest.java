@@ -10,7 +10,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -188,7 +188,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 메뉴_등록_요청() {
         MenuGroup 신메뉴 = 메뉴_그룹_생성_요청("신메뉴").as(MenuGroup.class);
-        Product 파닭치킨 = 상품_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L)).as(Product.class);
+        ProductResponse 파닭치킨 = 상품_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L)).as(ProductResponse.class);
 
         return 메뉴_생성_요청("파닭치킨",
             BigDecimal.valueOf(15_000L),
