@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -73,8 +73,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 메뉴_생성_실패됨(response);
             }),
             dynamicTest("존재하지 않는 상품이 포함된 메뉴을 등록한다.", () -> {
-                Product 존재하지_않는_상품 = new Product();
-                존재하지_않는_상품.setId(Long.MAX_VALUE);
+                Product 존재하지_않는_상품 = new Product(Long.MAX_VALUE, "noExistProduct", BigDecimal.valueOf(1L));
 
                 ExtractableResponse<Response> response = 메뉴_생성_요청("파닭치킨", BigDecimal.valueOf(15_000L),
                     신메뉴.getId(), 존재하지_않는_상품);
