@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-class ApplicationTest {
+public class TableApplication {
+
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 }
