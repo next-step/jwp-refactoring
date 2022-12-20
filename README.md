@@ -96,3 +96,10 @@
 - [x] OrderService - orderTable.isEmpty() 체크하기.
 - [x] OrderService - OrderStatus.COMPLETION.name() 체크하기.
 - [x] 마지막에 newLine 넣기.
+#### 요구사항 1
+- 단위 테스트가 가능한 코드와 어려운 코드를 분리해 단위 테스트를 구현
+- Spring Data JPA 사용시 `spring.jpa.hibernate.ddl-auto=validate` 필수
+- 데이터 스키마 변경 및 마이그레이션이 필요하다면 [여기](https://meetup.toast.com/posts/173)
+- Lombok없이 진행하기
+- 자바 코드 컨벤션 지키기
+
