@@ -1,6 +1,6 @@
-package kitchenpos.product.dto;
+package product.dto;
 
-import kitchenpos.product.domain.Product;
+import product.domain.Product;
 
 import java.math.BigDecimal;
 import java.util.Objects;

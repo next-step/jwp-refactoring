@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,8 +79,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertAll(
-                () -> assertThat(products).hasSize(2),
-                () -> assertThat(products).containsAll(createdProducts)
+                () -> Assertions.assertThat(products).hasSize(2),
+                () -> Assertions.assertThat(products).containsAll(createdProducts)
         );
     }
 

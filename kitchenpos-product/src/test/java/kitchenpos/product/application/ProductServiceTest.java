@@ -4,6 +4,7 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.application.ProductService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class ProductServiceTest {
 
         ProductResponse result = productService.create(honeycombo);
 
-        assertThat(result).isEqualTo(ProductResponse.from(honeycombo));
+        Assertions.assertThat(result).isEqualTo(ProductResponse.from(honeycombo));
     }
 
 
@@ -59,8 +60,8 @@ class ProductServiceTest {
         List<ProductResponse> results = productService.list();
 
         assertAll(
-                () -> assertThat(results).hasSize(2),
-                () -> assertThat(results).containsExactly(ProductResponse.from(honeycombo), ProductResponse.from(redwing))
+                () -> Assertions.assertThat(results).hasSize(2),
+                () -> Assertions.assertThat(results).containsExactly(ProductResponse.from(honeycombo), ProductResponse.from(redwing))
         );
     }
 }

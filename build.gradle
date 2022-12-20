@@ -45,7 +45,18 @@ allprojects {
 project(':kitchenpos-menu') {
     dependencies {
         implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-product')
 
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-product').sourceSets.test.output
+    }
+}
+
+
+
+project(':kitchenpos-product') {
+    dependencies {
+        implementation project(':kitchenpos-common')
         testCompile project(':kitchenpos-common').sourceSets.test.output
     }
 }
