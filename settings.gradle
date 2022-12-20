@@ -1,2 +1,3 @@
 rootProject.name = 'kitchenpos'
 include 'sub-modules:kitchenpos-common'
+include 'sub-modules:kitchenpos-product'

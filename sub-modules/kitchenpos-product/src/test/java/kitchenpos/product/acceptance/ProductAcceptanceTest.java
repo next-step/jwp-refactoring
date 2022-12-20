@@ -3,20 +3,20 @@ package kitchenpos.product.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.ProductAcceptanceConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static kitchenpos.product.fixture.ProductTestFixture.*;
 
 @DisplayName("상품 관련 인수 테스트")
-public class ProductAcceptanceTest extends AcceptanceTest {
+public class ProductAcceptanceTest extends ProductAcceptanceConfig {
 
     /**
      * When : 상품 생성을 요청하면
-     * Then : 상품이 생성된다.
+     * Then : 상품이 생성 된다.
      */
-    @DisplayName("상품을 생성한다")
+    @DisplayName("상품을 생성 한다")
     @Test
     void createProduct() {
         // when
@@ -30,7 +30,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
      * When : 가격이 0 이하인 상품을 생성하면
      * Then : 상품 생성이 실패한다
      */
-    @DisplayName("상품을 생성 실패")
+    @DisplayName("상품을 생성 실패한다")
     @Test
     void createProductFailed() {
         // when
