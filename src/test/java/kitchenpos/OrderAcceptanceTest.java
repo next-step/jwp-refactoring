@@ -3,14 +3,14 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -37,8 +37,8 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 테이블;
-    private OrderTable 빈_테이블;
+    private OrderTableResponse 테이블;
+    private OrderTableResponse 빈_테이블;
     private MenuResponse 메뉴_파닭치킨;
     private OrderResponse 주문;
 
@@ -47,8 +47,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> order() {
         return Stream.of(
             dynamicTest("데이터를 세팅한다.", () -> {
-                테이블 = 테이블_생성_요청(false, 5).as(OrderTable.class);
-                빈_테이블 = 테이블_생성_요청(true, 0).as(OrderTable.class);
+                테이블 = 테이블_생성_요청(false, 5).as(OrderTableResponse.class);
+                빈_테이블 = 테이블_생성_요청(true, 0).as(OrderTableResponse.class);
                 메뉴_파닭치킨 = 메뉴_등록_요청().as(MenuResponse.class);
             }),
             dynamicTest("주문을 등록한다.", () -> {
@@ -102,9 +102,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(OrderTable orderTable, MenuResponse... menuResponses) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderTableResponse orderTableResponse, MenuResponse... menuResponses) {
         Map<String, Object> request = new HashMap<>();
-        request.put("orderTableId", orderTable.getId());
+        request.put("orderTableId", orderTableResponse.getId());
         request.put("orderLineItems", toOrderLoneItemRequests(menuResponses));
         return RestAssured
             .given().log().all()

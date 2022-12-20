@@ -1,7 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -9,12 +7,13 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,12 +22,12 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
 
-    private final OrderTableDao orderTableDao;
+    private final TableService tableService;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableDao orderTableDao) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, TableService tableService) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.tableService = tableService;
     }
 
     @Transactional
@@ -66,8 +65,8 @@ public class OrderService {
     }
 
     private void validateNotEmptyOrderTable(OrderRequest request) {
-        Optional<OrderTable> orderTable = orderTableDao.findById(request.getOrderTableId());
-        if (!orderTable.isPresent()) {
+        OrderTable orderTable = tableService.findById(request.getOrderTableId());
+        if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블 입니다.");
         }
     }

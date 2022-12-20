@@ -1,10 +1,10 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderStatusRequest {
     private String orderStatus;
-    
+
     protected OrderStatusRequest() {
     }
 
