@@ -7,7 +7,6 @@ import kitchenpos.common.error.ErrorEnum;
 
 @Embeddable
 public class Price {
-    private static final int ZERO = 0;
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -44,6 +43,6 @@ public class Price {
     }
 
     public boolean isBiggerThan(Price totalPrice) {
-        return price.compareTo(totalPrice.price) > ZERO;
+        return price.compareTo(totalPrice.price) > 0;
     }
 }

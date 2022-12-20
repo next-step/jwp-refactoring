@@ -12,8 +12,6 @@ import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
-    private static final int ZERO = 0;
-
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
@@ -28,7 +26,7 @@ public class MenuProducts {
     }
 
     public Price totalMenuPrice() {
-        Price total = new Price(BigDecimal.valueOf(ZERO));
+        Price total = new Price(BigDecimal.valueOf(0));
         for (MenuProduct menuProduct : menuProducts) {
             total = total.add(menuProduct.calculatePrice());
         }
