@@ -4,7 +4,6 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final Menus menus = new Menus(menuRepository.findAll());
+        final List<Menu> menus = menuRepository.findAll();
         return MenuResponse.getMenuResponses(menus);
     }
 }
