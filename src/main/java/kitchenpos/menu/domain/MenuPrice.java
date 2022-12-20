@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import kitchenpos.constants.ErrorMessages;
 
 @Embeddable
-public class MenuPrice implements Comparable<MenuPrice> {
+public class MenuPrice {
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -21,8 +21,8 @@ public class MenuPrice implements Comparable<MenuPrice> {
         this.price = price;
     }
 
-    public MenuPrice(int i) {
-        this(new BigDecimal(i));
+    public MenuPrice(int price) {
+        this(new BigDecimal(price));
     }
 
     private void validatePrice(BigDecimal val) {
@@ -40,7 +40,6 @@ public class MenuPrice implements Comparable<MenuPrice> {
         this.price = result;
     }
 
-    @Override
     public int compareTo(MenuPrice o) {
         return this.price.compareTo(o.price);
     }
