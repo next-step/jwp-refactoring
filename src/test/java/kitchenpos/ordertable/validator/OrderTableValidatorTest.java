@@ -6,15 +6,20 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.ordertable.testfixture.OrderTableTestFixture;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +34,9 @@ class OrderTableValidatorTest {
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderTableValidator orderTableValidator;
@@ -60,7 +68,29 @@ class OrderTableValidatorTest {
     void validateNotCompleteOrdersException() {
         when(orderRepository.findAllByOrderTableId(주문테이블.getId())).thenReturn(Arrays.asList(주문));
 
-        assertThatThrownBy(() -> orderTableValidator.validator(주문테이블))
+        assertThatThrownBy(() -> orderTableValidator.validatorTable(주문테이블))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 테이블이 등록되지 않은 경우 에러가 발생한다.")
+    @Test
+    void validateOrderTableNotEmptyException() {
+        OrderTable orderTable = OrderTableTestFixture.create(4L, 6, true);
+        OrderRequest orderRequest = OrderRequest.of(orderTable.getId(), OrderStatus.COOKING,
+            Collections.singletonList(하와이안피자세트주문요청));
+        when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+
+        assertThatThrownBy(() -> orderTableValidator.validatorOrder(orderRequest))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 테이블이 존재하지 않다면 에러가 발생한다.")
+    @Test
+    void validateOrderTableNotExistsException() {
+        OrderRequest orderRequest = OrderRequest.of(10L, OrderStatus.COOKING, Collections.singletonList(하와이안피자세트주문요청));
+        when(orderTableRepository.findById(10L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> orderTableValidator.validatorOrder(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

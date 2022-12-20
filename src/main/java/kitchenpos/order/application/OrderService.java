@@ -1,8 +1,10 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.constant.ErrorCode;
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
@@ -12,22 +14,15 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
+
     private final MenuRepository menuRepository;
-
     private final OrderRepository orderRepository;
-
     private final OrderValidator orderValidator;
 
     public OrderService(
@@ -42,7 +37,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderValidator.validator(orderRequest);
+        orderValidator.validatorOrder(orderRequest);
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findAllOrderLineItemByMenuId(orderLineItemRequests);
         Order order = Order.of(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems));

@@ -43,7 +43,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-        orderTableValidator.validator(orderTable);
+        orderTableValidator.validatorTable(orderTable);
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTable);
     }
