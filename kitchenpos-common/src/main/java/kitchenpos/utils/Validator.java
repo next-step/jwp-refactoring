@@ -2,7 +2,6 @@ package kitchenpos.utils;
 
 
 import kitchenpos.exception.BadRequestException;
-import org.flywaydb.core.internal.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class Validator {
     }
 
     public static void checkNotNull(String name, String message) {
-        if (StringUtils.hasText(name)) {
+        if (name != null && !name.isEmpty()) {
             return;
         }
         throw new BadRequestException(message);

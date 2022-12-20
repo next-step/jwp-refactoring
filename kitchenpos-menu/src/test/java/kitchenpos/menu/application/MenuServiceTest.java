@@ -1,8 +1,6 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
@@ -19,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import product.domain.Product;
+import product.domain.ProductRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
