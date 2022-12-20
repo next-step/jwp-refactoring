@@ -24,6 +24,7 @@ public enum ErrorMessage {
     ORDER_CANNOT_CHANGE_COMPLETION_ORDER("완료된 주문은 변경할 수 없습니다."),
     ORDER_TABLE_CANNOT_BE_EMPTY("빈 주문 테이블에서 주문할 수 없습니다."),
     ORDER_LINE_ITEMS_CANNOT_BE_EMPTY("주문 생성 시 빈 주문 제품을 요청할 수 없습니다."),
+    ORDER_MUST_BE_GREATER_THAN_MINIMUM_SIZE("주문 메뉴 크기는 최소 크기보다 작을 수 없습니다."),
 
     //orderLineItem
     ORDER_LINE_ITEM_REQUIRED_ORDER("주문은 필수 필드입니다."),
