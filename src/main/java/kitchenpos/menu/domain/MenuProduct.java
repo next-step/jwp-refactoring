@@ -8,7 +8,6 @@ import java.util.Objects;
 
 @Entity
 public class MenuProduct {
-    private static final int MIN_NUM = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,26 +20,26 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
-    private long quantity;
+
+    @Embedded
+    private MenuProductQuantity quantity;
 
     protected MenuProduct() {}
 
     public MenuProduct(Menu menu, Product product, long quantity) {
-        validate(menu, product, quantity);
+        validate(menu, product);
+
         this.menu = menu;
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new MenuProductQuantity(quantity);
     }
 
-    private void validate(Menu menu, Product product, long quantity) {
+    private void validate(Menu menu, Product product) {
         if(Objects.isNull(menu)) {
             throw new IllegalArgumentException(ErrorMessage.MENU_PRODUCT_REQUIRED_MENU.getMessage());
         }
         if(Objects.isNull(product)) {
             throw new IllegalArgumentException(ErrorMessage.MENU_PRODUCT_REQUIRED_PRODUCT.getMessage());
-        }
-        if(quantity < MIN_NUM) {
-            throw new IllegalArgumentException(ErrorMessage.MENU_PRODUCT_INVALID_QUANTITY.getMessage());
         }
     }
 
@@ -52,7 +51,7 @@ public class MenuProduct {
     }
 
     public BigDecimal calculateAmount() {
-        return this.product.calculateAmount(quantity);
+        return this.product.calculateAmount(quantity.value());
     }
 
     public Long getId() {
@@ -68,7 +67,7 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.value();
     }
 
     @Override
@@ -76,7 +75,7 @@ public class MenuProduct {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(menu, that.menu) && Objects.equals(product, that.product);
+        return Objects.equals(menu, that.menu) && Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
