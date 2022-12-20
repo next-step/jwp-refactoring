@@ -34,6 +34,7 @@ public class Menu {
 
 	private Long menuGroupId;
 
+	// TODO remove bidirection
 	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<MenuProduct> menuProducts = new ArrayList<>();
 

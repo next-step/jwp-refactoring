@@ -1,18 +1,11 @@
 package kitchenpos.order.domain;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,10 +16,6 @@ public class OrderLineItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "order_id")
-	private Order order;
-
 	private Long menuId;
 
 	private Integer quantity;
@@ -34,17 +23,9 @@ public class OrderLineItem {
 	protected OrderLineItem() {
 	}
 
-	public OrderLineItem(Order order, Long menuId, Integer quantity) {
-		this.order = order;
+	public OrderLineItem(Long menuId, Integer quantity) {
 		this.menuId = menuId;
 		this.quantity = quantity;
-	}
-
-	public static List<OrderLineItem> of(Order order, Map<Long, Integer> menus) {
-		return menus.entrySet()
-					.stream()
-					.map(entry -> new OrderLineItem(order, entry.getKey(), entry.getValue()))
-					.collect(Collectors.toList());
 	}
 
 	public Long getMenuId() {

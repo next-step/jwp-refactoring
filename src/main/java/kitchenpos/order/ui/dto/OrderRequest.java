@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 
 public class OrderRequest {
 
@@ -24,9 +26,16 @@ public class OrderRequest {
 	}
 
 	public Order toOrder() {
-		return new Order(orderTableId, getMenusWithQuantity());
+		return new Order(orderTableId, toOrderLineItems());
 	}
 
+	private OrderLineItems toOrderLineItems() {
+		return new OrderLineItems(orderLineItems.stream()
+									.map(OrderLineItemRequest::toOrderLineItem)
+									.collect(Collectors.toList()));
+	}
+
+	@Deprecated
 	private Map<Long, Integer> getMenusWithQuantity() {
 		return orderLineItems.stream()
 							 .collect(Collectors.toMap(
@@ -58,6 +67,10 @@ public class OrderRequest {
 
 		public OrderLineItemRequest(Map.Entry<Long, Integer> menuQuantity) {
 			this(menuQuantity.getKey(), menuQuantity.getValue());
+		}
+
+		private OrderLineItem toOrderLineItem() {
+			return new OrderLineItem(menuId, quantity);
 		}
 
 		public Long getMenuId() {

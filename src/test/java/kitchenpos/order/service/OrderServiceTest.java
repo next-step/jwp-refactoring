@@ -11,9 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -27,6 +25,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
@@ -47,17 +47,17 @@ class OrderServiceTest {
 
 	private Order createOrder(OrderStatus orderStatus) {
 		return new Order(1L,
-						 createMenus(3),
+						 createOrderLineItems(3),
 						 ORDER_TABLE_ID,
 						 orderStatus,
 						 LocalDateTime.now()
 						 );
 	}
 
-	private Map<Long, Integer> createMenus(int count) {
-		return LongStream.range(0, count)
-						 .boxed()
-						 .collect(Collectors.toMap(Function.identity(), it -> 1, Integer::sum));
+	private OrderLineItems createOrderLineItems(int count) {
+		return new OrderLineItems(LongStream.range(0, count)
+					.mapToObj(i -> new OrderLineItem(i, 1))
+					.collect(Collectors.toList()));
 	}
 
 	@Test

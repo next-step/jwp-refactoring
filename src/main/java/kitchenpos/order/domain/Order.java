@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -36,19 +35,20 @@ public class Order {
 	protected Order() {
 	}
 
-	public Order(Long orderTableId, Map<Long, Integer> menus) {
+	public Order(Long orderTableId, OrderLineItems orderLineItems) {
 		this.orderTableId = orderTableId;
 		this.orderedTime = LocalDateTime.now();
-		orderLineItems.addAll(this, menus);
+		this.orderLineItems.addAll(orderLineItems);
+		this.orderStatus = OrderStatus.COOKING;
 	}
 
 	public Order(Long id,
-				 Map<Long, Integer> menus,
+				 OrderLineItems orderLineItems,
 				 Long orderTableId,
 				 OrderStatus orderStatus,
 				 LocalDateTime orderedTime) {
 		this.id = id;
-		this.orderLineItems.addAll(this, menus);
+		this.orderLineItems.addAll(orderLineItems);
 		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
