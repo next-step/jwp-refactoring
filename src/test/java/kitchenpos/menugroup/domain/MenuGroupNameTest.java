@@ -1,6 +1,5 @@
 package kitchenpos.menugroup.domain;
 
-import kitchenpos.menugroup.domain.MenuGroupName;
 import kitchenpos.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

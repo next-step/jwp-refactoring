@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.exception.BadRequestException;
-import kitchenpos.utils.Validator;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

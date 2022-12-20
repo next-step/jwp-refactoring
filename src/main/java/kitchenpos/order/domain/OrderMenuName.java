@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.utils.Validator;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;

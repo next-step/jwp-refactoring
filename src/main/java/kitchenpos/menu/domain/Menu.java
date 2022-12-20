@@ -1,13 +1,10 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.exception.BadRequestException;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-
-import static kitchenpos.utils.Message.INVALID_MENU_PRICE;
 
 @Entity
 public class Menu {

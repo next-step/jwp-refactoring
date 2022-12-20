@@ -1,7 +1,5 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.utils.Validator;
-
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

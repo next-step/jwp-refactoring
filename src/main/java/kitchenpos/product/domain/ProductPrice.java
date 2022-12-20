@@ -1,8 +1,6 @@
 package kitchenpos.product.domain;
 
 
-import kitchenpos.utils.Validator;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
