@@ -55,11 +55,8 @@ public class ProductServiceTest {
     @ParameterizedTest
     @ValueSource(ints = { -1, -1000 })
     void createProductTest2(int price) {
-        // given
-        Product product = new Product(1L, "삼겹살", BigDecimal.valueOf(price));
-
         // when & then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> new Product(1L, "삼겹살", BigDecimal.valueOf(price)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

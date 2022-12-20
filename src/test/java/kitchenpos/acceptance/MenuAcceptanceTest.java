@@ -39,10 +39,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         삼겹살 = 상품_생성_요청(new Product(1L, "삼겹살", BigDecimal.valueOf(5_000))).as(Product.class);
         김치 = 상품_생성_요청(new Product(2L, "김치", BigDecimal.valueOf(3_000))).as(Product.class);
         한식 = 메뉴_그룹_생성_요청(new MenuGroup(1L, "한식")).as(MenuGroup.class);
-        삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", BigDecimal.valueOf(8_000), 한식.getId(), new ArrayList<>());
-        삼겹살메뉴싱품 = new MenuProduct(1L, 삼겹살세트메뉴.getId(), 삼겹살.getId(), 1L);
-        김치상품 = new MenuProduct(2L, 삼겹살세트메뉴.getId(), 김치.getId(), 1L);
-        삼겹살세트메뉴.setMenuProducts(Arrays.asList(삼겹살메뉴싱품, 김치상품));
+        삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", BigDecimal.valueOf(8_000), 한식);
+        삼겹살메뉴싱품 = new MenuProduct(1L, 삼겹살세트메뉴, 삼겹살, 1L);
+        김치상품 = new MenuProduct(2L, 삼겹살세트메뉴, 김치, 1L);
+        삼겹살세트메뉴.getMenuProducts().setMenuProducts(Arrays.asList(삼겹살메뉴싱품, 김치상품));
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -100,6 +100,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/api/menus")
                 .then().log().all()
                 .extract();

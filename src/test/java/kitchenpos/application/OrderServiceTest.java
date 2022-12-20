@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -68,10 +68,10 @@ class OrderServiceTest {
         삼겹살 = new Product(1L, "삼겹살", BigDecimal.valueOf(5_000));
         김치 = new Product(2L, "김치", BigDecimal.valueOf(3_000));
         한식 = new MenuGroup(1L, "한식");
-        삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", BigDecimal.valueOf(8_000), 한식.getId(), new ArrayList<>());
-        삼겹살메뉴상품 = new MenuProduct(1L, 삼겹살세트메뉴.getId(), 삼겹살.getId(), 1L);
-        김치메뉴상품 = new MenuProduct(2L, 삼겹살세트메뉴.getId(), 김치.getId(), 1L);
-        삼겹살세트메뉴.setMenuProducts(Arrays.asList(삼겹살메뉴상품, 김치메뉴상품));
+        삼겹살세트메뉴 = new Menu(1L, "삼겹살세트메뉴", BigDecimal.valueOf(8_000), 한식);
+        삼겹살메뉴상품 = new MenuProduct(1L, 삼겹살세트메뉴, 삼겹살, 1L);
+        김치메뉴상품 = new MenuProduct(2L, 삼겹살세트메뉴, 김치, 1L);
+        삼겹살세트메뉴.getMenuProducts().setMenuProducts(Arrays.asList(삼겹살메뉴상품, 김치메뉴상품));
         주문테이블 = new OrderTable(1L, null, 0, false);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         삼겹살세트메뉴주문 = new OrderLineItem(1L, 주문.getId(), 삼겹살세트메뉴.getId(), 1);
@@ -86,7 +86,7 @@ class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
+        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         when(orderDao.save(주문)).thenReturn(주문);
         when(orderLineItemDao.save(삼겹살세트메뉴주문)).thenReturn(삼겹살세트메뉴주문);
@@ -109,7 +109,7 @@ class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
+        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
 
         // when & then
@@ -121,7 +121,7 @@ class OrderServiceTest {
     @Test
     void createOrderTest3() {
         // given
-        when(menuDao.countByIdIn(anyList())).thenReturn(10L);
+        when(menuRepository.countByIdIn(anyList())).thenReturn(10);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -148,7 +148,7 @@ class OrderServiceTest {
                 .stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
-        when(menuDao.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
+        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
 
         // when & then
