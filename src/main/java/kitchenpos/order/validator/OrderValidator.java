@@ -1,8 +1,7 @@
 package kitchenpos.order.validator;
 
 import java.util.List;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -10,18 +9,18 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class OrderValidator {
 
-    private OrderTableDao orderTableDao;
+    private OrderTableService orderTableService;
 
-    public OrderValidator(OrderTableDao orderTableDao) {
-        this.orderTableDao = orderTableDao;
+    public OrderValidator(OrderTableService orderTableService) {
+        this.orderTableService = orderTableService;
     }
 
     public void validateCreate(List<OrderLineItemRequest> orderLineItemRequests, Long orderTableId){
-        OrderTable orderTable = getOrderTable(orderTableId);
+        boolean isTableEmpty = orderTableService.isTableEmpty(orderTableId);
 
         if (CollectionUtils.isEmpty(orderLineItemRequests) ||
                 existsMenuIdIsNull(orderLineItemRequests) ||
-                orderTable.isEmpty()
+                isTableEmpty
         ) {
             throw new IllegalArgumentException();
         }
@@ -30,10 +29,5 @@ public class OrderValidator {
     private boolean existsMenuIdIsNull(List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
                 .anyMatch(orderLineItemRequest -> orderLineItemRequest.getMenuId() == null);
-    }
-
-    private OrderTable getOrderTable(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
     }
 }
