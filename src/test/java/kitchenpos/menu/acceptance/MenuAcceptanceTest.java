@@ -1,8 +1,8 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_생성_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴_그룹_생성_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.common.acceptance.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;

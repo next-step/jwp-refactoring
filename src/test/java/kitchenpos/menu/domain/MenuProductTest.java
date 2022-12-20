@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import kitchenpos.menu.testfixture.MenuProductTestFixture;
 import kitchenpos.menu.testfixture.MenuTestFixture;
 import kitchenpos.menugroup.domain.MenuGroup;

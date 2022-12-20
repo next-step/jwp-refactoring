@@ -2,7 +2,6 @@ package kitchenpos.menu.testfixture;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 public class MenuProductTestFixture {
