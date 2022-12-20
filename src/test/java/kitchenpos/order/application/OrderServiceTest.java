@@ -46,12 +46,12 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    Long 주문_id;
-    OrderTable 주문_테이블;
-    OrderLineItem 주문_아이템_1;
-    OrderLineItem 주문_아이템_2;
-    List<OrderLineItem> 주문_아이템_목록;
-    Order 주문;
+    private Long 주문_id;
+    private OrderTable 주문_테이블;
+    private OrderLineItem 주문_아이템_1;
+    private OrderLineItem 주문_아이템_2;
+    private List<OrderLineItem> 주문_아이템_목록;
+    private Order 주문;
 
     @BeforeEach
     void setUp() {
