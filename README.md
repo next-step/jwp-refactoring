@@ -76,9 +76,8 @@
 
 ---
 
-🚀 1단계 - 테스트를 통한 코드 보호
 <details>
-<summary> </summary>
+<summary> 🚀 1단계 - 테스트를 통한 코드 보호 </summary>
 
 #### 요구사항1
 - kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md에 작성한다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
@@ -173,9 +172,8 @@ public class ControllerTest {
 
 
 
-🚀 2단계 - 서비스 리팩터링
 <details>
-<summary> </summary>
+<summary> 🚀 2단계 - 서비스 리팩터링 </summary>
 
 ### 요구 사항
 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다.
@@ -244,9 +242,9 @@ completePayment() vs setOrderState()
 
 
 
-🚀 3단계 - 의존성 리팩터링
+
 <details>
-<summary> </summary>
+<summary> 🚀 3단계 - 의존성 리팩터링 </summary>
 
 #### 구현
 - Order와 OrderTable 간의 순환참조 제거
@@ -338,4 +336,24 @@ Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
 * @EventListener
 * @Order
 * @Async (@EnableAsync)
+</details>
+
+
+
+
+<details>
+<summary> 🚀 4단계 - 멀티 모듈 적용 </summary>
+
+#### 요구사항
+* Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+  * **컨텍스트 간의 독립된 모듈로 만들 수 있다.**
+  * 계층 간의 독립된 모듈로 만들 수 있다.
+* 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+**힌트**
+ - https://jojoldu.tistory.com/123
+ - https://kwonnam.pe.kr/wiki/gradle/multiproject
+
+
+
 </details>
