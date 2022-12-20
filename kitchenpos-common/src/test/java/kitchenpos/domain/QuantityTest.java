@@ -1,19 +1,20 @@
-package kitchenpos.common.domain;
+package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.common.domain.Quantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class NumberOfGuestsTest {
+class QuantityTest {
 
-    @DisplayName("손님 수가 0명보다 작으면 에러가 발생한다.")
+    @DisplayName("수량이 0단위보다 작으면 에러가 발생한다.")
     @ParameterizedTest
-    @ValueSource(ints = { -1, -10, -100 })
-    void validateNumberOfGuestsLessThanZero(int numberOfGuests) {
+    @ValueSource(longs = { -1, -10, -100 })
+    void validateQuantityLessThanZero(long quantity) {
         // when & then
-        assertThatThrownBy(() -> NumberOfGuests.from(numberOfGuests))
+        assertThatThrownBy(() -> Quantity.from(quantity))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }
