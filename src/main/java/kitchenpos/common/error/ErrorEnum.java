@@ -9,6 +9,7 @@ public enum ErrorEnum {
     ORDER_LINE_ITEMS_IS_EMPTY("주문 항목이 비어있습니다."),
     ALREADY_GROUP("이미 단체그룹으로 지정되어 있습니다."),
     NOT_PAYMENT_ORDER("계산 완료된 주문이 아닙니다."),
+    ORDER_COMPLETION_STATUS_NOT_CHANGE("계산이 완료된 주문은 변경할 수 없습니다."),
     NOT_EXISTS_ORDER_TABLE("존재하지 않는 주문 테이블입니다."),
     NOT_EXISTS_TABLE_GROUP("단체 그룹이 존재하지 않습니다."),
     NOT_EXISTS_ORDER_TABLE_LIST("주문 테이블 목록에 주문 테이블이 없습니다."),

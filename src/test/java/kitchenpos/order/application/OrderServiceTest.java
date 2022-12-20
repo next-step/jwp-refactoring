@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -181,10 +182,13 @@ public class OrderServiceTest {
 
     @Test
     void 계산_완료된_주문은_상태를_변경할_수_없다() {
+        given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
+
         주문.setOrderStatus(OrderStatus.COMPLETION);
         UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(주문.getOrderStatus().name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.ORDER_COMPLETION_STATUS_NOT_CHANGE.message());
     }
 }

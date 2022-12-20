@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -75,8 +75,8 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+        if (savedOrder.isCompletion()) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_COMPLETION_STATUS_NOT_CHANGE.message());
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus().name());
