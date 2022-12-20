@@ -1,4 +1,4 @@
-package product.domain;
+package kitchenpos.product.domain;
 
 
 import kitchenpos.utils.Validator;

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 
+import kitchenpos.exception.BadRequestException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;

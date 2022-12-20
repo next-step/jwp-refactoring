@@ -8,10 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import product.application.ProductService;
-import product.domain.Product;
-import product.domain.ProductRepository;
-import product.dto.ProductResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductResponse;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
