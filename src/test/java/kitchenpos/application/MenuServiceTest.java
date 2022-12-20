@@ -64,7 +64,7 @@ class MenuServiceTest {
 		given(productDao.findById(menuProductRequest.getProductId()))
 			.willReturn(Optional.of(후라이드_치킨()));
 		given(menuDao.save(any())).willReturn(후라이드_세트);
-		MenuProduct 후라이드_한마리 = MenuProductGenerator.메뉴_상품(1L, 1L, 1L);
+		MenuProduct 후라이드_한마리 = MenuProductGenerator.메뉴_상품(1L, 1L);
 		given(menuProductDao.save(any())).willReturn(후라이드_한마리);
 
 		// when
@@ -76,7 +76,7 @@ class MenuServiceTest {
 			assertThat(response.getId()).isEqualTo(후라이드_세트.getId());
 			assertThat(response.getName()).isEqualTo(후라이드_세트.getName());
 			assertThat(response.getPrice()).isEqualTo(후라이드_세트.getPrice());
-			assertThat(response.getMenuGroupId()).isEqualTo(후라이드_세트.getMenuGroupId());
+			assertThat(response.getMenuGroupId()).isEqualTo(후라이드_세트.getMenuGroup().getId() );
 			assertThat(response.getMenuProducts()).hasSize(1);
 			assertThat(response.getMenuProducts().get(0).getProductId())
 				.isEqualTo(후라이드_한마리.getProductId());

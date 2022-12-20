@@ -15,7 +15,6 @@ public class MenuGroupRequest {
 	}
 
 	public MenuGroup toEntity() {
-		// todo : id 값 없이 수정
-		return new MenuGroup(null, name);
+		return MenuGroup.from(name);
 	}
 }

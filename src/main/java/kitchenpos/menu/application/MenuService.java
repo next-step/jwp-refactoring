@@ -68,11 +68,10 @@ public class MenuService {
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProducts) {
-            MenuProduct menuProduct = menuProductRequest.toEntity(menuId);
-            menuProduct.setMenuId(menuId);
+            MenuProduct menuProduct = menuProductRequest.toEntity();
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
-        savedMenu.setMenuProducts(savedMenuProducts);
+        // savedMenu.setMenuProducts(savedMenuProducts);
 
         return MenuResponse.from(savedMenu);
     }
@@ -81,7 +80,7 @@ public class MenuService {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+            // menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
         }
 
         return menus;

@@ -22,9 +22,14 @@ public class MenuResponse {
 		this.menuProducts = menuProducts;
 	}
 
-	public static MenuResponse from(Menu savedMenu) {
-		return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
-			savedMenu.getMenuGroupId(), MenuProductResponse.listFrom(savedMenu.getMenuProducts()));
+	public static MenuResponse from(Menu menu) {
+		return new MenuResponse(
+			menu.getId(),
+			menu.getName(),
+			menu.getPrice(),
+			menu.getMenuGroup().getId(),
+			MenuProductResponse.listFrom(menu.getMenuProducts())
+		);
 	}
 
 	public Long getId() {
