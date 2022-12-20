@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.JpaEntityTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -10,17 +9,33 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.utils.DatabaseCleanup;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
+@Import(DatabaseCleanup.class)
 @DisplayName("주문 관련 도메인 테스트")
-public class OrderTest extends JpaEntityTest {
+public class OrderTest {
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -29,6 +44,11 @@ public class OrderTest extends JpaEntityTest {
     private ProductRepository productRepository;
     @Autowired
     private MenuRepository menuRepository;
+
+    @BeforeEach
+    void setUp() {
+        databaseCleanup.execute();
+    }
 
     @DisplayName("주문 생성 테스트")
     @Test
@@ -90,5 +110,10 @@ public class OrderTest extends JpaEntityTest {
         save.addMenuProducts(Lists.newArrayList(new MenuProduct(product, 1L)));
 
         return save;
+    }
+
+    private void flushAndClear() {
+        entityManager.flush();
+        entityManager.clear();
     }
 }

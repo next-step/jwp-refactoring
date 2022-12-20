@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.JpaEntityTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -13,18 +12,38 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import kitchenpos.utils.DatabaseCleanup;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
+@Import({DatabaseCleanup.class, OrderTableValidator.class, TableGroupValidator.class})
 @DisplayName("테이블 도메인 테스트")
-public class OrderTableTest extends JpaEntityTest {
+public class OrderTableTest {
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+    @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
+    private TableGroupValidator tableGroupValidator;
+    @Autowired
+    private OrderTableValidator orderTableValidator;
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -35,6 +54,11 @@ public class OrderTableTest extends JpaEntityTest {
     private ProductRepository productRepository;
     @Autowired
     private MenuRepository menuRepository;
+
+    @BeforeEach
+    void setUp() {
+        databaseCleanup.execute();
+    }
 
     @DisplayName("테이블 생성 테스트")
     @Test
@@ -80,7 +104,7 @@ public class OrderTableTest extends JpaEntityTest {
         OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(1, true));
 
         // when / then
-        assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(getOrderTableValidator(),2))
+        assertThatThrownBy(() -> savedOrderTable.changeNumberOfGuests(getOrderTableValidator(), 2))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -141,5 +165,18 @@ public class OrderTableTest extends JpaEntityTest {
         save.addMenuProducts(Lists.newArrayList(new MenuProduct(product, 1L)));
 
         return menuRepository.save(menu);
+    }
+
+    private OrderTableValidator getOrderTableValidator() {
+        return orderTableValidator;
+    }
+
+    private TableGroupValidator getTableGroupValidator() {
+        return tableGroupValidator;
+    }
+
+    private void flushAndClear() {
+        entityManager.flush();
+        entityManager.clear();
     }
 }

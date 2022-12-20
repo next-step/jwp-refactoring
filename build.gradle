@@ -37,7 +37,18 @@ allprojects {
     }
 }
 
+subprojects {
+    bootJar {
+        enabled = false
+    }
+    jar {
+        enabled = true
+    }
+}
+
 dependencies {
     implementation 'org.flywaydb:flyway-core'
-    implementation project(path: ':kitchenpos-common')
+    implementation project(':kitchenpos-common')
+
+    testImplementation project(':kitchenpos-common').sourceSets.test.output
 }

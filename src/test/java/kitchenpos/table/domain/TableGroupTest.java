@@ -1,12 +1,18 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.JpaEntityTest;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import kitchenpos.utils.DatabaseCleanup;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -14,12 +20,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
+@Import({DatabaseCleanup.class, OrderTableValidator.class, TableGroupValidator.class})
 @DisplayName("테이블 그룹(단체테이블) 도메인 테스트")
-public class TableGroupTest extends JpaEntityTest {
+public class TableGroupTest {
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+    @Autowired
+    private TestEntityManager entityManager;
+
+    @Autowired
+    private TableGroupValidator tableGroupValidator;
     @Autowired
     private TableGroupRepository tableGroupRepository;
     @Autowired
     private OrderTableRepository orderTableRepository;
+
+    @BeforeEach
+    void setUp() {
+        databaseCleanup.execute();
+    }
 
     @DisplayName("단체테이블 객체 생성")
     @Test
@@ -93,5 +115,14 @@ public class TableGroupTest extends JpaEntityTest {
                 () -> assertThat(table2.isGrouping()).isFalse(),
                 () -> assertThat(tableGroup1.getOrderTables()).isEmpty()
         );
+    }
+
+    private TableGroupValidator getTableGroupValidator() {
+        return tableGroupValidator;
+    }
+
+    private void flushAndClear() {
+        entityManager.flush();
+        entityManager.clear();
     }
 }
