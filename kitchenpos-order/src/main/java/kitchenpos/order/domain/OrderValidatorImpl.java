@@ -7,7 +7,6 @@ import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-
 import java.util.Arrays;
 import java.util.List;
 

@@ -5,7 +5,8 @@ import kitchenpos.exception.BadRequestException;
 import javax.persistence.*;
 import java.util.Objects;
 
-import static kitchenpos.utils.Message.*;
+import static kitchenpos.utils.Message.CAN_NOT_CHANGE_NUMBER_OF_GUESTS;
+import static kitchenpos.utils.Message.INVALID_CHANGE_TO_EMPTY_GROUPED_TABLE;
 
 @Entity
 public class OrderTable {

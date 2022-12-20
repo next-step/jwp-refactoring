@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.exception.BadRequestException;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.Collections;
 import java.util.List;
