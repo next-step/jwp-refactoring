@@ -37,6 +37,7 @@ public class Order {
                  OrderTable orderTable,
                  OrderStatus orderStatus,
                  LocalDateTime orderedTime) {
+        validate(orderTable);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -46,8 +47,7 @@ public class Order {
     public Order(
             OrderTable orderTable,
             OrderStatus orderStatus,
-            LocalDateTime orderedTime
-    ) {
+            LocalDateTime orderedTime) {
         validate(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -58,8 +58,8 @@ public class Order {
             OrderTable orderTable,
             OrderStatus orderStatus,
             LocalDateTime orderedTime,
-            OrderLineItems orderLineItems
-    ) {
+            OrderLineItems orderLineItems) {
+        validate(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
