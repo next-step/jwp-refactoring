@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.common.ErrorMessage;
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -13,23 +12,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuRepository menuRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final MenuRepository menuRepository,
             final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
-        this.menuRepository = menuRepository;
         this.orderValidator = orderValidator;
     }
 
@@ -37,7 +32,6 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         orderValidator.validate(request);
         List<OrderLineItemRequest> requestOrderLineItems = request.getOrderLineItemsRequest();
-        validateOrderLineItems(requestOrderLineItems);
         List<OrderLineItem> orderLineItems = mapToOrderLineItems(requestOrderLineItems);
         Order savedOrder = orderRepository.save(Order.of(request.getOrderTableId(), orderLineItems));
         return OrderResponse.from(savedOrder);
@@ -46,28 +40,6 @@ public class OrderService {
     private List<OrderLineItem> mapToOrderLineItems(final List<OrderLineItemRequest> requestOrderLineItems) {
         return requestOrderLineItems.stream()
                 .map(orderLineItem -> OrderLineItem.of(orderLineItem.getMenuId(), orderLineItem.getQuantity()))
-                .collect(Collectors.toList());
-    }
-
-    private void validateOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
-        if (Objects.isNull(orderLineItems) || orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER_LINE_ITEM.getMessage());
-        }
-
-        final List<Long> menuIds = fetchMenuIdsFrom(orderLineItems);
-
-        if (orderLineItems.size() != countByIdIn(menuIds)) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_MENU_INFO.getMessage());
-        }
-    }
-
-    private Long countByIdIn(final List<Long> menuIds) {
-        return menuRepository.countByIdIn(menuIds);
-    }
-
-    private List<Long> fetchMenuIdsFrom(final List<OrderLineItemRequest> orderLineItems) {
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
     }
 

@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -23,14 +22,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static kitchenpos.menu.fixture.MenuTestFixture.*;
 import static kitchenpos.order.fixture.OrderLineItemTestFixture.주문정보목록;
 import static kitchenpos.order.fixture.OrderLineItemTestFixture.주문정보요청;
-import static kitchenpos.ordertable.fixture.OrderTableTestFixture.*;
 import static kitchenpos.order.fixture.OrderTestFixture.주문;
+import static kitchenpos.ordertable.fixture.OrderTableTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -86,11 +84,6 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
-        List<Long> menuIds = 주문1.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-        when(menuRepository.countByIdIn(menuIds)).thenReturn((long) menuIds.size());
         when(orderRepository.save(any())).thenReturn(주문1);
 
         // when
@@ -98,32 +91,6 @@ class OrderServiceTest {
 
         // then
         assertThat(order).isNotNull();
-    }
-
-    @DisplayName("주문을 생성할 떄, 주문 항목이 비어있으면 IllegalArgumentException을 반환한다.")
-    @Test
-    void createWithException1() {
-        // given
-        OrderRequest order = 주문(주문테이블1.getId(), null, null, null);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
-    }
-
-    @DisplayName("주문을 생성할 때, 주문 항목 내에 등록되지 않은 메뉴가 있다면 IllegalArgumentException을 반환한다.")
-    @Test
-    void createWithException2() {
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
-    }
-
-    @DisplayName("주문을 생성할 때, 주문 테이블이 등록되어 있지 않으면 IllegalArgumentException을 반환한다.")
-    @Test
-    void createWithException3() {
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(주문1_요청));
     }
 
     @DisplayName("주문 목록 조회 작업을 성공한다.")

@@ -69,6 +69,32 @@ class OrderValidatorImplTest {
                 .withMessage(ErrorMessage.EMPTY_ORDER_TABLE.getMessage());
     }
 
+    @DisplayName("주문을 생성할 떄, 주문 항목이 비어있으면 IllegalArgumentException을 반환한다.")
+    @Test
+    void createWithException1() {
+        // given
+        OrderRequest order = 주문(주문테이블1.getId(), null, null, null);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderValidator.validate(order));
+    }
+
+    @DisplayName("주문을 생성할 때, 주문 항목 내에 등록되지 않은 메뉴가 있다면 IllegalArgumentException을 반환한다.")
+    @Test
+    void createWithException2() {
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderValidator.validate((주문1_요청)));
+    }
+
+    @DisplayName("주문을 생성할 때, 주문 테이블이 등록되어 있지 않으면 IllegalArgumentException을 반환한다.")
+    @Test
+    void createWithException3() {
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderValidator.validate((주문1_요청)));
+    }
+
     @DisplayName("주문상태가 조리중이거나 식사중이면 IllegalArgumentException을 반환한다.")
     @Test
     void validateOrderStatus() {
