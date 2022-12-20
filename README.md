@@ -80,12 +80,12 @@
       - OrderTable
     - ```다른 도메인 참조```가 필요한 도메인 
       - Menu
-        - MenuGroup 참조
-        - MenuProduct 참조
+        - MenuGroup (간접) 참조
+        - MenuProduct (직접) 참조
       - Order
-        - OrderLineItem 참조
+        - OrderLineItem (직접) 참조
       - TableGroup
-        - OrderTable 참조
+        - OrderTable (간접) 참조
   - ```부모 도메인에 포함되는``` 자식 도메인들
     - MenuProduct
     - OrderLineItem
