@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.port.MenuGroupPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +16,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupPort menuGroupPort;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -28,23 +30,22 @@ class MenuGroupServiceTest {
     @Test
     @DisplayName("메뉴 그륩을 등록한다")
     void createMenuGroup() {
-        MenuGroup 피자 = new MenuGroup(1L, "피자");
-        when(menuGroupDao.save(any())).thenReturn(피자);
+        MenuGroup 피자 = new MenuGroup("피자");
 
-        MenuGroup result = menuGroupService.create(피자);
+        given(menuGroupPort.save(any())).willReturn(피자);
 
-        assertThat(result.getId()).isEqualTo(1L);
+        MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest("피자"));
+
         assertThat(result.getName()).isEqualTo("피자");
     }
 
     @Test
     @DisplayName("메뉴 그륩 리스트를 받아온다")
     void getMenuGroupList() {
-        MenuGroup 피자 = new MenuGroup(1L, "피자");
-        MenuGroup 치킨 = new MenuGroup(2L, "치킨");
+        MenuGroup 피자 = new MenuGroup("피자");
+        MenuGroup 치킨 = new MenuGroup("치킨");
 
-
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(피자, 치킨));
+        given(menuGroupPort.findAll()).willReturn(Arrays.asList(피자, 치킨));
 
         List<MenuGroup> result = menuGroupService.list();
 

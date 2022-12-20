@@ -4,7 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.dto.TableRequest;
+import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,19 +22,19 @@ import static kitchenpos.acceptence.TableRestControllerTest.주문테이블을_�
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TableGroupRestControllerTest extends AcceptanceSupport {
-    private OrderTable 주문테이블_일번;
-    private OrderTable 주문테이블_이번;
-    private TableGroup 크리스마스파티;
+    private TableResponse 주문테이블_일번;
+    private TableResponse 주문테이블_이번;
+    private TableGroupRequest 크리스마스파티;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_일번 = 주문테이블을_생성한다((new OrderTable(null, null, 5, true)))
-                .as(OrderTable.class);
-        주문테이블_이번 = 주문테이블을_생성한다(new OrderTable(null, null, 9, true))
-                .as(OrderTable.class);
+        주문테이블_일번 = 주문테이블을_생성한다(new TableRequest(5, true))
+                .as(TableResponse.class);
+        주문테이블_이번 = 주문테이블을_생성한다(new TableRequest(9, true))
+                .as(TableResponse.class);
 
-        크리스마스파티 = new TableGroup(1L, null, Arrays.asList(주문테이블_일번, 주문테이블_이번));
+        크리스마스파티 = new TableGroupRequest(Arrays.asList(주문테이블_일번.getId(), 주문테이블_이번.getId()));
     }
 
     @Test
@@ -46,16 +51,16 @@ class TableGroupRestControllerTest extends AcceptanceSupport {
     @DisplayName("단체지정 등록 취소 할 수 있다.")
     void upGroupTableGroup() {
         // given
-        크리스마스파티 = 단체지정_생성을_요청한다(크리스마스파티).as(TableGroup.class);
+        TableGroupResponse 크리스마스파티_응답 = 단체지정_생성을_요청한다(크리스마스파티).as(TableGroupResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 단체지정_취소를_요청한다(크리스마스파티.getId());
+        ExtractableResponse<Response> response = 단체지정_취소를_요청한다(크리스마스파티_응답.getId());
 
         // then
         상태값을_비교한다(response.statusCode(), HttpStatus.NO_CONTENT);
     }
 
-    private ExtractableResponse<Response> 단체지정_생성을_요청한다(TableGroup tableGroup) {
+    private ExtractableResponse<Response> 단체지정_생성을_요청한다(TableGroupRequest tableGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

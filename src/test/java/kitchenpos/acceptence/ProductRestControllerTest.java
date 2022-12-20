@@ -3,7 +3,10 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -17,14 +20,14 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProductRestControllerTest extends AcceptanceSupport {
-    private Product 스테이크;
-    private Product 감튀;
+    private ProductRequest 스테이크;
+    private ProductRequest 감튀;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        스테이크 = new Product(1L, "스테이크", BigDecimal.valueOf(1_000));
-        감튀 = new Product(2L, "감튀", BigDecimal.valueOf(2_000));
+        스테이크 = new ProductRequest("스테이크", BigDecimal.valueOf(1_000));
+        감튀 = new ProductRequest("감튀", BigDecimal.valueOf(2_000));
     }
 
     @Test
@@ -39,19 +42,19 @@ class ProductRestControllerTest extends AcceptanceSupport {
     @Test
     void 상품_목록을_조회_할_수_있다() {
         // given
-        스테이크 = 상품을_등록한다(this.스테이크).as(Product.class);
-        감튀 = 상품을_등록한다(this.감튀).as(Product.class);
+        ProductResponse responseA = 상품을_등록한다(스테이크).as(ProductResponse.class);
+        ProductResponse responseB = 상품을_등록한다(감튀).as(ProductResponse.class);
 
         // when
         ExtractableResponse<Response> response = 상품_리스트를_조회해온다();
 
         // then
         상태값을_비교한다(response.statusCode(), HttpStatus.OK);
-        상품_리스트를_비교한다(response, Arrays.asList(스테이크.getId(), 감튀.getId()));
+        상품_리스트를_비교한다(response, Arrays.asList(responseA.getId(), responseB.getId()));
 
     }
 
-    public static ExtractableResponse<Response> 상품을_등록한다(Product product) {
+    public static ExtractableResponse<Response> 상품을_등록한다(ProductRequest product) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -74,8 +77,8 @@ class ProductRestControllerTest extends AcceptanceSupport {
     }
 
     private void 상품_리스트를_비교한다(ExtractableResponse<Response> response, List<Long> getId) {
-        List<Product> result = response.jsonPath().getList(".", Product.class);
-        List<Long> responseId = result.stream().map(Product::getId).collect(Collectors.toList());
+        List<ProductResponse> result = response.jsonPath().getList(".", ProductResponse.class);
+        List<Long> responseId = result.stream().map(ProductResponse::getId).collect(Collectors.toList());
         assertThat(responseId).containsAll(getId);
     }
 }
