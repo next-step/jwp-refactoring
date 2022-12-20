@@ -2,8 +2,11 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
@@ -13,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
+    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderValidator orderValidator) {
+        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
@@ -32,7 +37,7 @@ public class OrderService {
     private List<OrderLineItem> mapToOrderLineItems(OrderRequest orderRequest) {
         return orderRequest.getOrderLineItems()
                 .stream()
-                .map(i -> OrderLineItem.of(i.getMenuId(), i.getQuantity()))
+                .map(i -> OrderLineItem.of(OrderMenu.from(findMenuById(i.getMenuId())), i.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -58,5 +63,8 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-
+    private Menu findMenuById(long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다."));
+    }
 }

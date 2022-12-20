@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
@@ -67,19 +66,6 @@ class OrderValidatorTest {
 
         //when & then
         assertThatThrownBy(() -> orderValidator.validCreate(1L, Collections.emptyList()))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목에 등록되지 않은 메뉴가 있으면 에러가 발생한다.")
-    @Test
-    void createOrderItemCount() {
-        //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 10L);
-        given(menuRepository.findById(any())).willReturn(Optional.empty());
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(한명테이블));
-
-        //when & then
-        assertThatThrownBy(() -> orderValidator.validCreate(1L, Collections.singletonList(orderLineItem)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

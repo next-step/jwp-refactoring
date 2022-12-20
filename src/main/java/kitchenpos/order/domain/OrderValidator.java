@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -24,17 +23,6 @@ public class OrderValidator {
         OrderTable orderTable = findOrderTableById(orderTableId);
         validOrderTable(orderTable);
         validOrderLineItems(orderLineItems);
-        validMenu(mapToMenuIds(orderLineItems));
-    }
-
-    private List<Long> mapToMenuIds(List<OrderLineItem> orderLineItems) {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-    }
-
-    private void validMenu(List<Long> menuIds) {
-        menuIds.forEach(this::validMenuById);
     }
 
     private OrderTable findOrderTableById(long orderTableId) {
@@ -52,10 +40,5 @@ public class OrderValidator {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("비어있는 주문항목은 등록할 수 없습니다.");
         }
-    }
-
-    private void validMenuById(long menuId) {
-        menuRepository.findById(menuId)
-                .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다."));
     }
 }
