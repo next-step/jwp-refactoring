@@ -32,31 +32,13 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
-        Menu menu = menuRequest.toMenu();
-        MenuGroup menuGroup = findMenuGroupById(menu.getMenuGroupId());
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = findProductById(menuProduct.getProductId());
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (menu.getPrice().compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
+        MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        Menu menu = new Menu(menuRequest.getName(), new BigDecimal(menuRequest.getPrice()), menuGroup);
+        List<MenuProduct> menuProducts = generateMenuProducts(menuRequest, menu);
+        menu.addMenuProduct(menuProducts);
         final Menu savedMenu = menuRepository.save(menu);
 
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
-        }
-        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return savedMenu;
+        return MenuResponse.of(savedMenu);
     }
 
     public List<MenuResponse> list() {
@@ -65,11 +47,24 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
+    private List<MenuProduct> generateMenuProducts(MenuRequest menuRequest, Menu menu) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuRequest.getMenuProducts().stream()
+                .forEach(
+                        menuProduct -> {
+                            Product product = findProduct(menuProduct.getProductId());
+                            menuProducts.add(new MenuProduct(menu, product, menuProduct.getQuantity()));
+                        }
+                );
+
+        return menuProducts;
+    }
+
     private MenuGroup findMenuGroupById(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId).orElseThrow(IllegalArgumentException::new);
     }
 
-    private Product findProductById(Long productId) {
+    private Product findProduct(Long productId) {
         return productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -1,34 +1,48 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
     private int price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductRequest> menuProducts;
 
     public MenuRequest() {
 
     }
 
-    public MenuRequest(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public MenuRequest(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public Menu toMenu() {
-        return new Menu(name, new BigDecimal(price), menuGroupId, menuProducts);
+    public static MenuRequest of(Menu menu) {
+        List<MenuProductRequest> menuProducts = menu.getMenuProducts().stream()
+                .map(menuProduct -> MenuProductRequest.of(menuProduct))
+                .collect(Collectors.toList());
+        return new MenuRequest(menu.getName(), menu.getPrice().intValue(), menu.getMenuGroup().getId(), menuProducts);
     }
 
-    public static MenuRequest of(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice().intValue(), menu.getMenuGroupId(), menu.getMenuProducts());
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setMenuGroupId(Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
+    }
+
+    public void setMenuProducts(List<MenuProductRequest> menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
     public String getName() {
@@ -43,7 +57,7 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 }

@@ -16,7 +16,11 @@ public class Menu {
     @Column(unique = true)
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
@@ -24,18 +28,28 @@ public class Menu {
 
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProductList) {
-        validatePrice(price);
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        validatePriceValue(price);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts.addList(menuProductList);
+        this.menuGroup = menuGroup;
     }
 
-    private void validatePrice(BigDecimal price) {
+    private void validatePriceValue(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException(INVALID_PRICE);
         }
+    }
+
+    private void validateMenuPrice() {
+        if (price.compareTo(menuProducts.getMenuProductPriceSum()) > 0) {
+            throw new IllegalArgumentException(INVALID_PRICE);
+        }
+    }
+
+    public void addMenuProduct(List<MenuProduct> menuProductList) {
+        menuProducts.addList(menuProductList);
+        validateMenuPrice();
     }
 
     public Long getId() {
@@ -50,8 +64,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

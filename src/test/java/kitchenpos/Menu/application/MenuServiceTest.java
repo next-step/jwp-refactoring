@@ -1,14 +1,12 @@
 package kitchenpos.Menu.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kitchenpos.Menu.domain.MenuFixture.메뉴;
 import static kitchenpos.Menu.domain.MenuGroupFixture.메뉴그룹;
@@ -38,13 +37,11 @@ import static org.mockito.Mockito.verify;
 @DisplayName("메뉴 테스트")
 public class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -76,36 +73,36 @@ public class MenuServiceTest {
         레드와인 = 상품(5L, "레드와인", new BigDecimal(9000));
 
         세트 = 메뉴그룹(1L, "세트");
-        코스 = 메뉴그룹(2L, "코스");;
+        코스 = 메뉴그룹(2L, "코스");
 
-        오일2인세트_알리오올리오 = 메뉴상품(1L, 1L, 1);
-        오일2인세트_봉골레오일 = 메뉴상품(2L, 2L, 1);
-        풀코스_카프레제샐러드 = 메뉴상품(3L, 4L, 1);
-        풀코스_알리오올리오 = 메뉴상품(4L, 1L, 1);
-        풀코스_쉬림프로제 = 메뉴상품(5L, 3L, 1);
-        풀코스_레드와인 = 메뉴상품(6L, 5L, 2);
+        오일2인세트 = 메뉴(1L, "오일2인세트", new BigDecimal(34000), 세트);
+        풀코스 = 메뉴(2L, "풀코스", new BigDecimal(62000), 코스);
 
-        오일2인세트 = 메뉴(1L, "오일2인세트", new BigDecimal(34000), 세트.getId(), Arrays.asList(오일2인세트_알리오올리오 ,오일2인세트_봉골레오일));
-        풀코스 = 메뉴(2L, "풀코스", new BigDecimal(62000), 세트.getId(), Arrays.asList(오일2인세트_알리오올리오 ,오일2인세트_봉골레오일));
+        오일2인세트_알리오올리오 = 메뉴상품(1L, 오일2인세트, 알리오올리오, 1);
+        오일2인세트_봉골레오일 = 메뉴상품(2L, 오일2인세트, 봉골레오일, 1);
+        풀코스_카프레제샐러드 = 메뉴상품(3L, 풀코스, 카프레제샐러드, 1);
+        풀코스_알리오올리오 = 메뉴상품(4L, 풀코스, 알리오올리오, 1);
+        풀코스_쉬림프로제 = 메뉴상품(5L, 풀코스, 쉬림프로제, 1);
+        풀코스_레드와인 = 메뉴상품(6L, 풀코스, 레드와인, 2);
     }
 
     @DisplayName("메뉴를 생성한다")
     @Test
     void 메뉴_생성() {
         // given
-        given(menuGroupDao.existsById(세트.getId())).willReturn(true);
-        given(productDao.findById(오일2인세트_알리오올리오.getProductId())).willReturn(Optional.ofNullable(알리오올리오));
-        given(productDao.findById(오일2인세트_봉골레오일.getProductId())).willReturn(Optional.ofNullable(봉골레오일));
-        given(menuDao.save(any())).willReturn(오일2인세트);
-        given(menuProductDao.save(오일2인세트_알리오올리오)).willReturn(오일2인세트_알리오올리오);
-        given(menuProductDao.save(오일2인세트_봉골레오일)).willReturn(오일2인세트_봉골레오일);
+        given(menuGroupRepository.findById(세트.getId())).willReturn(Optional.ofNullable(세트));
+        given(productRepository.findById(알리오올리오.getId())).willReturn(Optional.ofNullable(알리오올리오));
+        given(productRepository.findById(봉골레오일.getId())).willReturn(Optional.ofNullable(봉골레오일));
+        오일2인세트.addMenuProduct(Arrays.asList(오일2인세트_알리오올리오, 오일2인세트_봉골레오일));
+        given(menuRepository.save(any())).willReturn(오일2인세트);
 
         // when
-        Menu menu = menuService.create(오일2인세트);
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().intValue(), 세트.getId(), menuProductRequests);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
-        verify(menuDao, times(1)).save(any());
-        verify(menuProductDao, times(2)).save(any());
+        verify(menuRepository, times(1)).save(any());
         assertAll(
                 () -> assertThat(오일2인세트.getMenuProducts()).hasSize(2),
                 () -> assertThat(오일2인세트.getMenuProducts()).containsExactly(오일2인세트_알리오올리오, 오일2인세트_봉골레오일),
@@ -117,68 +114,74 @@ public class MenuServiceTest {
     @Test
     void 전체_메뉴_목록_조회() {
         // given
-        given(menuDao.findAll()).willReturn(Arrays.asList(오일2인세트, 풀코스));
-        given(menuProductDao.findAllByMenuId(오일2인세트.getId())).willReturn(Arrays.asList(오일2인세트_알리오올리오, 오일2인세트_봉골레오일));
-        given(menuProductDao.findAllByMenuId(풀코스.getId()))
-                .willReturn(Arrays.asList(풀코스_카프레제샐러드, 풀코스_알리오올리오, 풀코스_쉬림프로제, 풀코스_레드와인));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(오일2인세트, 풀코스));
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
+        List<String> menuProductNames = menus.stream().map(MenuResponse::getName).collect(Collectors.toList());
 
         // then
         assertAll(
                 () -> assertThat(menus).hasSize(2),
-                () -> assertThat(menus).containsExactly(오일2인세트, 풀코스)
+                () -> assertThat(menuProductNames).containsExactly(오일2인세트.getName(), 풀코스.getName())
         );
     }
 
     @DisplayName("가격 정보가 없는 메뉴를 생성한다")
     @Test
     void 가격_정보가_없는_메뉴_생성() {
-        // given & when
-        오일2인세트.setPrice(null);
+        // given
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 0, 세트.getId(), menuProductRequests);
 
-        // then
+        // when & then
         assertThatThrownBy(
-                () -> menuService.create(오일2인세트)
+                () -> menuService.create(menuRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("가격이 음수인 메뉴를 생성한다")
     @Test
     void 가격이_음수인_메뉴_생성() {
-        // given & when
-        오일2인세트.setPrice(new BigDecimal(-34000));
+        // given
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), -17000, 세트.getId(), menuProductRequests);
 
-        // then
+
+        // when & then
         assertThatThrownBy(
-                () -> menuService.create(오일2인세트)
+                () -> menuService.create(menuRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 그룹 정보가 없는 메뉴를 생성한다")
     @Test
     void 메뉴_그룹_정보가_없는_메뉴_생성() {
-        // given & when
-        given(menuGroupDao.existsById(세트.getId())).willReturn(false);
+        // given
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().intValue(), 100L, menuProductRequests);
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.ofNullable(null));
 
-        // then
+        // when & then
         assertThatThrownBy(
-                () -> menuService.create(오일2인세트)
+                () -> menuService.create(menuRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품 정보가 없는 메뉴를 생성한다")
     @Test
     void 상품_정보가_없는_메뉴_생성() {
-        // given & when
-        given(menuGroupDao.existsById(세트.getId())).willReturn(true);
-        given(productDao.findById(오일2인세트_알리오올리오.getProductId())).willReturn(Optional.ofNullable(알리오올리오));
-        given(productDao.findById(오일2인세트_봉골레오일.getProductId())).willReturn(Optional.ofNullable(null));
+        // given
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().intValue(), 세트.getId(), menuProductRequests);
 
-        // then
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.ofNullable(세트));
+        given(productRepository.findById(알리오올리오.getId())).willReturn(Optional.ofNullable(알리오올리오));
+        given(productRepository.findById(봉골레오일.getId())).willReturn(Optional.ofNullable(null));
+
+        // then & then
         assertThatThrownBy(
-                () -> menuService.create(오일2인세트)
+                () -> menuService.create(menuRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -186,16 +189,16 @@ public class MenuServiceTest {
     @Test
     void 단일_상품_가격_합보다_큰_메뉴_가격의_메뉴_생성() {
         // given
-        given(menuGroupDao.existsById(세트.getId())).willReturn(true);
-        given(productDao.findById(오일2인세트_알리오올리오.getProductId())).willReturn(Optional.ofNullable(알리오올리오));
-        given(productDao.findById(오일2인세트_봉골레오일.getProductId())).willReturn(Optional.ofNullable(봉골레오일));
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 100000, 세트.getId(), menuProductRequests);
 
-        // when
-        오일2인세트.setPrice(new BigDecimal(100000));
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.ofNullable(세트));
+        given(productRepository.findById(알리오올리오.getId())).willReturn(Optional.ofNullable(알리오올리오));
+        given(productRepository.findById(봉골레오일.getId())).willReturn(Optional.ofNullable(봉골레오일));
 
-        // then
+        // when & then
         assertThatThrownBy(
-                () -> menuService.create(오일2인세트)
+                () -> menuService.create(menuRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }
