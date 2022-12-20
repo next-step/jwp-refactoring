@@ -33,7 +33,6 @@ public class Menu {
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
         menuProducts.forEach(this::addMenuProduct);
-        validPrice();
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -60,11 +59,6 @@ public class Menu {
         return menuProducts;
     }
 
-    private void validPrice() {
-        if (price.value().compareTo(menuProducts.totalPrice().value()) > 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 구성 상품의 총 합보다 클 수 없습니다.");
-        }
-    }
 
     private void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);

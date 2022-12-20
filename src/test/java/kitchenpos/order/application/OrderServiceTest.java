@@ -26,8 +26,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductFactory;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableFactory;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -61,11 +59,8 @@ class OrderServiceTest {
     public void setUp() {
         MenuGroup 메뉴분류세트 = MenuGroupFactory.create(1L, "메뉴분류세트");
 
-        Product 후라이드 = ProductFactory.create(1L, "후라이드", BigDecimal.valueOf(15000));
-        Product 콜라 = ProductFactory.create(2L, "콜라", BigDecimal.valueOf(1000));
-
-        MenuProduct 후라이드메뉴상품 = MenuProductFactory.create(1L, 후라이드세트, 후라이드, 1L);
-        MenuProduct 콜라메뉴상품 = MenuProductFactory.create(2L, 후라이드세트, 콜라, 1L);
+        MenuProduct 후라이드메뉴상품 = MenuProductFactory.create(1L, 후라이드세트, 1L, 1L);
+        MenuProduct 콜라메뉴상품 = MenuProductFactory.create(2L, 후라이드세트, 2L, 1L);
 
         후라이드세트 = MenuFactory.create(1L, "후라이드세트", BigDecimal.valueOf(16000), 메뉴분류세트, Arrays.asList(후라이드메뉴상품, 콜라메뉴상품));
         주문테이블 = OrderTableFactory.create(1L, null, 4, false);
@@ -139,7 +134,7 @@ class OrderServiceTest {
         //given
         OrderTable 빈주문테이블 = OrderTableFactory.create(1L, null, 0, true);
         OrderRequest 주문요청 = new OrderRequest(빈주문테이블.getId(), null, Collections.singletonList(주문항목요청));
-        given(orderTableRepository.findById(빈주문테이블.getId())).willReturn(Optional.ofNullable(빈주문테이블));
+        given(orderTableRepository.findById(빈주문테이블.getId())).willReturn(Optional.of(빈주문테이블));
         given(menuRepository.findById(후라이드세트.getId())).willReturn(Optional.ofNullable(후라이드세트));
 
         //when & then

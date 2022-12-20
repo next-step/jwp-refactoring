@@ -19,12 +19,12 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductFactory;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductFactory;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class MenuServiceTest {
     @Mock
     MenuGroupRepository menuGroupRepository;
     @Mock
-    ProductRepository productRepository;
+    MenuValidator menuValidator;
 
     @InjectMocks
     MenuService menuService;
@@ -63,8 +63,8 @@ class MenuServiceTest {
         후라이드 = ProductFactory.create(1L, "후라이드", 후라이드가격);
         콜라 = ProductFactory.create(2L, "콜라", 콜라가격);
 
-        MenuProduct 후라이드메뉴상품 = MenuProductFactory.create(1L, 후라이드세트, 후라이드, 1L);
-        MenuProduct 콜라메뉴상품 = MenuProductFactory.create(2L, 후라이드세트, 콜라, 1L);
+        MenuProduct 후라이드메뉴상품 = MenuProductFactory.create(1L, 후라이드세트, 1L, 1L);
+        MenuProduct 콜라메뉴상품 = MenuProductFactory.create(2L, 후라이드세트, 2L, 1L);
 
         후라이드메뉴상품요청 = new MenuProductRequest(후라이드.getId(), 1L);
         콜라메뉴상품요청 = new MenuProductRequest(콜라.getId(), 1L);
@@ -79,8 +79,6 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("후라이드세트", BigDecimal.valueOf(16000), 메뉴분류세트.getId(), Arrays.asList(후라이드메뉴상품요청, 콜라메뉴상품요청));
 
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(메뉴분류세트));
-        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(후라이드));
-        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(콜라));
         given(menuRepository.save(any())).willReturn(후라이드세트);
 
         //when
@@ -140,22 +138,6 @@ class MenuServiceTest {
         //when & then
         assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴의 가격이 구성 상품의 가격 * 수량을 모두 더한 값보다 크면 에러가 발생한다.")
-    @Test
-    void sumPrice() {
-        //given
-        MenuRequest request = new MenuRequest("후라이드세트", BigDecimal.valueOf(17000), 메뉴분류세트.getId(), Arrays.asList(후라이드메뉴상품요청, 콜라메뉴상품요청));
-
-        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(메뉴분류세트));
-        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(후라이드));
-        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(콜라));
-
-        //when & then
-        assertThatThrownBy(() -> menuService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
-
     }
 
 
