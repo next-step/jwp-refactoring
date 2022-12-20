@@ -1,6 +1,7 @@
 package kitchenpos.utils;
 
 import com.google.common.base.CaseFormat;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class DatabaseCleaner implements InitializingBean{
@@ -23,8 +26,16 @@ public class DatabaseCleaner implements InitializingBean{
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .collect(Collectors.toList());
+                .map(e -> {
+                    if(e.getName().equalsIgnoreCase("order")) {
+                        return "orders";
+                    }
+
+                    System.out.println(e.getName());
+
+                    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName());
+                })
+                .collect(toList());
     }
 
     @Transactional
@@ -34,9 +45,23 @@ public class DatabaseCleaner implements InitializingBean{
 
         for (String tableName : tableNames) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            cleanAutoIncrement(entityManager, tableName);
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private void cleanAutoIncrement(EntityManager entityManager, String tableName) {
+        if(isTableContainedSeqColumn(tableName)) {
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN SEQ RESTART WITH 1").executeUpdate();
+            return;
+        }
+
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+    }
+
+    private boolean isTableContainedSeqColumn(String tableName) {
+        return StringUtils.equals(tableName, "order_line_item") ||
+                StringUtils.equals(tableName, "menu_product");
     }
 }
