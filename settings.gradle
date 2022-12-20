@@ -1,5 +1,11 @@
 rootProject.name = 'kitchenpos'
-include 'sub-modules:kitchenpos-common'
-include 'sub-modules:kitchenpos-product'
-include 'sub-modules:kitchenpos-menu'
+include ':commons'
+include ':product'
+include ':menu'
+include ':table'
+include ':order'
 
+for (project in rootProject.children) {
+    project.projectDir = file("sub-modules/${project.name}")
+    project.buildFileName = "${project.name}.gradle"
+}

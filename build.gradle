@@ -47,30 +47,50 @@ subprojects {
     }
 }
 
-dependencies {
-    implementation project(':sub-modules:kitchenpos-common')
-    implementation project(':sub-modules:kitchenpos-menu')
-    implementation project(':sub-modules:kitchenpos-product')
-
-    testImplementation project(':sub-modules:kitchenpos-common').sourceSets.test.output
-    testImplementation project(':sub-modules:kitchenpos-menu').sourceSets.test.output
-    testImplementation project(':sub-modules:kitchenpos-product').sourceSets.test.output
-}
-
-project(':sub-modules:kitchenpos-product') {
+project(':product') {
     dependencies {
-        implementation project(':sub-modules:kitchenpos-common')
+        implementation project(':commons')
 
-        testImplementation project(':sub-modules:kitchenpos-common').sourceSets.test.output
+        testImplementation project(':commons').sourceSets.test.output
     }
 }
 
-project(':sub-modules:kitchenpos-menu') {
+project(':menu') {
     dependencies {
-        implementation project(':sub-modules:kitchenpos-common')
-        implementation project(':sub-modules:kitchenpos-product')
+        implementation project(':commons')
+        implementation project(':product')
 
-        testImplementation project(':sub-modules:kitchenpos-common').sourceSets.test.output
-        testImplementation project(':sub-modules:kitchenpos-product').sourceSets.test.output
+
+        testImplementation project(':commons').sourceSets.test.output
+        testImplementation project(':product').sourceSets.test.output
+    }
+}
+
+project(':table') {
+    dependencies {
+        implementation project(':commons')
+        implementation project(':order')
+
+        testImplementation project(':commons').sourceSets.test.output
+        testImplementation project(':product').sourceSets.test.output
+        testImplementation project(':menu').sourceSets.test.output
+        testImplementation project(':order').sourceSets.test.output
+    }
+}
+
+project(':order') {
+    dependencies {
+        implementation project(':commons')
+        implementation project(':menu')
+        implementation project(':table')
+
+        testImplementation project(':commons')
+        testImplementation project(':menu')
+        testImplementation project(':table')
+        testImplementation project(':product')
+        testImplementation project(':commons').sourceSets.test.output
+        testImplementation project(':product').sourceSets.test.output
+        testImplementation project(':menu').sourceSets.test.output
+        testImplementation project(':table').sourceSets.test.output
     }
 }
