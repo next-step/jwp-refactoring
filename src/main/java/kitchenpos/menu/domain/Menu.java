@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.embedded.MenuPrice;
 
 @Entity
 @Table(name = "menu")
@@ -25,7 +25,7 @@ public class Menu {
     @Column(nullable = false)
     private String name;
     @Embedded
-    private Price price;
+    private MenuPrice price;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
@@ -37,7 +37,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = new Price(price);
+        this.price = new MenuPrice(price);
         this.menuGroup = menuGroup;
 
         for (MenuProduct menuProduct : menuProducts) {
