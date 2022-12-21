@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.common.domain;
 
 import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
 

@@ -1,10 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.common;
 
 import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import kitchenpos.common.domain.Price;
 import kitchenpos.exception.KitchenposException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
