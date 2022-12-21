@@ -15,31 +15,30 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTableValidator;
 
 @Service
 public class OrderService {
 	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
-	private final OrderValidator orderValidator;
+	private final OrderTableValidator orderTableValidator;
 
 	public OrderService(
 		final MenuRepository menuRepository,
 		final OrderRepository orderRepository,
-		final OrderValidator orderValidator
+		final OrderTableValidator orderTableValidator
 	) {
 		this.menuRepository = menuRepository;
 		this.orderRepository = orderRepository;
-		this.orderValidator = orderValidator;
+		this.orderTableValidator = orderTableValidator;
 	}
 
 	@Transactional
 	public OrderResponse create(final OrderRequest orderRequest) {
-		orderValidator.orderTableExistValidate(orderRequest.getOrderTableId());
-		orderValidator.orderTableEmptyValidate(orderRequest.getOrderTableId());
+		orderTableValidator.orderTableEmptyValidate(orderRequest.getOrderTableId());
 		List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItemRequests()
 			.stream()
 			.map(this::createOrderLineItem)

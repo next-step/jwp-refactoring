@@ -3,6 +3,8 @@ package kitchenpos.table.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,7 @@ public class TableGroupedEventHandler {
 	}
 
 	@EventListener
+	@Transactional
 	public void handle(TableGroupedEvent event) {
 		List<OrderTable> orderTables = event.getOrderTableIds()
 			.stream()

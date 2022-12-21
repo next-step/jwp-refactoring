@@ -6,10 +6,9 @@ import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
 
 @Component
-public class OrderTableValidator implements OrderValidator {
+public class OrderTableValidator {
 
 	private final OrderRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
@@ -19,29 +18,18 @@ public class OrderTableValidator implements OrderValidator {
 		this.orderTableRepository = orderTableRepository;
 	}
 
-	@Override
 	public void unGroupOrderStatusValidate(Long orderTableId) {
 		if (!isAllFinished(orderTableId)) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_UNGROUP_WHEN_ORDER_NOT_COMPLETED);
 		}
 	}
 
-	@Override
 	public void changeEmptyOrderStatusValidate(Long orderTableId) {
 		if (!isAllFinished(orderTableId)) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_ORDER_NOT_COMPLETED);
 		}
 	}
 
-	@Override
-	public void orderTableExistValidate(Long orderTableId) {
-		boolean exists = orderTableRepository.existsOrderTableById(orderTableId);
-		if (!exists) {
-			throw new EntityNotFoundException(OrderTable.ENTITY_NAME, orderTableId);
-		}
-	}
-
-	@Override
 	public void orderTableEmptyValidate(Long orderTableId) {
 		OrderTable orderTable = orderTableRepository.findById(orderTableId)
 			.orElseThrow(() -> new EntityNotFoundException(OrderTable.ENTITY_NAME, orderTableId));

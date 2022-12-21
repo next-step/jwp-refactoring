@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.common.Empty;
 import kitchenpos.common.GuestCount;
 import kitchenpos.exception.EntityNotFoundException;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 
@@ -19,12 +19,12 @@ import kitchenpos.table.dto.OrderTableResponse;
 public class TableService {
 
 	private final OrderTableRepository orderTableRepository;
-	private final OrderValidator orderValidator;
+	private final OrderTableValidator orderTableValidator;
 
-	public TableService(OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
+	public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
 
 		this.orderTableRepository = orderTableRepository;
-		this.orderValidator = orderValidator;
+		this.orderTableValidator = orderTableValidator;
 	}
 
 	@Transactional
@@ -44,7 +44,7 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final boolean empty) {
 		OrderTable saved = findOrderTableById(orderTableId);
-		orderValidator.changeEmptyOrderStatusValidate(orderTableId);
+		orderTableValidator.changeEmptyOrderStatusValidate(orderTableId);
 		saved.updateEmptyStatus(Empty.EMPTY);
 		return OrderTableResponse.of(saved);
 	}
