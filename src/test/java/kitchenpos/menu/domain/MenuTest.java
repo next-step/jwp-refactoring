@@ -1,18 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
-import static kitchenpos.exception.ErrorCode.PRICE_GREATER_THAN_SUM;
-import static kitchenpos.exception.ErrorCode.PRICE_IS_NULL_OR_MINUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.menu.domain.Menu;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class MenuTest {
     @Test

@@ -13,7 +13,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 

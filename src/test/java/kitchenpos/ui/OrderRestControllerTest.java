@@ -1,8 +1,8 @@
 package kitchenpos.ui;
 
 import static kitchenpos.table.ui.TableRestControllerTest.좌석_생성_요청;
-import static kitchenpos.ui.MenuGroupRestControllerTest.메뉴_그룹_생성_요청;
-import static kitchenpos.ui.MenuRestControllerTest.메뉴_생성_요청;
+import static kitchenpos.menu.ui.MenuGroupRestControllerTest.메뉴_그룹_생성_요청;
+import static kitchenpos.menu.ui.MenuRestControllerTest.메뉴_생성_요청;
 import static kitchenpos.ui.ProductRestControllerTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,17 +11,17 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.BaseTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.dto.request.MenuProductRequest;
-import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.menu.dto.request.MenuProductRequest;
+import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.request.OrderStatusRequest;
 import kitchenpos.dto.request.ProductRequest;
-import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.menu.dto.response.MenuResponse;
 import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-class OrderRestControllerTest extends BaseTest {
+public class OrderRestControllerTest extends BaseTest {
     private final ProductRequest 후라이드 = new ProductRequest("후라이드", BigDecimal.valueOf(16000));
     private MenuProductRequest 메뉴_항목;
     private final MenuGroup 메뉴_그룹 = new MenuGroup("한마리메뉴");

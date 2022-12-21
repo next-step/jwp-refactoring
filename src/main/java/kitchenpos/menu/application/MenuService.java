@@ -1,13 +1,13 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.application.validator.MenuValidator;
-import kitchenpos.domain.Menu;
-import kitchenpos.dto.request.MenuRequest;
-import kitchenpos.dto.response.MenuResponse;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.request.MenuRequest;
+import kitchenpos.menu.dto.response.MenuResponse;
+import kitchenpos.menu.domain.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

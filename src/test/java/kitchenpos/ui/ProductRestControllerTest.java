@@ -14,7 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-class ProductRestControllerTest extends BaseTest {
+public class ProductRestControllerTest extends BaseTest {
     private ProductRequest 후라이드;
     private ProductRequest 양념치킨;
 

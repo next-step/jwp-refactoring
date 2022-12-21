@@ -1,10 +1,10 @@
-package kitchenpos.application.validator;
+package kitchenpos.menu.validator;
 
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.request.MenuProductRequest;
-import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.menu.dto.request.MenuProductRequest;
+import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.ProductRepository;

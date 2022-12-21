@@ -1,17 +1,17 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import kitchenpos.BaseTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-class MenuGroupRestControllerTest extends BaseTest {
+public class MenuGroupRestControllerTest extends BaseTest {
     @Test
     void 생성() {
         MenuGroup menuGroup = new MenuGroup(1L, "한마리메뉴");
