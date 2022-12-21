@@ -1,4 +1,4 @@
-package kitchenpos.application.validator;
+package kitchenpos.table.validator;
 
 import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.OrderRepository;
 import org.springframework.stereotype.Component;

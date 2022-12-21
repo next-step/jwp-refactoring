@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
@@ -18,12 +18,13 @@ import static org.mockito.Mockito.doThrow;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.application.validator.TableValidator;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.table.validator.TableValidator;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.response.OrderTableResponse;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

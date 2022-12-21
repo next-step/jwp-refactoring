@@ -7,11 +7,10 @@ import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_A
 
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.Order;
+import kitchenpos.table.application.TableService;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.MenuRepository;

@@ -1,8 +1,9 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.Test;
 
 class OrderTableTest {

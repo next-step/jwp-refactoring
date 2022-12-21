@@ -1,4 +1,4 @@
-package kitchenpos.application.validator;
+package kitchenpos.table.validator;
 
 import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
@@ -8,8 +8,8 @@ import static kitchenpos.exception.ErrorCode.TABLE_IS_EMPTY;
 import java.util.Arrays;
 import java.util.Objects;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.OrderRepository;
 import org.springframework.stereotype.Component;

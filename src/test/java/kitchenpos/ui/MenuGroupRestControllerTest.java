@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import kitchenpos.BaseTest;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.table.dto.response.OrderTableResponse;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity

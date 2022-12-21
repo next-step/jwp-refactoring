@@ -1,12 +1,13 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.request.OrderTableEmptyRequest;
-import kitchenpos.dto.request.OrderTableNumberOfGuestsRequest;
-import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.BaseTest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.request.OrderTableEmptyRequest;
+import kitchenpos.table.dto.request.OrderTableNumberOfGuestsRequest;
+import kitchenpos.table.dto.response.OrderTableResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -14,7 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-class TableRestControllerTest extends BaseTest {
+public class TableRestControllerTest extends BaseTest {
     private final OrderTable 좌석 = new OrderTable(null, 4, false);
     private final OrderTableEmptyRequest 공석_변경_요청 = new OrderTableEmptyRequest(true);
     private final OrderTableNumberOfGuestsRequest 인원_변경_요청 = new OrderTableNumberOfGuestsRequest(0);

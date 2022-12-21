@@ -1,14 +1,14 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.exception.ErrorCode.NOT_EXISTS_TABLE;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.application.validator.TableValidator;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.table.validator.TableValidator;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.response.OrderTableResponse;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

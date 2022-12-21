@@ -1,20 +1,21 @@
 package kitchenpos.ui;
 
+import static kitchenpos.table.ui.TableRestControllerTest.좌석_생성_요청;
 import static kitchenpos.ui.MenuGroupRestControllerTest.메뉴_그룹_생성_요청;
 import static kitchenpos.ui.MenuRestControllerTest.메뉴_생성_요청;
 import static kitchenpos.ui.ProductRestControllerTest.상품_생성_요청;
-import static kitchenpos.ui.TableRestControllerTest.좌석_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.BaseTest;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.dto.request.MenuProductRequest;
 import kitchenpos.dto.request.MenuRequest;
 import kitchenpos.dto.request.OrderRequest;

@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos;
 
 import kitchenpos.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class BaseTest {
+public class BaseTest {
     @LocalServerPort
     private int localPort;
     protected static String basePath;
