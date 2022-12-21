@@ -1,6 +1,6 @@
 package kitchenpos.global.domain;
 
-import kitchenpos.menu.message.QuantityMessage;
+import kitchenpos.global.message.QuantityMessage;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

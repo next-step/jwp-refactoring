@@ -1,6 +1,6 @@
 package kitchenpos.global.domain;
 
-import kitchenpos.menu.message.QuantityMessage;
+import kitchenpos.global.message.QuantityMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

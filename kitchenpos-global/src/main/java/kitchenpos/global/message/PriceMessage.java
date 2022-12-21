@@ -1,4 +1,4 @@
-package kitchenpos.product.message;
+package kitchenpos.global.message;
 
 public enum PriceMessage {
     CREATE_ERROR_PRICE_MUST_BE_NOT_NULL("가격이 주어지지 않았습니다."),

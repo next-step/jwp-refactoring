@@ -1,4 +1,4 @@
-package kitchenpos.menu.message;
+package kitchenpos.global.message;
 
 public enum QuantityMessage {
     CREATE_ERROR_QTY_MUST_BE_NOT_NULL("수량이 주어지지 않았습니다."),
