@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.ordertable.domain.OrderTable;
-import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "orders")
@@ -24,7 +23,6 @@ public class Order {
     private Long id;
     @Enumerated
     private OrderStatus orderStatus;
-    @CreatedDate
     private LocalDateTime orderedTime;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
