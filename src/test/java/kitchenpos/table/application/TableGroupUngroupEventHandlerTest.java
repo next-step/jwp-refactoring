@@ -46,7 +46,7 @@ class TableGroupUngroupEventHandlerTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("이벤트 핸들링 성공")
+    @DisplayName("단체지정 해제 성공")
     @Test
     void handle() {
         TableGroupUngroupEvent tableGroupUngroupEvent = tableGroupUngroupEvent(1L);

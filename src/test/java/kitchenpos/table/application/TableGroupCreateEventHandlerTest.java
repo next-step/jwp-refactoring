@@ -101,7 +101,7 @@ class TableGroupCreateEventHandlerTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("이벤트 핸들링 성공")
+    @DisplayName("단체지정 생성 성공")
     @Test
     void handle() {
         // given
