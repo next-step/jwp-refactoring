@@ -1,12 +1,11 @@
 package kitchenpos.menu.application;
 
+import java.util.List;
 import kitchenpos.menu.dao.ProductDao;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.ProductRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ProductService {
