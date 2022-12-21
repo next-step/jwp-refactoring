@@ -6,7 +6,5 @@ include 'module-order'
 include 'module-ordertable'
 include 'module-tablegroup'
 include 'module-common'
-include 'module-common'
-include 'module-common'
 include 'module-event'
 

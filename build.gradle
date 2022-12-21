@@ -53,7 +53,8 @@ dependencies {
     compile project(':module-product')
     compile project(':module-tablegroup')
 
-    testCompile project(':module-common').sourceSets.test.output
+    testCompile project(':module-common')
+    testCompile project(':module-event')
     testCompile project(':module-menu').sourceSets.test.output
     testCompile project(':module-menugroup').sourceSets.test.output
     testCompile project(':module-order').sourceSets.test.output
@@ -78,22 +79,29 @@ project(':module-menu'){
     dependencies {
         implementation project(':module-product')
         implementation project(':module-menugroup')
-        implementation project(':module-common')
+        testImplementation project(':module-common')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-tablegroup')
         testCompile project(':module-common').sourceSets.test.output
     }
 }
 project(':module-menugroup'){
     dependencies {
-        implementation project(':module-common')
+        testImplementation project(':module-common')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-menu')
+        testImplementation project(':module-tablegroup')
+        testImplementation project(':module-product')
         testCompile project(':module-common').sourceSets.test.output
     }
 }
 project(':module-order'){
     dependencies {
         implementation project(':module-menu')
-        implementation project(':module-common')
+        testImplementation project(':module-common')
         testImplementation project(':module-ordertable')
         testImplementation project(':module-menugroup')
+        testImplementation project(':module-tablegroup')
         testImplementation project(':module-product')
         testCompile project(':module-common').sourceSets.test.output
     }
@@ -101,17 +109,23 @@ project(':module-order'){
 project(':module-ordertable'){
     dependencies {
         implementation project(':module-order')
-        implementation project(':module-common')
+        testImplementation project(':module-common')
         testImplementation project(':module-tablegroup')
         testImplementation project(':module-menugroup')
         testImplementation project(':module-product')
         testImplementation project(':module-menu')
+        testImplementation project(':module-event')
         testCompile project(':module-common').sourceSets.test.output
     }
 }
 project(':module-product'){
     dependencies {
-        implementation project(':module-common')
+        testImplementation project(':module-common')
+        testImplementation project(':module-menugroup')
+        testImplementation project(':module-menu')
+        testImplementation project(':module-order')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-tablegroup')
         testCompile project(':module-common').sourceSets.test.output
     }
 }
@@ -119,10 +133,11 @@ project(':module-tablegroup'){
     dependencies {
         implementation project(':module-order')
         implementation project(':module-ordertable')
-        implementation project(':module-common')
+        testImplementation project(':module-common')
         testImplementation project(':module-menu')
         testImplementation project(':module-menugroup')
         testImplementation project(':module-product')
+        testImplementation project(':module-event')
         testCompile project(':module-common').sourceSets.test.output
     }
 }
