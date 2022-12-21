@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-import static kitchenpos.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
-import static kitchenpos.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
+import static kitchenpos.common.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
+import static kitchenpos.common.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
 
 @Service
 @Transactional(readOnly = true)

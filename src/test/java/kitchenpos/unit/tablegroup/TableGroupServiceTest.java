@@ -1,14 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.unit.tablegroup;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.order.port.OrderPort;
 import kitchenpos.order.port.OrderTablePort;
 import kitchenpos.tablegroup.port.TableGroupPort;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
@@ -23,10 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.*;
+import static kitchenpos.common.constants.ErrorCodeType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

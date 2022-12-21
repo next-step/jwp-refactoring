@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.*;
+import static kitchenpos.common.constants.ErrorCodeType.*;
 
 @Embeddable
 public class OrderTables {

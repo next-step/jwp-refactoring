@@ -7,7 +7,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menugroup.port.MenuGroupPort;
 import kitchenpos.menu.port.MenuPort;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.port.ProductPort;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.constants.ErrorCodeType.NOT_FOUND_PRODUCT;
+import static kitchenpos.common.constants.ErrorCodeType.NOT_FOUND_PRODUCT;
 
 @Service
 @Transactional

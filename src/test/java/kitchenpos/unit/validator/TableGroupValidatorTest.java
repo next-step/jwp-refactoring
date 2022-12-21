@@ -1,4 +1,4 @@
-package kitchenpos.validator;
+package kitchenpos.unit.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;

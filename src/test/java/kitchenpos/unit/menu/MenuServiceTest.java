@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.unit.menu;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -7,7 +7,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menugroup.port.MenuGroupPort;
 import kitchenpos.menu.port.MenuPort;

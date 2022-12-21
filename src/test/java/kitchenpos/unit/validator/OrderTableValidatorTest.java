@@ -1,12 +1,10 @@
-package kitchenpos.validator;
+package kitchenpos.unit.validator;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.port.OrderPort;
 import kitchenpos.order.validator.OrderTableValidator;
-import kitchenpos.product.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;

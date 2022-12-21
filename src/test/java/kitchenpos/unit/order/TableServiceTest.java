@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.unit.order;
 
 import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.Order;
@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.COOKING_MEAL_NOT_UNGROUP;
-import static kitchenpos.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
+import static kitchenpos.common.constants.ErrorCodeType.COOKING_MEAL_NOT_UNGROUP;
+import static kitchenpos.common.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

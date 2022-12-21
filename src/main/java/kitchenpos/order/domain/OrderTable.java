@@ -1,12 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
 import javax.persistence.*;
-import java.util.Objects;
-
-import static kitchenpos.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
-import static kitchenpos.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
 
 @Entity
 public class OrderTable {

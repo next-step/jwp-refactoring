@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.unit.order;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.type.OrderStatus;
@@ -8,10 +8,8 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.Price;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.menu.port.MenuPort;
@@ -36,7 +34,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {

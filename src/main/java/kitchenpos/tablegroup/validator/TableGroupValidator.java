@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.validator;
 
-import kitchenpos.constants.ErrorCodeType;
+import kitchenpos.common.constants.ErrorCodeType;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTables;

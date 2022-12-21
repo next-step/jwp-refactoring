@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.TABLE_GROUP_NOT_FOUND;
+import static kitchenpos.common.constants.ErrorCodeType.TABLE_GROUP_NOT_FOUND;
 
 @Service
 @Transactional

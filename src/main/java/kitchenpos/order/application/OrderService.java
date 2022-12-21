@@ -19,8 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.constants.ErrorCodeType.MATCH_NOT_MENU;
-import static kitchenpos.constants.ErrorCodeType.ORDER_LINE_ITEM_REQUEST;
+import static kitchenpos.common.constants.ErrorCodeType.MATCH_NOT_MENU;
 
 @Service
 @Transactional

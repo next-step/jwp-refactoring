@@ -1,11 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.unit.order;
 
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

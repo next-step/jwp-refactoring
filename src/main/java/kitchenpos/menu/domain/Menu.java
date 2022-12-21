@@ -1,12 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.MENU_PRICE_NOT_OVER_SUM_PRICE;
+import static kitchenpos.common.constants.ErrorCodeType.MENU_PRICE_NOT_OVER_SUM_PRICE;
 
 @Entity
 public class Menu {

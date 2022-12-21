@@ -1,14 +1,12 @@
-package kitchenpos.validator;
+package kitchenpos.unit.validator;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.port.OrderPort;
 import kitchenpos.order.port.OrderTablePort;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

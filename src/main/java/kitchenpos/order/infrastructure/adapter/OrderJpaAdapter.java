@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.ORDER_NOT_FOUND;
+import static kitchenpos.common.constants.ErrorCodeType.ORDER_NOT_FOUND;
 
 @Service
 @Transactional

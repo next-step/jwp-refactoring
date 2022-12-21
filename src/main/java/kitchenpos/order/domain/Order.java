@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.constants.ErrorCodeType.*;
+import static kitchenpos.common.constants.ErrorCodeType.*;
 
 @Entity
 @Table(name = "orders")

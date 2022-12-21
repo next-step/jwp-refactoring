@@ -1,4 +1,4 @@
-package kitchenpos.constants;
+package kitchenpos.common.constants;
 
 public enum ErrorCodeType {
 

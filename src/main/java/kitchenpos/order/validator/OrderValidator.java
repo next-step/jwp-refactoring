@@ -1,6 +1,6 @@
 package kitchenpos.order.validator;
 
-import kitchenpos.constants.ErrorCodeType;
+import kitchenpos.common.constants.ErrorCodeType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.constants.ErrorCodeType.ORDER_LINE_ITEM_REQUEST;
-import static kitchenpos.constants.ErrorCodeType.ORDER_STATUS_NOT_COMPLETION;
+import static kitchenpos.common.constants.ErrorCodeType.ORDER_LINE_ITEM_REQUEST;
+import static kitchenpos.common.constants.ErrorCodeType.ORDER_STATUS_NOT_COMPLETION;
 
 @Service
 @Transactional(readOnly = true)
