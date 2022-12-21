@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
 import kitchenpos.domain.Product;
@@ -18,26 +19,33 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Test
-    void 상품가격이_null일경우_에러발생() {
-        assertThatThrownBy(() -> productService.create(new Product("이름", null)))
+    void 생성시_상품가격이_null일경우_예외발생() {
+        assertThatThrownBy(() -> createProduct("이름", null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 상품가격이_0원이하일경우_에러발생() {
-        assertThatThrownBy(() -> productService.create(new Product("이름", BigDecimal.valueOf(-1))))
+    void 생성시_상품가격이_0보다작을경우_예외발생() {
+        assertThatThrownBy(() -> createProduct("이름", BigDecimal.valueOf(-1)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 상품가격이_0원이상일경우_상품반환() {
-        assertThat(productService.create(new Product("아이패드", BigDecimal.ONE)))
-            .isEqualTo(new Product("아이패드", BigDecimal.ONE));
+    void 생성시_정상적인상품일경우_생성한상품반환() {
+        final Product product = createProduct("아이패드", BigDecimal.ONE);
+        assertAll(
+            ()-> assertThat(product.getName()).isEqualTo("아이패드"),
+            () -> assertThat(product.getPrice()).isEqualTo(new BigDecimal("1.00"))
+        );
     }
 
     @Test
-    void 상품목록_조회() {
+    void 조회시_존재하는상품목록반환() {
         assertThat(productService.list()).isNotEmpty();
+    }
+
+    private Product createProduct(String name, BigDecimal price) {
+        return productService.create(new Product(name, price));
     }
 
 }
