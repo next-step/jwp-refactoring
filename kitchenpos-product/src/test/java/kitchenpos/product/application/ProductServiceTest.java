@@ -1,11 +1,11 @@
 package kitchenpos.product.application;
 
 import kitchenpos.global.message.PriceMessage;
-import kitchenpos.product.ProductFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.fixture.ProductFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
