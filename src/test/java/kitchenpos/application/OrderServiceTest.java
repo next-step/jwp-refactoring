@@ -9,6 +9,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.order.domain.Order;
@@ -34,6 +35,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -45,14 +48,12 @@ class OrderServiceTest {
     private OrderPort orderPort;
     @Mock
     private OrderTablePort orderTablePort;
+    @Mock
+    private OrderValidator orderValidator;
     @InjectMocks
     private OrderService orderService;
 
-    private Product 후라이드치킨;
-    private Product 제로콜라;
     private MenuGroup 치킨;
-    private MenuProduct 후라이드_이인분;
-    private MenuProduct 제로콜라_삼인분;
     private Menu 후치콜세트;
     private OrderTable 주문테이블;
 
@@ -64,15 +65,9 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨");
-        제로콜라 = new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라");
-
         치킨 = new MenuGroup("치킨");
 
         후치콜세트 = new Menu(1L, "후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨.getId());
-
-        후라이드_이인분 = new MenuProduct(후치콜세트, 후라이드치킨, 2);
-        제로콜라_삼인분 = new MenuProduct(후치콜세트, 제로콜라, 2);
 
         주문테이블 = new OrderTable(1L, null, 0, false);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, null);
@@ -88,23 +83,13 @@ class OrderServiceTest {
         given(menuPort.findAllByMenuId(any())).willReturn(Arrays.asList(후치콜세트));
         given(orderPort.save(any())).willReturn(주문);
 
-
         OrderRequest request = new OrderRequest(1L, Arrays.asList(주문요청));
-
 
         OrderResponse result = orderService.create(request);
 
         assertThat(result.getId()).isNotNull();
         assertThat(result.getOrderStatus()).isNotNull();
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-    }
-
-    @Test
-    @DisplayName("주문 항목이 비어 있을 수 없다.")
-    void createOrderEmpty() {
-        assertThatThrownBy(() ->
-                orderService.create(new OrderRequest(1L, null))
-        ).isInstanceOf(IllegalArgumentException.class);
     }
 
 
@@ -144,6 +129,7 @@ class OrderServiceTest {
 
 
         given(orderPort.findById(any())).willReturn(주문);
+        doCallRealMethod().when(orderValidator).validChangeOrderStatus(OrderStatus.COMPLETION);
 
         assertThatThrownBy(() ->
                 orderService.changeOrderStatus(주문.getId(), new ChangeOrderStatusRequest(OrderStatus.COOKING))

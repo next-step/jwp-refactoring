@@ -75,7 +75,7 @@ class OrderRestControllerTest extends AcceptanceSupport {
 
         주문테이블_일번 = new OrderTable(1L, null, 3, true);
         주문테이블_이번 = new OrderTable(2L, null, 7, true);
-        테이블_그륩 = new TableGroup(new OrderTables(Arrays.asList(주문테이블_일번, 주문테이블_이번)));
+        테이블_그륩 = new TableGroup();
         후치콜_세트_주문_아이템 = new OrderLineItem(치킨_콜라_정식_메뉴, 1L);
         주문 = new Order(주문테이블_일번.getId(), OrderStatus.COOKING);
         주문.addOrderLineItems(Arrays.asList(후치콜_세트_주문_아이템), Arrays.asList(치킨_콜라_정식_메뉴));

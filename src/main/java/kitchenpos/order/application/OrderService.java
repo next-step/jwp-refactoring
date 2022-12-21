@@ -28,7 +28,6 @@ public class OrderService {
     private final MenuPort menuPort;
     private final OrderPort orderPort;
     private final OrderTablePort orderTablePort;
-
     private final OrderValidator orderValidator;
 
     public OrderService(

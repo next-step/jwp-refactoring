@@ -30,7 +30,7 @@ public class OrderTableValidator {
     }
 
     private void validCheckIsNotNullTableGroup(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroup())) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL.getMessage());
         }
     }

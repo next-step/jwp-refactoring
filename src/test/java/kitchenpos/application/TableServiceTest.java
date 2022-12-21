@@ -4,6 +4,7 @@ import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.order.validator.OrderTableValidator;
 import kitchenpos.tablegroup.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
 import kitchenpos.order.dto.TableRequest;
@@ -20,18 +21,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.constants.ErrorCodeType.COOKING_MEAL_NOT_UNGROUP;
+import static kitchenpos.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderPort orderPort;
-
-    @Mock
     private OrderTablePort orderTablePort;
+    @Mock
+    private OrderTableValidator orderTableValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -65,10 +68,9 @@ class TableServiceTest {
     @DisplayName("주문테이블의 상태를 변경할 수 있다.")
     void changeTableStatusEmpty() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
-        Order order = new Order(주문테이블.getId(), OrderStatus.COMPLETION);
 
         given(orderTablePort.findById(any())).willReturn(주문테이블);
-        given(orderPort.findByOrderTableId(any())).willReturn(Arrays.asList(order));
+        doNothing().when(orderTableValidator).validChangeEmpty(주문테이블);
 
         TableResponse result = tableService.changeEmpty(1L, new ChangeEmptyRequest(true));
 
@@ -82,7 +84,8 @@ class TableServiceTest {
         Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, null);
 
         given(orderTablePort.findById(1L)).willReturn(주문테이블);
-        given(orderPort.findByOrderTableId(any())).willReturn(Arrays.asList(주문));
+        doThrow(new IllegalArgumentException(COOKING_MEAL_NOT_UNGROUP.getMessage()))
+                .when(orderTableValidator).validChangeEmpty(주문테이블);
 
         assertThatThrownBy(() ->
                 tableService.changeEmpty(1L, new ChangeEmptyRequest(true)))
@@ -107,6 +110,8 @@ class TableServiceTest {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
 
         given(orderTablePort.findById(any())).willReturn(주문테이블);
+        doThrow(new IllegalArgumentException(GUEST_NOT_NULL_AND_ZERO.getMessage()))
+                .when(orderTableValidator).validChangeNumberOfGuest(-1);
 
         assertThatThrownBy(() ->
                 tableService.changeNumberOfGuests(1L, new ChaneNumberOfGuestRequest(-1))

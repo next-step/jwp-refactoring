@@ -11,9 +11,9 @@ public class TableResponse {
     private int numberOfGuests;
     private boolean empty;
 
-    private TableResponse(Long id, TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
+    private TableResponse(Long id, Long tableGroup, int numberOfGuests, boolean isEmpty) {
         this.id = id;
-        this.tableGroup = tableGroupNullCheck(tableGroup);
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = isEmpty;
     }
@@ -21,18 +21,10 @@ public class TableResponse {
     public static TableResponse from(OrderTable orderTable) {
         return new TableResponse(
                 orderTable.getId(),
-                orderTable.getTableGroup(),
+                orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty()
         );
-    }
-
-    private Long tableGroupNullCheck(TableGroup tableGroup) {
-        if (Objects.isNull(tableGroup)) {
-            return null;
-        }
-
-        return tableGroup.getId();
     }
 
     public Long getId() {

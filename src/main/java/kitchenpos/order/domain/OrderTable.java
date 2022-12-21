@@ -50,12 +50,18 @@ public class OrderTable {
         this.isEmpty = isEmpty;
     }
 
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
+
+/*
     public void addTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
+*/
 
     public boolean isNotNull() {
-        return this.tableGroup != null;
+        return this.tableGroupId != null;
     }
 
     public void changeNumberOfGuests(Integer numberOfGuests) {
@@ -67,9 +73,9 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
+//    public TableGroup getTableGroup() {
+//        return tableGroup;
+//    }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
@@ -78,5 +84,4 @@ public class OrderTable {
     public boolean isEmpty() {
         return isEmpty;
     }
-
 }

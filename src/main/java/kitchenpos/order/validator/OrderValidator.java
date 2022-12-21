@@ -47,6 +47,11 @@ public class OrderValidator {
     }
 
     public void validChangeOrderStatus(OrderStatus orderStatus) {
+
+        System.out.println("==========");
+        System.out.println(orderStatus);
+
+
         if (orderStatus.isCompletion()) {
             throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION.getMessage());
         }

@@ -1,16 +1,18 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.tablegroup.event.TableGroupPublisher;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +23,6 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
     }
 
-
     public Long getId() {
         return id;
     }
@@ -31,6 +32,7 @@ public class TableGroup {
     }
 
     public void ungroup() {
-        orderTables.ungroup();
+        TableGroupPublisher tableGroupPublisher = new TableGroupPublisher(id);
+        registerEvent(tableGroupPublisher);
     }
 }

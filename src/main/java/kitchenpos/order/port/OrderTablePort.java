@@ -14,4 +14,6 @@ public interface OrderTablePort {
     List<OrderTable> findAllByIdIn(List<Long> ids);
 
     List<OrderTable> findAllByTableGroupId(Long id);
+
+    List<OrderTable> findAllByTableGroupIdIn(List<Long> tableGroupIds);
 }

@@ -31,32 +31,4 @@ class OrderTableTest {
                 () -> new OrderTables(Arrays.asList(orderTable))
         ).isInstanceOf(IllegalArgumentException.class);
     }
-
-    @Test
-    @DisplayName("단체 지정할 수 있는지 확인할 때 비어 있는 상태라면 예외가 발생한다")
-    void groupIsEmptyException() {
-        OrderTable orderTable = new OrderTable(new TableGroup(new OrderTables()), 5, false);
-
-        assertThatThrownBy(
-                () -> orderTable.changeEmpty(true))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-
-    @Test
-    @DisplayName("주문 테이블 목록에 대해 단체 지정 해제를 할 수 있다")
-    void orderTablesUngroup() {
-        OrderTable orderTableA = new OrderTable(3, true);
-        OrderTable orderTableB = new OrderTable(5, true);
-        OrderTables orderTables = new OrderTables(Arrays.asList(orderTableA, orderTableB));
-        TableGroup tableGroup = new TableGroup(orderTables);
-
-        orderTableA.addTableGroup(tableGroup);
-        orderTableB.addTableGroup(tableGroup);
-
-        orderTables.ungroup();
-
-        assertThat(orderTableA.getTableGroup()).isNull();
-        assertThat(orderTableB.getTableGroup()).isNull();
-    }
 }

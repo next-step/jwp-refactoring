@@ -14,6 +14,8 @@ public enum ErrorCodeType {
     ORDER_STATUS_NOT_COMPLETION("주문 상태가 이미 완료 상태입니다."),
     ORDER_LINE_ITEM_REQUEST("주문항목은 비어있을 수 없습니다"),
     PRICE_NOT_NULL_AND_ZERO("가격이 비어있거나, 0원 미만일수 없습니다"),
+    NOT_FOUND_ORDER_TABLE("주문테이블에 주문이 없습니다"),
+    ORDER_TABLE_MIN_SIZE_ERROR("주문 테이블은 최소 2개 이상이여야 합니다"),
     NOT_MATCH_ORDER_TABLE("매치 되는 주문테이블이 없습니다"),
     NOT_FOUND_PRODUCT("상품을 찾을 수 없습니다"),
     MATCH_NOT_MENU("메누와 메칭 되는것을 찾을 수 없습니다"),
