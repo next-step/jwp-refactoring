@@ -16,7 +16,7 @@ public class MenuProducts {
 
     protected MenuProducts() {}
 
-   public MenuProducts(List<MenuProduct> menuProducts) {
+    public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 

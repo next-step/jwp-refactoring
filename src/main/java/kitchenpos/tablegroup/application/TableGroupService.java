@@ -35,7 +35,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        final TableGroup tableGroup = findTableGroupById(tableGroupId);
         List<Order> orders = findAllOrderByTableIds(tableGroup.getOrderTableIds());
 
         tableGroup.ungroup(orders);

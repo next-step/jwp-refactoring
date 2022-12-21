@@ -25,7 +25,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable orderTable = orderTableRepository.save(request.createOrderTable());
+        final OrderTable orderTable = orderTableRepository.save(request.createOrderTable());
         return OrderTableResponse.from(orderTable);
     }
 
@@ -39,7 +39,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final UpdateEmptyRequest request) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        List<Order> orders = findAllOrderByOrderTableId(orderTableId);
+        final List<Order> orders = findAllOrderByOrderTableId(orderTableId);
 
         savedOrderTable.updateEmpty(request.isEmpty(), orders);
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
