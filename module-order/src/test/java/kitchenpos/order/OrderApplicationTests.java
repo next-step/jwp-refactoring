@@ -1,7 +1,7 @@
-package kitchenpos.table;
+package kitchenpos.order;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TableApplicationTest {
+public class OrderApplicationTests {
 }
