@@ -32,11 +32,15 @@ public class MenuValidator {
         BigDecimal sum = BigDecimal.ZERO;
 
         for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> new KitchenposException(ErrorCode.NOT_FOUND_PRODUCT));
+            final Product product = getProduct(menuProduct.getProductId());
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
         return sum;
+    }
+
+    private Product getProduct(Long productId){
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new KitchenposException(ErrorCode.NOT_FOUND_PRODUCT));
     }
 }
