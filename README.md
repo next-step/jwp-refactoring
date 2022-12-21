@@ -104,7 +104,14 @@
 
 ### TODO
 - [x] 요구 사항을 README.md에 작성
-- [ ] 요구 사항을 토대로 통합 테스트 코드 또는 단위테스트 작성
-- [ ] (Optional) 인수테스트코드 작성
+- [x] 요구 사항을 토대로 통합 테스트 코드 또는 단위테스트 작성
+    - [x] ProductService
+    - [x] MenuGroupService
+    - [x] MenuService
+    - [x] TableService
+    - [x] OrderService
+    - [x] TableGroupService
 
-
+### Note
+- 각 도메인 모델들의 동등성 비교는 PK로 비교 
+-> 현재 로직에서, 영속된 모델들로만 로직이 구성되어있는지 확인이 되지 않았으므로, 실제 리팩토링 들어갈때 수정 필요
