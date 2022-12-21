@@ -5,15 +5,15 @@ import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableResponse {
     private Long id;
-    private Long tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTableResponse() {}
 
-    private OrderTableResponse(Long id, Long tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -22,21 +22,20 @@ public class OrderTableResponse {
         Long id = orderTable.getId();
         int numberOfGuests = orderTable.getNumberOfGuests();
         boolean empty = orderTable.isEmpty();
-        TableGroup tableGroup = orderTable.getTableGroup();
-
-        if (tableGroup == null) {
+        Long tableGroupId = orderTable.getTableGroupId();
+        if (tableGroupId == null) {
             return new OrderTableResponse(id, null, numberOfGuests, empty);
         }
 
-        return new OrderTableResponse(id, tableGroup.getId(), numberOfGuests, empty);
+        return new OrderTableResponse(id, tableGroupId, numberOfGuests, empty);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

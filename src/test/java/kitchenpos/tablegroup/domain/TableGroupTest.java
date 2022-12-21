@@ -29,15 +29,15 @@ public class TableGroupTest {
                 new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable))
         );
 
-        firstOrderTable.setTableGroup(tableGroup);
-        secondOrderTable.setTableGroup(tableGroup);
+//        firstOrderTable.setTableGroup(tableGroup);
+//        secondOrderTable.setTableGroup(tableGroup);
         // when
         tableGroup.ungroup(Arrays.asList(order1, order2));
 
         // then
         assertAll(
-                () -> assertThat(firstOrderTable.getTableGroup()).isNull(),
-                () -> assertThat(secondOrderTable.getTableGroup()).isNull()
+                () -> assertThat(firstOrderTable.getTableGroupId()).isNull(),
+                () -> assertThat(secondOrderTable.getTableGroupId()).isNull()
         );
     }
 

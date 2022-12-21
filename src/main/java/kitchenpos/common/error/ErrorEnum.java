@@ -6,6 +6,7 @@ public enum ErrorEnum {
     MENU_PRICE_OVER_TOTAL_PRICE("메뉴의 가격이 전체 메뉴 상품 가격의 합보다 클 수 없습니다."),
     GUESTS_UNDER_ZERO("손님은 0명 이하일 수 없습니다."),
     ORDER_TABLE_IS_EMPTY("주문 테이블이 비어있습니다."),
+    ORDER_TABLE_IS_NOT_EMPTY("주문 테이블이 비어있지 않습니다."),
     ORDER_LINE_ITEMS_IS_EMPTY("주문 항목이 비어있습니다."),
     ALREADY_GROUP("이미 단체그룹으로 지정되어 있습니다."),
     NOT_PAYMENT_ORDER("계산 완료된 주문이 아닙니다."),

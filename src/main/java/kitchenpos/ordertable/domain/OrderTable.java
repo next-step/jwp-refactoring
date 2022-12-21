@@ -3,14 +3,10 @@ package kitchenpos.ordertable.domain;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.error.ErrorEnum;
-import kitchenpos.tablegroup.domain.TableGroup;
 @Entity
 public class OrderTable {
     @Id
@@ -19,9 +15,7 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     protected OrderTable() {}
 
@@ -48,9 +42,16 @@ public class OrderTable {
     }
 
     private void validateHasTableGroup() {
-        if (tableGroup != null) {
+        if (tableGroupId != null) {
             throw new IllegalArgumentException(ErrorEnum.ALREADY_GROUP.message());
         }
+    }
+    public void updateTableGroup(Long tableGroupId) {
+        if (!isEmpty()) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_NOT_EMPTY.message());
+        }
+        updateEmpty(false);
+        this.tableGroupId = tableGroupId;
     }
 
     public void updateEmpty(boolean empty) {
@@ -62,12 +63,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void setTableGroup(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -83,7 +80,8 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
+        updateEmpty(true);
     }
 
     @Override

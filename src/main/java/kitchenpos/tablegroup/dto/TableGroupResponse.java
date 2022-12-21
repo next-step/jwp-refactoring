@@ -1,11 +1,9 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupResponse {
     private Long id;
@@ -20,16 +18,25 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse from(TableGroup tableGroup) {
-        List<OrderTableResponse> orderTableResponses = tableGroup
-                .getOrderTables()
-                .get()
-                .stream()
-                .map(OrderTableResponse::from)
-                .collect(Collectors.toList());
-
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
+    public TableGroupResponse(TableGroup tableGroup, List<OrderTableResponse> orderTableResponses) {
+        this.id = tableGroup.getId();
+        this.orderTables = orderTableResponses;
     }
+
+    public static TableGroupResponse of(TableGroup tableGroup, List<OrderTableResponse> orderTableResponses) {
+        return new TableGroupResponse(tableGroup, orderTableResponses);
+    }
+
+//    public static TableGroupResponse from(TableGroup tableGroup) {
+//        List<OrderTableResponse> orderTableResponses = tableGroup
+//                .getOrderTables()
+//                .get()
+//                .stream()
+//                .map(OrderTableResponse::from)
+//                .collect(Collectors.toList());
+//
+//        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
+//    }
 
     public Long getId() {
         return id;

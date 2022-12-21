@@ -6,6 +6,8 @@ import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -28,16 +30,27 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
-        final TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup(savedOrderTables));
-        return TableGroupResponse.from(savedTableGroup);
+        OrderTables orderTables = OrderTables.of(orderTableById(request.getOrderTableIds()));
+        List<OrderTableResponse> orderTableResponses = orderTables.get()
+                .stream()
+                .map(OrderTableResponse::from)
+                .collect(Collectors.toList());
+        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        orderTables.group(tableGroup.getId());
+        return TableGroupResponse.of(tableGroup, orderTableResponses);
+    }
+
+    private List<OrderTable> orderTableById(List<Long> ids) {
+        return ids.stream()
+                .map(this::findOrderTableById)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByTableIds(tableGroup.getOrderTableIds());
-
+        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        List<Order> orders = findAllOrderByTableIds(orderTables.getOrderTableIds());
         tableGroup.ungroup(orders);
         tableGroupRepository.save(tableGroup);
     }

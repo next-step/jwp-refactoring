@@ -92,7 +92,7 @@ public class TableServiceTest {
 
     @Test
     void 단체_테이블에_지정되어_있으면_주문_테이블을_변경할_수_없다() {
-        firstTable.setTableGroup(개발자_단체);
+        firstTable.updateTableGroup(개발자_단체.getId());
         UpdateEmptyRequest request = UpdateEmptyRequest.of(firstTable.isEmpty());
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
 

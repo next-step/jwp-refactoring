@@ -114,7 +114,7 @@ public class TableGroupServiceTest {
         when(orderTableRepository.findById(firstTable.getId())).thenReturn(Optional.of(firstTable));
         when(orderTableRepository.findById(secondTable.getId())).thenReturn(Optional.of(secondTable));
 
-        firstTable.setTableGroup(tableGroup);
+        //firstTable.setTableGroup(tableGroup);
         TableGroupRequest request = TableGroupRequest.of(Arrays.asList(firstTable.getId(), secondTable.getId()));
 
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -138,8 +138,8 @@ public class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(firstTable.getTableGroup()).isNull(),
-                () -> assertThat(secondTable.getTableGroup()).isNull()
+                () -> assertThat(firstTable.getTableGroupId()).isNull(),
+                () -> assertThat(secondTable.getTableGroupId()).isNull()
         );
     }
 

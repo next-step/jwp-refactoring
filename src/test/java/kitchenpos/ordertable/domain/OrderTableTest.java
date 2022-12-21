@@ -32,7 +32,7 @@ public class OrderTableTest {
                 LocalDateTime.now(),
                 new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable))
         );
-        firstOrderTable.setTableGroup(tableGroup);
+        //firstOrderTable.setTableGroup(tableGroup);
 
         // when & then
         assertThatThrownBy(() -> firstOrderTable.updateEmpty(true))
@@ -72,12 +72,12 @@ public class OrderTableTest {
         TableGroup tableGroup = new TableGroup(
                 LocalDateTime.now(),
                 new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable)));
-        firstOrderTable.setTableGroup(tableGroup);
+//        firstOrderTable.setTableGroup(tableGroup);
 
         // when
         firstOrderTable.ungroup();
 
         // then
-        assertThat(firstOrderTable.getTableGroup()).isNull();
+        assertThat(firstOrderTable.getTableGroupId()).isNull();
     }
 }
