@@ -18,7 +18,7 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
@@ -27,6 +27,10 @@ public class OrderTable {
 
     public static OrderTable generate(int numberOfGuests, boolean empty) {
         return new OrderTable(null, null, numberOfGuests, empty);
+    }
+
+    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public boolean isTableGroupRegistered() {

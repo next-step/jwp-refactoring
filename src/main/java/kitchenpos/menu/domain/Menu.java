@@ -30,7 +30,7 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = MenuPrice.from(price);
@@ -40,6 +40,10 @@ public class Menu {
 
     public static Menu generate(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(null, name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
     public boolean hasId(Long id) {

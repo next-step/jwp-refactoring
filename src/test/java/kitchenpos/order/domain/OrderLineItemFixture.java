@@ -13,10 +13,10 @@ public class OrderLineItemFixture {
     }
 
     public static OrderLineItem savedOrderLineItem(Long seq) {
-        return new OrderLineItem(seq, 1L, "orderMenuName", BigDecimal.valueOf(1000), 5);
+        return OrderLineItem.of(seq, 1L, "orderMenuName", BigDecimal.valueOf(1000), 5);
     }
 
     public static OrderLineItem savedOrderLineItem(Long seq, String menuName, long menuPrice) {
-        return new OrderLineItem(seq, 1L, menuName, BigDecimal.valueOf(menuPrice), 5);
+        return OrderLineItem.of(seq, 1L, menuName, BigDecimal.valueOf(menuPrice), 5);
     }
 }

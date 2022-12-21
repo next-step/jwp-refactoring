@@ -21,7 +21,7 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Long menuId, String menuName, BigDecimal menuPrice, long quantity) {
+    private OrderLineItem(Long seq, Long menuId, String menuName, BigDecimal menuPrice, long quantity) {
         this.seq = seq;
         this.menuId = menuId;
         this.menuName = menuName;
@@ -31,6 +31,10 @@ public class OrderLineItem {
 
     public static OrderLineItem generate(Long menuId, String orderMenuName, BigDecimal orderMenuPrice, long quantity) {
         return new OrderLineItem(null, menuId, orderMenuName, orderMenuPrice, quantity);
+    }
+
+    public static OrderLineItem of(Long seq, Long menuId, String orderMenuName, BigDecimal orderMenuPrice, long quantity) {
+        return new OrderLineItem(seq, menuId, orderMenuName, orderMenuPrice, quantity);
     }
 
     public Long getSeq() {

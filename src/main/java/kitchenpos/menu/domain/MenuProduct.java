@@ -17,7 +17,7 @@ public class MenuProduct {
 
     protected MenuProduct() {}
 
-    public MenuProduct(Long seq, Long productId, long quantity) {
+    private MenuProduct(Long seq, Long productId, long quantity) {
         this.seq = seq;
         this.productId = productId;
         this.quantity = quantity;
@@ -25,6 +25,10 @@ public class MenuProduct {
 
     public static MenuProduct generate(Long productId, long quantity) {
         return new MenuProduct(null, productId, quantity);
+    }
+
+    public static MenuProduct of(Long seq, Long productId, long quantity) {
+        return new MenuProduct(seq, productId, quantity);
     }
 
     public Long getSeq() {

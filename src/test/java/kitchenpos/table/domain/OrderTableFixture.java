@@ -19,18 +19,18 @@ public class OrderTableFixture {
     }
 
     public static OrderTable savedOrderTable(Long id, boolean empty) {
-        return new OrderTable(id, null, 0, empty);
+        return OrderTable.of(id, null, 0, empty);
     }
 
     public static OrderTable savedOrderTable(Long id, Long tableGroupId) {
-        return new OrderTable(id, tableGroupId, 0, false);
+        return OrderTable.of(id, tableGroupId, 0, false);
     }
 
     public static OrderTable savedOrderTable(Long id, Long tableGroupId, boolean empty) {
-        return new OrderTable(id, tableGroupId, 0, empty);
+        return OrderTable.of(id, tableGroupId, 0, empty);
     }
 
     public static OrderTable savedOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+        return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
     }
 }

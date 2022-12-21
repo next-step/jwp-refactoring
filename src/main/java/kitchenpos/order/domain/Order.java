@@ -39,7 +39,7 @@ public class Order {
 
     protected Order() {}
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+    private Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -50,6 +50,10 @@ public class Order {
 
     public static Order generate(Long orderTableId, List<OrderLineItem> orderLineItems) {
         return new Order(null, orderTableId, OrderStatus.COOKING, null, orderLineItems);
+    }
+
+    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {

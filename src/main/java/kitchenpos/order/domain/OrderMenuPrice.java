@@ -9,8 +9,7 @@ import javax.persistence.Embeddable;
 public class OrderMenuPrice {
     private BigDecimal menuPrice;
 
-    public OrderMenuPrice() {
-    }
+    protected OrderMenuPrice() {}
 
     private OrderMenuPrice(BigDecimal menuPrice) {
         validatePriceNotNull(menuPrice);

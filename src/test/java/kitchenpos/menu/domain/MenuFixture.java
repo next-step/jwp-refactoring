@@ -19,10 +19,10 @@ public class MenuFixture {
 
     public static Menu savedMenu(Long id, String name, BigDecimal price, Long menuGroupId,
         List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroupId, menuProducts);
+        return Menu.of(id, name, price, menuGroupId, menuProducts);
     }
 
     public static Menu savedMenu(Long id, String name, BigDecimal price) {
-        return new Menu(id, name, price, 1L, Collections.emptyList());
+        return Menu.of(id, name, price, 1L, Collections.emptyList());
     }
 }
