@@ -7,7 +7,6 @@ plugins {
 group = 'camp.nextstep.edu'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
-
 repositories {
     mavenCentral()
 }
@@ -20,18 +19,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     runtimeOnly 'com.h2database:h2'
-    implementation 'com.google.guava:guava:31.1-jre'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
     implementation project(':kitchenpos-global')
     implementation project(':kitchenpos-product')
     implementation project(':kitchenpos-menu')
     implementation project(':kitchenpos-order')
     implementation project(':kitchenpos-table')
-
-    testImplementation(testFixtures(project(":kitchenpos-product")))
-    testImplementation(testFixtures(project(":kitchenpos-menu")))
 }
 
 test {

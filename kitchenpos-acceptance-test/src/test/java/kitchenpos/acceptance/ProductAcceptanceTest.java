@@ -1,13 +1,12 @@
-package kitchenpos.product.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.fixture.ProductFixture;
-import kitchenpos.product.rest.ProductRestAssured;
+import kitchenpos.rest.ProductRestAssured;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class ProductAcceptanceTest extends BaseAcceptanceTest {
@@ -33,7 +31,7 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
         ProductResponse productResponse = response.as(ProductResponse.class);
         assertAll(
                 () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(productResponse.getId()).isNotNull()
+                () -> Assertions.assertThat(productResponse.getId()).isNotNull()
         );
     }
 

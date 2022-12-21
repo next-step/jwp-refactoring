@@ -1,18 +1,17 @@
-package kitchenpos.menugroup.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.fixture.MenuGroupFixture;
-import kitchenpos.menugroup.rest.MenuGroupRestAssured;
+import kitchenpos.rest.MenuGroupRestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
@@ -29,8 +28,8 @@ public class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
         // then
         MenuGroupResponse menuGroupResponse = response.as(MenuGroupResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(menuGroupResponse.getId()).isNotNull()
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> Assertions.assertThat(menuGroupResponse.getId()).isNotNull()
         );
     }
 
@@ -46,8 +45,8 @@ public class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
         // then
         JsonPath jsonPath = response.jsonPath();
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(jsonPath.getList("name", String.class)).containsExactly(groupResponse.getName())
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(jsonPath.getList("name", String.class)).containsExactly(groupResponse.getName())
         );
     }
 }

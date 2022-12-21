@@ -1,0 +1,19 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.google.guava:guava:31.1-jre'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+    testImplementation project(':kitchenpos-global')
+    testImplementation project(':kitchenpos-product')
+    testImplementation project(':kitchenpos-product')
+    testImplementation project(':kitchenpos-menu')
+    testImplementation project(':kitchenpos-order')
+    testImplementation project(':kitchenpos-table')
+    testImplementation (testFixtures(project(':kitchenpos-product')))
+    testImplementation (testFixtures(project(':kitchenpos-menu')))
+}

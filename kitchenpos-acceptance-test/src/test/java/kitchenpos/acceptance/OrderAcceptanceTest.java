@@ -1,26 +1,22 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.rest.MenuRestAssured;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.fixture.MenuGroupFixture;
-import kitchenpos.menugroup.rest.MenuGroupRestAssured;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.rest.OrderRestAssured;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.fixture.ProductFixture;
-import kitchenpos.product.rest.ProductRestAssured;
+import kitchenpos.rest.*;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.rest.TableRestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,9 +60,9 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
         // then
         OrderResponse orderResponse = response.as(OrderResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(orderResponse.getId()).isNotNull(),
-                () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> Assertions.assertThat(orderResponse.getId()).isNotNull(),
+                () -> Assertions.assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)
         );
     }
 
@@ -84,7 +80,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
         List<Long> orderIds = orders.stream().map(OrderResponse::getId).collect(Collectors.toList());
         List<Long> expectedOrderIds = Stream.of(order).map(OrderResponse::getId).collect(Collectors.toList());
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(orderIds).containsAll(expectedOrderIds)
         );
     }
@@ -101,8 +97,8 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
         // then
         OrderResponse orderResponse = response.as(OrderResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION)
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION)
         );
     }
 }

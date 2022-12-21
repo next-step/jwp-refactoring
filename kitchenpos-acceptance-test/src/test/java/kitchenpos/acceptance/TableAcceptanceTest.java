@@ -1,12 +1,12 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.BaseAcceptanceTest;
+import kitchenpos.rest.TableRestAssured;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.rest.TableRestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class TableAcceptanceTest extends BaseAcceptanceTest {
@@ -32,9 +31,9 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         // then
         OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests()),
-                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(request.isEmpty())
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> Assertions.assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests()),
+                () -> Assertions.assertThat(orderTableResponse.isEmpty()).isEqualTo(request.isEmpty())
         );
     }
 
@@ -54,9 +53,9 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         JsonPath jsonPath = response.jsonPath();
         List<Integer> numberOfGuestsInExpectedTables = expectedOrderTables.stream().map(OrderTableResponse::getNumberOfGuests).collect(Collectors.toList());
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(jsonPath.getList("tableGroupId", Long.class)).isEqualTo(Arrays.asList(null, null)),
-                () -> assertThat(jsonPath.getList("numberOfGuests", Integer.class)).isEqualTo(numberOfGuestsInExpectedTables)
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(jsonPath.getList("tableGroupId", Long.class)).isEqualTo(Arrays.asList(null, null)),
+                () -> Assertions.assertThat(jsonPath.getList("numberOfGuests", Integer.class)).isEqualTo(numberOfGuestsInExpectedTables)
         );
     }
 
@@ -72,8 +71,8 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         // then
         OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(true)
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(orderTableResponse.isEmpty()).isEqualTo(true)
         );
     }
 
@@ -89,8 +88,8 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         // then
         OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(orderTableResponse.isEmpty()).isFalse()
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(orderTableResponse.isEmpty()).isFalse()
         );
     }
 
@@ -106,8 +105,8 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         // then
         OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(3)
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(3)
         );
     }
 }

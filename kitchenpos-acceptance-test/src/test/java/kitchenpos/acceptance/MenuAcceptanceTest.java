@@ -1,19 +1,19 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.BaseAcceptanceTest;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.rest.MenuRestAssured;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.fixture.MenuGroupFixture;
-import kitchenpos.menugroup.rest.MenuGroupRestAssured;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.fixture.ProductFixture;
-import kitchenpos.product.rest.ProductRestAssured;
+import kitchenpos.rest.MenuGroupRestAssured;
+import kitchenpos.rest.MenuRestAssured;
+import kitchenpos.rest.ProductRestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest {
         MenuResponse menuResponse = response.as(MenuResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(menuResponse.getId()).isNotNull()
+                () -> Assertions.assertThat(menuResponse.getId()).isNotNull()
         );
     }
 
@@ -79,7 +79,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest {
                 .collect(Collectors.toList());
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(menuResponses).hasSize(1),
+                () -> Assertions.assertThat(menuResponses).hasSize(1),
                 () -> assertThat(menuNames).containsExactly(menu.getName())
         );
     }

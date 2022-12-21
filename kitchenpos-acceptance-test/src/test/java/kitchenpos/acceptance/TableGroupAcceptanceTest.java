@@ -1,15 +1,15 @@
-package kitchenpos.tablegroup.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.BaseAcceptanceTest;
+import kitchenpos.rest.TableGroupRestAssured;
+import kitchenpos.rest.TableRestAssured;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.rest.TableRestAssured;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.dto.TableRequest;
-import kitchenpos.tablegroup.rest.TableGroupRestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
@@ -51,8 +50,8 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
         // then
         TableGroupResponse tableGroupResponse = response.as(TableGroupResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(tableGroupResponse.getId()).isNotNull()
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> Assertions.assertThat(tableGroupResponse.getId()).isNotNull()
         );
     }
 
@@ -66,6 +65,6 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
         ExtractableResponse<Response> response = TableGroupRestAssured.주문_테이블_그룹_해지_요청(tableGroup.getId());
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
