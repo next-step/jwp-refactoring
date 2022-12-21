@@ -58,11 +58,6 @@ public class Order {
         }
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItem, List<Menu> menu) {
-        this.orderLineItems = new OrderLineItems(orderLineItem);
-        orderLineItems.setOrderLineItem(this);
-    }
-
     public Long getId() {
         return id;
     }

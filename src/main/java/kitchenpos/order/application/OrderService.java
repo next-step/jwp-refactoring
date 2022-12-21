@@ -56,7 +56,6 @@ public class OrderService {
                 .map(item -> createOrderLineItemRequest(menus, item))
                 .collect(Collectors.toList());
 
-        order.addOrderLineItems(orderLineItems, menus);
 
         return orderPort.save(order);
     }

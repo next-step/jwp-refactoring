@@ -1,5 +1,6 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
@@ -18,11 +19,11 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem, Order order) {
         return new OrderLineItemResponse(
                 orderLineItem.getSeq(),
                 orderLineItem.getMenu().getId(),
-                orderLineItem.getOrder().getId(),
+                order.getId(),
                 orderLineItem.getQuantity());
     }
 
