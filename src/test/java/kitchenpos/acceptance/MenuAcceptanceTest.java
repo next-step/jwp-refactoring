@@ -43,7 +43,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 		int quantity = 1;
 
 		// when
-		ExtractableResponse<Response> 메뉴_등록_요청 = 메뉴_등록_요청(name, price, 한마리메뉴.getId(), 간장치킨.id(), quantity);
+		ExtractableResponse<Response> 메뉴_등록_요청 = 메뉴_등록_요청(name, price, 한마리메뉴.getId(), 간장치킨.getId(), quantity);
 
 		// then
 		메뉴_등록_됨(메뉴_등록_요청, name, price, quantity, 한마리메뉴, 간장치킨);
@@ -61,7 +61,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 		String name = "후라이드치킨";
 		BigDecimal price = BigDecimal.valueOf(16000);
 		int quantity = 1;
-		MenuResponse 후라이드치킨 = 메뉴_등록_되어_있음(name, price, 한마리메뉴.getId(), 간장치킨.id(), quantity);
+		MenuResponse 후라이드치킨 = 메뉴_등록_되어_있음(name, price, 한마리메뉴.getId(), 간장치킨.getId(), quantity);
 
 		// when
 		ExtractableResponse<Response> 메뉴_목록_조회_요청 = 메뉴_목록_조회_요청();

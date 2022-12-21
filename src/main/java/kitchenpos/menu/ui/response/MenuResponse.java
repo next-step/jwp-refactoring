@@ -8,11 +8,14 @@ import kitchenpos.menu.domain.Menu;
 
 public class MenuResponse {
 
-	private final Long id;
-	private final String name;
-	private final BigDecimal price;
-	private final Long menuGroupId;
-	private final List<MenuProductResponse> menuProducts;
+	private long id;
+	private String name;
+	private BigDecimal price;
+	private Long menuGroupId;
+	private List<MenuProductResponse> menuProducts;
+
+	private MenuResponse() {
+	}
 
 	private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
 		List<MenuProductResponse> menuProducts) {
@@ -39,19 +42,19 @@ public class MenuResponse {
 			.collect(Collectors.toList());
 	}
 
-	public Long id() {
+	public Long getId() {
 		return id;
 	}
 
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
-	public BigDecimal price() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public Long menuGroupId() {
+	public Long getMenuGroupId() {
 		return menuGroupId;
 	}
 

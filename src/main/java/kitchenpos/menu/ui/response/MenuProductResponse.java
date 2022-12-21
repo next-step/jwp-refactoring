@@ -8,9 +8,12 @@ import kitchenpos.menu.domain.MenuProducts;
 
 public class MenuProductResponse {
 
-	private final long seq;
-	private final long productId;
-	private final long quantity;
+	private long seq;
+	private long productId;
+	private long quantity;
+
+	private MenuProductResponse() {
+	}
 
 	private MenuProductResponse(long seq, long productId, long quantity) {
 		this.seq = seq;
@@ -19,7 +22,7 @@ public class MenuProductResponse {
 	}
 
 	public static MenuProductResponse of(long seq, long productId, long quantity) {
-		return new MenuProductResponse(seq,productId, quantity);
+		return new MenuProductResponse(seq, productId, quantity);
 	}
 
 	public static List<MenuProductResponse> listFrom(MenuProducts menuProducts) {

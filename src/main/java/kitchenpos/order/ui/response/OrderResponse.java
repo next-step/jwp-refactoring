@@ -8,11 +8,14 @@ import kitchenpos.order.domain.Order;
 
 public class OrderResponse {
 
-	private final long id;
-	private final long orderTableId;
-	private final String orderStatus;
-	private final LocalDateTime orderedTime;
-	private final List<OrderLineItemResponse> orderLineItems;
+	private long id;
+	private long orderTableId;
+	private String orderStatus;
+	private LocalDateTime orderedTime;
+	private List<OrderLineItemResponse> orderLineItems;
+
+	private OrderResponse() {
+	}
 
 	private OrderResponse(long id, long orderTableId, String orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItemResponse> orderLineItems) {
@@ -30,7 +33,7 @@ public class OrderResponse {
 
 	public static OrderResponse from(Order order) {
 		return new OrderResponse(
-			order.id(),
+			order.getId(),
 			order.table().id(),
 			order.orderStatus().name(),
 			order.orderedTime(),

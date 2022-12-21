@@ -15,7 +15,7 @@ public class OrderGenerator {
 
 	public static Order 조리중_주문() {
 		Order order = spy(Order.of(OrderTableGenerator.비어있지_않은_5명_테이블(), OrderLineItems.from(Collections.singletonList(주문_품목()))));
-		given(order.id()).willReturn(1L);
+		given(order.getId()).willReturn(1L);
 		return order;
 	}
 

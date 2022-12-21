@@ -69,7 +69,7 @@ public class OrderService {
 	}
 
 	private OrderLineItem orderLineItem(OrderLineItemRequest request) {
-		return OrderLineItem.of(menu(request.menuId()), request.quantity());
+		return OrderLineItem.of(menu(request.getMenuId()), request.getQuantity());
 	}
 
 	private Menu menu(long menuId) {

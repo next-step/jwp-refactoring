@@ -15,7 +15,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
     private String name;
 
     @Embedded

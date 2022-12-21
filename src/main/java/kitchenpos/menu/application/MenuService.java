@@ -6,11 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
 import kitchenpos.menu.ui.request.MenuRequest;
@@ -46,10 +48,10 @@ public class MenuService {
 
 	private Menu newMenu(MenuRequest request) {
 		return Menu.of(
-			request.name(),
-			request.price(),
-			menuGroupRepository.menuGroup(request.menuGroupId()),
-			menuProducts(request.menuProductRequests())
+			request.getName(),
+			Price.from(request.getPrice()),
+			menuGroupRepository.menuGroup(request.getMenuGroupId()),
+			menuProducts(request.getMenuProducts())
 		);
 	}
 
@@ -61,8 +63,8 @@ public class MenuService {
 
 	private MenuProduct menuProduct(MenuProductRequest menuProductRequest) {
 		return MenuProduct.of(
-			productRepository.product(menuProductRequest.productId()),
-			menuProductRequest.quantity()
+			productRepository.product(menuProductRequest.getProductId()),
+			Quantity.from(menuProductRequest.getQuantity())
 		);
 	}
 }

@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.ui.request.NumberOfGuestsRequest;
 import kitchenpos.order.ui.request.OrderTableRequest;
 import kitchenpos.order.ui.request.TableStatusRequest;
@@ -38,7 +37,8 @@ public class TableAcceptanceUtils {
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
 			() -> assertThat(response.as(OrderTableResponse.class))
 				.extracting(
-					OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty, OrderTableResponse::getTableGroupId)
+					OrderTableResponse::getNumberOfGuests, OrderTableResponse::isEmpty,
+					OrderTableResponse::getTableGroupId)
 				.containsExactly(expectedNumberOfGuests, expectedEmpty, null)
 		);
 	}
@@ -67,7 +67,9 @@ public class TableAcceptanceUtils {
 	public static void 빈_테이블로_수정됨(ExtractableResponse<Response> response, boolean expectedEmpty) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(expectedEmpty)
+			() -> assertThat(response.as(OrderTableResponse.class))
+				.extracting(OrderTableResponse::isEmpty)
+				.isEqualTo(expectedEmpty)
 		);
 	}
 
@@ -86,7 +88,9 @@ public class TableAcceptanceUtils {
 	public static void 손님_수_수정됨(ExtractableResponse<Response> response, int expectedNumberOfGuests) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(expectedNumberOfGuests)
+			() -> assertThat(response.as(OrderTableResponse.class))
+				.extracting(OrderTableResponse::getNumberOfGuests)
+				.isEqualTo(expectedNumberOfGuests)
 		);
 	}
 

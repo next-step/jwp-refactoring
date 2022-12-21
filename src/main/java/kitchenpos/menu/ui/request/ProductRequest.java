@@ -2,6 +2,9 @@ package kitchenpos.menu.ui.request;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 
@@ -10,7 +13,11 @@ public class ProductRequest {
 	private final String name;
 	private final BigDecimal price;
 
-	public ProductRequest(String name, BigDecimal price) {
+	@JsonCreator
+	public ProductRequest(
+		@JsonProperty("name") String name,
+		@JsonProperty("price") BigDecimal price
+	) {
 		this.name = name;
 		this.price = price;
 	}

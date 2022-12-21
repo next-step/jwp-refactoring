@@ -164,7 +164,7 @@ class OrderServiceTest {
 		given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		orderService.changeOrderStatus(order.id(), orderStatusRequest);
+		orderService.changeOrderStatus(order.getId(), orderStatusRequest);
 
 		// then
 		verify(order, times(1)).updateStatus(orderStatus);
@@ -195,7 +195,7 @@ class OrderServiceTest {
 		given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(order.id(), orderStatusRequest));
+		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);

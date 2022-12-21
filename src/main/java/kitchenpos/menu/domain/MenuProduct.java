@@ -19,7 +19,7 @@ public class MenuProduct {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long seq;
+	private long seq;
 
 	@ManyToOne
 	@JoinColumn(name = "menu_id", nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
@@ -46,7 +46,7 @@ public class MenuProduct {
 		return new MenuProduct(product, quantity);
 	}
 
-	public Long seq() {
+	public long seq() {
 		return seq;
 	}
 

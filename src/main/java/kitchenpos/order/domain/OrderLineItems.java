@@ -9,7 +9,10 @@ import javax.persistence.OneToMany;
 public class OrderLineItems {
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
-	private final List<OrderLineItem> orderLineItems;
+	private List<OrderLineItem> orderLineItems;
+
+	protected OrderLineItems() {
+	}
 
 	private OrderLineItems(List<OrderLineItem> orderLineItems) {
 		this.orderLineItems = orderLineItems;

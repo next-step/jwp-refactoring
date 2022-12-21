@@ -54,7 +54,7 @@ public class OrderLineItem {
 	}
 
 	public Long orderId() {
-		return order.id();
+		return order.getId();
 	}
 
 	public Menu menu() {

@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.ui.response.MenuResponse;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
@@ -26,8 +25,8 @@ public class OrderAcceptanceUtils {
 	private OrderAcceptanceUtils() {
 	}
 
-	public static Order 주문_등록_되어_있음(long tableId, long menuId, int quantity) {
-		return 주문_등록_요청(tableId, menuId, quantity).as(Order.class);
+	public static OrderResponse 주문_등록_되어_있음(long tableId, long menuId, int quantity) {
+		return 주문_등록_요청(tableId, menuId, quantity).as(OrderResponse.class);
 	}
 
 	public static ExtractableResponse<Response> 주문_등록_요청(long tableId, long menuId, int quantity) {
@@ -43,7 +42,7 @@ public class OrderAcceptanceUtils {
 			() -> assertThat(order.getOrderedTime()).isEqualToIgnoringMinutes(LocalDateTime.now()),
 			() -> assertThat(order.getOrderLineItems()).first()
 				.satisfies(orderLineItem -> {
-					assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenu.id());
+					assertThat(orderLineItem.getMenuId()).isEqualTo(expectedMenu.getId());
 					assertThat(orderLineItem.getQuantity()).isEqualTo(expectedQuantity);
 				})
 		);
@@ -53,12 +52,12 @@ public class OrderAcceptanceUtils {
 		return get(ORDERS_API_URL).extract();
 	}
 
-	public static void 주문_목록_조회_됨(ExtractableResponse<Response> response, Order expectedOrder) {
+	public static void 주문_목록_조회_됨(ExtractableResponse<Response> response, OrderResponse expectedOrder) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(response.jsonPath().getList(".", OrderResponse.class))
 				.extracting(OrderResponse::getId)
-				.containsExactly(expectedOrder.id())
+				.containsExactly(expectedOrder.getId())
 		);
 	}
 

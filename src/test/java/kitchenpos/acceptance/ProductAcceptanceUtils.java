@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.ui.request.ProductRequest;
 import kitchenpos.menu.ui.response.ProductResponse;
 
@@ -37,8 +36,8 @@ public class ProductAcceptanceUtils {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
 			() -> assertThat(product).isNotNull(),
-			() -> assertThat(product.name()).isEqualTo(expectedName),
-			() -> assertThat(product.price().intValue()).isEqualTo(expectedPrice.intValue())
+			() -> assertThat(product.getName()).isEqualTo(expectedName),
+			() -> assertThat(product.getPrice().intValue()).isEqualTo(expectedPrice.intValue())
 		);
 	}
 
@@ -47,11 +46,10 @@ public class ProductAcceptanceUtils {
 		});
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.jsonPath().getList(".", Product.class)).isNotNull(),
 			() -> assertThat(products)
 				.first()
-				.extracting(ProductResponse::name)
-				.isEqualTo(expectedProduct.name())
+				.extracting(ProductResponse::getName)
+				.isEqualTo(expectedProduct.getName())
 		);
 	}
 

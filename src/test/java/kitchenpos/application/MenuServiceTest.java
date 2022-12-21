@@ -54,7 +54,7 @@ class MenuServiceTest {
 		given(menuGroupRepository.menuGroup(anyLong())).willReturn(한마리_메뉴);
 
 		Product 후라이드_치킨 = 후라이드_치킨();
-		given(productRepository.product(menuProductRequest.productId())).willReturn(후라이드_치킨);
+		given(productRepository.product(menuProductRequest.getProductId())).willReturn(후라이드_치킨);
 
 		Menu 후라이드_세트 = 후라이드_세트();
 		given(menuRepository.save(any())).willReturn(후라이드_세트);
@@ -65,10 +65,10 @@ class MenuServiceTest {
 		// then
 		verify(menuRepository, times(1)).save(any());
 		assertThat(menuResponse).satisfies(response -> {
-			assertThat(response.id()).isEqualTo(후라이드_세트.id());
-			assertThat(response.name()).isEqualTo(후라이드_세트.name());
-			assertThat(response.price()).isEqualTo(후라이드_세트.price());
-			assertThat(response.menuGroupId()).isEqualTo(후라이드_세트.menuGroup().id() );
+			assertThat(response.getId()).isEqualTo(후라이드_세트.id());
+			assertThat(response.getName()).isEqualTo(후라이드_세트.name());
+			assertThat(response.getPrice()).isEqualTo(후라이드_세트.price());
+			assertThat(response.getMenuGroupId()).isEqualTo(후라이드_세트.menuGroup().id() );
 			assertThat(response.getMenuProducts()).hasSize(1);
 		});
 	}

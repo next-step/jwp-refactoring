@@ -3,35 +3,42 @@ package kitchenpos.menu.ui.request;
 import java.math.BigDecimal;
 import java.util.List;
 
-import kitchenpos.menu.domain.Price;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MenuRequest {
 
 	private final String name;
 	private final BigDecimal price;
 	private final Long menuGroupId;
-	private final List<MenuProductRequest> menuProductRequests;
+	private final List<MenuProductRequest> menuProducts;
 
-	public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+
+	@JsonCreator
+	public MenuRequest(
+		@JsonProperty("name") String name,
+		@JsonProperty("price") BigDecimal price,
+		@JsonProperty("menuGroupId") long menuGroupId,
+		@JsonProperty("menuProducts") List<MenuProductRequest> menuProducts) {
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
-		this.menuProductRequests = menuProductRequests;
+		this.menuProducts = menuProducts;
 	}
 
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
-	public Price price() {
-		return Price.from(price);
+	public BigDecimal getPrice() {
+		return price;
 	}
 
-	public Long menuGroupId() {
+	public Long getMenuGroupId() {
 		return menuGroupId;
 	}
 
-	public List<MenuProductRequest> menuProductRequests() {
-		return menuProductRequests;
+	public List<MenuProductRequest> getMenuProducts() {
+		return menuProducts;
 	}
 }

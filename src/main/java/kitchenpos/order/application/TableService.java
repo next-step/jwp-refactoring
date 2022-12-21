@@ -65,7 +65,7 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final NumberOfGuestsRequest request) {
 		final OrderTable savedOrderTable = findById(orderTableId);
-		savedOrderTable.updateNumberOfGuests(request.numberOfGuests());
+		savedOrderTable.updateNumberOfGuests(request.getNumberOfGuests());
 		return OrderTableResponse.from(savedOrderTable);
 	}
 

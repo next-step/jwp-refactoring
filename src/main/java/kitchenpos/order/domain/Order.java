@@ -68,7 +68,7 @@ public class Order {
 		return new Order(orderTable, orderLineItems);
 	}
 
-	public Long id() {
+	public Long getId() {
 		return id;
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.ui.request.MenuGroupRequest;
 import kitchenpos.menu.ui.response.MenuGroupResponse;
@@ -19,7 +20,8 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroup) {
-        return MenuGroupResponse.from(menuGroupRepository.save(menuGroup.toEntity()));
+        MenuGroup entity = menuGroup.toEntity();
+        return MenuGroupResponse.from(menuGroupRepository.save(entity));
     }
 
     public List<MenuGroupResponse> list() {

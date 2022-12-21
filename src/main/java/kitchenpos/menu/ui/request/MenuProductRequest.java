@@ -1,22 +1,26 @@
 package kitchenpos.menu.ui.request;
 
-import kitchenpos.common.domain.Quantity;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MenuProductRequest {
 
 	private final long productId;
 	private final long quantity;
 
-	public MenuProductRequest(long productId, long quantity) {
-		this.productId = productId;
-		this.quantity = quantity;
-	}
+    @JsonCreator
+    public MenuProductRequest(
+        @JsonProperty("productId") long productId,
+        @JsonProperty("quantity") long quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 
-	public long productId() {
+	public long getProductId() {
 		return productId;
 	}
 
-	public Quantity quantity() {
-		return Quantity.from(quantity);
+	public long getQuantity() {
+		return quantity;
 	}
 }

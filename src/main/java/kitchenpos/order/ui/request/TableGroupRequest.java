@@ -2,10 +2,14 @@ package kitchenpos.order.ui.request;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TableGroupRequest {
 	private final List<OrderTableIdRequest> orderTables;
 
-	public TableGroupRequest(List<OrderTableIdRequest> orderTables) {
+	@JsonCreator
+	public TableGroupRequest(@JsonProperty("orderTables") List<OrderTableIdRequest> orderTables) {
 		this.orderTables = orderTables;
 	}
 
@@ -16,7 +20,8 @@ public class TableGroupRequest {
 	public static class OrderTableIdRequest {
 		private final long id;
 
-		public OrderTableIdRequest(long id) {
+		@JsonCreator
+		public OrderTableIdRequest(@JsonProperty("id") long id) {
 			this.id = id;
 		}
 
