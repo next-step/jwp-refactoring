@@ -1,12 +1,17 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
-import kitchenpos.port.MenuGroupPort;
-import kitchenpos.port.MenuPort;
-import kitchenpos.port.ProductPort;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.menugroup.port.MenuGroupPort;
+import kitchenpos.menu.port.MenuPort;
+import kitchenpos.product.port.ProductPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,8 +56,8 @@ class MenuServiceTest {
     void setUp() {
         스테이크 = new Product(1L, new Price(BigDecimal.valueOf(30_000)), "스테이크");
         파스타 = new Product(2L, new Price(BigDecimal.valueOf(15_000)), "파스타");
-        스파빅그륩 = new MenuGroup("피자");
-        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 스파빅그륩);
+        스파빅그륩 = new MenuGroup(1L, "피자");
+        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 스파빅그륩.getId());
 
         스테이크_이인분 = new MenuProduct(스테이크_파스타_빅세트, 파스타, 2);
         파스타_삼인분 = new MenuProduct(스테이크_파스타_빅세트, 파스타, 3);
@@ -62,6 +67,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 생성할 수 있다")
     void createMenu() {
+        given(menuGroupPort.findById(any())).willReturn(스파빅그륩);
         given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList(스테이크, 파스타));
         given(menuPort.save(any())).willReturn(스테이크_파스타_빅세트);
 
@@ -72,7 +78,7 @@ class MenuServiceTest {
 
         assertThat(result.getId()).isEqualTo(스테이크_파스타_빅세트.getId());
         assertThat(result.getName()).isEqualTo(스테이크_파스타_빅세트.getName());
-        assertThat(result.getMenuGroupId()).isEqualTo(스테이크_파스타_빅세트.getMenuGroup().getId());
+        assertThat(result.getMenuGroupId()).isEqualTo(스테이크_파스타_빅세트.getMenuGroupId());
         assertThat(result.getPrice()).isEqualTo(스테이크_파스타_빅세트.getPrice().getPrice());
     }
 
@@ -80,18 +86,10 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격은 0원 이상이다")
     void createMenuPriceZeroException() {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
-        MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.ZERO, 스파빅그륩.getId(), productRequest);
+        MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", new BigDecimal(-1), 스파빅그륩.getId(), productRequest);
 
-        assertThatThrownBy(() ->
-                menuService.create(request)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴 그륩에 메뉴는 존재해야 한다")
-    void createMenuPresentMenuGroup() {
-        List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
-        MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 스파빅그륩.getId(), productRequest);
+        given(menuGroupPort.findById(any())).willReturn(스파빅그륩);
+        given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList(스테이크, 파스타));
 
         assertThatThrownBy(() ->
                 menuService.create(request)
@@ -104,6 +102,7 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(45_000), 스파빅그륩.getId(), productRequest);
 
+        given(menuGroupPort.findById(스테이크_파스타_빅세트.getMenuGroupId())).willReturn(스파빅그륩);
         given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList());
 
         assertThatThrownBy(() ->
@@ -114,15 +113,13 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격은 모든 상품의 합 이하야야한다")
     void createMenuIsAllProductSumMin() {
-        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(200_000)), 스파빅그륩);
-        given(menuGroupPort.findById(스테이크_파스타_빅세트.getMenuGroup().getId())).willReturn(스파빅그륩);
+        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(200_000)), 스파빅그륩.getId());
+        given(menuGroupPort.findById(스테이크_파스타_빅세트.getMenuGroupId())).willReturn(스파빅그륩);
         given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList(스테이크));
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(3_000), 스파빅그륩.getId(), productRequest);
 
-        assertThatThrownBy(() ->
-                menuService.create(request)
-        ).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(request)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -131,8 +128,8 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 2L), new MenuProductRequest(파스타.getId(), 3L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(90_000), 스파빅그륩.getId(), productRequest);
 
-        Menu 스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩);
-        Menu 스테이크_세트 = new Menu("스테이크_세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩);
+        Menu 스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩.getId());
+        Menu 스테이크_세트 = new Menu("스테이크_세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩.getId());
 
         given(menuPort.findAll()).willReturn(Arrays.asList(스테이크_파스타_빅세트, 스테이크_세트));
 

@@ -1,14 +1,22 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
-import kitchenpos.domain.type.OrderStatus;
-import kitchenpos.dto.ChangeOrderStatusRequest;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.port.MenuPort;
-import kitchenpos.port.OrderPort;
-import kitchenpos.port.OrderTablePort;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.menu.port.MenuPort;
+import kitchenpos.order.port.OrderPort;
+import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.order.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,13 +69,13 @@ class OrderServiceTest {
 
         치킨 = new MenuGroup("치킨");
 
-        후치콜세트 = new Menu(1L, "후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨);
+        후치콜세트 = new Menu(1L, "후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨.getId());
 
         후라이드_이인분 = new MenuProduct(후치콜세트, 후라이드치킨, 2);
         제로콜라_삼인분 = new MenuProduct(후치콜세트, 제로콜라, 2);
 
         주문테이블 = new OrderTable(1L, null, 0, false);
-        주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
+        주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, null);
         주문_항목 = new OrderLineItem(후치콜세트, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
         주문요청 = new OrderLineItemRequest(후치콜세트.getId(), 1L);
@@ -103,7 +111,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 리스트를 받을 수 있다.")
     void getOrderList() {
-        Order 주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, null);
+        Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, null);
         OrderLineItem 주문_항목 = new OrderLineItem(1L, 주문, 후치콜세트, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
 
@@ -129,7 +137,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("계산이 완료된 상태이면 주문 상태 변경이 불가능하다.")
     void changeOrderStatusNotCompleteChange() {
-        주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION, null);
+        주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION, null);
         주문_항목 = new OrderLineItem(후치콜세트, 1L);
         주문.addOrderLineItems(Arrays.asList(주문_항목), Arrays.asList(후치콜세트));
         주문요청 = new OrderLineItemRequest(후치콜세트.getId(), 1L);

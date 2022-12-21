@@ -1,6 +1,11 @@
 package kitchenpos.domain;
 
-import kitchenpos.domain.type.OrderStatus;
+import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.product.domain.Price;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +25,7 @@ class OrderTest {
     void setUp() {
         치킨 = new MenuGroup("치킨");
 
-        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨);
+        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨.getId());
 
         주문테이블 = new OrderTable(1L, null, 0, false);
     }
@@ -30,7 +35,7 @@ class OrderTest {
     @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
     @DisplayName("주문상태가 COOKING, MEAL 이면 주문을 생성할수 없다")
     void orderStatusCheckValidCookingAndMeal(OrderStatus status) {
-        Order 주문 = new Order(1L, 주문테이블, status, null);
+        Order 주문 = new Order(1L, 주문테이블.getId(), status, null);
 
         assertThatThrownBy(주문::validUngroupable)
                 .isInstanceOf(IllegalArgumentException.class);

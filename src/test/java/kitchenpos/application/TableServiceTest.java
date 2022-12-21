@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.type.OrderStatus;
-import kitchenpos.dto.ChaneNumberOfGuestRequest;
-import kitchenpos.dto.ChangeEmptyRequest;
-import kitchenpos.dto.TableRequest;
-import kitchenpos.dto.TableResponse;
-import kitchenpos.port.OrderPort;
-import kitchenpos.port.OrderTablePort;
+import kitchenpos.order.application.TableService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.tablegroup.dto.ChaneNumberOfGuestRequest;
+import kitchenpos.order.dto.ChangeEmptyRequest;
+import kitchenpos.order.dto.TableRequest;
+import kitchenpos.order.dto.TableResponse;
+import kitchenpos.order.port.OrderPort;
+import kitchenpos.order.port.OrderTablePort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,7 +65,7 @@ class TableServiceTest {
     @DisplayName("주문테이블의 상태를 변경할 수 있다.")
     void changeTableStatusEmpty() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
-        Order order = new Order(주문테이블, OrderStatus.COMPLETION);
+        Order order = new Order(주문테이블.getId(), OrderStatus.COMPLETION);
 
         given(orderTablePort.findById(any())).willReturn(주문테이블);
         given(orderPort.findByOrderTableId(any())).willReturn(Arrays.asList(order));
@@ -78,7 +79,7 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리, 식사중 이면 테이블 이용여부 변경이 불가능하다.")
     void changeFailIfStatusCookingAndMeal() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
-        Order 주문 = new Order(주문테이블, OrderStatus.COOKING, null);
+        Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, null);
 
         given(orderTablePort.findById(1L)).willReturn(주문테이블);
         given(orderPort.findByOrderTableId(any())).willReturn(Arrays.asList(주문));

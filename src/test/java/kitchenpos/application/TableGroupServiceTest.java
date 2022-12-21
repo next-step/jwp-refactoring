@@ -1,15 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.type.OrderStatus;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
-import kitchenpos.port.OrderPort;
-import kitchenpos.port.OrderTablePort;
-import kitchenpos.port.TableGroupPort;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.order.port.OrderPort;
+import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.tablegroup.port.TableGroupPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -116,7 +117,7 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 등록 취소 할 수 있다.")
     void cancelTableGroup() {
         given(tableGroupPort.findById(1L)).willReturn(단체지정);
-        given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(new Order(1L, 주문테이블_일번, OrderStatus.COMPLETION, null)));
+        given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(new Order(1L, 주문테이블_일번.getId(), OrderStatus.COMPLETION, null)));
 
         tableGroupService.ungroup(1L);
 
@@ -128,7 +129,7 @@ class TableGroupServiceTest {
     @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
     @DisplayName("주문 테이블이 이미 조리중이거나 식사중이면 취소가 불가능하다")
     void cancelTableGroupIfCookingAndMealFail(OrderStatus status) {
-        List<Order> orderList = Arrays.asList(new Order(1L, 주문테이블_일번, OrderStatus.COOKING, null), new Order(2L, 주문테이블_이번, status, null));
+        List<Order> orderList = Arrays.asList(new Order(1L, 주문테이블_일번.getId(), OrderStatus.COOKING, null), new Order(2L, 주문테이블_이번.getId(), status, null));
 
         given(tableGroupPort.findById(any())).willReturn(단체지정);
         given(orderPort.findAllByOrderTableIdIn(Arrays.asList(1L, 2L)))

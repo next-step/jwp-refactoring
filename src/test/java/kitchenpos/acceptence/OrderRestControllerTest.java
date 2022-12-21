@@ -3,9 +3,19 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.*;
-import kitchenpos.domain.type.OrderStatus;
-import kitchenpos.dto.*;
+import kitchenpos.menu.dto.*;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.order.dto.*;
+import kitchenpos.product.domain.Price;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,14 +56,14 @@ class OrderRestControllerTest extends AcceptanceSupport {
         양식_메뉴_그륩 = 메뉴그룹을_생성한다(new MenuGroupRequest("양식_메뉴_그륩")).as(MenuGroupResponse.class);
         양식 = new MenuGroup(양식_메뉴_그륩.getId(), 양식_메뉴_그륩.getName());
 
-        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000)), 양식);
+        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000)), 양식.getId());
 
         MenuProductRequest productA = new MenuProductRequest(치킨.getId(), 1L);
         MenuProductRequest productB = new MenuProductRequest(제로콜라.getId(), 2L);
 
 
         MenuRequest request = new MenuRequest(
-                치킨_콜라_정식_메뉴.getName(), 치킨_콜라_정식_메뉴.getPrice().getPrice(), 치킨_콜라_정식_메뉴.getMenuGroup().getId(),
+                치킨_콜라_정식_메뉴.getName(), 치킨_콜라_정식_메뉴.getPrice().getPrice(), 치킨_콜라_정식_메뉴.getMenuGroupId(),
                 Arrays.asList(productA, productB)
         );
 
@@ -67,7 +77,7 @@ class OrderRestControllerTest extends AcceptanceSupport {
         주문테이블_이번 = new OrderTable(2L, null, 7, true);
         테이블_그륩 = new TableGroup(new OrderTables(Arrays.asList(주문테이블_일번, 주문테이블_이번)));
         후치콜_세트_주문_아이템 = new OrderLineItem(치킨_콜라_정식_메뉴, 1L);
-        주문 = new Order(new OrderTable(테이블_그륩, 5, true), OrderStatus.COOKING);
+        주문 = new Order(주문테이블_일번.getId(), OrderStatus.COOKING);
         주문.addOrderLineItems(Arrays.asList(후치콜_세트_주문_아이템), Arrays.asList(치킨_콜라_정식_메뉴));
     }
 

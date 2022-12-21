@@ -3,8 +3,13 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.*;
-import kitchenpos.dto.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.*;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +41,8 @@ class MenuRestControllerTest extends AcceptanceSupport {
         제로콜라 = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
 
         치킨 = 메뉴그룹을_생성한다(new MenuGroupRequest("치킨")).as(MenuGroupResponse.class);
-        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), new MenuGroup("치킨"));
+
+        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨.getId());
 
         후라이드_이인분 = new MenuProduct(1L, 후치콜세트, new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨"), 2);
         제로콜라_삼인분 = new MenuProduct(2L, 후치콜세트, new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라"), 3);

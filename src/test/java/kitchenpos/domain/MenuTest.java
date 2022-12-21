@@ -1,5 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.menu.domain.*;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +20,7 @@ class MenuTest {
         MenuGroup menuGroup = new MenuGroup("양식");
         Product product = new Product(new Price(BigDecimal.valueOf(10_000)), "파스타");
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(product, 2L)));
-        Menu menu = new Menu("스테이크", new Price(BigDecimal.valueOf(500_000)), menuGroup);
+        Menu menu = new Menu("스테이크", new Price(BigDecimal.valueOf(500_000)), menuGroup.getId());
 
         assertThatThrownBy(
                 () -> menu.addMenuProducts(menuProducts))
