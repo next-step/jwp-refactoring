@@ -1,7 +1,7 @@
-package kitchenpos.tablegroup.presenter;
+package kitchenpos.order.presenter;
 
 import kitchenpos.order.application.TableService;
-import kitchenpos.tablegroup.dto.ChaneNumberOfGuestRequest;
+import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
 import kitchenpos.order.dto.TableRequest;
 import kitchenpos.order.dto.TableResponse;

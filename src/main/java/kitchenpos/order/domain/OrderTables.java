@@ -31,9 +31,6 @@ public class OrderTables {
         }
     }
 
-    public void ungroup() {
-        orderTables.forEach(OrderTable::ungroup);
-    }
     private void validHasGroup() {
         boolean matchGroup = orderTables.stream()
                 .anyMatch(OrderTable::isNotNull);
@@ -52,9 +49,6 @@ public class OrderTables {
         }
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
 
     public void validCheckTableGroup() {
         validIsNotEmpty();

@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.dto;
+package kitchenpos.order.dto;
 
 public class ChaneNumberOfGuestRequest {
     private int numberOfRequest;

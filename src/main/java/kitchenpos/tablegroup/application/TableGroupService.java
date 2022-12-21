@@ -28,8 +28,8 @@ public class TableGroupService {
     public TableGroupResponse create(TableGroupRequest request) {
         tableGroupValidator.makeTableGroup(request);
         List<OrderTable> orderTables = orderTablePort.findAllByTableGroupIdIn(request.getOrderTableIds());
-
         TableGroup savedTableGroup = tableGroupPort.save(new TableGroup());
+        savedTableGroup.setOrderTableId(orderTables);
 
         return TableGroupResponse.from(savedTableGroup, orderTables);
     }

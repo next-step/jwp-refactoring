@@ -73,15 +73,15 @@ public class OrderTable {
         return id;
     }
 
-//    public TableGroup getTableGroup() {
-//        return tableGroup;
-//    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
     public boolean isEmpty() {
         return isEmpty;
+    }
+
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 }

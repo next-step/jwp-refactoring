@@ -3,7 +3,7 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.tablegroup.dto.ChaneNumberOfGuestRequest;
+import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
 import kitchenpos.order.dto.TableRequest;
 import kitchenpos.order.dto.TableResponse;
