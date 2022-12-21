@@ -1,29 +1,143 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+allprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
 
-repositories {
-    mavenCentral()
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+        runtimeOnly 'com.h2database:h2'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.flywaydb:flyway-core'
 
-    runtimeOnly 'com.h2database:h2'
+    compile project(':module-common')
+    compile project(':module-event')
+    compile project(':module-menu')
+    compile project(':module-menugroup')
+    compile project(':module-order')
+    compile project(':module-ordertable')
+    compile project(':module-product')
+    compile project(':module-tablegroup')
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompile project(':module-common')
+    testCompile project(':module-event')
+    testCompile project(':module-menu').sourceSets.test.output
+    testCompile project(':module-menugroup').sourceSets.test.output
+    testCompile project(':module-order').sourceSets.test.output
+    testCompile project(':module-ordertable').sourceSets.test.output
+    testCompile project(':module-product').sourceSets.test.output
+    testCompile project(':module-tablegroup').sourceSets.test.output
 }
 
-test {
-    useJUnitPlatform()
+project(':module-common'){
+    dependencies {
+    }
+}
+
+project(':module-event'){
+    dependencies {
+        implementation project(':module-ordertable')
+        implementation project(':module-tablegroup')
+    }
+}
+
+project(':module-menu'){
+    dependencies {
+        implementation project(':module-product')
+        implementation project(':module-menugroup')
+        testImplementation project(':module-common')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-tablegroup')
+        testCompile project(':module-common').sourceSets.test.output
+    }
+}
+project(':module-menugroup'){
+    dependencies {
+        testImplementation project(':module-common')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-menu')
+        testImplementation project(':module-tablegroup')
+        testImplementation project(':module-product')
+        testCompile project(':module-common').sourceSets.test.output
+    }
+}
+project(':module-order'){
+    dependencies {
+        implementation project(':module-menu')
+        testImplementation project(':module-common')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-menugroup')
+        testImplementation project(':module-tablegroup')
+        testImplementation project(':module-product')
+        testCompile project(':module-common').sourceSets.test.output
+    }
+}
+project(':module-ordertable'){
+    dependencies {
+        implementation project(':module-order')
+        testImplementation project(':module-common')
+        testImplementation project(':module-tablegroup')
+        testImplementation project(':module-menugroup')
+        testImplementation project(':module-product')
+        testImplementation project(':module-menu')
+        testImplementation project(':module-event')
+        testCompile project(':module-common').sourceSets.test.output
+    }
+}
+project(':module-product'){
+    dependencies {
+        testImplementation project(':module-common')
+        testImplementation project(':module-menugroup')
+        testImplementation project(':module-menu')
+        testImplementation project(':module-order')
+        testImplementation project(':module-ordertable')
+        testImplementation project(':module-tablegroup')
+        testCompile project(':module-common').sourceSets.test.output
+    }
+}
+project(':module-tablegroup'){
+    dependencies {
+        implementation project(':module-order')
+        implementation project(':module-ordertable')
+        testImplementation project(':module-common')
+        testImplementation project(':module-menu')
+        testImplementation project(':module-menugroup')
+        testImplementation project(':module-product')
+        testImplementation project(':module-event')
+        testCompile project(':module-common').sourceSets.test.output
+    }
 }
