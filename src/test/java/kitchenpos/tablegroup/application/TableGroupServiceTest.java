@@ -14,14 +14,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.application.TableGroupValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 
@@ -29,13 +29,11 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @Mock
-    private TableGroupValidator tableGroupValidator;
+    private ApplicationEventPublisher applicationEventPublisher;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -45,14 +43,14 @@ class TableGroupServiceTest {
         // given
         Long orderTableId1 = 1L;
         Long orderTableId2 = 2L;
-        OrderTable savedOrderTable1 = savedOrderTable(orderTableId1, true);
-        OrderTable savedOrderTable2 = savedOrderTable(orderTableId2, true);
+        OrderTable savedOrderTable1 = savedOrderTable(orderTableId1, 1L, false);
+        OrderTable savedOrderTable2 = savedOrderTable(orderTableId2, 1L, false);
         TableGroupRequest tableGroupRequest = tableGroupRequest(Arrays.asList(orderTableId1, orderTableId2));
         given(orderTableRepository.findAllByIdIn(Arrays.asList(orderTableId1, orderTableId2)))
             .willReturn(Arrays.asList(savedOrderTable1, savedOrderTable2));
         TableGroup savedTableGroup = savedTableGroup(1L);
         given(tableGroupRepository.save(any())).willReturn(savedTableGroup);
-        doNothing().when(tableGroupValidator).validateCreate(anyList(), any());
+        doNothing().when(applicationEventPublisher).publishEvent(any(TableGroupCreatedEvent.class));
 
         // when
         TableGroupResponse actual = tableGroupService.create(tableGroupRequest);
@@ -64,24 +62,9 @@ class TableGroupServiceTest {
             () -> assertThat(savedOrderTable1.isEmpty()).isFalse(),
             () -> assertThat(savedOrderTable1.getTableGroupId()).isEqualTo(1L),
             () -> assertThat(savedOrderTable2.isEmpty()).isFalse(),
-            () -> assertThat(savedOrderTable2.getTableGroupId()).isEqualTo(1L)
+            () -> assertThat(savedOrderTable2.getTableGroupId()).isEqualTo(1L),
+            () -> then(applicationEventPublisher).should().publishEvent(any(TableGroupCreatedEvent.class))
         );
-    }
-
-    @DisplayName("단체 지정 해제 API - 주문 상태 조리중 또는 식사중")
-    @Test
-    void ungroup_cooking_or_meal() {
-        // given
-        long tableGroupId = 1L;
-        OrderTable orderTable1 = savedOrderTable(1L, tableGroupId, false);
-        OrderTable orderTable2 = savedOrderTable(2L, tableGroupId, false);
-        given(orderTableRepository.findAllByTableGroupId(tableGroupId)).willReturn(
-            Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).willReturn(true);
-
-        // when, then
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupId))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 지정 해제 API")
@@ -89,19 +72,12 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         long tableGroupId = 1L;
-        OrderTable orderTable1 = savedOrderTable(1L, tableGroupId, false);
-        OrderTable orderTable2 = savedOrderTable(2L, tableGroupId, false);
-        given(orderTableRepository.findAllByTableGroupId(tableGroupId)).willReturn(
-            Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).willReturn(false);
+        doNothing().when(applicationEventPublisher).publishEvent(any(TableGroupUngroupedEvent.class));
 
         // when
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        assertAll(
-            () -> assertThat(orderTable1.getTableGroupId()).isNull(),
-            () -> assertThat(orderTable2.getTableGroupId()).isNull()
-        );
+        then(applicationEventPublisher).should().publishEvent(any(TableGroupUngroupedEvent.class));
     }
 }

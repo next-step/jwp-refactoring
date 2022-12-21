@@ -13,10 +13,10 @@ public class ProductFixture {
     }
 
     public static Product savedProduct(long id, String name, BigDecimal price) {
-        return new Product(id, name, price);
+        return Product.of(id, name, price);
     }
 
     public static Product savedProduct(long id, BigDecimal price) {
-        return new Product(id, null, price);
+        return Product.of(id, null, price);
     }
 }

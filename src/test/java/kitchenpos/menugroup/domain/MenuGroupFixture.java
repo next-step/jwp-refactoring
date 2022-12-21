@@ -12,6 +12,6 @@ public class MenuGroupFixture {
     }
 
     public static MenuGroup savedMenuGroup(Long id, String name) {
-        return new MenuGroup(id, name);
+        return MenuGroup.of(id, name);
     }
 }

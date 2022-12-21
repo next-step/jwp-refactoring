@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,8 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderValidator orderValidator;
+    @Mock
+    private OrderLineItemGenerator orderLineItemGenerator;
 
     @InjectMocks
     private OrderService orderService;
@@ -43,16 +46,13 @@ class OrderServiceTest {
     void create() {
         // given
         Long orderTableId = 1L;
-        OrderRequest orderRequest = orderRequest(orderTableId, Arrays.asList(
-            orderLineItemRequest(1L, 1),
-            orderLineItemRequest(2L, 2)
-        ));
-        OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L);
-        OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L);
-        Order savedOrder = savedOrder(1L, orderTableId, Arrays.asList(savedOrderLineItem1, savedOrderLineItem2));
+        OrderRequest orderRequest = orderRequest(orderTableId, Collections.singletonList(orderLineItemRequest(1L, 1)));
+        OrderLineItem savedOrderLineItem = savedOrderLineItem(1L, "menuName1", 1000L);
+        Order savedOrder = savedOrder(1L, orderTableId, Collections.singletonList(savedOrderLineItem));
 
         given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
         doNothing().when(orderValidator).validateSave(orderRequest);
+        given(orderLineItemGenerator.generate(anyList())).willReturn(Collections.singletonList(savedOrderLineItem));
 
         // when
         OrderResponse actual = orderService.create(orderRequest);
@@ -62,9 +62,11 @@ class OrderServiceTest {
             () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTableId),
             () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
             () -> assertThat(actual.getOrderedTime()).isNotNull(),
-            () -> assertThat(actual.getOrderLineItems()).hasSize(2),
-            () -> assertThat(actual.getOrderLineItems().get(0).getSeq()).isEqualTo(1L),
-            () -> assertThat(actual.getOrderLineItems().get(1).getSeq()).isEqualTo(2L)
+            () -> assertThat(actual.getOrderLineItems()).hasSize(1),
+            () -> assertThat(actual.getOrderLineItems().get(0).getSeq()).isNotNull(),
+            () -> assertThat(actual.getOrderLineItems().get(0).getMenuId()).isEqualTo(1L),
+            () -> assertThat(actual.getOrderLineItems().get(0).getMenuName()).isEqualTo("menuName1"),
+            () -> assertThat(actual.getOrderLineItems().get(0).getMenuPrice()).isEqualTo(BigDecimal.valueOf(1000L))
         );
     }
 

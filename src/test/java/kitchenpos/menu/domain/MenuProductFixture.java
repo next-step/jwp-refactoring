@@ -11,6 +11,6 @@ public class MenuProductFixture {
     }
 
     public static MenuProduct savedMenuProduct(Long id, Long productId, long quantity) {
-        return new MenuProduct(id, productId, quantity);
+        return MenuProduct.of(id, productId, quantity);
     }
 }

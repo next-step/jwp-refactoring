@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.OrderLineItem;
+import java.math.BigDecimal;
+
 import kitchenpos.order.dto.OrderLineItemRequest;
 
 public class OrderLineItemFixture {
@@ -11,11 +12,11 @@ public class OrderLineItemFixture {
         return new OrderLineItemRequest(menuId, quantity);
     }
 
-    public static OrderLineItem generateOrderLineItem(long menuId, long quantity) {
-        return new OrderLineItem(null, menuId, quantity);
+    public static OrderLineItem savedOrderLineItem(Long seq) {
+        return OrderLineItem.of(seq, 1L, "orderMenuName", BigDecimal.valueOf(1000), 5);
     }
 
-    public static OrderLineItem savedOrderLineItem(Long seq) {
-        return new OrderLineItem(seq, 1L, 5);
+    public static OrderLineItem savedOrderLineItem(Long seq, String menuName, long menuPrice) {
+        return OrderLineItem.of(seq, 1L, menuName, BigDecimal.valueOf(menuPrice), 5);
     }
 }

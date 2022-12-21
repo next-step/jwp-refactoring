@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTableRepository;
 
@@ -26,8 +25,6 @@ import kitchenpos.table.domain.OrderTableRepository;
 public class OrderValidatorTest {
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private MenuRepository menuRepository;
 
     @InjectMocks
     private OrderValidator orderValidator;
@@ -59,23 +56,6 @@ public class OrderValidatorTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 등록 유효성 검사 - 등록 되어 있지 않은 주문 항목 메뉴")
-    @Test
-    void create_order_line_items_not_exists() {
-        // given
-        OrderRequest orderRequest = orderRequest(1L, Arrays.asList(
-            orderLineItemRequest(1L, 1L),
-            orderLineItemRequest(2L, 2L)
-        ));
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable(1L, false)));
-        given(menuRepository.countByIdIn(anyList())).willReturn(0L);
-
-
-        // when, then
-        assertThatThrownBy(() -> orderValidator.validateSave(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 등록 유효성 검사 - 주문 테이블 빈 테이블")
     @Test
     void create_order_table_is_empty() {
@@ -85,7 +65,6 @@ public class OrderValidatorTest {
             orderLineItemRequest(2L, 2L)
         ));
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable(1L, true)));
-        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
 
         // when, then
         assertThatThrownBy(() -> orderValidator.validateSave(orderRequest))

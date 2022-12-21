@@ -6,8 +6,12 @@ import java.util.stream.Collectors;
 public class OrderTables {
     private final List<OrderTable> orderTables;
 
-    public OrderTables(List<OrderTable> orderTables) {
+    private OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public static OrderTables from(List<OrderTable> orderTables) {
+        return new OrderTables(orderTables);
     }
 
     public List<Long> toIds() {

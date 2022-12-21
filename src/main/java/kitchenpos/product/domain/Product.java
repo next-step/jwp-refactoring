@@ -20,7 +20,7 @@ public class Product {
 
     protected Product() {}
 
-    public Product(Long id, String name, BigDecimal price) {
+    private Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = ProductPrice.from(price);
@@ -28,6 +28,10 @@ public class Product {
 
     public static Product generate(String name, BigDecimal price) {
         return new Product(null, name, price);
+    }
+
+    public static Product of(Long id, String name, BigDecimal price) {
+        return new Product(id, name, price);
     }
 
     public boolean hasId(Long id) {

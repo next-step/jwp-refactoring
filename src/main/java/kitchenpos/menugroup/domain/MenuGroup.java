@@ -14,7 +14,7 @@ public class MenuGroup {
 
     protected MenuGroup() {}
 
-    public MenuGroup(Long id, String name) {
+    private MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -22,6 +22,11 @@ public class MenuGroup {
     public static MenuGroup generate(String name) {
         return new MenuGroup(null, name);
     }
+
+    public static MenuGroup of(Long id, String name) {
+        return new MenuGroup(id, name);
+    }
+
 
     public Long getId() {
         return id;
