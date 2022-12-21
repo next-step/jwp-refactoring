@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static kitchenpos.constants.ErrorCodeType.ORDER_LINE_ITEM_REQUEST;
 import static kitchenpos.constants.ErrorCodeType.ORDER_STATUS_NOT_COMPLETION;
@@ -31,13 +32,13 @@ public class OrderValidator {
     }
 
     private void validCheckMenuSize(List<OrderLineItemRequest> orderLineItemRequest, List<Menu> menus) {
-        if (orderLineItemRequest.isEmpty()) {
+        if (orderLineItemRequest.size() != menus.size()) {
             throw new IllegalArgumentException(ErrorCodeType.ORDER_LINE_ITEM_REQUEST.getMessage());
         }
     }
 
     private void validCheckEmptyOrderLineItems(OrderRequest request) {
-        if (request.getOrderLineItemRequest().isEmpty()) {
+        if (Objects.isNull(request.getOrderLineItemRequest())) {
             throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
         }
     }
