@@ -10,7 +10,7 @@ public class ProductResponse {
     private BigDecimal price;
 
 
-    public ProductResponse() {
+    protected ProductResponse() {
     }
 
     public ProductResponse(Long id, String name, BigDecimal price) {
