@@ -53,7 +53,9 @@ public class OrderTable {
 		return empty;
 	}
 
-	public void groupBy(Long tableGroupId) {
+	public void group(Long tableGroupId) {
+		validateGroupedWhenGroup();
+		validateEmptyWhenGroup();
 		this.tableGroupId = tableGroupId;
 	}
 
@@ -62,24 +64,36 @@ public class OrderTable {
 	}
 
 	public void updateEmptyStatus(Empty empty) {
-		validateTableGroup();
+		validateGroupedWhenChangeEmpty();
 		this.empty = empty;
 	}
 
 	public void updateNumberOfGuest(GuestCount guestCounts) {
-		validateTableEmpty();
+		validateEmptyWhenChangeNumberOfGuests();
 		this.guestCount = guestCounts;
 	}
 
-	private void validateTableGroup() {
+	private void validateGroupedWhenGroup() {
+		if (isGrouped()) {
+			throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_ALREADY_GROUPED);
+		}
+	}
+
+	private void validateGroupedWhenChangeEmpty() {
 		if (isGrouped()) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED);
 		}
 	}
 
-	private void validateTableEmpty() {
+	private void validateEmptyWhenChangeNumberOfGuests() {
 		if (isEmpty()) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_NUMBER_OF_GUESTS_WHEN_TABLE_IS_EMPTY);
+		}
+	}
+
+	private void validateEmptyWhenGroup() {
+		if (!isEmpty()) {
+			throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_IS_NOT_ALL_EMPTY);
 		}
 	}
 

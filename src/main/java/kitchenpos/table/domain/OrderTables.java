@@ -22,10 +22,8 @@ public class OrderTables {
 	}
 
 	public void group(Long tableGroupId) {
-		validateGrouped();
-		validateEmpty();
 		validateSize();
-		this.orderTables.forEach(it -> it.groupBy(tableGroupId));
+		this.orderTables.forEach(it -> it.group(tableGroupId));
 	}
 
 	public void unGroup() {
@@ -36,27 +34,6 @@ public class OrderTables {
 		if (orderTables.size() < MIN_GROUP_SIZE) {
 			throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_SIZE_SIZE_IS_TOO_SMALL);
 		}
-	}
-
-	private void validateEmpty() {
-		if (!isAllEmpty()) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_IS_NOT_ALL_EMPTY);
-		}
-	}
-
-	private void validateGrouped() {
-		if (isAnyGrouped()) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_ALREADY_GROUPED);
-		}
-	}
-
-	private boolean isAllEmpty() {
-		return orderTables.stream().allMatch(it -> it.isEmpty());
-	}
-
-	private boolean isAnyGrouped() {
-		return orderTables.stream()
-			.anyMatch(it -> it.isGrouped());
 	}
 
 }

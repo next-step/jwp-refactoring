@@ -38,7 +38,7 @@ public class OrderTablesTest {
 	void updateEmptyStatus_when_grouped_exception() {
 		// given
 		List<OrderTable> orderTables = Arrays.asList(빈_테이블_A, 빈_테이블_B);
-		orderTables.stream().forEach(it -> it.groupBy(1L));
+		orderTables.stream().forEach(it -> it.group(1L));
 		// when - then
 		assertThatThrownBy(() -> 빈_테이블_A.updateEmptyStatus(Empty.of(false)))
 			.isInstanceOf(IllegalArgumentException.class)
@@ -50,7 +50,7 @@ public class OrderTablesTest {
 	void create_when_grouped_exception() {
 		// given
 		List<OrderTable> orderTables = Arrays.asList(빈_테이블_A, 빈_테이블_B);
-		orderTables.stream().forEach(it -> it.groupBy(1L));
+		orderTables.stream().forEach(it -> it.group(1L));
 
 		// when - then
 		assertThatThrownBy(() -> OrderTables.of(orderTables).group(2L))

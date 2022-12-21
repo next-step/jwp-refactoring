@@ -1,13 +1,11 @@
 package kitchenpos.table.domain;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
 
 @Component
@@ -53,8 +51,6 @@ public class OrderTableValidator implements OrderValidator {
 	}
 
 	private boolean isAllFinished(Long orderTableId) {
-		List<Order> orders = orderRepository.findOrdersByOrderTableId(orderTableId);
-		return orders.stream()
-			.allMatch(Order::isFinished);
+		return !orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(orderTableId, OrderStatus.COMPLETION);
 	}
 }

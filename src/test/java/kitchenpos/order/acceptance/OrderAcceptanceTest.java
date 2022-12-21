@@ -38,43 +38,53 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 		Long 빈_테이블_ID = 테이블_생성됨(2, true);
 
 		return Stream.of(dynamicTest("주문을 생성한다.", () -> {
-			// when
-			ExtractableResponse<Response> response = 주문_생성_요청(채워진_테이블_ID, 짜장_탕수_세트_ID);
-			// then
-			주문_정상_생성됨(response);
-		}), dynamicTest("등록되지 않은 메뉴로는 주문을 생성할 수 없다.", () -> {
-			// given
-			Long 미등록_메뉴_ID = Long.MAX_VALUE;
-			// when
-			ExtractableResponse<Response> response = 주문_생성_요청(채워진_테이블_ID, 미등록_메뉴_ID);
-			// then
-			요청_실패됨_엔티티_찾을_수_없음(response);
-		}), dynamicTest("빈테이블은 주문을 생성 할 수 없다.", () -> {
-			// when
-			ExtractableResponse<Response> response = 주문_생성_요청(빈_테이블_ID, 짜장_탕수_세트_ID);
-			// then
-			요청_실패됨_잘못된_요청(response);
-		}), dynamicTest("주문 목록을 조회한다.", () -> {
-			// when
-			ExtractableResponse<Response> response = 주문_목록_조회_요청();
-			// then
-			주문_목록_정상_조회됨(response, 짜장_탕수_세트_ID);
-		}), dynamicTest("주문 상태를 변경한다.", () -> {
-			// given
-			Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID);
-			// when
-			ExtractableResponse<Response> response = 주문상태_변경_요청(생성된_주문_ID, OrderStatus.MEAL);
-			// then
-			주문_정상_변경됨(response, OrderStatus.MEAL);
-		}), dynamicTest("주문상태가 현재 종료되었으면 상태를 변경할 수 없다.", () -> {
-			// given
-			Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID);
-			주문상태_변경_요청(생성된_주문_ID, OrderStatus.COMPLETION);
-			// when
-			ExtractableResponse<Response> response = 주문상태_변경_요청(생성된_주문_ID, OrderStatus.MEAL);
-			// then
-			요청_실패됨_잘못된_요청(response);
-		}));
+				// when
+				ExtractableResponse<Response> response = 주문_생성_요청(채워진_테이블_ID, 짜장_탕수_세트_ID);
+				// then
+				주문_정상_생성됨(response);
+			}), dynamicTest("등록되지 않은 메뉴로는 주문을 생성할 수 없다.", () -> {
+				// given
+				Long 미등록_메뉴_ID = Long.MAX_VALUE;
+				// when
+				ExtractableResponse<Response> response = 주문_생성_요청(채워진_테이블_ID, 미등록_메뉴_ID);
+				// then
+				요청_실패됨_엔티티_찾을_수_없음(response);
+			}),
+			dynamicTest("빈테이블은 주문을 생성 할 수 없다.", () -> {
+				// when
+				ExtractableResponse<Response> response = 주문_생성_요청(빈_테이블_ID, 짜장_탕수_세트_ID);
+				// then
+				요청_실패됨_잘못된_요청(response);
+			}),
+			dynamicTest("주문테이블이 생성되지 않았으면 주문을 생성 할 수 없다.", () -> {
+				// given
+				Long 생성되지_않은_주문테이블_ID = Long.MAX_VALUE;
+				// when
+				ExtractableResponse<Response> response = 주문_생성_요청(생성되지_않은_주문테이블_ID, 짜장_탕수_세트_ID);
+				// then
+				요청_실패됨_잘못된_요청(response);
+			}),
+			dynamicTest("주문 목록을 조회한다.", () -> {
+				// when
+				ExtractableResponse<Response> response = 주문_목록_조회_요청();
+				// then
+				주문_목록_정상_조회됨(response, 짜장_탕수_세트_ID);
+			}), dynamicTest("주문 상태를 변경한다.", () -> {
+				// given
+				Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID);
+				// when
+				ExtractableResponse<Response> response = 주문상태_변경_요청(생성된_주문_ID, OrderStatus.MEAL);
+				// then
+				주문_정상_변경됨(response, OrderStatus.MEAL);
+			}), dynamicTest("주문상태가 현재 종료되었으면 상태를 변경할 수 없다.", () -> {
+				// given
+				Long 생성된_주문_ID = 주문_생성됨(채워진_테이블_ID, 짜장_탕수_세트_ID);
+				주문상태_변경_요청(생성된_주문_ID, OrderStatus.COMPLETION);
+				// when
+				ExtractableResponse<Response> response = 주문상태_변경_요청(생성된_주문_ID, OrderStatus.MEAL);
+				// then
+				요청_실패됨_잘못된_요청(response);
+			}));
 	}
 
 	public static Long 주문_생성됨(Long orderTableId, Long... menuIds) {
