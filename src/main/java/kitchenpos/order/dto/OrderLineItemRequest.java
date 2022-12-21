@@ -2,8 +2,8 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemRequest {
     private Long menuId;
@@ -20,8 +20,8 @@ public class OrderLineItemRequest {
         return new OrderLineItemRequest(menuId, quantity);
     }
 
-    public OrderLineItem createOrderLineItem(List<Menu> menus) {
-        Menu menu = menus.stream()
+    public OrderLineItem createOrderLineItem(List<OrderMenu> menus) {
+        OrderMenu menu = menus.stream()
                 .filter(item -> item.getId().equals(menuId))
                 .findFirst()
                 .get();

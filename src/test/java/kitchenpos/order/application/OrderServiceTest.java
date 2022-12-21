@@ -24,6 +24,7 @@ import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -84,7 +85,7 @@ public class OrderServiceTest {
         스파게티_이인분_요청 = MenuProductRequest.of(스파게티.getId(), 1L);
 
         주문_테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
-        주문_항목 = new OrderLineItem(new Quantity(1L), 치킨_스파게티_더블세트_메뉴);
+        주문_항목 = new OrderLineItem(new Quantity(1L), OrderMenu.of(치킨_스파게티_더블세트_메뉴));
         주문 = new Order(주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
         주문.addOrderLineItem(주문_항목);
         주문_항목_요청 = OrderLineItemRequest.of(치킨_스파게티_더블세트_메뉴.getMenuGroup().getId(), 1L);
@@ -92,7 +93,7 @@ public class OrderServiceTest {
         menuIds = 주문.getOrderLineItems()
                 .stream()
                 .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
+                .map(OrderMenu::getId)
                 .collect(Collectors.toList());
     }
 
