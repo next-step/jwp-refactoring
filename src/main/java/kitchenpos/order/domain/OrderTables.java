@@ -6,6 +6,8 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.springframework.util.Assert;
+
 @Embeddable
 public class OrderTables {
 
@@ -16,6 +18,8 @@ public class OrderTables {
 	}
 
 	private OrderTables(List<OrderTable> orderTables) {
+		Assert.notNull(orderTables, "주문 테이블 리스트는 필수입니다.");
+		Assert.noNullElements(orderTables, () -> "주문 테이블 리스트에 null이 포함될 수 없습니다.");
 		this.orderTables = orderTables;
 	}
 
@@ -33,10 +37,6 @@ public class OrderTables {
 
 	public void ungroup() {
 		updateGroup(null);
-	}
-
-	public boolean alreadyOrderd() {
-		return orderTables.stream().anyMatch(OrderTable::isOrdered);
 	}
 
 	public int size() {

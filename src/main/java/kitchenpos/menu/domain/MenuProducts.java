@@ -42,14 +42,14 @@ public class MenuProducts {
 			.orElse(Price.ZERO);
 	}
 
+	public void updateMenu(Menu menu) {
+		menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
+	}
+
 	@Override
 	public String toString() {
 		return "MenuProducts{" +
 			"menuProducts=" + menuProducts +
 			'}';
-	}
-
-	public void updateMenu(Menu menu) {
-		menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
 	}
 }

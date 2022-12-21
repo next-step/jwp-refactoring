@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 
+import org.springframework.util.Assert;
+
 public class OrderLineItems {
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
@@ -15,6 +17,8 @@ public class OrderLineItems {
 	}
 
 	private OrderLineItems(List<OrderLineItem> orderLineItems) {
+		Assert.notNull(orderLineItems, "주문 항목들은 필수입니다.");
+		Assert.noNullElements(orderLineItems, () -> "주문 항목 리스트에 null이 포함될 수 없습니다.");
 		this.orderLineItems = orderLineItems;
 	}
 

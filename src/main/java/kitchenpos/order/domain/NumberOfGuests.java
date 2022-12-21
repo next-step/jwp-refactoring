@@ -15,11 +15,11 @@ public class NumberOfGuests {
 	}
 
 	private NumberOfGuests(int value) {
-		validtae(value);
+		validate(value);
 		this.value = value;
 	}
 
-	private static void validtae(int value) {
+	private static void validate(int value) {
 		Assert.isTrue(graterThanOrEqualToZero(value), String.format("인원 수(%d)는 반드시 0이상 이어야 합니다.", value));
 	}
 

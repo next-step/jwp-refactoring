@@ -18,10 +18,17 @@ public class OrderTableGenerator {
 	}
 
 	public static OrderTable 비어있지_않은_5명_테이블() {
+		OrderTable spy = spy(OrderTable.of(NumberOfGuests.from(2), TableEmpty.from(false)));
+		lenient().when(spy.id()).thenReturn(1L);
+		return spy;
+	}
+
+	public static OrderTable 비어있지_않은_2명_테이블() {
 		OrderTable spy = spy(OrderTable.of(NumberOfGuests.from(5), TableEmpty.from(false)));
 		lenient().when(spy.id()).thenReturn(1L);
 		return spy;
 	}
+
 
 	public static OrderTable 비어있는_다섯명_테이블() {
 		OrderTable spy = spy(OrderTable.of(NumberOfGuests.from(5), TableEmpty.from(true)));
