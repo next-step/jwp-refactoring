@@ -27,20 +27,22 @@ public class TableGroup {
 	}
 
 	public TableGroup(List<OrderTable> orderTables) {
-		this.createdDate = LocalDateTime.now();
 		addOrderTables(orderTables);
+		this.createdDate = LocalDateTime.now();
 	}
 
-	private void addOrderTables(List<OrderTable> orderTables) {
-		this.orderTables.addAll(orderTables);
-		orderTables.forEach(orderTable -> orderTable.changeTableGroup(this));
+	private void addOrderTables(List<OrderTable> changingOrderTables) {
+		orderTables.addAll(changingOrderTables);
+		changingOrderTables.stream()
+						.forEach(orderTable ->
+									 orderTable.changeTableGroup(this));
 
 	}
 
-	public static TableGroup group(List<OrderTable> orderTable,
+	public static TableGroup group(List<OrderTable> orderTables,
 								   GroupTablesValidator validator) {
-		validator.validate(new OrderTables(orderTable));
-		return new TableGroup(orderTable);
+		validator.validate(new OrderTables(orderTables));
+		return new TableGroup(orderTables);
 	}
 
 	public Long getId() {
@@ -51,8 +53,7 @@ public class TableGroup {
 		return orderTables;
 	}
 
-	public void ungroup(UnGroupTablesValidator unGroupTablesValidator) {
-		unGroupTablesValidator.validate(this);
+	public void ungroup() {
 		orderTables.ungroup();
 	}
 

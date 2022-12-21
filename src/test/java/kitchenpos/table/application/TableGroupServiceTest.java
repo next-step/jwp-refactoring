@@ -58,7 +58,7 @@ class TableGroupServiceTest {
 		when(tableGroupRepository.save(any(TableGroup.class))).thenAnswer(returnsFirstArg());
 
 		// when
-		TableGroup actualTableGroup = tableGroupService.save(orderTableId);
+		TableGroup actualTableGroup = tableGroupService.group(orderTableId);
 
 		// then
 		verify(tableGroupRepository, times(1)).save(actualTableGroup);

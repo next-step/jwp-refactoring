@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.order.exception.CannotStartOrderException.TYPE.NO_ORDER_ITEMS;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -12,11 +14,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
+import kitchenpos.order.exception.CannotStartOrderException;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends AbstractAggregateRoot<Order> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,11 +75,11 @@ public class Order {
 		return orderTableId;
 	}
 
-	public void place(OrderValidator orderValidator) {
-		orderValidator.validate(this);
-
-		orderStatus = OrderStatus.COOKING;
+	public void place(OrderTableValidator orderTableValidator) {
 		orderedTime = LocalDateTime.now();
+		validate(orderTableValidator);
+		changeOrderStatus(OrderStatus.COOKING);
+		registerEvent(new OrderCookingEvent(this));
 	}
 
 	public void changeOrderStatus(OrderStatus toStatus) {
@@ -82,10 +87,28 @@ public class Order {
 			throw new CannotChangeOrderStatusException();
 		}
 		orderStatus = toStatus;
+		publishOrderCompletedEvent();
+	}
+
+	private void publishOrderCompletedEvent() {
+		if (isCompleted()) {
+			registerEvent(new OrderCompletedEvent(this));
+		}
 	}
 
 	public boolean isCompleted() {
 		return orderStatus == OrderStatus.COMPLETION;
+	}
+
+	private void validate(OrderTableValidator orderTableValidator) {
+		shouldOrderLineItemNotEmpty();
+		orderTableValidator.validate(this);
+	}
+
+	private void shouldOrderLineItemNotEmpty() {
+		if (orderLineItems.isEmpty()) {
+			throw new CannotStartOrderException(NO_ORDER_ITEMS);
+		}
 	}
 
 	@Override

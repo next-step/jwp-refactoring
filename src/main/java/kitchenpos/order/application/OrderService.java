@@ -8,22 +8,22 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.domain.OrderTableValidator;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
 	private final OrderRepository orderRepository;
-	private final OrderValidator orderValidator;
+	private final OrderTableValidator orderTableValidator;
 
-	public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
+	public OrderService(OrderRepository orderRepository, OrderTableValidator orderTableValidator) {
 		this.orderRepository = orderRepository;
-		this.orderValidator = orderValidator;
+		this.orderTableValidator = orderTableValidator;
 	}
 
 	@Transactional
 	public Order create(Order order) {
-		order.place(orderValidator);
+		order.place(orderTableValidator);
 		return orderRepository.save(order);
 	}
 

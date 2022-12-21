@@ -29,26 +29,26 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
+import kitchenpos.table.domain.OrderTable;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-	Long ORDER_TABLE_ID = 1L;
-
 	@Mock
 	OrderRepository orderRepository;
 	@Mock
-	OrderValidator orderValidator;
+	OrderTableValidator orderTableValidator;
 
 	@InjectMocks
 	OrderService orderService;
 
 	private Order createOrder(OrderStatus orderStatus) {
+		OrderTable orderTable = new OrderTable(1L, 2, false);
 		return new Order(1L,
 						 createOrderLineItems(3),
-						 ORDER_TABLE_ID,
+						 orderTable.getId(),
 						 orderStatus,
 						 LocalDateTime.now()
 						 );

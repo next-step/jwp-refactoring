@@ -38,7 +38,8 @@ public class TableService {
 	public OrderTable changeEmpty(Long orderTableId, Boolean empty) {
 		OrderTable orderTable = findById(orderTableId);
 
-		orderTable.changeEmpty(empty, emptyTableValidator);
+		emptyTableValidator.validate(orderTable);
+		orderTable.changeEmpty(empty);
 
 		return orderTableRepository.save(orderTable);
 	}

@@ -29,19 +29,10 @@ public class OrderRequest {
 		return new Order(orderTableId, toOrderLineItems());
 	}
 
-	private OrderLineItems toOrderLineItems() {
+	public OrderLineItems toOrderLineItems() {
 		return new OrderLineItems(orderLineItems.stream()
 									.map(OrderLineItemRequest::toOrderLineItem)
 									.collect(Collectors.toList()));
-	}
-
-	@Deprecated
-	private Map<Long, Integer> getMenusWithQuantity() {
-		return orderLineItems.stream()
-							 .collect(Collectors.toMap(
-								 OrderLineItemRequest::getMenuId,
-								 OrderLineItemRequest::getQuantity,
-								 Integer::sum));
 	}
 
 	public Long getOrderTableId() {

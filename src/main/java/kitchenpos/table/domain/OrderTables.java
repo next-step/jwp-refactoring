@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
 
-	@OneToMany(mappedBy = "tableGroup")
+	@OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private List<OrderTable> orderTables = new ArrayList<>();
 
 	protected OrderTables() {

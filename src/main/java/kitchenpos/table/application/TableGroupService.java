@@ -19,21 +19,21 @@ public class TableGroupService {
 
 	private final TableGroupRepository tableGroupRepository;
 	private final OrderTableRepository orderTableRepository;
-	private final GroupTablesValidator groupTablesValidator;
 	private final UnGroupTablesValidator unGroupTablesValidator;
+	private final GroupTablesValidator groupTablesValidator;
 
 	public TableGroupService(TableGroupRepository tableGroupRepository,
 							 OrderTableRepository orderTableRepository,
-							 GroupTablesValidator groupTablesValidator,
-							 UnGroupTablesValidator unGroupTablesValidator) {
+							 UnGroupTablesValidator unGroupTablesValidator,
+							 GroupTablesValidator groupTablesValidator) {
 		this.tableGroupRepository = tableGroupRepository;
 		this.orderTableRepository = orderTableRepository;
-		this.groupTablesValidator = groupTablesValidator;
 		this.unGroupTablesValidator = unGroupTablesValidator;
+		this.groupTablesValidator = groupTablesValidator;
 	}
 
 	@Transactional
-	public TableGroup save(List<Long> orderTableId) {
+	public TableGroup group(List<Long> orderTableId) {
 		List<OrderTable> orderTable = findAllOrderTables(orderTableId);
 
 		TableGroup tableGroup = TableGroup.group(orderTable, groupTablesValidator);
@@ -44,7 +44,8 @@ public class TableGroupService {
 	@Transactional
 	public void ungroup(Long tableGroupId) {
 		TableGroup savedTableGroup = findById(tableGroupId);
-		savedTableGroup.ungroup(unGroupTablesValidator);
+		unGroupTablesValidator.validate(savedTableGroup);
+		savedTableGroup.ungroup();
 	}
 
 	private TableGroup findById(Long tableGroupId) {

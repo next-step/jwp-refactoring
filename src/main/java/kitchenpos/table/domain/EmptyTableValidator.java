@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
-import static kitchenpos.order.exception.CannotChangeEmptyOrderTable.Type.IN_TABLE_GROUP;
-import static kitchenpos.order.exception.CannotChangeEmptyOrderTable.Type.NOT_COMPLETED_ORDER;
+import static kitchenpos.table.exception.CannotChangeEmptyOrderTable.Type.IN_TABLE_GROUP;
+import static kitchenpos.table.exception.CannotChangeEmptyOrderTable.Type.NOT_COMPLETED_ORDER;
 
 import java.util.Arrays;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.exception.CannotChangeEmptyOrderTable;
+import kitchenpos.table.exception.CannotChangeEmptyOrderTable;
 
 @Component
 public class EmptyTableValidator {
@@ -25,7 +25,7 @@ public class EmptyTableValidator {
 		validateIsCompleted(orderTable);
 	}
 
-	private static void validateNotInTableGroup(OrderTable orderTable) {
+	private void validateNotInTableGroup(OrderTable orderTable) {
 		if (orderTable.hasTableGroup()) {
 			throw new CannotChangeEmptyOrderTable(IN_TABLE_GROUP);
 		}

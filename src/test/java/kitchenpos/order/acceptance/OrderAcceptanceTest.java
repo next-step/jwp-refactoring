@@ -152,36 +152,29 @@ class OrderAcceptanceTest extends AcceptanceTest {
 	}
 
 	/**
-	 * When 주문을 등록하면
-	 * Then 주문 테이블이 주문 불가 상태로 변경된다
+	 * Scenario: 주문 등록시 주문 테이블의 주문가능 상태 변경
+	 * 	When 주문을 등록하면
+	 * 	Then 주문 테이블이 주문 불가 상태로 변경된다
+	 *  When 주문의 상태를 완료로 변경하면
+	 *  Then 주문 테이블의 주문 가능 상태로 변경된다
 	 */
 	@Test
 	void 주문_등록시_테이블이_주문불가_상태로_변경() {
 		// when
-		step.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
+		OrderResponse 주문 = step.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
 
 		boolean 주문_가능_상태 = false;
-		List<OrderTableResponse> 실제_테이블 = orderTables.목록_조회();
-		step.주문_테이블_상태_변경됨(주문_테이블.getId(), 주문_가능_상태, 실제_테이블);
-	}
-
-	/**
-	 * Given 주문을 등록하고
-	 * When 주문의 상태를 완료로 변경하면
-	 * Then 주문 테이블의 주문 가능 상태로 변경된다
-	 */
-	@Test
-	void 주문_완료시_테이블이_주문가능_상태로_변경() {
-		// given
-		OrderResponse 주문 = step.등록되어_있음(OrderFixture.주문(주문_테이블, Lists.newArrayList(메뉴)));
+		List<OrderTableResponse> 실제_주문_테이블 = orderTables.목록_조회();
+		// then
+		step.주문_테이블_상태_변경됨(주문_테이블.getId(), 주문_가능_상태, 실제_주문_테이블);
 
 		// when
 		step.주문_상태_변경_요청(주문.getId(), OrderStatus.COMPLETION);
 
 		// then
-		boolean 주문_가능_상태 = true;
-		List<OrderTableResponse> 실제_테이블 = orderTables.목록_조회();
-		step.주문_테이블_상태_변경됨(주문_테이블.getId(), 주문_가능_상태, 실제_테이블);
+		주문_가능_상태 = true;
+		실제_주문_테이블 = orderTables.목록_조회();
+		step.주문_테이블_상태_변경됨(주문_테이블.getId(), 주문_가능_상태, 실제_주문_테이블);
 	}
 }
 

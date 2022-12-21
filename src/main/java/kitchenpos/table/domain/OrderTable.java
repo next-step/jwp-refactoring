@@ -69,8 +69,15 @@ public class OrderTable {
 		return Objects.nonNull(tableGroup);
 	}
 
-	public void changeEmpty(boolean empty, EmptyTableValidator validator) {
-		validator.validate(this);
+	public void changeUnorderable() {
+		changeEmpty(false);
+	}
+
+	public void changeOrderable() {
+		changeEmpty(true);
+	}
+
+	public void changeEmpty(boolean empty) {
 		this.empty = empty;
 	}
 
