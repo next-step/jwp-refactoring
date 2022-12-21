@@ -52,7 +52,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
                 new OrderLineItemRequest(menuResponse.getId(), 1L)
         );
         OrderTableResponse orderTable = TableRestAssured.주문_테이블_등록됨(new OrderTableCreateRequest(1, false));
-        this.orderCreateRequest = new OrderCreateRequest(orderTable.getId(), orderLineItemRequests);
+        this.orderCreateRequest = new OrderCreateRequest(1L, orderLineItemRequests);
     }
 
     @Test

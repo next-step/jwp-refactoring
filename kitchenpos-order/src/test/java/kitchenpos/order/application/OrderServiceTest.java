@@ -3,12 +3,16 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.message.OrderMessage;
+import kitchenpos.table.domain.OrderTableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +44,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderValidator orderValidator;
+    private OrderTableValidator orderTableValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -73,7 +77,7 @@ class OrderServiceTest {
     @DisplayName("주문 등록시 등록에 성공하고 주문 정보를 반환한다")
     void createOrderThenReturnResponseTest() {
         // given
-        willDoNothing().given(orderValidator).validateOrderTable(any());
+        willDoNothing().given(orderTableValidator).validateOrderTableIsEmpty(any());
         given(menuRepository.findById(menuId1)).willReturn(Optional.ofNullable(menu1));
         given(menuRepository.findById(menuId2)).willReturn(Optional.ofNullable(menu2));
         given(orderRepository.save(any())).willReturn(order);
@@ -82,7 +86,7 @@ class OrderServiceTest {
         OrderResponse response = orderService.createOrder(orderCreateRequest);
 
         // then
-        then(orderValidator).should(times(1)).validateOrderTable(any());
+        then(orderTableValidator).should(times(1)).validateOrderTableIsEmpty(any());
         then(menuRepository).should(times(2)).findById(any());
         then(orderRepository).should(times(1)).save(any());
 
@@ -98,7 +102,7 @@ class OrderServiceTest {
     @DisplayName("주문 등록시 주문 상품이 미동록된 경우 예외처리되어 등록에 실패한다")
     void createOrderThrownByNotFoundProductTest() {
         // given
-        willDoNothing().given(orderValidator).validateOrderTable(any());
+        willDoNothing().given(orderTableValidator).validateOrderTableIsEmpty(any());
         given(menuRepository.findById(any())).willReturn(Optional.empty());
 
         // when
@@ -106,7 +110,7 @@ class OrderServiceTest {
                 .isInstanceOf(EntityNotFoundException.class);
 
         // then
-        then(orderValidator).should(times(1)).validateOrderTable(any());
+        then(orderTableValidator).should(times(1)).validateOrderTableIsEmpty(any());
         then(menuRepository).should(times(1)).findById(any());
     }
 
@@ -115,14 +119,14 @@ class OrderServiceTest {
     void createOrderThrownByNotFoundOrderTableTest() {
         // given
         willThrow(new EntityNotFoundException())
-                .given(orderValidator).validateOrderTable(any());
+                .given(orderTableValidator).validateOrderTableIsEmpty(any());
 
         // when
         assertThatThrownBy(() -> orderService.createOrder(orderCreateRequest))
                 .isInstanceOf(EntityNotFoundException.class);
 
         // then
-        then(orderValidator).should(times(1)).validateOrderTable(any());
+        then(orderTableValidator).should(times(1)).validateOrderTableIsEmpty(any());
     }
 
     @Test
@@ -130,7 +134,7 @@ class OrderServiceTest {
     void createOrderThrownByOrderTableIsNotEmptyTest() {
         // given
         willThrow(new IllegalArgumentException(OrderMessage.CREATE_ERROR_ORDER_TABLE_IS_EMPTY.message()))
-                .given(orderValidator).validateOrderTable(any());
+                .given(orderTableValidator).validateOrderTableIsEmpty(any());
 
         // when
         assertThatThrownBy(() -> orderService.createOrder(orderCreateRequest))
@@ -138,7 +142,7 @@ class OrderServiceTest {
                 .hasMessage(OrderMessage.CREATE_ERROR_ORDER_TABLE_IS_EMPTY.message());
 
         // then
-        then(orderValidator).should(times(1)).validateOrderTable(any());
+        then(orderTableValidator).should(times(1)).validateOrderTableIsEmpty(any());
     }
 
     @Test

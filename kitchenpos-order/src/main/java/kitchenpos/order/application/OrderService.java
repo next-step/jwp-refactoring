@@ -2,10 +2,14 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,23 +22,22 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderValidator orderValidator;
+    private final OrderTableValidator orderTableValidator;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderValidator orderValidator
-    ) {
+            final OrderTableValidator orderTableValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderValidator = orderValidator;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
     public OrderResponse createOrder(final OrderCreateRequest request) {
-        orderValidator.validateOrderTable(request.getOrderTableId());
-        Order order = toOrder(request);
-        return OrderResponse.of(orderRepository.save(order));
+        orderTableValidator.validateOrderTableIsEmpty(request.getOrderTableId());
+        Order order = orderRepository.save(toOrder(request));
+        return OrderResponse.of(order);
     }
 
     public List<OrderResponse> findAllOrders() {

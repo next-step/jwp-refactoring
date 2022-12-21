@@ -37,7 +37,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangeRequest request) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(EntityNotFoundException::new);
-        orderValidator.validateChangeTableEmpty(orderTable);
+        orderValidator.validateOrderStatusIsCookingOrMealByTableId(orderTable.getTableGroupId());
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTable);
     }

@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -185,7 +184,7 @@ class TableGroupServiceTest {
         orderTables.groupBy(1L);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.empty()));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTableItems);
-        willDoNothing().given(orderValidator).validateUnGroup(orderTables);
+        willDoNothing().given(orderValidator).validateOrderStatusIsCookingOrMealByTableIds(orderTables.getIds());
 
         // when
         tableGroupService.ungroup(1L);
@@ -193,7 +192,7 @@ class TableGroupServiceTest {
         // then
         then(tableGroupRepository).should(times(1)).findById(any());
         then(orderTableRepository).should(times(1)).findAllByTableGroupId(any());
-        then(orderValidator).should(times(1)).validateUnGroup(any());
+        then(orderValidator).should(times(1)).validateOrderStatusIsCookingOrMealByTableIds(any());
     }
 
     @Test
@@ -207,7 +206,7 @@ class TableGroupServiceTest {
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.empty()));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTableItems);
         willThrow(new IllegalArgumentException(OrderTableMessage.UN_GROUP_ERROR_INVALID_ORDER_STATE.message()))
-                .given(orderValidator).validateUnGroup(any());
+                .given(orderValidator).validateOrderStatusIsCookingOrMealByTableIds(any());
 
         // when
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
@@ -217,6 +216,6 @@ class TableGroupServiceTest {
         // then
         then(tableGroupRepository).should(times(1)).findById(any());
         then(orderTableRepository).should(times(1)).findAllByTableGroupId(any());
-        then(orderValidator).should(times(1)).validateUnGroup(any());
+        then(orderValidator).should(times(1)).validateOrderStatusIsCookingOrMealByTableIds(any());
     }
 }

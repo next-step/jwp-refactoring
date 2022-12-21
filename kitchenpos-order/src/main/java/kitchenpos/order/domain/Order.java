@@ -61,6 +61,10 @@ public class Order {
         return this.orderStatus;
     }
 
+    public Long getOrderTableId() {
+        return orderTableId;
+    }
+
     public LocalDateTime getOrderedTime() {
         return this.orderedTime;
     }

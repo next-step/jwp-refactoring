@@ -45,7 +45,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(EntityNotFoundException::new);
         OrderTables orderTables = findAllOrderTablesByTableGroupId(tableGroup.getId());
-        orderValidator.validateUnGroup(orderTables);
+        orderValidator.validateOrderStatusIsCookingOrMealByTableIds(orderTables.getIds());
         orderTables.unGroup();
     }
 

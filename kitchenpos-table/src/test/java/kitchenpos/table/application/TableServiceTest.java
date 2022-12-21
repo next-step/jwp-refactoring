@@ -9,6 +9,7 @@ import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.message.NumberOfGuestsMessage;
 import kitchenpos.table.message.OrderTableMessage;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
@@ -41,7 +41,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderValidator validator;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -91,8 +91,8 @@ class TableServiceTest {
                 .map(NumberOfGuests::value)
                 .collect(Collectors.toList());
         assertAll(
-                () -> assertThat(orderTableResponses).hasSize(expectedOrderTables.size()),
-                () -> assertThat(numberOfGuests).containsAll(expectedNumberOfGuests)
+                () -> Assertions.assertThat(orderTableResponses).hasSize(expectedOrderTables.size()),
+                () -> Assertions.assertThat(numberOfGuests).containsAll(expectedNumberOfGuests)
         );
     }
 
@@ -103,7 +103,7 @@ class TableServiceTest {
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, !currentEmpty);
         OrderTable expectedOrderTable = OrderTable.of(0, currentEmpty);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
-        willDoNothing().given(validator).validateChangeTableEmpty(any());
+        willDoNothing().given(orderValidator).validateOrderStatusIsCookingOrMealByTableId(any());
 
         // when
         OrderTableResponse orderTableResponse = tableService.changeEmpty(1L, changeRequest);
@@ -111,7 +111,7 @@ class TableServiceTest {
         // then
         assertThat(orderTableResponse.isEmpty()).isEqualTo(expectedEmpty);
         then(orderTableRepository).should(times(1)).findById(any());
-        then(validator).should(times(1)).validateChangeTableEmpty(any());
+        then(orderValidator).should(times(1)).validateOrderStatusIsCookingOrMealByTableId(any());
     }
 
     @Test
@@ -122,7 +122,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
                 .isInstanceOf(EntityNotFoundException.class);
 
         // then
@@ -137,16 +137,16 @@ class TableServiceTest {
         OrderTableChangeRequest changeRequest = new OrderTableChangeRequest(0, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         willThrow(new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message()))
-                .given(validator).validateChangeTableEmpty(any());
+                .given(orderValidator).validateOrderStatusIsCookingOrMealByTableId(any());
 
         // when
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableMessage.CHANGE_EMPTY_ERROR_TABLE_GROUP_MUST_BE_NOT_ENROLLED.message());
 
         // then
         then(orderTableRepository).should(times(1)).findById(any());
-        then(validator).should(times(1)).validateChangeTableEmpty(any());
+        then(orderValidator).should(times(1)).validateOrderStatusIsCookingOrMealByTableId(any());
     }
 
     @Test
@@ -157,16 +157,16 @@ class TableServiceTest {
         OrderTable orderTable = OrderTable.of(0, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         willThrow(new IllegalArgumentException(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message()))
-                .given(validator).validateChangeTableEmpty(any());
+                .given(orderValidator).validateOrderStatusIsCookingOrMealByTableId(any());
 
         // when
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L, changeRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableMessage.CHANGE_EMPTY_ERROR_INVALID_ORDER_STATE.message());
 
         // then
         then(orderTableRepository).should(times(1)).findById(any());
-        then(validator).should(times(1)).validateChangeTableEmpty(any());
+        then(orderValidator).should(times(1)).validateOrderStatusIsCookingOrMealByTableId(any());
     }
 
     @Test
@@ -194,7 +194,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NumberOfGuestsMessage.CREATE_ERROR_GUESTS_MUST_BE_MORE_THAN_ZERO.message());
     }
@@ -208,7 +208,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expectedOrderTable));
 
         // when
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(OrderTableMessage.CHANGE_GUESTS_ERROR_TABLE_MUST_BE_NOT_EMPTY_STATE.message());
 
