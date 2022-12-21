@@ -7,10 +7,9 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,26 +17,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-
-        final MenuGroup menuGroup = findMenuGroupById(menuRequest);
-
+        final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        menuValidator.validCreate(menuRequest);
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
                 .stream()
-                .map(m -> MenuProduct.of(findProductById(m.getProductId()), m.getQuantity()))
+                .map(m -> MenuProduct.of(m.getProductId(), m.getQuantity()))
                 .collect(Collectors.toList());
 
         Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
@@ -53,13 +51,9 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuGroup findMenuGroupById(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
+    private MenuGroup findMenuGroupById(long id) {
+        return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
     }
 
-    private Product findProductById(long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-    }
 }

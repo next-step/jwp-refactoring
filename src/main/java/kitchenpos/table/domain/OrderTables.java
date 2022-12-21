@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.PERSIST)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public List<OrderTable> getUnmodifiableOrderTables() {

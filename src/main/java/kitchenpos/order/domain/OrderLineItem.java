@@ -1,12 +1,14 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -15,22 +17,25 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne
     private Order order;
-    @ManyToOne
-    private Menu menu;
+    @Embedded
+    @AttributeOverride(name = "menuId", column = @Column(name = "menu_id"))
+    @AttributeOverride(name = "menuName.name", column = @Column(name = "menu_name"))
+    @AttributeOverride(name = "menuPrice.price", column = @Column(name = "menu_price"))
+    private OrderMenu orderMenu;
     private Quantity quantity;
-
+    
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, Order order, OrderMenu orderMenu, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.orderMenu = orderMenu;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Menu menu, Long quantity) {
-        return new OrderLineItem(null, null, menu, quantity);
+    public static OrderLineItem of(OrderMenu orderMenu, Long quantity) {
+        return new OrderLineItem(null, null, orderMenu, quantity);
     }
 
     public void setOrder(Order order) {
@@ -45,8 +50,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public OrderMenu getOrderMenu() {
+        return orderMenu;
     }
 
     public Quantity getQuantity() {

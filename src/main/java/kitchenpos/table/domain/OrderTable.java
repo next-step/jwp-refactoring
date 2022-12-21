@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -14,9 +13,8 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
     @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     @Column(nullable = false)
     private int numberOfGuests;
     private boolean empty;
@@ -25,9 +23,9 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    protected OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    protected OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -54,18 +52,18 @@ public class OrderTable {
     }
 
     public Long findTableGroupId() {
-        if (tableGroup == null) {
+        if (tableGroupId == null) {
             return null;
         }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
@@ -101,7 +99,7 @@ public class OrderTable {
     }
 
     private void validTableGroupEmpty() {
-        if (tableGroup != null) {
+        if (tableGroupId != null) {
             throw new IllegalArgumentException("단체되어 있습니다.");
         }
     }

@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.order.domain.Order;
 import org.springframework.util.CollectionUtils;
 
 
@@ -36,8 +35,7 @@ public class TableGroup {
         return new TableGroup(null, orderTables);
     }
 
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::validIfNotCompletion);
+    public void ungroup() {
         orderTables.ungroup();
     }
 
@@ -61,7 +59,7 @@ public class TableGroup {
 
     private void addOrderTable(OrderTable orderTable) {
         orderTable.validGroupingTableGroup();
-        orderTable.setTableGroup(this);
+        orderTable.group(this.getId());
         orderTable.notEmpty();
         orderTables.add(orderTable);
     }
