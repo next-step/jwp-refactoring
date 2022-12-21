@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.port.MenuGroupPort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
