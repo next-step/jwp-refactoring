@@ -3,10 +3,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation project(':kitchenpos-global')
     implementation project(':kitchenpos-product')
-    implementation project(':kitchenpos-menugroup')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-bootJar { enabled = false }
-jar { enabled = true }

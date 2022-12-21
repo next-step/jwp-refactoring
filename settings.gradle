@@ -2,7 +2,6 @@ rootProject.name = 'kitchenpos'
 include 'kitchenpos-global',
         'kitchenpos-product',
         'kitchenpos-menu',
-        'kitchenpos-menugroup',
         'kitchenpos-order'
 
 rootProject.children.each { project ->
