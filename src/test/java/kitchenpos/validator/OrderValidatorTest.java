@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderValidatorTest {
+class OrderValidatorTest {
 
     @Mock
     private OrderTablePort orderTablePort;
