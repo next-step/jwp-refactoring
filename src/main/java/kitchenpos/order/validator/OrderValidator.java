@@ -38,7 +38,7 @@ public class OrderValidator {
     }
 
     private void validCheckEmptyOrderLineItems(OrderRequest request) {
-        if (Objects.isNull(request.getOrderLineItemRequest())) {
+        if (request.isRequestItemEmpty()) {
             throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
         }
     }

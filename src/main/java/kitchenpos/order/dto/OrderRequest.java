@@ -1,17 +1,28 @@
 package kitchenpos.order.dto;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
-    private List<OrderLineItemRequest> orderLineItemRequest;
+    private List<OrderLineItemRequest> orderLineItemRequest = new ArrayList<>();
 
-    protected OrderRequest() {}
+    protected OrderRequest() {
+    }
 
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequest) {
         this.orderTableId = orderTableId;
-        this.orderLineItemRequest = orderLineItemRequest;
+        this.orderLineItemRequest = orderLineItemRequestIsNull(orderLineItemRequest);
+    }
+
+    private List<OrderLineItemRequest> orderLineItemRequestIsNull(List<OrderLineItemRequest> orderLineItemRequest) {
+        if (Objects.isNull(orderLineItemRequest)) {
+            return new ArrayList<>();
+        }
+
+        return orderLineItemRequest;
     }
 
     public Long getOrderTableId() {
@@ -28,4 +39,11 @@ public class OrderRequest {
         return orderLineItemRequest;
     }
 
+    public boolean isRequestItemEmpty() {
+        if (this.orderLineItemRequest.isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
 }
