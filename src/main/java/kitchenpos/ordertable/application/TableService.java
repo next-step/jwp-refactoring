@@ -41,8 +41,13 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         final List<Order> orders = findAllOrderByOrderTableId(orderTableId);
 
-        savedOrderTable.updateEmpty(request.isEmpty(), orders);
+        validateOngoingOrder(orders);
+        savedOrderTable.updateEmpty(request.isEmpty());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    }
+
+    private void validateOngoingOrder(List<Order> orders) {
+        orders.forEach(Order::validateOrderStatusShouldComplete);
     }
 
     private List<Order> findAllOrderByOrderTableId(Long id) {

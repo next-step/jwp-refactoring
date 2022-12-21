@@ -1,6 +1,5 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.error.ErrorEnum;
-import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 @Entity
 public class OrderTable {
@@ -55,9 +53,8 @@ public class OrderTable {
         }
     }
 
-    public void updateEmpty(boolean empty, List<Order> orders) {
+    public void updateEmpty(boolean empty) {
         validateHasTableGroup();
-        orders.forEach(Order::validateOrderStatusShouldComplete);
         this.empty = empty;
     }
 

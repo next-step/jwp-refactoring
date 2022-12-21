@@ -17,7 +17,8 @@ public enum ErrorEnum {
     ORDER_TABLE_TWO_OVER("주문 테이블은 2개 이상 존재해야 합니다."),
     QUANTITY_UNDER_ZERO("수량은 0개 이하일 수 없습니다."),
     NOT_NULL_OR_EMPTY_NAME("이름을 반드시 입력해야 합니다."),
-    DEFAULT_ERROR("오류가 발생하였습니다");
+    DEFAULT_ERROR("오류가 발생하였습니다"),
+    CANNOT_CHANGE_ORDER("조리중이거나 식사중인 주문은 변경할 수 없습니다.");
 
     private final String message;
 

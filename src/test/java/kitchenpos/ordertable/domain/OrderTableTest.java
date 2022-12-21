@@ -4,11 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import kitchenpos.common.error.ErrorEnum;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +15,9 @@ public class OrderTableTest {
         // given
         boolean expectEmpty = true;
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
-        orderTable.updateEmpty(expectEmpty, Arrays.asList(order));
+        orderTable.updateEmpty(expectEmpty);
 
         // then
         assertThat(orderTable.isEmpty()).isEqualTo(expectEmpty);
@@ -39,21 +35,9 @@ public class OrderTableTest {
         firstOrderTable.setTableGroup(tableGroup);
 
         // when & then
-        assertThatThrownBy(() -> firstOrderTable.updateEmpty(true, new ArrayList<>()))
+        assertThatThrownBy(() -> firstOrderTable.updateEmpty(true))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.ALREADY_GROUP.message());
-    }
-
-    @Test
-    void 주문_테이블의_비어있는_여부를_수정할_때_주문의_상태가_계산완료가_아니라면_예외가_발생한다() {
-        // given
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
-
-        // when & then
-        assertThatThrownBy(() -> orderTable.updateEmpty(false, Arrays.asList(order)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorEnum.NOT_PAYMENT_ORDER.message());
     }
 
     @Test

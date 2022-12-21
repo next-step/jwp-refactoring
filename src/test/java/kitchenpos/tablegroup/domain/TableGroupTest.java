@@ -62,7 +62,7 @@ public class TableGroupTest {
     public static Order createCompleteOrder() {
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
-        orderTable.updateEmpty(true, Arrays.asList(order));
+        orderTable.updateEmpty(true);
         return order;
     }
 }
