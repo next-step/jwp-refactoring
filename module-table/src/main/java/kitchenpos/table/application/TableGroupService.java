@@ -1,8 +1,7 @@
 package kitchenpos.table.application;
 
+import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
@@ -11,9 +10,10 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.validator.TableGroupValidator;
 import kitchenpos.table.validator.TableValidator;
+import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 public class TableGroupService {
