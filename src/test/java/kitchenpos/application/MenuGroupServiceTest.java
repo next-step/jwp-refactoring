@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;

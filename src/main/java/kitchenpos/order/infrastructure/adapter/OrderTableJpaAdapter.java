@@ -44,4 +44,9 @@ public class OrderTableJpaAdapter implements OrderTablePort {
     public List<OrderTable> findAllByIdIn(List<Long> ids) {
         return orderTableJpaRepository.findAllByIdIn(ids);
     }
+
+    @Override
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableJpaRepository.findAllByTableGroupId(tableGroupId);
+    }
 }

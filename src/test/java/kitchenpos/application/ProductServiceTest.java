@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.menu.application.ProductService;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.port.ProductPort;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;

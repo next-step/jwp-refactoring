@@ -12,11 +12,11 @@ import kitchenpos.order.port.OrderPort;
 import kitchenpos.order.port.OrderTablePort;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static kitchenpos.constants.ErrorCodeType.MATCH_NOT_MENU;
@@ -29,27 +29,24 @@ public class OrderService {
     private final OrderPort orderPort;
     private final OrderTablePort orderTablePort;
 
+    private final OrderValidator orderValidator;
+
     public OrderService(
             final MenuPort menuPort,
             final OrderPort orderPort,
-            final OrderTablePort orderTablePort
-    ) {
+            final OrderTablePort orderTablePort,
+            final OrderValidator orderValidator) {
         this.menuPort = menuPort;
         this.orderPort = orderPort;
         this.orderTablePort = orderTablePort;
+        this.orderValidator = orderValidator;
     }
 
-    public OrderResponse create(final OrderRequest request) {
-        if (Objects.isNull(request.getOrderLineItemRequest())) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
-        }
-
-        final OrderTable orderTable = orderTablePort.findById(request.getOrderTableId());
-        final List<Menu> menu = menuPort.findAllByMenuId(request.getMenuIds());
-
-        Order order = makeOrder(orderTable.getId(), menu, request);
-
-        final Order saveOrder = orderPort.save(order);
+    public OrderResponse create(OrderRequest request) {
+        List<Menu> menus = menuPort.findAllByMenuId(request.getMenuIds());
+        orderValidator.validOrder(request, menus);
+        OrderTable orderTable = orderTablePort.findById(request.getOrderTableId());
+        Order saveOrder = makeOrder(orderTable.getId(), menus, request);
 
         return OrderResponse.from(saveOrder);
     }
@@ -63,7 +60,7 @@ public class OrderService {
 
         order.addOrderLineItems(orderLineItems, menus);
 
-        return order;
+        return orderPort.save(order);
     }
 
     private OrderLineItem createOrderLineItemRequest(List<Menu> menus, OrderLineItemRequest item) {
@@ -77,7 +74,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> orders = orderPort.findAll();
+        List<Order> orders = orderPort.findAll();
 
         return orders.stream()
                 .map(OrderResponse::from)
@@ -85,9 +82,11 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final ChangeOrderStatusRequest request) {
-        final Order savedOrder = orderPort.findById(orderId);
-        savedOrder.changeOrderStatus(request.getOrderStatus());
+        Order order = orderPort.findById(orderId);
+        orderValidator.validChangeOrderStatus(order.getOrderStatus());
 
-        return OrderResponse.from(savedOrder);
+        order.changeOrderStatus(request.getOrderStatus());
+
+        return OrderResponse.from(order);
     }
 }

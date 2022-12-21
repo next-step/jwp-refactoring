@@ -9,10 +9,12 @@ import kitchenpos.order.port.OrderTablePort;
 import kitchenpos.tablegroup.port.TableGroupPort;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -20,10 +22,13 @@ public class TableGroupService {
     private final OrderTablePort orderTablePort;
     private final TableGroupPort tableGroupPort;
 
-    public TableGroupService(final OrderPort orderPort, final OrderTablePort orderTablePort, final TableGroupPort tableGroupPort) {
+    private final TableGroupValidator tableGroupValidator;
+
+    public TableGroupService(final OrderPort orderPort, final OrderTablePort orderTablePort, final TableGroupPort tableGroupPort, TableGroupValidator tableGroupValidator) {
         this.orderPort = orderPort;
         this.orderTablePort = orderTablePort;
         this.tableGroupPort = tableGroupPort;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
@@ -40,9 +45,20 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupPort.findById(tableGroupId);
-        final List<Order> order = orderPort.findAllByOrderTableIdIn(tableGroup.getOrderTablesId());
-        order.forEach(Order::validUngroupable);
+
+        tableGroupValidator.
+        List<OrderTable> orderTables =
+                orderTablePort.findAllByTableGroupId(tableGroup.getId());
+        List<Long> orderTableIds = getOrderTableIds(orderTables);
+        List<Order> orders = orderPort.findAllByOrderTableIdIn(orderTableIds);
+
+
+        orders.forEach(Order::validUngroupable);
 
         tableGroup.ungroup();
+    }
+
+    private List<Long> getOrderTableIds(List<OrderTable> orderTables) {
+        return orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
     }
 }

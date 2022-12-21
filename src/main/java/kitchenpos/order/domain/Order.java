@@ -85,13 +85,6 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        validCheckCompletion();
         this.orderStatus = orderStatus;
-    }
-
-    private void validCheckCompletion() {
-        if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION.getMessage());
-        }
     }
 }

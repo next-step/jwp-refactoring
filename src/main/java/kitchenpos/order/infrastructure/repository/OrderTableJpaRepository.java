@@ -10,4 +10,6 @@ import java.util.List;
 public interface OrderTableJpaRepository extends JpaRepository<OrderTable, Long> {
 
     List<OrderTable> findAllByIdIn(List<Long> id);
+
+    List<OrderTable> findAllByTableGroupId(Long tableGroupId);
 }

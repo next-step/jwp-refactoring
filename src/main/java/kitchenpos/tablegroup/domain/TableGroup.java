@@ -17,16 +17,7 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
-
-
-    protected TableGroup() {
-    }
-
-    public TableGroup(OrderTables orderTables) {
-        orderTables.validCheckTableGroup();
-        this.orderTables = orderTables;
+    public TableGroup() {
         this.createdDate = LocalDateTime.now();
     }
 
@@ -39,17 +30,7 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
-    }
-
-
-
     public void ungroup() {
         orderTables.ungroup();
-    }
-
-    public List<Long> getOrderTablesId() {
-        return getOrderTables().stream().map(OrderTable::getId).collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.validator.OrderTableValidator;
 import kitchenpos.tablegroup.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
 import kitchenpos.order.dto.TableRequest;
@@ -17,15 +18,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableService {
-    private final OrderPort orderPort;
     private final OrderTablePort orderTablePort;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderPort orderPort, final OrderTablePort orderTablePort) {
-        this.orderPort = orderPort;
+    public TableService(final OrderTablePort orderTablePort, final OrderTableValidator orderTableValidator) {
         this.orderTablePort = orderTablePort;
+        this.orderTableValidator = orderTableValidator;
     }
 
-    public TableResponse create(final TableRequest request) {
+    public TableResponse create(TableRequest request) {
         final OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
 
         final OrderTable saveOrderTable = orderTablePort.save(orderTable);
@@ -42,10 +43,9 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
-    public TableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest request) {
+    public TableResponse changeEmpty(Long orderTableId, ChangeEmptyRequest request) {
         final OrderTable savedOrderTable = orderTablePort.findById(orderTableId);
-        final List<Order> order = orderPort.findByOrderTableId(orderTableId);
-        order.forEach(Order::validUngroupable);
+        orderTableValidator.validChangeEmpty(savedOrderTable);
 
         savedOrderTable.changeEmpty(request.isEmpty());
 
@@ -53,8 +53,10 @@ public class TableService {
     }
 
     @Transactional
-    public TableResponse changeNumberOfGuests(final Long orderTableId, final ChaneNumberOfGuestRequest request) {
+    public TableResponse changeNumberOfGuests(Long orderTableId, ChaneNumberOfGuestRequest request) {
         final OrderTable orderTable = orderTablePort.findById(orderTableId);
+        orderTableValidator.validChangeNumberOfGuest(request.getNumberOfRequest());
+
         orderTable.changeNumberOfGuests(request.getNumberOfRequest());
 
         return TableResponse.from(orderTable);

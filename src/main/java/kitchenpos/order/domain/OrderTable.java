@@ -14,9 +14,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
+
     private int numberOfGuests;
 
     @Column(name = "empty")
@@ -25,15 +24,15 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean isEmpty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.isEmpty = isEmpty;
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean isEmpty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean isEmpty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.isEmpty = isEmpty;
     }
@@ -44,19 +43,11 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void changeEmpty(boolean isEmpty) {
-        validCheckIsNotNullTableGroup();
         this.isEmpty = isEmpty;
-    }
-
-
-    private void validCheckIsNotNullTableGroup() {
-        if (Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException(TABLE_GROUP_NOT_NULL.getMessage());
-        }
     }
 
     public void addTableGroup(TableGroup tableGroup) {
@@ -68,16 +59,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(Integer numberOfGuests) {
-        validCheckIsGuestZero(numberOfGuests);
-
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void validCheckIsGuestZero(Integer numberOfGuests) {
-        if (numberOfGuests < 0 || Objects.isNull(numberOfGuests)) {
-            throw new IllegalArgumentException(GUEST_NOT_NULL_AND_ZERO.getMessage());
-        }
-    }
 
     public Long getId() {
         return id;

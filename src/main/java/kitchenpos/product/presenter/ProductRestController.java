@@ -1,6 +1,6 @@
 package kitchenpos.product.presenter;
 
-import kitchenpos.menu.application.ProductService;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
