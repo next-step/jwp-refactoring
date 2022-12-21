@@ -1,5 +1,7 @@
 package kitchenpos.order.ui;
 
+import java.net.URI;
+import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
@@ -7,10 +9,12 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OrderRestController {

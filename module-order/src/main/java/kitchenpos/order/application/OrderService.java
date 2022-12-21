@@ -1,10 +1,9 @@
 package kitchenpos.order.application;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -12,10 +11,10 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.Menu;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class OrderService {
