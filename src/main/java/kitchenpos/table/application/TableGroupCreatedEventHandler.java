@@ -36,9 +36,6 @@ public class TableGroupCreatedEventHandler {
     }
 
     private void validate(final List<Long> orderTableIds, final OrderTables savedOrderTables) {
-        if (orderTableIds.isEmpty()) {
-            throw new IllegalArgumentException("최소 2개 이상의 주문테이블 ID를 입력하셔야 합니다.");
-        }
         if (orderTableIds.size() < MIN_ORDER_TABLE_SIZE) {
             throw new IllegalArgumentException("최소 2개 이상의 주문테이블 ID를 입력하셔야 합니다.");
         }
