@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 
@@ -36,7 +36,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.generate());
-        applicationEventPublisher.publishEvent(new TableGroupCreateEvent(orderTableIds, savedTableGroup.getId()));
+        applicationEventPublisher.publishEvent(new TableGroupCreatedEvent(orderTableIds, savedTableGroup.getId()));
 
         List<OrderTable> savedOrderTables = findSavedTables(orderTableIds);
         return TableGroupResponse.of(savedTableGroup, savedOrderTables);
@@ -48,6 +48,6 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        applicationEventPublisher.publishEvent(new TableGroupUngroupEvent(tableGroupId));
+        applicationEventPublisher.publishEvent(new TableGroupUngroupedEvent(tableGroupId));
     }
 }

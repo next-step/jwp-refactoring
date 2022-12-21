@@ -8,21 +8,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 
 @Component
-public class TableGroupCreateEventHandler {
+public class TableGroupCreatedEventHandler {
     private static final int MIN_ORDER_TABLE_SIZE = 2;
 
     private final OrderTableRepository orderTableRepository;
 
-    public TableGroupCreateEventHandler(OrderTableRepository orderTableRepository) {
+    public TableGroupCreatedEventHandler(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
     @EventListener
     @Transactional
-    public void handle(final TableGroupCreateEvent event) {
+    public void handle(final TableGroupCreatedEvent event) {
         final List<Long> orderTableIds = event.getOrderTableIds();
         final Long tableGroupId = event.getTableGroupId();
         final OrderTables savedOrderTables = findOrderTables(orderTableIds);

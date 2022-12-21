@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup.dto;
 
-public class TableGroupUngroupEvent {
+public class TableGroupUngroupedEvent {
     private final Long tableGroupId;
 
-    public TableGroupUngroupEvent(Long tableGroupId) {
+    public TableGroupUngroupedEvent(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 

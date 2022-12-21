@@ -19,9 +19,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 
@@ -50,7 +50,7 @@ class TableGroupServiceTest {
             .willReturn(Arrays.asList(savedOrderTable1, savedOrderTable2));
         TableGroup savedTableGroup = savedTableGroup(1L);
         given(tableGroupRepository.save(any())).willReturn(savedTableGroup);
-        doNothing().when(applicationEventPublisher).publishEvent(any(TableGroupCreateEvent.class));
+        doNothing().when(applicationEventPublisher).publishEvent(any(TableGroupCreatedEvent.class));
 
         // when
         TableGroupResponse actual = tableGroupService.create(tableGroupRequest);
@@ -63,7 +63,7 @@ class TableGroupServiceTest {
             () -> assertThat(savedOrderTable1.getTableGroupId()).isEqualTo(1L),
             () -> assertThat(savedOrderTable2.isEmpty()).isFalse(),
             () -> assertThat(savedOrderTable2.getTableGroupId()).isEqualTo(1L),
-            () -> then(applicationEventPublisher).should().publishEvent(any(TableGroupCreateEvent.class))
+            () -> then(applicationEventPublisher).should().publishEvent(any(TableGroupCreatedEvent.class))
         );
     }
 
@@ -72,12 +72,12 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         long tableGroupId = 1L;
-        doNothing().when(applicationEventPublisher).publishEvent(any(TableGroupUngroupEvent.class));
+        doNothing().when(applicationEventPublisher).publishEvent(any(TableGroupUngroupedEvent.class));
 
         // when
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        then(applicationEventPublisher).should().publishEvent(any(TableGroupUngroupEvent.class));
+        then(applicationEventPublisher).should().publishEvent(any(TableGroupUngroupedEvent.class));
     }
 }

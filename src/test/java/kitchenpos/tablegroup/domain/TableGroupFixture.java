@@ -3,9 +3,9 @@ package kitchenpos.tablegroup.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kitchenpos.tablegroup.dto.TableGroupCreateEvent;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 
 public class TableGroupFixture {
     private TableGroupFixture() {
@@ -19,11 +19,11 @@ public class TableGroupFixture {
         return new TableGroup(id, LocalDateTime.now());
     }
 
-    public static TableGroupCreateEvent tableGroupCreateEvent(List<Long> orderTableIds, Long tableGroupId) {
-        return new TableGroupCreateEvent(orderTableIds, tableGroupId);
+    public static TableGroupCreatedEvent tableGroupCreateEvent(List<Long> orderTableIds, Long tableGroupId) {
+        return new TableGroupCreatedEvent(orderTableIds, tableGroupId);
     }
 
-    public static TableGroupUngroupEvent tableGroupUngroupEvent(Long tableGroupId) {
-        return new TableGroupUngroupEvent(tableGroupId);
+    public static TableGroupUngroupedEvent tableGroupUngroupEvent(Long tableGroupId) {
+        return new TableGroupUngroupedEvent(tableGroupId);
     }
 }

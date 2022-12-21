@@ -10,14 +10,14 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.dto.TableGroupUngroupEvent;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 
 @Component
-public class TableGroupUngroupEventHandler {
+public class TableGroupUngroupedEventHandler {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableGroupUngroupEventHandler(OrderRepository orderRepository,
+    public TableGroupUngroupedEventHandler(OrderRepository orderRepository,
         OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
@@ -25,7 +25,7 @@ public class TableGroupUngroupEventHandler {
 
     @EventListener
     @Transactional
-    public void handle(final TableGroupUngroupEvent event) {
+    public void handle(final TableGroupUngroupedEvent event) {
         final Long tableGroupId = event.getTableGroupId();
         final OrderTables orderTables = findOrderTables(tableGroupId);
 
