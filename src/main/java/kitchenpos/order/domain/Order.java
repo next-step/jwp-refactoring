@@ -51,13 +51,17 @@ public class Order {
 		OrderTable orderTable,
 		OrderLineItems orderLineItems
 	) {
+		validate(orderTable, orderLineItems);
+		this.orderTable = orderTable;
+		orderLineItems.updateOrder(this);
+		this.orderLineItems = orderLineItems;
+	}
+
+	private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
 		Assert.notNull(orderTable, "주문 테이블은 필수입니다.");
 		Assert.isTrue(orderTable.isFull(), "주문을 하는 테이블은 비어있을 수 없습니다.");
 		Assert.notNull(orderLineItems, "주문 항목들은 필수입니다.");
 		Assert.isTrue(orderLineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
-		this.orderTable = orderTable;
-		orderLineItems.updateOrder(this);
-		this.orderLineItems = orderLineItems;
 	}
 
 	public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {

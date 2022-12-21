@@ -134,7 +134,7 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		OrderTable 비어있는_테이블 = 비어있는_테이블();
+		OrderTable 비어있는_테이블 = 비어있는_다섯명_테이블();
 		given(orderTableRepository.orderTable(orderTableId)).willReturn(비어있는_테이블);
 
 		// when

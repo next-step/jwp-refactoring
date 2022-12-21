@@ -27,6 +27,27 @@ public class OrderTables {
 		return orderTables;
 	}
 
+	public void updateGroup(TableGroup tableGroup) {
+		orderTables.forEach(orderTable -> orderTable.updateGroup(tableGroup));
+	}
+
+	public void ungroup() {
+		updateGroup(null);
+	}
+
+	public boolean alreadyOrderd() {
+		return orderTables.stream().anyMatch(OrderTable::isOrdered);
+	}
+
+	public int size() {
+		return orderTables.size();
+	}
+
+	public boolean emptyAndNoGroup() {
+		return orderTables.stream()
+			.allMatch(OrderTable::emptyAndNoGroup);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {

@@ -7,7 +7,7 @@ public class NumberOfGuestsRequest {
 		this.numberOfGuests = numberOfGuests;
 	}
 
-	public int getNumberOfGuests() {
+	public int numberOfGuests() {
 		return numberOfGuests;
 	}
 }

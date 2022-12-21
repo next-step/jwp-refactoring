@@ -23,9 +23,15 @@ public class OrderTableGenerator {
 		return spy;
 	}
 
-	public static OrderTable 비어있는_테이블() {
+	public static OrderTable 비어있는_다섯명_테이블() {
 		OrderTable spy = spy(OrderTable.of(NumberOfGuests.from(5), TableEmpty.from(true)));
 		lenient().when(spy.id()).thenReturn(1L);
+		return spy;
+	}
+
+	public static OrderTable 비어있는_두명_테이블() {
+		OrderTable spy = spy(OrderTable.of(NumberOfGuests.from(2), TableEmpty.from(true)));
+		lenient().when(spy.id()).thenReturn(2L);
 		return spy;
 	}
 
@@ -34,8 +40,8 @@ public class OrderTableGenerator {
 	}
 
 	public static OrderTable 빈_한명_테이블() {
-		OrderTable 주문테이블 = spy(주문테이블(1, true));
-		lenient().when(주문테이블.tableGroup().id()).thenReturn(2L);
+		OrderTable 주문테이블 = spy(OrderTable.of(NumberOfGuests.from(1), TableEmpty.from(true)));
+		lenient().when(주문테이블.id()).thenReturn(2L);
 		return 주문테이블;
 	}
 

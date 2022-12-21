@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -125,12 +126,13 @@ class MenuServiceTest {
 		MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
 		MenuRequest menuRequest = new MenuRequest("후라이드 세트", BigDecimal.valueOf(20000), 1L,
 			Collections.singletonList(menuProductRequest));
+		given(menuGroupRepository.menuGroup(anyLong())).willThrow(NotFoundException.class);
 
 		// when
 		Throwable actual = catchThrowable(() -> menuService.create(menuRequest));
 
 		// then
-		assertThat(actual).isInstanceOf(IllegalArgumentException.class);
+		assertThat(actual).isInstanceOf(NotFoundException.class);
 	}
 
 	@DisplayName("메뉴의 상품은 이미 저장되어 있어야 한다.")

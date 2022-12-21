@@ -44,6 +44,7 @@ public class OrderTable {
 	public Long id() {
 		return id;
 	}
+
 	public TableGroup tableGroup() {
 		return tableGroup;
 	}
@@ -67,19 +68,36 @@ public class OrderTable {
 		this.tableEmpty = TableEmpty.from(empty);
 	}
 
+
 	public NumberOfGuests numberOfGuests() {
 		return numberOfGuests;
 	}
 
 	public void updateNumberOfGuests(int numberOfGuests) {
+		validateNumberOfGuests();
+		this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
+	}
+
+	private void validateNumberOfGuests() {
 		if (isEmpty()) {
 			throw new IllegalArgumentException("빈 테이블은 인원수를 변경할 수 없습니다.");
 		}
-		this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
-
 	}
 
 	public boolean isFull() {
 		return tableEmpty.isFull();
+	}
+
+	public void updateGroup(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
+	public boolean emptyAndNoGroup() {
+		return isEmpty() && !hasTableGroup();
+	}
+
+
+	public boolean isOrdered() {
+		return false;
 	}
 }

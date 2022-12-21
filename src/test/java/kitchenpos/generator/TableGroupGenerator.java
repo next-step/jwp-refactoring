@@ -1,8 +1,12 @@
 package kitchenpos.generator;
 
-import java.util.List;
+import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+
+import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableEmpty;
 import kitchenpos.order.domain.TableGroup;
 
 public class TableGroupGenerator {
@@ -10,7 +14,17 @@ public class TableGroupGenerator {
 	private TableGroupGenerator() {
 	}
 
-	public static TableGroup 단체_지정(List<OrderTable> orderTables) {
-		return TableGroup.from(orderTables);
+	public static TableGroup 다섯명_두명_테이블그룹() {
+		OrderTable orderTable1 = spy(OrderTable.of(NumberOfGuests.from(5), TableEmpty.from(true)));
+		OrderTable orderTable2 = spy(OrderTable.of(NumberOfGuests.from(2), TableEmpty.from(true)));
+		TableGroup spy = spy(TableGroup.from(
+			Arrays.asList(
+				orderTable1,
+				orderTable2
+			)));
+		lenient().when(orderTable1.id()).thenReturn(1L);
+		lenient().when(orderTable2.id()).thenReturn(2L);
+		lenient().when(spy.id()).thenReturn(1L);
+		return spy;
 	}
 }

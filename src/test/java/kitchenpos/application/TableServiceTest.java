@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.application.TableService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
@@ -33,15 +32,10 @@ import kitchenpos.order.ui.response.OrderTableResponse;
 @DisplayName("테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-
-	@Mock
-	private OrderDao orderDao;
-
-	@Mock
-	private OrderTableDao orderTableDao;
-
 	@Mock
 	private OrderTableRepository orderTableRepository;
+	@Mock
+	private OrderRepository orderRepository;
 
 	@InjectMocks
 	private TableService tableService;
@@ -87,8 +81,8 @@ class TableServiceTest {
 	void updateTableStatusTest() {
 		// given
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
-			Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
+			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 
 		// when
@@ -105,9 +99,11 @@ class TableServiceTest {
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
-		// when, then
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
+		// when
+		Throwable throwable = catchThrowable(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
+
+		// then
+		assertThat(throwable).isInstanceOf(NotFoundException.class);
 	}
 
 	@DisplayName("테이블 그룹에 속해있으면 빈 테이블로 변경할 수 없다.")
@@ -116,8 +112,8 @@ class TableServiceTest {
 		// given
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		OrderTable 빈_한명_테이블 = 빈_한명_테이블();
-		TableGroup from = TableGroup.from(Collections.singletonList(빈_한명_테이블));
-		from.orderTables().list().get(0);
+		OrderTable 비어있는_두명_테이블 = 비어있는_두명_테이블();
+		TableGroup.from(Arrays.asList(빈_한명_테이블, 비어있는_두명_테이블));
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(빈_한명_테이블));
 
 		// when, then
@@ -131,8 +127,8 @@ class TableServiceTest {
 		// given
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
-			Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
+			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
 		// when, then
 		assertThatIllegalArgumentException()
@@ -160,6 +156,7 @@ class TableServiceTest {
 	void updateNumberOfGuestWithNegativeNumber(int numberOfGuests) {
 		// given
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(numberOfGuests);
+		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.ofNullable(주문테이블));
 
 		// when, then
 		assertThatIllegalArgumentException()
@@ -173,9 +170,11 @@ class TableServiceTest {
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(5);
 		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.empty());
 
-		// when, then
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.id(), request));
+		// when
+		Throwable throwable = catchThrowable(() -> tableService.changeNumberOfGuests(주문테이블.id(), request));
+
+		// then
+		assertThat(throwable).isInstanceOf(NotFoundException.class);
 	}
 
 	@DisplayName("방문 손님 수를 변경하려는 주문 테이블은 비어있지 않은 상태여야 한다.")
@@ -188,6 +187,6 @@ class TableServiceTest {
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeNumberOfGuests(비어있는_테이블().id(), request));
+			.isThrownBy(() -> tableService.changeNumberOfGuests(비어있는_다섯명_테이블().id(), request));
 	}
 }
