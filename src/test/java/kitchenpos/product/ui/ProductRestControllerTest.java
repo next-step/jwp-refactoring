@@ -1,12 +1,12 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.BaseTest;
-import kitchenpos.dto.request.ProductRequest;
-import kitchenpos.dto.response.ProductResponse;
+import kitchenpos.product.dto.request.ProductRequest;
+import kitchenpos.product.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;

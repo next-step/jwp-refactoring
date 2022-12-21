@@ -1,7 +1,7 @@
 package kitchenpos.menu.ui;
 
 import static kitchenpos.menu.ui.MenuGroupRestControllerTest.메뉴_그룹_생성_요청;
-import static kitchenpos.ui.ProductRestControllerTest.상품_생성_요청;
+import static kitchenpos.product.ui.ProductRestControllerTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
@@ -11,9 +11,9 @@ import kitchenpos.BaseTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;
-import kitchenpos.dto.request.ProductRequest;
+import kitchenpos.product.dto.request.ProductRequest;
 import kitchenpos.menu.dto.response.MenuResponse;
-import kitchenpos.dto.response.ProductResponse;
+import kitchenpos.product.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;

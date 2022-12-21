@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import static kitchenpos.exception.ErrorCode.PRICE_NOT_EXISTS_OR_LESS_THAN_ZERO;
 
@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.domain.Price;
 import kitchenpos.exception.KitchenposException;
 
 @Entity
