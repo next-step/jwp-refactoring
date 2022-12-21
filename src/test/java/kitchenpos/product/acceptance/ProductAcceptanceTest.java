@@ -4,10 +4,11 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.BaseAcceptanceTest;
+import kitchenpos.product.ProductFixture;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.fixture.ProductFixture;
 import kitchenpos.product.rest.ProductRestAssured;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
         // then
         ProductResponse productResponse = response.as(ProductResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(productResponse.getId()).isNotNull()
         );
     }
@@ -48,8 +49,8 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest {
         // then
         List<ProductResponse> productResponses = response.as(new TypeRef<List<ProductResponse>>() {});
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(productResponses).hasSize(1)
+                () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> Assertions.assertThat(productResponses).hasSize(1)
         );
     }
 }
