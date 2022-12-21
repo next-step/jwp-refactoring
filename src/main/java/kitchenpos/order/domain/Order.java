@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -72,16 +71,6 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public int getOrderLineItemsSize(){
-        return orderLineItems.size();
-    }
-
-    public List<Long> getMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
