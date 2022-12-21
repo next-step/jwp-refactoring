@@ -8,10 +8,10 @@ import static kitchenpos.exception.ErrorCode.TABLE_IS_NOT_EMPTY_OR_ALREADY_REGIS
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.domain.OrderRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 

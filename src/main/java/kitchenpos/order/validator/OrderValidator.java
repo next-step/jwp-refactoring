@@ -1,4 +1,4 @@
-package kitchenpos.application.validator;
+package kitchenpos.order.validator;
 
 import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
@@ -8,10 +8,10 @@ import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_A
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.table.application.TableService;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.dto.request.OrderRequest;
+import kitchenpos.order.dto.request.OrderRequest;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.MenuRepository;
 import org.springframework.stereotype.Component;

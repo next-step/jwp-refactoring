@@ -1,16 +1,16 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.exception.ErrorCode.NOT_FOUND_ORDER;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.application.validator.OrderValidator;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.request.OrderRequest;
-import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.request.OrderRequest;
+import kitchenpos.order.dto.response.OrderResponse;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.domain.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

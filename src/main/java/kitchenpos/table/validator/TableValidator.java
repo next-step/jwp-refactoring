@@ -7,11 +7,11 @@ import static kitchenpos.exception.ErrorCode.TABLE_IS_EMPTY;
 
 import java.util.Arrays;
 import java.util.Objects;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.domain.OrderRepository;
 import org.springframework.stereotype.Component;
 
 @Component

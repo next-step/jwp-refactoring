@@ -1,10 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.Test;
 
 class OrderTest {
