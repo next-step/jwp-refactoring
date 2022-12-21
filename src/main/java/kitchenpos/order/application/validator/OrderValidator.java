@@ -1,7 +1,6 @@
 package kitchenpos.order.application.validator;
 
 import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
-import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
 import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
 import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT;
 
@@ -12,27 +11,25 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.request.OrderRequest;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
 public class OrderValidator {
     private final MenuRepository menuRepository;
-    private final TableService tableService;
+    private final TableEmptyValidator tableEmptyValidator;
 
     public OrderValidator(
             final MenuRepository menuRepository,
-            final TableService tableService
+            final TableEmptyValidator tableEmptyValidator
     ) {
         this.menuRepository = menuRepository;
-        this.tableService = tableService;
+        this.tableEmptyValidator = tableEmptyValidator;
     }
 
     public void validateCreate(OrderRequest orderRequest) {
         validateNullOrderLineItems(orderRequest.getOrderLineItems());
-        validateEmptyTrue(tableService.findById(orderRequest.getOrderTableId()));
+        validateEmptyTrue(orderRequest.getOrderTableId());
         validateOrderLineItems(orderRequest.getOrderLineItemsSize(), menuRepository.countByIdIn(orderRequest.getMenuIds()));
     }
 
@@ -42,10 +39,8 @@ public class OrderValidator {
         }
     }
 
-    private void validateEmptyTrue(OrderTable orderTable){
-        if (orderTable.isEmpty()) {
-            throw new KitchenposException(CAN_NOT_ORDER);
-        }
+    private void validateEmptyTrue(Long orderTableId){
+        tableEmptyValidator.validateEmptyTrue(orderTableId);
     }
 
     private void validateOrderLineItems(int orderLineItemsSize, int menuCount){

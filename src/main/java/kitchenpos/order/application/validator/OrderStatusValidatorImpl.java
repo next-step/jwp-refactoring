@@ -10,10 +10,10 @@ import kitchenpos.order.domain.OrderStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderStatusValidator implements kitchenpos.table.application.validator.OrderStatusValidator {
+public class OrderStatusValidatorImpl implements kitchenpos.table.application.validator.OrderStatusValidator {
     private final OrderRepository orderRepository;
 
-    public OrderStatusValidator(OrderRepository orderRepository) {
+    public OrderStatusValidatorImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
