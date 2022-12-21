@@ -3,11 +3,10 @@ package kitchenpos.menu.application.validator;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
-import kitchenpos.menu.dto.request.MenuProductRequest;
-import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menu.dto.request.MenuProductRequest;
+import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
