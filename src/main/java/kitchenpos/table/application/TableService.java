@@ -4,7 +4,7 @@ import static kitchenpos.exception.ErrorCode.NOT_EXISTS_TABLE;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.table.validator.TableValidator;
+import kitchenpos.table.application.validator.TableValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.response.OrderTableResponse;
 import kitchenpos.exception.KitchenposException;

@@ -1,4 +1,4 @@
-package kitchenpos.table.validator;
+package kitchenpos.table.application.validator;
 
 import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES;

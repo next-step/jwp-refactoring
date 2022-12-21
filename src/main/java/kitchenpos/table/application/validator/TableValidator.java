@@ -1,4 +1,4 @@
-package kitchenpos.table.validator;
+package kitchenpos.table.application.validator;
 
 import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;

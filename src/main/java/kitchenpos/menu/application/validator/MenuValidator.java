@@ -1,4 +1,4 @@
-package kitchenpos.menu.validator;
+package kitchenpos.menu.application.validator;
 
 import java.math.BigDecimal;
 import java.util.List;

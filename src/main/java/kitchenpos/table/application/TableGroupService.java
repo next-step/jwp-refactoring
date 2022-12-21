@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import kitchenpos.table.validator.TableGroupValidator;
+import kitchenpos.table.application.validator.TableGroupValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;

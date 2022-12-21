@@ -4,7 +4,7 @@ import static kitchenpos.exception.ErrorCode.NOT_FOUND_ORDER;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.order.application.validator.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.request.OrderRequest;

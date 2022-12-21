@@ -3,7 +3,7 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menu.application.validator.MenuValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.menu.dto.response.MenuResponse;

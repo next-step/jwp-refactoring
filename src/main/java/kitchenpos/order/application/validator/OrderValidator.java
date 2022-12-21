@@ -1,4 +1,4 @@
-package kitchenpos.order.validator;
+package kitchenpos.order.application.validator;
 
 import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;

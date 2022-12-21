@@ -15,8 +15,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 
 import java.util.Arrays;
-import kitchenpos.table.validator.TableGroupValidator;
-import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.application.validator.TableGroupValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.request.TableGroupRequest;

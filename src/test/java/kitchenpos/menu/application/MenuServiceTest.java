@@ -14,7 +14,7 @@ import static org.mockito.Mockito.doThrow;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menu.application.validator.MenuValidator;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.request.MenuProductRequest;
