@@ -3,7 +3,7 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -56,7 +56,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
             .then().log().all()
             .extract();
     }
-
 
     public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
         return RestAssured

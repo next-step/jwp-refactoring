@@ -3,7 +3,7 @@ package kitchenpos;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -86,10 +86,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 상품_목록_확인됨(ExtractableResponse<Response> response, String... names) {
-        List<Product> products = response.jsonPath().getList(".", Product.class);
-        List<String> productNames = products
+        List<ProductResponse> productResponses = response.jsonPath().getList(".", ProductResponse.class);
+        List<String> productNames = productResponses
             .stream()
-            .map(Product::getName)
+            .map(ProductResponse::getName)
             .collect(Collectors.toList());
         assertThat(productNames).containsExactly(names);
     }
