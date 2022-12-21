@@ -1,10 +1,9 @@
 package kitchenpos.product.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.Price;
 import org.junit.jupiter.api.Test;
 
 class ProductTest {
@@ -13,6 +12,6 @@ class ProductTest {
         Product product = new Product("후라이드", BigDecimal.valueOf(16000));
 
         assertThat(product.getName()).isEqualTo("후라이드");
-        assertThat(product.getPrice()).isEqualTo(BigDecimal.valueOf(16000));
+        assertThat(product.getPrice()).isEqualTo(Price.of(16000));
     }
 }

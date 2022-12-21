@@ -2,6 +2,7 @@ package kitchenpos.menu.application.validator;
 
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;
@@ -23,24 +24,25 @@ public class MenuValidator {
     }
 
     private void validatePriceGreaterThanSum(List<MenuProductRequest> menuProducts, BigDecimal price) {
-        if (price.compareTo(getSumPriceFromMenuProducts(menuProducts)) > 0) {
+        if (Price.of(price).compareTo(getTotalPriceFromMenuProducts(menuProducts)) > 0) {
             throw new KitchenposException(ErrorCode.PRICE_GREATER_THAN_SUM);
         }
     }
 
-    private BigDecimal getSumPriceFromMenuProducts(List<MenuProductRequest> menuProducts) {
-        BigDecimal sum = BigDecimal.ZERO;
-
-        for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = getProduct(menuProduct.getProductId());
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        return sum;
+    private Price getTotalPriceFromMenuProducts(List<MenuProductRequest> menuProducts){
+        return menuProducts.stream()
+                .map(this::getMenuProductPrice)
+                .reduce(Price::add)
+                .orElse(Price.of(BigDecimal.ZERO));
     }
 
-    private Product getProduct(Long productId){
+    private Price getMenuProductPrice(MenuProductRequest menuProduct){
+        return getProductPrice(menuProduct.getProductId()).multiply(menuProduct.getQuantity());
+    }
+
+    private Price getProductPrice(Long productId){
         return productRepository.findById(productId)
-                .orElseThrow(() -> new KitchenposException(ErrorCode.NOT_FOUND_PRODUCT));
+                .orElseThrow(() -> new KitchenposException(ErrorCode.NOT_FOUND_PRODUCT))
+                .getPrice();
     }
 }

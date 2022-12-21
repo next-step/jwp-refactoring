@@ -11,7 +11,7 @@ import kitchenpos.exception.KitchenposException;
 @Embeddable
 public class Price {
     @Column
-    private BigDecimal price;
+    private BigDecimal price = BigDecimal.ZERO;
 
     public Price() {
     }
@@ -23,6 +23,22 @@ public class Price {
 
     public static Price of(BigDecimal price){
         return new Price(price);
+    }
+
+    public static Price of(int price){
+        return Price.of(BigDecimal.valueOf(price));
+    }
+
+    public Price add(Price value){
+        return Price.of(this.price.add(value.getPrice()));
+    }
+
+    public Price multiply(Long value) {
+        return Price.of(this.price.multiply(BigDecimal.valueOf(value)));
+    }
+
+    public int compareTo(Price price){
+        return this.price.compareTo(price.getPrice());
     }
 
     private void validatePrice(BigDecimal price){
