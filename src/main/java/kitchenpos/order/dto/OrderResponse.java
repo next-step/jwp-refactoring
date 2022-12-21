@@ -3,7 +3,6 @@ package kitchenpos.order.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderResponse {
     private Long id;

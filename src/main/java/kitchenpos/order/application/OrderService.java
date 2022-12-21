@@ -3,9 +3,9 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.error.ErrorEnum;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -46,7 +46,9 @@ public class OrderService {
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
-        List<Menu> menus = menuRepository.findAllById(menuIds);
+        List<OrderMenu> menus = menuRepository.findAllById(menuIds).stream()
+                .map(OrderMenu::of)
+                .collect(Collectors.toList());
 
         if (orderLineItems.size() != menus.size()) {
             throw new IllegalArgumentException();
