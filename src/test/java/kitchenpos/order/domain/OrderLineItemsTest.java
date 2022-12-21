@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.domain.OrderTableFixture.주문테이블;
+import static kitchenpos.table.domain.OrderTableFixture.주문테이블;
 import static kitchenpos.menu.domain.MenuFixture.메뉴;
 import static kitchenpos.order.domain.OrderFixture.주문;
 import static kitchenpos.order.domain.OrderLineItemFixture.주문라인아이템;
