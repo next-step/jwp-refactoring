@@ -6,14 +6,13 @@ import kitchenpos.order.port.OrderPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 import static kitchenpos.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
 import static kitchenpos.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class OrderTableValidator {
 
     private final OrderPort orderPort;

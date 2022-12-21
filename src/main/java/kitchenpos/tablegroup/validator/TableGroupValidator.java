@@ -8,16 +8,14 @@ import kitchenpos.order.port.OrderPort;
 import kitchenpos.order.port.OrderTablePort;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class TableGroupValidator {
 
     private static final int TABLE_GROUP_MIN_SIZE = 2;
