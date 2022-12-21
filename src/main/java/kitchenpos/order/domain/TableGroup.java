@@ -42,15 +42,15 @@ public class TableGroup {
 		return new TableGroup(OrderTables.from(orderTables));
 	}
 
-	public Long getId() {
+	public Long id() {
 		return id;
 	}
 
-	public LocalDateTime getCreatedDate() {
+	public LocalDateTime createdDate() {
 		return createdDate;
 	}
 
-	public OrderTables getOrderTables() {
+	public OrderTables orderTables() {
 		return orderTables;
 	}
 
@@ -71,7 +71,4 @@ public class TableGroup {
 		return Objects.hashCode(orderTables);
 	}
 
-	public List<OrderTable> orderTables() {
-		return orderTables.list();
-	}
 }

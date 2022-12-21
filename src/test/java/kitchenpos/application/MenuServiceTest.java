@@ -67,7 +67,7 @@ class MenuServiceTest {
 			assertThat(response.id()).isEqualTo(후라이드_세트.id());
 			assertThat(response.name()).isEqualTo(후라이드_세트.name());
 			assertThat(response.price()).isEqualTo(후라이드_세트.price());
-			assertThat(response.menuGroupId()).isEqualTo(후라이드_세트.menuGroup().getId() );
+			assertThat(response.menuGroupId()).isEqualTo(후라이드_세트.menuGroup().id() );
 			assertThat(response.getMenuProducts()).hasSize(1);
 		});
 	}

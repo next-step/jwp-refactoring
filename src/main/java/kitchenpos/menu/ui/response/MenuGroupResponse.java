@@ -19,7 +19,7 @@ public class MenuGroupResponse {
 	}
 
 	public static MenuGroupResponse from(MenuGroup save) {
-		return new MenuGroupResponse(save.getId(), save.getName());
+		return new MenuGroupResponse(save.id(), save.name());
 	}
 
 	public static List<MenuGroupResponse> listFrom(List<MenuGroup> menuGroups) {

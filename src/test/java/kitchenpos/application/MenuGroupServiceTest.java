@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.generator.MenuGroupGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -11,9 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.generator.MenuGroupGenerator;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.ui.request.MenuGroupRequest;
 import kitchenpos.menu.ui.response.MenuGroupResponse;
 
@@ -22,7 +23,7 @@ import kitchenpos.menu.ui.response.MenuGroupResponse;
 class MenuGroupServiceTest {
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@InjectMocks
 	private MenuGroupService menuGroupService;
@@ -31,14 +32,15 @@ class MenuGroupServiceTest {
 	@Test
 	void createMenuGroupTest() {
 		// given
-		MenuGroupRequest request = new MenuGroupRequest("한마리메뉴");
-		given(menuGroupDao.save(any())).willReturn(MenuGroupGenerator.메뉴_그룹("한마리메뉴"));
+		MenuGroupRequest request = new MenuGroupRequest("한마리 메뉴");
+		MenuGroup 한마리_메뉴 = 한마리_메뉴();
+		given(menuGroupRepository.save(any())).willReturn(한마리_메뉴);
 
 		// when
 		MenuGroupResponse response = menuGroupService.create(request);
 
 		// then
-		verify(menuGroupDao, only()).save(any());
+		verify(menuGroupRepository, only()).save(any());
 		assertAll(
 			() -> assertThat(response.getName()).isEqualTo(request.getName()),
 			() -> assertThat(response.getId()).isNotNull()
@@ -52,7 +54,7 @@ class MenuGroupServiceTest {
 		menuGroupService.list();
 
 		// then
-		verify(menuGroupDao, only()).findAll();
+		verify(menuGroupRepository, only()).findAll();
 	}
 
 }

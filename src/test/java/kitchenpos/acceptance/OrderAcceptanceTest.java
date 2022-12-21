@@ -69,7 +69,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 		Order order = 주문_등록_되어_있음(주문테이블.getId(), 반반치킨_세트.id(), 2);
 
 		// when
-		ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(order.getId(), OrderStatus.COOKING);
+		ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(order.id(), OrderStatus.COOKING);
 
 		// then
 		주문_상태_변경_됨(주문_상태_변경_요청, OrderStatus.COOKING);

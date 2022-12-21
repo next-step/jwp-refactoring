@@ -2,6 +2,7 @@ package kitchenpos.menu.ui.response;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.Product;
 
@@ -28,7 +29,7 @@ public class ProductResponse {
 	public static List<ProductResponse> listFrom(List<Product> products) {
 		return products.stream()
 			.map(ProductResponse::from)
-			.collect(java.util.stream.Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 	public Long id() {

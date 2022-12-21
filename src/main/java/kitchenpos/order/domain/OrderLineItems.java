@@ -26,4 +26,12 @@ public class OrderLineItems {
 	public List<OrderLineItem> list() {
 		return Collections.unmodifiableList(orderLineItems);
 	}
+
+	public void updateOrder(Order order) {
+		orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
+	}
+
+	public boolean isNotEmpty() {
+		return !orderLineItems.isEmpty();
+	}
 }

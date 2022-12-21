@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.generator.MenuGenerator.*;
 import static kitchenpos.generator.OrderGenerator.*;
 import static kitchenpos.generator.OrderTableGenerator.*;
 import static org.assertj.core.api.Assertions.*;
@@ -17,12 +18,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
@@ -32,13 +36,13 @@ import kitchenpos.order.ui.request.OrderStatusRequest;
 class OrderServiceTest {
 
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 
 	@Mock
 	private OrderRepository orderRepository;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -52,11 +56,15 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
-		given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(비어있지_않은_5명_테이블()));
 
-		Order 조리중_주문 = 조리중_주문();
-		given(orderRepository.save(any())).willReturn(조리중_주문);
+		OrderTable table = 비어있지_않은_5명_테이블();
+		given(orderTableRepository.orderTable(orderTableId)).willReturn(table);
+
+		Menu menu = 후라이드_세트();
+		given(menuRepository.menu(menuId)).willReturn(menu);
+
+		Order order = 조리중_주문();
+		given(orderRepository.save(any())).willReturn(order);
 
 		// when
 		orderService.create(orderRequest);
@@ -88,13 +96,15 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		given(menuDao.countByIdIn(anyList())).willReturn(0L);
+		OrderTable table = 비어있지_않은_5명_테이블();
+		// given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(table));
+		given(menuRepository.menu(anyLong())).willThrow(new NotFoundException("no menu"));
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
 
 		// then
-		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+		assertThat(throwable).isInstanceOf(NotFoundException.class);
 	}
 
 	@DisplayName("주문 테이블이 등록되어 있지 않으면 주문을 등록할 수 없다.")
@@ -106,15 +116,13 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-
-		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
-		given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
+		given(orderTableRepository.orderTable(orderTableId)).willThrow(NotFoundException.class);
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
 
 		// then
-		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+		assertThat(throwable).isInstanceOf(NotFoundException.class);
 	}
 
 	@DisplayName("주문 테이블이 비어있으면 주문을 등록할 수 없다.")
@@ -126,8 +134,8 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		given(menuDao.countByIdIn(anyList())).willReturn(orderTableId);
-		given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(비어있는_테이블()));
+		OrderTable 비어있는_테이블 = 비어있는_테이블();
+		given(orderTableRepository.orderTable(orderTableId)).willReturn(비어있는_테이블);
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
@@ -156,7 +164,7 @@ class OrderServiceTest {
 		given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		orderService.changeOrderStatus(order.getId(), orderStatusRequest);
+		orderService.changeOrderStatus(order.id(), orderStatusRequest);
 
 		// then
 		verify(order, times(1)).updateStatus(orderStatus);
@@ -187,7 +195,7 @@ class OrderServiceTest {
 		given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
 		// when
-		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest));
+		Throwable throwable = catchThrowable(() -> orderService.changeOrderStatus(order.id(), orderStatusRequest));
 
 		// then
 		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -198,9 +206,9 @@ class OrderServiceTest {
 		verify(orderRepository, only()).save(captor.capture());
 		Order savedOrder = captor.getValue();
 		assertAll(
-			() -> assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTableId),
-			() -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-			() -> assertThat(savedOrder.getOrderLineItems()).hasSize(1)
+			() -> assertThat(savedOrder.table().id()).isEqualTo(orderTableId),
+			() -> assertThat(savedOrder.orderStatus().name()).isEqualTo(OrderStatus.COOKING.name()),
+			() -> assertThat(savedOrder.orderLineItems()).hasSize(1)
 		);
 	}
 

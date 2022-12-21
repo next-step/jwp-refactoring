@@ -12,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.generator.ProductGenerator;
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.ui.request.ProductRequest;
 
 @DisplayName("상품 서비스 테스트")
@@ -23,7 +23,7 @@ import kitchenpos.menu.ui.request.ProductRequest;
 class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
@@ -33,13 +33,13 @@ class ProductServiceTest {
 	void createProductTest() {
 		// given
 		ProductRequest 후라이드 = new ProductRequest("후라이드", BigDecimal.valueOf(16000));
-		given(productDao.save(any())).willReturn(ProductGenerator.상품("후라이드"));
+		given(productRepository.save(any())).willReturn(ProductGenerator.상품("후라이드"));
 
 		// when
 		productService.create(후라이드);
 
 		// then
-		verify(productDao, only()).save(any(Product.class));
+		verify(productRepository, only()).save(any(Product.class));
 	}
 
 	@DisplayName("등록하려는 상품의 가격은 반드시 존재 해야 한다.")
@@ -71,6 +71,6 @@ class ProductServiceTest {
 		productService.list();
 
 		// then
-		verify(productDao, only()).findAll();
+		verify(productRepository, only()).findAll();
 	}
 }

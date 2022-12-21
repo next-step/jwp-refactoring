@@ -41,16 +41,11 @@ public class OrderTable {
 		return new OrderTable(numberOfGuests, tableEmpty);
 	}
 
-	public Long getId() {
+	public Long id() {
 		return id;
 	}
-
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
-	public Long getTableGroupId() {
-		return tableGroup.getId();
+	public TableGroup tableGroup() {
+		return tableGroup;
 	}
 
 	public boolean hasTableGroup() {
@@ -82,5 +77,9 @@ public class OrderTable {
 		}
 		this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
 
+	}
+
+	public boolean isFull() {
+		return tableEmpty.isFull();
 	}
 }

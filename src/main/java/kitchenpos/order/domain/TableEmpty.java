@@ -23,4 +23,8 @@ public class TableEmpty {
 	public boolean isEmpty() {
 		return empty;
 	}
+
+	public boolean isFull() {
+		return !empty;
+	}
 }

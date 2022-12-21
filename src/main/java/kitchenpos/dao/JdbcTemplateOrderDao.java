@@ -2,7 +2,6 @@ package kitchenpos.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public class JdbcTemplateOrderDao implements OrderDao {
 
     @Override
     public Order save(final Order entity) {
-        if (Objects.isNull(entity.getId())) {
+        if (Objects.isNull(entity.id())) {
             final SqlParameterSource parameters = new BeanPropertySqlParameterSource(entity);
             final Number key = jdbcInsert.executeAndReturnKey(parameters);
             return select(key.longValue());
@@ -89,19 +88,19 @@ public class JdbcTemplateOrderDao implements OrderDao {
     }
 
     private void update(final Order entity) {
-        final String sql = "UPDATE orders SET order_status = (:orderStatus) WHERE id = (:id)";
-        final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("orderStatus", entity.getOrderStatus())
-                .addValue("id", entity.getId());
-        jdbcTemplate.update(sql, parameters);
+        // final String sql = "UPDATE orders SET order_status = (:orderStatus) WHERE id = (:id)";
+        // final SqlParameterSource parameters = new MapSqlParameterSource()
+                // .addValue("orderStatus", entity.orderStatusgetOrderStatus())
+                // .addValue("id", entity.getId());
+        // jdbcTemplate.update(sql, parameters);
     }
 
     private Order toEntity(final ResultSet resultSet) throws SQLException {
-        final Order entity = new Order();
-        entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setOrderTableId(resultSet.getLong("order_table_id"));
+        // final Order entity = new orderStatusrder();
+        // entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
+        // entity.setOrderTableId(resultSet.getLong("order_table_id"));
         // entity.updateStatus(resultSet.getString("order_status"));
-        entity.setOrderedTime(resultSet.getObject("ordered_time", LocalDateTime.class));
-        return entity;
+        // entity.setOrderedTime(resultSet.getObject("ordered_time", LocalDateTime.class));
+        return null;
     }
 }

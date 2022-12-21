@@ -66,7 +66,7 @@ class TableServiceTest {
 		// then
 		assertThat(savedOrderTable)
 			.satisfies(orderTable -> {
-				assertThat(orderTable.getId()).isEqualTo(주문테이블.getId());
+				assertThat(orderTable.getId()).isEqualTo(주문테이블.id());
 				assertThat(orderTable.getNumberOfGuests()).isEqualTo(주문테이블.getNumberOfGuests());
 				assertThat(orderTable.isEmpty()).isEqualTo(주문테이블.isEmpty());
 			});
@@ -87,12 +87,12 @@ class TableServiceTest {
 	void updateTableStatusTest() {
 		// given
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.getId(),
+		given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
 			Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 
 		// when
-		OrderTableResponse response = tableService.changeEmpty(주문테이블.getId(), tableStatusRequest);
+		OrderTableResponse response = tableService.changeEmpty(주문테이블.id(), tableStatusRequest);
 
 		// then
 		assertThat(response.isEmpty()).isTrue();
@@ -107,7 +107,7 @@ class TableServiceTest {
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeEmpty(주문테이블.getId(), tableStatusRequest));
+			.isThrownBy(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
 	}
 
 	@DisplayName("테이블 그룹에 속해있으면 빈 테이블로 변경할 수 없다.")
@@ -117,12 +117,12 @@ class TableServiceTest {
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		OrderTable 빈_한명_테이블 = 빈_한명_테이블();
 		TableGroup from = TableGroup.from(Collections.singletonList(빈_한명_테이블));
-		from.getOrderTables().list().get(0);
+		from.orderTables().list().get(0);
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(빈_한명_테이블));
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeEmpty(주문테이블.getId(), tableStatusRequest));
+			.isThrownBy(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
 	}
 
 	@DisplayName("주문 상태가 조리중, 식사중이면 빈 테이블로 변경할 수 없다.")
@@ -131,12 +131,12 @@ class TableServiceTest {
 		// given
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.getId(),
+		given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
 			Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeEmpty(주문테이블.getId(), tableStatusRequest));
+			.isThrownBy(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
 	}
 
 	@DisplayName("방문한 손님 수를 변경할 수 있다.")
@@ -145,10 +145,10 @@ class TableServiceTest {
 		// given
 		int guestNumbersToChange = 4;
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(guestNumbersToChange);
-		given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
+		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.ofNullable(주문테이블));
 
 		// when
-		OrderTableResponse response = tableService.changeNumberOfGuests(주문테이블.getId(), request);
+		OrderTableResponse response = tableService.changeNumberOfGuests(주문테이블.id(), request);
 
 		// then
 		assertThat(response.getNumberOfGuests()).isEqualTo(guestNumbersToChange);
@@ -163,7 +163,7 @@ class TableServiceTest {
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(), request));
+			.isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.id(), request));
 	}
 
 	@DisplayName("방문 손님 수를 변경하려는 주문 테이블은 저장되어 있어야 한다.")
@@ -171,11 +171,11 @@ class TableServiceTest {
 	void updateNumberOfGuestsWithEmptyOrderTableTest() {
 		// given
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(5);
-		given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.empty());
+		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.empty());
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(), request));
+			.isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.id(), request));
 	}
 
 	@DisplayName("방문 손님 수를 변경하려는 주문 테이블은 비어있지 않은 상태여야 한다.")
@@ -184,10 +184,10 @@ class TableServiceTest {
 		// given
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(5);
 		// 주문테이블.setEmpty(true);
-		given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(빈_두명_테이블()));
+		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(빈_두명_테이블()));
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeNumberOfGuests(비어있는_테이블().getId(), request));
+			.isThrownBy(() -> tableService.changeNumberOfGuests(비어있는_테이블().id(), request));
 	}
 }

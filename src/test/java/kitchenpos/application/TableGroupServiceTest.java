@@ -70,8 +70,8 @@ class TableGroupServiceTest {
 		// then
 		verify(tableGroupDao, only()).save(any(TableGroup.class));
 		assertAll(
-			() -> assertThat(단체지정.getOrderTables().list()).hasSize(2),
-			() -> assertThat(단체지정.getId()).isEqualTo(response.getId())
+			() -> assertThat(단체지정.orderTables().list()).hasSize(2),
+			() -> assertThat(단체지정.id()).isEqualTo(response.getId())
 		);
 	}
 
@@ -140,7 +140,7 @@ class TableGroupServiceTest {
 		// then
 		verify(orderTableDao, times(2)).save(any(OrderTable.class));
 		assertThat(주문_테이블_목록.stream()).allMatch(
-			orderTable -> orderTable.getTableGroupId() == null && orderTable.isEmpty()
+			orderTable -> orderTable.tableGroup() == null && orderTable.isEmpty()
 		);
 	}
 

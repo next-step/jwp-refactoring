@@ -32,10 +32,10 @@ public class OrderTableResponse {
 	}
 	public static OrderTableResponse from(OrderTable orderTable) {
 		if (orderTable.hasTableGroup()) {
-			return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
+			return new OrderTableResponse(orderTable.id(), orderTable.tableGroup().id(),
 				orderTable.numberOfGuests().value(), orderTable.isEmpty());
 		}
-		return OrderTableResponse.of(orderTable.getId(),
+		return OrderTableResponse.of(orderTable.id(),
 			orderTable.getNumberOfGuests(), orderTable.isEmpty());
 	}
 

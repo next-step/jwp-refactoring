@@ -58,7 +58,7 @@ public class OrderAcceptanceUtils {
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(response.jsonPath().getList(".", OrderResponse.class))
 				.extracting(OrderResponse::getId)
-				.containsExactly(expectedOrder.getId())
+				.containsExactly(expectedOrder.id())
 		);
 	}
 
