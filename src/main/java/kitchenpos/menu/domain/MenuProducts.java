@@ -1,19 +1,18 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "menu_id", nullable = false)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    protected MenuProducts() {}
+    protected MenuProducts() {
+    }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = new ArrayList<>(menuProducts);
@@ -31,9 +30,5 @@ public class MenuProducts {
         }
 
         return sum;
-    }
-
-    public void setMenu(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.unit.menu;
 
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -57,10 +58,10 @@ class MenuServiceTest {
         스테이크 = new Product(1L, new Price(BigDecimal.valueOf(30_000)), "스테이크");
         파스타 = new Product(2L, new Price(BigDecimal.valueOf(15_000)), "파스타");
         스파빅그륩 = new MenuGroup(1L, "피자");
-        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 스파빅그륩.getId());
+        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 스파빅그륩.getId(), new MenuProducts(Arrays.asList()));
 
-        스테이크_이인분 = new MenuProduct(스테이크_파스타_빅세트, 파스타, 2);
-        파스타_삼인분 = new MenuProduct(스테이크_파스타_빅세트, 파스타, 3);
+        스테이크_이인분 = new MenuProduct(파스타, 2);
+        파스타_삼인분 = new MenuProduct(파스타, 3);
     }
 
 
@@ -113,7 +114,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격은 모든 상품의 합 이하야야한다")
     void createMenuIsAllProductSumMin() {
-        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(200_000)), 스파빅그륩.getId());
+        스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(200_000)), 스파빅그륩.getId(), new MenuProducts(Arrays.asList()));
         given(menuGroupPort.findById(스테이크_파스타_빅세트.getMenuGroupId())).willReturn(스파빅그륩);
         given(productPort.findAllByIdIn(any())).willReturn(Arrays.asList(스테이크));
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));
@@ -128,8 +129,8 @@ class MenuServiceTest {
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 2L), new MenuProductRequest(파스타.getId(), 3L));
         MenuRequest request = new MenuRequest("스테이크_파스타_빅세트", BigDecimal.valueOf(90_000), 스파빅그륩.getId(), productRequest);
 
-        Menu 스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩.getId());
-        Menu 스테이크_세트 = new Menu("스테이크_세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩.getId());
+        Menu 스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩.getId(), new MenuProducts(Arrays.asList()));
+        Menu 스테이크_세트 = new Menu("스테이크_세트", new Price(BigDecimal.valueOf(90_000)), 스파빅그륩.getId(), new MenuProducts(Arrays.asList()));
 
         given(menuPort.findAll()).willReturn(Arrays.asList(스테이크_파스타_빅세트, 스테이크_세트));
 

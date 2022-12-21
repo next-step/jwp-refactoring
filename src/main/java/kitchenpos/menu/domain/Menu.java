@@ -32,24 +32,20 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public Menu(String name, Price price, Long menuGroupId) {
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
     }
 
 
-    private static void validCheckMeuProductPrice(BigDecimal sumPrice, Price price) {
+    public void validCheckMeuProductPrice() {
+        BigDecimal sumPrice = this.menuProducts.getSumPrice();
+
         if (price.getPrice().compareTo(sumPrice) > 0) {
             throw new IllegalArgumentException(MENU_PRICE_NOT_OVER_SUM_PRICE.getMessage());
         }
-    }
-
-    public void addMenuProducts(MenuProducts menuProducts) {
-        validCheckMeuProductPrice(menuProducts.getSumPrice(), price);
-
-        this.menuProducts = menuProducts;
-        menuProducts.setMenu(this);
     }
 
     public Long getId() {
@@ -71,5 +67,16 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getList();
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", menuGroupId=" + menuGroupId +
+                ", menuProducts=" + menuProducts +
+                '}';
     }
 }

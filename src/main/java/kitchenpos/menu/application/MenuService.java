@@ -38,11 +38,12 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupPort.findById(request.getMenuGroupId());
         List<Product> products = productPort.findAllByIdIn(getProductIds(request));
-        Menu menu = new Menu(request.getName(), new Price(request.getPrice()), menuGroup.getId());
+        Menu menu = new Menu(request.getName(), new Price(request.getPrice()), menuGroup.getId(), makeMenuProducts(products, request));
+        menu.validCheckMeuProductPrice();
 
-        MenuProducts menuProducts = makeMenuProducts(products, request);
+        System.out.println("=========------");
+        System.out.println(menu.toString());
 
-        menu.addMenuProducts(menuProducts);
         Menu saveMenu = menuPort.save(menu);
 
         return MenuResponse.from(saveMenu);

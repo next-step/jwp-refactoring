@@ -20,10 +20,12 @@ class MenuTest {
         MenuGroup menuGroup = new MenuGroup("양식");
         Product product = new Product(new Price(BigDecimal.valueOf(10_000)), "파스타");
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(product, 2L)));
-        Menu menu = new Menu("스테이크", new Price(BigDecimal.valueOf(500_000)), menuGroup.getId());
+
+
+        Menu menu = new Menu("스테이크", new Price(BigDecimal.valueOf(500_000)), menuGroup.getId(), menuProducts);
 
         assertThatThrownBy(
-                () -> menu.addMenuProducts(menuProducts))
+                menu::validCheckMeuProductPrice)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

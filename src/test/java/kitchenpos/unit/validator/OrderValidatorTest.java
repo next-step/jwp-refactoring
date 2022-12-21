@@ -1,6 +1,7 @@
 package kitchenpos.unit.validator;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -34,7 +35,7 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문 항목이 비어 있을 수 없다.")
     void createOrderLineItemEmpty() {
-        Menu menu = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 1L);
+        Menu menu = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 1L, new MenuProducts(Arrays.asList()));
 
         given(orderTablePort.findById(any())).willReturn(any());
 
@@ -46,7 +47,7 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문항목과 메뉴의 크기는 같아야한다.")
     void validCheckMenuSize() {
-        Menu menu = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 1L);
+        Menu menu = new Menu("스테이크_파스타_빅세트", new Price(BigDecimal.valueOf(45_000)), 1L, new MenuProducts(Arrays.asList()));
         List<OrderLineItemRequest> requests = Arrays.asList(new OrderLineItemRequest(1L, 1L), new OrderLineItemRequest(2L, 1L));
         given(orderTablePort.findById(any())).willReturn(any());
 
