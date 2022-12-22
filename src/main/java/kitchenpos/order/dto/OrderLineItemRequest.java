@@ -5,7 +5,6 @@ import kitchenpos.order.domain.OrderLineItem;
 public class OrderLineItemRequest {
 
     private Long seq;
-    private Long orderId;
     private Long menuId;
     private long quantity;
 
@@ -18,7 +17,7 @@ public class OrderLineItemRequest {
     }
 
     public OrderLineItem toOrderLineItem() {
-        return new OrderLineItem(seq, orderId, menuId, quantity);
+        return new OrderLineItem(seq, null, menuId, quantity);
     }
 
     public Long getSeq() {
@@ -27,14 +26,6 @@ public class OrderLineItemRequest {
 
     public void setSeq(final Long seq) {
         this.seq = seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
     }
 
     public Long getMenuId() {

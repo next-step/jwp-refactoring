@@ -1,7 +1,6 @@
 package kitchenpos.order;
 
 import static kitchenpos.order.OrderFixture.주문;
-import static kitchenpos.order.OrderFixture.주문항목;
 import static kitchenpos.table.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,8 +50,6 @@ class OrderServiceTest {
             .thenReturn(Optional.of(일번테이블));
         when(orderDao.save(any()))
             .thenReturn(주문);
-        when(orderLineItemDao.save(any()))
-            .thenReturn(주문항목);
 
         //when
         OrderResponse orderResponse = orderService.create(주문);

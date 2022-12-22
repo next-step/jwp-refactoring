@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -49,20 +48,9 @@ public class OrderService {
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
         order(order, orderTable);
-
         final Order savedOrder = orderDao.save(order);
-        savedOrder.setOrderLineItems(saveOrderLine(order, savedOrder.getId()));
 
         return OrderResponse.from(savedOrder);
-    }
-
-    private List<OrderLineItem> saveOrderLine(Order order, Long orderId) {
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : order.getOrderLineItems()) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-        }
-        return savedOrderLineItems;
     }
 
     private void order(Order order, OrderTable orderTable) {
@@ -112,7 +100,6 @@ public class OrderService {
         changeOrderStatus(order, savedOrder);
 
         orderDao.save(savedOrder);
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
         return OrderResponse.from(savedOrder);
     }
 
