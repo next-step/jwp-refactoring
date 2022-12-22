@@ -45,8 +45,8 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Price getTotalPrice(Price productPrice) {
-        return productPrice.multiply(quantity);
+    public Price getTotalPrice() {
+        return product.multiply(quantity);
     }
 
     public Long getSeq() {

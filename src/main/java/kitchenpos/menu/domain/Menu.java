@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
@@ -36,7 +37,19 @@ public class Menu {
         this.name = Name.of(name);
         this.price = price;
         this.menuGroup = menuGroup;
+        validatePrice(menuProducts);
         this.menuProducts = menuProducts;
+    }
+
+    private void validatePrice(MenuProducts menuProducts) {
+        Price menuProductsPrice = menuProducts.value()
+            .stream()
+            .map(MenuProduct::getTotalPrice)
+            .reduce(Price::add)
+            .orElse(Price.ZERO);
+        if (price.compareTo(menuProductsPrice) > 0) {
+            throw new IllegalArgumentException(ErrorMessage.PRICE_HIGHER_THAN_MENU_PRODUCTS_TOTAL_PRICES);
+        }
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
@@ -62,4 +75,5 @@ public class Menu {
     public MenuProducts getMenuProducts() {
         return menuProducts;
     }
+
 }

@@ -23,6 +23,6 @@ public class MenuProductTest {
         // when
         MenuProduct 햄버거_상품 = MenuProduct.of(햄버거, 2);
         // then
-        assertThat(햄버거_상품.getTotalPrice(햄버거.getPrice())).isEqualTo(Price.of(BigDecimal.valueOf(5000 * 2)));
+        assertThat(햄버거_상품.getTotalPrice()).isEqualTo(Price.of(BigDecimal.valueOf(5000 * 2)));
     }
 }

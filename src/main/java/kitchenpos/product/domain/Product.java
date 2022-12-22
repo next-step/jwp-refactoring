@@ -10,6 +10,7 @@ import javax.persistence.Id;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 
 @Entity
 public class Product {
@@ -43,5 +44,9 @@ public class Product {
 
     public Price getPrice() {
         return price;
+    }
+
+    public Price multiply(Quantity quantity) {
+        return price.multiply(quantity);
     }
 }
