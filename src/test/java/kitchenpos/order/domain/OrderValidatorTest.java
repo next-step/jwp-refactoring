@@ -1,6 +1,5 @@
-package kitchenpos.order.unit;
+package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.DisplayName;

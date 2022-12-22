@@ -16,13 +16,13 @@ public class OrderValidator {
 
     public static void validateParam(List<OrderLineItemRequest> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("꼭 한개이상에 주문 상품이 포함되어 있어야 합니다.");
         }
     }
 
     public static void validateMenus(List<OrderLineItemRequest> orderLineItems, long menuCount) {
         if (orderLineItems.size() != menuCount) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("존재하는 메뉴들로만 구성되어 있어야 합니다.");
         }
 
     }

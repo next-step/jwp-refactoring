@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -59,7 +60,7 @@ class OrderTableServiceTest {
     @DisplayName("전체 주문 테이블을 조회할 수 있다.")
     void tableTest1() {
         List<OrderTable> 메뉴테이블들 = 메뉴테이블들_생성();
-        given(orderTableRepository.findAll()).willReturn(메뉴테이블들);
+        given(orderTableRepository.findAllJoinFetch()).willReturn(메뉴테이블들);
 
         List<OrderTableResponse> 조회된_메뉴테이블들 = orderTableService.list();
 
@@ -162,7 +163,7 @@ class OrderTableServiceTest {
         OrderTableRequest 변경할_메뉴테이블 = generateOrderTableRequest(5, false);
 
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(메뉴테이블1.getId(), 변경할_메뉴테이블))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     public static OrderTable generateOrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {

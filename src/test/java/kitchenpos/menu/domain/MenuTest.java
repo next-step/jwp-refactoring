@@ -1,6 +1,5 @@
-package kitchenpos.menu.unit;
+package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +17,9 @@ public class MenuTest {
         BigDecimal _3000 = new BigDecimal(3000);
         BigDecimal _2000 = new BigDecimal(2000);
 
-        Menu menu = Menu.create("menu", _3000, null);
+        MenuValidator validator = new MenuValidator(new Price(_2000));
 
-        assertThatThrownBy(() -> menu.validatePrice(new Price(_2000)))
+        assertThatThrownBy(() -> validator.validatePrice(new Price(_3000)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

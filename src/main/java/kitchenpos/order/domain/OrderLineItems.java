@@ -16,4 +16,7 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
+    public void add(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+    }
 }

@@ -1,7 +1,5 @@
-package kitchenpos.table.unit;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +15,7 @@ public class OrderTableTest {
     void orderTableTest1() {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
         OrderTable orderTable = new OrderTable(tableGroup, 0, false);
-        assertThatThrownBy(() -> orderTable.validateExist()).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable.validateGrouped()).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

@@ -22,7 +22,7 @@ public class TableGroupResponse {
         return new TableGroupResponse(
                 createTableGroup.getId(),
                 createTableGroup.getCreatedDate(),
-                createTableGroup.getOrderLineItems().stream()
+                createTableGroup.getOrderTables().stream()
                         .map(OrderTableResponse::from)
                         .collect(Collectors.toList()));
     }

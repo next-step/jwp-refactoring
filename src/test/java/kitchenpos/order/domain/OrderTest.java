@@ -1,8 +1,8 @@
-package kitchenpos.order.unit;
+package kitchenpos.order.domain;
 
 import kitchenpos.order.constant.OrderStatus;
-import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,15 +18,15 @@ public class OrderTest {
     void orderTest1() {
         OrderTable orderTable = OrderTable.create(null, 5, true);
 
-        Order order = Order.create(orderTable, null, LocalDateTime.now());
+        Order order = new Order(orderTable, null, LocalDateTime.now());
 
         assertThatThrownBy(() -> order.validate()).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("주문의 상태변경 기능 (주문 테이블은 비어있으면 안된다.)")
+    @DisplayName("주문의 상태변경 기능 (완료된 주문은 변경할 수 없다.)")
     void orderTest2() {
-        Order order = Order.create(null, OrderStatus.COMPLETION.name(), LocalDateTime.now());
+        Order order = new Order(null, OrderStatus.COMPLETION.name(), LocalDateTime.now());
 
         assertThatThrownBy(() -> order.changeStatus(OrderStatus.COMPLETION.name())).isInstanceOf(IllegalArgumentException.class);
     }

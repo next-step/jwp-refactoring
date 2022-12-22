@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.domain.Price;
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -100,7 +101,7 @@ public class MenuServiceTest {
     @DisplayName("전체 메뉴를 조회할 수 있다.")
     void menuTest1() {
         List<Menu> 메뉴들 = 메뉴들_생성();
-        given(menuRepository.findAll()).willReturn(메뉴들);
+        given(menuRepository.findAllJoinFetch()).willReturn(메뉴들);
 
         List<MenuResponse> 조회된_메뉴들 = menuService.list();
 
@@ -110,9 +111,9 @@ public class MenuServiceTest {
     @Test
     @DisplayName("새로운 메뉴를 추가할 수 있다.")
     void menuTest2() {
-        given(menuGroupRepository.findById(메뉴1.getMenuGroupId())).willReturn(Optional.of(메뉴그룹));
         given(productRepository.findById(상품1.getId())).willReturn(Optional.of(상품1));
         given(productRepository.findById(상품2.getId())).willReturn(Optional.of(상품2));
+        given(menuGroupRepository.findById(메뉴1.getMenuGroupId())).willReturn(Optional.of(메뉴그룹));
         given(menuRepository.save(any(Menu.class))).willReturn(메뉴1);
 
         MenuRequest 추가할_메뉴 = generateMenuRequest(메뉴1, 메뉴상품요청들);
@@ -124,6 +125,10 @@ public class MenuServiceTest {
     @Test
     @DisplayName("새로운 메뉴 추가 : 메뉴 가격은 필수값이며, 음수여서는 안된다.")
     void menuTest3() {
+        given(productRepository.findById(상품1.getId())).willReturn(Optional.of(상품1));
+        given(productRepository.findById(상품2.getId())).willReturn(Optional.of(상품2));
+        given(menuGroupRepository.findById(메뉴1.getMenuGroupId())).willReturn(Optional.of(메뉴그룹));
+
         Menu 가격이_NULL인_메뉴 = generateMenu(1L, "menu1", null, 메뉴그룹, 메뉴상품들);
         Menu 가격이_음수인_메뉴 = generateMenu(2L, "menu2", 가격(-1), 메뉴그룹, 메뉴상품들);
 
@@ -139,7 +144,7 @@ public class MenuServiceTest {
         Menu 메뉴그룹이_NULL인_메뉴 = generateMenu(1L, "menu1", 가격(1500), new MenuGroup(999L, null), 메뉴상품들);
 
         assertThatThrownBy(() -> menuService.create(generateMenuRequest(메뉴그룹이_NULL인_메뉴, 메뉴상품요청들)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -151,18 +156,17 @@ public class MenuServiceTest {
         Menu 존재하지않는_제품이포함된_메뉴 = generateMenu(1L, "menu1", 가격(1500), 메뉴그룹, 존재하지않는_제품이포함된_메뉴제품들);
 
         assertThatThrownBy(() -> menuService.create(generateMenuRequest(존재하지않는_제품이포함된_메뉴, 메뉴상품요청들)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
     @DisplayName("새로운 메뉴 추가 : 메뉴 가격은 메뉴 상품들의 가격의 합보다 크면 안된다.")
     void menuTest6() {
-        given(menuGroupRepository.findById(메뉴1.getMenuGroupId())).willReturn(Optional.of(메뉴그룹));
         given(productRepository.findById(상품1.getId())).willReturn(Optional.of(상품1));
         given(productRepository.findById(상품2.getId())).willReturn(Optional.of(상품2));
+        given(menuGroupRepository.findById(메뉴1.getMenuGroupId())).willReturn(Optional.of(메뉴그룹));
 
         Menu 상품들의_가격의합보다_큰메뉴 = generateMenu(1L, "menu1", 가격(4000), 메뉴그룹, 메뉴상품들);
-        given(menuRepository.save(any(Menu.class))).willReturn(상품들의_가격의합보다_큰메뉴);
 
         assertThatThrownBy(() -> menuService.create(generateMenuRequest(상품들의_가격의합보다_큰메뉴, 메뉴상품요청들)))
                 .isInstanceOf(IllegalArgumentException.class);

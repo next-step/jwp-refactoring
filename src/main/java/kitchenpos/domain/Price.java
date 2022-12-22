@@ -18,7 +18,7 @@ public class Price {
     public static Price create(BigDecimal price) {
         Price created = new Price(price);
         if (created.isNull() || created.isNegative()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격의 금액은 NULL이거나 음수여서는 안됩니다.");
         }
         return created;
     }

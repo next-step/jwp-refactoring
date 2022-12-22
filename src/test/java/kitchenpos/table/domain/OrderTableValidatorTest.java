@@ -1,6 +1,5 @@
-package kitchenpos.table.unit;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTableValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

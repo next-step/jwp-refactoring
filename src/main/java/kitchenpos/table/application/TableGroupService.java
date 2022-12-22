@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -34,9 +35,8 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        TableGroupValidator.validate(tableGroupRequest.getOrderTables(), savedOrderTables);
 
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.create(tableGroupRequest.getOrderTables(), savedOrderTables);
         TableGroup createTableGroup = tableGroupRepository.save(tableGroup);
 
         for (OrderTable savedOrderTable : savedOrderTables) {
@@ -67,12 +67,12 @@ public class TableGroupService {
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문의 상태가 요리중이거나 식사중이어선 안됩니다.");
         }
     }
 
     private TableGroup getTableGroup(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new EntityNotFoundException("TableGroup", tableGroupId));
     }
 
 }

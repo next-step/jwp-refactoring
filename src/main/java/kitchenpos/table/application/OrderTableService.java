@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.order.constant.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderTableService {
 
     private final OrderRepository orderRepository;
@@ -34,7 +36,7 @@ public class OrderTableService {
     }
 
     public List<OrderTableResponse> list() {
-        List<OrderTable> menuGroups = orderTableRepository.findAll();
+        List<OrderTable> menuGroups = orderTableRepository.findAllJoinFetch();
         return menuGroups.stream()
                 .map(OrderTableResponse::from)
                 .collect(Collectors.toList());
@@ -43,7 +45,6 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable savedOrderTable = getOrderTable(orderTableId);
-        savedOrderTable.validateExist();
 
         validateExistsOrderTable(orderTableId);
 
@@ -68,13 +69,13 @@ public class OrderTableService {
 
     private OrderTable getOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException("OrderTable", orderTableId));
     }
 
     private void validateExistsOrderTable(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문의 상태가 요리중이거나 식사중이어선 안됩니다.");
         }
     }
 

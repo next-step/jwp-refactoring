@@ -1,8 +1,7 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.menu.domain.*;
 import kitchenpos.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,38 +42,42 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = getMenuGroup(menuRequest.getMenuGroupId());
+        List<MenuProduct> menuProductList = new ArrayList<>();
 
-        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        Menu createdMenu = menuRepository.save(menu);
-
-        Price sum = Price.create(BigDecimal.ZERO);
+        Price sumPrice = Price.create(BigDecimal.ZERO);
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
             Product product = getProduct(menuProductRequest.getProductId());
 
-            MenuProduct menuProduct = MenuProduct.create(createdMenu, product, menuProductRequest.getQuantity());
+            MenuProduct menuProduct = MenuProduct.create(null, product, menuProductRequest.getQuantity());
             MenuProduct createdMenuProduct = menuProductRepository.save(menuProduct);
 
-            sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
+            menuProductList.add(createdMenuProduct);
+            sumPrice.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
         }
-        createdMenu.validate(sum);
 
-        return MenuResponse.from(createdMenu);
+        MenuGroup menuGroup = getMenuGroup(menuRequest.getMenuGroupId());
+        Menu menu = Menu.create(
+                menuRequest.getName(),
+                menuRequest.getPrice(),
+                menuGroup,
+                new MenuProducts(menuProductList),
+                new MenuValidator(sumPrice));
+        return MenuResponse.from(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
-        List<Menu> menus = menuRepository.findAll();
+        List<Menu> menus = menuRepository.findAllJoinFetch();
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
     }
 
     private MenuGroup getMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId).orElseThrow(IllegalArgumentException::new);
+        return menuGroupRepository.findById(menuGroupId).orElseThrow(() -> new EntityNotFoundException("MenuGroup", menuGroupId));
     }
 
     private Product getProduct(Long productId) {
-        return productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
+        return productRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product", productId));
     }
 
 }

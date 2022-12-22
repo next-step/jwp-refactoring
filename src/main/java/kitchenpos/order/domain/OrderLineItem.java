@@ -27,8 +27,13 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public static OrderLineItem create(Order order, Menu menu, long quantity) {
-        return new OrderLineItem(order, menu, quantity);
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public static OrderLineItem create(Menu menu, long quantity) {
+        return new OrderLineItem(menu, quantity);
     }
 
     public Long getId() {

@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.repository.MenuRepository;
@@ -93,7 +94,7 @@ class OrderServiceTest {
     @DisplayName("전체 주문을 조회할 수 있다.")
     void orderTest1() {
         List<Order> 주문들 = 주문들_생성();
-        given(orderRepository.findAll()).willReturn(주문들);
+        given(orderRepository.findAllJoinFetch()).willReturn(주문들);
 
         List<OrderResponse> 조회된_주문들 = orderService.list();
 
@@ -118,6 +119,8 @@ class OrderServiceTest {
     @DisplayName("새로운 주문 추가 : 주문항목은 비어있어선 안된다.")
     void orderTest3() {
         given(menuRepository.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(메뉴1));
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(메뉴2));
         given(orderTableRepository.findById(주문요청.getOrderTableId())).willReturn(Optional.of(generateOrderTable(null, 0, true)));
 
         assertThatThrownBy(() -> orderService.create(주문요청))
@@ -130,7 +133,7 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
 
         assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -160,7 +163,7 @@ class OrderServiceTest {
         OrderStatusRequest 변경할_주문_현황 = generateOrderStatusRequest(OrderStatus.COMPLETION.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 변경할_주문_현황))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test

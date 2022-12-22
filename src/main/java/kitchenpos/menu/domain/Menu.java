@@ -18,19 +18,13 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
-
-    public Menu(String name, Price price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-    }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
@@ -40,18 +34,16 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(name, Price.create(price), menuGroup);
+    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts, MenuValidator menuValidator) {
+        this.price = price;
+        this.name = name;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+        menuValidator.validate(price);
     }
 
-    public void validate(Price sum) {
-        validatePrice(sum);
-    }
-
-    public void validatePrice(Price sum) {
-        if (price.isGather(sum)) {
-            throw new IllegalArgumentException();
-        }
+    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts, MenuValidator menuValidator) {
+        return new Menu(name, Price.create(price), menuGroup, menuProducts, menuValidator);
     }
 
     public Long getId() {
