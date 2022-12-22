@@ -77,8 +77,8 @@ class TableGroupServiceTest extends ServiceTest {
     public void setUp() {
         super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        Product product = productRepository.save(new Product(nameProductA(), priceProductA()));
-        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
+        Product product = productRepository.save(new Product(1L, nameProductA(), priceProductA()));
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(new MenuProduct(product.getId(), new Quantity(1))))));
         orderLineItemsA = orderLineItemsA();
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }

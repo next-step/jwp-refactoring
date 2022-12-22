@@ -17,7 +17,7 @@ public class ProductCreateRequest {
     }
 
     public Product toProduct() {
-        return new Product(new Name(this.name), new Price(this.price));
+        return new Product(1L, new Name(this.name), new Price(this.price));
     }
 
     public BigDecimal getPrice() {

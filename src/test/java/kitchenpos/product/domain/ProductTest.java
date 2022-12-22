@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static kitchenpos.common.fixture.NameFixture.nameProductA;
 import static kitchenpos.common.fixture.PriceFixture.priceProductA;
-import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,14 +21,14 @@ class ProductTest {
     @DisplayName("이름을 필수로 갖는다.")
     @Test
     void name() {
-        assertThatThrownBy(() -> new Product(null, priceProductA()))
+        assertThatThrownBy(() -> new Product(1L, null, priceProductA()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("가격을 필수로 갖는다.")
     @Test
     void price() {
-        assertThatThrownBy(() -> new Product(nameProductA(), null))
+        assertThatThrownBy(() -> new Product(1L, nameProductA(), null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

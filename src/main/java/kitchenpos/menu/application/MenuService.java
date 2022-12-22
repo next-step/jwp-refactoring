@@ -4,13 +4,12 @@ import kitchenpos.common.Name;
 import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,46 +20,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
+
     public static final String MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE = "메뉴 그룹이 존재하지 않습니다.";
+
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
-    ) {
+    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
-        MenuProducts menuProducts = createMenuProducts(request.getMenuProducts());
-        Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), findMenuGroup(request), menuProducts);
+//        MenuProducts menuProducts = createMenuProducts(request.getMenuProducts());
+        Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), findMenuGroup(request), new MenuProducts(request.getMenuProducts()));
+        menu.validate(menuValidator);
         return MenuResponse.of(menuRepository.save(menu));
-    }
-
-    private MenuGroup findMenuGroup(MenuCreateRequest request) {
-        if (Objects.isNull(request.getMenuGroupId())) {
-            throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
-        }
-        return menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(EntityNotFoundException::new);
-    }
-
-    private MenuProducts createMenuProducts(List<MenuProduct> menuProducts) {
-        validateExistProduct(menuProducts);
-        return new MenuProducts(menuProducts);
-    }
-
-    private void validateExistProduct(List<MenuProduct> menuProducts) {
-        for (final MenuProduct menuProduct : menuProducts) {
-            productRepository.findById(menuProduct.getProduct().getId())
-                    .orElseThrow(IllegalArgumentException::new);
-        }
     }
 
     public List<MenuResponse> list() {
@@ -68,6 +46,13 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private MenuGroup findMenuGroup(MenuCreateRequest request) {
+        if (Objects.isNull(request.getMenuGroupId())) {
+            throw new IllegalArgumentException(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
+        }
+        return menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(EntityNotFoundException::new);
     }
 }
 

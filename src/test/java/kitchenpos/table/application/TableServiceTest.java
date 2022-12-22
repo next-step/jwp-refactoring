@@ -82,7 +82,7 @@ class TableServiceTest extends ServiceTest {
         super.setUp();
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         Product product = productRepository.save(ProductFixture.productA());
-        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(product.getId(), new Quantity(1))))));
         tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(changeEmptyOrder(), changeEmptyOrder()))));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(notEmptyOrderTable());

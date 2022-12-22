@@ -19,8 +19,18 @@ public class Product {
     @Embedded
     private Price price;
 
+    protected Product() {
+    }
+
     public Product(Name name, Price price) {
         validate(name, price);
+        this.name = name;
+        this.price = price;
+    }
+
+    public Product(Long id, Name name, Price price) {
+        validate(name, price);
+        this.id = id;
         this.name = name;
         this.price = price;
     }
