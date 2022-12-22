@@ -2,15 +2,12 @@ package kitchenpos.table.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.Empty;
 import kitchenpos.common.GuestCount;
@@ -18,79 +15,91 @@ import kitchenpos.exception.ErrorMessage;
 
 @Entity
 public class OrderTable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_to_table_group"))
-	private TableGroup tableGroup;
-	@Embedded
-	private GuestCount guestCount;
-	@Embedded
-	private Empty empty;
+    public static String ENTITY_NAME = "주문테이블";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
+    @Embedded
+    private GuestCount guestCount;
+    @Embedded
+    private Empty empty;
 
-	protected OrderTable() {}
+    protected OrderTable() {}
 
-	private OrderTable(int numberOfGuests, boolean empty) {
-		this.guestCount = GuestCount.of(numberOfGuests);
-		this.empty = Empty.of(empty);
-	}
+    private OrderTable(int numberOfGuests, boolean empty) {
+        this.guestCount = GuestCount.of(numberOfGuests);
+        this.empty = Empty.of(empty);
+    }
 
-	public static OrderTable of(int numberOfGuests, boolean empty) {
-		return new OrderTable(numberOfGuests, empty);
-	}
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
-	}
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
 
-	public GuestCount getGuestCounts() {
-		return guestCount;
-	}
+    public GuestCount getGuestCounts() {
+        return guestCount;
+    }
 
-	public Empty getEmpty() {
-		return empty;
-	}
+    public Empty getEmpty() {
+        return empty;
+    }
 
-	public void updateEmptyStatus(Empty empty) {
-		validateTableGroup();
-		this.empty = empty;
-	}
+    public void group(Long tableGroupId) {
+        validateGroupedWhenGroup();
+        validateEmptyWhenGroup();
+        this.tableGroupId = tableGroupId;
+    }
 
-	public void updateNumberOfGuest(GuestCount guestCounts) {
-		validateTableEmpty();
-		this.guestCount = guestCounts;
-	}
+    public void unGroup() {
+        this.tableGroupId = null;
+    }
 
-	private void validateTableGroup() {
-		if (Objects.nonNull(this.getTableGroup())) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED);
-		}
-	}
+    public void updateEmptyStatus(Empty empty) {
+        validateGroupedWhenChangeEmpty();
+        this.empty = empty;
+    }
 
-	private void validateTableEmpty() {
-		if (this.empty.isEmpty()) {
-			throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_NUMBER_OF_GUESTS_WHEN_TABLE_IS_EMPTY);
-		}
-	}
+    public void updateNumberOfGuest(GuestCount guestCounts) {
+        validateEmptyWhenChangeNumberOfGuests();
+        this.guestCount = guestCounts;
+    }
 
-	public Long getTableGroupId() {
-		if (Objects.isNull(tableGroup)) {
-			return null;
-		}
-		return tableGroup.getId();
-	}
+    private void validateGroupedWhenGroup() {
+        if (isGrouped()) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_ALREADY_GROUPED);
+        }
+    }
 
-	public void updateGroup(TableGroup tableGroup) {
-		this.tableGroup = tableGroup;
-	}
+    private void validateGroupedWhenChangeEmpty() {
+        if (isGrouped()) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED);
+        }
+    }
 
-	public boolean isEmpty() {
-		return this.empty.isEmpty();
-	}
+    private void validateEmptyWhenChangeNumberOfGuests() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_CHANGE_NUMBER_OF_GUESTS_WHEN_TABLE_IS_EMPTY);
+        }
+    }
 
+    private void validateEmptyWhenGroup() {
+        if (!isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_IS_NOT_ALL_EMPTY);
+        }
+    }
+
+    public boolean isEmpty() {
+        return this.empty.isEmpty();
+    }
+
+    public boolean isGrouped() {return Objects.nonNull(this.getTableGroupId());}
 }

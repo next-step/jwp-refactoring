@@ -10,11 +10,11 @@ import io.restassured.RestAssured;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/db/sql/truncate.sql")
 public abstract class AcceptanceTest {
-	@LocalServerPort
-	int port;
+    @LocalServerPort
+    int port;
 
-	@BeforeEach
-	public void setUp() {
-		RestAssured.port = port;
-	}
+    @BeforeEach
+    public void setUp() {
+        RestAssured.port = port;
+    }
 }

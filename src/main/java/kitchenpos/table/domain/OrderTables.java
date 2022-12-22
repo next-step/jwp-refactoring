@@ -1,51 +1,39 @@
 package kitchenpos.table.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import kitchenpos.exception.ErrorMessage;
 
-@Embeddable
 public class OrderTables {
+    private static int MIN_GROUP_SIZE = 2;
+    private final List<OrderTable> orderTables;
 
-	@OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST, orphanRemoval = true)
-	private final List<OrderTable> orderTables;
+    private OrderTables(List<OrderTable> orderTables) {
+        this.orderTables = Collections.unmodifiableList(orderTables);
+    }
 
-	protected OrderTables() {
-		this.orderTables = new ArrayList<>();
-	}
+    public static OrderTables of(List<OrderTable> orderTables) {
+        return new OrderTables(orderTables);
+    }
 
-	private OrderTables(List<OrderTable> orderTables) {
-		this.orderTables = Collections.unmodifiableList(orderTables);
-	}
+    public List<OrderTable> value() {
+        return orderTables;
+    }
 
-	public static OrderTables of(List<OrderTable> orderTables) {
-		return new OrderTables(orderTables);
-	}
+    public void group(Long tableGroupId) {
+        validateSize();
+        this.orderTables.forEach(it -> it.group(tableGroupId));
+    }
 
-	public List<OrderTable> getOrderTables() {
-		return orderTables;
-	}
+    public void unGroup() {
+        this.orderTables.forEach(it -> it.unGroup());
+    }
 
-	public void updateGroup(TableGroup tableGroup) {
-		this.orderTables.forEach(it -> it.updateGroup(tableGroup));
-	}
-
-	public boolean isAllEmpty() {
-		return orderTables.stream().allMatch(it -> it.isEmpty());
-	}
-
-	public boolean isAnyGrouped() {
-		return orderTables.stream()
-			.anyMatch(it -> Objects.nonNull(it.getTableGroup()));
-	}
-
-	public int getSize() {
-		return orderTables.size();
-	}
+    private void validateSize() {
+        if (orderTables.size() < MIN_GROUP_SIZE) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_TABLE_GROUP_WHEN_SIZE_SIZE_IS_TOO_SMALL);
+        }
+    }
 
 }
