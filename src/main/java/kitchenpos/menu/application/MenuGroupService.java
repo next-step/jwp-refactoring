@@ -29,6 +29,6 @@ public class MenuGroupService {
 
     public MenuGroup findById(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
     }
 }

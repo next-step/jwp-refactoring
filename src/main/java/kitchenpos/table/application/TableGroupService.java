@@ -1,9 +1,6 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -14,22 +11,27 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Transactional(readOnly = true)
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
-    private final OrderTableRepository orderTableRepository;
 
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderDao orderDao, OrderTableRepository orderTableDao, TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
-        this.orderTableRepository = orderTableDao;
+    public TableGroupService(OrderRepository orderRepository,
+        OrderTableRepository orderTableRepository,
+        TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
-
         List<Long> orderTableIds = request.getOrderTableIds();
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
 
@@ -43,24 +45,23 @@ public class TableGroupService {
     }
 
     @Transactional
-    public void ungroup(final Long tableGroupId) {
+    public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(IllegalArgumentException::new);
 
-        final List<Long> orderTableIds = getTableGroupIds(tableGroup);
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
+        validateToUngroup(tableGroup);
         tableGroup.ungroup();
     }
 
-    private List<Long> getTableGroupIds(TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-        return orderTables.stream()
+    private void validateToUngroup(TableGroup tableGroup) {
+        List<OrderTable> orderTables = tableGroup.getOrderTables();
+
+        List<Long> orderTableIds = orderTables.stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
+
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.notCompletion())) {
+            throw new IllegalArgumentException("주문 상태가 조리 또는 식사 중인 경우 단체 지정 등록을 해제할 수 없습니다.");
+        }
     }
 }

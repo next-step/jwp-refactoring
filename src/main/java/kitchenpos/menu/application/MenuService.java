@@ -38,7 +38,7 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
-                .map(MenuResponse::from)
-                .collect(Collectors.toList());
+            .map(MenuResponse::from)
+            .collect(Collectors.toList());
     }
 }

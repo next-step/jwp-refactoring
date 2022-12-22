@@ -34,7 +34,7 @@ public class ProductService {
         List<MenuProduct> menuProductList = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProducts) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(IllegalArgumentException::new);
             menuProductList.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return menuProductList;

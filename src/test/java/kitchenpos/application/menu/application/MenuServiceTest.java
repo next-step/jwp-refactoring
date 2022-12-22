@@ -70,15 +70,15 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        아메리카노 = new Product("아메리카노", BigDecimal.valueOf(3000));
-        바닐라라떼 = new Product("바닐라라떼", BigDecimal.valueOf(2000));
+        아메리카노 = new Product("아메리카노", BigDecimal.valueOf(5000));
+        바닐라라떼 = new Product("바닐라라떼", BigDecimal.valueOf(5000));
         기본메뉴그룹 = new MenuGroup("기본메뉴그룹");
         기본메뉴_아메리카노 = new MenuProduct(아메리카노, 1);
         기본메뉴_바닐라라떼 = new MenuProduct(바닐라라떼, 1);
         기본메뉴 = new Menu("기본메뉴", BigDecimal.valueOf(5000), 기본메뉴그룹,
             Arrays.asList(기본메뉴_아메리카노, 기본메뉴_바닐라라떼));
         아메리카노요청 = new MenuProductRequest(아메리카노.getId(), 2L);
-        메뉴기본요청 = new MenuRequest("메뉴 기본", BigDecimal.valueOf(15_000), 기본메뉴그룹.getId(),
+        메뉴기본요청 = new MenuRequest("메뉴 기본", BigDecimal.valueOf(5_000), 기본메뉴그룹.getId(),
             Arrays.asList(아메리카노요청));
 
     }
@@ -114,49 +114,11 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹이 등록되어 있지 않으면 오류 발생한다.")
     void notExistMenuGroupException() {
         // given
-        MenuRequest request = MenuRequest.of("기본메뉴", BigDecimal.valueOf(1_000), 기본메뉴그룹.getId(),
-            new ArrayList<>());
-        when(menuGroupRepository.findById(기본메뉴.getMenuGroup().getId())).thenReturn(
-            Optional.of(기본메뉴그룹));
-        Menu 메뉴그룹미등록 = new Menu("메뉴그룹미등록", BigDecimal.valueOf(-7000L), null,
-            Arrays.asList(기본메뉴_아메리카노, 기본메뉴_바닐라라떼));
+        when(menuGroupService.findById(기본메뉴그룹.getId())).thenThrow(IllegalArgumentException.class);
 
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
+        // when && then
+        assertThatThrownBy(() -> menuService.create(메뉴기본요청))
             .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴 상품이 등록되어 있지 않으면 오류 발생한다.")
-    void notExistProductException() {
-        // given
-        MenuRequest request = MenuRequest.of("기본메뉴", BigDecimal.valueOf(1_000), 기본메뉴그룹.getId(),
-            new ArrayList<>());
-        when(menuGroupRepository.findById(기본메뉴.getMenuGroup().getId())).thenReturn(
-            Optional.of(기본메뉴그룹));
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(request))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("메뉴 상품들 가격의 합보다 메뉴의 가격이 크면 오류 발생한다.")
-    void menuPriceException() {
-//        // given
-//        given(productRepository.findById(아메리카노.getId())).willReturn(Optional.of(아메리카노));
-//        given(productRepository.findById(바닐라라떼.getId())).willReturn(Optional.of(바닐라라떼));
-//        given(menuGroupRepository.existsById(기본메뉴그룹.getId())).willReturn(true);
-//        List<MenuProductRequest> menuProductRequests = Arrays.asList(기본메뉴_아메리카노, 기본메뉴_바닐라라떼)
-//            .stream()
-//            .map(MenuProductRequest::)
-//            .collect(Collectors.toList());
-//        MenuRequest request = MenuRequest.of(기본메뉴.getName(), 기본메뉴.getPrice(),
-//            기본메뉴그룹.getId(), menuProductRequests);
-//
-//// when & then
-//        assertThatThrownBy(() -> menuService.create(request))
-//            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,12 @@ class ProductServiceTest {
 
     private Product 아메리카노;
     private Product 바닐라라떼;
+
+    @BeforeEach
+    void set_up() {
+        아메리카노 = new Product("아메리카노", BigDecimal.valueOf(15_000));
+        바닐라라떼 =  new Product("바닐라라떼", BigDecimal.valueOf(18_000));
+    }
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test

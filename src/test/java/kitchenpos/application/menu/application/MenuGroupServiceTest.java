@@ -2,6 +2,7 @@ package kitchenpos.application.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import kitchenpos.menu.application.MenuGroupService;
@@ -33,10 +34,10 @@ class MenuGroupServiceTest {
     void createMenuGroup() {
         // given
         MenuGroup 커피류 = new MenuGroup("커피류");
-        when(menuGroupRepository.save(커피류)).thenReturn(커피류);
+        when(menuGroupRepository.save(any())).thenReturn(커피류);
 
         // when
-        MenuGroupResponse result = menuGroupService.create(MenuGroupRequest.of(커피류.getName()));
+        MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest("커피류"));
 
         // then
         assertAll(
