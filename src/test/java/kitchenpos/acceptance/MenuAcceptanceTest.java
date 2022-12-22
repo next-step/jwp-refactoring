@@ -1,8 +1,8 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceUtils.*;
-import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.*;
-import static kitchenpos.acceptance.ProductAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuGroupAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.ProductAcceptanceUtils.*;
 
 import java.math.BigDecimal;
 

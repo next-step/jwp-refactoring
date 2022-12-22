@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.TableAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.TableAcceptanceUtils.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

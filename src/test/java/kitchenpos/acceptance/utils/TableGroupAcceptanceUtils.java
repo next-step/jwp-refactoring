@@ -1,6 +1,6 @@
-package kitchenpos.acceptance;
+package kitchenpos.acceptance.utils;
 
-import static kitchenpos.acceptance.RestAssuredUtils.*;
+import static kitchenpos.acceptance.utils.RestAssuredUtils.*;
 import static kitchenpos.table.ui.request.TableGroupRequest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

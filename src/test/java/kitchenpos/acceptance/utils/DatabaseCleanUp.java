@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.acceptance.utils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

@@ -1,11 +1,9 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import kitchenpos.table.domain.TableEmpty;
 
 @DisplayName("테이블 빈 상태 테스트")
 class TableEmptyTest {

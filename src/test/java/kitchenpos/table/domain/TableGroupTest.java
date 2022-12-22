@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import static kitchenpos.generator.OrderTableGenerator.*;
 import static org.assertj.core.api.Assertions.*;
@@ -9,8 +9,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.order.domain.OrderTable;
 
 @DisplayName("단체 지정 테스트")
 class TableGroupTest {

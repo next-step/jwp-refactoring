@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.acceptance.utils;
 
 import org.springframework.http.MediaType;
 

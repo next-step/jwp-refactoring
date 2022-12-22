@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import static kitchenpos.generator.TableGroupGenerator.*;
 import static org.assertj.core.api.Assertions.*;
@@ -7,8 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import kitchenpos.table.domain.NumberOfGuests;
-import kitchenpos.table.domain.TableEmpty;
+import kitchenpos.order.domain.OrderTable;
 
 @DisplayName("주문 테이블 테스트")
 class OrderTableTest {

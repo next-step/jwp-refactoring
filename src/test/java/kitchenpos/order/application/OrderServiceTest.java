@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.generator.MenuGenerator.*;
 import static kitchenpos.generator.OrderGenerator.*;
@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;

@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.generator.OrderTableGenerator.*;
 import static org.assertj.core.api.Assertions.*;
@@ -21,7 +21,6 @@ import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.ui.request.NumberOfGuestsRequest;

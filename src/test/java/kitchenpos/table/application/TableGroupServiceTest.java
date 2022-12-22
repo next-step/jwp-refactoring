@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.generator.OrderTableGenerator.*;
 import static kitchenpos.generator.TableGroupGenerator.*;
@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;

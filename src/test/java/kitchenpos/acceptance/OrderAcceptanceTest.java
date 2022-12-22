@@ -1,10 +1,10 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceUtils.*;
-import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.*;
-import static kitchenpos.acceptance.OrderAcceptanceUtils.*;
-import static kitchenpos.acceptance.ProductAcceptanceUtils.*;
-import static kitchenpos.acceptance.TableAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuGroupAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.OrderAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.ProductAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.TableAcceptanceUtils.*;
 
 import java.math.BigDecimal;
 

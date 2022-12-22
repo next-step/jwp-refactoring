@@ -1,7 +1,7 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.TableAcceptanceUtils.*;
-import static kitchenpos.acceptance.TableGroupAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.TableAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.TableGroupAcceptanceUtils.*;
 
 import java.util.Arrays;
 import java.util.List;
