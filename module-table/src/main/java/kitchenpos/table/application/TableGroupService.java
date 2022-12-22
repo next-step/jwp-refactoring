@@ -8,33 +8,29 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableRequest;
+import kitchenpos.table.validator.TableGroupOrderValidator;
 import kitchenpos.table.validator.TableGroupValidator;
-import kitchenpos.table.validator.TableValidator;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.domain.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
 
     private final TableGroupValidator tableGroupValidator;
-    private final TableValidator tableValidator;
+
+    private final TableGroupOrderValidator tableGroupOrderValidator;
 
     public TableGroupService(
-            final OrderDao orderDao,
             final OrderTableDao orderTableDao,
             final TableGroupDao tableGroupDao,
             final TableGroupValidator tableGroupValidator,
-            final TableValidator tableValidator) {
-        this.orderDao = orderDao;
+            final TableGroupOrderValidator tableGroupOrderValidator) {
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
         this.tableGroupValidator = tableGroupValidator;
-        this.tableValidator = tableValidator;
+        this.tableGroupOrderValidator = tableGroupOrderValidator;
     }
 
     @Transactional
@@ -68,7 +64,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if(orderDao.existsByOrderTableIdInAndOrderStatusNot(tableIds, OrderStatus.COMPLETION)){
+        if(tableGroupOrderValidator.existsDinningTable(tableIds)){
             throw new IllegalArgumentException();
         }
 

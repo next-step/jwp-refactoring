@@ -1,18 +1,15 @@
 package kitchenpos.table.validator;
 
-import java.util.List;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TableValidator {
 
-    private final OrderDao orderDao;
+    private final TableOrderValidator tableOrderValidator;
 
-    public TableValidator(OrderDao orderDao) {
-        this.orderDao = orderDao;
+    public TableValidator(TableOrderValidator tableOrderValidator) {
+        this.tableOrderValidator = tableOrderValidator;
     }
 
     public void validateChangeNumberOfGuests(OrderTable table, int numberOfGuests){
@@ -27,8 +24,7 @@ public class TableValidator {
     }
 
     public void validateChangeEmpty(OrderTable table){
-        List<Order> orders = orderDao.findAllByOrderTableId(table.getId());
-        if(hasDinningOrder(orders)){
+        if(tableOrderValidator.existsDinningOrder(table.getId())){
             throw new IllegalArgumentException();
         }
 
@@ -37,10 +33,5 @@ public class TableValidator {
         }
     }
 
-    private boolean hasDinningOrder(List<Order> orders) {
-        return orders.stream()
-                .map(Order::isDinning)
-                .findFirst()
-                .isPresent();
-    }
+
 }

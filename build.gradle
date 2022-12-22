@@ -48,8 +48,6 @@ project(':module-menu') {
 
 project(':module-table') {
     dependencies {
-        implementation project(':module-order')
-        testCompile project(':module-order').sourceSets.test.output
     }
 }
 
