@@ -30,7 +30,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTable orderTable) {
         orderTable.setTableGroup(null);
-        return OrderTableResponse.of(orderTableRepository.save(orderTable));
+        OrderTable save = orderTableRepository.save(orderTable);
+        return OrderTableResponse.of(save);
     }
 
     public List<OrderTableResponse> list() {

@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
@@ -20,7 +21,8 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductCreateRequest request) {
-        return ProductResponse.of(productRepository.save(request.toProduct()));
+        Product product = productRepository.save(request.toProduct());
+        return ProductResponse.of(product);
     }
 
     public List<ProductResponse> list() {
