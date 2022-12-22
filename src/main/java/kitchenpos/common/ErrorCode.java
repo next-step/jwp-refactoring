@@ -14,6 +14,7 @@ public enum ErrorCode {
 
     INVALID_QUANTITY("[ERROR] 유효하지 않은 수량입니다."),
     INVALID_NUMBER_OF_GUESTS("[ERROR] 손님 숫자는 음수가 될 수 없습니다."),
+    INVALID_NUMBER_OF_ORDER_TABLES("[ERROR] 테이블 그룹핑을 위한 주문테이블은 최소 2개 이상이 되어야 합니다."),
     INVALID_FORMAT_ORDER("[ERROR] 유효하지 않은 주문입니다."),
     INVALID_FORMAT_MENU("[ERROR] 요청한 메뉴는 잘못된 형식입니다."),
     INVALID_FORMAT_MENU_NAME("[ERROR] 요청한 메뉴명은 잘못된 형식입니다."),

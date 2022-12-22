@@ -17,6 +17,8 @@ import java.util.List;
 
 @Service
 public class TableGroupService {
+    private static final int NUMBER_OF_MINIMUM_ORDER_TABLES = 2;
+
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
@@ -35,11 +37,13 @@ public class TableGroupService {
     }
 
     private List<OrderTable> findAllOrderTableByIds(List<Long> orderTableIds) {
+        if (orderTableIds.size() < NUMBER_OF_MINIMUM_ORDER_TABLES) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_NUMBER_OF_ORDER_TABLES.getErrorMessage());
+        }
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         if (orderTableIds.size() != orderTables.size()) {
             throw new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
         }
-
         return orderTables;
     }
 
