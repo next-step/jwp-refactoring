@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain.fixture;
 
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 

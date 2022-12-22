@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
+import kitchenpos.common.vo.Name;
+import kitchenpos.common.vo.Price;
 import kitchenpos.order.domain.fixture.OrderLineItemFixture;
 import kitchenpos.order.domain.fixture.OrderLineItemsFixture;
 import org.junit.jupiter.api.DisplayName;

@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.common.fixture.PriceFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;

@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
+import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.fixture.NameFixture.*;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.common.fixture.PriceFixture.priceProductA;

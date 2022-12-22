@@ -1,10 +1,9 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
+import kitchenpos.common.vo.Name;
+import kitchenpos.common.vo.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity

@@ -1,7 +1,7 @@
 package kitchenpos.product.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Name;
+import kitchenpos.common.vo.Name;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
-import static kitchenpos.common.Price.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
+import static kitchenpos.common.vo.Price.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

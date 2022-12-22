@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.vo.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;

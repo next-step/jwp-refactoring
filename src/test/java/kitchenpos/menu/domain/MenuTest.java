@@ -1,13 +1,13 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.vo.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
+import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.Menu.MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
