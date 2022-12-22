@@ -13,22 +13,22 @@ import kitchenpos.product.repository.ProductRepository;
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
-	private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-	public ProductService(final ProductRepository productRepository) {
-		this.productRepository = productRepository;
-	}
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
-	@Transactional
-	public ProductResponse create(final ProductRequest productRequest) {
-		return ProductResponse.from(productRepository.save(productRequest.toEntity()));
-	}
+    @Transactional
+    public ProductResponse create(final ProductRequest productRequest) {
+        return ProductResponse.from(productRepository.save(productRequest.toEntity()));
+    }
 
-	public List<ProductResponse> list() {
-		return productRepository.findAll()
-			.stream()
-			.map(ProductResponse::from)
-			.collect(Collectors.toList());
-	}
+    public List<ProductResponse> list() {
+        return productRepository.findAll()
+            .stream()
+            .map(ProductResponse::from)
+            .collect(Collectors.toList());
+    }
 
 }

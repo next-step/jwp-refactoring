@@ -14,22 +14,22 @@ import kitchenpos.menugroup.repository.MenuGroupRepository;
 @Service
 @Transactional(readOnly = true)
 public class MenuGroupService {
-	private final MenuGroupRepository menuGroupRepository;
+    private final MenuGroupRepository menuGroupRepository;
 
-	public MenuGroupService(MenuGroupRepository menuGroupRepository) {
-		this.menuGroupRepository = menuGroupRepository;
-	}
+    public MenuGroupService(MenuGroupRepository menuGroupRepository) {
+        this.menuGroupRepository = menuGroupRepository;
+    }
 
-	@Transactional
-	public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-		MenuGroup saved = menuGroupRepository.save(menuGroupRequest.toEntity());
-		return MenuGroupResponse.from(saved);
-	}
+    @Transactional
+    public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
+        MenuGroup saved = menuGroupRepository.save(menuGroupRequest.toEntity());
+        return MenuGroupResponse.from(saved);
+    }
 
-	public List<MenuGroupResponse> list() {
-		return menuGroupRepository.findAll()
-			.stream()
-			.map(MenuGroupResponse::from)
-			.collect(Collectors.toList());
-	}
+    public List<MenuGroupResponse> list() {
+        return menuGroupRepository.findAll()
+            .stream()
+            .map(MenuGroupResponse::from)
+            .collect(Collectors.toList());
+    }
 }

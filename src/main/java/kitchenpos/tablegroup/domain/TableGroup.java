@@ -9,25 +9,25 @@ import javax.persistence.Id;
 
 @Entity
 public class TableGroup {
-	public static String ENTITY_NAME = "단체지정";
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private LocalDateTime createdDate;
+    public static String ENTITY_NAME = "단체지정";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private LocalDateTime createdDate;
 
-	protected TableGroup() {
-		this.createdDate = LocalDateTime.now();
-	}
+    protected TableGroup() {
+        this.createdDate = LocalDateTime.now();
+    }
 
-	public static TableGroup of() {
-		return new TableGroup();
-	}
+    public static TableGroup of() {
+        return new TableGroup();
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
-	}
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 }

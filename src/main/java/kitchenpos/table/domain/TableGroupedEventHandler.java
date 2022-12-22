@@ -13,25 +13,25 @@ import kitchenpos.tablegroup.domain.TableGroupedEvent;
 
 @Component
 public class TableGroupedEventHandler {
-	private final OrderTableRepository orderTableRepository;
+    private final OrderTableRepository orderTableRepository;
 
-	public TableGroupedEventHandler(OrderTableRepository orderTableRepository) {
-		this.orderTableRepository = orderTableRepository;
-	}
+    public TableGroupedEventHandler(OrderTableRepository orderTableRepository) {
+        this.orderTableRepository = orderTableRepository;
+    }
 
-	@EventListener
-	@Transactional
-	public void handle(TableGroupedEvent event) {
-		List<OrderTable> orderTables = event.getOrderTableIds()
-			.stream()
-			.map(this::findOrderTableById)
-			.collect(Collectors.toList());
-		OrderTables.of(orderTables).group(event.getTableGroupId());
-	}
+    @EventListener
+    @Transactional
+    public void handle(TableGroupedEvent event) {
+        List<OrderTable> orderTables = event.getOrderTableIds()
+            .stream()
+            .map(this::findOrderTableById)
+            .collect(Collectors.toList());
+        OrderTables.of(orderTables).group(event.getTableGroupId());
+    }
 
-	private OrderTable findOrderTableById(Long orderTableId) {
-		return orderTableRepository.findById(orderTableId)
-			.orElseThrow(() -> new EntityNotFoundException(OrderTable.ENTITY_NAME, orderTableId));
-	}
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(() -> new EntityNotFoundException(OrderTable.ENTITY_NAME, orderTableId));
+    }
 
 }

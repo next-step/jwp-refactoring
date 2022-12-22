@@ -16,51 +16,50 @@ import kitchenpos.common.Quantity;
 @Entity
 public class MenuProduct {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long seq;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long seq;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
-	private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
+    private Menu menu;
+    private Long productId;
+    @Embedded
+    private Quantity quantity;
 
-	private Long productId;
-	@Embedded
-	private Quantity quantity;
+    protected MenuProduct() {}
 
-	protected MenuProduct() {}
+    private MenuProduct(Long productId, int quantity) {
+        this.productId = productId;
+        this.quantity = Quantity.of(quantity);
+    }
 
-	private MenuProduct(Long productId, int quantity) {
-		this.productId = productId;
-		this.quantity = Quantity.of(quantity);
-	}
+    public static MenuProduct of(Long productId, int quantity) {
+        return new MenuProduct(productId, quantity);
+    }
 
-	public static MenuProduct of(Long productId, int quantity) {
-		return new MenuProduct(productId, quantity);
-	}
+    public void updateMenu(Menu menu) {
+        this.menu = menu;
+    }
 
-	public void updateMenu(Menu menu) {
-		this.menu = menu;
-	}
+    public Price getTotalPrice(Price productPrice) {
+        return productPrice.multiply(quantity);
+    }
 
-	public Price getTotalPrice(Price productPrice) {
-		return productPrice.multiply(quantity);
-	}
+    public Long getSeq() {
+        return seq;
+    }
 
-	public Long getSeq() {
-		return seq;
-	}
+    public Menu getMenu() {
+        return menu;
+    }
 
-	public Menu getMenu() {
-		return menu;
-	}
+    public Long getProductId() {
+        return productId;
+    }
 
-	public Long getProductId() {
-		return productId;
-	}
-
-	public Quantity getQuantity() {
-		return quantity;
-	}
+    public Quantity getQuantity() {
+        return quantity;
+    }
 
 }

@@ -9,46 +9,45 @@ import kitchenpos.exception.ErrorMessage;
 
 @Embeddable
 public class Name {
-	private static String PROPERTY_NAME = "이름";
+    private static String PROPERTY_NAME = "이름";
+    @Column(name = "name", nullable = false)
+    private String value;
 
-	@Column(name = "name", nullable = false)
-	private String value;
+    protected Name() {}
 
-	protected Name() {}
+    private Name(String name) {
+        validateNameIsNull(name);
+        this.value = name;
+    }
 
-	private Name(String name) {
-		validateNameIsNull(name);
-		this.value = name;
-	}
+    public static Name of(String name) {
+        return new Name(name);
+    }
 
-	public static Name of(String name) {
-		return new Name(name);
-	}
+    private void validateNameIsNull(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.cannotBeNull(PROPERTY_NAME));
+        }
+    }
 
-	private void validateNameIsNull(String name) {
-		if (name == null || name.isEmpty()) {
-			throw new IllegalArgumentException(ErrorMessage.cannotBeNull(PROPERTY_NAME));
-		}
-	}
+    public String value() {
+        return value;
+    }
 
-	public String value() {
-		return value;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Name)) {
+            return false;
+        }
+        Name name = (Name)o;
+        return Objects.equals(value, name.value);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof Name)) {
-			return false;
-		}
-		Name name = (Name)o;
-		return Objects.equals(value, name.value);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(value);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }

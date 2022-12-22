@@ -15,22 +15,22 @@ import kitchenpos.menu.dto.MenuResponse;
 
 @RestController
 public class MenuRestController {
-	private final MenuService menuService;
+    private final MenuService menuService;
 
-	public MenuRestController(final MenuService menuService) {
-		this.menuService = menuService;
-	}
+    public MenuRestController(final MenuService menuService) {
+        this.menuService = menuService;
+    }
 
-	@PostMapping("/api/menus")
-	public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menuRequest) {
-		final MenuResponse created = menuService.create(menuRequest);
-		final URI uri = URI.create("/api/menus/" + created.getId());
-		return ResponseEntity.created(uri).body(created);
-	}
+    @PostMapping("/api/menus")
+    public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menuRequest) {
+        final MenuResponse created = menuService.create(menuRequest);
+        final URI uri = URI.create("/api/menus/" + created.getId());
+        return ResponseEntity.created(uri).body(created);
+    }
 
-	@GetMapping("/api/menus")
-	public ResponseEntity<List<MenuResponse>> list() {
-		return ResponseEntity.ok().body(menuService.list());
-	}
+    @GetMapping("/api/menus")
+    public ResponseEntity<List<MenuResponse>> list() {
+        return ResponseEntity.ok().body(menuService.list());
+    }
 
 }

@@ -14,47 +14,46 @@ import kitchenpos.common.Quantity;
 
 @Entity
 public class OrderLineItem {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long seq;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_to_order"))
-	private Order order;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long seq;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_to_order"))
+    private Order order;
+    @Embedded
+    private OrderMenu menu;
+    @Embedded
+    private Quantity quantity;
 
-	@Embedded
-	private OrderMenu menu;
-	@Embedded
-	private Quantity quantity;
+    protected OrderLineItem() {}
 
-	protected OrderLineItem() {}
+    private OrderLineItem(OrderMenu menu, int quantity) {
+        this.menu = menu;
+        this.quantity = Quantity.of(quantity);
+    }
 
-	private OrderLineItem(OrderMenu menu, int quantity) {
-		this.menu = menu;
-		this.quantity = Quantity.of(quantity);
-	}
+    public static OrderLineItem of(OrderMenu menu, int quantity) {
+        return new OrderLineItem(menu, quantity);
+    }
 
-	public static OrderLineItem of(OrderMenu menu, int quantity) {
-		return new OrderLineItem(menu, quantity);
-	}
+    public void updateOrder(Order order) {
+        this.order = order;
+    }
 
-	public void updateOrder(Order order) {
-		this.order = order;
-	}
+    public Long getSeq() {
+        return seq;
+    }
 
-	public Long getSeq() {
-		return seq;
-	}
+    public Order getOrder() {
+        return order;
+    }
 
-	public Order getOrder() {
-		return order;
-	}
+    public OrderMenu getMenu() {
+        return menu;
+    }
 
-	public OrderMenu getMenu() {
-		return menu;
-	}
-
-	public Quantity getQuantity() {
-		return quantity;
-	}
+    public Quantity getQuantity() {
+        return quantity;
+    }
 
 }

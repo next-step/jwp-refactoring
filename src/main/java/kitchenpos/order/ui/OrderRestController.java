@@ -17,28 +17,28 @@ import kitchenpos.order.dto.OrderResponse;
 
 @RestController
 public class OrderRestController {
-	private final OrderService orderService;
+    private final OrderService orderService;
 
-	public OrderRestController(final OrderService orderService) {
-		this.orderService = orderService;
-	}
+    public OrderRestController(final OrderService orderService) {
+        this.orderService = orderService;
+    }
 
-	@PostMapping("/api/orders")
-	public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
-		final OrderResponse created = orderService.create(orderRequest);
-		final URI uri = URI.create("/api/orders/" + created.getId());
-		return ResponseEntity.created(uri).body(created);
-	}
+    @PostMapping("/api/orders")
+    public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
+        final OrderResponse created = orderService.create(orderRequest);
+        final URI uri = URI.create("/api/orders/" + created.getId());
+        return ResponseEntity.created(uri).body(created);
+    }
 
-	@GetMapping("/api/orders")
-	public ResponseEntity<List<OrderResponse>> list() {
-		return ResponseEntity.ok().body(orderService.list());
-	}
+    @GetMapping("/api/orders")
+    public ResponseEntity<List<OrderResponse>> list() {
+        return ResponseEntity.ok().body(orderService.list());
+    }
 
-	@PutMapping("/api/orders/{orderId}/order-status")
-	public ResponseEntity<OrderResponse> changeOrderStatus(@PathVariable final Long orderId,
-		@RequestBody final String orderStatus) {
-		return ResponseEntity.ok(orderService.changeOrderStatus(orderId, orderStatus));
-	}
+    @PutMapping("/api/orders/{orderId}/order-status")
+    public ResponseEntity<OrderResponse> changeOrderStatus(@PathVariable final Long orderId,
+        @RequestBody final String orderStatus) {
+        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, orderStatus));
+    }
 
 }

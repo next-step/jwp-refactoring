@@ -11,21 +11,21 @@ import kitchenpos.tablegroup.domain.TableUnGroupedEvent;
 
 @Component
 public class TableUnGroupedEventHandler {
-	private final OrderTableRepository orderTableRepository;
-	private final OrderTableValidator orderTableValidator;
+    private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-	public TableUnGroupedEventHandler(OrderTableRepository orderTableRepository,
-		OrderTableValidator orderTableValidator) {
-		this.orderTableRepository = orderTableRepository;
-		this.orderTableValidator = orderTableValidator;
-	}
+    public TableUnGroupedEventHandler(OrderTableRepository orderTableRepository,
+        OrderTableValidator orderTableValidator) {
+        this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
+    }
 
-	@EventListener
-	@Transactional
-	public void handle(TableUnGroupedEvent event) {
-		List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());
-		orderTables.forEach(it -> orderTableValidator.unGroupOrderStatusValidate(it.getId()));
-		OrderTables.of(orderTables).unGroup();
-	}
+    @EventListener
+    @Transactional
+    public void handle(TableUnGroupedEvent event) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());
+        orderTables.forEach(it -> orderTableValidator.unGroupOrderStatusValidate(it.getId()));
+        OrderTables.of(orderTables).unGroup();
+    }
 
 }

@@ -14,35 +14,35 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @Service
 public class TableGroupService {
-	private final TableGroupRepository tableGroupRepository;
-	private final ApplicationEventPublisher applicationEventPublisher;
+    private final TableGroupRepository tableGroupRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-	public TableGroupService(TableGroupRepository tableGroupRepository,
-		ApplicationEventPublisher applicationEventPublisher) {
-		this.tableGroupRepository = tableGroupRepository;
-		this.applicationEventPublisher = applicationEventPublisher;
+    public TableGroupService(TableGroupRepository tableGroupRepository,
+        ApplicationEventPublisher applicationEventPublisher) {
+        this.tableGroupRepository = tableGroupRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
 
-	}
+    }
 
-	@Transactional
-	public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
-		TableGroup saved = tableGroupRepository.save(TableGroup.of());
-		applicationEventPublisher.publishEvent(
-			new TableGroupedEvent(saved.getId(), tableGroupRequest.getOrderTableIds()));
-		return TableGroupResponse.of(saved, tableGroupRequest.getOrderTableIds());
-	}
+    @Transactional
+    public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
+        TableGroup saved = tableGroupRepository.save(TableGroup.of());
+        applicationEventPublisher.publishEvent(
+            new TableGroupedEvent(saved.getId(), tableGroupRequest.getOrderTableIds()));
+        return TableGroupResponse.of(saved, tableGroupRequest.getOrderTableIds());
+    }
 
-	@Transactional
-	public void ungroup(final Long tableGroupId) {
-		TableGroup tableGroup = findTableGroupById(tableGroupId);
-		tableGroupRepository.delete(tableGroup);
-		applicationEventPublisher.publishEvent(new TableUnGroupedEvent(tableGroupId));
-	}
+    @Transactional
+    public void ungroup(final Long tableGroupId) {
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        tableGroupRepository.delete(tableGroup);
+        applicationEventPublisher.publishEvent(new TableUnGroupedEvent(tableGroupId));
+    }
 
-	private TableGroup findTableGroupById(Long tableGroupId) {
-		return tableGroupRepository.findById(tableGroupId).orElseThrow(
-			() -> new EntityNotFoundException(TableGroup.ENTITY_NAME, tableGroupId)
-		);
-	}
+    private TableGroup findTableGroupById(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(
+            () -> new EntityNotFoundException(TableGroup.ENTITY_NAME, tableGroupId)
+        );
+    }
 
 }

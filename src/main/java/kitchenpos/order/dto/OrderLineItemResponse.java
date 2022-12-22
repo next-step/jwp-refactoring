@@ -9,46 +9,45 @@ import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemResponse {
 
-	private Long seq;
+    private Long seq;
+    private Long menuId;
+    private String menuName;
+    private int quantity;
 
-	private Long menuId;
-	private String menuName;
-	private int quantity;
+    protected OrderLineItemResponse() {}
 
-	protected OrderLineItemResponse() {}
+    private OrderLineItemResponse(Long seq, OrderMenu menu, int quantity) {
+        this.seq = seq;
+        this.menuName = menu.getName().value();
+        this.menuId = menu.getMenuId();
+        this.quantity = quantity;
+    }
 
-	private OrderLineItemResponse(Long seq, OrderMenu menu, int quantity) {
-		this.seq = seq;
-		this.menuName = menu.getName().value();
-		this.menuId = menu.getMenuId();
-		this.quantity = quantity;
-	}
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
+        return new OrderLineItemResponse(orderLineItem.getSeq(),
+            orderLineItem.getMenu(),
+            orderLineItem.getQuantity().value());
 
-	public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-		return new OrderLineItemResponse(orderLineItem.getSeq(),
-			orderLineItem.getMenu(),
-			orderLineItem.getQuantity().value());
+    }
 
-	}
+    public static List<OrderLineItemResponse> of(OrderLineItems orderLineItems) {
+        return orderLineItems.getOrderLineItems().stream()
+            .map(OrderLineItemResponse::of).collect(Collectors.toList());
+    }
 
-	public static List<OrderLineItemResponse> of(OrderLineItems orderLineItems) {
-		return orderLineItems.getOrderLineItems().stream()
-			.map(OrderLineItemResponse::of).collect(Collectors.toList());
-	}
+    public Long getSeq() {
+        return seq;
+    }
 
-	public Long getSeq() {
-		return seq;
-	}
+    public String getMenuName() {
+        return menuName;
+    }
 
-	public String getMenuName() {
-		return menuName;
-	}
+    public Long getMenuId() {
+        return menuId;
+    }
 
-	public Long getMenuId() {
-		return menuId;
-	}
-
-	public int getQuantity() {
-		return quantity;
-	}
+    public int getQuantity() {
+        return quantity;
+    }
 }

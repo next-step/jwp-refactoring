@@ -13,35 +13,35 @@ import kitchenpos.common.Price;
 
 @Entity
 public class Product {
-	public static String ENTITY_NAME = "상품";
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@Embedded
-	private Name name;
-	@Embedded
-	private Price price;
+    public static String ENTITY_NAME = "상품";
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    private Name name;
+    @Embedded
+    private Price price;
 
-	protected Product() {}
+    protected Product() {}
 
-	private Product(String name, BigDecimal price) {
-		this.name = Name.of(name);
-		this.price = Price.of(price);
-	}
+    private Product(String name, BigDecimal price) {
+        this.name = Name.of(name);
+        this.price = Price.of(price);
+    }
 
-	public static Product of(String name, BigDecimal price) {
-		return new Product(name, price);
-	}
+    public static Product of(String name, BigDecimal price) {
+        return new Product(name, price);
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Name getName() {
-		return name;
-	}
+    public Name getName() {
+        return name;
+    }
 
-	public Price getPrice() {
-		return price;
-	}
+    public Price getPrice() {
+        return price;
+    }
 }

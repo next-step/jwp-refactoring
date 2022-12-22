@@ -4,23 +4,23 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupRequest {
 
-	private String name;
+    private String name;
 
-	protected MenuGroupRequest() {}
+    protected MenuGroupRequest() {}
 
-	private MenuGroupRequest(String name) {
-		this.name = name;
-	}
+    private MenuGroupRequest(String name) {
+        this.name = name;
+    }
 
-	public static MenuGroupRequest of(String name) {
-		return new MenuGroupRequest(name);
-	}
+    public static MenuGroupRequest of(String name) {
+        return new MenuGroupRequest(name);
+    }
 
-	public MenuGroup toEntity() {
-		return MenuGroup.of(this.name);
-	}
+    public MenuGroup toEntity() {
+        return MenuGroup.of(this.name);
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 }

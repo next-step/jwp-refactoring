@@ -6,24 +6,24 @@ import java.util.List;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupResponse {
-	private Long id;
-	private LocalDateTime createdDate;
-	private List<Long> orderTableIds;
+    private Long id;
+    private LocalDateTime createdDate;
+    private List<Long> orderTableIds;
 
-	protected TableGroupResponse() {}
+    protected TableGroupResponse() {}
 
-	private TableGroupResponse(Long id, LocalDateTime createdDate, List<Long> orderTableIds) {
-		this.id = id;
-		this.createdDate = createdDate;
-		this.orderTableIds = orderTableIds;
-	}
+    private TableGroupResponse(Long id, LocalDateTime createdDate, List<Long> orderTableIds) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTableIds = orderTableIds;
+    }
 
-	public static TableGroupResponse of(TableGroup tableGroup, List<Long> orderTableIds) {
-		return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableIds);
-	}
+    public static TableGroupResponse of(TableGroup tableGroup, List<Long> orderTableIds) {
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableIds);
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
 }
