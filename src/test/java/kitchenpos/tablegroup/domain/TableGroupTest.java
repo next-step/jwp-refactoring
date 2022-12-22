@@ -55,8 +55,8 @@ public class TableGroupTest {
         TableGroup 새로운_단체_테이블 = new TableGroup();
         단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
 
-        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderEmpty(true));
-        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderEmpty(true));
+        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderTableEmpty(true));
+        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderTableEmpty(true));
 
         assertThatThrownBy(() -> {
             새로운_단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));

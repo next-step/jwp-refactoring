@@ -6,13 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class OrderEmpty {
+public class OrderTableEmpty {
     @Column
     private boolean empty;
 
-    protected OrderEmpty() {}
+    protected OrderTableEmpty() {}
 
-    public OrderEmpty(boolean empty) {
+    public OrderTableEmpty(boolean empty) {
         this.empty = empty;
     }
 
@@ -23,8 +23,8 @@ public class OrderEmpty {
         }
     }
 
-    public OrderEmpty changeEmpty(boolean empty) {
-        return new OrderEmpty(empty);
+    public OrderTableEmpty changeEmpty(boolean empty) {
+        return new OrderTableEmpty(empty);
     }
 
     public boolean isEmpty() {

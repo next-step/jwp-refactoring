@@ -24,17 +24,17 @@ public class OrderTable {
     private TableGroup tableGroup;
 
     @Embedded
-    private OrderGuests numberOfGuests = new OrderGuests();
+    private OrderTableGuests numberOfGuests = new OrderTableGuests();
 
     @Embedded
-    private OrderEmpty empty = new OrderEmpty();
+    private OrderTableEmpty empty = new OrderTableEmpty();
 
     protected OrderTable() {}
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.tableGroup = null;
-        this.numberOfGuests = new OrderGuests(numberOfGuests);
-        this.empty = new OrderEmpty(empty);
+        this.numberOfGuests = new OrderTableGuests(numberOfGuests);
+        this.empty = new OrderTableEmpty(empty);
     }
 
     void updateTableGroup(TableGroup tableGroup) {

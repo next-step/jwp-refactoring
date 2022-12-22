@@ -3,8 +3,8 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.common.ErrorCode;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.domain.OrderEmpty;
-import kitchenpos.tablegroup.domain.OrderGuests;
+import kitchenpos.tablegroup.domain.OrderTableEmpty;
+import kitchenpos.tablegroup.domain.OrderTableGuests;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.dto.OrderTableRequest;
 import kitchenpos.tablegroup.dto.OrderTableResponse;
@@ -36,7 +36,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(Long orderTableId, OrderEmpty request) {
+    public OrderTableResponse changeEmpty(Long orderTableId, OrderTableEmpty request) {
         OrderTable savedOrderTable = findOrderTableById(orderTableId);
         List<Order> orders = findAllByOrderTableId(savedOrderTable.getId());
 
@@ -55,7 +55,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(Long orderTableId, OrderGuests request) {
+    public OrderTableResponse changeNumberOfGuests(Long orderTableId, OrderTableGuests request) {
         OrderTable orderTable = findOrderTableById(orderTableId);
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
 

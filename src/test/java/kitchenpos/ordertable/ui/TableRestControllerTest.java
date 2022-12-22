@@ -2,8 +2,8 @@ package kitchenpos.ordertable.ui;
 
 import kitchenpos.ControllerTest;
 import kitchenpos.tablegroup.application.TableService;
-import kitchenpos.tablegroup.domain.OrderEmpty;
-import kitchenpos.tablegroup.domain.OrderGuests;
+import kitchenpos.tablegroup.domain.OrderTableEmpty;
+import kitchenpos.tablegroup.domain.OrderTableGuests;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.dto.OrderTableRequest;
 import kitchenpos.tablegroup.dto.OrderTableResponse;
@@ -84,11 +84,11 @@ class TableRestControllerTest extends ControllerTest {
     @Test
     void 빈_테이블로_변경() throws Exception {
         주문테이블1.changeEmpty(true, Collections.emptyList());
-        given(tableService.changeEmpty(anyLong(), any(OrderEmpty.class)))
+        given(tableService.changeEmpty(anyLong(), any(OrderTableEmpty.class)))
                 .willReturn(OrderTableResponse.of(주문테이블1));
 
         webMvc.perform(put("/api/tables/" + 주문테이블1.getId() + "/empty")
-                .content(mapper.writeValueAsString(new OrderEmpty(true)))
+                .content(mapper.writeValueAsString(new OrderTableEmpty(true)))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(주문테이블1.getId().intValue())))
@@ -98,11 +98,11 @@ class TableRestControllerTest extends ControllerTest {
     @Test
     void 빈_테이블로_변경_실패() throws Exception {
         주문테이블1.changeEmpty(true, Collections.emptyList());
-        given(tableService.changeEmpty(anyLong(), any(OrderEmpty.class)))
+        given(tableService.changeEmpty(anyLong(), any(OrderTableEmpty.class)))
                 .willThrow(IllegalArgumentException.class);
 
         webMvc.perform(put("/api/tables/" + 주문테이블1.getId() + "/empty")
-                .content(mapper.writeValueAsString(new OrderEmpty(true)))
+                .content(mapper.writeValueAsString(new OrderTableEmpty(true)))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
@@ -110,11 +110,11 @@ class TableRestControllerTest extends ControllerTest {
     @Test
     void 방문한_손님_수_변경() throws Exception {
         주문테이블1.changeNumberOfGuests(5);
-        given(tableService.changeNumberOfGuests(anyLong(), any(OrderGuests.class)))
+        given(tableService.changeNumberOfGuests(anyLong(), any(OrderTableGuests.class)))
                 .willReturn(OrderTableResponse.of(주문테이블1));
 
         webMvc.perform(put("/api/tables/" + 주문테이블1.getId() + "/number-of-guests")
-                .content(mapper.writeValueAsString(new OrderGuests(5)))
+                .content(mapper.writeValueAsString(new OrderTableGuests(5)))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(주문테이블1.getId().intValue())))
@@ -124,11 +124,11 @@ class TableRestControllerTest extends ControllerTest {
     @Test
     void 방문한_손님_수_변경_실패() throws Exception {
         주문테이블1.changeNumberOfGuests(5);
-        given(tableService.changeNumberOfGuests(anyLong(), any(OrderGuests.class)))
+        given(tableService.changeNumberOfGuests(anyLong(), any(OrderTableGuests.class)))
                 .willThrow(IllegalArgumentException.class);
 
         webMvc.perform(put("/api/tables/" + 주문테이블1.getId() + "/number-of-guests")
-                .content(mapper.writeValueAsString(new OrderGuests(5)))
+                .content(mapper.writeValueAsString(new OrderTableGuests(5)))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
