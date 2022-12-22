@@ -61,7 +61,7 @@ public class OrderTableTest {
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 요리중이거나_식사중인_주문이_있다면_빈_테이블로_변경할_수_없음(OrderStatus orderStatus) {
         OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, orderStatus);
+        Order order = new Order(주문_테이블.getId(), orderStatus);
 
         assertThatThrownBy(() -> {
             주문_테이블.changeEmpty(true, Arrays.asList(order));
@@ -72,7 +72,7 @@ public class OrderTableTest {
     @Test
     void 빈_테이블로_변경() {
         OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, OrderStatus.COMPLETION);
+        Order order = new Order(주문_테이블.getId(), OrderStatus.COMPLETION);
 
         주문_테이블.changeEmpty(true, Arrays.asList(order));
 

@@ -49,14 +49,14 @@ public class OrderTest {
         OrderTable 빈_주문_테이블 = new OrderTable(0, true);
 
         assertThatThrownBy(() -> {
-            new Order(빈_주문_테이블, OrderStatus.COOKING);
+            new Order(빈_주문_테이블.getId(), OrderStatus.COOKING);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.ORDER_TABLES_CANNOT_BE_EMPTY.getErrorMessage());
     }
 
     @Test
     void 주문_상품_추가() {
-        Order 주문 = new Order(주문테이블, OrderStatus.COOKING);
+        Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
         OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트, 1L);
 
         주문.order(Arrays.asList(양식_세트_주문));
@@ -66,7 +66,7 @@ public class OrderTest {
 
     @Test
     void 기존에_포함되어_있는_주문_상품은_추가되지_않음() {
-        Order 주문 = new Order(주문테이블, OrderStatus.COOKING);
+        Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
         OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트, 1L);
 
         주문.order(Arrays.asList(양식_세트_주문));
@@ -78,17 +78,17 @@ public class OrderTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중이거나_식사중인_주문_테이블은_변경할_수_없음(OrderStatus orderStatus) {
-        Order 주문 = new Order(주문테이블, orderStatus);
+        Order 주문 = new Order(주문테이블.getId(), orderStatus);
 
         assertThatThrownBy(() -> {
-            주문.checkForChangingOrderTable();
+            주문.checkOrderStatus();
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
     }
 
     @Test
     void 이미_완료된_주문은_변경할_수_없음() {
-        Order 주문 = new Order(주문테이블, OrderStatus.COMPLETION);
+        Order 주문 = new Order(주문테이블.getId(), OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> {
             주문.changeOrderStatus(OrderStatus.MEAL);

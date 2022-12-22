@@ -126,7 +126,7 @@ public class OrderValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void modifyOrderTableValidation_tableStatus(OrderStatus orderStatus) {
-        Order order = new Order(주문테이블, orderStatus);
+        Order order = new Order(주문테이블.getId(), orderStatus);
         given(orderRepository.findAllByOrderTableId(주문테이블.getId())).willReturn(Arrays.asList(order));
 
         assertThatThrownBy(() -> {
@@ -139,7 +139,7 @@ public class OrderValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void deleteOrderTableValidation_tableStatus(OrderStatus orderStatus) {
-        Order order = new Order(주문테이블, orderStatus);
+        Order order = new Order(주문테이블.getId(), orderStatus);
         given(orderRepository.findAllByOrderTableIds(Arrays.asList(주문테이블.getId()))).willReturn(Arrays.asList(order));
 
         assertThatThrownBy(() -> {

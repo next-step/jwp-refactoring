@@ -33,7 +33,7 @@ public class TableGroup extends BaseEntity {
     }
 
     public void ungroup(List<Order> orders) {
-        orders.forEach(Order::checkForChangingOrderTable);
+        orders.forEach(Order::checkOrderStatus);
         this.orderTables.ungroup();
     }
 

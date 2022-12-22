@@ -62,7 +62,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         주문테이블 = new OrderTable(2, false);
-        주문 = new Order(주문테이블, OrderStatus.COOKING);
+        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
         양식_세트1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);

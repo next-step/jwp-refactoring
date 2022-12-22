@@ -79,8 +79,8 @@ public class TableGroupTest {
     void 조리중이거나_식사중인_주문_테이블이_있으면_단체_테이블을_해제할_수_없음(OrderStatus orderStatus) {
         단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
 
-        Order 주문1 = new Order(단체_주문_테이블1, orderStatus);
-        Order 주문2 = new Order(단체_주문_테이블2, OrderStatus.COMPLETION);
+        Order 주문1 = new Order(단체_주문_테이블1.getId(), orderStatus);
+        Order 주문2 = new Order(단체_주문_테이블2.getId(), OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> {
             단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
@@ -92,8 +92,8 @@ public class TableGroupTest {
     void 단체_테이블_해제() {
         단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
 
-        Order 주문1 = new Order(단체_주문_테이블1, OrderStatus.COMPLETION);
-        Order 주문2 = new Order(단체_주문_테이블2, OrderStatus.COMPLETION);
+        Order 주문1 = new Order(단체_주문_테이블1.getId(), OrderStatus.COMPLETION);
+        Order 주문2 = new Order(단체_주문_테이블2.getId(), OrderStatus.COMPLETION);
 
         단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
 

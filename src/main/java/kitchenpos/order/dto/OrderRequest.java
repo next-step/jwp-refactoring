@@ -24,7 +24,7 @@ public class OrderRequest {
     }
 
     public Order toOrder(OrderTable orderTable, OrderStatus orderStatus, List<Menu> menus) {
-        Order order = new Order(orderTable, orderStatus);
+        Order order = new Order(orderTable.getId(), orderStatus);
         List<OrderLineItem> items = orderLineItems.stream()
                 .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
                 .collect(toList());
