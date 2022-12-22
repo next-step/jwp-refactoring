@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -33,7 +32,7 @@ class TableGroupServiceTest {
 	@Mock
 	private TableGroupRepository tableGroupRepository;
 	@Mock
-	private OrderRepository orderRepository;
+	private TableValidator tableValidator;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 
@@ -137,6 +136,7 @@ class TableGroupServiceTest {
 		long 단체_아이디 = 1L;
 		TableGroup 다섯명_두명_테이블그룹 = 다섯명_두명_테이블그룹();
 		given(tableGroupRepository.tableGroup(단체_아이디)).willReturn(다섯명_두명_테이블그룹);
+		willDoNothing().given(tableValidator).validateUngroup(any());
 
 		// when
 		tableGroupService.ungroup(단체_아이디);
@@ -155,7 +155,7 @@ class TableGroupServiceTest {
 		long 단체_아이디 = 1L;
 		TableGroup 다섯명_두명_테이블그룹 = 다섯명_두명_테이블그룹();
 		given(tableGroupRepository.tableGroup(단체_아이디)).willReturn(다섯명_두명_테이블그룹);
-		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+		willThrow(IllegalArgumentException.class).given(tableValidator).validateUngroup(any());
 
 		// when
 		Throwable throwable = catchThrowable(() -> tableGroupService.ungroup(단체_아이디));
