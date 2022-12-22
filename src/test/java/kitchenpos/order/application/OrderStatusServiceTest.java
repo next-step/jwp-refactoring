@@ -59,7 +59,7 @@ class OrderStatusServiceTest extends ServiceTest {
     @Autowired
     private OrderService orderService;
 
-    private Orders order;
+    private Order order;
 
     @BeforeEach
     public void setUp() {
@@ -106,12 +106,12 @@ class OrderStatusServiceTest extends ServiceTest {
     }
 
     private void 주문완료_검증됨() {
-        Orders findOrder = orderRepository.findById(order.getId()).get();
+        Order findOrder = orderRepository.findById(order.getId()).get();
         assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     private void createOrder(OrderTable orderTable, Menu menu) {
         orderTable.setEmpty(false);
-        order = orderRepository.save(new Orders(orderTable.getId(), new OrderLineItems(singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1))))));
+        order = orderRepository.save(new Order(orderTable.getId(), new OrderLineItems(singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1))))));
     }
 }

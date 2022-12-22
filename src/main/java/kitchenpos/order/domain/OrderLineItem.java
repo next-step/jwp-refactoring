@@ -13,7 +13,7 @@ public class OrderLineItem {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
-    private Orders order;
+    private Order order;
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "menuId", column = @Column(name = "menu_id")),
@@ -26,7 +26,7 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Orders order, OrderMenu orderMenu, Quantity quantity) {
+    public OrderLineItem(Order order, OrderMenu orderMenu, Quantity quantity) {
         validate(orderMenu, quantity);
         this.order = order;
         this.orderMenu = orderMenu;
@@ -49,11 +49,11 @@ public class OrderLineItem {
         return this.quantity;
     }
 
-    public Orders getOrder() {
+    public Order getOrder() {
         return this.order;
     }
 
-    public void setOrder(Orders order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 

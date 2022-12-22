@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
@@ -35,7 +35,7 @@ public class OrderService {
     public OrderResponse create(final OrderCreateRequest request) {
         final OrderLineItems orderLineItems = request.toOrderLineItems();
         validateOrderItems(orderLineItems);
-        Orders order = orderRepository.save(new Orders(findOrderTable(request).getId(), request.toOrderLineItems()));
+        Order order = orderRepository.save(new Order(findOrderTable(request).getId(), request.toOrderLineItems()));
         return OrderResponse.of(order);
     }
 
@@ -48,7 +48,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
-        final Orders savedOrder = findOrder(orderId);
+        final Order savedOrder = findOrder(orderId);
         savedOrder.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }
@@ -64,7 +64,7 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private Orders findOrder(Long orderId) {
+    private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
     }

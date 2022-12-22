@@ -50,7 +50,7 @@ class OrderLineItemsTest {
     @DisplayName("주문 항목을 주문과 매핑한다.")
     @Test
     void mapOrder() {
-        Orders order = orderA(orderTableA().getId(), OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)));
+        Order order = orderA(orderTableA().getId(), OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)));
         OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(OrderLineItemFixture.OrderLineItem()));
         orderLineItems.mapOrder(order);
         for (OrderLineItem orderLineItem : orderLineItems.getOrderLineItems()) {

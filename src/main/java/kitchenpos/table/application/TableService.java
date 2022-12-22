@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
@@ -43,7 +43,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
-        Orders order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
+        Order order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
         validateOrderStatus(order.getOrderStatus());
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
         orderTable.empty();

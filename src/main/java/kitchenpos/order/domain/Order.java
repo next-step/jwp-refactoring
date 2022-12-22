@@ -11,7 +11,7 @@ import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_E
 
 @Entity
 @Table(name = "orders")
-public class Orders {
+public class Order {
     public static final String ORDER_TABLE_NULL_EXCEPTION_MESSAGE = "주문 테이블이 없습니다.";
     public static final String COMPLETION_CHANGE_EXCEPTION_MESSAGE = "완료일 경우 변경할 수 없습니다.";
     @Id
@@ -24,7 +24,7 @@ public class Orders {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Orders(Long orderTableId, OrderLineItems orderLineItems) {
+    public Order(Long orderTableId, OrderLineItems orderLineItems) {
         validate(orderTableId, orderLineItems);
         this.orderTableId = orderTableId;
         orderLineItems.mapOrder(this);

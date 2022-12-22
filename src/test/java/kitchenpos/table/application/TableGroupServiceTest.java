@@ -69,7 +69,7 @@ class TableGroupServiceTest extends ServiceTest {
 
     private TableGroup tableGroupA;
     private TableGroup tableGroupB;
-    private Orders order;
+    private Order order;
     private Menu menu;
     private OrderLineItems orderLineItemsA;
 
@@ -116,7 +116,7 @@ class TableGroupServiceTest extends ServiceTest {
         테이블_그룹_존재_검증(tableGroup);
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1)))));
+        Order order = new Order(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -136,7 +136,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA.getId(), orderLineItemsA);
+        Order order = new Order(orderTableA.getId(), orderLineItemsA);
         order.setOrderStatus(OrderStatus.COOKING);
         orderRepository.save(order);
 
@@ -159,7 +159,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA.getId(), orderLineItemsA);
+        Order order = new Order(orderTableA.getId(), orderLineItemsA);
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
@@ -176,8 +176,8 @@ class TableGroupServiceTest extends ServiceTest {
         return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), true));
     }
 
-    private void 주문_요리중_상태_검증(Orders order) {
-        Orders order1 = orderRepository.findById(order.getId()).get();
+    private void 주문_요리중_상태_검증(Order order) {
+        Order order1 = orderRepository.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 

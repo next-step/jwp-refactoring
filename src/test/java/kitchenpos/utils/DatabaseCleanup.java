@@ -34,10 +34,18 @@ public class DatabaseCleanup implements InitializingBean {
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNames) {
+            tableName = changeOrders(tableName);
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
             entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private static String changeOrders(String tableName) {
+        if (tableName.equals("order")) {
+            tableName = "orders";
+        }
+        return tableName;
     }
 }

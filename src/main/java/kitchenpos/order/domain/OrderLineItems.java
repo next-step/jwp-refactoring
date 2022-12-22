@@ -44,7 +44,7 @@ public class OrderLineItems {
                 .collect(Collectors.toList());
     }
 
-    public void mapOrder(Orders order) {
+    public void mapOrder(Order order) {
         for (OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.setOrder(order);
         }
