@@ -19,38 +19,20 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-                        OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        OrderTable orderTable = findOrderTableById(request.getOrderTableId());
-        List<Menu> menus = findAllMenuById(request.findAllMenuIds());
-        Order order = request.toOrder(orderTable, OrderStatus.COOKING, menus);
+        orderValidator.validateToCreateOrder(request.getOrderTableId(), request.toMenuIds());
+        Order order = request.toOrder(request.getOrderTableId(), OrderStatus.COOKING);
 
         return OrderResponse.of(orderRepository.save(order));
-    }
-
-    private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage()));
-    }
-
-    private List<Menu> findAllMenuById(List<Long> menuIds) {
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-        if(menuIds.size() != menus.size()) {
-            throw new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
-        }
-
-        return menus;
     }
 
     @Transactional(readOnly = true)

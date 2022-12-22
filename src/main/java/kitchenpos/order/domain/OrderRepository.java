@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @Query("SELECT o FROM Order o WHERE o.orderTable.id = :orderTableId")
+    @Query("SELECT o FROM Order o WHERE o.orderTableId = :orderTableId")
     List<Order> findAllByOrderTableId(Long orderTableId);
 
-    @Query("SELECT o FROM Order o WHERE o.orderTable.id IN :orderTableIds")
+    @Query("SELECT o FROM Order o WHERE o.orderTableId IN :orderTableIds")
     List<Order> findAllByOrderTableIds(List<Long> orderTableIds);
 }

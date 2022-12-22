@@ -98,7 +98,7 @@ class OrderServiceTest {
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
         given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.findAllMenuIds()))
+        given(menuRepository.findAllById(request.toMenuIds()))
                 .willReturn(Arrays.asList(양식_세트1));
 
         assertThatThrownBy(() -> {
@@ -114,7 +114,7 @@ class OrderServiceTest {
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
         given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.findAllMenuIds()))
+        given(menuRepository.findAllById(request.toMenuIds()))
                 .willReturn(Arrays.asList(양식_세트1, 양식_세트2));
 
         assertThatThrownBy(() -> {
@@ -129,7 +129,7 @@ class OrderServiceTest {
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
         given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.findAllMenuIds()))
+        given(menuRepository.findAllById(request.toMenuIds()))
                 .willReturn(Arrays.asList(양식_세트1, 양식_세트2));
         given(orderRepository.save(any(Order.class))).willReturn(주문);
 
