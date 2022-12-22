@@ -3,8 +3,10 @@ package kitchenpos.table.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableResponse {
+
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
@@ -13,21 +15,27 @@ public class OrderTableResponse {
     private OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public static OrderTableResponse from(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        if (tableGroup != null) {
+            this.tableGroupId = tableGroup.getId();
+        }
     }
 
     public static List<OrderTableResponse> toList(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(OrderTableResponse::from)
-                .collect(Collectors.toList());
+            .map(OrderTableResponse::from)
+            .collect(Collectors.toList());
+    }
+
+    public static OrderTableResponse from(OrderTable orderTable) {
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     public Long getId() {
@@ -40,10 +48,6 @@ public class OrderTableResponse {
 
     public int getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
     }
 
 }

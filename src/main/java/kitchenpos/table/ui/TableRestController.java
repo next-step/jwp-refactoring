@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequestMapping("/api/tables")
 @RestController
 public class TableRestController {
     private final TableService tableService;
@@ -21,27 +23,28 @@ public class TableRestController {
         this.tableService = tableService;
     }
 
-    @PostMapping("/api/tables")
+    @PostMapping
     public ResponseEntity<OrderTableResponse> create(@RequestBody OrderTableRequest orderTableRequest) {
         OrderTableResponse response = tableService.create(orderTableRequest);
         URI uri = URI.create("/api/tables/" + response.getId());
         return ResponseEntity.created(uri).body(response);
     }
 
-    @GetMapping("/api/tables")
+    @GetMapping
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok().body(tableService.list());
     }
 
-    @PutMapping("/api/tables/{orderTableId}/empty")
+    @PutMapping("/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(
-            @PathVariable Long orderTableId, @RequestBody OrderTableRequest request) {
+        @PathVariable Long orderTableId, @RequestBody OrderTableRequest request) {
         return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId, request));
     }
 
-    @PutMapping("/api/tables/{orderTableId}/number-of-guests")
+    @PutMapping("/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
-            @PathVariable Long orderTableId, @RequestBody OrderTableRequest request) {
+        @PathVariable Long orderTableId, @RequestBody OrderTableRequest request) {
         return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, request));
     }
+
 }
