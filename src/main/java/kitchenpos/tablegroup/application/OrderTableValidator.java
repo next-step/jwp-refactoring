@@ -8,10 +8,12 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
+@Component
 public class OrderTableValidator implements OrderValidator {
     private static final int NUMBER_OF_MINIMUM_ORDER_MENU = 1;
 

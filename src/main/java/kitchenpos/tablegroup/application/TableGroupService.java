@@ -1,8 +1,6 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -21,13 +19,13 @@ public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final OrderTableValidator orderTableValidator;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
-                             OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+                             OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.tableGroupRepository = tableGroupRepository;
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -50,9 +48,9 @@ public class TableGroupService {
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByOrderTableIds(tableGroup.getOrderTableIds());
+        orderTableValidator.validateToUngroup(tableGroup.getOrderTableIds());
 
-        tableGroup.ungroup(orders);
+        tableGroup.ungroup();
 
         tableGroupRepository.save(tableGroup);
     }
@@ -60,9 +58,5 @@ public class TableGroupService {
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage()));
-    }
-
-    private List<Order> findAllOrderByOrderTableIds(List<Long> orderTableIds) {
-        return orderRepository.findAllByOrderTableIds(orderTableIds);
     }
 }

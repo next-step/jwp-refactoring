@@ -24,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,7 +108,7 @@ class OrderServiceTest {
 
     @Test
     void 주문_테이블이_빈_테이블이면_주문할_수_없음() {
-        주문테이블.changeEmpty(true, Collections.emptyList());
+        주문테이블.changeEmpty(true);
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 

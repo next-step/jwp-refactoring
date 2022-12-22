@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -58,9 +57,8 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void changeEmpty(boolean empty, List<Order> orders) {
+    public void changeEmpty(boolean empty) {
         checkTableGroup();
-        orders.forEach(Order::checkOrderStatus);
         this.empty = this.empty.changeEmpty(empty);
     }
 

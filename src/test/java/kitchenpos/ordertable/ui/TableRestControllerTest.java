@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -83,7 +82,7 @@ class TableRestControllerTest extends ControllerTest {
 
     @Test
     void 빈_테이블로_변경() throws Exception {
-        주문테이블1.changeEmpty(true, Collections.emptyList());
+        주문테이블1.changeEmpty(true);
         given(tableService.changeEmpty(anyLong(), any(OrderTableEmpty.class)))
                 .willReturn(OrderTableResponse.of(주문테이블1));
 
@@ -97,7 +96,7 @@ class TableRestControllerTest extends ControllerTest {
 
     @Test
     void 빈_테이블로_변경_실패() throws Exception {
-        주문테이블1.changeEmpty(true, Collections.emptyList());
+        주문테이블1.changeEmpty(true);
         given(tableService.changeEmpty(anyLong(), any(OrderTableEmpty.class)))
                 .willThrow(IllegalArgumentException.class);
 

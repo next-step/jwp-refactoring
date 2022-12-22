@@ -32,8 +32,7 @@ public class TableGroup extends BaseEntity {
         this.orderTables.addOrderTable(this, orderTable);
     }
 
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::checkOrderStatus);
+    public void ungroup() {
         this.orderTables.ungroup();
     }
 

@@ -83,7 +83,7 @@ public class TableGroupTest {
         Order 주문2 = new Order(단체_주문_테이블2.getId(), OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> {
-            단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
+            단체_테이블.ungroup();
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
     }
@@ -95,7 +95,7 @@ public class TableGroupTest {
         Order 주문1 = new Order(단체_주문_테이블1.getId(), OrderStatus.COMPLETION);
         Order 주문2 = new Order(단체_주문_테이블2.getId(), OrderStatus.COMPLETION);
 
-        단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
+        단체_테이블.ungroup();
 
         assertAll(
                 () -> assertThat(단체_주문_테이블1.getTableGroup()).isNull(),

@@ -17,11 +17,11 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderTableValidator orderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableValidator orderTableValidator, OrderTableRepository orderTableRepository) {
+        this.orderTableValidator = orderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -38,9 +38,9 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableEmpty request) {
         OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        List<Order> orders = findAllByOrderTableId(savedOrderTable.getId());
+        orderTableValidator.validateToChangeEmpty(savedOrderTable);
 
-        savedOrderTable.changeEmpty(request.isEmpty(), orders);
+        savedOrderTable.changeEmpty(request.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
@@ -48,10 +48,6 @@ public class TableService {
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage()));
-    }
-
-    private List<Order> findAllByOrderTableId(Long orderTableId) {
-        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 
     @Transactional
