@@ -34,7 +34,7 @@ public class OrderService {
     public OrderResponse create(final OrderCreateRequest request) {
         final OrderLineItems orderLineItems = request.toOrderLineItems();
         validateOrderItems(orderLineItems);
-        return OrderResponse.of(orderRepository.save(new Orders(findOrderTable(request), request.toOrderLineItems())));
+        return OrderResponse.of(orderRepository.save(new Orders(findOrderTable(request).getId(), request.toOrderLineItems())));
     }
 
     public List<OrderResponse> list() {

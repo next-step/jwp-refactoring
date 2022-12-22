@@ -113,8 +113,8 @@ class OrderStatusServiceTest extends ServiceTest {
         assertThat(findOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
-    private void createOrder(OrderTable orderTable1, Menu menu) {
-        orderTable1.setEmpty(false);
-        order = orderRepository.save(new Orders(orderTable1, new OrderLineItems(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))))));
+    private void createOrder(OrderTable orderTable, Menu menu) {
+        orderTable.setEmpty(false);
+        order = orderRepository.save(new Orders(orderTable.getId(), new OrderLineItems(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))))));
     }
 }

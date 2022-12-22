@@ -116,7 +116,7 @@ class TableGroupServiceTest extends ServiceTest {
         테이블_그룹_존재_검증(tableGroup);
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
+        Orders order = new Orders(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -136,7 +136,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, orderLineItemsA);
+        Orders order = new Orders(orderTableA.getId(), orderLineItemsA);
         order.setOrderStatus(OrderStatus.COOKING);
         orderRepository.save(order);
 
@@ -159,7 +159,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, orderLineItemsA);
+        Orders order = new Orders(orderTableA.getId(), orderLineItemsA);
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 

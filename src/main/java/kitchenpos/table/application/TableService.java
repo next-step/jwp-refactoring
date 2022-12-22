@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -41,8 +42,10 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         Orders order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
-        order.emptyTable();
-        return OrderTableResponse.of(order.getOrderTable());
+        validateOrderStatus(order.getOrderStatus());
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
+        orderTable.empty();
+        return OrderTableResponse.of(orderTable);
     }
 
     @Transactional
@@ -55,5 +58,11 @@ public class TableService {
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private void validateOrderStatus(OrderStatus status) {
+        if (status.equals(OrderStatus.COOKING) || status.equals(OrderStatus.MEAL)) {
+            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
+        }
     }
 }

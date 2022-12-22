@@ -23,4 +23,8 @@ public class OrderTableFixture {
     public static OrderTable notEmptyNotTableGroupOrderTable() {
         return new OrderTable(new TableGroup(), numberOfGuests(), false);
     }
+
+    public static OrderTable orderTableA() {
+        return new OrderTable(1L, null, numberOfGuests(), true);
+    }
 }

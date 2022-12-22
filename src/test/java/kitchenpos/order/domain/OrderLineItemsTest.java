@@ -10,6 +10,7 @@ import java.util.Collections;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.order.domain.fixture.OrdersFixture.orderA;
+import static kitchenpos.table.domain.fixture.OrderTableFixture.orderTableA;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문 항목 일급 콜렉션")
@@ -46,7 +47,7 @@ class OrderLineItemsTest {
     @DisplayName("주문 항목을 주문과 매핑한다.")
     @Test
     void mapOrder() {
-        Orders order = orderA();
+        Orders order = orderA(orderTableA().getId());
         OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(OrderLineItemFixture.OrderLineItem()));
         orderLineItems.mapOrder(order);
         for (OrderLineItem orderLineItem : orderLineItems.getOrderLineItems()) {
