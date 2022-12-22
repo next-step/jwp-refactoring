@@ -33,12 +33,12 @@ public class MenuValidator {
     }
 
     private void validatePrice(Price price, MenuProducts menuProducts) {
-        if (price.getPrice().compareTo(sum(menuProducts.getMenuProducts())) > 0) {
+        if (price.getPrice().compareTo(sumMenuProducts(menuProducts.getMenuProducts())) > 0) {
             throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
         }
     }
 
-    private BigDecimal sum(List<MenuProduct> menuProducts) {
+    private BigDecimal sumMenuProducts(List<MenuProduct> menuProducts) {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(findProduct(menuProduct.getProductId()).getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
