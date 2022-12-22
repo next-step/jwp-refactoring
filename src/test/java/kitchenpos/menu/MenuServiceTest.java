@@ -52,8 +52,6 @@ class MenuServiceTest {
             .thenReturn(Optional.of(강정치킨));
         when(menuDao.save(any()))
             .thenReturn(더블강정치킨);
-        when(menuProductDao.save(any()))
-            .thenReturn(MenuFixture.더블강정치킨상품);
 
         //when
         MenuResponse menuResponse = menuService.create(더블강정치킨);

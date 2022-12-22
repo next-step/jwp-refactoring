@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
@@ -44,18 +43,8 @@ public class MenuService {
         menu.validateMenuPrice(sumOfProducts);
 
         final Menu savedMenu = menuDao.save(menu);
-        savedMenu.setMenuProducts(saveMenuProducts(menu.getMenuProducts(), savedMenu.getId()));
 
         return MenuResponse.from(savedMenu);
-    }
-
-    private List<MenuProduct> saveMenuProducts(List<MenuProduct> menuProducts, Long menuId) {
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
-        }
-        return savedMenuProducts;
     }
 
     private BigDecimal sumOfProducts(List<MenuProduct> menuProducts) {
