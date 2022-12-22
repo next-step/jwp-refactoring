@@ -24,18 +24,33 @@ public class OrderTables {
         return orderTables.size() == size;
     }
 
-    public boolean hasAnyNotEmpty() {
+    public void group(Long tableGroupId) {
+        validateHasAnyNotEmpty();
+        validateHasAnyTableGroupRegistered();
+
+        orderTables.forEach(orderTable -> orderTable.group(tableGroupId));
+    }
+
+    private void validateHasAnyNotEmpty() {
+        if (hasAnyNotEmpty()) {
+            throw new IllegalStateException("모든 주문 테이블은 빈 테이블 상태이어야 합니다.");
+        }
+    }
+
+    private void validateHasAnyTableGroupRegistered() {
+        if (hasAnyTableGroupRegistered()) {
+            throw new IllegalStateException("이미 단체 지정되어있는 테이블이 존재합니다.");
+        }
+    }
+
+    private boolean hasAnyNotEmpty() {
         return orderTables.stream()
             .anyMatch(OrderTable::isNotEmpty);
     }
 
-    public boolean hasAnyTableGroupRegistered() {
+    private boolean hasAnyTableGroupRegistered() {
         return orderTables.stream()
             .anyMatch(OrderTable::isTableGroupRegistered);
-    }
-
-    public void group(Long tableGroupId) {
-        orderTables.forEach(orderTable -> orderTable.group(tableGroupId));
     }
 
     public void ungroup() {

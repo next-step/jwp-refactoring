@@ -69,38 +69,6 @@ class TableGroupCreatedEventHandlerTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("비어있지 않은 주문 테이블 존재")
-    @Test
-    void handle_order_table_not_empty() {
-        // given
-        List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        TableGroupCreatedEvent tableGroupCreatedEvent = tableGroupCreateEvent(orderTableIds, 1L);
-        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(
-            savedOrderTable(1L, true),
-            savedOrderTable(2L, false)
-        ));
-
-        // when, then
-        assertThatThrownBy(() -> tableGroupCreatedEventHandler.handle(tableGroupCreatedEvent))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("다른 단체 지정에 연결되어있는 주문 테이블 존재")
-    @Test
-    void handle_order_table_table_group_id_exists() {
-        // given
-        List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        TableGroupCreatedEvent tableGroupCreatedEvent = tableGroupCreateEvent(orderTableIds, 1L);
-        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(Arrays.asList(
-            savedOrderTable(1L, true),
-            savedOrderTable(2L, 1L, true)
-        ));
-
-        // when, then
-        assertThatThrownBy(() -> tableGroupCreatedEventHandler.handle(tableGroupCreatedEvent))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("단체지정 생성 성공")
     @Test
     void handle() {
