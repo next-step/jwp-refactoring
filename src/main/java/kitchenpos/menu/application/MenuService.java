@@ -8,6 +8,8 @@ import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
@@ -35,7 +37,9 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponse create(final Menu menu) {
+    public MenuResponse create(final MenuRequest request) {
+        List<MenuProductRequest> menuProducts = request.getMenuProducts();
+        Menu menu = request.toMenu(getMenuProducts(menuProducts));
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
@@ -50,12 +54,21 @@ public class MenuService {
     private BigDecimal sumOfProducts(List<MenuProduct> menuProducts) {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProductId())
-                .orElseThrow(IllegalArgumentException::new);
+            final Product product = menuProduct.getProduct();
             sum = sum
                 .add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
         return sum;
+    }
+
+    public List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
+        return requests.stream()
+            .map(menuProductRequest -> {
+                Product product = productDao.findById(menuProductRequest.getProductId())
+                    .orElseThrow(() -> new IllegalArgumentException(""));
+                return new MenuProduct(product, menuProductRequest.getQuantity());
+            })
+            .collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {

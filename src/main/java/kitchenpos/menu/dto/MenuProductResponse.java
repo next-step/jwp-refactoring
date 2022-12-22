@@ -23,7 +23,7 @@ public class MenuProductResponse {
     public static MenuProductResponse from(final MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(),
             menuProduct.menuId(),
-            menuProduct.getProductId(),
+            menuProduct.productId(),
             menuProduct.getQuantity()
         );
     }

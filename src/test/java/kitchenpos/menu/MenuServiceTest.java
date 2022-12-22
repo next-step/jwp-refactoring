@@ -12,12 +12,17 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductDao;
 import org.assertj.core.api.Assertions;
@@ -54,7 +59,7 @@ class MenuServiceTest {
             .thenReturn(더블강정치킨);
 
         //when
-        MenuResponse menuResponse = menuService.create(더블강정치킨);
+        MenuResponse menuResponse = menuService.create(from(더블강정치킨));
 
         //then
         Assertions.assertThat(menuResponse).isEqualTo(MenuResponse.from(더블강정치킨));
@@ -74,7 +79,19 @@ class MenuServiceTest {
             Arrays.asList(더블강정치킨상품, 더블개손해치킨상품));
 
         //when
-        Assertions.assertThatThrownBy(() -> menuService.create(menu))
+        Assertions.assertThatThrownBy(() -> menuService.create(from(menu)))
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private MenuRequest from(Menu menu) {
+        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+            from(menu.getMenuProducts()));
+    }
+
+    private List<MenuProductRequest> from(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+            .map(menuProduct -> new MenuProductRequest(menuProduct.getProduct().getId(),
+                menuProduct.getQuantity()))
+            .collect(Collectors.toList());
     }
 }
