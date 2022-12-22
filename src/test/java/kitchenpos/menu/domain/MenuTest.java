@@ -26,7 +26,7 @@ class MenuTest {
     void validateMenuPrice() {
         Assertions.assertThatThrownBy(
             () -> new Menu(더블강정치킨.getId(), 더블강정치킨.getName(), null, 추천메뉴,
-                더블강정치킨.getMenuProducts()))
+                더블강정치킨.menuProducts()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("가격정보가 없거나 0원이하면 안됩니다.");
     }

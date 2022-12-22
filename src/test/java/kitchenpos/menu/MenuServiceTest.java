@@ -61,7 +61,7 @@ class MenuServiceTest {
 
     private MenuRequest from(Menu menu) {
         return new MenuRequest(menu.getName(), menu.getPrice(), menu.menuGroupId(),
-            from(menu.getMenuProducts()));
+            from(menu.menuProducts()));
     }
 
     private List<MenuProductRequest> from(List<MenuProduct> menuProducts) {

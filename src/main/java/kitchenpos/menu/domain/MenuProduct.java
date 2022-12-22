@@ -71,7 +71,7 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public BigDecimal getPrice() {
-        return product.getPrice();
+    public BigDecimal getTotalPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }

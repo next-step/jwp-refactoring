@@ -3,14 +3,13 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -23,8 +22,8 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
@@ -35,22 +34,12 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-        menuProducts
-            .forEach(menuProduct -> menuProduct.setMenu(this));
+        this.menuProducts = new MenuProducts(this, menuProducts);
         validatePrice();
-        BigDecimal sumOfProducts = sumOfProducts();
+        BigDecimal sumOfProducts = this.menuProducts.sumOfProducts();
         validateMenuPrice(sumOfProducts);
     }
 
-    private BigDecimal sumOfProducts() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(
-                menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-        return sum;
-    }
 
     private void validatePrice() {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -92,11 +81,7 @@ public class Menu {
         return menuGroup.getId();
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public List<MenuProduct> menuProducts() {
+        return menuProducts.getMenuProducts();
     }
 }
