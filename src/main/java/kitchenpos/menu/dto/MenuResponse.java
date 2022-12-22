@@ -13,7 +13,7 @@ public class MenuResponse {
     private final List<MenuProductResponse> menuProducts;
 
     public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
-        List<MenuProductResponse> menuProducts) {
+                        List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -23,9 +23,9 @@ public class MenuResponse {
 
     public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(),
-            menu.getMenuProducts().stream()
-                .map(MenuProductResponse::from)
-                .collect(Collectors.toList()));
+                menu.getMenuProducts().stream()
+                        .map(MenuProductResponse::from)
+                        .collect(Collectors.toList()));
     }
 
     public Long getId() {

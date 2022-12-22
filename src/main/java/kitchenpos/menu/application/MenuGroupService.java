@@ -1,13 +1,12 @@
 package kitchenpos.menu.application;
 
+import java.util.List;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.repository.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -24,13 +23,12 @@ public class MenuGroupService {
         return MenuGroupResponse.from(menuGroup);
     }
 
-    public MenuGroup findById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(IllegalArgumentException::new);
-    }
-
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.toList(menuGroupRepository.findAll());
     }
-}
 
+    public MenuGroup findById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+}

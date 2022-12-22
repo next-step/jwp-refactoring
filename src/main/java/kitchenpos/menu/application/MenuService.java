@@ -1,17 +1,15 @@
 package kitchenpos.menu.application;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -40,7 +38,7 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
-            .map(MenuResponse::from)
-            .collect(Collectors.toList());
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 }

@@ -1,11 +1,11 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 
 @Embeddable
 public class MenuProducts {
@@ -24,8 +24,8 @@ public class MenuProducts {
 
     public BigDecimal totalPrice() {
         return menuProducts.stream()
-            .map(menuProduct -> menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(menuProduct -> menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<MenuProduct> getMenuProducts() {
