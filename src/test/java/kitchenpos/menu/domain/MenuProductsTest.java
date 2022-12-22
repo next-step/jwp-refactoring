@@ -20,13 +20,6 @@ class MenuProductsTest {
         assertThatNoException().isThrownBy(MenuProducts::new);
     }
 
-//    @DisplayName("메뉴 상품 일급 콜렉션의 가격의 합을 구한다.")
-//    @Test
-//    void sum() {
-//        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(menuProductA()));
-//        assertThat(menuProducts.sum()).isEqualTo(BigDecimal.valueOf(2));
-//    }
-
     @DisplayName("메뉴 상품 일급 콜렉션의 empty 여부를 반환한다. / false")
     @Test
     void isEmpty_false() {
