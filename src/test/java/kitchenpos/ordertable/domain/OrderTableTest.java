@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.Test;
@@ -27,12 +26,8 @@ public class OrderTableTest {
     void 주문_테이블의_비어있는_여부를_수정할_때_단체_지정되어_있다면_수정할_수_없다() {
         // given
         OrderTable firstOrderTable = new OrderTable(new NumberOfGuests(4), true);
-        OrderTable secondOrderTable = new OrderTable(new NumberOfGuests(4), true);
-        TableGroup tableGroup = new TableGroup(
-                LocalDateTime.now(),
-                new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable))
-        );
-        //firstOrderTable.setTableGroup(tableGroup);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        firstOrderTable.updateTableGroup(tableGroup.getId());
 
         // when & then
         assertThatThrownBy(() -> firstOrderTable.updateEmpty(true))
@@ -68,11 +63,6 @@ public class OrderTableTest {
     void 단체_지정을_해제할_수_있다() {
         // given
         OrderTable firstOrderTable = new OrderTable(new NumberOfGuests(4), true);
-        OrderTable secondOrderTable = new OrderTable(new NumberOfGuests(4), true);
-        TableGroup tableGroup = new TableGroup(
-                LocalDateTime.now(),
-                new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable)));
-//        firstOrderTable.setTableGroup(tableGroup);
 
         // when
         firstOrderTable.ungroup();

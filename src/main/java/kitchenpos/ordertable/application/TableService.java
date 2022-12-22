@@ -2,6 +2,8 @@ package kitchenpos.ordertable.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -26,13 +28,13 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         final OrderTable orderTable = orderTableRepository.save(request.createOrderTable());
-        return OrderTableResponse.from(orderTable);
+        return OrderTableResponse.of(orderTable);
     }
 
     public List<OrderTableResponse> findAll() {
         return orderTableRepository.findAll()
                 .stream()
-                .map(OrderTableResponse::from)
+                .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +45,7 @@ public class TableService {
 
         validateOngoingOrder(orders);
         savedOrderTable.updateEmpty(request.isEmpty());
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     private void validateOngoingOrder(List<Order> orders) {
@@ -62,12 +64,12 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.updateNumberOfGuest(request.getNumberOfGuests());
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.ORDER_TABLE_NOT_FOUND.message()));
         return savedOrderTable;
     }
 }

@@ -28,8 +28,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = new OrderTable(null, new NumberOfGuests(4),  false);
-        주문테이블_B = new OrderTable(null, new NumberOfGuests(4),  false);
+        주문테이블_B = new OrderTable(null, new NumberOfGuests(4),  true);
+        주문테이블_A = new OrderTable(null, new NumberOfGuests(4),  true);
     }
 
     @Test

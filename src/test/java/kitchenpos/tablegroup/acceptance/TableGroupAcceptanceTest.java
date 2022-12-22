@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
+import javax.persistence.EntityListeners;
 import kitchenpos.common.AcceptanceTest;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -15,6 +16,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -28,9 +30,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(4), true))
+        주문테이블_A = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(0), true))
                 .as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(4), true))
+        주문테이블_B = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(0), true))
                 .as(OrderTable.class);
         개발자_모임_단체 = TableGroupRequest.of(Arrays.asList(주문테이블_A.getId(), 주문테이블_B.getId()));
     }

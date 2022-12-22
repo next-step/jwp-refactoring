@@ -12,17 +12,16 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
-    private Long tableGroupId;
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
-        this.id = id;
+    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
+        validateShouldNotEmpty();
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
     }
 
     public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
@@ -30,9 +29,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
-        validateShouldNotEmpty();
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
+        this.id = id;
         this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     private void validateShouldNotEmpty() {
@@ -46,9 +46,10 @@ public class OrderTable {
             throw new IllegalArgumentException(ErrorEnum.ALREADY_GROUP.message());
         }
     }
+
     public void updateTableGroup(Long tableGroupId) {
         if (!isEmpty()) {
-            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_NOT_EMPTY.message());
+            throw new IllegalArgumentException(ErrorEnum.EXISTS_NOT_EMPTY_ORDER_TABLE.message());
         }
         updateEmpty(false);
         this.tableGroupId = tableGroupId;

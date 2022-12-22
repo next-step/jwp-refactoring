@@ -11,7 +11,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
 import org.junit.jupiter.api.Test;
 
 public class TableGroupTest {
@@ -24,13 +23,8 @@ public class TableGroupTest {
         OrderTable firstOrderTable = order1.getOrderTable();
         OrderTable secondOrderTable = order2.getOrderTable();
 
-        TableGroup tableGroup = new TableGroup(
-                LocalDateTime.now(),
-                new OrderTables(Arrays.asList(firstOrderTable, secondOrderTable))
-        );
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
-//        firstOrderTable.setTableGroup(tableGroup);
-//        secondOrderTable.setTableGroup(tableGroup);
         // when
         tableGroup.ungroup(Arrays.asList(order1, order2));
 
@@ -46,10 +40,7 @@ public class TableGroupTest {
         // given
         Order firstOrder = createCompleteOrder();
         Order secondOrder = createCompleteOrder();
-        TableGroup tableGroup = new TableGroup(
-                LocalDateTime.now(),
-                new OrderTables(Arrays.asList(firstOrder.getOrderTable(), secondOrder.getOrderTable()))
-        );
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         firstOrder.setOrderStatus(OrderStatus.MEAL);
 
@@ -62,6 +53,13 @@ public class TableGroupTest {
     public static Order createCompleteOrder() {
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
         Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        orderTable.updateEmpty(true);
+        return order;
+    }
+
+    public static Order createMealOrder() {
+        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
+        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
         orderTable.updateEmpty(true);
         return order;
     }

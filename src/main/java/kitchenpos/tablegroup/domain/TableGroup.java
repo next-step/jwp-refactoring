@@ -3,26 +3,23 @@ package kitchenpos.tablegroup.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
-import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @CreatedDate
     private LocalDateTime createdDate;
-
-    @Embedded
-    private OrderTables orderTables;
 
     public TableGroup() {}
 
@@ -34,32 +31,17 @@ public class TableGroup {
         return new TableGroup(id);
     }
 
-    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
-        validateTableGroup(orderTables);
+    public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        validateTableGroup(orderTables);
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
-    private void validateTableGroup(OrderTables orderTables) {
-        boolean hasNotEmpty = orderTables.get().stream()
-                .anyMatch(orderTable -> !orderTable.isEmpty());
-        if (hasNotEmpty) {
-            throw new IllegalArgumentException(ErrorEnum.EXISTS_NOT_EMPTY_ORDER_TABLE.message());
-        }
-
-        boolean hasGroup = orderTables.get().stream()
-                .anyMatch(orderTable -> orderTable.getTableGroupId() != null);
-        if (hasGroup) {
-            throw new IllegalArgumentException(ErrorEnum.ALREADY_GROUP.message());
-        }
-
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::validateOrderStatusShouldComplete);
     }
 
     public Long getId() {
@@ -68,22 +50,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-//    public OrderTables getOrderTables() {
-//        return orderTables;
-//    }
-
-//    public List<Long> getOrderTableIds() {
-//        return orderTables.get()
-//                .stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//    }
-
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::validateOrderStatusShouldComplete);
-        orderTables.ungroup();
     }
 
     @Override

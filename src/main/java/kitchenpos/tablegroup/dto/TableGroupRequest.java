@@ -7,7 +7,7 @@ public class TableGroupRequest {
 
     protected TableGroupRequest() {}
 
-    private TableGroupRequest(List<Long> orderTableIds) {
+    public TableGroupRequest(List<Long> orderTableIds) {
         this.orderTableIds = orderTableIds;
     }
 

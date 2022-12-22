@@ -3,10 +3,13 @@ package kitchenpos.ordertable.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.error.ErrorEnum;
@@ -44,13 +47,13 @@ public class TableServiceTest {
 
     private OrderTable firstTable;
     private OrderTable secondTable;
-    private TableGroup 개발자_단체;
+    private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
         firstTable = new OrderTable(new NumberOfGuests(0), true);
         secondTable = new OrderTable(new NumberOfGuests(0), true);
-        개발자_단체 = new TableGroup(1L, null, new OrderTables(Arrays.asList(firstTable, secondTable)));
+        tableGroup = TableGroup.of(1L);
     }
 
     @Test
@@ -91,12 +94,17 @@ public class TableServiceTest {
     }
 
     @Test
-    void 단체_테이블에_지정되어_있으면_주문_테이블을_변경할_수_없다() {
-        firstTable.updateTableGroup(개발자_단체.getId());
-        UpdateEmptyRequest request = UpdateEmptyRequest.of(firstTable.isEmpty());
-        given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
+    void 단체_테이블에_지정되어_있으면_주문_빈자리_여부를_변경할_수_없다() {
+        OrderTable orderTable1 = new OrderTable(1L, new NumberOfGuests(0), true);
+        OrderTable orderTable2 = new OrderTable(2L, new NumberOfGuests(0), true);
+        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable1, orderTable2));
+        orderTables.group(tableGroup.getId());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), request))
+        when(orderTableRepository.findById(orderTable1.getId())).thenReturn(Optional.of(orderTable1));
+        when(orderRepository.findAllByOrderTableId(any())).thenReturn(Collections.emptyList());
+
+        UpdateEmptyRequest request = UpdateEmptyRequest.of(orderTable1.isEmpty());
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.ALREADY_GROUP.message());
     }

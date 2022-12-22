@@ -33,8 +33,9 @@ public class TableGroupService {
         OrderTables orderTables = OrderTables.of(orderTableById(request.getOrderTableIds()));
         List<OrderTableResponse> orderTableResponses = orderTables.get()
                 .stream()
-                .map(OrderTableResponse::from)
+                .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
+
         final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         orderTables.group(tableGroup.getId());
         return TableGroupResponse.of(tableGroup, orderTableResponses);
@@ -52,7 +53,7 @@ public class TableGroupService {
         OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
         List<Order> orders = findAllOrderByTableIds(orderTables.getOrderTableIds());
         tableGroup.ungroup(orders);
-        tableGroupRepository.save(tableGroup);
+        orderTables.ungroup();
     }
 
     private List<OrderTable> findAllOrderTablesByIds(List<Long> ids) {
@@ -69,6 +70,7 @@ public class TableGroupService {
     private List<Order> findAllOrderByTableIds(List<Long> ids) {
         return orderRepository.findAllByOrderTableIdIn(ids);
     }
+
     private TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_EXISTS_TABLE_GROUP.message()));

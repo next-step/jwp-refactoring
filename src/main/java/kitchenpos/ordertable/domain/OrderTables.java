@@ -46,6 +46,9 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
+    public List<OrderTable> getOrderTables() {
+        return Collections.unmodifiableList(orderTables);
+    }
     public List<Long> getOrderTableIds() {
         return orderTables.stream()
                 .map(OrderTable::getId)
