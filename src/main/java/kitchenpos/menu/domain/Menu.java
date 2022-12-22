@@ -35,20 +35,15 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
-        validatePrice();
-        BigDecimal sumOfProducts = this.menuProducts.sumOfProducts();
-        validateMenuPrice(sumOfProducts);
+        validateMenu();
     }
 
-
-    private void validatePrice() {
+    private void validateMenu() {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격정보가 없거나 0원이하면 안됩니다.");
         }
-    }
 
-    public void validateMenuPrice(BigDecimal sumOfProducts) {
-        if (price.compareTo(sumOfProducts) > 0) {
+        if (price.compareTo(menuProducts.sumOfProducts()) > 0) {
             throw new IllegalArgumentException("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
         }
     }
