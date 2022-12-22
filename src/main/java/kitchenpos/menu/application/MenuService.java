@@ -40,26 +40,18 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         List<MenuProductRequest> menuProducts = request.getMenuProducts();
         Menu menu = request.toMenu(getMenuProducts(menuProducts));
+
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
-        BigDecimal sumOfProducts = sumOfProducts(menu.getMenuProducts());
-        menu.validateMenuPrice(sumOfProducts);
+
 
         final Menu savedMenu = menuDao.save(menu);
 
         return MenuResponse.from(savedMenu);
     }
 
-    private BigDecimal sumOfProducts(List<MenuProduct> menuProducts) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = menuProduct.getProduct();
-            sum = sum
-                .add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-        return sum;
-    }
+
 
     public List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
         return requests.stream()

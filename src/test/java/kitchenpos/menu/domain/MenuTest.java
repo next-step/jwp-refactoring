@@ -34,12 +34,12 @@ class MenuTest {
     @Test
     @DisplayName("메뉴의 가격이 상품들의 가격 합보다 크면 안된다")
     void validateSumOfMenuPrice() {
-        Menu 더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(199_000),
-            추천메뉴.getId(),
-            Arrays.asList(MenuFixture.더블강정치킨상품, 더블개손해치킨상품));
         Assertions
-            .assertThatThrownBy(() -> 더블강정치킨.validateMenuPrice(new BigDecimal(99_999)))
+            .assertThatThrownBy(() -> new Menu(1L, "더블강정치킨", new BigDecimal(199_000),
+                추천메뉴.getId(),
+                Arrays.asList(MenuFixture.더블강정치킨상품, 더블개손해치킨상품)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
+
     }
 }

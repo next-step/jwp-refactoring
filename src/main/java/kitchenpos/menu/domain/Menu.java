@@ -35,6 +35,17 @@ public class Menu {
         menuProducts
             .forEach(menuProduct -> menuProduct.setMenu(this));
         validatePrice();
+        BigDecimal sumOfProducts = sumOfProducts();
+        validateMenuPrice(sumOfProducts);
+    }
+
+    private BigDecimal sumOfProducts() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            sum = sum.add(
+                menuProduct.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+        return sum;
     }
 
     private void validatePrice() {
