@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.OrderBuilder.anOrder;
-import static kitchenpos.application.OrderTableBuilder.emptyOrderTableWithGuestNo;
+import static kitchenpos.OrderBuilder.anOrder;
+import static kitchenpos.OrderTableBuilder.emptyOrderTableWithGuestNo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

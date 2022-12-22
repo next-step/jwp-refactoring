@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.OrderBuilder.completionStatusOrder;
-import static kitchenpos.application.OrderBuilder.cookingStatusOrder;
-import static kitchenpos.application.OrderBuilder.mealStatusOrder;
-import static kitchenpos.application.OrderTableBuilder.emptyOrderTableWithGuestNo;
-import static kitchenpos.application.OrderTableBuilder.nonEmptyOrderTableWithGuestNo;
+import static kitchenpos.OrderBuilder.completionStatusOrder;
+import static kitchenpos.OrderBuilder.cookingStatusOrder;
+import static kitchenpos.OrderBuilder.mealStatusOrder;
+import static kitchenpos.OrderTableBuilder.emptyOrderTableWithGuestNo;
+import static kitchenpos.OrderTableBuilder.nonEmptyOrderTableWithGuestNo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

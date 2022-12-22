@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.OrderBuilder.anOrder;
-import static kitchenpos.application.OrderTableBuilder.emptyOrderTableWithGuestNo;
-import static kitchenpos.application.OrderTableBuilder.nonEmptyOrderTableWithGuestNo;
+import static kitchenpos.OrderBuilder.anOrder;
+import static kitchenpos.OrderTableBuilder.emptyOrderTableWithGuestNo;
+import static kitchenpos.OrderTableBuilder.nonEmptyOrderTableWithGuestNo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import kitchenpos.OrderBuilder;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
