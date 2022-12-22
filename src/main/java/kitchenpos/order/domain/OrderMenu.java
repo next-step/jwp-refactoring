@@ -6,6 +6,7 @@ import kitchenpos.common.vo.Price;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class OrderMenu {
@@ -24,6 +25,7 @@ public class OrderMenu {
     }
 
     private OrderMenu(Long menuId, Name name, Price price) {
+        validate(menuId, name, price);
         this.menuId = menuId;
         this.name = name;
         this.price = price;
@@ -43,5 +45,29 @@ public class OrderMenu {
 
     public Name getName() {
         return this.name;
+    }
+
+    private void validate(Long menuId, Name name, Price price) {
+        validateNullMenuId(menuId);
+        validateNullName(name);
+        validateNullPrice(price);
+    }
+
+    private static void validateNullMenuId(Long menuId) {
+        if (Objects.isNull(menuId)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static void validateNullName(Name name) {
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private static void validateNullPrice(Price price) {
+        if (Objects.isNull(price)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
