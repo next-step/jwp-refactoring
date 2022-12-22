@@ -29,7 +29,7 @@ public class Order extends BaseEntity {
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private static OrderStatus orderStatus;
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
@@ -93,6 +93,12 @@ public class Order extends BaseEntity {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
+    }
+
+    public static void checkCookingOrEatingMealOrder(Order order) {
+        if(orderStatus.isCooking() || orderStatus.isMeal()) {
+            throw new IllegalArgumentException(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
+        }
     }
 
     @Override
