@@ -1,0 +1,10 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation project(':kitchenpos-global')
+    implementation project(':kitchenpos-menu')
+    implementation project(':kitchenpos-ordervalidator')
+    implementation project(':kitchenpos-table')
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

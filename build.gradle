@@ -7,30 +7,48 @@ plugins {
 group = 'camp.nextstep.edu'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // spring
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // db
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
 
-    // guava
-    implementation 'com.google.guava:guava:31.1-jre'
-
-    // test
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation project(':kitchenpos-global')
+    implementation project(':kitchenpos-product')
+    implementation project(':kitchenpos-menu')
+    implementation project(':kitchenpos-order')
+    implementation project(':kitchenpos-table')
 }
 
 test {
     useJUnitPlatform()
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar { enabled = false }
+    jar { enabled = true }
 }
