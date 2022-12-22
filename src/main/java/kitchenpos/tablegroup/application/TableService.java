@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.ErrorCode;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderEmpty;
 import kitchenpos.tablegroup.domain.OrderGuests;
 import kitchenpos.tablegroup.domain.OrderTable;
