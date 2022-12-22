@@ -12,7 +12,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
@@ -56,10 +55,6 @@ public class OrderService {
 
 		order.updateStatus(request.status());
 		return OrderResponse.from(order);
-	}
-
-	public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList) {
-		return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, asList);
 	}
 
 	private OrderLineItems orderLineItems(List<OrderLineItemRequest> orderLineItems) {

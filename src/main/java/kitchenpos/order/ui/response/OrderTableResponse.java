@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 public class OrderTableResponse {
 
@@ -15,31 +16,26 @@ public class OrderTableResponse {
 	private OrderTableResponse() {
 	}
 
-	private OrderTableResponse(long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+	private OrderTableResponse(long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
 		this.id = id;
-		this.tableGroupId = tableGroupId;
+		if (tableGroup != null) {
+			this.tableGroupId = tableGroup.id();
+		}
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 	}
 
-
-	public static OrderTableResponse of(long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		return new OrderTableResponse(id, tableGroupId, numberOfGuests, empty);
-	}
-
-	public static OrderTableResponse of(long id,  int numberOfGuests, boolean empty) {
-		return new OrderTableResponse(id, null, numberOfGuests, empty);
-	}
 	public static OrderTableResponse from(OrderTable orderTable) {
-		if (orderTable.hasTableGroup()) {
-			return new OrderTableResponse(orderTable.id(),
-				orderTable.tableGroup().id(),
-				orderTable.numberOfGuests().value(),
-				orderTable.isEmpty());
-		}
-		return OrderTableResponse.of(orderTable.id(),
-			orderTable.getNumberOfGuests(),
-			orderTable.isEmpty());
+		return new OrderTableResponse(
+			orderTable.id(),
+			orderTable.tableGroup(),
+			orderTable.numberOfGuests().value(),
+			orderTable.isEmpty()
+		);
+	}
+
+	public static OrderTableResponse of(long id, int numberOfGuests, boolean empty) {
+		return new OrderTableResponse(id, null, numberOfGuests, empty);
 	}
 
 	public static List<OrderTableResponse> listFrom(List<OrderTable> orderTables) {
