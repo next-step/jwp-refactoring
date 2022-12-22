@@ -9,6 +9,9 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
+
 @DisplayName("단체 지정 테스트")
 class TableGroupTest {
 

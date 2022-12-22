@@ -17,15 +17,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.application.TableGroupService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
-import kitchenpos.order.ui.request.TableGroupRequest;
-import kitchenpos.order.ui.request.TableGroupRequest.OrderTableIdRequest;
-import kitchenpos.order.ui.response.TableGroupResponse;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.ui.request.TableGroupRequest;
+import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.ui.response.TableGroupResponse;
 
 @DisplayName("단체 지정 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

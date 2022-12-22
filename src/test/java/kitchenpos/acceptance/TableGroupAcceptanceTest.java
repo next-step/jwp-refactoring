@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.ui.response.OrderTableResponse;
-import kitchenpos.order.ui.response.TableGroupResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.TableGroupResponse;
 
 @DisplayName("단체 지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {

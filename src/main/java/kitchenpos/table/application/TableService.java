@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +11,11 @@ import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.ui.request.NumberOfGuestsRequest;
-import kitchenpos.order.ui.request.OrderTableRequest;
-import kitchenpos.order.ui.request.TableStatusRequest;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.ui.request.NumberOfGuestsRequest;
+import kitchenpos.table.ui.request.OrderTableRequest;
+import kitchenpos.table.ui.request.TableStatusRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
 
 @Service
 public class TableService {

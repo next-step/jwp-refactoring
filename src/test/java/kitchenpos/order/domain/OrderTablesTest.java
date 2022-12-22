@@ -10,6 +10,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTables;
+
 @DisplayName("주문 테이블 목록 테스트")
 class OrderTablesTest {
 

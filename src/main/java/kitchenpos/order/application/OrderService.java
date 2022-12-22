@@ -13,11 +13,11 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
 import kitchenpos.order.ui.response.OrderResponse;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @Service
 public class OrderService {

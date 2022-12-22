@@ -18,16 +18,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.application.TableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.ui.request.NumberOfGuestsRequest;
-import kitchenpos.order.ui.request.OrderTableRequest;
-import kitchenpos.order.ui.request.TableStatusRequest;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.ui.request.NumberOfGuestsRequest;
+import kitchenpos.table.ui.request.OrderTableRequest;
+import kitchenpos.table.ui.request.TableStatusRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
 
 @DisplayName("테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

@@ -26,10 +26,10 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

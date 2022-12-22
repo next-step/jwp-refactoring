@@ -1,6 +1,6 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
-import static kitchenpos.order.ui.request.TableGroupRequest.*;
+import static kitchenpos.table.ui.request.TableGroupRequest.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
-import kitchenpos.order.ui.request.TableGroupRequest;
-import kitchenpos.order.ui.response.TableGroupResponse;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.ui.request.TableGroupRequest;
+import kitchenpos.table.ui.response.TableGroupResponse;
 
 @Service
 public class TableGroupService {

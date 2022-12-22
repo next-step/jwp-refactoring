@@ -11,10 +11,10 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.ui.request.NumberOfGuestsRequest;
-import kitchenpos.order.ui.request.OrderTableRequest;
-import kitchenpos.order.ui.request.TableStatusRequest;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.request.NumberOfGuestsRequest;
+import kitchenpos.table.ui.request.OrderTableRequest;
+import kitchenpos.table.ui.request.TableStatusRequest;
+import kitchenpos.table.ui.response.OrderTableResponse;
 
 public class TableAcceptanceUtils {
 

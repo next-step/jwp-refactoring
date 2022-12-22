@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
 
 @DisplayName("주문 테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {

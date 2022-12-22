@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
+
+import kitchenpos.order.domain.OrderTable;
 
 @Embeddable
 public class OrderTables {

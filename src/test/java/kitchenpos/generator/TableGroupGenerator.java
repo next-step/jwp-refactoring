@@ -4,10 +4,10 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 
-import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableEmpty;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.TableEmpty;
+import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupGenerator {
 

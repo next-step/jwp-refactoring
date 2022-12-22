@@ -7,6 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.TableEmpty;
+
 @DisplayName("주문 테이블 테스트")
 class OrderTableTest {
 

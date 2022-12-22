@@ -1,8 +1,9 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.order.domain.OrderTable;
 
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
 	default OrderTable orderTable(long id) {

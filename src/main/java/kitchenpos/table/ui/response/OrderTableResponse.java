@@ -1,10 +1,10 @@
-package kitchenpos.order.ui.response;
+package kitchenpos.table.ui.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableResponse {
 
