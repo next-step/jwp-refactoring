@@ -81,48 +81,6 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문_테이블이_등록되어_있지_않으면_주문할_수_없음() {
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> {
-            orderService.create(new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                    OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2))));
-        }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
-    }
-
-    @Test
-    void 주문_메뉴_중_등록되지_않은_메뉴가_있으면_주문할_수_없음() {
-        OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
-
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.toMenuIds()))
-                .willReturn(Arrays.asList(양식_세트1));
-
-        assertThatThrownBy(() -> {
-            orderService.create(request);
-        }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
-    }
-
-    @Test
-    void 주문_테이블이_빈_테이블이면_주문할_수_없음() {
-        주문테이블.changeEmpty(true);
-        OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
-
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.toMenuIds()))
-                .willReturn(Arrays.asList(양식_세트1, 양식_세트2));
-
-        assertThatThrownBy(() -> {
-            orderService.create(request);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.ORDER_TABLES_CANNOT_BE_EMPTY.getErrorMessage());
-    }
-
-    @Test
     void 주문_생성() {
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));

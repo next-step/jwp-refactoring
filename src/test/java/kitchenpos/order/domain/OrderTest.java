@@ -37,24 +37,6 @@ public class OrderTest {
     }
 
     @Test
-    void 주문_테이블이_존재하지_않으면_주문을_생성할_수_없음() {
-        assertThatThrownBy(() -> {
-            new Order(null, OrderStatus.COOKING);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_ORDER.getErrorMessage());
-    }
-
-    @Test
-    void 주문_테이블이_비어있으면_주문을_생성할_수_없음() {
-        OrderTable 빈_주문_테이블 = new OrderTable(0, true);
-
-        assertThatThrownBy(() -> {
-            new Order(빈_주문_테이블.getId(), OrderStatus.COOKING);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.ORDER_TABLES_CANNOT_BE_EMPTY.getErrorMessage());
-    }
-
-    @Test
     void 주문_상품_추가() {
         Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
         OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트.getId(), 1L);

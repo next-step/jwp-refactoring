@@ -74,20 +74,6 @@ public class TableGroupTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 조리중이거나_식사중인_주문_테이블이_있으면_단체_테이블을_해제할_수_없음(OrderStatus orderStatus) {
-        단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
-
-        Order 주문1 = new Order(단체_주문_테이블1.getId(), orderStatus);
-        Order 주문2 = new Order(단체_주문_테이블2.getId(), OrderStatus.COMPLETION);
-
-        assertThatThrownBy(() -> {
-            단체_테이블.ungroup();
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
-    }
-
     @Test
     void 단체_테이블_해제() {
         단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));

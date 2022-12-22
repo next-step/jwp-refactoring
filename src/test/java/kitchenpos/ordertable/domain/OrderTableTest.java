@@ -56,18 +56,6 @@ public class OrderTableTest {
                 .hasMessage(ErrorCode.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getErrorMessage());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 요리중이거나_식사중인_주문이_있다면_빈_테이블로_변경할_수_없음(OrderStatus orderStatus) {
-        OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블.getId(), orderStatus);
-
-        assertThatThrownBy(() -> {
-            주문_테이블.changeEmpty(true);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
-    }
-
     @Test
     void 빈_테이블로_변경() {
         OrderTable 주문_테이블 = new OrderTable(5, false);
