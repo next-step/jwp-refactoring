@@ -1,8 +1,11 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static kitchenpos.common.fixture.QuantityFixture.quantityOrderLineItemA;
@@ -27,7 +30,7 @@ class OrderTest {
     @DisplayName("주문 테이블은 비어있을 수 없다.")
     @Test
     void constructor_fail_orderTable() {
-        assertThatThrownBy(() -> new Orders(null, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, 1L, quantityOrderLineItemA())))))
+        assertThatThrownBy(() -> new Orders(null, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA())))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
     }
@@ -35,13 +38,13 @@ class OrderTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void name() {
-        assertThatNoException().isThrownBy(() -> new Orders(orderTableA().getId(), orderLineItemsA()));
+        assertThatNoException().isThrownBy(() -> new Orders(orderTableA().getId(), orderLineItemsA(OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)))));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")
     @Test
     void changeMeal_success() {
-        Orders order = new Orders(orderTableA().getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, 1L, quantityOrderLineItemA()))));
+        Orders order = new Orders(orderTableA().getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA()))));
         order.meal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
@@ -49,7 +52,7 @@ class OrderTest {
     @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
     @Test
     void changeMeal_fail_completion() {
-        Orders order = new Orders(orderTableA().getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, 1L, quantityOrderLineItemA()))));
+        Orders order = new Orders(orderTableA().getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA()))));
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
         assertThatThrownBy(order::meal)
@@ -60,7 +63,7 @@ class OrderTest {
     @DisplayName("주문상태를 완료로 변경한다.")
     @Test
     void nameCompletion() {
-        Orders order = new Orders(orderTableA().getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, 1L, quantityOrderLineItemA()))));
+        Orders order = new Orders(orderTableA().getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA()))));
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }

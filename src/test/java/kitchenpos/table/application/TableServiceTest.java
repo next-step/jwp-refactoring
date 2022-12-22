@@ -8,10 +8,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.fixture.ProductFixture;
@@ -145,7 +142,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_success() {
 
-        Orders order = new Orders(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
+        Orders order = new Orders(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -156,7 +153,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void changeEmpty_fail_notTableGroup() {
 
-        Orders order = new Orders(orderTableB.getId(), orderLineItemsA());
+        Orders order = new Orders(orderTableB.getId(), orderLineItemsA(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice())));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -182,7 +179,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_fail_meal() {
 
-        Orders order = new Orders(orderTableA.getId(), orderLineItemsA());
+        Orders order = new Orders(orderTableA.getId(), orderLineItemsA(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice())));
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
@@ -203,7 +200,7 @@ class TableServiceTest extends ServiceTest {
     }
 
     private Orders notEmptyOrder(Long orderTableId) {
-        return orderRepository.save(new Orders(orderTableId, orderLineItemsA()));
+        return orderRepository.save(new Orders(orderTableId, orderLineItemsA(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()))));
     }
 
     private void 테이블_공석_상태_확인됨() {

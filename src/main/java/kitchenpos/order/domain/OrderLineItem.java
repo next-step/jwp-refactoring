@@ -14,25 +14,35 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Orders order;
-    private Long menuId;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "menuId", column = @Column(name = "menu_id")),
+            @AttributeOverride(name = "name.name", column = @Column(name = "menu_name")),
+            @AttributeOverride(name = "price.price", column = @Column(name = "menu_price"))
+    })
+    private OrderMenu orderMenu;
     private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Orders order, Long menuId, Quantity quantity) {
-        validate(menuId, quantity);
+    public OrderLineItem(Orders order, OrderMenu orderMenu, Quantity quantity) {
+        validate(orderMenu, quantity);
         this.order = order;
-        this.menuId = menuId;
+        this.orderMenu = orderMenu;
         this.quantity = quantity;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    private static void validateNullQuantity(Quantity quantity) {
+        if (Objects.isNull(quantity)) {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public void setOrder(Orders order) {
-        this.order = order;
+    private static void validateNullOrderMenu(OrderMenu orderMenu) {
+        if (Objects.isNull(orderMenu)) {
+            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
+        }
     }
 
     public Quantity getQuantity() {
@@ -43,20 +53,16 @@ public class OrderLineItem {
         return this.order;
     }
 
-    private void validate(Long menuId, Quantity quantity) {
-        validateNullMenuId(menuId);
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+
+    private void validate(OrderMenu orderMenu, Quantity quantity) {
+        validateNullOrderMenu(orderMenu);
         validateNullQuantity(quantity);
     }
 
-    private static void validateNullQuantity(Quantity quantity) {
-        if (Objects.isNull(quantity)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private static void validateNullMenuId(Long menuId) {
-        if (Objects.isNull(menuId)) {
-            throw new IllegalArgumentException(MENU_NULL_EXCEPTION_MESSAGE);
-        }
+    public OrderMenu getMenu() {
+        return this.orderMenu;
     }
 }

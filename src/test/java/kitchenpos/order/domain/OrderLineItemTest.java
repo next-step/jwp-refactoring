@@ -20,7 +20,7 @@ class OrderLineItemTest {
         OrderLineItem orderLineItem = OrderLineItem();
 
         assertAll(
-                () -> assertThat(orderLineItem.getMenuId()).isNotNull(),
+                () -> assertThat(orderLineItem.getMenu().getMenuId()).isNotNull(),
                 () -> assertThat(orderLineItem.getQuantity()).isNotNull()
         );
     }

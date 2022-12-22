@@ -75,8 +75,8 @@ public class Menu {
         return id;
     }
 
-    public String getName() {
-        return this.name.getName();
+    public Name getName() {
+        return this.name;
     }
 
     public Price getPrice() {

@@ -8,10 +8,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.product.domain.Product;
@@ -115,6 +112,6 @@ class OrderStatusServiceTest extends ServiceTest {
 
     private void createOrder(OrderTable orderTable, Menu menu) {
         orderTable.setEmpty(false);
-        order = orderRepository.save(new Orders(orderTable.getId(), new OrderLineItems(singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1))))));
+        order = orderRepository.save(new Orders(orderTable.getId(), new OrderLineItems(singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1))))));
     }
 }
