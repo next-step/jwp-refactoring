@@ -21,7 +21,7 @@ public class MenuProductTest {
         Product 햄버거 = Product.of("햄버거", BigDecimal.valueOf(5000));
         ReflectionTestUtils.setField(햄버거, "id", 1L);
         // when
-        MenuProduct 햄버거_상품 = MenuProduct.of(햄버거.getId(), 2);
+        MenuProduct 햄버거_상품 = MenuProduct.of(햄버거, 2);
         // then
         assertThat(햄버거_상품.getTotalPrice(햄버거.getPrice())).isEqualTo(Price.of(BigDecimal.valueOf(5000 * 2)));
     }

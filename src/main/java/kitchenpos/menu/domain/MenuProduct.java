@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 
 import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
+import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -23,19 +24,21 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_menu"))
     private Menu menu;
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_to_product"))
+    private Product product;
     @Embedded
     private Quantity quantity;
 
     protected MenuProduct() {}
 
-    private MenuProduct(Long productId, int quantity) {
-        this.productId = productId;
+    private MenuProduct(Product product, int quantity) {
+        this.product = product;
         this.quantity = Quantity.of(quantity);
     }
 
-    public static MenuProduct of(Long productId, int quantity) {
-        return new MenuProduct(productId, quantity);
+    public static MenuProduct of(Product product, int quantity) {
+        return new MenuProduct(product, quantity);
     }
 
     public void updateMenu(Menu menu) {
@@ -54,8 +57,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
     public Quantity getQuantity() {

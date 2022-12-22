@@ -73,7 +73,8 @@ public class MenuService {
     }
 
     private MenuProduct createMenuProduct(Long productId, int quantity) {
-        return MenuProduct.of(productId, quantity);
+        Product product = findProductById(productId);
+        return MenuProduct.of(product, quantity);
     }
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {
@@ -89,7 +90,7 @@ public class MenuService {
     }
 
     private Price productPrice(MenuProduct menuProduct) {
-        Price price = findProductById(menuProduct.getProductId()).getPrice();
+        Price price = menuProduct.getProduct().getPrice();
         return menuProduct.getTotalPrice(price);
     }
 

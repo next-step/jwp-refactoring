@@ -37,8 +37,8 @@ public class MenuTest {
     @Test
     void createMenu() {
         // given
-        MenuProduct 짜장면_1개 = MenuProduct.of(짜장면.getId(), 1);
-        MenuProduct 군만두_2개 = MenuProduct.of(군만두.getId(), 2);
+        MenuProduct 짜장면_1개 = MenuProduct.of(짜장면, 1);
+        MenuProduct 군만두_2개 = MenuProduct.of(군만두, 2);
         // when
         Menu 짜장세트 = Menu.of("짜장세트", BigDecimal.valueOf(6000), 중식,
             MenuProducts.of(Arrays.asList(짜장면_1개, 군만두_2개)));
