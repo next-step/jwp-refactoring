@@ -2,9 +2,9 @@ package kitchenpos.table.application;
 
 import java.util.Arrays;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -23,8 +23,7 @@ public class TableGroupUngroupedEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener
-    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(final TableGroupUngroupedEvent event) {
         final Long tableGroupId = event.getTableGroupId();
         final OrderTables orderTables = findOrderTables(tableGroupId);

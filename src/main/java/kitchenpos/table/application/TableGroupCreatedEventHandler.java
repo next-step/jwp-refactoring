@@ -2,9 +2,9 @@ package kitchenpos.table.application;
 
 import java.util.List;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -20,8 +20,7 @@ public class TableGroupCreatedEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener
-    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(final TableGroupCreatedEvent event) {
         final List<Long> orderTableIds = event.getOrderTableIds();
         final Long tableGroupId = event.getTableGroupId();
