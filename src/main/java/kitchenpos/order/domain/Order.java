@@ -20,7 +20,7 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderedTime;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 

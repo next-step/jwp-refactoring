@@ -15,7 +15,7 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 

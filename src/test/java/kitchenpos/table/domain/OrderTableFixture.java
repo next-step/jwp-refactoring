@@ -5,8 +5,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class OrderTableFixture {
 
-    public static OrderTable 주문테이블(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable(tableGroupId, numberOfGuests, empty);
+    public static OrderTable 주문테이블(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        OrderTable orderTable = new OrderTable(tableGroup, numberOfGuests, empty);
         ReflectionTestUtils.setField(orderTable, "id", id);
         return orderTable;
     }

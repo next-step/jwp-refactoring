@@ -20,10 +20,12 @@ public class OrderTable {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
+
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {

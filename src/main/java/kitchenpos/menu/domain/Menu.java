@@ -17,7 +17,7 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 

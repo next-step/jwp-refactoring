@@ -39,7 +39,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
         final Order order = findOrderByOrderTableId(orderTableId);
-        persistOrderTable.updateEmpty(order, persistOrderTable.isEmpty());
+        persistOrderTable.updateEmpty(order, orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(persistOrderTable);
     }

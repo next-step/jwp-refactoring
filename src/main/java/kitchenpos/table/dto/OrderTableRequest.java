@@ -19,7 +19,13 @@ public class OrderTableRequest {
     }
 
     public static OrderTableRequest of(OrderTable orderTable) {
-        return new OrderTableRequest(orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        Long tableGroupId = null;
+
+        if (orderTable.getTableGroup() != null) {
+            tableGroupId = orderTable.getTableGroup().getId();
+        }
+
+        return new OrderTableRequest(tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getTableGroupId() {

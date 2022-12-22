@@ -35,7 +35,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.addList(orderTables);
+        tableGroup.group(orderTables);
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
