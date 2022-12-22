@@ -19,10 +19,11 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup, List<OrderTable> orderTables) {
+    public static TableGroupResponse of(TableGroup tableGroup, OrderTables orderTables) {
         return new TableGroupResponse(tableGroup.getId(),
                 tableGroup.getCreatedDate(),
-                orderTables.stream()
+                orderTables.getValue()
+                        .stream()
                         .map(OrderTableResponse::of)
                         .collect(Collectors.toList()));
     }

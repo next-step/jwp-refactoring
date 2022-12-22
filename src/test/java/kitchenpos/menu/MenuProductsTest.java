@@ -2,8 +2,8 @@ package kitchenpos.menu;
 
 import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.MenuProducts;
-import kitchenpos.menu.domain.Quantity;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.Quantity;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,19 +12,15 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuProductsTest {
 
-    @DisplayName("빈 메뉴상품 확인 테스트")
+    @DisplayName("빈 메뉴상품 생성불가 테스트")
     @Test
     void emptyMenuProductsTest() {
-        //given
-        final MenuProducts menuProducts = new MenuProducts(Arrays.asList());
-
-        //when
-        //then
-        assertThat(menuProducts.isEmpty())
-                .isTrue();
+        assertThatThrownBy(() -> new MenuProducts(Arrays.asList()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴상품의 총 가격합 확인 테스트")

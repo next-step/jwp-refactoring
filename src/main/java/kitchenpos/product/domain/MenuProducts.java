@@ -1,7 +1,8 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.ExceptionMessage;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,14 +13,20 @@ public class MenuProducts {
     private List<MenuProduct> menuProducts;
 
     public MenuProducts() {
-        if (menuProducts.isEmpty()) {
-            throw new IllegalArgumentException(ExceptionMessage.EMPTY_MENU_PRODUCTS.getMessage());
-        }
         this.menuProducts = new ArrayList<>();
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException(ExceptionMessage.EMPTY_MENU_PRODUCTS.getMessage());
+        }
         this.menuProducts = menuProducts;
+    }
+
+    public void checkValidMenuPrice(Price price) {
+        if (!price.lessOrEqualThan(getProductPriceSum())) {
+            throw new IllegalArgumentException(ExceptionMessage.MENU_PRICE_LESS_PRODUCT_PRICE_SUM.getMessage());
+        }
     }
 
     public Price getProductPriceSum() {
@@ -34,11 +41,8 @@ public class MenuProducts {
         return totalPrice;
     }
 
-    public boolean isEmpty() {
-        return menuProducts.isEmpty();
-    }
-
     public List<MenuProduct> getValue() {
         return menuProducts;
     }
+
 }

@@ -28,4 +28,8 @@ public class OrderTables {
     public List<OrderTable> getValue() {
         return orderTables;
     }
+
+    public void ungroup() {
+        orderTables.forEach(OrderTable::ungroup);
+    }
 }

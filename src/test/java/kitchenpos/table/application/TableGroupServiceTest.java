@@ -1,10 +1,11 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.MenuProducts;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -64,7 +65,6 @@ public class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
     @Autowired
     private ApplicationEventPublisher publisher;
-    private OrderValidator orderValidator;
     private TableService tableService;
     private TableGroupService tableGroupService;
 
@@ -94,9 +94,8 @@ public class TableGroupServiceTest {
         주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
         주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(2));
 
-        orderValidator = new OrderValidator(orderRepository);
-        tableService = new TableService(orderTableRepository, orderValidator);
-        tableGroupService = new TableGroupService(tableGroupRepository, tableService, publisher);
+        tableService = new TableService(orderTableRepository, publisher);
+        tableGroupService = new TableGroupService(tableGroupRepository, tableService);
     }
 
     @DisplayName("테이블그룹 생성 테스트")

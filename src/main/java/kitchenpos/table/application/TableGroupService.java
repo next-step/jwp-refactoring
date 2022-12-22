@@ -18,28 +18,26 @@ public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
-    private final ApplicationEventPublisher publisher;
 
-    public TableGroupService(final TableGroupRepository tableGroupRepository,
-                             final TableService tableService, final ApplicationEventPublisher publisher) {
+    public TableGroupService(final TableGroupRepository tableGroupRepository, final TableService tableService) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
-        this.publisher = publisher;
+
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final TableGroup tableGroup = new TableGroup();
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        publisher.publishEvent(new TableGroupedEvent(tableGroupRequest.getOrderTableIds(), savedTableGroup));
-        List<OrderTable> orderTables = tableService.findAllByTableGroupId(savedTableGroup.getId());
+        OrderTables orderTables =
+                tableService.createGroupedOrderTables(tableGroupRequest.getOrderTableIds(), savedTableGroup);
         return TableGroupResponse.of(savedTableGroup, orderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findById(tableGroupId);
-        publisher.publishEvent(new TableUngroupedEvent(tableGroupId));
+        tableService.ungroupOrderTables(tableGroupId);
         tableGroupRepository.delete(tableGroup);
     }
 
@@ -47,4 +45,6 @@ public class TableGroupService {
         return tableGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_TABLE_GROUP.getMessage()));
     }
+
+
 }

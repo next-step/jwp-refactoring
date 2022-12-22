@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,7 +69,7 @@ public class ProductServiceTest {
                 .thenReturn(Arrays.asList(참치김밥, 치즈김밥));
 
         //when
-        List<ProductResponse> products = productService.list();
+        List<ProductResponse> products = productService.findAll();
 
         //then
         assertAll(

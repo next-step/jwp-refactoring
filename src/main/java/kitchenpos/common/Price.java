@@ -1,7 +1,6 @@
-package kitchenpos.product.domain;
+package kitchenpos.common;
 
 import kitchenpos.ExceptionMessage;
-import kitchenpos.menu.domain.Quantity;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

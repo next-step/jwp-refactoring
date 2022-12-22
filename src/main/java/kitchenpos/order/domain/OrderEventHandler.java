@@ -1,33 +1,35 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Quantity;
-import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.ExceptionMessage;
+import kitchenpos.table.domain.TableEmptyChangedEvent;
+import kitchenpos.table.domain.TableUngroupedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class OrderEventHandler {
 
-    private OrderLineItemRepository orderLineItemRepository;
+    private OrderRepository orderRepository;
 
-    public OrderEventHandler(OrderLineItemRepository orderLineItemRepository) {
-        this.orderLineItemRepository = orderLineItemRepository;
+    public OrderEventHandler(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     @EventListener
-    public void createOrderLineItems(OrderCreatedEvent event) {
-        final List<OrderLineItem> orderLineItemList = new ArrayList<>();
-        for(OrderLineItemRequest orderLineItemRequest: event.getOrderLineItemRequests()) {
-            final Quantity quantity = new Quantity(orderLineItemRequest.getQuantity());
-            final OrderLineItem orderLineItem = new OrderLineItem(event.getOrder(), orderLineItemRequest.getMenuId(),
-                    quantity);
-            orderLineItemList.add(orderLineItem);
+    public void checkCookingOrMealByOrderTableIds(TableUngroupedEvent event) {
+        for (Long orderTableId : event.getOrderTableIds()) {
+            checkCookingOrMealByOrderTableId(orderTableId);
         }
-        OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-        orderLineItemRepository.saveAll(orderLineItemList);
     }
 
+    @EventListener
+    public void checkCookingOrMealByOrderTableId(TableEmptyChangedEvent event) {
+        checkCookingOrMealByOrderTableId(event.getOrderTableId());
+    }
+
+    private void checkCookingOrMealByOrderTableId(Long orderTableId) {
+        final Order order = orderRepository.findOrderByOrderTableId(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.NOT_EXIST_ORDER.getMessage()));
+        order.checkCookingOrMeal();
+    }
 }

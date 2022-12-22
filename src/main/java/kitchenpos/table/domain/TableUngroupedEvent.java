@@ -1,14 +1,16 @@
 package kitchenpos.table.domain;
 
+import java.util.List;
+
 public class TableUngroupedEvent {
 
-    private Long tableGroupId;
+    private List<Long> orderTableIds;
 
-    public TableUngroupedEvent(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableUngroupedEvent(List<Long> orderTableIds) {
+        this.orderTableIds = orderTableIds;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public List<Long> getOrderTableIds() {
+        return orderTableIds;
     }
 }

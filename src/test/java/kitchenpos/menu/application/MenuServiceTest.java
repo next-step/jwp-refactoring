@@ -1,10 +1,13 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.product.application.MenuProductService;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,8 +61,9 @@ public class MenuServiceTest {
     private ProductRepository productRepository;
     @Mock
     private MenuProductRepository menuProductRepository;
+    private ProductService productService;
+    private MenuProductService menuProductService;
     private MenuGroupService menuGroupService;
-    private MenuProductValidator menuProductValidator;
     private MenuService menuService;
 
     @BeforeEach
@@ -90,8 +94,9 @@ public class MenuServiceTest {
         menuProductsMap.put(쫄면세트.getId(), 쫄면세트구성);
 
         menuGroupService = new MenuGroupService(menuGroupRepository);
-        menuProductValidator = new MenuProductValidator(menuProductRepository, productRepository);
-        menuService = new MenuService(menuRepository, menuGroupService, menuProductValidator);
+        productService = new ProductService(productRepository);
+        menuProductService = new MenuProductService(menuProductRepository, productService);
+        menuService = new MenuService(menuRepository, menuGroupService, menuProductService);
     }
 
     @DisplayName("메뉴등록 테스트")

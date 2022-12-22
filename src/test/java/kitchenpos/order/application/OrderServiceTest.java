@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -11,7 +13,6 @@ import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,13 +67,7 @@ public class OrderServiceTest {
     private OrderTableRepository orderTableRepository;
     @MockBean
     private MenuProductRepository menuProductRepository;
-    @MockBean
-    private ProductRepository productRepository;
-    @Autowired
-    private ApplicationEventPublisher publisher;
-    private MenuValidator menuValidator;
-    private TableValidator tableValidator;
-    private MenuProductValidator menuProductValidator;
+    private OrderMapper orderMapper;
     private OrderService orderService;
 
     @BeforeEach
@@ -100,11 +95,8 @@ public class OrderServiceTest {
         주문테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
 
-        menuValidator = new MenuValidator(menuRepository);
-        tableValidator = new TableValidator(orderTableRepository);
-        menuProductValidator = new MenuProductValidator(menuProductRepository, productRepository);
-        orderService = new OrderService(orderRepository, orderLineItemRepository, tableValidator, menuValidator,
-                menuProductValidator, publisher);
+        orderMapper = new OrderMapper(orderTableRepository, menuRepository, menuProductRepository);
+        orderService = new OrderService(orderRepository, orderLineItemRepository, orderMapper);
     }
 
     @DisplayName("주문생성 테스트")

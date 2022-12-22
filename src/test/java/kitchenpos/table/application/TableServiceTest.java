@@ -1,10 +1,11 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.MenuProducts;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -12,11 +13,12 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class TableServiceTest {
 
     private OrderTable 주문테이블1;
@@ -51,11 +53,12 @@ public class TableServiceTest {
     private OrderTable 주문테이블2;
     private Order 주문;
 
-    @Mock
+    @MockBean
     private OrderRepository orderRepository;
-    @Mock
+    @MockBean
     private OrderTableRepository orderTableRepository;
-    private OrderValidator orderValidator;
+    @Autowired
+    private ApplicationEventPublisher publisher;
     private TableService tableService;
 
     @BeforeEach
@@ -82,8 +85,7 @@ public class TableServiceTest {
 
         주문 = new Order(1L, 주문테이블2.getId(), OrderStatus.COOKING, LocalDateTime.now());
 
-        orderValidator = new OrderValidator(orderRepository);
-        tableService = new TableService(orderTableRepository, orderValidator);
+        tableService = new TableService(orderTableRepository, publisher);
     }
 
     @DisplayName("테이블생성테스트")
