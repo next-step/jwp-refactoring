@@ -1,8 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.generator.ProductGenerator.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 
@@ -13,15 +12,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.generator.ProductGenerator;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.ui.request.ProductRequest;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
@@ -30,21 +32,21 @@ class ProductServiceTest {
 	@Test
 	void createProductTest() {
 		// given
-		Product 후라이드 = 상품("후라이드");
+		ProductRequest 후라이드 = new ProductRequest("후라이드", BigDecimal.valueOf(16000));
+		given(productRepository.save(any())).willReturn(ProductGenerator.상품("후라이드"));
 
 		// when
 		productService.create(후라이드);
 
 		// then
-		verify(productDao, only()).save(any(Product.class));
+		verify(productRepository, only()).save(any(Product.class));
 	}
 
 	@DisplayName("등록하려는 상품의 가격은 반드시 존재 해야 한다.")
 	@Test
 	void createProductWithNullPriceTest() {
 		// given
-		Product 후라이드 = 상품("후라이드");
-		후라이드.setPrice(null);
+		ProductRequest 후라이드 = new ProductRequest("후라이드", null);
 
 		// when, then
 		assertThatIllegalArgumentException()
@@ -55,7 +57,7 @@ class ProductServiceTest {
 	@Test
 	void createProductWithNegativePriceTest() {
 		// given
-		Product 후라이드 = 상품("후라이드", BigDecimal.valueOf(-1L));
+		ProductRequest 후라이드 = new ProductRequest("후라이드", BigDecimal.valueOf(-1));
 
 		// when, then
 		assertThatIllegalArgumentException()
@@ -69,6 +71,6 @@ class ProductServiceTest {
 		productService.list();
 
 		// then
-		verify(productDao, only()).findAll();
+		verify(productRepository, only()).findAll();
 	}
 }

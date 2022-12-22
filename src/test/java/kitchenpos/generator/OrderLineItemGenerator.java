@@ -1,6 +1,8 @@
 package kitchenpos.generator;
 
-import kitchenpos.domain.OrderLineItem;
+import static org.mockito.BDDMockito.*;
+
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemGenerator {
 
@@ -8,10 +10,10 @@ public class OrderLineItemGenerator {
 	}
 
 	public static OrderLineItem 주문_품목() {
-		return new OrderLineItem(1L, 1L, 1L, 2);
+		OrderLineItem orderLineItem = spy(OrderLineItem.of(
+			MenuGenerator.후라이드_세트(), 2));
+		lenient().when(orderLineItem.seq()).thenReturn(1L);
+		return orderLineItem;
 	}
 
-	public static OrderLineItem 주문_품목(Long menuId, int quantity) {
-		return new OrderLineItem(null, null, menuId, quantity);
-	}
 }
