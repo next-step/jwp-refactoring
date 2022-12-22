@@ -21,9 +21,9 @@ public class UnGroupTablesValidator {
 
 	public void validate(TableGroup tableGroup) {
 		List<Long> orderTableIdList = tableGroup.getOrderTables()
-									   .stream()
-									   .map(OrderTable::getId)
-									   .collect(Collectors.toList());
+			.stream()
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
 		if (hasAnyInCompletedOrders(orderTableIdList)) {
 			throw new CannotUnGroupTablesException();
 		}

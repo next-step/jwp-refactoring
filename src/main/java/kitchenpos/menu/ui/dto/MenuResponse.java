@@ -24,12 +24,12 @@ public class MenuResponse {
 
 	public MenuResponse(Menu menu) {
 		this(menu.getId(),
-			 menu.getName()
-				 .value(),
-			 menu.getPrice()
-				 .longValue(),
-			 menu.getMenuGroupId(),
-			 MenuProductResponse.of(menu.getMenuProducts()));
+			menu.getName()
+				.value(),
+			menu.getPrice()
+				.longValue(),
+			menu.getMenuGroupId(),
+			MenuProductResponse.of(menu.getMenuProducts()));
 	}
 
 	private MenuResponse() {
@@ -37,8 +37,8 @@ public class MenuResponse {
 
 	public static List<MenuResponse> of(List<Menu> menus) {
 		return menus.stream()
-					.map(MenuResponse::new)
-					.collect(Collectors.toList());
+			.map(MenuResponse::new)
+			.collect(Collectors.toList());
 	}
 
 	public Long getId() {
@@ -75,9 +75,9 @@ public class MenuResponse {
 
 		public static List<MenuProductResponse> of(List<MenuProduct> menuProducts) {
 			return menuProducts.stream()
-							   .map(menuProduct -> new MenuProductResponse(menuProduct.getProductId(),
-																		   menuProduct.getQuantity()))
-							   .collect(Collectors.toList());
+				.map(menuProduct -> new MenuProductResponse(menuProduct.getProductId(),
+					menuProduct.getQuantity()))
+				.collect(Collectors.toList());
 		}
 
 		public Long getProductId() {

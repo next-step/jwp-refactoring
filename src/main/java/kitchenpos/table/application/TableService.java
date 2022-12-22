@@ -18,8 +18,8 @@ public class TableService {
 	private final NumberOfGuestsValidator numberOfGuestsValidator;
 
 	public TableService(OrderTableRepository orderTableRepository,
-						EmptyTableValidator emptyTableValidator,
-						NumberOfGuestsValidator numberOfGuestsValidator) {
+		EmptyTableValidator emptyTableValidator,
+		NumberOfGuestsValidator numberOfGuestsValidator) {
 		this.orderTableRepository = orderTableRepository;
 		this.emptyTableValidator = emptyTableValidator;
 		this.numberOfGuestsValidator = numberOfGuestsValidator;
@@ -55,6 +55,6 @@ public class TableService {
 
 	public OrderTable findById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId)
-								   .orElseThrow(EntityNotFoundException::new);
+			.orElseThrow(EntityNotFoundException::new);
 	}
 }

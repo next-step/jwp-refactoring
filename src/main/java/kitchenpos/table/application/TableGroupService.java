@@ -23,9 +23,9 @@ public class TableGroupService {
 	private final GroupTablesValidator groupTablesValidator;
 
 	public TableGroupService(TableGroupRepository tableGroupRepository,
-							 OrderTableRepository orderTableRepository,
-							 UnGroupTablesValidator unGroupTablesValidator,
-							 GroupTablesValidator groupTablesValidator) {
+		OrderTableRepository orderTableRepository,
+		UnGroupTablesValidator unGroupTablesValidator,
+		GroupTablesValidator groupTablesValidator) {
 		this.tableGroupRepository = tableGroupRepository;
 		this.orderTableRepository = orderTableRepository;
 		this.unGroupTablesValidator = unGroupTablesValidator;
@@ -50,7 +50,7 @@ public class TableGroupService {
 
 	private TableGroup findById(Long tableGroupId) {
 		return tableGroupRepository.findById(tableGroupId)
-								   .orElseThrow(EntityNotFoundException::new);
+			.orElseThrow(EntityNotFoundException::new);
 	}
 
 	private List<OrderTable> findAllOrderTables(List<Long> orderTableId) {

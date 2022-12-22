@@ -14,13 +14,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "table_group")
 public class TableGroup {
+	@Embedded
+	private final OrderTables orderTables = new OrderTables();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Embedded
-	private OrderTables orderTables = new OrderTables();
-
 	private LocalDateTime createdDate;
 
 	protected TableGroup() {
@@ -31,18 +29,18 @@ public class TableGroup {
 		this.createdDate = LocalDateTime.now();
 	}
 
+	public static TableGroup group(List<OrderTable> orderTables,
+		GroupTablesValidator validator) {
+		validator.validate(new OrderTables(orderTables));
+		return new TableGroup(orderTables);
+	}
+
 	private void addOrderTables(List<OrderTable> changingOrderTables) {
 		orderTables.addAll(changingOrderTables);
 		changingOrderTables.stream()
-						.forEach(orderTable ->
-									 orderTable.changeTableGroup(this));
+			.forEach(orderTable ->
+				orderTable.changeTableGroup(this));
 
-	}
-
-	public static TableGroup group(List<OrderTable> orderTables,
-								   GroupTablesValidator validator) {
-		validator.validate(new OrderTables(orderTables));
-		return new TableGroup(orderTables);
 	}
 
 	public Long getId() {

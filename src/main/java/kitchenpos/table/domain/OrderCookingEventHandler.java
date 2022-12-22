@@ -27,6 +27,6 @@ public class OrderCookingEventHandler {
 
 	private OrderTable getOrderTable(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId)
-								   .orElseThrow(EntityNotFoundException::new);
+			.orElseThrow(EntityNotFoundException::new);
 	}
 }

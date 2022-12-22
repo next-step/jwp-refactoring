@@ -26,8 +26,8 @@ public class OrderTableResponse {
 
 	public static List<OrderTableResponse> of(List<OrderTable> orderTables) {
 		return orderTables.stream()
-						  .map(OrderTableResponse::new)
-						  .collect(Collectors.toList());
+			.map(OrderTableResponse::new)
+			.collect(Collectors.toList());
 	}
 
 	public Long getId() {

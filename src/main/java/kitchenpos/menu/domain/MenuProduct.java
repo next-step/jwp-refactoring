@@ -43,12 +43,12 @@ public class MenuProduct {
 
 	public static List<MenuProduct> of(List<Product> products) {
 		Map<Product, Integer> productsCount = products.stream()
-												.collect(
-													Collectors.toMap(
-														Function.identity(), it -> 1, Integer::sum));
+			.collect(
+				Collectors.toMap(
+					Function.identity(), it -> 1, Integer::sum));
 		return products.stream()
-					   .map(product -> new MenuProduct(product, productsCount.get(product)))
-					   .collect(Collectors.toList());
+			.map(product -> new MenuProduct(product, productsCount.get(product)))
+			.collect(Collectors.toList());
 	}
 
 	public Long getProductId() {
@@ -65,6 +65,6 @@ public class MenuProduct {
 
 	public Money totalPrice() {
 		return product.getPrice()
-					  .multiply(quantity);
+			.multiply(quantity);
 	}
 }

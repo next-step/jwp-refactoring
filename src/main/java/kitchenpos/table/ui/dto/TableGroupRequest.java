@@ -12,14 +12,14 @@ public class TableGroupRequest {
 
 	public TableGroupRequest(List<Long> idList) {
 		this.orderTables = idList.stream()
-								 .map(OrderTableId::new)
-								 .collect(Collectors.toList());
+			.map(OrderTableId::new)
+			.collect(Collectors.toList());
 	}
 
 	public List<Long> toOrderTableId() {
 		return orderTables.stream()
-						  .map(OrderTableId::getId)
-						  .collect(Collectors.toList());
+			.map(OrderTableId::getId)
+			.collect(Collectors.toList());
 	}
 
 	public List<OrderTableId> getOrderTables() {

@@ -33,7 +33,7 @@ public class EmptyTableValidator {
 
 	private void validateIsCompleted(OrderTable orderTable) {
 		boolean isNotCompleted = orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
-															 Arrays.asList(OrderStatus.MEAL, OrderStatus.COOKING));
+			Arrays.asList(OrderStatus.MEAL, OrderStatus.COOKING));
 		if (isNotCompleted) {
 			throw new CannotChangeEmptyOrderTable(NOT_COMPLETED_ORDER);
 		}

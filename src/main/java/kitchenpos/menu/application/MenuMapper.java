@@ -23,9 +23,9 @@ public class MenuMapper {
 	public Menu toMenu(MenuRequest menuRequest) {
 		List<Product> products = productService.findAllById(menuRequest.toProductsId());
 		return new Menu(menuRequest.getName(),
-						menuRequest.getPrice(),
-						menuRequest.getMenuGroupId(),
-						MenuProduct.of(products));
+			menuRequest.getPrice(),
+			menuRequest.getMenuGroupId(),
+			MenuProduct.of(products));
 	}
 
 }

@@ -22,15 +22,15 @@ public class OrderResponse {
 
 	public OrderResponse(Order order) {
 		this(order.getId(),
-			 order.getOrderStatus()
-				  .name(),
-			 OrderLineItemResponse.of(order.getOrderLineItems()));
+			order.getOrderStatus()
+				.name(),
+			OrderLineItemResponse.of(order.getOrderLineItems()));
 	}
 
 	public static List<OrderResponse> of(List<Order> orders) {
 		return orders.stream()
-					 .map(OrderResponse::new)
-					 .collect(Collectors.toList());
+			.map(OrderResponse::new)
+			.collect(Collectors.toList());
 	}
 
 	public Long getId() {
@@ -59,9 +59,9 @@ public class OrderResponse {
 
 		public static List<OrderLineItemResponse> of(OrderLineItems orderLineItems) {
 			return orderLineItems.stream()
-								 .map(orderLineItem -> new OrderLineItemResponse(orderLineItem.getMenuId(),
-																				 orderLineItem.getQuantity()))
-								 .collect(Collectors.toList());
+				.map(orderLineItem -> new OrderLineItemResponse(orderLineItem.getMenuId(),
+					orderLineItem.getQuantity()))
+				.collect(Collectors.toList());
 		}
 
 		public Long getMenuId() {

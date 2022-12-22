@@ -28,7 +28,7 @@ public class OrderTableShouldNotEmptyTableValidator implements OrderTableValidat
 
 	private OrderTable getOrderTable(Order order) {
 		return orderTableRepository.findById(order.getOrderTableId())
-								   .orElseThrow(EntityNotFoundException::new);
+			.orElseThrow(EntityNotFoundException::new);
 	}
 
 }

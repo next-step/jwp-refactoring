@@ -20,9 +20,9 @@ public class OrderRequest {
 	public OrderRequest(Long orderTableId, Map<Long, Integer> orderLineItems) {
 		this.orderTableId = orderTableId;
 		this.orderLineItems = orderLineItems.entrySet()
-											.stream()
-											.map(OrderLineItemRequest::new)
-											.collect(Collectors.toList());
+			.stream()
+			.map(OrderLineItemRequest::new)
+			.collect(Collectors.toList());
 	}
 
 	public Order toOrder() {
@@ -31,8 +31,8 @@ public class OrderRequest {
 
 	public OrderLineItems toOrderLineItems() {
 		return new OrderLineItems(orderLineItems.stream()
-									.map(OrderLineItemRequest::toOrderLineItem)
-									.collect(Collectors.toList()));
+			.map(OrderLineItemRequest::toOrderLineItem)
+			.collect(Collectors.toList()));
 	}
 
 	public Long getOrderTableId() {

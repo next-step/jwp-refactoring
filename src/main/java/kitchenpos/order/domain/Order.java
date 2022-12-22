@@ -23,13 +23,11 @@ import kitchenpos.order.exception.CannotStartOrderException;
 @Table(name = "orders")
 public class Order extends AbstractAggregateRoot<Order> {
 
+	@Embedded
+	private final OrderLineItems orderLineItems = new OrderLineItems();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Embedded
-	private OrderLineItems orderLineItems = new OrderLineItems();
-
 	private Long orderTableId;
 
 	@Enumerated(value = EnumType.STRING)
@@ -48,10 +46,10 @@ public class Order extends AbstractAggregateRoot<Order> {
 	}
 
 	public Order(Long id,
-				 OrderLineItems orderLineItems,
-				 Long orderTableId,
-				 OrderStatus orderStatus,
-				 LocalDateTime orderedTime) {
+		OrderLineItems orderLineItems,
+		Long orderTableId,
+		OrderStatus orderStatus,
+		LocalDateTime orderedTime) {
 		this.id = id;
 		this.orderLineItems.addAll(orderLineItems);
 		this.orderTableId = orderTableId;

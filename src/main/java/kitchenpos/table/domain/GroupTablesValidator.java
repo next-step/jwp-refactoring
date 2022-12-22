@@ -31,12 +31,12 @@ public class GroupTablesValidator {
 
 	private boolean hasOrderTableGroup(OrderTables orderTables) {
 		return orderTables.stream()
-						  .anyMatch(OrderTable::hasTableGroup);
+			.anyMatch(OrderTable::hasTableGroup);
 	}
 
 	private boolean isOrderTableNotEmpty(OrderTables orderTables) {
 		return orderTables.stream()
-						  .noneMatch(OrderTable::isEmpty);
+			.noneMatch(OrderTable::isEmpty);
 	}
 
 	private boolean isOrderTablesValidSize(OrderTables orderTables) {

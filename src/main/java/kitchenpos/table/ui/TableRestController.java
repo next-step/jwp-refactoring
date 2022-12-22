@@ -47,17 +47,17 @@ public class TableRestController {
 
 	@PutMapping("/api/tables/{orderTableId}/empty")
 	public ResponseEntity<OrderTableResponse> changeEmpty(@PathVariable Long orderTableId,
-														  @RequestBody OrderTableRequest request) {
+		@RequestBody OrderTableRequest request) {
 		OrderTableResponse orderTable = new OrderTableResponse(
 			tableService.changeEmpty(orderTableId, request.getEmpty()));
 
 		return ResponseEntity.ok()
-							 .body(orderTable);
+			.body(orderTable);
 	}
 
 	@PutMapping("/api/tables/{orderTableId}/number-of-guests")
 	public ResponseEntity<OrderTableResponse> changeNumberOfGuests(@PathVariable Long orderTableId,
-																   @RequestBody OrderTableRequest request) {
+		@RequestBody OrderTableRequest request) {
 		OrderTableResponse orderTable = new OrderTableResponse(
 			tableService.changeNumberOfGuests(orderTableId, request.toOrderTable()));
 

@@ -20,22 +20,18 @@ import javax.persistence.Table;
 @Table(name = "menu")
 public class Menu {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Embedded
-	private Name name;
-
-	@Embedded
-	@AttributeOverride(name = "value", column = @Column(name = "price"))
-	private Money price;
-
-	private Long menuGroupId;
-
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "menu_id")
 	private final List<MenuProduct> menuProducts = new ArrayList<>();
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Embedded
+	private Name name;
+	@Embedded
+	@AttributeOverride(name = "value", column = @Column(name = "price"))
+	private Money price;
+	private Long menuGroupId;
 
 	protected Menu() {
 	}
@@ -45,6 +41,12 @@ public class Menu {
 		this.price = Money.valueOf(price);
 		this.menuGroupId = menuGroupId;
 		this.menuProducts.addAll(menuProducts);
+	}
+
+	public Money sumAllProductsPrice() {
+		return menuProducts.stream()
+			.map(MenuProduct::totalPrice)
+			.reduce(Money.ZERO, Money::add);
 	}
 
 	public Long getId() {
@@ -65,12 +67,6 @@ public class Menu {
 
 	public Long getMenuGroupId() {
 		return menuGroupId;
-	}
-
-	public Money sumAllProductsPrice() {
-		return menuProducts.stream()
-						   .map(MenuProduct::totalPrice)
-						   .reduce(Money.ZERO, Money::add);
 	}
 
 	@Override
