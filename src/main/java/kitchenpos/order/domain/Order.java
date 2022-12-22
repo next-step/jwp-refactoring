@@ -26,7 +26,7 @@ public class Order extends BaseEntity {
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
-    private static OrderStatus orderStatus;
+    private OrderStatus orderStatus;
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
@@ -39,11 +39,7 @@ public class Order extends BaseEntity {
     }
 
     public void order(List<OrderLineItem> orderLineItems) {
-        if(CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(ErrorCode.ORDER_LINE_ITEMS_CANNOT_BE_EMPTY.getErrorMessage());
-        }
-
-        orderLineItems.forEach(orderLineItem -> addOrderLineItem(orderLineItem));
+        orderLineItems.forEach(this::addOrderLineItem);
     }
 
     void addOrderLineItem(OrderLineItem orderLineItem) {
@@ -80,7 +76,7 @@ public class Order extends BaseEntity {
         return orderLineItems.getOrderLineItems();
     }
 
-    public static void checkCookingOrEatingMealOrder(Order order) {
+    public void checkCookingOrEatingMealOrder() {
         if(orderStatus.isCooking() || orderStatus.isMeal()) {
             throw new IllegalArgumentException(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
         }
