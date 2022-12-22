@@ -64,11 +64,6 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuDao.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-        }
-
         return menus.stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
