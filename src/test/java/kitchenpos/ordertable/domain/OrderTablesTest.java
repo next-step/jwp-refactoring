@@ -1,10 +1,10 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.OrderEmpty;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.OrderEmpty;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;

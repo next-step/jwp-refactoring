@@ -1,13 +1,13 @@
 package kitchenpos.ordertable.ui;
 
 import kitchenpos.ControllerTest;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderEmpty;
-import kitchenpos.domain.OrderGuests;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.ui.TableRestController;
+import kitchenpos.tablegroup.application.TableService;
+import kitchenpos.tablegroup.domain.OrderEmpty;
+import kitchenpos.tablegroup.domain.OrderGuests;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
+import kitchenpos.tablegroup.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

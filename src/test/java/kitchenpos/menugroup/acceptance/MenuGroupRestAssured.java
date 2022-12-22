@@ -3,16 +3,8 @@ package kitchenpos.menugroup.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.dto.MenuGroupRequest;
-import org.springframework.http.HttpStatus;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -3,16 +3,10 @@ package kitchenpos.ordertable.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderEmpty;
-import kitchenpos.domain.OrderGuests;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import org.springframework.http.HttpStatus;
+import kitchenpos.tablegroup.domain.OrderEmpty;
+import kitchenpos.tablegroup.domain.OrderGuests;
+import kitchenpos.tablegroup.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

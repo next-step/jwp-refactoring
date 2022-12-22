@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

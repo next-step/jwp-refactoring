@@ -3,15 +3,10 @@ package kitchenpos.product.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
-import org.springframework.http.HttpStatus;
+import kitchenpos.menu.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
