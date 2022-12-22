@@ -2,9 +2,11 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -28,6 +30,14 @@ public class OrderValidatorTest {
 
         assertThatThrownBy(() -> OrderValidator.validateMenus(orderRequest.getOrderLineItems(), 0))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("주문 테이블은 비어있으면 안된다.")
+    void orderTest1() {
+        OrderTable orderTable = OrderTable.create(null, 5, true);
+
+        assertThatThrownBy(() -> OrderValidator.validateOrderTable(orderTable)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

@@ -60,8 +60,8 @@ public class MenuService {
                 menuRequest.getName(),
                 menuRequest.getPrice(),
                 menuGroup,
-                new MenuProducts(menuProductList),
-                new MenuValidator(sumPrice));
+                sumPrice,
+                new MenuProducts(menuProductList));
         return MenuResponse.from(menuRepository.save(menu));
     }
 

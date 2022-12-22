@@ -34,16 +34,17 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts, MenuValidator menuValidator) {
+    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.price = price;
         this.name = name;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-        menuValidator.validate(price);
     }
 
-    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts, MenuValidator menuValidator) {
-        return new Menu(name, Price.create(price), menuGroup, menuProducts, menuValidator);
+    public static Menu create(String name, BigDecimal priceValue, MenuGroup menuGroup, Price sumPrice, MenuProducts menuProducts) {
+        Price price = Price.create(priceValue);
+        MenuValidator.validate(price, sumPrice);
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {

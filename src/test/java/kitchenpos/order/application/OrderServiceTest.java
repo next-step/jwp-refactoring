@@ -131,14 +131,21 @@ class OrderServiceTest {
     @DisplayName("새로운 주문 추가 : 존재하지 않는 주문 테이블로 요청할 수 없다.")
     void orderTest4() {
         given(menuRepository.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(메뉴1));
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(메뉴2));
+        given(orderTableRepository.findById(주문요청.getOrderTableId())).willReturn(Optional.of(generateOrderTable(null, 0, true)));
 
         assertThatThrownBy(() -> orderService.create(주문요청))
-                .isInstanceOf(EntityNotFoundException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("새로운 주문 추가 : 실제로 존재하는 메뉴로만 요청할 수 있다.")
     void orderTest5() {
+        given(menuRepository.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(메뉴1));
+        given(menuRepository.findById(any(Long.class))).willReturn(Optional.of(메뉴2));
+        given(orderTableRepository.findById(주문요청.getOrderTableId())).willReturn(Optional.of(generateOrderTable(null, 0, false)));
         given(menuRepository.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(1L);
 
         assertThatThrownBy(() -> orderService.create(주문요청))

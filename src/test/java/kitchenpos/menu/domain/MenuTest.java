@@ -17,9 +17,7 @@ public class MenuTest {
         BigDecimal _3000 = new BigDecimal(3000);
         BigDecimal _2000 = new BigDecimal(2000);
 
-        MenuValidator validator = new MenuValidator(new Price(_2000));
-
-        assertThatThrownBy(() -> validator.validatePrice(new Price(_3000)))
+        assertThatThrownBy(() -> MenuValidator.validatePrice(new Price(_3000), new Price(_2000)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

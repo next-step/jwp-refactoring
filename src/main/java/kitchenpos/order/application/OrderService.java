@@ -46,8 +46,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderValidator.validate(orderRequest, menuRepository.countByIdIn(orderRequest.getMenuIds()));
-
         OrderLineItems orderLineItems = new OrderLineItems();
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             Menu menu = getMenu(orderLineItemRequest.getMenuId());
@@ -60,7 +58,10 @@ public class OrderService {
 
         OrderTable orderTable = getOrderTable(orderRequest.getOrderTableId());
 
-        Order order = Order.create(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        Order order = Order.create(
+                orderTable, OrderStatus.COOKING.name(),
+                LocalDateTime.now(), orderLineItems,
+                orderRequest, menuRepository.countByIdIn(orderRequest.getMenuIds()));
         Order createdOrder = orderRepository.save(order);
 
         return OrderResponse.from(createdOrder);
