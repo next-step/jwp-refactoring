@@ -87,6 +87,7 @@ class OrderTableServiceTest {
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(메뉴테이블1.getId(),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
 
+        메뉴테이블1.update(단체지정, true);
         메뉴테이블1.updateEmpty(변경할_메뉴테이블.isEmpty());
 
         given(orderTableRepository.save(메뉴테이블1)).willReturn(메뉴테이블1);
@@ -167,7 +168,7 @@ class OrderTableServiceTest {
     }
 
     public static OrderTable generateOrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
+        return new OrderTable(numberOfGuests, empty);
     }
 
     private OrderTableRequest generateOrderTableRequest(int numberOfGuests, boolean empty) {

@@ -1,7 +1,8 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.OrderValidator;
+
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -18,14 +19,13 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable create(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, numberOfGuests, empty);
+    public static OrderTable create(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public void update(TableGroup tableGroup, boolean empty) {
@@ -33,28 +33,17 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void validateGrouped() {
-        if (Objects.nonNull(tableGroup.getId())) {
-            throw new IllegalArgumentException("테이블 그룹은 항상 존재해야 합니다.");
-        }
-    }
-
-    public void validateEmpty() {
-        if (empty) {
-            throw new IllegalArgumentException("주문 테이블은 비어있으면 안됩니다.");
-        }
-    }
-
     public void removeTableGroup() {
         this.tableGroup = null;
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
+        OrderValidator.validateEmpty(empty);
         this.numberOfGuests = numberOfGuests;
     }
 
     public void updateEmpty(final boolean empty) {
-        validateGrouped();
+        OrderValidator.validateGrouped(tableGroup);
         this.empty = empty;
     }
 
@@ -63,7 +52,10 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroup.getId();
+        if (tableGroup != null) {
+            return tableGroup.getId();
+        }
+        return null;
     }
 
     public int getNumberOfGuests() {

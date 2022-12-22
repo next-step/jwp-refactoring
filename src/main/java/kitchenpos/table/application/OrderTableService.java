@@ -29,7 +29,7 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = OrderTable.create(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+        OrderTable orderTable = OrderTable.create(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
         OrderTable createdOrderTable = orderTableRepository.save(orderTable);
 
         return OrderTableResponse.from(createdOrderTable);
@@ -59,7 +59,6 @@ public class OrderTableService {
         OrderTableValidator.validate(orderTableRequest.getNumberOfGuests());
 
         OrderTable savedOrderTable = getOrderTable(orderTableId);
-        savedOrderTable.validateEmpty();
 
         savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
         OrderTable updatedOrderTable = orderTableRepository.save(savedOrderTable);

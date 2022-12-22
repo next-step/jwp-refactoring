@@ -3,9 +3,11 @@ package kitchenpos.order.domain;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OrderValidator {
 
@@ -35,4 +37,15 @@ public class OrderValidator {
         }
     }
 
+    public static void validateEmpty(boolean empty) {
+        if (empty) {
+            throw new IllegalArgumentException("주문 테이블은 비어있으면 안됩니다.");
+        }
+    }
+
+    public static void validateGrouped(TableGroup tableGroup) {
+        if (Objects.nonNull(tableGroup.getId())) {
+            throw new IllegalArgumentException("테이블 그룹은 항상 존재해야 합니다.");
+        }
+    }
 }
