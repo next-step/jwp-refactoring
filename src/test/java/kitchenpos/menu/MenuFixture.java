@@ -20,7 +20,7 @@ public class MenuFixture {
 
     public static final MenuProduct 더블강정치킨상품 = new MenuProduct(1L, null, 강정치킨, 2L);
     public static final MenuProduct 더블개손해치킨상품 = new MenuProduct(1L, null, 개손해치킨, 2L);
-    public static final Menu 더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴.getId(),
+    public static final Menu 더블강정치킨 = new Menu(1L, "더블강정치킨", new BigDecimal(19_000), 추천메뉴,
         Collections.singletonList(더블강정치킨상품));
 
     public static ExtractableResponse<Response> 메뉴_등록(String name, BigDecimal price,

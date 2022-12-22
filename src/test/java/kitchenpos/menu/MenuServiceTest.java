@@ -1,6 +1,7 @@
 package kitchenpos.menu;
 
 import static kitchenpos.menu.MenuFixture.더블강정치킨;
+import static kitchenpos.menu.MenuGroupFixture.추천메뉴;
 import static kitchenpos.product.ProductFixture.강정치킨;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -44,8 +45,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성")
     void createMenu() {
         //given
-        when(menuGroupDao.existsById(any()))
-            .thenReturn(true);
+        when(menuGroupDao.findById(any()))
+            .thenReturn(Optional.of(추천메뉴));
         when(productDao.findById(any()))
             .thenReturn(Optional.of(강정치킨));
         when(menuDao.save(any()))
@@ -59,7 +60,7 @@ class MenuServiceTest {
     }
 
     private MenuRequest from(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(),
+        return new MenuRequest(menu.getName(), menu.getPrice(), menu.menuGroupId(),
             from(menu.getMenuProducts()));
     }
 

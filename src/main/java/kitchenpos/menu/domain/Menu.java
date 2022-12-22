@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -18,19 +20,21 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId,
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
         List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
         menuProducts
             .forEach(menuProduct -> menuProduct.setMenu(this));
@@ -84,12 +88,8 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public Long menuGroupId() {
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {

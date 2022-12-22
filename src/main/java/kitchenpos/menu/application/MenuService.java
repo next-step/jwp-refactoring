@@ -6,6 +6,7 @@ import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -38,19 +39,18 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         List<MenuProductRequest> menuProducts = request.getMenuProducts();
-        Menu menu = request.toMenu(getMenuProducts(menuProducts));
-
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
+        Menu menu = request
+            .toMenu(getMenuProducts(menuProducts), getMenuGroup(request.getMenuGroupId()));
         final Menu savedMenu = menuDao.save(menu);
-
         return MenuResponse.from(savedMenu);
     }
 
+    private MenuGroup getMenuGroup(Long menuGroupId) {
+        return menuGroupDao.findById(menuGroupId)
+            .orElseThrow(() -> new IllegalArgumentException("존재 하지 않는 메뉴 그룹 입니다."));
+    }
 
-    public List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
+    private List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
         return requests.stream()
             .map(menuProductRequest -> menuProductRequest
                 .toMenuProduct(findProductById(menuProductRequest.getProductId())))
