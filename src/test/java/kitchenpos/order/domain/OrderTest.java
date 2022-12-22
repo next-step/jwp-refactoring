@@ -18,18 +18,8 @@ class OrderTest {
 	void createOrderTest() {
 		assertThatNoException()
 			.isThrownBy(() -> Order.of(
-				비어있지_않은_5명_테이블(),
+				비어있지_않은_5명_테이블().id(),
 				OrderLineItems.fromSingle(주문_품목())));
-	}
-
-	@Test
-	@DisplayName("주문 생성 - 주문 테이블이 null이면 예외 발생")
-	void createOrderWithNullOrderTableTest() {
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> Order.of(
-				null,
-				OrderLineItems.fromSingle(주문_품목())))
-			.withMessage("주문 테이블은 필수입니다.");
 	}
 
 	@Test
@@ -37,7 +27,7 @@ class OrderTest {
 	void createOrderWithNullOrderLineItemsTest() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> Order.of(
-				비어있지_않은_5명_테이블(),
+				비어있지_않은_5명_테이블().id(),
 				null))
 			.withMessage("주문 항목들은 필수입니다.");
 	}
@@ -47,7 +37,7 @@ class OrderTest {
 	void createOrderWithEmptyOrderTableTest() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> Order.of(
-				비어있는_다섯명_테이블(),
+				비어있는_다섯명_테이블().id(),
 				OrderLineItems.fromSingle(주문_품목())))
 			.withMessage("주문을 하는 테이블은 비어있을 수 없습니다.");
 	}
@@ -57,7 +47,7 @@ class OrderTest {
 	void createOrderWithEmptyOrderLineItemsTest() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> Order.of(
-				비어있지_않은_5명_테이블(),
+				비어있지_않은_5명_테이블().id(),
 				OrderLineItems.from(Collections.emptyList())))
 			.withMessage("주문 항목들이 비어있을 수 없습니다.");
 	}
@@ -66,7 +56,7 @@ class OrderTest {
 	@DisplayName("주문 상태 변경")
 	void changeOrderStatusTest() {
 		Order order = Order.of(
-			비어있지_않은_5명_테이블(),
+			비어있지_않은_5명_테이블().id(),
 			OrderLineItems.fromSingle(주문_품목()));
 
 		order.updateStatus(OrderStatus.COMPLETION);
@@ -78,7 +68,7 @@ class OrderTest {
 	@DisplayName("주문 상태 변경 - 이미 완료 된 주문은 변경 불가")
 	void changeOrderStatusWithCompletionTest() {
 		Order order = Order.of(
-			비어있지_않은_5명_테이블(),
+			비어있지_않은_5명_테이블().id(),
 			OrderLineItems.fromSingle(주문_품목()));
 		order.updateStatus(OrderStatus.COMPLETION);
 

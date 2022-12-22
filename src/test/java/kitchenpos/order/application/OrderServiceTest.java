@@ -28,7 +28,6 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
-import kitchenpos.table.domain.OrderTableRepository;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +40,7 @@ class OrderServiceTest {
 	private OrderRepository orderRepository;
 
 	@Mock
-	private OrderTableRepository orderTableRepository;
+	private OrderValidator orderValidator;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -56,8 +55,7 @@ class OrderServiceTest {
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
 
-		OrderTable table = 비어있지_않은_5명_테이블();
-		given(orderTableRepository.orderTable(orderTableId)).willReturn(table);
+		willDoNothing().given(orderValidator).validateCreateOrder(anyLong());
 
 		Menu menu = 후라이드_세트();
 		given(menuRepository.menu(menuId)).willReturn(menu);
@@ -95,8 +93,6 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		OrderTable table = 비어있지_않은_5명_테이블();
-		// given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(table));
 		given(menuRepository.menu(anyLong())).willThrow(new NotFoundException("no menu"));
 
 		// when
@@ -115,7 +111,7 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		given(orderTableRepository.orderTable(orderTableId)).willThrow(NotFoundException.class);
+		willThrow(NotFoundException.class).given(orderValidator).validateCreateOrder(anyLong());
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
@@ -134,7 +130,7 @@ class OrderServiceTest {
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
 		OrderTable 비어있는_테이블 = 비어있는_다섯명_테이블();
-		given(orderTableRepository.orderTable(orderTableId)).willReturn(비어있는_테이블);
+		// given(orderTableRepository.orderTable(orderTableId)).willReturn(비어있는_테이블);
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
@@ -205,7 +201,7 @@ class OrderServiceTest {
 		verify(orderRepository, only()).save(captor.capture());
 		Order savedOrder = captor.getValue();
 		assertAll(
-			() -> assertThat(savedOrder.table().id()).isEqualTo(orderTableId),
+			() -> assertThat(savedOrder.orderTableId()).isEqualTo(orderTableId),
 			() -> assertThat(savedOrder.orderStatus().name()).isEqualTo(OrderStatus.COOKING.name()),
 			() -> assertThat(savedOrder.orderLineItems()).hasSize(1)
 		);
