@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -25,10 +26,22 @@ public class TableValidator implements OrderValidator {
 		}
 	}
 
+	@Override
+	public void validateChangeEmpty(Long orderTableId) {
+		if (isCookingOrMeal(orderTableId)) {
+			throw new IllegalArgumentException("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없습니다.");
+		}
+	}
+	private boolean isCookingOrMeal(Long orderTableId) {
+		return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, cookingAndMealStatus());
+	}
+
 	private boolean isCookingOrMeal(TableGroup tableGroup) {
 		return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
 			tableGroup.orderTableIds(),
-			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+			cookingAndMealStatus());
 	}
-
+	private List<OrderStatus> cookingAndMealStatus() {
+		return Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+	}
 }

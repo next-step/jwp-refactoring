@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.ui.request.NumberOfGuestsRequest;
@@ -19,15 +16,15 @@ import kitchenpos.table.ui.response.OrderTableResponse;
 
 @Service
 public class TableService {
-	private final OrderRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
+	private final TableValidator tableValidator;
 
 	public TableService(
-		final OrderRepository orderRepository,
-		final OrderTableRepository orderTableRepository
+		final OrderTableRepository orderTableRepository,
+		final TableValidator tableValidator
 	) {
-		this.orderRepository = orderRepository;
 		this.orderTableRepository = orderTableRepository;
+		this.tableValidator = tableValidator;
 	}
 
 	@Transactional
@@ -43,23 +40,9 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final TableStatusRequest request) {
 		final OrderTable savedOrderTable = findById(orderTableId);
-		validate(orderTableId);
+		tableValidator.validateChangeEmpty(orderTableId);
 		savedOrderTable.updateEmpty(request.isEmpty());
 		return OrderTableResponse.from(savedOrderTable);
-	}
-
-	private void validate(Long orderTableId) {
-		if (isCookingOrMeal(orderTableId)) {
-			throw new IllegalArgumentException("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없습니다.");
-		}
-	}
-
-	private boolean isCookingOrMeal(Long orderTableId) {
-		return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, cookingAndMealStatus());
-	}
-
-	private List<OrderStatus> cookingAndMealStatus() {
-		return Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
 	}
 
 	@Transactional

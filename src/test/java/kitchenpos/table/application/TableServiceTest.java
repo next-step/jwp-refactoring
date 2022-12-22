@@ -18,8 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -34,7 +32,7 @@ class TableServiceTest {
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@Mock
-	private OrderRepository orderRepository;
+	private TableValidator tableValidator;
 
 	@InjectMocks
 	private TableService tableService;
@@ -80,8 +78,7 @@ class TableServiceTest {
 	void updateTableStatusTest() {
 		// given
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
-			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
+		willDoNothing().given(tableValidator).validateChangeEmpty(any());
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 
 		// when
@@ -126,8 +123,7 @@ class TableServiceTest {
 		// given
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
-			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
+		willThrow(IllegalArgumentException.class).given(tableValidator).validateChangeEmpty(any());
 
 		// when, then
 		assertThatIllegalArgumentException()
@@ -181,7 +177,6 @@ class TableServiceTest {
 	void updateNumberOfGuestsWithEmptyStatusTest() {
 		// given
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(5);
-		// 주문테이블.setEmpty(true);
 		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(빈_두명_테이블()));
 
 		// when, then
