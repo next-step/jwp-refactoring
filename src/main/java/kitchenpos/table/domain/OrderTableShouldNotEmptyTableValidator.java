@@ -2,14 +2,13 @@ package kitchenpos.table.domain;
 
 import static kitchenpos.order.exception.CannotStartOrderException.TYPE.ORDER_TABLE_NOT_EMPTY;
 
-import org.springframework.stereotype.Component;
-
+import kitchenpos.annoation.DomainService;
 import kitchenpos.exception.EntityNotFoundException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTableValidator;
 import kitchenpos.order.exception.CannotStartOrderException;
 
-@Component
+@DomainService
 public class OrderTableShouldNotEmptyTableValidator implements OrderTableValidator {
 
 	private final OrderTableRepository orderTableRepository;

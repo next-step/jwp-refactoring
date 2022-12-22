@@ -3,11 +3,10 @@ package kitchenpos.table.domain;
 import static kitchenpos.table.exception.CannotChangeNumberOfGuestsException.Type.INVALID_NUMBER_OF_GUESTS;
 import static kitchenpos.table.exception.CannotChangeNumberOfGuestsException.Type.NOT_EMPTY;
 
-import org.springframework.stereotype.Component;
-
+import kitchenpos.annoation.DomainService;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
 
-@Component
+@DomainService
 public class NumberOfGuestsValidator {
 
 	public void validate(OrderTable orderTable) {

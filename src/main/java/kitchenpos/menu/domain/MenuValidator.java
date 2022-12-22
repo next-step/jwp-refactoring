@@ -1,10 +1,9 @@
 package kitchenpos.menu.domain;
 
-import org.springframework.stereotype.Service;
-
+import kitchenpos.annoation.DomainService;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
 
-@Service
+@DomainService
 public class MenuValidator {
 
 	public void validate(Menu menu) {

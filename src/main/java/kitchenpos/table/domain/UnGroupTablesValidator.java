@@ -4,13 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Component;
-
+import kitchenpos.annoation.DomainService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.exception.CannotUnGroupTablesException;
 
-@Component
+@DomainService
 public class UnGroupTablesValidator {
 
 	private final OrderRepository orderRepository;

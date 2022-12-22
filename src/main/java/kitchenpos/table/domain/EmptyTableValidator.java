@@ -5,13 +5,12 @@ import static kitchenpos.table.exception.CannotChangeEmptyOrderTable.Type.NOT_CO
 
 import java.util.Arrays;
 
-import org.springframework.stereotype.Component;
-
+import kitchenpos.annoation.DomainService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.exception.CannotChangeEmptyOrderTable;
 
-@Component
+@DomainService
 public class EmptyTableValidator {
 
 	private final OrderRepository orderRepository;

@@ -5,11 +5,10 @@ import static kitchenpos.table.exception.CannotCreateGroupTableException.TYPE.HA
 import static kitchenpos.table.exception.CannotCreateGroupTableException.TYPE.INVALID_TABLE_COUNT;
 import static kitchenpos.table.exception.CannotCreateGroupTableException.TYPE.NOT_EMPTY_ORDER_TABLE;
 
-import org.springframework.stereotype.Component;
-
+import kitchenpos.annoation.DomainService;
 import kitchenpos.table.exception.CannotCreateGroupTableException;
 
-@Component
+@DomainService
 public class GroupTablesValidator {
 
 	private static final int MINIMUM_ORDER_TABLE_COUNT = 2;
