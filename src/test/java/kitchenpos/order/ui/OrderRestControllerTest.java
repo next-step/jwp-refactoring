@@ -60,7 +60,7 @@ public class OrderRestControllerTest extends ControllerTest {
         ReflectionTestUtils.setField(양식_세트1, "id", 1L);
         ReflectionTestUtils.setField(양식_세트2, "id", 2L);
 
-        주문_메뉴_목록 = Arrays.asList(new OrderLineItem(주문, 양식_세트1, 1L), new OrderLineItem(주문, 양식_세트2, 1L));
+        주문_메뉴_목록 = Arrays.asList(new OrderLineItem(주문, 양식_세트1.getId(), 1L), new OrderLineItem(주문, 양식_세트2.getId(), 1L));
         주문.order(주문_메뉴_목록);
     }
 

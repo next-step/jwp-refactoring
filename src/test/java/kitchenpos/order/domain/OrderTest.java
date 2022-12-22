@@ -57,7 +57,7 @@ public class OrderTest {
     @Test
     void 주문_상품_추가() {
         Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
-        OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트, 1L);
+        OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트.getId(), 1L);
 
         주문.order(Arrays.asList(양식_세트_주문));
 
@@ -67,7 +67,7 @@ public class OrderTest {
     @Test
     void 기존에_포함되어_있는_주문_상품은_추가되지_않음() {
         Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
-        OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트, 1L);
+        OrderLineItem 양식_세트_주문 = new OrderLineItem(주문, 양식_세트.getId(), 1L);
 
         주문.order(Arrays.asList(양식_세트_주문));
         주문.order(Arrays.asList(양식_세트_주문));
