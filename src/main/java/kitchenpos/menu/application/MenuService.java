@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
@@ -45,22 +44,22 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-
         final Menu savedMenu = menuDao.save(menu);
 
         return MenuResponse.from(savedMenu);
     }
 
 
-
     public List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
         return requests.stream()
-            .map(menuProductRequest -> {
-                Product product = productDao.findById(menuProductRequest.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException(""));
-                return new MenuProduct(product, menuProductRequest.getQuantity());
-            })
+            .map(menuProductRequest -> menuProductRequest
+                .toMenuProduct(findProductById(menuProductRequest.getProductId())))
             .collect(Collectors.toList());
+    }
+
+    private Product findProductById(Long productId) {
+        return productDao.findById(productId)
+            .orElseThrow(() -> new IllegalArgumentException(""));
     }
 
     public List<MenuResponse> list() {
