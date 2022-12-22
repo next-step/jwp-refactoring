@@ -15,6 +15,10 @@ public class TableGroup {
         this(null, LocalDateTime.now(), orderTables);
     }
 
+    public TableGroup(Long id, List<OrderTable> orderTables) {
+        this(id, LocalDateTime.now(), orderTables);
+    }
+
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
