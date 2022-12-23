@@ -1,9 +1,9 @@
-package kitchenpos.order.event;
+package kitchenpos.table.event;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.port.OrderTablePort;
-import kitchenpos.tablegroup.event.TableGroupPublisher;
-import kitchenpos.tablegroup.event.TableUnGroupPublisher;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.port.OrderTablePort;
+import kitchenpos.tablegroup.event.TableGroupEvent;
+import kitchenpos.tablegroup.event.TableUnGroupEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -21,7 +21,7 @@ public class OrderTableGroupSubscribe {
     }
 
     @TransactionalEventListener
-    public void ungroup(TableUnGroupPublisher publisher) {
+    public void ungroup(TableUnGroupEvent publisher) {
         Long tableGroupId = publisher.getTableGroupId();
         List<OrderTable> orderTables = orderTablePort.findAllByTableGroupId(tableGroupId);
 
@@ -29,7 +29,7 @@ public class OrderTableGroupSubscribe {
     }
 
     @TransactionalEventListener
-    public void group(TableGroupPublisher publisher) {
+    public void group(TableGroupEvent publisher) {
         Long tableGroupId = publisher.getTableGroupId();
         publisher.getOrderTables()
                 .forEach(orderTable -> orderTable.setTableGroupId(tableGroupId));

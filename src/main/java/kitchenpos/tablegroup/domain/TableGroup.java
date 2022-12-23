@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.tablegroup.event.TableGroupPublisher;
-import kitchenpos.tablegroup.event.TableUnGroupPublisher;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.event.TableGroupEvent;
+import kitchenpos.tablegroup.event.TableUnGroupEvent;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -35,11 +35,11 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     }
 
     public void ungroup() {
-        TableUnGroupPublisher tableUnGroupPublisher = new TableUnGroupPublisher(id);
-        registerEvent(tableUnGroupPublisher);
+        TableUnGroupEvent tableUnGroupEvent = new TableUnGroupEvent(id);
+        registerEvent(tableUnGroupEvent);
     }
 
     public void setOrderTableId(List<OrderTable> orderTables) {
-        registerEvent(new TableGroupPublisher(id, orderTables));
+        registerEvent(new TableGroupEvent(id, orderTables));
     }
 }

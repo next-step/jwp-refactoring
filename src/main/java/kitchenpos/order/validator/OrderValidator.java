@@ -2,17 +2,15 @@ package kitchenpos.order.validator;
 
 import kitchenpos.common.constants.ErrorCodeType;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.type.OrderStatus;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
-import static kitchenpos.common.constants.ErrorCodeType.ORDER_LINE_ITEM_REQUEST;
 import static kitchenpos.common.constants.ErrorCodeType.ORDER_STATUS_NOT_COMPLETION;
 
 @Service
@@ -26,9 +24,12 @@ public class OrderValidator {
     }
 
     public void validOrder(OrderRequest request, List<Menu> menus) {
-        orderTablePort.findById(request.getOrderTableId());
-        validCheckEmptyOrderLineItems(request);
+        isExistOrderTable(request.getOrderTableId());
         validCheckMenuSize(request.getOrderLineItemRequest(), menus);
+    }
+
+    private void isExistOrderTable(Long orderTableId) {
+        orderTablePort.findById(orderTableId);
     }
 
     private void validCheckMenuSize(List<OrderLineItemRequest> orderLineItemRequest, List<Menu> menus) {
@@ -37,14 +38,8 @@ public class OrderValidator {
         }
     }
 
-    private void validCheckEmptyOrderLineItems(OrderRequest request) {
-        if (request.isRequestItemEmpty()) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
-        }
-    }
-
-    public void validChangeOrderStatus(OrderStatus orderStatus) {
-        if (orderStatus.isCompletion()) {
+    public void validChangeOrderStatus(Order order) {
+        if (order.isCompletion()) {
             throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION.getMessage());
         }
     }

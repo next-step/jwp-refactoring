@@ -42,6 +42,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+        this.orderLineItems.setOrder(this);
     }
 
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
@@ -51,6 +52,7 @@ public class Order {
         this.orderedTime = LocalDateTime.now();;
         this.orderLineItems = orderLineItems;
     }
+
 
     public void validUngroupable() {
         if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(this.orderStatus)) {
@@ -81,5 +83,9 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public boolean isCompletion() {
+        return this.getOrderStatus().isCompletion();
     }
 }

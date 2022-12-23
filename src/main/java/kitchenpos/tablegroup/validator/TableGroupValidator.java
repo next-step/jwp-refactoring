@@ -2,12 +2,11 @@ package kitchenpos.tablegroup.validator;
 
 import kitchenpos.common.constants.ErrorCodeType;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.order.port.OrderPort;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +28,12 @@ public class TableGroupValidator {
         this.orderTablePort = orderTablePort;
     }
 
-    public void makeTableGroup(TableGroupRequest request) {
-        validCheckOrderTableIdsIsEmpty(request.getOrderTableIds());
-        validCheckOrderTableMisSize(request.getOrderTableIds());
+    public void validOrderTableIds(List<Long> orderTableIds) {
+        validCheckOrderTableIdsIsEmpty(orderTableIds);
+        validCheckOrderTableMisSize(orderTableIds);
 
         List<OrderTable> orderTables =
-                orderTablePort.findAllByIdIn(request.getOrderTableIds());
+                orderTablePort.findAllByIdIn(orderTableIds);
 
         new OrderTables(orderTables).validCheckTableGroup();
     }
@@ -51,7 +50,7 @@ public class TableGroupValidator {
         }
     }
 
-    public void ungroup(TableGroup tableGroup) {
+    public void validCheckUngroup(TableGroup tableGroup) {
         List<OrderTable> orderTables = orderTablePort.findAllByTableGroupId(tableGroup.getId());
         List<Long> orderTableIds = getOrderTableIds(orderTables);
         List<Order> orders = orderPort.findAllByOrderTableIdIn(orderTableIds);
@@ -62,4 +61,5 @@ public class TableGroupValidator {
     private List<Long> getOrderTableIds(List<OrderTable> orderTables) {
         return orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
     }
+
 }

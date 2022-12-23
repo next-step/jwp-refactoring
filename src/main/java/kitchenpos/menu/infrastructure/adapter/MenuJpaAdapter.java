@@ -26,11 +26,6 @@ public class MenuJpaAdapter implements MenuPort {
     }
 
     @Override
-    public Menu findById(Long id) {
-        return menuJpaRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(MENU_NOT_FOUND.getMessage()));
-    }
-
-    @Override
     public List<Menu> findAll() {
         return menuJpaRepository.findAll();
     }

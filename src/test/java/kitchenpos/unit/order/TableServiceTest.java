@@ -1,15 +1,20 @@
 package kitchenpos.unit.order;
 
-import kitchenpos.order.application.TableService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.table.application.TableService;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.validator.OrderTableValidator;
 import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
 import kitchenpos.order.dto.TableRequest;
 import kitchenpos.order.dto.TableResponse;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,7 +86,7 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리, 식사중 이면 테이블 이용여부 변경이 불가능하다.")
     void changeFailIfStatusCookingAndMeal() {
         OrderTable 주문테이블 = new OrderTable(1L, null, 4, false);
-        Order 주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, null);
+
 
         given(orderTablePort.findById(1L)).willReturn(주문테이블);
         doThrow(new IllegalArgumentException(COOKING_MEAL_NOT_UNGROUP.getMessage()))

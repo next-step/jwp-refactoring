@@ -1,4 +1,4 @@
-package kitchenpos.common.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,14 +8,15 @@ import java.util.Objects;
 import static kitchenpos.common.constants.ErrorCodeType.PRICE_NOT_NULL_AND_ZERO;
 
 @Embeddable
-public class Price {
+public class MenuPrice {
 
     @Column(nullable = false)
     private BigDecimal price;
 
-    public Price() {}
+    protected MenuPrice() {
+    }
 
-    public Price(BigDecimal price) {
+    public MenuPrice(BigDecimal price) {
         validCheckPrice(price);
         this.price = price;
     }
@@ -28,5 +29,9 @@ public class Price {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public boolean isBiggerThen(BigDecimal targetAmount) {
+        return this.price.compareTo(targetAmount) > 0;
     }
 }

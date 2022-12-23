@@ -1,5 +1,6 @@
 package kitchenpos.unit.order;
 
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.type.OrderStatus;
@@ -10,13 +11,12 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.common.domain.Price;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.menu.port.MenuPort;
 import kitchenpos.order.port.OrderPort;
-import kitchenpos.order.port.OrderTablePort;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.port.OrderTablePort;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ class OrderServiceTest {
     void setUp() {
         치킨 = new MenuGroup("치킨");
 
-        후치콜세트 = new Menu(1L, "후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨.getId());
+        후치콜세트 = new Menu(1L, "후치콜세트", new MenuPrice(BigDecimal.valueOf(5_000)), 치킨.getId());
 
         주문테이블 = new OrderTable(1L, null, 0, false);
         주문_항목 = new OrderLineItem(후치콜세트, 1L);
@@ -124,7 +124,7 @@ class OrderServiceTest {
 
 
         given(orderPort.findById(any())).willReturn(주문);
-        doCallRealMethod().when(orderValidator).validChangeOrderStatus(OrderStatus.COMPLETION);
+        doCallRealMethod().when(orderValidator).validChangeOrderStatus(주문);
 
         assertThatThrownBy(() ->
                 orderService.changeOrderStatus(주문.getId(), new ChangeOrderStatusRequest(OrderStatus.COOKING))

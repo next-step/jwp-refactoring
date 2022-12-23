@@ -7,27 +7,21 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "menu_id", nullable = false)
+
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    protected MenuProducts() {
-    }
+    protected MenuProducts() {}
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = new ArrayList<>(menuProducts);
     }
 
-    public List<MenuProduct> getList() {
-        return this.menuProducts;
+    public void setMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 
-    public BigDecimal getSumPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.price());
-        }
-
-        return sum;
+    public List<MenuProduct> getList() {
+        return this.menuProducts;
     }
 }

@@ -38,12 +38,4 @@ public class OrderRequest {
     public List<OrderLineItemRequest> getOrderLineItemRequest() {
         return orderLineItemRequest;
     }
-
-    public boolean isRequestItemEmpty() {
-        if (this.orderLineItemRequest.isEmpty()) {
-            return true;
-        }
-
-        return false;
-    }
 }

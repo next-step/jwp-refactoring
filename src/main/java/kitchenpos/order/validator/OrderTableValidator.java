@@ -1,7 +1,7 @@
 package kitchenpos.order.validator;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.port.OrderPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

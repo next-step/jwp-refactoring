@@ -1,7 +1,7 @@
 package kitchenpos.unit.validator;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.port.OrderPort;
 import kitchenpos.order.validator.OrderTableValidator;

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.common.constants.ErrorCodeType.NOT_FOUND_PRODUCT;
+
 @Service
 @Transactional
 public class MenuProductJpaAdapter implements MenuProductPort {
@@ -28,7 +30,7 @@ public class MenuProductJpaAdapter implements MenuProductPort {
     @Override
     @Transactional(readOnly = true)
     public Optional<MenuProduct> findById(Long id) {
-        return Optional.empty();
+        return menuProductJpaRepository.findById(id);
     }
 
     @Override

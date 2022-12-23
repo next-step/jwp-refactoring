@@ -1,13 +1,14 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.*;
-import kitchenpos.menugroup.port.MenuGroupPort;
 import kitchenpos.menu.port.MenuPort;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.common.domain.Price;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.port.ProductPort;
 import org.springframework.stereotype.Service;
@@ -22,50 +23,43 @@ import static kitchenpos.common.constants.ErrorCodeType.NOT_FOUND_PRODUCT;
 @Transactional
 public class MenuService {
     private final MenuPort menuPort;
-    private final MenuGroupPort menuGroupPort;
+    private final MenuValidator menuValidator;
     private final ProductPort productPort;
 
-    public MenuService(
-            final MenuPort menuPort,
-            final MenuGroupPort menuGroupPort,
-            final ProductPort productPort
-    ) {
+    public MenuService(MenuPort menuPort, MenuValidator menuValidator, ProductPort productPort) {
         this.menuPort = menuPort;
-        this.menuGroupPort = menuGroupPort;
+        this.menuValidator = menuValidator;
         this.productPort = productPort;
     }
 
-    public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupPort.findById(request.getMenuGroupId());
-        List<Product> products = productPort.findAllByIdIn(getProductIds(request));
-        Menu menu = new Menu(request.getName(), new Price(request.getPrice()), menuGroup.getId(), makeMenuProducts(products, request));
-        menu.validCheckMeuProductPrice();
-
-        System.out.println("=========------");
-        System.out.println(menu.toString());
-
+    public MenuResponse create(MenuRequest request) {
+        MenuProducts menuProducts = makeMenuProduct(request);
+        Menu menu = new Menu(request.getName(), new MenuPrice(request.getPrice()), request.getMenuGroupId(), menuProducts);
+        menuValidator.validCheckMakeMenu(menu);
         Menu saveMenu = menuPort.save(menu);
 
         return MenuResponse.from(saveMenu);
     }
 
+    private MenuProducts makeMenuProduct(MenuRequest request) {
+        List<MenuProduct> menuProducts = request.getMenuProduct()
+                .stream()
+                .map(it -> new MenuProduct(findProductById(it.getProductId()).getId(), it.getQuantity()))
+                .collect(Collectors.toList());
+
+        return new MenuProducts(menuProducts);
+    }
+
+    private Product findProductById(Long id) {
+        return productPort.findById(id);
+    }
+
     private MenuProduct makeMenuProduct(List<Product> product, MenuProductRequest request) {
         Product targetProduct = findProduct(product, request.getProductId());
-        return new MenuProduct(targetProduct, request.getQuantity());
+
+        return new MenuProduct(request.getQuantity(), targetProduct.getId());
     }
 
-    private MenuProducts makeMenuProducts(List<Product> product, MenuRequest request) {
-        return new MenuProducts(request.getMenuProduct().stream()
-                .map(menuProduct -> makeMenuProduct(product, menuProduct))
-                .collect(Collectors.toList()));
-    }
-
-    private List<Long> getProductIds(MenuRequest request) {
-        return request.getMenuProduct()
-                .stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
-    }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {

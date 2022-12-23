@@ -3,6 +3,7 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.*;
@@ -16,9 +17,9 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.*;
-import kitchenpos.common.domain.Price;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,16 +56,16 @@ class OrderRestControllerTest extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        Product productA = new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨");
-        Product productB = new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라");
-        MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(productA, 2L), new MenuProduct(productB, 2L)));
+        Product productA = new Product(new ProductPrice(BigDecimal.valueOf(3_000)), "후라이드치킨");
+        Product productB = new Product(new ProductPrice(BigDecimal.valueOf(2_000)), "제로콜라");
+        MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(productA.getId(), 2L), new MenuProduct(productB.getId(), 2L)));
 
         치킨 = 상품을_등록한다(new ProductRequest("치킨", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
         제로콜라 = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
         양식_메뉴_그륩 = 메뉴그룹을_생성한다(new MenuGroupRequest("양식_메뉴_그륩")).as(MenuGroupResponse.class);
         양식 = new MenuGroup(양식_메뉴_그륩.getId(), 양식_메뉴_그륩.getName());
 
-        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new Price(BigDecimal.valueOf(12_000)), 양식.getId(), menuProducts);
+        치킨_콜라_정식_메뉴 = new Menu("불고기정식", new MenuPrice(BigDecimal.valueOf(12_000)), 양식.getId(), menuProducts);
 
         MenuProductRequest productRequestA = new MenuProductRequest(치킨.getId(), 1L);
         MenuProductRequest productRequestB = new MenuProductRequest(제로콜라.getId(), 2L);

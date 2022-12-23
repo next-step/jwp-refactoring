@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
 import javax.persistence.*;
 
@@ -47,12 +47,6 @@ public class OrderTable {
     public Long getTableGroupId() {
         return tableGroupId;
     }
-
-/*
-    public void addTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-*/
 
     public boolean isNotNull() {
         return this.tableGroupId != null;

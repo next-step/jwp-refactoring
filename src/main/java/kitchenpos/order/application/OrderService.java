@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -9,9 +10,9 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.port.MenuPort;
 import kitchenpos.order.port.OrderPort;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,12 +51,10 @@ public class OrderService {
     }
 
     private Order makeOrder(Long orderTableId, List<Menu> menus, OrderRequest request) {
-        Order order = new Order(orderTableId, OrderStatus.COOKING);
-
         List<OrderLineItem> orderLineItems = request.getOrderLineItemRequest().stream()
                 .map(item -> createOrderLineItemRequest(menus, item))
                 .collect(Collectors.toList());
-
+        Order order = new Order(orderTableId, OrderStatus.COOKING, new OrderLineItems(orderLineItems));
 
         return orderPort.save(order);
     }
@@ -80,7 +79,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId, final ChangeOrderStatusRequest request) {
         Order order = orderPort.findById(orderId);
-        orderValidator.validChangeOrderStatus(order.getOrderStatus());
+        orderValidator.validChangeOrderStatus(order);
 
         order.changeOrderStatus(request.getOrderStatus());
 

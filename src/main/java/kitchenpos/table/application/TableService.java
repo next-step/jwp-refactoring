@@ -1,12 +1,12 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.order.validator.OrderTableValidator;
 import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
 import kitchenpos.order.dto.TableRequest;
 import kitchenpos.order.dto.TableResponse;
-import kitchenpos.order.port.OrderTablePort;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.port.OrderTablePort;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

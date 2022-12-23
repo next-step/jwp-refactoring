@@ -1,12 +1,12 @@
 package kitchenpos.unit.tablegroup;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import kitchenpos.tablegroup.port.TableGroupPort;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +61,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체지정을 등록 할 수 있다.")
     void createTableGroup() {
-        doNothing().when(tableGroupValidator).makeTableGroup(any());
+        doNothing().when(tableGroupValidator).validOrderTableIds(any());
 
         given(orderTablePort.findAllByTableGroupIdIn(
                 Arrays.asList(주문테이블_일번.getId(), 주문테이블_이번.getId()))
@@ -79,7 +79,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 비어있어야만 단체지정이 가능한다.")
     void emptyOrderTableAddTableGroup() {
         doThrow(new IllegalArgumentException(NOT_FOUND_ORDER_TABLE.getMessage()))
-                .when(tableGroupValidator).makeTableGroup(any());
+                .when(tableGroupValidator).validOrderTableIds(any());
 
         assertThatThrownBy(() ->
                 tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L, 3L)))
@@ -90,7 +90,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 2개 이여야만 단채 지정이 가능하다.")
     void tableGroupsSizeMinTwo() {
         doThrow(new IllegalArgumentException(ORDER_TABLE_MIN_SIZE_ERROR.getMessage()))
-                .when(tableGroupValidator).makeTableGroup(any());
+                .when(tableGroupValidator).validOrderTableIds(any());
 
         assertThatThrownBy(() ->
                 tableGroupService.create(new TableGroupRequest(Arrays.asList(1L))))
@@ -101,7 +101,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 테이블은 주문 테이블이여야한다.")
     void tableGroupIsOrderTable() {
         doThrow(new IllegalArgumentException(MATCH_GROUP_PRESENT.getMessage()))
-                .when(tableGroupValidator).makeTableGroup(any());
+                .when(tableGroupValidator).validOrderTableIds(any());
 
         assertThatThrownBy(() ->
                 tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)))
@@ -112,7 +112,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 이미 단체지정 되어있으면(이용중) 등록 할 수 없다.")
     void tableGroupIsAlreadyUseFail() {
         doThrow(new IllegalArgumentException(NOT_MATCH_ORDER_TABLE.getMessage()))
-                .when(tableGroupValidator).makeTableGroup(any());
+                .when(tableGroupValidator).validOrderTableIds(any());
 
         assertThatThrownBy(() ->
                 tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)))
@@ -137,7 +137,7 @@ class TableGroupServiceTest {
     void cancelTableGroupIfCookingAndMealFail(OrderStatus status) {
         given(tableGroupPort.findById(any())).willReturn(단체지정);
         doThrow(new IllegalArgumentException(COOKING_MEAL_NOT_UNGROUP.getMessage()))
-                .when(tableGroupValidator).ungroup(any());
+                .when(tableGroupValidator).validCheckUngroup(any());
 
         assertThatThrownBy(() ->
                 tableGroupService.ungroup(1L)

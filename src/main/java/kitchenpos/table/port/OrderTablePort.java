@@ -1,6 +1,6 @@
-package kitchenpos.order.port;
+package kitchenpos.table.port;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 import java.util.List;
 

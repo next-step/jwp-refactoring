@@ -1,12 +1,12 @@
 package kitchenpos.unit.order;
 
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.common.domain.Price;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +26,7 @@ class OrderTest {
     @BeforeEach
     void setUp() {
         치킨 = new MenuGroup("치킨");
-        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), 치킨.getId(), new MenuProducts(Arrays.asList()));
+        후치콜세트 = new Menu("후치콜세트", new MenuPrice(BigDecimal.valueOf(5_000)), 치킨.getId());
 
         주문테이블 = new OrderTable(1L, null, 0, false);
     }

@@ -1,12 +1,11 @@
 package kitchenpos.unit.validator;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.domain.type.OrderStatus;
 import kitchenpos.order.port.OrderPort;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ class TableGroupValidatorTest {
     @DisplayName("요청으로 들어온 주문테이블의 아이디는 비어있으면 안된다.")
     void validCheckOrderTableIdsIsEmpty() {
         assertThatThrownBy(() ->
-                tableGroupValidator.makeTableGroup(new TableGroupRequest(Arrays.asList()))
+                tableGroupValidator.validOrderTableIds(Arrays.asList())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -47,7 +46,7 @@ class TableGroupValidatorTest {
     @DisplayName("요청 으로 들어온 주문테이블 아이디의 크기는 2보다 작으면 안된다.")
     void validCheckOrderTableMisSize() {
         assertThatThrownBy(() ->
-                tableGroupValidator.makeTableGroup(new TableGroupRequest(Arrays.asList(1L)))
+                tableGroupValidator.validOrderTableIds(Arrays.asList())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -63,7 +62,7 @@ class TableGroupValidatorTest {
         given(orderPort.findAllByOrderTableIdIn(any())).willReturn(Arrays.asList(주문));
 
         assertThatThrownBy(() ->
-                tableGroupValidator.ungroup(new TableGroup())
+                tableGroupValidator.validCheckUngroup(new TableGroup())
         ).isInstanceOf(IllegalArgumentException.class);
 
     }

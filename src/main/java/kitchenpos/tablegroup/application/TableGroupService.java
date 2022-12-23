@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.port.OrderTablePort;
 import kitchenpos.tablegroup.port.TableGroupPort;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.validator.TableGroupValidator;
@@ -26,7 +26,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
-        tableGroupValidator.makeTableGroup(request);
+        tableGroupValidator.validOrderTableIds(request.getOrderTableIds());
         List<OrderTable> orderTables = orderTablePort.findAllByTableGroupIdIn(request.getOrderTableIds());
         TableGroup savedTableGroup = tableGroupPort.save(new TableGroup());
         savedTableGroup.setOrderTableId(orderTables);
@@ -37,8 +37,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupPort.findById(tableGroupId);
-        tableGroupValidator.ungroup(tableGroup);
-
+        tableGroupValidator.validCheckUngroup(tableGroup);
         tableGroup.ungroup();
     }
 }

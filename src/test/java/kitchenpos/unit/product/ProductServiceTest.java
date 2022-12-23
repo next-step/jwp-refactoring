@@ -1,6 +1,6 @@
 package kitchenpos.unit.product;
 
-import kitchenpos.common.domain.Price;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.application.ProductService;
@@ -34,7 +34,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품을 등록 할 수 있다")
     void createProduct() {
-        Product 스테이크 = new Product(new Price(BigDecimal.valueOf(10_000)), "스테이크");
+        Product 스테이크 = new Product(new ProductPrice(BigDecimal.valueOf(10_000)), "스테이크");
 
         given(productPort.save(any())).willReturn(스테이크);
 
@@ -56,8 +56,8 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 리스트를 받을 수 있다")
     void getProductList() {
-        Product 스테이크 = new Product(new Price(BigDecimal.valueOf(200)), "스테이크");
-        Product 감자튀김 = new Product(new Price(BigDecimal.valueOf(200)), "감자튀김");
+        Product 스테이크 = new Product(new ProductPrice(BigDecimal.valueOf(200)), "스테이크");
+        Product 감자튀김 = new Product(new ProductPrice(BigDecimal.valueOf(200)), "감자튀김");
 
         given(productPort.findAll()).willReturn(Arrays.asList(스테이크, 감자튀김));
 

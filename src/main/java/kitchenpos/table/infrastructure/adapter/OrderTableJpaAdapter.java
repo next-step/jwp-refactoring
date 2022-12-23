@@ -1,9 +1,9 @@
-package kitchenpos.order.infrastructure.adapter;
+package kitchenpos.table.infrastructure.adapter;
 
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.infrastructure.repository.OrderTableJpaRepository;
-import kitchenpos.order.port.OrderTablePort;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.infrastructure.repository.OrderTableJpaRepository;
+import kitchenpos.table.port.OrderTablePort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

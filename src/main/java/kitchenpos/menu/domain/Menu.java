@@ -1,12 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domain.Price;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-
-import static kitchenpos.common.constants.ErrorCodeType.MENU_PRICE_NOT_OVER_SUM_PRICE;
 
 @Entity
 public class Menu {
@@ -15,7 +11,7 @@ public class Menu {
     private Long id;
     private String name;
     @Embedded
-    private Price price;
+    private MenuPrice price;
 
     private Long menuGroupId;
 
@@ -25,27 +21,25 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(Long id, String name, Price price, Long menuGroupId) {
+    public Menu(Long id, String name, MenuPrice price, Long menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
     }
 
-    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(String name, MenuPrice price, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
+    public Menu(String name, MenuPrice price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-    }
-
-
-    public void validCheckMeuProductPrice() {
-        BigDecimal sumPrice = this.menuProducts.getSumPrice();
-
-        if (price.getPrice().compareTo(sumPrice) > 0) {
-            throw new IllegalArgumentException(MENU_PRICE_NOT_OVER_SUM_PRICE.getMessage());
-        }
+        menuProducts.setMenu(this);
     }
 
     public Long getId() {
@@ -56,27 +50,20 @@ public class Menu {
         return name;
     }
 
-    public Price getPrice() {
+
+    public MenuPrice getPrice() {
         return price;
     }
 
+    public BigDecimal getMenuPrice() {
+        return price.getPrice();
+    }
 
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getList();
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", menuGroupId=" + menuGroupId +
-                ", menuProducts=" + menuProducts +
-                '}';
+        return this.menuProducts.getList();
     }
 }

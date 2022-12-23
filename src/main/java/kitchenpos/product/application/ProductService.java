@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import kitchenpos.common.domain.Price;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.port.ProductPort;
@@ -20,7 +20,7 @@ public class ProductService {
     }
 
     public ProductResponse create(final ProductRequest request) {
-        Product product = new Product(new Price(request.getPrice()), request.getName());
+        Product product = new Product(new ProductPrice(request.getPrice()), request.getName());
         productPort.save(product);
 
         return ProductResponse.of(product);
