@@ -11,12 +11,10 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    private Long productId;
 
     @Column(nullable = false)
     private long quantity;
@@ -28,7 +26,7 @@ public class MenuProduct {
         validate(menu, product, quantity);
 
         updateMenu(menu);
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -53,10 +51,6 @@ public class MenuProduct {
         }
     }
 
-    public Price getTotalPrice() {
-        return this.product.getPrice().multiply(quantity);
-    }
-
     public Long getSeq() {
         return seq;
     }
@@ -65,8 +59,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {

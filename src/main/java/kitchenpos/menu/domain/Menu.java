@@ -28,8 +28,8 @@ public class Menu {
     private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id", nullable = false, foreignKey = @ForeignKey(name = "fk_menu_menu_group"))private MenuGroup menuGroup;
-
+    @JoinColumn(name = "menu_group_id", nullable = false, foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
     @Embedded
     private final MenuProducts menuProducts = new MenuProducts();
 
@@ -52,17 +52,11 @@ public class Menu {
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(this::addMenuProduct);
-        validatePrice();
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.addMenuProduct(this, menuProduct);
     }
-
-    private void validatePrice() {
-        price.validateTotalPrice(this.menuProducts.totalPrice());
-    }
-
 
     public Long getId() {
         return id;

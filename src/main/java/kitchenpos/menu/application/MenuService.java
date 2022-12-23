@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import java.math.BigDecimal;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -27,6 +28,7 @@ public class MenuService {
     public MenuResponse create(MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         List<Product> products = findAllProductByIds(request.findAllProductIds());
+        validatePrice(request.getPrice(), products);
         Menu menu = request.toMenu(menuGroup, products);
         return MenuResponse.from(menuRepository.save(menu));
     }
@@ -43,5 +45,13 @@ public class MenuService {
         return menuRepository.findAll().stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());
+    }
+
+    private void validatePrice(BigDecimal price, List<Product> products) {
+        Price productsPrice = products.stream()
+            .map(Product::getPrice)
+            .reduce(Price.of(BigDecimal.ZERO), Price::add);
+
+        Price.of(price).validateTotalPrice(productsPrice);
     }
 }
