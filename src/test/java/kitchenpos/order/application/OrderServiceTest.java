@@ -33,18 +33,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
+    private OrderValidator orderValidator;
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -61,6 +61,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         주문테이블 = new OrderTable(2, false);
+        ReflectionTestUtils.setField(주문테이블, "id", 1L);
         주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
@@ -85,9 +86,7 @@ class OrderServiceTest {
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
-        given(menuRepository.findAllById(request.toMenuIds()))
-                .willReturn(Arrays.asList(양식_세트1, 양식_세트2));
+        willDoNothing().given(orderValidator).validateToCreateOrder(anyLong(), anyList());
         given(orderRepository.save(any(Order.class))).willReturn(주문);
 
         OrderResponse orderResponse = orderService.create(request);
