@@ -47,36 +47,6 @@ public class OrderService {
         return OrderResponse.from(orderDao.save(order));
     }
 
-    private OrderTable getOrderTable(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> requests){
-        if(Objects.isNull(requests) || requests.isEmpty()){
-            throw new IllegalArgumentException("주문 항목 정보 없음");
-        }
-        return requests.stream()
-            .map(request -> request.toOrderLineItem(findMenuById(request.getMenuId())))
-            .collect(Collectors.toList());
-    }
-
-    private Menu findMenuById(Long id){
-        return menuDao.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
-    }
-
-    private List<Long> getOrderLineIds(OrderRequest request) {
-        return request.getOrderLineItems().stream()
-            .map(OrderLineItemRequest::getMenuId)
-            .collect(Collectors.toList());
-    }
-
-    private void validateOrderLineItem(Order order) {
-        if (CollectionUtils.isEmpty(order.getOrderLineItems())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public List<OrderResponse> list() {
         final List<Order> orders = orderDao.findAll();
 
@@ -102,5 +72,23 @@ public class OrderService {
 
     private void changeOrderStatus(Order savedOrder, String orderStatus) {
         savedOrder.setOrderStatus(orderStatus);
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> requests){
+        if(Objects.isNull(requests) || requests.isEmpty()){
+            throw new IllegalArgumentException("주문 항목 정보 없음");
+        }
+        return requests.stream()
+            .map(request -> request.toOrderLineItem(findMenuById(request.getMenuId())))
+            .collect(Collectors.toList());
+    }
+
+    private Menu findMenuById(Long id){
+        return menuDao.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
     }
 }
