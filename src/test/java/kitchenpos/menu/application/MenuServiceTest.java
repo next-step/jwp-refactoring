@@ -20,10 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 
 import static java.util.Collections.singletonList;
-import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.fixture.NameFixture.*;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.common.fixture.PriceFixture.priceProductA;
+import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.application.MenuService.MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.Menu.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.MenuValidator.MENU_PRICE_EXCEPTION_MESSAGE;

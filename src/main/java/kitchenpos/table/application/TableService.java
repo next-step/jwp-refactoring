@@ -1,10 +1,10 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.validator.TableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 public class TableService {
     public static final String CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "변경하는 손님수는 0명보다 작을 수 없습니다.";
     private final OrderTableRepository orderTableRepository;
-    private final OrderValidator orderValidator;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
+    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderValidator = orderValidator;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -41,7 +41,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
-        orderValidator.validateNotComplete(orderTable.getId());
+        tableValidator.validateNotComplete(orderTable.getId());
         orderTable.empty();
         return OrderTableResponse.of(orderTable);
     }

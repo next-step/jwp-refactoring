@@ -10,7 +10,6 @@ import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.fixture.ProductFixture;
 import kitchenpos.product.repository.ProductRepository;
@@ -22,6 +21,7 @@ import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,11 +36,11 @@ import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
-import static kitchenpos.order.validator.OrderValidator.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
+import static kitchenpos.table.validator.TableValidator.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -70,7 +70,7 @@ class TableServiceTest extends ServiceTest {
     private TableGroupRepository tableGroupRepository;
 
     @Autowired
-    private OrderValidator orderValidator;
+    private TableValidator tableValidator;
 
     private MenuGroup menuGroupA;
     private OrderTable orderTableA;
@@ -88,7 +88,7 @@ class TableServiceTest extends ServiceTest {
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(notEmptyOrderTable());
         orderTableB = orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
-        tableService = new TableService(orderTableRepository, orderValidator);
+        tableService = new TableService(orderTableRepository, tableValidator);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
