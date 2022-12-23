@@ -83,15 +83,7 @@ public class Order {
         return orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public Long getOrderTableId() {
-        return orderTable.getId();
     }
 }

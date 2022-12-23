@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,5 +88,13 @@ class OrderTest {
         Order 주문 = new Order(주문테이블, OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 추가시 주문 아이템이 빈값인지 확인한다.")
+    @Test
+    void 주문_추가_확인() {
+        Order 주문 = new Order(주문테이블, OrderStatus.COMPLETION);
+
+        assertThatThrownBy(() -> 주문.order(new ArrayList<>())).isInstanceOf(IllegalArgumentException.class);
     }
 }

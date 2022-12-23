@@ -60,10 +60,6 @@ public class OrderLineItem {
         return menu;
     }
 
-    public Long getMenuId() {
-        return menu.getId();
-    }
-
     public long getQuantity() {
         return quantity;
     }

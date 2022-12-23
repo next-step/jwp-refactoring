@@ -50,10 +50,6 @@ public class TableGroup {
         return id;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
     public OrderTables getOrderTables() {
         return orderTables;
     }

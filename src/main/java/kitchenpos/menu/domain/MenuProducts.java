@@ -12,13 +12,6 @@ public class MenuProducts {
 
     protected MenuProducts() {}
 
-    public BigDecimal getTotalPrice() {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        menuProducts.forEach(menuProduct -> totalPrice.add(menuProduct.getPrice()));
-
-        return totalPrice;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
