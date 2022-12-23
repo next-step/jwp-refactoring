@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
@@ -32,10 +33,10 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        menuValidator.validCreate(menuRequest);
+        menuValidator.validCreate(mapToProductIds(menuRequest), menuRequest.getPrice());
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
                 .stream()
-                .map(m -> MenuProduct.of(m.getProductId(), m.getQuantity()))
+                .map(it -> MenuProduct.of(it.getProductId(), it.getQuantity()))
                 .collect(Collectors.toList());
 
         Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
@@ -55,5 +56,14 @@ public class MenuService {
         return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
     }
+
+    private List<Long> mapToProductIds(MenuRequest menuRequest) {
+        return menuRequest.getMenuProducts()
+                .stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

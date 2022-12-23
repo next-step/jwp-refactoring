@@ -42,7 +42,7 @@ class MenuValidatorTest {
         given(productRepository.findAllByIdIn(any())).willReturn(Arrays.asList(후라이드, 콜라));
 
         //when & then
-        assertThatThrownBy(() -> menuValidator.validCreate(request))
+        assertThatThrownBy(() -> menuValidator.validCreate(Arrays.asList(후라이드.getId(), 콜라.getId()), request.getPrice()))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
