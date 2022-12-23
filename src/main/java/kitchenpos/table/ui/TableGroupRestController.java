@@ -22,7 +22,7 @@ public class TableGroupRestController {
 
     @PostMapping("/api/table-groups")
     public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest request) {
-        final TableGroupResponse created = tableGroupService.create(request.toTableGroup());
+        final TableGroupResponse created = tableGroupService.create(request);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
             .body(created)

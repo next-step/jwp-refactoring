@@ -10,7 +10,10 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
@@ -18,6 +21,8 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,7 +44,7 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정할_테이블이_없을_경우_에러발생() {
         //when & then
-        assertThatThrownBy(() -> tableGroupService.create(new TableGroup()))
+        assertThatThrownBy(() -> tableGroupService.create(from(new TableGroup())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -50,7 +55,7 @@ class TableGroupServiceTest {
         tableGroup.setOrderTables(Collections.singletonList(new OrderTable()));
 
         //when & then
-        assertThatThrownBy(() -> tableGroupService.create(new TableGroup()))
+        assertThatThrownBy(() -> tableGroupService.create(from(new TableGroup())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -62,7 +67,7 @@ class TableGroupServiceTest {
         when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(new OrderTable()));
 
         //when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(from(tableGroup)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -75,7 +80,7 @@ class TableGroupServiceTest {
             .thenReturn(Arrays.asList(new OrderTable(), new OrderTable()));
 
         //when & then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(from(tableGroup)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,6 +96,19 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
+    }
+
+    private TableGroupRequest from(TableGroup tableGroup) {
+        return new TableGroupRequest(tableGroup.getId(), tableGroup.getCreatedDate(), from(tableGroup.getOrderTables()));
+    }
+
+    private List<OrderTableRequest> from(List<OrderTable> orderTables) {
+        if (Objects.isNull(orderTables)) {
+            return Collections.emptyList();
+        }
+        return orderTables.stream()
+            .map(orderTable -> new OrderTableRequest(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+            .collect(Collectors.toList());
     }
 
 }

@@ -11,6 +11,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroup tableGroup) {
+    public TableGroupResponse create(final TableGroupRequest request) {
+        TableGroup tableGroup = request.toTableGroup();
         validateTableGroup(tableGroup);
 
         final List<OrderTable> savedOrderTables = orderTableDao

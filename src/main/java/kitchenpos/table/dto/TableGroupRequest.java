@@ -14,6 +14,12 @@ public class TableGroupRequest {
     public TableGroupRequest() {
     }
 
+    public TableGroupRequest(Long id, LocalDateTime createdDate, List<OrderTableRequest> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
     public TableGroupRequest(List<Long> orderTableIds) {
         this.orderTables = orderTableIds.stream()
             .map(OrderTableRequest::new)
