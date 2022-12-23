@@ -1,8 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -18,13 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
     public static final String CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE = "변경하는 손님수는 0명보다 작을 수 없습니다.";
-    public static final String ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE = "완료 상태만 변경 가능합니다";
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -43,9 +40,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
-        Order order = orderRepository.findByOrderTableId(orderTableId).orElseThrow(EntityNotFoundException::new);
-        validateOrderStatus(order.getOrderStatus());
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
+        orderValidator.validateNotComplete(orderTable.getId());
         orderTable.empty();
         return OrderTableResponse.of(orderTable);
     }
@@ -60,11 +56,5 @@ public class TableService {
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private void validateOrderStatus(OrderStatus status) {
-        if (status.equals(OrderStatus.COOKING) || status.equals(OrderStatus.MEAL)) {
-            throw new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
-        }
     }
 }

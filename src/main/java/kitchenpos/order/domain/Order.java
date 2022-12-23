@@ -103,4 +103,8 @@ public class Order {
     public Long getOrderTableId() {
         return this.orderTableId;
     }
+
+    public boolean isComplete() {
+        return this.orderStatus.equals(OrderStatus.COMPLETION);
+    }
 }
