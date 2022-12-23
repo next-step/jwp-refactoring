@@ -15,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableService {
 
-    private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
+    public TableService(final OrderTableDao orderTableDao) {
         this.orderTableDao = orderTableDao;
     }
 
@@ -45,23 +43,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
         final int numberOfGuests) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.changeNumberOfGuest(numberOfGuests);
-        changeNumberOfGuest(numberOfGuests, savedOrderTable);
-
-        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
-    }
-
-    private void changeNumberOfGuest(int numberOfGuests, OrderTable savedOrderTable) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        final OrderTable orderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        orderTable.changeNumberOfGuest(numberOfGuests);
+        return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
 }
