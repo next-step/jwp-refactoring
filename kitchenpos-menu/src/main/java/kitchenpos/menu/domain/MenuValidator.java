@@ -4,10 +4,10 @@ import static java.math.BigDecimal.ZERO;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.common.domain.Price;
+import kitchenpos.domain.Price;
+import org.springframework.stereotype.Component;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import org.springframework.stereotype.Component;
 
 @Component
 public class MenuValidator {
