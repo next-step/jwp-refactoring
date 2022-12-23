@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -40,8 +39,6 @@ class OrderServiceTest {
     private MenuDao menuDao;
     @Mock
     private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
     @Mock
     private OrderTableDao orderTableDao;
     @InjectMocks

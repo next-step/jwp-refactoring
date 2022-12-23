@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -22,18 +21,15 @@ public class OrderService {
 
     private final MenuDao menuDao;
     private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
     public OrderService(
         final MenuDao menuDao,
         final OrderDao orderDao,
-        final OrderLineItemDao orderLineItemDao,
         final OrderTableDao orderTableDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
     }
 
