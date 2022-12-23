@@ -57,7 +57,7 @@ class TableValidatorTest {
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중이거나_식사중인_주문이_있으면_빈_테이블로_변경할_수_없다(OrderStatus orderStatus) {
         Order order = new Order(주문테이블.getId(), orderStatus);
-        given(orderRepository.findAllByOrderTableId(주문테이블.getId())).willReturn(Arrays.asList(order));
+        given(orderRepository.findByOrderTableId(주문테이블.getId())).willReturn(Arrays.asList(order));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableValidator.validateChangeEmpty(주문테이블))
@@ -69,7 +69,7 @@ class TableValidatorTest {
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중이거나_식사중인_주문이_있으면_테이블_그룹을_해제할_수_없다(OrderStatus orderStatus) {
         Order order = new Order(주문테이블.getId(), orderStatus);
-        given(orderRepository.findAllByOrderTableIds(Arrays.asList(주문테이블.getId()))).willReturn(Arrays.asList(order));
+        given(orderRepository.findByOrderTableIdIn(Arrays.asList(주문테이블.getId()))).willReturn(Arrays.asList(order));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableValidator.validateUngroup(Arrays.asList(주문테이블.getId())))

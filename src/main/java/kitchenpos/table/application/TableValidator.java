@@ -17,7 +17,7 @@ public class TableValidator {
     }
 
     public void validateUngroup(List<Long> orderTableIds) {
-        List<Order> orders = orderRepository.findAllByOrderTableIds(orderTableIds);
+        List<Order> orders = orderRepository.findByOrderTableIdIn(orderTableIds);
         orders.forEach(Order::checkCookingOrMeal);
     }
 
@@ -31,6 +31,6 @@ public class TableValidator {
     }
 
     private List<Order> findAllByOrderTableId(Long orderTableId) {
-        return orderRepository.findAllByOrderTableId(orderTableId);
+        return orderRepository.findByOrderTableId(orderTableId);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Objects;
 public class MenuProductQuantity {
     private static final int MIN_NUM = 0;
 
-    @Column
+    @Column(nullable = false)
     private long quantity;
 
     protected MenuProductQuantity() {}
