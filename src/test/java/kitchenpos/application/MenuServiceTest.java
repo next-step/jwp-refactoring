@@ -104,16 +104,16 @@ class MenuServiceTest {
         assertThat(names).contains("기본피자");
     }
 
-    private Menu createMenu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu createMenu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
-    private MenuProduct createMenuProduct(String name, BigDecimal price, long quantity) {
+    public MenuProduct createMenuProduct(String name, BigDecimal price, long quantity) {
         Product product = productDao.save(new Product(name, price));
         return new MenuProduct(product.getId(), quantity);
     }
 
-    private MenuGroup createMenuGroup(String name) {
+    public MenuGroup createMenuGroup(String name) {
         return menuGroupDao.save(new MenuGroup(name));
     }
 }
