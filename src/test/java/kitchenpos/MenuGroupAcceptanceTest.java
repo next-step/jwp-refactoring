@@ -20,7 +20,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     /**
      * Feature: 메뉴 그룹 기능
-     *  Scenario: 상품 추가 조회
+     *  Scenario: 메뉴 그룹 추가 조회
      *      when: 메뉴 그룹을 생성한다
      *      then: 메뉴 그룹이 생성됨
      *      when: 이름이 없는 메뉴 그룹을 생성한다
@@ -29,9 +29,9 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
      *      then: 메뉴 그룹 목록이 조회됨
      */
 
-    @DisplayName("상품 추가 조회")
+    @DisplayName("메뉴 그룹 추가 조회")
     @Test
-    void createProduct() {
+    void scenarioMenuGroup() {
         // when
         ExtractableResponse<Response> 메뉴그룹 = 메뉴_그룹_생성_요청("메뉴그룹");
         // then
