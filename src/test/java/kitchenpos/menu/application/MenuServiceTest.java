@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -126,26 +127,14 @@ public class MenuServiceTest {
         );
     }
 
-    @DisplayName("가격 정보가 없는 메뉴를 생성한다")
-    @Test
-    void 가격_정보가_없는_메뉴_생성() {
-        // given
-        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
-        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 0, 세트.getId(), menuProductRequests);
-
-        // when & then
-        assertThatThrownBy(
-                () -> menuService.create(menuRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("가격이 음수인 메뉴를 생성한다")
     @Test
     void 가격이_음수인_메뉴_생성() {
         // given
+        given(menuGroupRepository.findById(세트.getId())).willReturn(Optional.ofNullable(세트));
+
         List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
         MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), -17000, 세트.getId(), menuProductRequests);
-
 
         // when & then
         assertThatThrownBy(
@@ -164,7 +153,7 @@ public class MenuServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> menuService.create(menuRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("상품 정보가 없는 메뉴를 생성한다")
@@ -181,7 +170,7 @@ public class MenuServiceTest {
         // then & then
         assertThatThrownBy(
                 () -> menuService.create(menuRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("단일 상품 가격 합보다 메뉴 가격이 큰 메뉴를 생성한다")

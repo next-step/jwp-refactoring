@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -37,7 +38,7 @@ public class MenuService {
         List<MenuProduct> menuProducts = generateMenuProducts(menuRequest, menu);
         menu.addMenuProducts(menuProducts);
         final Menu savedMenu = menuRepository.save(menu);
-
+        System.out.println(savedMenu == null);
         return MenuResponse.of(savedMenu);
     }
 
@@ -61,10 +62,10 @@ public class MenuService {
     }
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId).orElseThrow(IllegalArgumentException::new);
+        return menuGroupRepository.findById(menuGroupId).orElseThrow(NoSuchDataException::new);
     }
 
     private Product findProduct(Long productId) {
-        return productRepository.findById(productId).orElseThrow(IllegalArgumentException::new);
+        return productRepository.findById(productId).orElseThrow(NoSuchDataException::new);
     }
 }

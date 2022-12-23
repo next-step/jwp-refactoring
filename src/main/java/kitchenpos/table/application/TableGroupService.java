@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -54,14 +55,14 @@ public class TableGroupService {
         }
 
     private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId).orElseThrow(NoSuchDataException::new);
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(NoSuchDataException::new);
     }
 
     private Order findOrderByOrderTableId(Long orderTableId) {
-        return orderRepository.findOrderByOrderTableId(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderRepository.findOrderByOrderTableId(orderTableId).orElseThrow(NoSuchDataException::new);
     }
 }

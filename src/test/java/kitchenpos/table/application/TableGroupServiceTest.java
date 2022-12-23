@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -112,6 +113,7 @@ public class TableGroupServiceTest {
     @Test
     void 단일_테이블로_테이블_그룹_생성() {
         // when & then
+        given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(테이블1));
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId()));
 
         assertThatThrownBy(
@@ -131,7 +133,7 @@ public class TableGroupServiceTest {
 
         assertThatThrownBy(
                 () -> tableGroupService.create(tableGroupRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("비어있지 않은 테이블로 테이블 그룹을 생성한다")
@@ -139,6 +141,7 @@ public class TableGroupServiceTest {
     void 비어_있지_않은_테이블로_테이블_그룹_생성() {
         // given
         OrderTable 테이블4 = 주문테이블(4L, null, 5, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블4));
 
         // when & then
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블4.getId()));

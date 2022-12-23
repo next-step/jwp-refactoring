@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -53,10 +54,10 @@ public class TableService {
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId).orElseThrow(NoSuchDataException::new);
     }
 
     private Order findOrderByOrderTableId(Long orderTableId) {
-        return orderRepository.findOrderByOrderTableId(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderRepository.findOrderByOrderTableId(orderTableId).orElseThrow(NoSuchDataException::new);
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
@@ -142,7 +143,7 @@ public class OrderServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> orderService.create(orderRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("존재하지 않는 메뉴가 있는 주문을 생성한다")
@@ -155,7 +156,7 @@ public class OrderServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> orderService.create(orderRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("주문테이블 정보가 없는 주문을 생성한다")
@@ -169,7 +170,7 @@ public class OrderServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> orderService.create(orderRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("비어있는 주문테이블에 주문을 생성한다")
@@ -196,7 +197,7 @@ public class OrderServiceTest {
         // when & then
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(주문1.getId(), orderRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("완료된 주문의 주문상태를 갱신한다")

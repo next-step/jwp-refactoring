@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import common.exception.NoSuchDataException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -135,14 +136,16 @@ public class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 5, false);
         assertThatThrownBy(
                 () -> tableService.changeEmpty(테이블3.getId(), orderTableRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("테이블그룹이 지정된 테이블의 빈 테이블 여부 값을 갱신한다")
     @Test
     void 테이블그룹_지정된_테이블_빈_테이블_여부_값_갱신() {
         // given
+        Order 주문 = 주문(1L, OrderStatus.COOKING.name(), 테이블4);
         given(orderTableRepository.findById(테이블4.getId())).willReturn(Optional.ofNullable(테이블4));
+        given(orderRepository.findOrderByOrderTableId(any())).willReturn(Optional.ofNullable(주문));
 
         // when & then
         OrderTableRequest orderTableRequest = OrderTableRequest.of(테이블4);
@@ -172,7 +175,10 @@ public class TableServiceTest {
     @Test
     void 음수인_방문한_손님_수_갱신() {
         // when & then
-        OrderTableRequest orderTableRequest = new OrderTableRequest(null, -5, false);
+        OrderTable 테이블5 = 주문테이블(5L, null, -5, false);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블5));
+
+        OrderTableRequest orderTableRequest = new OrderTableRequest(null, 테이블5.getNumberOfGuests(), 테이블5.isEmpty());
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(테이블3.getId(), orderTableRequest)
@@ -190,7 +196,7 @@ public class TableServiceTest {
 
         assertThatThrownBy(
                 () -> tableService.changeNumberOfGuests(테이블3.getId(), orderTableRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchDataException.class);
     }
 
     @DisplayName("빈 테이블의 방문한 손님 수를 갱신한다")
