@@ -88,26 +88,4 @@ class OrderTest {
         assertThat(계산완료.onCookingOrMeal()).isFalse();
     }
 
-    @Test
-    @DisplayName("조리중이거나 식사중일떄는 테이블을 빈 상태로 변경 불가능")
-    void cantEmptyWhenCookingOrMeal(){
-        //given
-        Order 식사중 = new Order(1L, 일번테이블, MEAL.name(), null, Collections.singletonList(주문항목));
-        OrderTable 식사중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(식사중));
-
-        //when & then
-        assertThatThrownBy(() -> 식사중테이블.changeEmpty(true))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("조리중 이거나 식사중에는 테이블을 비울 수 없습니다.");
-
-        //given
-        Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null, Collections.singletonList(주문항목));
-        OrderTable 조리중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(조리중));
-
-        //when & then
-        assertThatThrownBy(() -> 조리중테이블.changeEmpty(true))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("조리중 이거나 식사중에는 테이블을 비울 수 없습니다.");
-    }
-
 }

@@ -47,7 +47,7 @@ public class TableService {
         final int numberOfGuests) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
-
+        savedOrderTable.changeNumberOfGuest(numberOfGuests);
         changeNumberOfGuest(numberOfGuests, savedOrderTable);
 
         return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
