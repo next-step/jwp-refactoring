@@ -24,7 +24,7 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables;
 
@@ -36,6 +36,9 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
         validateTableGroup();
+        for (final OrderTable savedOrderTable : orderTables) {
+            savedOrderTable.setEmpty(false);
+        }
     }
 
     private void validateTableGroup() {

@@ -34,20 +34,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         List<OrderTable> savedOrderTables = getOrderTables(request);
         TableGroup tableGroup = request.toTableGroup(savedOrderTables);
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-        updateOrderTables(savedOrderTables, savedTableGroup.getId());
-
-        savedTableGroup.setOrderTables(savedOrderTables);
-        return TableGroupResponse.from(savedTableGroup);
-    }
-
-    private void updateOrderTables(List<OrderTable> savedOrderTables, Long tableGroupId) {
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
+        return TableGroupResponse.from(tableGroupDao.save(tableGroup));
     }
 
     private List<OrderTable> getOrderTables(TableGroupRequest request) {
