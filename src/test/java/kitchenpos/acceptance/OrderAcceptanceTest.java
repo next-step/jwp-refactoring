@@ -1,10 +1,10 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceUtils.*;
-import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.*;
-import static kitchenpos.acceptance.OrderAcceptanceUtils.*;
-import static kitchenpos.acceptance.ProductAcceptanceUtils.*;
-import static kitchenpos.acceptance.TableAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuGroupAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.OrderAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.ProductAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.TableAcceptanceUtils.*;
 
 import java.math.BigDecimal;
 
@@ -19,7 +19,7 @@ import kitchenpos.menu.ui.response.MenuResponse;
 import kitchenpos.menu.ui.response.ProductResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.ui.response.OrderResponse;
-import kitchenpos.order.ui.response.OrderTableResponse;
+import kitchenpos.table.ui.response.OrderTableResponse;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends AcceptanceTest {

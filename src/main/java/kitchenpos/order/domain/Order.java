@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -30,8 +29,7 @@ public class Order {
 	private Long id;
 
 	@JoinColumn(name = "order_table_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "fk_order_order_table"))
-	@OneToOne(optional = false)
-	private OrderTable orderTable;
+	private long orderTableId;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -48,32 +46,26 @@ public class Order {
 	}
 
 	private Order(
-		OrderTable orderTable,
+		long orderTableId,
 		OrderLineItems orderLineItems
 	) {
-		validate(orderTable, orderLineItems);
-		this.orderTable = orderTable;
+		Assert.notNull(orderLineItems, "주문 항목들은 필수입니다.");
+		Assert.isTrue(orderLineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
+		this.orderTableId = orderTableId;
 		orderLineItems.updateOrder(this);
 		this.orderLineItems = orderLineItems;
 	}
 
-	private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
-		Assert.notNull(orderTable, "주문 테이블은 필수입니다.");
-		Assert.isTrue(orderTable.isFull(), "주문을 하는 테이블은 비어있을 수 없습니다.");
-		Assert.notNull(orderLineItems, "주문 항목들은 필수입니다.");
-		Assert.isTrue(orderLineItems.isNotEmpty(), "주문 항목들이 비어있을 수 없습니다.");
-	}
-
-	public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
-		return new Order(orderTable, orderLineItems);
+	public static Order of(long orderTableId, OrderLineItems orderLineItems) {
+		return new Order(orderTableId, orderLineItems);
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public OrderTable table() {
-		return orderTable;
+	public long orderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus orderStatus() {

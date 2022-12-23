@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +13,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.event.OrderCreatedEvent;
 import kitchenpos.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.ui.request.OrderRequest;
 import kitchenpos.order.ui.request.OrderStatusRequest;
@@ -24,22 +23,27 @@ import kitchenpos.order.ui.response.OrderResponse;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final OrderTableRepository orderTableRepository;
 	private final MenuRepository menuRepository;
+	private final OrderValidator orderValidator;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public OrderService(
 		final OrderRepository orderRepository,
-		final OrderTableRepository orderTableRepository,
-		final MenuRepository menuRepository
+		final MenuRepository menuRepository,
+		final OrderValidator orderValidator,
+		final ApplicationEventPublisher eventPublisher
 	) {
 		this.orderRepository = orderRepository;
-		this.orderTableRepository = orderTableRepository;
 		this.menuRepository = menuRepository;
+		this.orderValidator = orderValidator;
+		this.eventPublisher = eventPublisher;
 	}
 
 	@Transactional
 	public OrderResponse create(final OrderRequest request) {
+		orderValidator.validateCreateOrder(request.getOrderTableId());
 		Order order = orderRepository.save(newOrder(request));
+		eventPublisher.publishEvent(OrderCreatedEvent.from(order));
 		return OrderResponse.from(order);
 	}
 
@@ -58,10 +62,6 @@ public class OrderService {
 		return OrderResponse.from(order);
 	}
 
-	public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList) {
-		return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, asList);
-	}
-
 	private OrderLineItems orderLineItems(List<OrderLineItemRequest> orderLineItems) {
 		return orderLineItems.stream()
 			.map(this::orderLineItem)
@@ -78,12 +78,8 @@ public class OrderService {
 
 	private Order newOrder(OrderRequest request) {
 		return Order.of(
-			orderTable(request.getOrderTableId()),
+			request.getOrderTableId(),
 			orderLineItems(request.getOrderLineItems())
 		);
-	}
-
-	private OrderTable orderTable(long orderTableId) {
-		return orderTableRepository.orderTable(orderTableId);
 	}
 }

@@ -34,7 +34,7 @@ public class OrderResponse {
 	public static OrderResponse from(Order order) {
 		return new OrderResponse(
 			order.getId(),
-			order.table().id(),
+			order.orderTableId(),
 			order.orderStatus().name(),
 			order.orderedTime(),
 			OrderLineItemResponse.listFrom(order.orderLineItems())

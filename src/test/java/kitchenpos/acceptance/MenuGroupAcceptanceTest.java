@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceUtils.*;
+import static kitchenpos.acceptance.utils.MenuGroupAcceptanceUtils.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

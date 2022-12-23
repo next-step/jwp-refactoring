@@ -11,6 +11,10 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.util.Assert;
 
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.TableEmpty;
+import kitchenpos.table.domain.TableGroup;
+
 @Entity
 public class OrderTable {
 	@Id
@@ -94,10 +98,5 @@ public class OrderTable {
 
 	public boolean emptyAndNoGroup() {
 		return isEmpty() && !hasTableGroup();
-	}
-
-
-	public boolean isOrdered() {
-		return false;
 	}
 }

@@ -44,8 +44,6 @@ public class MenuService {
 	public List<MenuResponse> list() {
 		return MenuResponse.listFrom(menuRepository.findAll());
 	}
-
-
 	private Menu newMenu(MenuRequest request) {
 		return Menu.of(
 			request.getName(),
