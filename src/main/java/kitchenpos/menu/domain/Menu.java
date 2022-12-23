@@ -62,8 +62,7 @@ public class Menu {
     public Long getMenuGroupId() {
         return menuGroupId;
     }
-
     public List<MenuProduct> getMenuProducts() {
-        return this.menuProducts.getList();
+        return menuProducts.getList();
     }
 }

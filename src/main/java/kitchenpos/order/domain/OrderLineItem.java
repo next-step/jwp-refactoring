@@ -15,6 +15,7 @@ public class OrderLineItem {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
     private Menu menu;
     private long quantity;
 
