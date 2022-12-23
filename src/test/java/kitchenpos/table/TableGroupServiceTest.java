@@ -4,6 +4,7 @@ import static kitchenpos.order.OrderFixture.주문항목;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.table.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +26,7 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -63,12 +65,14 @@ class TableGroupServiceTest {
     void 단체_지정할_테이블_중_없는_테이블이_있는경우_에러발생() {
         //given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(new OrderTable()));
+        tableGroup.setOrderTables(Arrays.asList(new OrderTable(1L, null, 0, false, null), new OrderTable(2L, null, 0, false, null)));
+        when(orderTableDao.findById(eq(1L))).thenReturn(Optional.of(new OrderTable()));
+        when(orderTableDao.findById(eq(2L))).thenReturn(Optional.empty());
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(from(tableGroup)))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("단체 지정할 테이블 중 존재하지 않는 테이블이 존재 합니다.");
     }
 
     @Test
@@ -76,8 +80,8 @@ class TableGroupServiceTest {
         //given
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
-        when(orderTableDao.findAllByIdIn(any()))
-            .thenReturn(Arrays.asList(new OrderTable(), new OrderTable()));
+        when(orderTableDao.findById(any()))
+            .thenReturn(Optional.of(new OrderTable()));
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(from(tableGroup)))
@@ -107,7 +111,7 @@ class TableGroupServiceTest {
             return Collections.emptyList();
         }
         return orderTables.stream()
-            .map(orderTable -> new OrderTableRequest(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+            .map(orderTable -> new OrderTableRequest(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty()))
             .collect(Collectors.toList());
     }
 

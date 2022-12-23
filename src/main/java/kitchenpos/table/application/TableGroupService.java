@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.TableGroup;
@@ -33,12 +32,10 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        TableGroup tableGroup = request.toTableGroup();
+        List<OrderTable> savedOrderTables = getOrderTables(request);
+        TableGroup tableGroup = request.toTableGroup(savedOrderTables);
         validateTableGroup(tableGroup);
 
-        final List<OrderTable> savedOrderTables = orderTableDao
-            .findAllByIdIn(getOrderTableIds(tableGroup));
-        validateExists(tableGroup, savedOrderTables);
         validateOrderTablesStatus(savedOrderTables);
 
         tableGroup.setCreatedDate(LocalDateTime.now());
@@ -58,12 +55,6 @@ public class TableGroupService {
         }
     }
 
-    private void validateExists(TableGroup tableGroup, List<OrderTable> savedOrderTables) {
-        if (tableGroup.getOrderTables().size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     private void validateOrderTablesStatus(List<OrderTable> orderTables) {
         for (final OrderTable savedOrderTable : orderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
@@ -79,9 +70,9 @@ public class TableGroupService {
         }
     }
 
-    private List<Long> getOrderTableIds(TableGroup tableGroup) {
-        return tableGroup.getOrderTables().stream()
-            .map(OrderTable::getId)
+    private List<OrderTable> getOrderTables(TableGroupRequest request) {
+        return request.getOrderTables().stream()
+            .map(orderTableRequest -> orderTableDao.findById(orderTableRequest.getId()).orElseThrow(() -> new IllegalArgumentException("단체 지정할 테이블 중 존재하지 않는 테이블이 존재 합니다.")))
             .collect(Collectors.toList());
     }
 
