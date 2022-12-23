@@ -22,7 +22,7 @@ public class MenuProductRequest {
     public MenuProduct toMenuProducts(Menu menu, List<Product> products) {
         Optional<Product> target = findProductByProductId(products);
         if (!target.isPresent()) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException();
         }
 
         return new MenuProduct(menu, target.get(), quantity);
