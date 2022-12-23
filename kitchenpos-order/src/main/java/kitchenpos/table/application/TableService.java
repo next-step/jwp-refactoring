@@ -3,10 +3,11 @@ package kitchenpos.table.application;
 import kitchenpos.order.validator.OrderTableValidator;
 import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
-import kitchenpos.order.dto.TableRequest;
-import kitchenpos.order.dto.TableResponse;
+import kitchenpos.table.dto.TableRequest;
+import kitchenpos.table.dto.TableResponse;
 import kitchenpos.table.port.OrderTablePort;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.port.OrderTableValidatorPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 @Transactional
 public class TableService {
     private final OrderTablePort orderTablePort;
-    private final OrderTableValidator orderTableValidator;
+    private final OrderTableValidatorPort orderTableValidatorPort;
 
-    public TableService(final OrderTablePort orderTablePort, final OrderTableValidator orderTableValidator) {
+    public TableService(final OrderTablePort orderTablePort, final OrderTableValidatorPort orderTableValidatorPort) {
         this.orderTablePort = orderTablePort;
-        this.orderTableValidator = orderTableValidator;
+        this.orderTableValidatorPort = orderTableValidatorPort;
     }
 
     public TableResponse create(TableRequest request) {
@@ -43,7 +44,7 @@ public class TableService {
 
     public TableResponse changeEmpty(Long orderTableId, ChangeEmptyRequest request) {
         final OrderTable savedOrderTable = orderTablePort.findById(orderTableId);
-        orderTableValidator.validChangeEmpty(savedOrderTable);
+        orderTableValidatorPort.validChangeEmpty(savedOrderTable);
 
         savedOrderTable.changeEmpty(request.isEmpty());
 
@@ -53,7 +54,7 @@ public class TableService {
     @Transactional
     public TableResponse changeNumberOfGuests(Long orderTableId, ChaneNumberOfGuestRequest request) {
         final OrderTable orderTable = orderTablePort.findById(orderTableId);
-        orderTableValidator.validChangeNumberOfGuest(request.getNumberOfRequest());
+        orderTableValidatorPort.validChangeNumberOfGuest(request.getNumberOfRequest());
 
         orderTable.changeNumberOfGuests(request.getNumberOfRequest());
 

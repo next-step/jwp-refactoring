@@ -3,6 +3,7 @@ package kitchenpos.order.validator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.port.OrderPort;
+import kitchenpos.table.port.OrderTableValidatorPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import static kitchenpos.common.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
 
 @Service
 @Transactional(readOnly = true)
-public class OrderTableValidator {
+public class OrderTableValidator implements OrderTableValidatorPort {
 
     private final OrderPort orderPort;
 
@@ -21,6 +22,7 @@ public class OrderTableValidator {
         this.orderPort = orderPort;
     }
 
+    @Override
     public void validChangeEmpty(OrderTable orderTable) {
         orderPort.findByOrderTableId(orderTable.getId())
                 .forEach(Order::validUngroupable);
@@ -34,6 +36,7 @@ public class OrderTableValidator {
         }
     }
 
+    @Override
     public void validChangeNumberOfGuest(int numberOfGuests) {
         if (numberOfGuests < 0 || Objects.isNull(numberOfGuests)) {
             throw new IllegalArgumentException(GUEST_NOT_NULL_AND_ZERO.getMessage());

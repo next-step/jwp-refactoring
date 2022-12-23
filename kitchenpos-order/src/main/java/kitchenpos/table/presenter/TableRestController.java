@@ -3,8 +3,8 @@ package kitchenpos.table.presenter;
 import kitchenpos.table.application.TableService;
 import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
 import kitchenpos.order.dto.ChangeEmptyRequest;
-import kitchenpos.order.dto.TableRequest;
-import kitchenpos.order.dto.TableResponse;
+import kitchenpos.table.dto.TableRequest;
+import kitchenpos.table.dto.TableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
