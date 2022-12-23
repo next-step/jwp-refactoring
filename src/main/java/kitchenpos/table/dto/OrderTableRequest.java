@@ -38,7 +38,7 @@ public class OrderTableRequest {
     public OrderTable toOrderTable() {
         return new OrderTable(
             id,
-            tableGroupId,
+            null,
             numberOfGuests,
             empty
         );

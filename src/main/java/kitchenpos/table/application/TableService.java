@@ -25,8 +25,6 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
         return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
 
@@ -39,29 +37,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final boolean isEmpty) {
-        final OrderTable orderTable = orderTableDao.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        changeEmpty(orderTable, isEmpty);
-
+        final OrderTable orderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        orderTable.changeEmpty(isEmpty);
         return OrderTableResponse.from(orderTableDao.save(orderTable));
-    }
-
-    private void changeEmpty(final OrderTable savedOrderTable, final boolean isEmpty) {
-        validateOrderTable(savedOrderTable);
-        savedOrderTable.setEmpty(isEmpty);
-    }
-
-    private void validateOrderTable(OrderTable savedOrderTable) {
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-            savedOrderTable.getId(),
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Transactional

@@ -65,6 +65,10 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public boolean onCookingOrMeal(){
+        return OrderStatus.COOKING.name().equals(orderStatus) || OrderStatus.MEAL.name().equals(orderStatus);
+    }
+
     private void validateStatus() {
         if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
             throw new IllegalArgumentException("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
