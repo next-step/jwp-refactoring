@@ -67,7 +67,7 @@ class TableServiceTest {
         orderTable.setNumberOfGuests(-1);
 
         //when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable.getNumberOfGuests()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -77,7 +77,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         //when
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -89,7 +89,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
 
         //when
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -66,11 +66,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
-        final OrderTable orderTable) {
+        final int numberOfGuests) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
-        changeNumberOfGuest(orderTable.getNumberOfGuests(), savedOrderTable);
+        changeNumberOfGuest(numberOfGuests, savedOrderTable);
 
         return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
     }

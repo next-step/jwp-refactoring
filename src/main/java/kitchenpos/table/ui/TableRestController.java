@@ -54,7 +54,7 @@ public class TableRestController {
         @RequestBody final OrderTableRequest request
     ) {
         return ResponseEntity.ok()
-            .body(tableService.changeNumberOfGuests(orderTableId, request.toOrderTable()))
+            .body(tableService.changeNumberOfGuests(orderTableId, request.getNumberOfGuests()))
             ;
     }
 }
