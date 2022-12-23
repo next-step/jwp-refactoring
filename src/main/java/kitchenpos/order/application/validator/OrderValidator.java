@@ -3,10 +3,12 @@ package kitchenpos.order.application.validator;
 import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
 import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
+import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT;
 
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.request.OrderRequest;
@@ -17,14 +19,14 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class OrderValidator {
     private final TableService tableService;
-    private final OrderLineItemsSizeValidator orderLineItemsSizeValidator;
+    private final MenuRepository menuRepository;
 
     public OrderValidator(
             final TableService tableService,
-            final OrderLineItemsSizeValidator orderLineItemsSizeValidator
+            final MenuRepository menuRepository
     ) {
         this.tableService = tableService;
-        this.orderLineItemsSizeValidator = orderLineItemsSizeValidator;
+        this.menuRepository = menuRepository;
     }
 
     public void validateCreate(OrderRequest orderRequest) {
@@ -45,8 +47,14 @@ public class OrderValidator {
         }
     }
 
-    private void validateOrderLineItems(int orderLineItemsSize, List<Long> menuIds){
-        orderLineItemsSizeValidator.validateOrderLineItems(orderLineItemsSize, menuIds);
+    private void validateOrderLineItems(int orderLineItemsSize, List<Long> menuIds) {
+        if (orderLineItemsSize != getMenuCount(menuIds)) {
+            throw new KitchenposException(NOT_SAME_BETWEEN_ORDER_LINE_ITEMS_AND_MENU_COUNT);
+        }
+    }
+
+    private int getMenuCount(List<Long> menuIds){
+        return menuRepository.countByIdIn(menuIds);
     }
 
     public static void isCompletionOrderStatus(OrderStatus orderStatus) {
