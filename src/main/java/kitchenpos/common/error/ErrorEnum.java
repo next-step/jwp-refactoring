@@ -12,6 +12,8 @@ public enum ErrorEnum {
     NOT_PAYMENT_ORDER("계산 완료된 주문이 아닙니다."),
     ORDER_COMPLETION_STATUS_NOT_CHANGE("계산이 완료된 주문은 변경할 수 없습니다."),
     NOT_EXISTS_ORDER_TABLE("존재하지 않는 주문 테이블입니다."),
+    NOT_EXISTS_MENU("존재하지 않는 메뉴입니다."),
+    REQUIRED_MENU("메뉴가 필수로 지정되어야 합니다."),
     NOT_EXISTS_TABLE_GROUP("단체 그룹이 존재하지 않습니다."),
     NOT_EXISTS_ORDER_TABLE_LIST("주문 테이블 목록에 주문 테이블이 없습니다."),
     EXISTS_NOT_EMPTY_ORDER_TABLE("빈 상태가 아닌 주문테이블이 존재합니다."),

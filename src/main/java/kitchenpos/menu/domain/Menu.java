@@ -79,4 +79,12 @@ public class Menu {
             throw new IllegalArgumentException(ErrorEnum.MENU_PRICE_OVER_TOTAL_PRICE.message());
         }
     }
+
+    public void create(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct) {
+        this.menuProducts.addMenuProduct(this, menuProduct);
+    }
 }

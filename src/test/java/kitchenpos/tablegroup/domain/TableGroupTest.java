@@ -17,11 +17,10 @@ public class TableGroupTest {
     @Test
     void 단체_지정된_테이블을_해제할_수_있다() {
         // given
-        Order order1 = createCompleteOrder();
-        Order order2 = createCompleteOrder();
-
-        OrderTable firstOrderTable = order1.getOrderTable();
-        OrderTable secondOrderTable = order2.getOrderTable();
+        Order order1 = createOrder(OrderStatus.COMPLETION);
+        Order order2 = createOrder(OrderStatus.COMPLETION);
+        OrderTable firstOrderTable = new OrderTable(new NumberOfGuests(4), false);
+        OrderTable secondOrderTable = new OrderTable(new NumberOfGuests(4), false);
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
@@ -38,8 +37,8 @@ public class TableGroupTest {
     @Test
     void 단체_지정된_테이블을_해제할_때_주문상태가_결제완료가_아니면_예외를_발생한다() {
         // given
-        Order firstOrder = createCompleteOrder();
-        Order secondOrder = createCompleteOrder();
+        Order firstOrder = createOrder(OrderStatus.MEAL);
+        Order secondOrder = createOrder(OrderStatus.MEAL);
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         firstOrder.setOrderStatus(OrderStatus.MEAL);
@@ -50,16 +49,10 @@ public class TableGroupTest {
                 .hasMessageContaining(ErrorEnum.NOT_PAYMENT_ORDER.message());
     }
 
-    public static Order createCompleteOrder() {
+    public static Order createOrder(OrderStatus orderStatus) {
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
-        orderTable.updateEmpty(true);
-        return order;
-    }
-
-    public static Order createMealOrder() {
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
+        Order order = Order.of(orderTable.getId(), null);
+        order.setOrderStatus(orderStatus);
         orderTable.updateEmpty(true);
         return order;
     }

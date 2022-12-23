@@ -3,16 +3,17 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
@@ -24,12 +25,12 @@ import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.UpdateOrderStatusRequest;
+import kitchenpos.order.dto.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -84,9 +85,9 @@ public class OrderServiceTest {
         치킨_두마리_요청 = MenuProductRequest.of(치킨.getId(), 1L);
         스파게티_이인분_요청 = MenuProductRequest.of(스파게티.getId(), 1L);
 
-        주문_테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
-        주문_항목 = new OrderLineItem(new Quantity(1L), OrderMenu.of(치킨_스파게티_더블세트_메뉴));
-        주문 = new Order(주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
+        주문_테이블 = new OrderTable(1L, new NumberOfGuests(1), false);
+        주문_항목 = OrderLineItem.of(OrderMenu.of(치킨_스파게티_더블세트_메뉴), 1L);
+        주문 = new Order(1L, 주문_테이블.getId(), new OrderLineItems(Arrays.asList(주문_항목)));
         주문.addOrderLineItem(주문_항목);
         주문_항목_요청 = OrderLineItemRequest.of(치킨_스파게티_더블세트_메뉴.getMenuGroup().getId(), 1L);
 
@@ -99,10 +100,10 @@ public class OrderServiceTest {
 
     @Test
     void 주문을_등록할_수_있다() {
-        when(menuRepository.findAllById(menuIds)).thenReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴));
-        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문_테이블));
-        when(orderRepository.save(주문)).thenReturn(주문);
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
+        when(menuRepository.findAllById(request.findAllMenuIds())).thenReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴));
+        when(orderTableRepository.findById(주문.getId())).thenReturn(Optional.of(주문_테이블));
+        when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
         OrderResponse result = orderService.create(request);
 
@@ -116,7 +117,7 @@ public class OrderServiceTest {
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -126,7 +127,7 @@ public class OrderServiceTest {
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(notExistsOrderItem));
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -134,7 +135,8 @@ public class OrderServiceTest {
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(ErrorEnum.NOT_EXISTS_ORDER_TABLE.message());
     }
 
     @Test
@@ -143,7 +145,7 @@ public class OrderServiceTest {
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -160,8 +162,8 @@ public class OrderServiceTest {
 
     @Test
     void 주문_상태를_변경할_수_있다() {
-        OrderStatus expectedOrderStatus = OrderStatus.MEAL;
-        UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(expectedOrderStatus.name());
+        kitchenpos.order.domain.OrderStatus expectedOrderStatus = kitchenpos.order.domain.OrderStatus.MEAL;
+        OrderStatus request = OrderStatus.of(expectedOrderStatus.name());
         given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
         given(orderRepository.save(주문)).willReturn(주문);
 
@@ -175,20 +177,20 @@ public class OrderServiceTest {
 
     @Test
     void 등록되지_않은_주문_상태를_변경할_수_없다() {
-        UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(OrderStatus.COOKING.name());
+        OrderStatus request = OrderStatus.of(kitchenpos.order.domain.OrderStatus.COOKING.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(ErrorEnum.ORDER_TABLE_NOT_FOUND.message());
     }
 
     @Test
     void 계산_완료된_주문은_상태를_변경할_수_없다() {
         given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
 
-        주문.setOrderStatus(OrderStatus.COMPLETION);
-        UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(주문.getOrderStatus().name());
+        주문.setOrderStatus(kitchenpos.order.domain.OrderStatus.COMPLETION);
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), request))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), OrderStatus.of(주문.getOrderStatus().name())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.ORDER_COMPLETION_STATUS_NOT_CHANGE.message());
     }

@@ -14,6 +14,14 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
     public static OrderTableRequest of(int numberOfGuests, boolean empty) {
         return new OrderTableRequest(numberOfGuests, empty);
     }
@@ -22,5 +30,4 @@ public class OrderTableRequest {
         OrderTable orderTable = new OrderTable(new NumberOfGuests(numberOfGuests), empty);
         return orderTable;
     }
-
 }

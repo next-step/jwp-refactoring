@@ -21,6 +21,9 @@ public class OrderLineItems {
         validate(orderLineItems);
         this.orderLineItems = new ArrayList<>(orderLineItems);
     }
+    public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+        return new OrderLineItems(orderLineItems);
+    }
 
     private void validate(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {

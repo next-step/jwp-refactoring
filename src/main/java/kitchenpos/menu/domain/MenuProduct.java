@@ -44,6 +44,13 @@ public class MenuProduct {
         return price.multiply(BigDecimal.valueOf(quantity.value()));
     }
 
+    public void updateMenu(Menu menu) {
+        if (this.menu != menu) {
+            this.menu = menu;
+            menu.addMenuProduct(this);
+        }
+    }
+
     public Long getSeq() {
         return seq;
     }

@@ -112,7 +112,8 @@ public class TableServiceTest {
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
         OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
+        Order order = Order.of(orderTable.getId(), null);
+        order.setOrderStatus(OrderStatus.MEAL);
         UpdateEmptyRequest request = UpdateEmptyRequest.of(firstTable.isEmpty());
         given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
         given(orderRepository.findAllByOrderTableId(orderTable.getId())).willReturn(Arrays.asList(order));

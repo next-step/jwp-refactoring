@@ -2,21 +2,23 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.UpdateOrderStatusRequest;
+import kitchenpos.order.dto.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
@@ -36,33 +38,17 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
+        final List<OrderLineItemRequest> orderLineItemRequests = request.getOrderLineItems();
+        List<OrderLineItem> orderLineItems = orderLineItemByMenuId(orderLineItemRequests);
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
-
-        List<OrderMenu> menus = menuRepository.findAllById(menuIds).stream()
-                .map(OrderMenu::of)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menus.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
+        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
+                .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.NOT_EXISTS_ORDER_TABLE.message()));
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
         }
+        Order order = Order.of(orderTable.getId(), OrderLineItems.of(orderLineItems));
 
-        final Order savedOrder = orderRepository.save(request.createOrder(orderTable, menus));
-        return OrderResponse.from(savedOrder);
+        return OrderResponse.from(orderRepository.save(order));
     }
 
     public List<OrderResponse> findAll() {
@@ -72,18 +58,20 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    private List<OrderLineItem> orderLineItemByMenuId(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(orderLineItemRequest -> {
+                    Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
+                            .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.NOT_EXISTS_MENU.message()));
+                    return orderLineItemRequest.toOrderLineItem(OrderMenu.of(menu));
+                }).collect(Collectors.toList());
+    }
+
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final UpdateOrderStatusRequest request) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrder.isCompletion()) {
-            throw new IllegalArgumentException(ErrorEnum.ORDER_COMPLETION_STATUS_NOT_CHANGE.message());
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus().name());
-        savedOrder.setOrderStatus(orderStatus);
-
-        return OrderResponse.from(orderRepository.save(savedOrder));
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus request) {
+        final Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.ORDER_TABLE_NOT_FOUND.message()));
+        order.setOrderStatus(request.getOrderStatus());
+        return OrderResponse.from(orderRepository.save(order));
     }
 }

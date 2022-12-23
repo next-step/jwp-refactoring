@@ -39,6 +39,9 @@ public class OrderTable {
         if (isEmpty()) {
             throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
         }
+        if (numberOfGuests.value() < 0) {
+            throw new IllegalArgumentException(ErrorEnum.GUESTS_UNDER_ZERO.message());
+        }
     }
 
     private void validateHasTableGroup() {

@@ -1,5 +1,7 @@
 package kitchenpos.order.dto;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,12 +36,9 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order createOrder(OrderTable orderTable, List<OrderMenu> menus) {
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
-        List<OrderLineItem> orderLineItems = getOrderLineItems().stream()
-                .map(item -> item.createOrderLineItem(menus))
-                .collect(Collectors.toList());
-        order.setOrderLineItems(new OrderLineItems(orderLineItems));
-        return order;
+    public List<Long> findAllMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(toList());
     }
 }

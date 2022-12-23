@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.error.ErrorEnum;
 
 @Entity
 public class OrderLineItem {
@@ -34,15 +36,35 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Quantity quantity, OrderMenu menu) {
-        this.seq = seq;
-        this.quantity = quantity;
+    public OrderLineItem(Order order, OrderMenu menu, Quantity quantity) {
+        if (Objects.isNull(order)) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
+        }
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException(ErrorEnum.REQUIRED_MENU.message());
+        }
+        if (quantity.value() < 0) {
+            throw new IllegalArgumentException(ErrorEnum.QUANTITY_UNDER_ZERO.message());
+        }
+
+        updateOrder(order);
+        this.order = order;
         this.menu = menu;
+        this.quantity = quantity;
+    }
+    private OrderLineItem(Long seq, Order order, OrderMenu menu, Quantity quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
     }
 
-    public OrderLineItem(Quantity quantity, OrderMenu menu) {
-        this.quantity = quantity;
-        this.menu = menu;
+    public static OrderLineItem of(OrderMenu menu, long quantity) {
+        return new OrderLineItem(null, null, menu, new Quantity(quantity));
+    }
+
+    public void updateOrder(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {

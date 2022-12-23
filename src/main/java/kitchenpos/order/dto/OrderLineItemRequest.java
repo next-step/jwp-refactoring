@@ -26,7 +26,11 @@ public class OrderLineItemRequest {
                 .findFirst()
                 .get();
 
-        return new OrderLineItem(new Quantity(quantity), menu);
+        return OrderLineItem.of(menu, quantity);
+    }
+
+    public OrderLineItem toOrderLineItem(OrderMenu menu) {
+        return OrderLineItem.of(menu, quantity);
     }
 
     public Long getMenuId() {

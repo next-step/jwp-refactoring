@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -138,8 +139,8 @@ public class TableGroupServiceTest {
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_그룹을_해제할_수_없다() {
         // given
-        Order firstOrder = TableGroupTest.createMealOrder();
-        Order secondOrder = TableGroupTest.createMealOrder();
+        Order firstOrder = TableGroupTest.createOrder(OrderStatus.MEAL);
+        Order secondOrder = TableGroupTest.createOrder(OrderStatus.MEAL);
 
         when(tableGroupRepository.findById(any(Long.class))).thenReturn(Optional.of(tableGroup));
         when(orderTableRepository.findAllByTableGroupId(any(Long.class))).thenReturn(orderTables.getOrderTables());

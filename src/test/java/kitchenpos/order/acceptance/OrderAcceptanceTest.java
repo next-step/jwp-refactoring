@@ -11,7 +11,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +29,10 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderMenu;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.UpdateOrderStatusRequest;
+import kitchenpos.order.dto.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.dto.ProductRequest;
@@ -81,11 +79,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(순살치킨상품, 후라이드치킨상품)
         )).as(MenuResponse.class);
 
-        주문테이블 = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(0), false))
-                .as(OrderTable.class);
-        두마리치킨세트_주문 = new OrderLineItem(null, new Quantity(1L), OrderMenu.of(순살치킨메뉴));
+        주문테이블 = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(0), false)).as(OrderTable.class);
+
         두마리치킨세트_요청 = OrderLineItemRequest.of(두마리치킨세트_응답.getId(), 1L);
-        주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(두마리치킨세트_주문)));
+        OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(두마리치킨세트_요청));
+        Order 주문_응답 = 주문_생성_요청(request).as(Order.class);
+        두마리치킨세트_주문 = new OrderLineItem(주문, OrderMenu.of(순살치킨메뉴), new Quantity(1L));
+        //주문 = Order.of(주문테이블.getId(), new OrderLineItems(Arrays.asList(두마리치킨세트_주문)));
     }
 
     @Test
@@ -114,10 +114,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void 주문_상태를_수정할_수_있다() {
         // given
-        OrderStatus expectedOrderStatus = OrderStatus.MEAL;
+        kitchenpos.order.domain.OrderStatus expectedOrderStatus = kitchenpos.order.domain.OrderStatus.MEAL;
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(두마리치킨세트_요청));
         OrderResponse 생성된_주문 = 주문_생성_요청(request).as(OrderResponse.class);
-        UpdateOrderStatusRequest updateRequest = UpdateOrderStatusRequest.of(OrderStatus.MEAL.name());
+        OrderStatus updateRequest = OrderStatus.of(kitchenpos.order.domain.OrderStatus.MEAL.name());
 
         // when
         ExtractableResponse<Response> response = 주문_상태_수정_요청(생성된_주문.getId(), updateRequest);
@@ -145,7 +145,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, UpdateOrderStatusRequest request) {
+    private ExtractableResponse<Response> 주문_상태_수정_요청(long id, OrderStatus request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

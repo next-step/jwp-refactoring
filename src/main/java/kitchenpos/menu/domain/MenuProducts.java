@@ -35,4 +35,11 @@ public class MenuProducts {
     public void setMenu(Menu menu) {
         this.get().forEach(menuProduct -> menuProduct.setMenu(menu));
     }
+
+    public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
+        if (!menuProducts.contains(menuProduct)) {
+            this.menuProducts.add(menuProduct);
+            menuProduct.updateMenu(menu);
+        }
+    }
 }
