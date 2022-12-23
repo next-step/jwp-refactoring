@@ -35,8 +35,6 @@ public class TableGroupService {
         List<OrderTable> savedOrderTables = getOrderTables(request);
         TableGroup tableGroup = request.toTableGroup(savedOrderTables);
 
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
         updateOrderTables(savedOrderTables, savedTableGroup.getId());
 

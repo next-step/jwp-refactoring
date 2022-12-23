@@ -31,10 +31,9 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate,
-        List<OrderTable> orderTables) {
+    public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
-        this.createdDate = createdDate;
+        this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
         validateTableGroup();
     }
@@ -61,10 +60,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {

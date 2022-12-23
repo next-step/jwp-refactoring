@@ -30,7 +30,6 @@ public class TableGroupRequest {
     public TableGroup toTableGroup(List<OrderTable> orderTables) {
         return new TableGroup(
             id,
-            createdDate,
             orderTables
         );
     }

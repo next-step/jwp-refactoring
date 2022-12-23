@@ -23,9 +23,9 @@ class TableGroupTest {
     void cannotUngroupWhenOrderOnMealOrCooking(){
         //given
         Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null, Collections.singletonList(주문항목));
-        OrderTable 조리중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(조리중));
-        OrderTable 조리중테이블2 = new OrderTable(2L, null, 0, false, Collections.singletonList(조리중));
-        TableGroup 조리중테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(조리중테이블, 조리중테이블2));
+        OrderTable 조리중테이블 = new OrderTable(1L, null, 0, true, Collections.singletonList(조리중));
+        OrderTable 조리중테이블2 = new OrderTable(2L, null, 0, true, Collections.singletonList(조리중));
+        TableGroup 조리중테이블그룹 = new TableGroup(1L, Arrays.asList(조리중테이블, 조리중테이블2));
 
         //when & then
         assertThatThrownBy(() -> 조리중테이블그룹.ungroup())
@@ -34,9 +34,9 @@ class TableGroupTest {
 
         //given
         Order 식사중 = new Order(1L, 일번테이블, MEAL.name(), null, Collections.singletonList(주문항목));
-        OrderTable 식사중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(식사중));
-        OrderTable 식사중테이블2 = new OrderTable(2L, null, 0, false, Collections.singletonList(식사중));
-        TableGroup 식사중테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(식사중테이블, 식사중테이블2));
+        OrderTable 식사중테이블 = new OrderTable(1L, null, 0, true, Collections.singletonList(식사중));
+        OrderTable 식사중테이블2 = new OrderTable(2L, null, 0, true, Collections.singletonList(식사중));
+        TableGroup 식사중테이블그룹 = new TableGroup(1L, Arrays.asList(식사중테이블, 식사중테이블2));
 
         //when & then
         assertThatThrownBy(() -> 식사중테이블그룹.ungroup())
@@ -52,14 +52,14 @@ class TableGroupTest {
         OrderTable 테이블2 = new OrderTable(2L, null, 0, true, Collections.emptyList());
 
         //when & then
-        new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블, 테이블2));
+        new TableGroup(1L, Arrays.asList(테이블, 테이블2));
     }
 
     @Test
     @DisplayName("단체 지정할 테이블이 없거나 2 미만일 경우 단체 지정 실패")
     void groupFailWhenTableEmptyOrLessThan2(){
         //when & then
-        assertThatThrownBy(() -> new TableGroup(1L, LocalDateTime.now(), Collections.emptyList()))
+        assertThatThrownBy(() -> new TableGroup(1L, Collections.emptyList()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
         //given
@@ -67,7 +67,7 @@ class TableGroupTest {
         OrderTable 식사중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(식사중));
 
         //when
-        assertThatThrownBy(() -> new TableGroup(1L, LocalDateTime.now(), Collections.singletonList(식사중테이블)))
+        assertThatThrownBy(() -> new TableGroup(1L, Collections.singletonList(식사중테이블)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
     }
@@ -80,7 +80,7 @@ class TableGroupTest {
         OrderTable 테이블2 = new OrderTable(2L, null, 0, true, Collections.emptyList());
 
         //when & then
-        assertThatThrownBy(() -> new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블, 테이블2)))
+        assertThatThrownBy(() -> new TableGroup(1L, Arrays.asList(테이블, 테이블2)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
 
@@ -89,7 +89,7 @@ class TableGroupTest {
         OrderTable 테이블4 = new OrderTable(4L, 1L, 0, true, Collections.emptyList());
 
         //when & then
-        assertThatThrownBy(() -> new TableGroup(2L, LocalDateTime.now(), Arrays.asList(테이블3, 테이블4)))
+        assertThatThrownBy(() -> new TableGroup(2L, Arrays.asList(테이블3, 테이블4)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
     }

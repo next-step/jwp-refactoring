@@ -92,9 +92,9 @@ class TableGroupServiceTest {
     void 단체_지정_해제_하려는_주문_테이블_상태가_조리_식사_라면_에러발생() {
         //given
         Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null, Collections.singletonList(주문항목));
-        OrderTable 조리중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(조리중));
-        OrderTable 조리중테이블2 = new OrderTable(2L, null, 0, false, Collections.singletonList(조리중));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(조리중테이블, 조리중테이블2));
+        OrderTable 조리중테이블 = new OrderTable(1L, null, 0, true, Collections.singletonList(조리중));
+        OrderTable 조리중테이블2 = new OrderTable(2L, null, 0, true, Collections.singletonList(조리중));
+        TableGroup tableGroup = new TableGroup(1L, Arrays.asList(조리중테이블, 조리중테이블2));
         when(tableGroupDao.findById(any())).thenReturn(Optional.of(tableGroup));
 
         //when & then
