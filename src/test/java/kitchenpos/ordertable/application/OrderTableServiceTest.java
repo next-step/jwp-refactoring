@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.common.domain.Price;
+import common.domain.Price;
 import kitchenpos.order.fixture.OrderLineItemTestFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;

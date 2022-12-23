@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import product.domain.Product;
 
 import java.math.BigDecimal;
 

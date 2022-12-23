@@ -1,8 +1,8 @@
 package kitchenpos.menu.fixture;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
+import menu.domain.Menu;
+import menu.domain.MenuProduct;
+import menu.dto.MenuProductRequest;
 
 import static kitchenpos.product.fixture.ProductTestFixture.*;
 

@@ -3,7 +3,7 @@ package kitchenpos.menugroup.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.common.acceptance.AcceptanceTest;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
+import menugroup.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

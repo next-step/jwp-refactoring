@@ -1,18 +1,14 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.common.domain.Price;
+import common.domain.Price;
 import kitchenpos.order.fixture.OrderLineItemTestFixture;
 import kitchenpos.tablegroup.fixture.TableGroupTestFixture;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.repository.TableGroupRepository;
+import order.domain.Order;
+import order.domain.OrderLineItem;
+import order.repository.OrderRepository;
+import order.validator.OrderValidator;
+import ordertable.domain.OrderTable;
+import ordertable.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +16,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tablegroup.application.TableGroupService;
+import tablegroup.domain.TableGroup;
+import tablegroup.dto.TableGroupRequest;
+import tablegroup.dto.TableGroupResponse;
+import tablegroup.repository.TableGroupRepository;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

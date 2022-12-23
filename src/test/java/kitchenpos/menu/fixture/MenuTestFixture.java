@@ -1,11 +1,11 @@
 package kitchenpos.menu.fixture;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Product;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
+import menu.domain.Menu;
+import menu.domain.MenuProduct;
+import menu.domain.MenuProducts;
+import product.domain.Product;
+import menu.dto.MenuProductRequest;
+import menu.dto.MenuRequest;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;

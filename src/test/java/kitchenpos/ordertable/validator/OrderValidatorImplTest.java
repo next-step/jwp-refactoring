@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.validator;
 
-import kitchenpos.common.ErrorMessage;
+import common.ErrorMessage;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
