@@ -3,8 +3,17 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.*;
-import kitchenpos.dto.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.*;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.domain.ProductPrice;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,19 +41,24 @@ class MenuRestControllerTest extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
+        Product productA = new Product(new ProductPrice(BigDecimal.valueOf(3_000)), "후라이드치킨");
+        Product productB = new Product(new ProductPrice(BigDecimal.valueOf(2_000)), "제로콜라");
         후라이드치킨 = 상품을_등록한다(new ProductRequest("후라이드치킨", BigDecimal.valueOf(3_000))).as(ProductResponse.class);
         제로콜라 = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
 
         치킨 = 메뉴그룹을_생성한다(new MenuGroupRequest("치킨")).as(MenuGroupResponse.class);
-        후치콜세트 = new Menu("후치콜세트", new Price(BigDecimal.valueOf(5_000)), new MenuGroup("치킨"));
 
-        후라이드_이인분 = new MenuProduct(1L, 후치콜세트, new Product(new Price(BigDecimal.valueOf(3_000)), "후라이드치킨"), 2);
-        제로콜라_삼인분 = new MenuProduct(2L, 후치콜세트, new Product(new Price(BigDecimal.valueOf(2_000)), "제로콜라"), 3);
+        MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(productA.getId(), 2L), new MenuProduct(productB.getId(), 2L)));
 
-        MenuProductRequest productA = new MenuProductRequest(후라이드_이인분.getSeq(), 후라이드_이인분.getQuantity());
-        MenuProductRequest productB = new MenuProductRequest(제로콜라_삼인분.getSeq(), 제로콜라_삼인분.getQuantity());
+        후치콜세트 = new Menu("후치콜세트", new MenuPrice(BigDecimal.valueOf(10_000)), 치킨.getId(), menuProducts);
 
-        메뉴요청 = new MenuRequest(후치콜세트.getName(), 후치콜세트.getPrice().getPrice(), 치킨.getId(), Arrays.asList(productA, productB));
+        후라이드_이인분 = new MenuProduct(1L, new Product(new ProductPrice(BigDecimal.valueOf(3_000)), "후라이드치킨").getId(), 2L);
+        제로콜라_삼인분 = new MenuProduct(2L, new Product(new ProductPrice(BigDecimal.valueOf(2_000)), "제로콜라").getId(), 3L);
+
+        MenuProductRequest productRequestA = new MenuProductRequest(후라이드_이인분.getSeq(), 후라이드_이인분.getQuantity());
+        MenuProductRequest productRequestB = new MenuProductRequest(제로콜라_삼인분.getSeq(), 제로콜라_삼인분.getQuantity());
+
+        메뉴요청 = new MenuRequest(후치콜세트.getName(), 후치콜세트.getPrice().getPrice(), 치킨.getId(), Arrays.asList(productRequestA, productRequestB));
     }
 
     @Test
