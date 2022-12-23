@@ -47,7 +47,7 @@ project(':kitchenpos-common') {
 project(':kitchenpos-product') {
     dependencies {
         compile project(':kitchenpos-common')
-        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-application').sourceSets.test.output
     }
 }
 
@@ -55,7 +55,7 @@ project(':kitchenpos-menu') {
     dependencies {
         compile project(':kitchenpos-common')
         compile project(':kitchenpos-product')
-        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-application').sourceSets.test.output
     }
 }
 
@@ -63,7 +63,7 @@ project(':kitchenpos-order') {
     dependencies {
         compile project(':kitchenpos-common')
         compile project(':kitchenpos-menu')
-        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-application').sourceSets.test.output
         testCompile project(':kitchenpos-table')
     }
 }
@@ -73,6 +73,16 @@ project(':kitchenpos-table') {
         compile project(':kitchenpos-common')
         compile project(':kitchenpos-order')
         compile project(':kitchenpos-menu')
-        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-application').sourceSets.test.output
+    }
+}
+
+project(':kitchenpos-application') {
+    dependencies {
+        compile project(':kitchenpos-common')
+        compile project(':kitchenpos-order')
+        compile project(':kitchenpos-menu')
+        compile project(':kitchenpos-product')
+        compile project(':kitchenpos-table')
     }
 }

@@ -3,4 +3,5 @@ include 'kitchenpos-common',
         'kitchenpos-menu',
         'kitchenpos-order',
         'kitchenpos-product',
-        'kitchenpos-table'
+        'kitchenpos-table',
+        'kitchenpos-application'
