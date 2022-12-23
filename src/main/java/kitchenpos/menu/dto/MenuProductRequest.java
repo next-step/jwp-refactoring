@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MenuProductRequest {
 
@@ -19,14 +20,18 @@ public class MenuProductRequest {
     }
 
     public MenuProduct toMenuProducts(Menu menu, List<Product> products) {
-        Product target = findProductByProductId(products);
-        return new MenuProduct(menu, target, quantity);
+        Optional<Product> target = findProductByProductId(products);
+        if (!target.isPresent()) {
+            throw new RuntimeException();
+        }
+
+        return new MenuProduct(menu, target.get(), quantity);
     }
 
-    private Product findProductByProductId(List<Product> products) {
+    private Optional<Product> findProductByProductId(List<Product> products) {
         return products.stream()
                 .filter(product -> product.getId().equals(productId))
-                .findFirst().get();
+                .findFirst();
     }
 
     public Long getProductId() {
