@@ -30,7 +30,9 @@ public class OrderLineItems {
             throw new IllegalArgumentException(ErrorEnum.ORDER_LINE_ITEMS_IS_EMPTY.message());
         }
     }
-
+    public void updateOrder(Order order) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
+    }
     public void setOrder(final Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
     }

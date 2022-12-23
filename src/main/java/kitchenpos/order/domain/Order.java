@@ -28,11 +28,19 @@ public class Order {
     protected Order() {}
 
     public Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        if (orderTableId == null) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_NOT_FOUND.message());
+        }
+        orderLineItems.updateOrder(this);
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
+    }
+
+    public static Order of(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(id, orderTableId, orderLineItems);
     }
 
     public static Order of(Long orderTableId, OrderLineItems orderLineItems) {

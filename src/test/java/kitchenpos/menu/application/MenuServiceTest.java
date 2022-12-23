@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menu.domain.Menu;
@@ -62,13 +61,15 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         양식 = new MenuGroup(1L, new Name("양식"));
-        양념치킨 = new Product(1L, new Name("양념치킨"), new Price(BigDecimal.valueOf(20_000)));
-        스파게티 = new Product(2L, new Name("스파게티"), new Price(BigDecimal.valueOf(10_000)));
-        양념치킨_두마리_세트 = new Menu(1L, new Name("양념치킨_두마리_세트"), new Price(BigDecimal.valueOf(40_000)), 양식);
-        스파게티_이인분_세트 = new Menu(2L, new Name("양념치킨_두마리_세트"), new Price(BigDecimal.valueOf(40_000)), 양식);
+        양념치킨 = new Product(1L, "양념치킨", 20_000L);
+        스파게티 = new Product(2L, "스파게티", 10_000L);
 
-        치킨_두마리 = new MenuProduct(1L, new Quantity(2L), 양념치킨_두마리_세트, 양념치킨);
-        스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), 스파게티_이인분_세트, 스파게티);
+        치킨_두마리 = new MenuProduct(1L, new Quantity(2L), null, 양념치킨);
+        스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), null, 스파게티);
+        List<MenuProduct> menuProducts = Arrays.asList(치킨_두마리, 스파게티_이인분);
+
+        양념치킨_두마리_세트 = Menu.of(1L, "양념치킨_두마리_세트", BigDecimal.valueOf(40_000L), 양식.getId(), menuProducts);
+        스파게티_이인분_세트 = Menu.of(2L, "양념치킨_두마리_세트", BigDecimal.valueOf(40_000L), 양식.getId(), menuProducts);
     }
 
     @Test
@@ -77,9 +78,11 @@ class MenuServiceTest {
                 .stream()
                 .map(MenuProductRequest::from)
                 .collect(Collectors.toList());
+
         MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of(양념치킨.getName().value(), 양념치킨.getPrice().value(), 양식.getId(), menuProductRequests);
         given(menuGroupRepository.findById(치킨_스파게티_더블세트_메뉴.getMenuGroupId())).willReturn(Optional.of(양식));
-        when(productRepository.findAllById(anyList())).thenReturn(Arrays.asList(양념치킨, 스파게티));
+        when(productRepository.findById(양념치킨.getId())).thenReturn(Optional.of(양념치킨));
+        when(productRepository.findById(스파게티.getId())).thenReturn(Optional.of(스파게티));
         given(menuRepository.save(any())).willReturn(양념치킨_두마리_세트);
 
         MenuResponse result = menuService.create(치킨_스파게티_더블세트_메뉴);

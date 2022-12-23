@@ -6,18 +6,27 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupTest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -50,6 +59,12 @@ public class TableGroupServiceTest {
     private OrderTable firstTable;
     private OrderTable secondTable;
     private OrderTables orderTables;
+    private Order order;
+    private OrderLineItemRequest 후라이드치킨주문요청;
+    private MenuGroup 치킨단품;
+    private MenuProduct 치킨상품;
+    private Menu 후라이드치킨;
+    private Product 치킨;
 
     @BeforeEach
     void setUp() {
@@ -58,6 +73,12 @@ public class TableGroupServiceTest {
         secondTable = new OrderTable(2L, new NumberOfGuests(0), true);
         orderTables = OrderTables.of(Arrays.asList(firstTable, secondTable));
         orderTables.group(tableGroup.getId());
+        치킨 = Product.of(1L, "치킨", 15_000L);
+        치킨상품 = MenuProduct.of(치킨, 1L);
+        치킨단품 = MenuGroup.of(1L, "치킨단품");
+        후라이드치킨 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(15_000L), 치킨단품.getId(), Collections.singletonList(치킨상품));
+        후라이드치킨주문요청 = new OrderLineItemRequest(후라이드치킨.getId(), 2L);
+        order = Order.of(secondTable.getId(), OrderLineItems.of(Collections.singletonList(후라이드치킨주문요청.toOrderLineItem(OrderMenu.of(후라이드치킨)))));
     }
 
     @Test
@@ -138,14 +159,11 @@ public class TableGroupServiceTest {
 
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_그룹을_해제할_수_없다() {
-        // given
-        Order firstOrder = TableGroupTest.createOrder(OrderStatus.MEAL);
-        Order secondOrder = TableGroupTest.createOrder(OrderStatus.MEAL);
-
-        when(tableGroupRepository.findById(any(Long.class))).thenReturn(Optional.of(tableGroup));
-        when(orderTableRepository.findAllByTableGroupId(any(Long.class))).thenReturn(orderTables.getOrderTables());
-        when(orderRepository.findAllByOrderTableIdIn(orderTables.getOrderTableIds()))
-                .thenReturn(Arrays.asList(firstOrder, secondOrder));
+        TableGroup 단체 = TableGroup.of(1L);
+        order.setOrderStatus(OrderStatus.MEAL);
+        when(tableGroupRepository.findById(단체.getId())).thenReturn(Optional.of(단체));
+        when(orderTableRepository.findAllByTableGroupId(단체.getId())).thenReturn(Arrays.asList(firstTable, secondTable));
+        when(orderRepository.findAllByOrderTableIdIn(Arrays.asList(firstTable.getId(), secondTable.getId()))).thenReturn(Collections.singletonList(order));
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))

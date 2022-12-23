@@ -7,14 +7,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -24,6 +29,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.dto.UpdateEmptyRequest;
 import kitchenpos.ordertable.dto.UpdateNumberOfGuestsRequest;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,18 +54,29 @@ public class TableServiceTest {
     private OrderTable firstTable;
     private OrderTable secondTable;
     private TableGroup tableGroup;
+    private Product 후라이드치킨;
+    private MenuProduct 후라이드치킨상품;
+    private MenuGroup 치킨단품;
+    private Menu 후라이드치킨단품;
+    private OrderLineItemRequest 후라이드치킨세트주문요청;
+    private Order 주문;
 
     @BeforeEach
     void setUp() {
-        firstTable = new OrderTable(new NumberOfGuests(0), true);
-        secondTable = new OrderTable(new NumberOfGuests(0), true);
+        firstTable = new OrderTable(1L, new NumberOfGuests(0), true);
+        secondTable = new OrderTable(2L, new NumberOfGuests(0), true);
         tableGroup = TableGroup.of(1L);
+        후라이드치킨 = Product.of(1L, "후라이드치킨", 15_000L);
+        후라이드치킨상품 = MenuProduct.of(후라이드치킨, 1L);
+        치킨단품 = MenuGroup.of(1L, "치킨단품");
+        후라이드치킨단품 = Menu.of(1L, "후라이드치킨세트", BigDecimal.valueOf(15_000L), 치킨단품.getId(), Collections.singletonList(후라이드치킨상품));
+        후라이드치킨세트주문요청 = new OrderLineItemRequest(후라이드치킨단품.getId(), 2L);
+        주문 = Order.of(1L, secondTable.getId(), OrderLineItems.of(Collections.singletonList(후라이드치킨세트주문요청.toOrderLineItem(OrderMenu.of( 후라이드치킨단품)))));
     }
 
     @Test
     void 주문_테이블을_등록할_수_있다() {
-        given(orderTableRepository.save(firstTable)).willReturn(firstTable);
-
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(firstTable);
         OrderTableResponse savedOrderTable = tableService.create(
                 OrderTableRequest.of(firstTable.getNumberOfGuests(), firstTable.isEmpty())
         );
@@ -86,7 +103,6 @@ public class TableServiceTest {
         OrderTable expected = new OrderTable(1L, new NumberOfGuests(1), true);
         UpdateEmptyRequest request = UpdateEmptyRequest.of(false);
         given(orderTableRepository.findById(expected.getId())).willReturn(Optional.of(firstTable));
-        given(orderTableRepository.save(firstTable)).willReturn(firstTable);
 
         OrderTableResponse changeOrderTable = tableService.changeEmpty(expected.getId(), request);
 
@@ -111,14 +127,14 @@ public class TableServiceTest {
 
     @Test
     void 주문_상태가_조리_또는_식사중이면_테이블_이용_여부를_변경할_수_없다() {
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = Order.of(orderTable.getId(), null);
-        order.setOrderStatus(OrderStatus.MEAL);
-        UpdateEmptyRequest request = UpdateEmptyRequest.of(firstTable.isEmpty());
-        given(orderTableRepository.findById(firstTable.getId())).willReturn(Optional.of(firstTable));
-        given(orderRepository.findAllByOrderTableId(orderTable.getId())).willReturn(Arrays.asList(order));
+        UpdateEmptyRequest changeOrderTableRequest = new UpdateEmptyRequest(true);
+        // given
+        when(orderTableRepository.findById(firstTable.getId())).thenReturn(Optional.of(firstTable));
+        when(orderRepository.findAllByOrderTableId(firstTable.getId()))
+                .thenReturn(Collections.singletonList(주문));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(firstTable.getId(), request))
+        assertThatThrownBy(() ->
+            tableService.changeEmpty(firstTable.getId(), changeOrderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorEnum.NOT_PAYMENT_ORDER.message());
     }

@@ -2,7 +2,12 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
@@ -32,16 +37,26 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         final MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
-        final List<Product> products = productRepository.findAllById(request.getMenuProductIds());
-        final Menu savedMenu = menuRepository.save(request.createMenu(menuGroup, products));
-        return MenuResponse.from(savedMenu);
+                .orElseThrow( () -> new IllegalArgumentException(ErrorEnum.REQUIRED_MENU.message()));
+        MenuProducts menuProducts = MenuProducts.of(menuProductsByProductId(request.getMenuProductRequests()));
+        Menu menu = request.toMenu(menuGroup, menuProducts);
+
+        return MenuResponse.from(menuRepository.save(menu));
     }
 
     public List<MenuResponse> findAll() {
         return menuRepository.findAll()
                 .stream()
                 .map(MenuResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    private List<MenuProduct> menuProductsByProductId(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
+                .map(menuProductRequest -> menuProductRequest.toMenuProduct(
+                        productRepository.findById(menuProductRequest.getProductId()).orElseThrow(
+                                () -> new EntityNotFoundException(ErrorEnum.PRODUCT_NOT_FOUND.message())
+                        )))
                 .collect(Collectors.toList());
     }
 }

@@ -136,7 +136,8 @@
 * [x] OrderTable, Order 간접 참조를 제거
 * [x] OrderLineItem, Menu 간점 참조 변경
 * [x] OrderTable, TableGroup 결합도 낮춤
-* [ ] Order, OrderTable 간접 참조로 변경
+* [x] Order, OrderTable 간접 참조로 변경
+* [x] Menu, MenuGroup 간접 참조로 변경
 
 * 메뉴의 이름과 가격이 변경되면 주문 항목도 함께 변경된다.
 * 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현한다.

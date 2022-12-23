@@ -45,7 +45,8 @@ public class TableService {
 
         validateOngoingOrder(orders);
         savedOrderTable.updateEmpty(request.isEmpty());
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     private void validateOngoingOrder(List<Order> orders) {

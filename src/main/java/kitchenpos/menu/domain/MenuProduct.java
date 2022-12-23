@@ -39,6 +39,16 @@ public class MenuProduct {
         this.product = product;
     }
 
+    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this.seq = seq;
+        this.menu = menu;
+        this.product = product;
+        this.quantity = new Quantity(quantity);
+    }
+    public static MenuProduct of(Product product, Long quantity) {
+        return new MenuProduct(null, null, product, quantity);
+    }
+
     public Price calculatePrice() {
         Price price = product.getPrice();
         return price.multiply(BigDecimal.valueOf(quantity.value()));

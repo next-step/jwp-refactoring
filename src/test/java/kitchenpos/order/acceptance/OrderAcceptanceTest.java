@@ -19,6 +19,7 @@ import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -35,6 +36,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,14 +70,21 @@ class OrderAcceptanceTest extends AcceptanceTest {
         치킨그룹_응답 = 메뉴그룹_생성_요청(MenuGroupRequest.of("치킨")).as(MenuGroupResponse.class);
         치킨그룹 = new MenuGroup(치킨그룹_응답.getId(), new Name(치킨그룹_응답.getName()));
 
-        순살치킨메뉴 = new Menu(new Name("순살치킨"), new Price(BigDecimal.valueOf(12_000L)), 치킨그룹);
-        두마리치킨세트메뉴 = new Menu(new Name("두마리치킨세트"), new Price(BigDecimal.valueOf(38_000L)), 치킨그룹);
         순살치킨상품 = MenuProductRequest.of(생성된_순살치킨.getId(), 1L);
         후라이드치킨상품 = MenuProductRequest.of(생성된_후라이드치킨.getId(), 1L);
+
+        MenuProduct 순살치킨 = new MenuProduct(new Quantity(1L),
+                new Product(new Name("순살치킨"), new Price(new BigDecimal(20_000L))));
+        MenuProduct 양념치킨 = new MenuProduct(new Quantity(1L),
+                new Product(new Name("양념치킨"), new Price(new BigDecimal(20_000L))));
+        List<MenuProduct> menuProducts = Arrays.asList(순살치킨, 양념치킨);
+
+        순살치킨메뉴 = Menu.of("순살치킨", BigDecimal.valueOf(12_000L), 치킨그룹.getId(), menuProducts);
+        두마리치킨세트메뉴 = Menu.of("두마리치킨세트", BigDecimal.valueOf(38_000L), 치킨그룹.getId(), menuProducts);
         두마리치킨세트_응답 = 메뉴_생성_요청(MenuRequest.of(
                 두마리치킨세트메뉴.getName().value(),
                 두마리치킨세트메뉴.getPrice().value(),
-                두마리치킨세트메뉴.getMenuGroup().getId(),
+                두마리치킨세트메뉴.getMenuGroupId(),
                 Arrays.asList(순살치킨상품, 후라이드치킨상품)
         )).as(MenuResponse.class);
 
@@ -83,9 +92,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         두마리치킨세트_요청 = OrderLineItemRequest.of(두마리치킨세트_응답.getId(), 1L);
         OrderRequest request = OrderRequest.of(주문테이블.getId(), Arrays.asList(두마리치킨세트_요청));
-        Order 주문_응답 = 주문_생성_요청(request).as(Order.class);
-        두마리치킨세트_주문 = new OrderLineItem(주문, OrderMenu.of(순살치킨메뉴), new Quantity(1L));
-        //주문 = Order.of(주문테이블.getId(), new OrderLineItems(Arrays.asList(두마리치킨세트_주문)));
+        //Order 주문_응답 = 주문_생성_요청(request).as(Order.class);
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+                OrderLineItem.of(OrderMenu.of(순살치킨메뉴), 2L),
+                OrderLineItem.of(OrderMenu.of(두마리치킨세트메뉴), 2L)
+        );
+        Order order = Order.of(주문테이블.getId(), OrderLineItems.of(orderLineItems));
+        두마리치킨세트_주문 = new OrderLineItem(order, OrderMenu.of(순살치킨메뉴), new Quantity(1L));
     }
 
     @Test

@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.order.domain.Order;
+
 @Entity
 public class OrderTable {
     @Id
@@ -18,10 +20,11 @@ public class OrderTable {
     private boolean empty;
 
     protected OrderTable() {}
-
-    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
-        validateShouldNotEmpty();
-        this.numberOfGuests = numberOfGuests;
+    private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = empty;
     }
 
     public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
@@ -33,6 +36,15 @@ public class OrderTable {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    }
+
+    public void updateNumberOfGuest(NumberOfGuests numberOfGuests) {
+        validateShouldNotEmpty();
+        this.numberOfGuests = numberOfGuests;
     }
 
     private void validateShouldNotEmpty() {

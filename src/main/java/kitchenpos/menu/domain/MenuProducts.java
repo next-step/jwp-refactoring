@@ -20,6 +20,9 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
+        return new MenuProducts(menuProducts);
+    }
     public List<MenuProduct> get() {
         return Collections.unmodifiableList(menuProducts);
     }

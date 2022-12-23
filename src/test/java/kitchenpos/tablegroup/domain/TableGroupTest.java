@@ -3,17 +3,60 @@ package kitchenpos.tablegroup.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.error.ErrorEnum;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 public class TableGroupTest {
+    @Mock
+    private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
+
+    private OrderTables orderTables;
+    private OrderTable firstTable;
+    private OrderTable secondTable;
+    TableGroup tableGroup;
+        @BeforeEach
+        void setUp() {
+            tableGroup = TableGroup.of(1L);
+            firstTable = new OrderTable(1L, new NumberOfGuests(0), true);
+            secondTable = new OrderTable(2L, new NumberOfGuests(0), true);
+            orderTables = OrderTables.of(Arrays.asList(firstTable, secondTable));
+            orderTables.group(tableGroup.getId());
+        }
+
     @Test
     void 단체_지정된_테이블을_해제할_수_있다() {
         // given
@@ -21,7 +64,6 @@ public class TableGroupTest {
         Order order2 = createOrder(OrderStatus.COMPLETION);
         OrderTable firstOrderTable = new OrderTable(new NumberOfGuests(4), false);
         OrderTable secondOrderTable = new OrderTable(new NumberOfGuests(4), false);
-
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         // when
@@ -39,9 +81,7 @@ public class TableGroupTest {
         // given
         Order firstOrder = createOrder(OrderStatus.MEAL);
         Order secondOrder = createOrder(OrderStatus.MEAL);
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
-
-        firstOrder.setOrderStatus(OrderStatus.MEAL);
+        TableGroup tableGroup = TableGroup.of(1L);
 
         // when & then
         assertThatThrownBy(() -> tableGroup.ungroup(Arrays.asList(firstOrder, secondOrder)))
@@ -50,8 +90,17 @@ public class TableGroupTest {
     }
 
     public static Order createOrder(OrderStatus orderStatus) {
-        OrderTable orderTable = new OrderTable(new NumberOfGuests(4), false);
-        Order order = Order.of(orderTable.getId(), null);
+        Product 양념치킨 = new Product(1L, "양념치킨", 20_000L);
+        Product 스파게티 = new Product(2L, "스파게티", 10_000L);
+        MenuProduct 치킨_두마리 = new MenuProduct(1L, new Quantity(2L), null, 양념치킨);
+        MenuProduct 스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), null, 스파게티);
+        List<MenuProduct> menuProducts = Arrays.asList(치킨_두마리, 스파게티_이인분);
+
+        Menu 치킨_스파게티_더블세트_메뉴 = Menu.of(1L, "치킨 스파게티 더블세트 메뉴", BigDecimal.valueOf(13_000L), 1L, menuProducts);
+        OrderLineItem 주문_항목 = OrderLineItem.of(OrderMenu.of(치킨_스파게티_더블세트_메뉴), 1L);
+
+        OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(4), false);
+        Order order = Order.of(orderTable.getId(), new OrderLineItems(Arrays.asList(주문_항목)));
         order.setOrderStatus(orderStatus);
         orderTable.updateEmpty(true);
         return order;
