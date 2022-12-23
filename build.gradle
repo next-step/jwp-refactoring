@@ -22,8 +22,31 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation project(':kitchenpos-menugroup')
 }
 
 test {
     useJUnitPlatform()
+}
+
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar { enabled = false }
+    jar { enabled = true }
 }
