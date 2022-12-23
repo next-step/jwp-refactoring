@@ -54,13 +54,6 @@ public class MenuService {
         return productPort.findById(id);
     }
 
-    private MenuProduct makeMenuProduct(List<Product> product, MenuProductRequest request) {
-        Product targetProduct = findProduct(product, request.getProductId());
-
-        return new MenuProduct(request.getQuantity(), targetProduct.getId());
-    }
-
-
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuPort.findAll();
@@ -68,12 +61,5 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
-    }
-
-    private Product findProduct(List<Product> products, Long productId) {
-        return products.stream()
-                .filter(product -> product.getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PRODUCT.getMessage()));
     }
 }

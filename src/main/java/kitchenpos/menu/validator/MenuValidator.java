@@ -2,6 +2,7 @@ package kitchenpos.menu.validator;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.port.MenuGroupPort;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.port.ProductPort;
@@ -46,12 +47,13 @@ public class MenuValidator {
     private BigDecimal getAmount(Menu menu) {
         return menu.getMenuProducts()
                 .stream()
-                .map(it -> findProductById(it.getProductId()).getPrice()
-                        .multiply(BigDecimal.valueOf(it.getQuantity())))
+                .map(this::getProductPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private Product findProductById(Long id) {
-        return productPort.findById(id);
+    private BigDecimal getProductPrice(MenuProduct menuProduct) {
+        Product product = productPort.findById(menuProduct.getProductId());
+        return product.getCalculateMultiplyQuantity(menuProduct.getQuantity());
     }
 }
+

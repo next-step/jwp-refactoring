@@ -26,8 +26,6 @@ public class Product {
         this.name = name;
     }
 
-
-
     public Long getId() {
         return id;
     }
@@ -38,5 +36,9 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price.getPrice();
+    }
+
+    public BigDecimal getCalculateMultiplyQuantity(long quantity) {
+        return getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }
