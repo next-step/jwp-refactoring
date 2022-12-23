@@ -7,7 +7,6 @@ public class ErrorMessage {
 
     private static final String CANNOT_BE_NULL = " 은(는) 비어있을 수 없습니다.";
     private static final String CANNOT_BE_NEGATIVE = " 은(는) 음수일 수 없습니다.";
-    public static final String PRICE_HIGHER_THAN_MENU_PRODUCTS_TOTAL_PRICES = "메뉴의 가격은 메뉴상품들의 총 가격보다 높을 수 없습니다.";
     public static final String CANNOT_ORDER_WHEN_TABLE_IS_EMPTY = "빈 테이블은 주문을 할 수 없다.";
     public static final String CANNOT_CHANGE_ORDER_STATUS_WHEN_COMPLETED = "주문상태가 완료된 경우에는 주문상태를 변경할 수 없다.";
     public static final String CANNOT_CHANGE_EMPTINESS_WHEN_TABLE_GROUPED = "단체지정이 된 경우 주문테이블의 비움상태를 변경할 수 없다.";

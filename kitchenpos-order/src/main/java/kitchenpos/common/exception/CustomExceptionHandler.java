@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
-    @ExceptionHandler(kitchenpos.common.exception.CustomException.class)
-    public ResponseEntity<kitchenpos.common.exception.CustomErrorResponse> handleException(
-        CustomException e) {
-        kitchenpos.common.exception.CustomErrorResponse customErrorResponse =
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<CustomErrorResponse> handleException(CustomException e) {
+        CustomErrorResponse customErrorResponse =
             CustomErrorResponse.of(e.getErrorMessage(), HttpStatus.NOT_FOUND);
         return ResponseEntity.badRequest().body(customErrorResponse);
     }
