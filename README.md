@@ -197,4 +197,4 @@
 - [x] 클래스 간의 방향도 중요하고 패키지 간의 방향도 중요하다. 클래스 사이, 패키지 사이의 의존 관계는 단방향이 되도록 해야 한다.
     - [x] MenuProduct Product 의존성 제거
     - [x] Orders OrderTable 의존성 제거
-    - [ ] OrderService TableService 결합도 줄이기
+    - [x] OrderService TableService 결합도 줄이기
