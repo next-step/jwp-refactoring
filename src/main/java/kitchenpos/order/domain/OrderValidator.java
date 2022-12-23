@@ -20,15 +20,9 @@ public class OrderValidator {
 
     public void validateBeforeCreateOrder(Order order) {
         OrderLineItems orderLineItems = order.getOrderLineItems();
-        checkOrderLineItemEmpty(orderLineItems);
+        orderLineItems.checkOrderLineItemEmpty();
         checkMenuExist(orderLineItems);
         checkOrderTableExist(order);
-    }
-
-    private void checkOrderLineItemEmpty(OrderLineItems orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessages.ORDER_LINE_ITEM_EMPTY);
-        }
     }
 
     private void checkMenuExist(OrderLineItems orderLineItems) {

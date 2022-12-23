@@ -94,6 +94,12 @@ public class OrderTable {
         }
     }
 
+    public void checkOrderTableGrouped() {
+        if (isGrouped()) {
+            throw new IllegalArgumentException(ErrorMessages.GROUPED_ORDER_TABLE_CANNOT_CHANGE_EMPTY);
+        }
+    }
+
     public void updateEmpty(final boolean empty) {
         this.empty = empty;
     }

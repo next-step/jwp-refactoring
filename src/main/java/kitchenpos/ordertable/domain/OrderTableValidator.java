@@ -15,14 +15,8 @@ public class OrderTableValidator {
     }
 
     public void validateEmptyChangable(OrderTable orderTable) {
-        checkOrderTableGrouped(orderTable);
+        orderTable.checkOrderTableGrouped();
         checkNotCompletedOrderExist(orderTable);
-    }
-
-    private void checkOrderTableGrouped(OrderTable orderTable) {
-        if (orderTable.isGrouped()) {
-            throw new IllegalArgumentException(ErrorMessages.GROUPED_ORDER_TABLE_CANNOT_CHANGE_EMPTY);
-        }
     }
 
     private void checkNotCompletedOrderExist(OrderTable orderTable) {
