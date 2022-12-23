@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import static kitchenpos.order.OrderFixture.주문항목;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.table.TableFixture.일번테이블;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,6 +40,17 @@ class OrderTest {
         assertThatThrownBy(() -> new Order(1L, null, null, null, Collections.singletonList(주문항목)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("주문 테이블 정보가 없습니다.");
+    }
+
+    @Test
+    @DisplayName("주문 테스트")
+    void order(){
+        Order 주문 = new Order(1L, 일번테이블, null, null,
+            Collections.singletonList(주문항목));
+        주문.order();
+
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(주문.getOrderedTime()).isNotNull();
     }
 
 }

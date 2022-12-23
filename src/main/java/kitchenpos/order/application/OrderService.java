@@ -43,10 +43,8 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest request) {
         Order order = request.toOrder(getOrderTable(request.getOrderTableId()), getOrderLineItems(request.getOrderLineItems()));
-        order(order);
-        final Order savedOrder = orderDao.save(order);
-
-        return OrderResponse.from(savedOrder);
+        order.order();
+        return OrderResponse.from(orderDao.save(order));
     }
 
     private OrderTable getOrderTable(Long orderTableId) {
@@ -65,11 +63,6 @@ public class OrderService {
 
     private Menu findMenuById(Long id){
         return menuDao.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
-    }
-
-    private void order(Order order) {
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
     }
 
     private List<Long> getOrderLineIds(OrderRequest request) {

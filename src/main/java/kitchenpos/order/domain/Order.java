@@ -40,7 +40,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-        orderLineItems.stream()
+        orderLineItems
             .forEach(orderLineItem -> orderLineItem.setOrder(this));
         validateOrder();
     }
@@ -53,6 +53,11 @@ public class Order {
         if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블 정보가 없습니다.");
         }
+    }
+
+    public void order() {
+        orderStatus = OrderStatus.COOKING.name();
+        orderedTime = LocalDateTime.now();
     }
 
     public Long getId() {
