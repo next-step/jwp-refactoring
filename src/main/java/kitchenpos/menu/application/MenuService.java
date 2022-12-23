@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -20,12 +21,12 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
-    private final MenuGroupService menuGroupService;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuService(MenuRepository menuRepository, ProductRepository productRepository, MenuGroupService menuGroupService) {
+    public MenuService(MenuRepository menuRepository, ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
         this.menuRepository = menuRepository;
         this.productRepository = productRepository;
-        this.menuGroupService = menuGroupService;
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
@@ -37,7 +38,7 @@ public class MenuService {
     }
 
     private void validateMenuGroup(MenuRequest request) {
-        if (!menuGroupService.existsById(request.getMenuGroupId())) {
+        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
     }
