@@ -49,11 +49,6 @@ public class OrderService {
 
     public List<OrderResponse> list() {
         final List<Order> orders = orderDao.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-        }
-
         return orders.stream()
             .map(OrderResponse::from)
             .collect(Collectors.toList());
