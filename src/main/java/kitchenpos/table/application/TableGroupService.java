@@ -60,7 +60,7 @@ public class TableGroupService {
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.notCompletion())) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.notCompletion)) {
             throw new IllegalArgumentException("주문 상태가 조리 또는 식사 중인 경우 단체 지정 등록을 해제할 수 없습니다.");
         }
     }
