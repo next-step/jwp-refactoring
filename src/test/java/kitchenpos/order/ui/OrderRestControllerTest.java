@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -13,6 +14,8 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -51,11 +54,11 @@ public class OrderRestControllerTest extends ControllerTest {
 
         주문테이블 = new OrderTable(2, false);
         ReflectionTestUtils.setField(주문테이블, "id", 1L);
-        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
         양식_세트1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);
         양식_세트2 = new Menu("양식 세트2", new BigDecimal(50000), 양식);
+        주문 = Order.fromDefault(주문테이블.getId());
 
         ReflectionTestUtils.setField(주문테이블, "id", 1L);
         ReflectionTestUtils.setField(주문, "id", 1L);
@@ -63,8 +66,8 @@ public class OrderRestControllerTest extends ControllerTest {
         ReflectionTestUtils.setField(양식_세트1, "id", 1L);
         ReflectionTestUtils.setField(양식_세트2, "id", 2L);
 
-        주문_메뉴_목록 = Arrays.asList(new OrderLineItem(주문, 양식_세트1.getId(), 1L), new OrderLineItem(주문, 양식_세트2.getId(), 1L));
-        주문.order(주문_메뉴_목록);
+        주문_메뉴_목록 = Arrays.asList(OrderLineItem.of(주문, OrderMenu.of(양식_세트1), 1L), OrderLineItem.of(주문, OrderMenu.of(양식_세트2), 1L));
+        주문.addOrderLineItems(주문_메뉴_목록);
     }
 
     @Test

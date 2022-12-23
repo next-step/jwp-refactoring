@@ -52,7 +52,7 @@ public class MenuProductsTest {
     @Test
     void validateMenuPrice() {
         assertThatThrownBy(() -> {
-            양식_세트_목록.validatePrice(양식_세트.getPrice());
+            양식_세트_목록.validatePrice(양식_세트.getPriceToDecimal());
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.INVALID_ADD_MENU_PRICE.getErrorMessage());
     }

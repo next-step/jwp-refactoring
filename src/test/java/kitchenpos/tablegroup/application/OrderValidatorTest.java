@@ -5,6 +5,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.OrderTable;
@@ -126,7 +128,11 @@ public class OrderValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void modifyOrderTableValidation_tableStatus(OrderStatus orderStatus) {
-        Order order = new Order(주문테이블.getId(), orderStatus);
+        Order order = Order.fromDefault(주문테이블.getId());
+        OrderLineItem orderLineItem1 = OrderLineItem.of(order, OrderMenu.of(양식_세트1), 1L);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(order, OrderMenu.of(양식_세트2), 1L);
+        order.addOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
+        order.changeOrderStatus(orderStatus);
         given(orderRepository.findAllByOrderTableId(주문테이블.getId())).willReturn(Arrays.asList(order));
 
         assertThatThrownBy(() -> {
@@ -139,7 +145,10 @@ public class OrderValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void deleteOrderTableValidation_tableStatus(OrderStatus orderStatus) {
-        Order order = new Order(주문테이블.getId(), orderStatus);
+        Order order = Order.fromDefault(주문테이블.getId());
+        OrderLineItem orderLineItem1 = OrderLineItem.of(order, OrderMenu.of(양식_세트1), 1L);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(order, OrderMenu.of(양식_세트2), 1L);
+        order.addOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
         given(orderRepository.findAllByOrderTableIds(Arrays.asList(주문테이블.getId()))).willReturn(Arrays.asList(order));
 
         assertThatThrownBy(() -> {
