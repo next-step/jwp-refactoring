@@ -12,7 +12,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public OrderTables() {
+    protected OrderTables() {
 
     }
 

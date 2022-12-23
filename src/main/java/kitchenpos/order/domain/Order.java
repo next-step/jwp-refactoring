@@ -27,7 +27,7 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
 
     }
 
