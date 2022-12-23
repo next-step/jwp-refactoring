@@ -1,6 +1,7 @@
 package kitchenpos.order.application.validator;
 
 import static kitchenpos.exception.ErrorCode.ALREADY_COMPLETION_STATUS;
+import static kitchenpos.exception.ErrorCode.CAN_NOT_ORDER;
 import static kitchenpos.exception.ErrorCode.NOT_EXISTS_ORDER_LINE_ITEMS;
 
 import java.util.List;
@@ -9,19 +10,20 @@ import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.request.OrderRequest;
+import kitchenpos.table.application.TableService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
 public class OrderValidator {
-    private final TableEmptyValidator tableEmptyValidator;
+    private final TableService tableService;
     private final OrderLineItemsSizeValidator orderLineItemsSizeValidator;
 
     public OrderValidator(
-            final TableEmptyValidator tableEmptyValidator,
+            final TableService tableService,
             final OrderLineItemsSizeValidator orderLineItemsSizeValidator
     ) {
-        this.tableEmptyValidator = tableEmptyValidator;
+        this.tableService = tableService;
         this.orderLineItemsSizeValidator = orderLineItemsSizeValidator;
     }
 
@@ -38,7 +40,9 @@ public class OrderValidator {
     }
 
     private void validateEmptyTrue(Long orderTableId){
-        tableEmptyValidator.validateEmptyTrue(orderTableId);
+        if (tableService.findById(orderTableId).isEmpty()) {
+            throw new KitchenposException(CAN_NOT_ORDER);
+        }
     }
 
     private void validateOrderLineItems(int orderLineItemsSize, List<Long> menuIds){
