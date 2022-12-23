@@ -35,10 +35,10 @@ public class MenuTest {
 
     @BeforeEach
     void setup() {
-        알리오올리오 = 상품(1L, "알리오올리오", new BigDecimal(17000));
-        쉬림프로제 = 상품(3L, "쉬림프로제", new BigDecimal(18000));
-        카프레제샐러드 = 상품(4L, "카프레제샐러드", new BigDecimal(13000));
-        레드와인 = 상품(5L, "레드와인", new BigDecimal(9000));
+        알리오올리오 = 상품(1L, "알리오올리오", 17000);
+        쉬림프로제 = 상품(3L, "쉬림프로제", 18000);
+        카프레제샐러드 = 상품(4L, "카프레제샐러드", 13000);
+        레드와인 = 상품(5L, "레드와인", 9000);
 
         코스 = 메뉴그룹(2L, "코스");
 
@@ -52,7 +52,7 @@ public class MenuTest {
     @Test
     void 메뉴_클래스_생성() {
         // when
-        풀코스 = 메뉴(2L, "풀코스", new BigDecimal(62000), 코스);
+        풀코스 = 메뉴(2L, "풀코스", 62000, 코스);
         풀코스.addMenuProducts(Arrays.asList(풀코스_카프레제샐러드, 풀코스_알리오올리오, 풀코스_쉬림프로제, 풀코스_레드와인));
 
         // then
@@ -70,7 +70,7 @@ public class MenuTest {
     void 음수_가격_메뉴_클래스_생성() {
         // when & then
         assertThatThrownBy(
-                () -> 풀코스 = 메뉴(2L, "풀코스", new BigDecimal(-62000), 코스)
+                () -> 풀코스 = 메뉴(2L, "풀코스", -62000, 코스)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -78,7 +78,7 @@ public class MenuTest {
     @Test
     void 메뉴_상품_가격_합보다_큰_가격의_메뉴_클래스_생성() {
         //given
-        풀코스 = 메뉴(2L, "풀코스", new BigDecimal(100000), 코스);
+        풀코스 = 메뉴(2L, "풀코스", 100000, 코스);
 
         // when & then
         assertThatThrownBy(

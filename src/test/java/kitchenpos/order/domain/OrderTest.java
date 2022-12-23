@@ -43,8 +43,8 @@ public class OrderTest {
         주문1 = 주문(1L, OrderStatus.COOKING.name(), 테이블1);
         주문2 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1);
 
-        오일2인세트 = 메뉴(1L, "오일2인세트", new BigDecimal(34000), null);
-        풀코스 = 메뉴(2L, "풀코스", new BigDecimal(62000), null);
+        오일2인세트 = 메뉴(1L, "오일2인세트", 34000, null);
+        풀코스 = 메뉴(2L, "풀코스", 62000, null);
 
         풀코스_주문 = 주문라인아이템(1L, 주문1, 풀코스, 1);
         오일2인세트_주문 = 주문라인아이템(2L, 주문1, 오일2인세트, 1);

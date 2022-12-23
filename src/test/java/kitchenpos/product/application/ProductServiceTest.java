@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class ProductServiceTest {
     @Test
     void 상품_생성() {
         // given
-        ProductRequest 알리오올리오 = ProductRequest.of(상품(1L, "알리오올리오", new BigDecimal(17000)));
+        ProductRequest 알리오올리오 = ProductRequest.of(상품(1L, "알리오올리오", 17000));
 
         given(productRepository.save(any())).willReturn(알리오올리오.toProduct());
 
@@ -53,8 +52,8 @@ public class ProductServiceTest {
     @Test
     void 전체_상품_목록_조회() {
         // given
-        ProductRequest 알리오올리오 = ProductRequest.of(상품(1L, "알리오올리오", new BigDecimal(17000)));
-        ProductRequest 쉬림프로제 = ProductRequest.of(상품(2L, "쉬림프로제", new BigDecimal(22000)));
+        ProductRequest 알리오올리오 = ProductRequest.of(상품(1L, "알리오올리오", 17000));
+        ProductRequest 쉬림프로제 = ProductRequest.of(상품(2L, "쉬림프로제", 22000));
         given(productRepository.findAll()).willReturn(Arrays.asList(알리오올리오.toProduct(), 쉬림프로제.toProduct()));
 
         // when
@@ -73,18 +72,6 @@ public class ProductServiceTest {
     void 가격이_음수인_상품_생성() {
         // given
         ProductRequest 알리오올리오 = new ProductRequest("알리오올리오", -17000);
-
-        // when & then
-        assertThatThrownBy(
-                () -> productService.create(알리오올리오)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("가격 정보가 없는 상품을 생성한다")
-    @Test
-    void 가격_정보가_없는_상품_생성() {
-        // given
-        ProductRequest 알리오올리오 = new ProductRequest("알리오올리오", 0);
 
         // when & then
         assertThatThrownBy(

@@ -15,7 +15,7 @@ public class ProductTest {
     @DisplayName("Product를 생성한다")
     @Test
     void Product_생성() {
-        Product product = new Product("알리오올리오", new BigDecimal(17000));
+        Product product = new Product("알리오올리오",17000);
 
         assertAll(
                 () -> assertThat(product.getName()).isEqualTo("알리오올리오"),
@@ -28,7 +28,7 @@ public class ProductTest {
     void 유효하지_않은_가격의_Product_생성() {
 
         assertThatThrownBy(
-                () -> new Product("알리오올리오", new BigDecimal(-17000))
+                () -> new Product("알리오올리오", -17000)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

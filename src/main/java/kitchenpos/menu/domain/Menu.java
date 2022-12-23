@@ -1,9 +1,10 @@
 package kitchenpos.menu.domain;
 
+import common.domain.Price;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -13,9 +14,12 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_group_id")
@@ -24,21 +28,14 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {
+    protected Menu() {
 
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        validatePriceValue(price);
+    public Menu(String name, int price, MenuGroup menuGroup) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
-    }
-
-    private void validatePriceValue(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(INVALID_PRICE);
-        }
     }
 
     private void validateMenuPrice() {
@@ -61,7 +58,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public MenuGroup getMenuGroup() {
