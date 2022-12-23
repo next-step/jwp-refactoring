@@ -1,26 +1,22 @@
 package kitchenpos.table.application.validator;
 
-import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 import static kitchenpos.exception.ErrorCode.NOT_SAME_BETWEEN_ORDER_TABLES_COUNT_AND_SAVED_ORDER_TABLES;
 import static kitchenpos.exception.ErrorCode.ORDER_TABLES_MUST_BE_AT_LEAST_TWO;
 import static kitchenpos.exception.ErrorCode.TABLE_IS_NOT_EMPTY_OR_ALREADY_REGISTER_TABLE_GROUP;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
 public class TableGroupValidator {
-    private final OrderRepository orderRepository;
+    private final OrderStatusValidator orderStatusValidator;
 
-    public TableGroupValidator(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupValidator(OrderStatusValidator orderStatusValidator) {
+        this.orderStatusValidator = orderStatusValidator;
     }
 
     public void validateCreate(List<Long> orderTableIds, List<OrderTable> orderTables) {
@@ -58,9 +54,6 @@ public class TableGroupValidator {
     }
 
     public void existsByCookingAndMeal(List<Long> orderTableIds){
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new KitchenposException(EXISTS_NOT_COMPLETION_STATUS);
-        }
+        orderStatusValidator.existsByOrderTableIdInAndOrderStatusIn(orderTableIds);
     }
 }
