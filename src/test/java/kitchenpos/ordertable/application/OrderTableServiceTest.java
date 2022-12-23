@@ -88,7 +88,7 @@ class OrderTableServiceTest {
         OrderTableResponse 수정된_주문_테이블 = orderTableService.changeEmpty(주문_테이블_1_id, 수정할_주문_테이블);
 
         //빈 테이블 -> 빈 테이블 아님
-        verify(orderTableValidator).validateEmptyChangable(any(OrderTable.class));
+        verify(orderTableValidator).validateEmptyChangeable(any(OrderTable.class));
         assertAll(
                 () -> assertThat(수정된_주문_테이블.getId()).isEqualTo(주문_테이블_1_id),
                 () -> assertThat(수정된_주문_테이블.isEmpty()).isEqualTo(수정할_주문_테이블.isEmpty())

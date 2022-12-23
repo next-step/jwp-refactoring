@@ -35,7 +35,7 @@ public class OrderTableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = getSavedOrderTable(orderTableId);
-        orderTableValidator.validateEmptyChangable(savedOrderTable);
+        orderTableValidator.validateEmptyChangeable(savedOrderTable);
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
