@@ -12,9 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 public class TableGroup {
+
+    private static final int MIN_NUMBER_OF_GROUP = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +35,13 @@ public class TableGroup {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+        validateTableGroup();
+    }
+
+    private void validateTableGroup() {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_NUMBER_OF_GROUP) {
+            throw new IllegalArgumentException("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
+        }
     }
 
     public Long getId() {

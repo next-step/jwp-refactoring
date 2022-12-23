@@ -34,7 +34,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         List<OrderTable> savedOrderTables = getOrderTables(request);
         TableGroup tableGroup = request.toTableGroup(savedOrderTables);
-        validateTableGroup(tableGroup);
+        //validateTableGroup(tableGroup);
 
         validateOrderTablesStatus(savedOrderTables);
 
@@ -60,13 +60,6 @@ public class TableGroupService {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
                 throw new IllegalArgumentException();
             }
-        }
-    }
-
-    private void validateTableGroup(TableGroup tableGroup) {
-        if (CollectionUtils.isEmpty(tableGroup.getOrderTables())
-            || tableGroup.getOrderTables().size() < 2) {
-            throw new IllegalArgumentException();
         }
     }
 

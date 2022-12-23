@@ -93,7 +93,8 @@ class TableGroupServiceTest {
         //given
         Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null, Collections.singletonList(주문항목));
         OrderTable 조리중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(조리중));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Collections.singletonList(조리중테이블));
+        OrderTable 조리중테이블2 = new OrderTable(2L, null, 0, false, Collections.singletonList(조리중));
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(조리중테이블, 조리중테이블2));
         when(tableGroupDao.findById(any())).thenReturn(Optional.of(tableGroup));
 
         //when & then
