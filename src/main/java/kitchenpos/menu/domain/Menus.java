@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Menus {
     private final List<Menu> menus;
@@ -14,9 +14,9 @@ public class Menus {
         return new Menus(menus);
     }
 
-    public Optional<Menu> findById(Long id) {
+    public List<OrderMenu> generateOrderMenus() {
         return menus.stream()
-            .filter(menu -> menu.hasId(id))
-            .findAny();
+            .map(menu -> OrderMenu.generate(menu.getId(), menu.getName(), menu.getPrice()))
+            .collect(Collectors.toList());
     }
 }

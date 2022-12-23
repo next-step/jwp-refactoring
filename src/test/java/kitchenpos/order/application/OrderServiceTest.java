@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +46,7 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
         OrderRequest orderRequest = orderRequest(orderTableId, Collections.singletonList(orderLineItemRequest(1L, 1)));
-        OrderLineItem savedOrderLineItem = savedOrderLineItem(1L, "menuName1", 1000L);
+        OrderLineItem savedOrderLineItem = savedOrderLineItem(1L, 1L, 5);
         Order savedOrder = savedOrder(1L, orderTableId, Collections.singletonList(savedOrderLineItem));
 
         given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
@@ -64,9 +63,8 @@ class OrderServiceTest {
             () -> assertThat(actual.getOrderedTime()).isNotNull(),
             () -> assertThat(actual.getOrderLineItems()).hasSize(1),
             () -> assertThat(actual.getOrderLineItems().get(0).getSeq()).isNotNull(),
-            () -> assertThat(actual.getOrderLineItems().get(0).getMenuId()).isEqualTo(1L),
-            () -> assertThat(actual.getOrderLineItems().get(0).getMenuName()).isEqualTo("menuName1"),
-            () -> assertThat(actual.getOrderLineItems().get(0).getMenuPrice()).isEqualTo(BigDecimal.valueOf(1000L))
+            () -> assertThat(actual.getOrderLineItems().get(0).getOrderMenuId()).isEqualTo(1L),
+            () -> assertThat(actual.getOrderLineItems().get(0).getQuantity()).isEqualTo(5)
         );
     }
 

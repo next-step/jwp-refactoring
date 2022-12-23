@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -44,10 +43,6 @@ public class Menu {
 
     public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(id, name, price, menuGroupId, menuProducts);
-    }
-
-    public boolean hasId(Long id) {
-        return Objects.equals(this.id, id);
     }
 
     public Long getId() {

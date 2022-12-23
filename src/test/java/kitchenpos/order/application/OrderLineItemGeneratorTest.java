@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
 import static kitchenpos.menu.domain.MenuFixture.*;
-import static kitchenpos.menu.domain.MenuProductFixture.*;
+import static kitchenpos.menu.domain.OrderMenuFixture.*;
 import static kitchenpos.order.domain.OrderLineItemFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,8 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.OrderMenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 
@@ -30,6 +30,8 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 class OrderLineItemGeneratorTest {
     @Mock
     private MenuRepository menuRepository;
+    @Mock
+    private OrderMenuRepository orderMenuRepository;
 
     @InjectMocks
     private OrderLineItemGenerator orderLineItemGenerator;
@@ -44,6 +46,9 @@ class OrderLineItemGeneratorTest {
         );
         given(menuRepository.findAllById(anyList())).willReturn(Collections.singletonList(
             savedMenu(1L, "메뉴", BigDecimal.valueOf(13000))
+        ));
+        given(orderMenuRepository.saveAll(anyList())).willReturn(Collections.singletonList(
+            savedOrderMenu(1L, 1L, "메뉴", BigDecimal.valueOf(13000))
         ));
 
         // when, then
@@ -64,15 +69,17 @@ class OrderLineItemGeneratorTest {
             savedMenu(menuId, menuName, menuPrice)
         ));
 
+        given(orderMenuRepository.saveAll(anyList())).willReturn(Collections.singletonList(
+            savedOrderMenu(1L, menuId, menuName, menuPrice)
+        ));
+
         // when
         List<OrderLineItem> actual = orderLineItemGenerator.generate(orderLineItems);
 
         // then
         assertAll(
             () -> assertThat(actual).hasSize(1),
-            () -> assertThat(actual.get(0).getMenuId()).isEqualTo(menuId),
-            () -> assertThat(actual.get(0).getMenuName()).isEqualTo(menuName),
-            () -> assertThat(actual.get(0).getMenuPrice()).isEqualTo(menuPrice),
+            () -> assertThat(actual.get(0).getOrderMenuId()).isEqualTo(menuId),
             () -> assertThat(actual.get(0).getQuantity()).isEqualTo(quantity)
         );
     }
