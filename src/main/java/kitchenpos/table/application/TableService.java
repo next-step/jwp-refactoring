@@ -48,9 +48,8 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-            savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId(), OrderStatus.notCompletion())) {
+            throw new IllegalArgumentException("주문 테이블의 상태가 조리 또는 식사일 경우 테이블의 상태를 변경할 수 없다.");
         }
 
         savedOrderTable.changeEmptyStatus(request.isEmpty());

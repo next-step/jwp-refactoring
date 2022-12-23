@@ -66,7 +66,9 @@ class OrderServiceTest {
     @BeforeEach
     void set_up() {
         주문_테이블 = new OrderTable(1, false);
-        주문 = new Order(주문_테이블);
+        ReflectionTestUtils.setField(주문_테이블, "id", 1L);
+        주문 = new Order(주문_테이블.getId());
+        ReflectionTestUtils.setField(주문, "id", 1L);
 
         상품 = new Product("상품", BigDecimal.valueOf(1000L));
         메뉴그룹 = new MenuGroup("메뉴그룹");
@@ -78,7 +80,7 @@ class OrderServiceTest {
         ReflectionTestUtils.setField(메뉴그룹, "id", 1L);
         ReflectionTestUtils.setField(메뉴, "id", 1L);
 
-        주문_메뉴 = new OrderLineItem(주문, 메뉴, 1);
+        주문_메뉴 = new OrderLineItem(주문, 메뉴.getId(), 1);
         OrderLineItemRequest 주문_항목_요청 = new OrderLineItemRequest(1L, 1L);
         주문_요청 = new OrderRequest(1L, Arrays.asList(주문_항목_요청));
     }

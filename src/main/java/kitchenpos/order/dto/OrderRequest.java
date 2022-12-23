@@ -29,7 +29,7 @@ public class OrderRequest {
     }
 
     public Order toOrder(OrderTable orderTable, List<Menu> menus) {
-        Order order = new Order(orderTable);
+        Order order = new Order(orderTable.getId());
         List<OrderLineItem> items = orderLineItems.stream()
             .map(orderLineItem -> orderLineItem.toOrderLineItem(order, menus))
             .collect(toList());

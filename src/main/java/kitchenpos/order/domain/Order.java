@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -31,9 +32,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,14 +48,14 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable) {
-        validateOrderTable(orderTable);
+    public Order(Long orderTableId) {
+        validateOrderTable(orderTableId);
         changeOrderStatus(OrderStatus.COOKING);
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
+    private void validateOrderTable(Long orderTableId) {
+        if (Objects.isNull(orderTableId)) {
             throw new IllegalArgumentException("빈 테이블에서는 주문을 할 수 없습니다");
         }
     }
@@ -90,10 +89,9 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }

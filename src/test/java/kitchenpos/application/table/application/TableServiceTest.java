@@ -77,7 +77,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable(10, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
@@ -105,9 +105,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = new OrderTable(4, true);
         when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.ofNullable(orderTable));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(
-            orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
-        )).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
 
         // when && then
         assertThatThrownBy(() -> {
