@@ -1,3 +1,4 @@
+
 package kitchenpos.table;
 
 import kitchenpos.table.domain.NumberOfGuests;

@@ -1,6 +1,6 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.Quantity;
 
 import javax.persistence.*;
 
@@ -9,9 +9,7 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
+    private Long menuId;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
@@ -20,14 +18,15 @@ public class MenuProduct {
 
     protected MenuProduct() {}
 
-    public MenuProduct(Product product, Quantity quantity) {
+    public MenuProduct(Long menuId, Product product, Quantity quantity) {
+        this.menuId = menuId;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
+    public MenuProduct(Long seq, Long menuId, Product product, Quantity quantity) {
         this.seq = seq;
-        this.menu = menu;
+        this.menuId = menuId;
         this.product = product;
         this.quantity = quantity;
     }
@@ -36,8 +35,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {

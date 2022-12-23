@@ -1,12 +1,15 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.product.domain.MenuProducts;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OrderResponse {
@@ -26,14 +29,16 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderResponse of(Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().getValue()
+    public static OrderResponse of(Order order, List<OrderLineItem> orderLineItems, Map<Long, Menu> menus,
+                                   OrderTable orderTable, Map<Long, MenuProducts> menuProducts) {
+        List<OrderLineItemResponse> orderLineItemResponses = orderLineItems
                 .stream()
-                .map(OrderLineItemResponse::of)
+                .map(orderLineItem -> OrderLineItemResponse.of(orderLineItem,
+                        menus.get(orderLineItem.getMenuId()), menuProducts.get(orderLineItem.getMenuId())))
                 .collect(Collectors.toList());
 
         return new OrderResponse(order.getId(),
-                OrderTableResponse.of(order.getOrderTable()),
+                OrderTableResponse.of(orderTable),
                 order.getOrderStatus().name(),
                 order.getOrderedTime(),
                 orderLineItemResponses);

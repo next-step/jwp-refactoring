@@ -1,7 +1,6 @@
-package kitchenpos.product.domain;
+package kitchenpos.common;
 
 import kitchenpos.ExceptionMessage;
-import kitchenpos.menu.domain.Quantity;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -10,7 +9,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
 
-    private static final BigDecimal MINIMUM_PRICE = new BigDecimal(0);
+    private static final BigDecimal MINIMUM_PRICE = BigDecimal.ZERO;
 
     BigDecimal price;
 

@@ -2,19 +2,11 @@ package kitchenpos.order.domain;
 
 import kitchenpos.ExceptionMessage;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.util.List;
 
-@Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
-
-    protected OrderLineItems() {
-
-    }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
@@ -27,7 +19,4 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void updateOrder(Order order) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
-    }
 }

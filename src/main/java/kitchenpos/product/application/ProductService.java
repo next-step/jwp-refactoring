@@ -1,7 +1,7 @@
 package kitchenpos.product.application;
 
 import kitchenpos.ExceptionMessage;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -30,7 +30,7 @@ public class ProductService {
         return ProductResponse.of(savedProduct);
     }
 
-    public List<ProductResponse> list() {
+    public List<ProductResponse> findAll() {
         return productRepository.findAll()
                 .stream()
                 .map(ProductResponse::of)

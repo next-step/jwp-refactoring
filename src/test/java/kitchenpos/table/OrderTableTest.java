@@ -2,11 +2,12 @@ package kitchenpos.table;
 
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,10 +43,8 @@ public class OrderTableTest {
     @Test
     void groupingOrderTableChangeExceptionTest() {
         //given
-        final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(10), true);
-        final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(5), true);
-        final TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-        tableGroup.group();
+        final TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        final OrderTable orderTable1 = new OrderTable(1L, tableGroup, new NumberOfGuests(10), false);
 
         //when
         //then
@@ -57,10 +56,8 @@ public class OrderTableTest {
     @Test
     void changeNumberOfGuestsTest() {
         //given
-        final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(10), true);
-        final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(5), true);
-        final TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-        tableGroup.group();
+        final TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        final OrderTable orderTable1 = new OrderTable(1L, tableGroup, new NumberOfGuests(10), false);
         int newNumberOfGuests = 2;
 
         //when
@@ -86,10 +83,8 @@ public class OrderTableTest {
     @Test
     void notEmptyValidateTableGroupTest() {
         //given
-        final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(10), true);
-        final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(5), true);
-        final TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-        tableGroup.group();
+        final TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        final OrderTable orderTable1 = new OrderTable(1L, tableGroup, new NumberOfGuests(10), true);
 
         //when
         //then

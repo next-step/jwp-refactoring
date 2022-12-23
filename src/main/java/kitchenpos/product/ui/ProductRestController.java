@@ -28,8 +28,8 @@ public class ProductRestController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ProductResponse>> list() {
+    public ResponseEntity<List<ProductResponse>> findAll() {
         return ResponseEntity.ok()
-                .body(productService.list());
+                .body(productService.findAll());
     }
 }

@@ -1,25 +1,32 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.ExceptionMessage;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
-    protected MenuProducts() {
+    public MenuProducts() {
         this.menuProducts = new ArrayList<>();
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException(ExceptionMessage.EMPTY_MENU_PRODUCTS.getMessage());
+        }
         this.menuProducts = menuProducts;
+    }
+
+    public void checkValidMenuPrice(Price price) {
+        if (!price.lessOrEqualThan(getProductPriceSum())) {
+            throw new IllegalArgumentException(ExceptionMessage.MENU_PRICE_LESS_PRODUCT_PRICE_SUM.getMessage());
+        }
     }
 
     public Price getProductPriceSum() {
@@ -34,11 +41,8 @@ public class MenuProducts {
         return totalPrice;
     }
 
-    public boolean isEmpty() {
-        return menuProducts.isEmpty();
-    }
-
     public List<MenuProduct> getValue() {
         return menuProducts;
     }
+
 }

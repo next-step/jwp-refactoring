@@ -1,8 +1,11 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
-import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.MenuProduct;
+import kitchenpos.product.domain.MenuProducts;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -11,11 +14,12 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,59 +30,135 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class TableGroupServiceTest {
 
-    @Mock
+    private OrderTable 주문테이블1;
+    private OrderTable 주문테이블2;
+    private List<OrderTable> orderTables;
+    private Map<Long, OrderTable> orderTableMap;
+    private TableGroup 테이블그룹;
+
+    private Product 참치김밥;
+    private Product 라볶이;
+    private Product 돈까스;
+
+    private MenuProduct 라볶이세트참치김밥;
+    private MenuProduct 라볶이세트라볶이;
+    private MenuProduct 라볶이세트돈까스;
+
+    private MenuGroup 분식;
+
+    private MenuProducts 라볶이세트구성;
+    private Menu 라볶이세트;
+
+    private OrderLineItem 주문항목1;
+    private OrderLineItem 주문항목2;
+
+    @MockBean
     private OrderRepository orderRepository;
-    @Mock
+    @MockBean
     private OrderTableRepository orderTableRepository;
-    @Mock
+    @MockBean
     private TableGroupRepository tableGroupRepository;
+    @Autowired
+    private ApplicationEventPublisher publisher;
     private TableService tableService;
     private TableGroupService tableGroupService;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableRepository);
-        tableGroupService = new TableGroupService(tableService, tableGroupRepository);
+        테이블그룹 = new TableGroup(1L, LocalDateTime.now());
+        주문테이블1 = new OrderTable(1L, 테이블그룹, new NumberOfGuests(4), false);
+        주문테이블2 = new OrderTable(2L, 테이블그룹, new NumberOfGuests(4), false);
+        orderTables = Arrays.asList(주문테이블1, 주문테이블2);
+        orderTableMap = orderTables.stream()
+                .collect(Collectors.toMap(OrderTable::getId, orderTable -> orderTable));
+
+        참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
+        라볶이 = new Product(2L, "라볶이", new Price(new BigDecimal(4500)));
+        돈까스 = new Product(3L, "돈까스", new Price(new BigDecimal(7000)));
+
+        라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식);
+
+        라볶이세트참치김밥 = new MenuProduct(라볶이세트.getId(), 참치김밥, new Quantity(1));
+        라볶이세트라볶이 = new MenuProduct(라볶이세트.getId(), 라볶이, new Quantity(1));
+        라볶이세트돈까스 = new MenuProduct(라볶이세트.getId(), 돈까스, new Quantity(1));
+
+        분식 = new MenuGroup(1L, "분식");
+
+        라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
+
+        주문항목1 = new OrderLineItem(1L, null, 라볶이세트.getId(), new Quantity(1));
+        주문항목2 = new OrderLineItem(2L, null, 라볶이세트.getId(), new Quantity(2));
+
+        tableService = new TableService(orderTableRepository, publisher);
+        tableGroupService = new TableGroupService(tableGroupRepository, tableService);
     }
 
     @DisplayName("테이블그룹 생성 테스트")
     @Test
     void createTableGroupTest() {
         //given
+        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now());
         final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(4), true);
         final OrderTable 주문테이블2 = new OrderTable(2L, null, new NumberOfGuests(4), true);
         final List<OrderTable> orderTables = Arrays.asList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(),
-                new OrderTables(orderTables));
 
+        when(tableGroupRepository.save(any(TableGroup.class)))
+                .thenReturn(테이블그룹);
         for (OrderTable orderTable : orderTables) {
             when(orderTableRepository.findById(orderTable.getId()))
                     .thenReturn(Optional.ofNullable(orderTable));
         }
-        given(tableGroupRepository.save(any(TableGroup.class)))
-                .willReturn(테이블그룹);
+        when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId()))
+                .thenReturn(orderTables);
 
         //when
+        List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
         final TableGroupResponse result = tableGroupService.create(
-                new TableGroupRequest(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList())));
+                new TableGroupRequest(orderTableIds));
 
         //then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(테이블그룹.getId()),
-                () -> assertThat(result.getOrderTables().stream().map(OrderTableResponse::getId).collect(Collectors.toList()))
-                        .containsAll(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList())),
-                () -> assertThat(result.getOrderTables().stream().map(OrderTableResponse::isEmpty).collect(Collectors.toList()))
+                () -> assertThat(orderTableResponsesToIds(result.getOrderTables()))
+                        .containsAll(orderTableToIds(orderTables)),
+                () -> assertThat(orderTableResponsesToBooleans(result.getOrderTables()))
                         .allMatch(empty -> !empty),
-                () -> assertThat(result.getOrderTables().stream().map(OrderTableResponse::getTableGroupId).collect(Collectors.toList()))
+                () -> assertThat(orderTableResponsesToTableGroupIds(result.getOrderTables()))
                         .allMatch(테이블그룹.getId()::equals)
         );
     }
+
+    private List<Long> orderTableResponsesToIds(List<OrderTableResponse> orderTables) {
+        return orderTables.stream()
+                .map(OrderTableResponse::getId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> orderTableToIds(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Boolean> orderTableResponsesToBooleans(List<OrderTableResponse> orderTables) {
+        return orderTables.stream()
+                .map(OrderTableResponse::isEmpty)
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> orderTableResponsesToTableGroupIds(List<OrderTableResponse> orderTables) {
+        return orderTables.stream()
+                .map(OrderTableResponse::getTableGroupId)
+                .collect(Collectors.toList());
+    }
+
 
     @DisplayName("테이블 목록이 비어있을 경우 테이블그룹 생성 오류 발생")
     @Test
@@ -145,11 +225,10 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupAlreadyExistTableGroupTableExceptionTest() {
         //given
-        final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(4), true);
-        final OrderTable 주문테이블2 = new OrderTable(2L, null, new NumberOfGuests(4), true);
+        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now());
+        final OrderTable 주문테이블1 = new OrderTable(1L, 테이블그룹, new NumberOfGuests(4), false);
+        final OrderTable 주문테이블2 = new OrderTable(2L, 테이블그룹, new NumberOfGuests(4), false);
         List<OrderTable> orderTables = Arrays.asList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
-        테이블그룹.group();
 
         List<Long> ids = orderTables.stream()
                 .map(OrderTable::getId)
@@ -170,45 +249,21 @@ public class TableGroupServiceTest {
     @Test
     void unGroupTableTest() {
         //given
-        final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(4), true);
-        final OrderTable 주문테이블2 = new OrderTable(2L, null, new NumberOfGuests(4), true);
-        List<OrderTable> orderTables = Arrays.asList(주문테이블1, 주문테이블2);
-        Map<Long, OrderTable> orderTableMap = orderTables.stream()
-                .collect(Collectors.toMap(OrderTable::getId, orderTable -> orderTable));
-        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
-        테이블그룹.group();
-
-        final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
-        final Product 라볶이 = new Product(3L, "라볶이", new Price(new BigDecimal(4500)));
-        final Product 돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
-
-        final MenuProduct 라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-        final MenuProduct 라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-        final MenuProduct 라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
-
-        final MenuGroup 분식 = new MenuGroup(1L, "분식");
-
-        final MenuProducts 라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-        final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
-
-        final OrderLineItem 주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-        final OrderLineItem 주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(2));
-
-        final Order 주문 = new Order(1L, 주문테이블1, OrderStatus.COMPLETION, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
+        final Order 주문 = new Order(1L, 주문테이블1.getId(), OrderStatus.COMPLETION, LocalDateTime.now());
 
         List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
+
+        when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId()))
+                .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
         when(tableGroupRepository.findById(테이블그룹.getId()))
                 .thenReturn(Optional.ofNullable(테이블그룹));
 
         for(Long id : orderTableIds) {
             OrderTable orderTable = orderTableMap.get(id);
-            when(orderTableRepository.findById(id))
-                    .thenReturn(Optional.ofNullable(orderTable));
-            when(orderRepository.findOrderByOrderTable(orderTable))
+            when(orderRepository.findOrderByOrderTableId(orderTable.getId()))
                     .thenReturn(Optional.ofNullable(주문));
         }
 
@@ -216,7 +271,9 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(테이블그룹.getId());
 
         //then
-        assertThat(orderTables.stream().map(OrderTable::getTableGroup).collect(Collectors.toList()))
+        assertThat(orderTables.stream()
+                .map(OrderTable::getTableGroup)
+                .collect(Collectors.toList()))
                 .allMatch(Objects::isNull);
     }
 
@@ -225,47 +282,16 @@ public class TableGroupServiceTest {
     @ValueSource(strings = {"COOKING", "MEAL"})
     void createTableGroupContainCookingOrMealTableExceptionTest(OrderStatus orderStatus) {
         //given
-        final OrderTable 주문테이블1 = new OrderTable(1L, null, new NumberOfGuests(4), true);
-        final OrderTable 주문테이블2 = new OrderTable(2L, null, new NumberOfGuests(4), true);
-        List<OrderTable> orderTables = Arrays.asList(주문테이블1, 주문테이블2);
-        Map<Long, OrderTable> orderTableMap = orderTables.stream()
-                .collect(Collectors.toMap(OrderTable::getId, orderTable -> orderTable));
-        final TableGroup 테이블그룹 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
-        테이블그룹.group();
+        final Order 주문 = new Order(1L, 주문테이블1.getId(), orderStatus, LocalDateTime.now());
 
-        final Product 참치김밥 = new Product(1L, "참치김밥", new Price(new BigDecimal(3000)));
-        final Product 라볶이 = new Product(3L, "라볶이", new Price(new BigDecimal(4500)));
-        final Product 돈까스 = new Product(4L, "돈까스", new Price(new BigDecimal(7000)));
-
-        final MenuProduct 라볶이세트참치김밥 = new MenuProduct(참치김밥, new Quantity(1));
-        final MenuProduct 라볶이세트라볶이 = new MenuProduct(라볶이, new Quantity(1));
-        final MenuProduct 라볶이세트돈까스 = new MenuProduct(돈까스, new Quantity(1));
-
-        final MenuGroup 분식 = new MenuGroup(1L, "분식");
-
-        final MenuProducts 라볶이세트구성 = new MenuProducts(Arrays.asList(라볶이세트참치김밥, 라볶이세트라볶이, 라볶이세트돈까스));
-        final Menu 라볶이세트 = new Menu(1L, "라볶이세트", new Price(new BigDecimal(14000)), 분식, 라볶이세트구성);
-
-        final OrderLineItem 주문항목1 = new OrderLineItem(1L, null, 라볶이세트, new Quantity(1));
-        final OrderLineItem 주문항목2 = new OrderLineItem(2L, null, 라볶이세트, new Quantity(2));
-
-        final Order 주문 = new Order(1L, 주문테이블1, orderStatus, LocalDateTime.now(),
-                new OrderLineItems(Arrays.asList(주문항목1, 주문항목2)));
-
-        List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId()))
+                .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
         when(tableGroupRepository.findById(테이블그룹.getId()))
                 .thenReturn(Optional.ofNullable(테이블그룹));
 
-        for(Long id : orderTableIds) {
-            OrderTable orderTable = orderTableMap.get(id);
-            when(orderTableRepository.findById(id))
-                    .thenReturn(Optional.ofNullable(orderTable));
-            when(orderRepository.findOrderByOrderTable(orderTable))
-                    .thenReturn(Optional.ofNullable(주문));
-        }
+        when(orderRepository.findOrderByOrderTableId(orderTables.get(0).getId()))
+                .thenReturn(Optional.ofNullable(주문));
 
         //when
         //then

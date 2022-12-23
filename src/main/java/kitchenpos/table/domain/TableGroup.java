@@ -15,28 +15,12 @@ public class TableGroup {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
-    @Embedded
-    private OrderTables orderTables;
 
-    protected TableGroup() {}
+    public TableGroup() {}
 
-    public TableGroup(OrderTables orderTables) {
-        this.orderTables = orderTables;
-    }
-
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this(orderTables);
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-    }
-
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::checkCookingOrMeal);
-        this.orderTables.ungroup();
-    }
-
-    public List<Long> getOrderTableIds() {
-        return orderTables.getOrderTableIds();
     }
 
     public Long getId() {
@@ -47,11 +31,4 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
-
-    public void group() {
-        orderTables.group(this);
-    }
 }
