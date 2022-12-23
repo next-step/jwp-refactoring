@@ -6,8 +6,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
     private final MenuGroupService menuGroupService;
 
-    public MenuService(MenuRepository menuRepository, ProductService productService, MenuGroupService menuGroupService) {
+    public MenuService(MenuRepository menuRepository, ProductRepository productRepository, MenuGroupService menuGroupService) {
         this.menuRepository = menuRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
         this.menuGroupService = menuGroupService;
     }
 
@@ -45,7 +45,8 @@ public class MenuService {
     private List<MenuProduct> toMenuProducts(MenuRequest request) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : request.getMenuProducts()) {
-            Product product = productService.findById(menuProductRequest.getProductId());
+            Product product = productRepository.findById(menuProductRequest.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. id=" + menuProductRequest.getProductId()));
             menuProducts.add(menuProductRequest.toMenuProduct(product));
         }
         return menuProducts;

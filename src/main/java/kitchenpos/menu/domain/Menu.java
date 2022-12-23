@@ -28,7 +28,7 @@ public class Menu {
 
     protected Menu() {
     }
-    
+
     public Menu(String name, BigDecimal price, Long menuGroupId) {
         validateName(name);
         validatePrice(price);
@@ -52,7 +52,7 @@ public class Menu {
 
     private void validateMenuGroupId(Long menuGroupId) {
         if (Objects.isNull(menuGroupId) || menuGroupId == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴 그룹이 비어있습니다.");
         }
     }
 

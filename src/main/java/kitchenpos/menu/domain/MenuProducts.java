@@ -20,9 +20,9 @@ public class MenuProducts {
     public void addAll(Menu menu, List<MenuProduct> menuProducts) {
         requireNonNull(menu, "menu");
         requireNonNull(menuProducts, "menuProducts");
-        for (MenuProduct menuProduct : menuProducts) {
-            add(menu, menuProduct);
-        }
+
+        menuProducts
+            .forEach(menuProduct -> add(menu, menuProduct));
     }
 
     private void add(Menu menu, MenuProduct menuProduct) {
