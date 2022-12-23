@@ -133,20 +133,6 @@ class OrderServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 테이블의 값이 비어있다면 주문 할 수 없다.")
-    @Test
-    void create_error_order_table_value_empty() {
-        // given
-        Menu 메뉴 = new Menu("name", BigDecimal.valueOf(1000), 메뉴그룹);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴));
-        주문_테이블.changeEmptyStatus(true);
-
-        // when && then
-        assertThatThrownBy(() -> orderService.create(주문_요청))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문의 목록을 조회할 수 있다.")
     @Test
     void list() {

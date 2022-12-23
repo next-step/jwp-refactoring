@@ -71,22 +71,6 @@ class TableServiceTest {
         );
     }
 
-    @DisplayName("주문 테이블이 비어있는 상태를 변경할 수 있다.")
-    @Test
-    void updateOrderTableEmpty() {
-        // given
-        OrderTable orderTable = new OrderTable(10, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), anyList())).thenReturn(false);
-        when(orderTableRepository.save(any())).thenReturn(orderTable);
-
-        // when
-        OrderTableResponse response = tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(1L, 6, true));
-
-        // then
-        assertThat(response.isEmpty()).isTrue();
-    }
-
     @DisplayName("등록되지 않은 주문 테이블의 비어있는 상태를 변경하면 예외가 발생한다.")
     @Test
     void updateNotExistOrderTableEmptyException() {
@@ -103,13 +87,16 @@ class TableServiceTest {
     @Test
     void updateWrongOrderStatusEmptyException() {
         // given
-        OrderTable orderTable = new OrderTable(4, true);
-        when(orderTableRepository.findById(orderTable.getId())).thenReturn(Optional.ofNullable(orderTable));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).thenReturn(false);
+        OrderTable orderTable1 = new OrderTable(6, true);
+        OrderTableRequest request = new OrderTableRequest(1L, 6, true);
+        when(orderTableRepository.findById(orderTable1.getId())).thenReturn(Optional.ofNullable(orderTable1));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
+            orderTable1.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+        )).thenReturn(true);
 
         // when && then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(1L, 6, true));
+            tableService.changeEmpty(orderTable1.getId(), request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
