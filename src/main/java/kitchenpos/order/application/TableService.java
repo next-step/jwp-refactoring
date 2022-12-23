@@ -1,11 +1,11 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +29,7 @@ public class TableService {
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        return OrderTableResponse.list(orderTableRepository.findAll());
+        return OrderTableResponse.toResponselist(orderTableRepository.findAll());
     }
 
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {

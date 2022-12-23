@@ -31,21 +31,18 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+        validatePrice(price);
         if (menuGroup == null) {
             throw new IllegalArgumentException();
         }
-        validatePrice();
 
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public void validatePrice() {
-        if (price.compareTo(menuProducts.getTotalPrice()) > 0) {
+    public void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
     }

@@ -40,6 +40,6 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        return MenuResponse.list(menuRepository.findAll());
+        return MenuResponse.toResponselist(menuRepository.findAll());
     }
 }
