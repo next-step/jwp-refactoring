@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class OrderTable {
+
     private static final int MIN_NUMBER_OF_GUEST = 0;
 
     @Id
@@ -75,6 +76,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public boolean onCookingOrMeal() {
+        for (Order order : orders) {
+            if (order.onCookingOrMeal()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void validateChangeEmpty() {
         if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException();
@@ -90,11 +100,11 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuest(int numberOfGuests) {
-        if(numberOfGuests < MIN_NUMBER_OF_GUEST){
+        if (numberOfGuests < MIN_NUMBER_OF_GUEST) {
             throw new IllegalArgumentException("손님의 수는 0명 이하일 수 없습니다.");
         }
 
-        if(empty){
+        if (empty) {
             throw new IllegalArgumentException("빈 테이블의 손님 수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;

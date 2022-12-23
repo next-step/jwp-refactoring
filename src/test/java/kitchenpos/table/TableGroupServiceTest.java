@@ -1,13 +1,19 @@
 package kitchenpos.table;
 
+import static kitchenpos.order.OrderFixture.주문항목;
+import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.table.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.TableGroupDao;
@@ -76,11 +82,15 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정_해제_하려는_주문_테이블_상태가_조리_식사_라면_에러발생() {
         //given
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null, Collections.singletonList(주문항목));
+        OrderTable 조리중테이블 = new OrderTable(1L, null, 0, false, Collections.singletonList(조리중));
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Collections.singletonList(조리중테이블));
+        when(tableGroupDao.findById(any())).thenReturn(Optional.of(tableGroup));
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
     }
 
 }
