@@ -26,3 +26,79 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+
+subprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.rest-assured:rest-assured'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project(':kitchenpos-common'){
+    dependencies {
+
+    }
+}
+
+project(':kitchenpos-menu'){
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-product')
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-product').sourceSets.test.output
+    }
+}
+
+project(':kitchenpos-order'){
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-menu')
+        implementation project(':kitchenpos-table')
+        implementation project(':kitchenpos-product')
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-menu').sourceSets.test.output
+        testCompile project(':kitchenpos-table').sourceSets.test.output
+        testCompile project(':kitchenpos-product').sourceSets.test.output
+    }
+}
+
+project(':kitchenpos-product'){
+    dependencies {
+        implementation project(':kitchenpos-common')
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+    }
+}
+
+project(':kitchenpos-table'){
+    dependencies {
+        implementation project(':kitchenpos-order')
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-product')
+        testCompile project(':kitchenpos-order').sourceSets.test.output
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+        testCompile project(':kitchenpos-product').sourceSets.test.output
+    }
+}
