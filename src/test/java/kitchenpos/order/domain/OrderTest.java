@@ -33,16 +33,6 @@ class OrderTest {
 	}
 
 	@Test
-	@DisplayName("주문 생성 - 주문 테이블이 비어있으면 예외 발생")
-	void createOrderWithEmptyOrderTableTest() {
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> Order.of(
-				비어있는_다섯명_테이블().id(),
-				OrderLineItems.fromSingle(주문_품목())))
-			.withMessage("주문을 하는 테이블은 비어있을 수 없습니다.");
-	}
-
-	@Test
 	@DisplayName("주문 생성 - 주문 품목이 비어있으면 예외 발생")
 	void createOrderWithEmptyOrderLineItemsTest() {
 		assertThatIllegalArgumentException()

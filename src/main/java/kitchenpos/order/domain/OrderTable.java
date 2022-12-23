@@ -99,9 +99,4 @@ public class OrderTable {
 	public boolean emptyAndNoGroup() {
 		return isEmpty() && !hasTableGroup();
 	}
-
-
-	public boolean isOrdered() {
-		return false;
-	}
 }
