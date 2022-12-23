@@ -5,11 +5,8 @@ import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.table.TableFixture.일번테이블;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
-import kitchenpos.order.OrderFixture;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +26,7 @@ class OrderTest {
     void changeOrderStatusWhenItCompleted(){
         Order 주문 = new Order(1L, 일번테이블, COMPLETION.name(), null,
             Collections.singletonList(주문항목));
-        assertThatThrownBy(() -> 주문.setOrderStatus(OrderStatus.MEAL.name()))
+        assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL.name()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
     }
@@ -51,6 +48,16 @@ class OrderTest {
 
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(주문.getOrderedTime()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("주문 상태 변경 테스트")
+    void changeOrderStatus(){
+        Order 주문 = new Order(1L, 일번테이블, null, null,
+            Collections.singletonList(주문항목));
+        주문.changeOrderStatus(OrderStatus.COOKING.name());
+
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
 }

@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -11,14 +10,12 @@ import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
@@ -56,17 +53,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
-        final Order savedOrder = orderDao.findById(orderId)
+        final Order order = orderDao.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
-
-        changeOrderStatus(savedOrder, orderStatus);
-
-        orderDao.save(savedOrder);
-        return OrderResponse.from(savedOrder);
-    }
-
-    private void changeOrderStatus(Order savedOrder, String orderStatus) {
-        savedOrder.setOrderStatus(orderStatus);
+        order.changeOrderStatus(orderStatus);
+        return OrderResponse.from(orderDao.save(order));
     }
 
     private OrderTable getOrderTable(Long orderTableId) {

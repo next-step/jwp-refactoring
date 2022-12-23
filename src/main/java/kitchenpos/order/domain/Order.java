@@ -60,6 +60,17 @@ public class Order {
         orderedTime = LocalDateTime.now();
     }
 
+    public void changeOrderStatus(final String orderStatus) {
+        validateStatus();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+            throw new IllegalArgumentException("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -77,17 +88,6 @@ public class Order {
 
     public String getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        validateStatus();
-        this.orderStatus = orderStatus;
-    }
-
-    private void validateStatus() {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
-            throw new IllegalArgumentException("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
-        }
     }
 
     public LocalDateTime getOrderedTime() {
