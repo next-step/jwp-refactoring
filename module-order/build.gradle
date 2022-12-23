@@ -1,0 +1,11 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    compile project(':module-table')
+    compile project(':module-menu')
+
+    testCompile project(':module-product').sourceSets.test.output
+    testCompile project(':module-menu').sourceSets.test.output
+    testCompile project(':module-table').sourceSets.test.output
+}

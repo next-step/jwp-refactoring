@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':module-common')
+    compile project(':module-menu')
+    compile project(':module-order')
+    compile project(':module-product')
+    compile project(':module-table')
+
+    implementation 'org.flywaydb:flyway-core'
+}
