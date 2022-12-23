@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.ProductPrice;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -31,7 +33,7 @@ public class MenuPrice {
         return price;
     }
 
-    public boolean isBiggerThen(BigDecimal targetAmount) {
-        return this.price.compareTo(targetAmount) > 0;
+    public boolean isBiggerThen(ProductPrice productPrice) {
+        return this.price.compareTo(productPrice.getPrice()) > 0;
     }
 }
