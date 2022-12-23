@@ -3,8 +3,8 @@ package kitchenpos.order.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
 
 @Embeddable

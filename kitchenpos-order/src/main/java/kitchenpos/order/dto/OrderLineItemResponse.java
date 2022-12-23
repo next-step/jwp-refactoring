@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.common.domain.Quantity;
+import kitchenpos.domain.Quantity;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 
