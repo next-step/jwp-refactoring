@@ -65,7 +65,7 @@ public class OrderService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(MATCH_NOT_MENU.getMessage()));
 
-        return new OrderLineItem(menu, item.getQuantity());
+        return new OrderLineItem(menu.getId(), item.getQuantity());
     }
 
     @Transactional(readOnly = true)

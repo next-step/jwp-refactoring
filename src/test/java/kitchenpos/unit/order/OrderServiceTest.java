@@ -68,7 +68,7 @@ class OrderServiceTest {
         후치콜세트 = new Menu(1L, "후치콜세트", new MenuPrice(BigDecimal.valueOf(5_000)), 치킨.getId());
 
         주문테이블 = new OrderTable(1L, null, 0, false);
-        주문_항목 = new OrderLineItem(후치콜세트, 1L);
+        주문_항목 = new OrderLineItem(후치콜세트.getId(), 1L);
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, new OrderLineItems(Arrays.asList(주문_항목)));
         주문요청 = new OrderLineItemRequest(후치콜세트.getId(), 1L);
     }
@@ -93,7 +93,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 리스트를 받을 수 있다.")
     void getOrderList() {
-        OrderLineItem 주문_항목 = new OrderLineItem(1L, 후치콜세트, 1L);
+        OrderLineItem 주문_항목 = new OrderLineItem(1L, 후치콜세트.getId(), 1L);
         Order 주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, new OrderLineItems(Arrays.asList(주문_항목)));
 
         given(orderPort.findAll()).willReturn(Collections.singletonList(주문));
@@ -119,7 +119,7 @@ class OrderServiceTest {
     @DisplayName("계산이 완료된 상태이면 주문 상태 변경이 불가능하다.")
     void changeOrderStatusNotCompleteChange() {
         주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION, null);
-        주문_항목 = new OrderLineItem(후치콜세트, 1L);
+        주문_항목 = new OrderLineItem(후치콜세트.getId(), 1L);
         주문요청 = new OrderLineItemRequest(후치콜세트.getId(), 1L);
 
 
