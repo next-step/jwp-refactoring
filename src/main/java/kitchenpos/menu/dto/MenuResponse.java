@@ -32,7 +32,7 @@ public class MenuResponse {
                 menu.getId(),
                 menu.getName().value(),
                 menu.getPrice().value(),
-                menu.getMenuGroup().getId(),
+                menu.getMenuGroupId(),
                 menuProducts
         );
     }
@@ -46,13 +46,5 @@ public class MenuResponse {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public List<MenuProductResponse> getMenuProducts() {
-        return menuProducts;
     }
 }

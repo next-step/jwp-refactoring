@@ -43,4 +43,8 @@ public class MenuProductRequest {
                 .findFirst()
                 .get();
     }
+
+    public MenuProduct toMenuProduct(Product product) {
+        return MenuProduct.of(product, quantity);
+    }
 }

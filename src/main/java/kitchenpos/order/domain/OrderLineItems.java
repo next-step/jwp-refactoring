@@ -5,14 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import kitchenpos.common.error.ErrorEnum;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {}
@@ -21,13 +20,18 @@ public class OrderLineItems {
         validate(orderLineItems);
         this.orderLineItems = new ArrayList<>(orderLineItems);
     }
+    public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+        return new OrderLineItems(orderLineItems);
+    }
 
     private void validate(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException(ErrorEnum.ORDER_LINE_ITEMS_IS_EMPTY.message());
         }
     }
-
+    public void updateOrder(Order order) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
+    }
     public void setOrder(final Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
     }

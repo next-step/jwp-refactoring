@@ -2,6 +2,8 @@ package kitchenpos.ordertable.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -25,24 +27,30 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable orderTable = orderTableRepository.save(request.createOrderTable());
-        return OrderTableResponse.from(orderTable);
+        final OrderTable orderTable = orderTableRepository.save(request.createOrderTable());
+        return OrderTableResponse.of(orderTable);
     }
 
     public List<OrderTableResponse> findAll() {
         return orderTableRepository.findAll()
                 .stream()
-                .map(OrderTableResponse::from)
+                .map(OrderTableResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final UpdateEmptyRequest request) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        List<Order> orders = findAllOrderByOrderTableId(orderTableId);
+        final List<Order> orders = findAllOrderByOrderTableId(orderTableId);
 
-        savedOrderTable.updateEmpty(request.isEmpty(), orders);
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        validateOngoingOrder(orders);
+        savedOrderTable.updateEmpty(request.isEmpty());
+
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private void validateOngoingOrder(List<Order> orders) {
+        orders.forEach(Order::validateOrderStatusShouldComplete);
     }
 
     private List<Order> findAllOrderByOrderTableId(Long id) {
@@ -57,12 +65,12 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.updateNumberOfGuest(request.getNumberOfGuests());
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.ORDER_TABLE_NOT_FOUND.message()));
         return savedOrderTable;
     }
 }

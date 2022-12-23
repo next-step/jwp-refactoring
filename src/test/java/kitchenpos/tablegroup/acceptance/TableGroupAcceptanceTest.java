@@ -28,9 +28,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(4), true))
+        주문테이블_A = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(3), true))
                 .as(OrderTable.class);
-        주문테이블_B = 주문테이블_생성_요청(new OrderTable(null, new NumberOfGuests(4), true))
+        주문테이블_B = 주문테이블_생성_요청(new OrderTable(new NumberOfGuests(2), true))
                 .as(OrderTable.class);
         개발자_모임_단체 = TableGroupRequest.of(Arrays.asList(주문테이블_A.getId(), 주문테이블_B.getId()));
     }

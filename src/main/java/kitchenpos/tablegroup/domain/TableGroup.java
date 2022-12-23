@@ -3,18 +3,17 @@ package kitchenpos.tablegroup.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.order.domain.Order;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,22 +21,27 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
+    public TableGroup() {}
 
-    protected TableGroup() {}
-
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        orderTables.validateGroup();
+    private TableGroup(Long id) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
-    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
-        orderTables.validateGroup();
+    public static TableGroup of(Long id) {
+        return new TableGroup(id);
+    }
+
+    public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
+    public void ungroup(List<Order> orders) {
+        orders.forEach(Order::validateOrderStatusShouldComplete);
     }
 
     public Long getId() {
@@ -48,26 +52,14 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
-    }
-
-    public List<Long> getOrderTableIds() {
-        return orderTables.get()
-                .stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-    }
-
-    public void ungroup(List<Order> orders) {
-        orders.forEach(Order::validateOrderStatusShouldComplete);
-        orderTables.ungroup();
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TableGroup that = (TableGroup) o;
         return Objects.equals(id, that.id);
     }

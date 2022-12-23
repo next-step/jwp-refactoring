@@ -1,42 +1,42 @@
 package kitchenpos.ordertable.dto;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableResponse {
     private Long id;
-    private Long tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTableResponse() {}
 
-    private OrderTableResponse(Long id, Long tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTableResponse from(OrderTable orderTable) {
-        Long id = orderTable.getId();
-        int numberOfGuests = orderTable.getNumberOfGuests();
-        boolean empty = orderTable.isEmpty();
-        TableGroup tableGroup = orderTable.getTableGroup();
+    public static OrderTableResponse of(OrderTable orderTable) {
+        return new OrderTableResponse(orderTable.getId(),
+                orderTable.getTableGroupId(),
+                orderTable.getNumberOfGuests(),
+                orderTable.isEmpty());
+    }
 
-        if (tableGroup == null) {
-            return new OrderTableResponse(id, null, numberOfGuests, empty);
-        }
-
-        return new OrderTableResponse(id, tableGroup.getId(), numberOfGuests, empty);
+    public static List<OrderTableResponse> list(List<OrderTable> orderTables) {
+        return orderTables.stream().map(OrderTableResponse::of).collect(toList());
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

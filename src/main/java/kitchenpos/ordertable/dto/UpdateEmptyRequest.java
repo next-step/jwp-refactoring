@@ -5,7 +5,7 @@ public class UpdateEmptyRequest {
 
     protected UpdateEmptyRequest() {}
 
-    private UpdateEmptyRequest(boolean empty) {
+    public UpdateEmptyRequest(boolean empty) {
         this.empty = empty;
     }
 

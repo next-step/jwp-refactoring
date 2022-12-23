@@ -1,5 +1,10 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.common.error.ErrorEnum;
 
 @Entity
 public class OrderLineItem {
@@ -16,9 +21,13 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "id", column = @Column(name = "menu_id")),
+            @AttributeOverride(name = "name.name", column = @Column(name = "menu_name")),
+            @AttributeOverride(name = "price.price", column = @Column(name = "menu_price"))
+    })
+    private OrderMenu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -27,22 +36,42 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Quantity quantity, Menu menu) {
-        this.seq = seq;
-        this.quantity = quantity;
+    public OrderLineItem(Order order, OrderMenu menu, Quantity quantity) {
+        if (Objects.isNull(order)) {
+            throw new IllegalArgumentException(ErrorEnum.ORDER_TABLE_IS_EMPTY.message());
+        }
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException(ErrorEnum.REQUIRED_MENU.message());
+        }
+        if (quantity.value() < 0) {
+            throw new IllegalArgumentException(ErrorEnum.QUANTITY_UNDER_ZERO.message());
+        }
+
+        updateOrder(order);
+        this.order = order;
         this.menu = menu;
+        this.quantity = quantity;
+    }
+    private OrderLineItem(Long seq, Order order, OrderMenu menu, Quantity quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
     }
 
-    public OrderLineItem(Quantity quantity, Menu menu) {
-        this.quantity = quantity;
-        this.menu = menu;
+    public static OrderLineItem of(OrderMenu menu, long quantity) {
+        return new OrderLineItem(null, null, menu, new Quantity(quantity));
+    }
+
+    public void updateOrder(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Menu getMenu() {
+    public OrderMenu getMenu() {
         return menu;
     }
 

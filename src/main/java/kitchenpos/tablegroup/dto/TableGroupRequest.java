@@ -1,17 +1,13 @@
 package kitchenpos.tablegroup.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupRequest {
     private List<Long> orderTableIds;
 
     protected TableGroupRequest() {}
 
-    private TableGroupRequest(List<Long> orderTableIds) {
+    public TableGroupRequest(List<Long> orderTableIds) {
         this.orderTableIds = orderTableIds;
     }
 
@@ -21,11 +17,5 @@ public class TableGroupRequest {
 
     public List<Long> getOrderTableIds() {
         return orderTableIds;
-    }
-
-    public TableGroup createTableGroup(List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(orderTables));
-        orderTables.forEach(table -> table.setTableGroup(tableGroup));
-        return tableGroup;
     }
 }

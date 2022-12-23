@@ -3,31 +3,32 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.UpdateOrderStatusRequest;
+import kitchenpos.order.dto.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -56,76 +57,69 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Product 치킨;
-    private Product 스파게티;
+    private Product 순살치킨_상품;
+    private Product 토마토스파게티_상품;
     private MenuProduct 치킨_두마리;
     private MenuProduct 스파게티_이인분;
-    private MenuProductRequest 치킨_두마리_요청;
-    private MenuProductRequest 스파게티_이인분_요청;
     private Menu 치킨_스파게티_더블세트_메뉴;
     private MenuGroup 양식;
     private OrderTable 주문_테이블;
     private OrderLineItem 주문_항목;
     private Order 주문;
-    private List<Long> menuIds;
     OrderLineItemRequest 주문_항목_요청;
 
     @BeforeEach
     public void setUp() {
-        치킨 = new Product(1L, new Name("치킨"), new Price(BigDecimal.valueOf(20_000)));
-        스파게티 = new Product(2L, new Name("스파게티"), new Price(BigDecimal.valueOf(10_000)));
+        순살치킨_상품 = new Product(1L, "순살치킨", 20_000L);
+        토마토스파게티_상품 = new Product(2L, "스파게티", 10_000L);
         양식 = new MenuGroup(1L, new Name("양식"));
 
-        치킨_스파게티_더블세트_메뉴 = new Menu(1L, new Name("치킨 스파게티 더블세트 메뉴"), new Price(BigDecimal.valueOf(13_000)), 양식);
-        치킨_두마리 = new MenuProduct(1L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 치킨);
-        스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 스파게티);
-        치킨_두마리_요청 = MenuProductRequest.of(치킨.getId(), 1L);
-        스파게티_이인분_요청 = MenuProductRequest.of(스파게티.getId(), 1L);
+        치킨_두마리 = new MenuProduct(1L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 순살치킨_상품);
+        스파게티_이인분 = new MenuProduct(2L, new Quantity(2L), 치킨_스파게티_더블세트_메뉴, 토마토스파게티_상품);
+        List<MenuProduct> menuProducts = Arrays.asList(치킨_두마리, 스파게티_이인분);
 
-        주문_테이블 = new OrderTable(1L, new NumberOfGuests(0), false);
-        주문_항목 = new OrderLineItem(new Quantity(1L), 치킨_스파게티_더블세트_메뉴);
-        주문 = new Order(주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
+        치킨_스파게티_더블세트_메뉴 = Menu.of(1L, "치킨 스파게티 더블세트 메뉴", BigDecimal.valueOf(13_000L), 양식.getId(), menuProducts);
+
+        주문_테이블 = new OrderTable(1L, new NumberOfGuests(1), false);
+        주문_항목 = OrderLineItem.of(OrderMenu.of(치킨_스파게티_더블세트_메뉴), 1L);
+        주문 = new Order(1L, 주문_테이블.getId(), new OrderLineItems(Arrays.asList(주문_항목)));
         주문.addOrderLineItem(주문_항목);
-        주문_항목_요청 = OrderLineItemRequest.of(치킨_스파게티_더블세트_메뉴.getMenuGroup().getId(), 1L);
-
-        menuIds = 주문.getOrderLineItems()
-                .stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .collect(Collectors.toList());
+        주문_항목_요청 = OrderLineItemRequest.of(치킨_스파게티_더블세트_메뉴.getMenuGroupId(), 1L);
     }
 
     @Test
     void 주문을_등록할_수_있다() {
-        when(menuRepository.findAllById(menuIds)).thenReturn(Arrays.asList(치킨_스파게티_더블세트_메뉴));
-        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
-        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문_테이블));
-        when(orderRepository.save(주문)).thenReturn(주문);
-        OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
+        OrderRequest request = new OrderRequest(주문_테이블.getId(), Collections.singletonList(주문_항목_요청));
+        Order 주문 = Order.of(1L, 주문_테이블.getId(),
+                OrderLineItems.of(Collections.singletonList(주문_항목_요청.toOrderLineItem(OrderMenu.of(치킨_스파게티_더블세트_메뉴)))));
+        when(menuRepository.findById(치킨_스파게티_더블세트_메뉴.getId())).thenReturn(Optional.of(치킨_스파게티_더블세트_메뉴));
+        when(orderTableRepository.findById(request.getOrderTableId())).thenReturn(Optional.of(주문_테이블));
+        when(orderRepository.save(any(Order.class))).thenReturn(주문);
 
         OrderResponse result = orderService.create(request);
 
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(주문.getId()),
                 () -> assertThat(result.getOrderStatus()).isEqualTo(주문.getOrderStatus().name())
-        );    }
+        );
+    }
 
     @Test
     void 주문_항목이_비어있는_경우_주문을_등록할_수_없다() {
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
     void 등록되지_않은_주문_항목이_존재_할_경우_주문을_등록할_수_없다() {
         OrderLineItemRequest notExistsOrderItem = OrderLineItemRequest
-                .of(치킨_스파게티_더블세트_메뉴.getMenuGroup().getId(), 1L);
+                .of(치킨_스파게티_더블세트_메뉴.getMenuGroupId(), 1L);
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(notExistsOrderItem));
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -133,18 +127,17 @@ public class OrderServiceTest {
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(ErrorEnum.NOT_EXISTS_ORDER_TABLE.message());
     }
 
     @Test
     void 주문_테이블이_비어있는_경우_주문을_등록할_수_없다() {
         주문_테이블.setEmpty(true);
         OrderRequest request = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
-        when(menuRepository.countByIdIn(menuIds)).thenReturn(menuIds.size());
-        when(orderTableRepository.findById(주문.getOrderTable().getId())).thenReturn(Optional.of(주문_테이블));
 
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
@@ -161,8 +154,8 @@ public class OrderServiceTest {
 
     @Test
     void 주문_상태를_변경할_수_있다() {
-        OrderStatus expectedOrderStatus = OrderStatus.MEAL;
-        UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(expectedOrderStatus.name());
+        kitchenpos.order.domain.OrderStatus expectedOrderStatus = kitchenpos.order.domain.OrderStatus.MEAL;
+        OrderStatus request = OrderStatus.of(expectedOrderStatus.name());
         given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
         given(orderRepository.save(주문)).willReturn(주문);
 
@@ -176,18 +169,21 @@ public class OrderServiceTest {
 
     @Test
     void 등록되지_않은_주문_상태를_변경할_수_없다() {
-        UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(OrderStatus.COOKING.name());
+        OrderStatus request = OrderStatus.of(kitchenpos.order.domain.OrderStatus.COOKING.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(ErrorEnum.ORDER_TABLE_NOT_FOUND.message());
     }
 
     @Test
     void 계산_완료된_주문은_상태를_변경할_수_없다() {
-        주문.setOrderStatus(OrderStatus.COMPLETION);
-        UpdateOrderStatusRequest request = UpdateOrderStatusRequest.of(주문.getOrderStatus().name());
+        given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), request))
-                .isInstanceOf(IllegalArgumentException.class);
+        주문.setOrderStatus(kitchenpos.order.domain.OrderStatus.COMPLETION);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), OrderStatus.of(주문.getOrderStatus().name())))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ErrorEnum.ORDER_COMPLETION_STATUS_NOT_CHANGE.message());
     }
 }

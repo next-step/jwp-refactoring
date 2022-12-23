@@ -6,6 +6,7 @@ import kitchenpos.common.error.ErrorEnum;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.ordertable.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -28,24 +29,25 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> savedOrderTables = findAllOrderTablesByIds(request.getOrderTableIds());
-        final TableGroup savedTableGroup = tableGroupRepository.save(request.createTableGroup(savedOrderTables));
-        return TableGroupResponse.from(savedTableGroup);
+        OrderTables orderTables = OrderTables.of(orderTableById(request.getOrderTableIds()));
+        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        orderTables.group(tableGroup.getId());
+        return TableGroupResponse.of(tableGroup, orderTables);
+    }
+
+    private List<OrderTable> orderTableById(List<Long> ids) {
+        return ids.stream()
+                .map(this::findOrderTableById)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = findTableGroupById(tableGroupId);
-        List<Order> orders = findAllOrderByTableIds(tableGroup.getOrderTableIds());
-
+        final TableGroup tableGroup = findTableGroupById(tableGroupId);
+        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        List<Order> orders = findAllOrderByTableIds(orderTables.getOrderTableIds());
         tableGroup.ungroup(orders);
-        tableGroupRepository.save(tableGroup);
-    }
-
-    private List<OrderTable> findAllOrderTablesByIds(List<Long> ids) {
-        return ids.stream()
-                .map(this::findOrderTableById)
-                .collect(Collectors.toList());
+        orderTables.ungroup();
     }
 
     private OrderTable findOrderTableById(Long id) {
@@ -56,6 +58,7 @@ public class TableGroupService {
     private List<Order> findAllOrderByTableIds(List<Long> ids) {
         return orderRepository.findAllByOrderTableIdIn(ids);
     }
+
     private TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_EXISTS_TABLE_GROUP.message()));

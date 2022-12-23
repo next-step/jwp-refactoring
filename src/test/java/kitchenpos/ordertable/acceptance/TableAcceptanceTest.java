@@ -28,8 +28,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블_A = new OrderTable(null, new NumberOfGuests(4),  false);
-        주문테이블_B = new OrderTable(null, new NumberOfGuests(4),  false);
+        주문테이블_A = new OrderTable(null, new NumberOfGuests(4), true);
+        주문테이블_B = new OrderTable(null, new NumberOfGuests(4), true);
     }
 
     @Test
@@ -76,6 +76,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     void 주문_테이블의_방문한_손님_수를_변경할_수_있다() {
         // given
         int expectedNumberOfGuest = 8;
+        주문테이블_A.setEmpty(false);
         주문테이블_A = 주문테이블_생성_요청(주문테이블_A).as(OrderTable.class);
         OrderTable 업데이트된_주문테이블_A = new OrderTable(
                 주문테이블_A.getId(),
