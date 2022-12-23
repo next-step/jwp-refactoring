@@ -20,6 +20,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -50,13 +51,8 @@ public class Order {
 
     public Order(OrderTable orderTable) {
         validateOrderTable(orderTable);
+        changeOrderStatus(OrderStatus.COOKING);
         this.orderTable = orderTable;
-        orderStatus = OrderStatus.COOKING;
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        validateOrderStatus();
-        this.orderStatus = orderStatus;
     }
 
     private void validateOrderTable(OrderTable orderTable) {
@@ -65,14 +61,29 @@ public class Order {
         }
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateOrderStatus();
+        this.orderStatus = orderStatus;
+    }
+
     private void validateOrderStatus() {
+        if (this.orderStatus == null) {
+            return;
+        }
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException("이미 주문이 완료되었습니다.");
         }
     }
 
-    public void addOrderLineItem(Menu menu, long quantity) {
-        orderLineItems.addOrderLineItem(this, menu, quantity);
+    public void order(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 항목이 비어있을 수 없습니다.");
+        }
+        orderLineItems.forEach(this::addOrderLineItem);
+    }
+
+    void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.addOrderLineItem(this, orderLineItem);
     }
 
     public Long getId() {

@@ -1,39 +1,42 @@
 package kitchenpos.menu.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Transactional(readOnly = true)
 @Service
 public class MenuService {
+
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService, ProductService productService) {
+    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService, ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public MenuResponse create(MenuRequest request) {
-
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
-        List<MenuProduct> menuProducts = productService.findMenuProducts(request.getMenuProducts());
+        List<Product> products = findAllProductByIds(request.findAllProductIds());
+        Menu menu = request.toMenu(menuGroup, products);
+        return MenuResponse.from(menuRepository.save(menu));
+    }
 
-        Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts);
-        Menu savedMenu = menuRepository.save(menu);
-
-        return MenuResponse.from(savedMenu);
+    private List<Product> findAllProductByIds(List<Long> productIds) {
+        List<Product> products = productRepository.findAllById(productIds);
+        if (productIds.size() != products.size()) {
+            throw new IllegalArgumentException("요청한 상품 메뉴의 개수가 일치하지 않습니다.");
+        }
+        return products;
     }
 
     public List<MenuResponse> list() {

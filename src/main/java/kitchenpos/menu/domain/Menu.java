@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -36,21 +37,31 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        validate(menuGroup);
         this.name = name;
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
     }
 
-    private void addMenuProducts(List<MenuProduct> menuProducts) {
+
+    private void validate(MenuGroup menuGroup) {
+        if (Objects.isNull(menuGroup)) {
+            throw new IllegalArgumentException("메뉴 그룹 값이 없으면 메뉴를 등록할 수 없습니다.");
+        }
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(this::addMenuProduct);
-        price.validateTotalPrice(this.menuProducts.totalPrice());
+        validatePrice();
     }
 
-    private void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
+    public void addMenuProduct(MenuProduct menuProduct) {
+        this.menuProducts.addMenuProduct(this, menuProduct);
+    }
+
+    private void validatePrice() {
+        price.validateTotalPrice(this.menuProducts.totalPrice());
     }
 
 

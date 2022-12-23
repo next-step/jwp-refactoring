@@ -14,7 +14,7 @@ class PriceTest {
     void not_zero_price() {
         // given && when && then
         Assertions.assertThatThrownBy(() -> Price.of(BigDecimal.valueOf(-1000)))
-                .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("기존 가격이 전체 가격보다 크면 안된다.")
@@ -24,8 +24,8 @@ class PriceTest {
         Price price = Price.of(BigDecimal.valueOf(10_000));
 
         // when && then
-        Assertions.assertThatThrownBy(() -> price.validateTotalPrice(BigDecimal.valueOf(9000)))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> price.validateTotalPrice(Price.of(BigDecimal.valueOf(9000))))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

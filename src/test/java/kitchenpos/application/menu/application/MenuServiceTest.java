@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -73,11 +75,9 @@ class MenuServiceTest {
         아메리카노 = new Product("아메리카노", BigDecimal.valueOf(5000));
         바닐라라떼 = new Product("바닐라라떼", BigDecimal.valueOf(5000));
         기본메뉴그룹 = new MenuGroup("기본메뉴그룹");
-        기본메뉴_아메리카노 = new MenuProduct(아메리카노, 1);
-        기본메뉴_바닐라라떼 = new MenuProduct(바닐라라떼, 1);
-        기본메뉴 = new Menu("기본메뉴", BigDecimal.valueOf(5000), 기본메뉴그룹,
-            Arrays.asList(기본메뉴_아메리카노, 기본메뉴_바닐라라떼));
-        아메리카노요청 = new MenuProductRequest(아메리카노.getId(), 2L);
+        ReflectionTestUtils.setField(아메리카노, "id", 1L);
+        기본메뉴 = new Menu("기본메뉴", BigDecimal.valueOf(5000), 기본메뉴그룹);
+        아메리카노요청 = new MenuProductRequest(아메리카노.getId(), 1L);
         메뉴기본요청 = new MenuRequest("메뉴 기본", BigDecimal.valueOf(5_000), 기본메뉴그룹.getId(),
             Arrays.asList(아메리카노요청));
 
@@ -89,7 +89,7 @@ class MenuServiceTest {
     void createMenu() {
         // given
         when(menuGroupService.findById(any())).thenReturn(기본메뉴그룹);
-        when(productService.findMenuProducts(any())).thenReturn(Arrays.asList(기본메뉴_아메리카노));
+        BDDMockito.given(productRepository.findAllById(Arrays.asList(1L))).willReturn(Arrays.asList(아메리카노));
         when(menuRepository.save(any())).thenReturn(기본메뉴);
 
         // when
@@ -103,11 +103,15 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격이 0원 미만이면 오류 발생한다.")
     void createUnderZeroPriceMenuException() {
         // given
-        MenuRequest 가격zero미만 = new MenuRequest("가격zero미만", BigDecimal.valueOf(-7000L),
-            기본메뉴그룹.getId(), null);
+        MenuRequest 메뉴_가격_이상 = new MenuRequest(
+            "메뉴 기본", BigDecimal.valueOf(-5_000), 기본메뉴그룹.getId(),  Arrays.asList(아메리카노요청)
+        );
+        when(menuGroupService.findById(any())).thenReturn(기본메뉴그룹);
+        when(productRepository.findAllById(Arrays.asList(1L))).thenReturn(Arrays.asList(아메리카노));
 
-        // then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(가격zero미만));
+        // when && then
+        assertThatThrownBy(() -> menuService.create(메뉴_가격_이상))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

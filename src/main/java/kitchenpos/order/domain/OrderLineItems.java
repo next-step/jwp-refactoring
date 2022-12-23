@@ -16,8 +16,11 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
-    public void addOrderLineItem(Order order, Menu menu, long quantity) {
-        this.orderLineItems.add(new OrderLineItem(order, menu, quantity));
+    public void addOrderLineItem(Order order, OrderLineItem orderLineItem) {
+        if (!orderLineItems.contains(orderLineItem)) {
+            this.orderLineItems.add(orderLineItem);
+            orderLineItem.updateOrder(order);
+        }
     }
 
     public List<OrderLineItem> getOrderLineItems() {

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
+
     @Mock
     private ProductRepository productRepository;
 
@@ -38,23 +39,24 @@ class ProductServiceTest {
 
     @BeforeEach
     void set_up() {
-        아메리카노 = new Product("아메리카노", BigDecimal.valueOf(15_000));
-        바닐라라떼 =  new Product("바닐라라떼", BigDecimal.valueOf(18_000));
+        아메리카노 = new Product("아메리카노", BigDecimal.valueOf(5_000));
+        바닐라라떼 = new Product("바닐라라떼", BigDecimal.valueOf(8_000));
     }
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void create() {
-
         // given
         when(productRepository.save(any())).thenReturn(아메리카노);
 
         // when
-        ProductResponse 상품_등록 = productService.create(new ProductRequest("아메리카노", BigDecimal.valueOf(3_000)));
+        ProductResponse 상품_등록 = productService.create(
+            new ProductRequest("강정치킨", BigDecimal.valueOf(5_000)));
 
+        // then
         assertAll(
             () -> assertThat(상품_등록.getName()).isEqualTo(아메리카노.getName()),
-            () -> assertThat(상품_등록.getPrice()).isEqualTo(아메리카노.getPrice())
+            () -> assertThat(상품_등록.getPrice()).isEqualTo(아메리카노.getPrice().getPrice())
         );
     }
 
@@ -71,7 +73,8 @@ class ProductServiceTest {
     @ValueSource(ints = {-1, -1000, -20000})
     void createUnderZeroPriceProductionException(int input) {
         // given & when & then
-        assertThatThrownBy(() -> productService.create(new ProductRequest("아메리카노", BigDecimal.valueOf(input))))
+        assertThatThrownBy(
+            () -> productService.create(new ProductRequest("아메리카노", BigDecimal.valueOf(input))))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -88,9 +91,9 @@ class ProductServiceTest {
         assertAll(
             () -> assertThat(상품목록).hasSize(2),
             () -> assertThat(상품목록.get(0).getName()).isEqualTo(아메리카노.getName()),
-            () -> assertThat(상품목록.get(0).getPrice()).isEqualTo(아메리카노.getPrice()),
+            () -> assertThat(상품목록.get(0).getPrice()).isEqualTo(아메리카노.getPrice().getPrice()),
             () -> assertThat(상품목록.get(1).getName()).isEqualTo(바닐라라떼.getName()),
-            () -> assertThat(상품목록.get(1).getPrice()).isEqualTo(바닐라라떼.getPrice())
+            () -> assertThat(상품목록.get(1).getPrice()).isEqualTo(바닐라라떼.getPrice().getPrice())
         );
     }
 }
