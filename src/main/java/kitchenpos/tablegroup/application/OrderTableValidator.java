@@ -62,10 +62,14 @@ public class OrderTableValidator implements OrderValidator {
 
     private List<Menu> findAllMenuById(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
-        if(menuIds.size() != menus.size()) {
+        if(isLessThanNumberOfMinimumOrderMenu(menus)) {
             throw new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
         }
         return menus;
+    }
+
+    private boolean isLessThanNumberOfMinimumOrderMenu(List<Menu> menus) {
+        return menus.size() < NUMBER_OF_MINIMUM_ORDER_MENU;
     }
 
     private List<Order> findAllByOrderTableId(Long orderTableId) {
