@@ -31,7 +31,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         //when
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, null))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -44,7 +44,7 @@ class TableServiceTest {
             .thenReturn(Optional.of(orderTable));
 
         //when
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, null))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -56,7 +56,7 @@ class TableServiceTest {
             .thenReturn(true);
 
         //when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, null))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

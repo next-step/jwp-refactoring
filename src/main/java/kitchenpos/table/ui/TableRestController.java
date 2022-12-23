@@ -44,7 +44,7 @@ public class TableRestController {
         @RequestBody final OrderTableRequest request
     ) {
         return ResponseEntity.ok()
-            .body(tableService.changeEmpty(orderTableId, request.toOrderTable()))
+            .body(tableService.changeEmpty(orderTableId, request.isEmpty()))
             ;
     }
 

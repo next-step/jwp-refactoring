@@ -38,18 +38,18 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+    public OrderTableResponse changeEmpty(final Long orderTableId, final boolean isEmpty) {
+        final OrderTable orderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
-        changeEmpty(orderTable, savedOrderTable);
+        changeEmpty(orderTable, isEmpty);
 
-        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
 
-    private void changeEmpty(OrderTable orderTable, OrderTable savedOrderTable) {
+    private void changeEmpty(final OrderTable savedOrderTable, final boolean isEmpty) {
         validateOrderTable(savedOrderTable);
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.setEmpty(isEmpty);
     }
 
     private void validateOrderTable(OrderTable savedOrderTable) {
