@@ -37,6 +37,7 @@ public class Menu {
         if (menuGroup == null) {
             throw new IllegalArgumentException();
         }
+        validatePrice();
 
         this.name = name;
         this.price = price;
