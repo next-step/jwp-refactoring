@@ -1,0 +1,35 @@
+package kitchenpos.menu.infrastructure.adapter;
+
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.infrastructure.repository.MenuJpaRepository;
+import kitchenpos.menu.port.MenuPort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@Transactional
+public class MenuJpaAdapter implements MenuPort {
+
+    private final MenuJpaRepository menuJpaRepository;
+
+    public MenuJpaAdapter(MenuJpaRepository menuJpaRepository) {
+        this.menuJpaRepository = menuJpaRepository;
+    }
+
+    @Override
+    public Menu save(Menu entity) {
+        return menuJpaRepository.save(entity);
+    }
+
+    @Override
+    public List<Menu> findAll() {
+        return menuJpaRepository.findAll();
+    }
+
+    @Override
+    public List<Menu> findAllByMenuId(List<Long> menuIds) {
+        return menuJpaRepository.findAllByIdIn(menuIds);
+    }
+}
