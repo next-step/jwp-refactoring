@@ -21,7 +21,7 @@ public class OrderLineItemResponse {
         this.quantity = orderLineItem.getQuantity();
     }
 
-    public static List<OrderLineItemResponse> list(List<OrderLineItem> orderLineItems) {
+    public static List<OrderLineItemResponse> toResponselist(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
                 .map(OrderLineItemResponse::new)
                 .collect(toList());

@@ -28,7 +28,7 @@ public class OrderTableResponse {
         return new OrderTableResponse(orderTable);
     }
 
-    public static List<OrderTableResponse> list(List<OrderTable> orderTables) {
+    public static List<OrderTableResponse> toResponselist(List<OrderTable> orderTables) {
         return orderTables.stream().map(OrderTableResponse::new).collect(toList());
     }
 

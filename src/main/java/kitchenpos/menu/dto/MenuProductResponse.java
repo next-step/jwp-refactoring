@@ -20,7 +20,7 @@ public class MenuProductResponse {
         this.quantity = menuProduct.getQuantity();
     }
 
-    public static List<MenuProductResponse> list(List<MenuProduct> menuProducts) {
+    public static List<MenuProductResponse> toResponselist(List<MenuProduct> menuProducts) {
         return menuProducts.stream().map(MenuProductResponse::new)
                 .collect(Collectors.toList());
     }

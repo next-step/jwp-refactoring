@@ -20,14 +20,14 @@ public class MenuResponse {
         this.name = menu.getName();
         this.price = menu.getPrice();
         this.menuGroup = MenuGroupResponse.of(menu.getMenuGroup());
-        this.menuProducts = MenuProductResponse.list(menu.getMenuProducts().getMenuProducts());
+        this.menuProducts = MenuProductResponse.toResponselist(menu.getMenuProducts().getMenuProducts());
     }
 
     public static MenuResponse of(Menu menu) {
         return new MenuResponse(menu);
     }
 
-    public static List<MenuResponse> list(List<Menu> menus) {
+    public static List<MenuResponse> toResponselist(List<Menu> menus) {
         return menus.stream()
                 .map(MenuResponse::new)
                 .collect(Collectors.toList());

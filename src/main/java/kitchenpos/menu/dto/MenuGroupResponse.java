@@ -20,7 +20,7 @@ public class MenuGroupResponse {
         return new MenuGroupResponse(menuGroup);
     }
 
-    public static List<MenuGroupResponse> list(List<MenuGroup> menuGroups) {
+    public static List<MenuGroupResponse> toResponselist(List<MenuGroup> menuGroups) {
         return menuGroups.stream()
                 .map(MenuGroupResponse::new)
                 .collect(Collectors.toList());

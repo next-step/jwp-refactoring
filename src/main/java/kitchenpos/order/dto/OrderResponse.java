@@ -22,14 +22,14 @@ public class OrderResponse {
         this.id = order.getId();
         this.orderTableId = order.getOrderTable().getId();
         this.orderStatus = order.getOrderStatus();
-        this.orderLineItems = OrderLineItemResponse.list(order.getOrderLineItems().getOrderLineItems());
+        this.orderLineItems = OrderLineItemResponse.toResponselist(order.getOrderLineItems().getOrderLineItems());
     }
 
     public static OrderResponse of(Order order) {
         return new OrderResponse(order);
     }
 
-    public static List<OrderResponse> list(List<Order> orders) {
+    public static List<OrderResponse> toResponselist(List<Order> orders) {
         return orders.stream()
                 .map(OrderResponse::new)
                 .collect(toList());

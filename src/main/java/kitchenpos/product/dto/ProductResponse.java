@@ -23,7 +23,7 @@ public class ProductResponse {
         return new ProductResponse(product);
     }
 
-    public static List<ProductResponse> list(List<Product> products) {
+    public static List<ProductResponse> toResponselist(List<Product> products) {
         return products.stream()
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());

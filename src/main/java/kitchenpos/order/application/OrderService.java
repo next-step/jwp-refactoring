@@ -48,7 +48,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        return OrderResponse.list(orderRepository.findAll());
+        return OrderResponse.toResponselist(orderRepository.findAll());
     }
 
     public OrderResponse changeOrderStatus(Long orderId, OrderStatus request) {

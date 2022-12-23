@@ -19,7 +19,7 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public static List<OrderLineItemRequest> list(List<OrderLineItem> orderLineItems) {
+    public static List<OrderLineItemRequest> toResponselist(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
                 .map(orderLineItem -> new OrderLineItemRequest(orderLineItem.getMenu().getId(),
                         orderLineItem.getQuantity()))

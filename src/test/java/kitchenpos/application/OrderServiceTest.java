@@ -85,7 +85,7 @@ class OrderServiceTest {
     @Test
     void createOrderTest() {
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2)));
+                OrderLineItemRequest.toResponselist(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2)));
 
         when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
         when(menuRepository.findAllById(request.findAllMenuIds()))
@@ -109,7 +109,7 @@ class OrderServiceTest {
 
         Assertions.assertThatThrownBy(
                 () -> orderService.create(new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                        OrderLineItemRequest.list(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2))))
+                        OrderLineItemRequest.toResponselist(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2))))
         ).isInstanceOf(EntityNotFoundException.class);
     }
 
@@ -117,7 +117,7 @@ class OrderServiceTest {
     @Test
     void createOrderTest3() {
         OrderRequest request = new OrderRequest(주문테이블.getId(), OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2)));
+                OrderLineItemRequest.toResponselist(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2)));
 
         when(orderTableRepository.findById(주문테이블.getId())).thenReturn(Optional.of(주문테이블));
         when(menuRepository.findAllById(request.findAllMenuIds())).thenReturn(Arrays.asList(삼겹살세트메뉴1));
@@ -130,7 +130,7 @@ class OrderServiceTest {
     void createOrderTest4() {
         // given
         OrderRequest request = new OrderRequest(null, OrderStatus.COOKING,
-                OrderLineItemRequest.list(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2)));
+                OrderLineItemRequest.toResponselist(Arrays.asList(삼겹살세트메뉴주문1, 삼겹살세트메뉴주문2)));
 
         // when & then
         assertThatThrownBy(() -> orderService.create(request))
