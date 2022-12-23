@@ -7,10 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import kitchenpos.constants.ErrorMessages;
+import kitchenpos.ordertable.event.OderTableUngroupedEvent;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -63,7 +66,9 @@ public class OrderTable {
         this.empty = false;
     }
 
+    @PrePersist
     public void ungroupOrderTable() {
+        registerEvent(new OderTableUngroupedEvent(this));
         this.tableGroupId = null;
     }
 

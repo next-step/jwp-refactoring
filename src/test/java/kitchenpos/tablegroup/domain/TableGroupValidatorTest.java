@@ -4,16 +4,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.domain.OrderTables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableGroupValidatorTest {
 
     @Mock
-    OrderRepository orderRepository;
-    @Mock
     OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -38,9 +31,6 @@ public class TableGroupValidatorTest {
     private OrderTable 주문_테이블_2;
     private Long 단체_지정_id;
     private TableGroup 단체_2;
-    private OrderTable 단체_지정된_주문_테이블_1;
-    private OrderTable 단체_지정된_주문_테이블_2;
-    private List<OrderTable> 단체_지정된_주문_테이블_목록;
 
     @BeforeEach
     void setUp() {
@@ -48,9 +38,6 @@ public class TableGroupValidatorTest {
         주문_테이블_2 = new OrderTable(2L, null, new NumberOfGuests(0), true);
         단체_지정_id = 1L;
         단체_2 = new TableGroup(단체_지정_id, null);
-        단체_지정된_주문_테이블_1 = new OrderTable(1L, 단체_2.getId(), new NumberOfGuests(5), false);
-        단체_지정된_주문_테이블_2 = new OrderTable(2L, 단체_2.getId(), new NumberOfGuests(4), false);
-        단체_지정된_주문_테이블_목록 = Arrays.asList(단체_지정된_주문_테이블_1, 단체_지정된_주문_테이블_2);
     }
 
     @DisplayName("2개 미만 주문 테이블에 대해 단체 지정 요청 시 예외처리")
@@ -93,18 +80,6 @@ public class TableGroupValidatorTest {
 
         assertThatThrownBy(
                 () -> tableGroupValidator.getSavedOrderTablesIfValid(주문_테이블_Id_목록(단체_지정된_주문_테이블_포함_목록))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("계산 완료되지 않은 주문이 등록된 주문 테이블에 대해 단체 지정 해제")
-    @Test
-    void 단체_지정_해제_계산_미완료_예외처리() {
-        Order 계산_미완료된_주문 = new Order(단체_지정된_주문_테이블_1.getId(), OrderStatus.MEAL);
-        when(orderRepository.findByOrderTableIdIn(주문_테이블_Id_목록(단체_지정된_주문_테이블_목록)))
-                .thenReturn(Collections.singletonList(계산_미완료된_주문));
-
-        assertThatThrownBy(
-                () -> tableGroupValidator.validateBeforeUngroup(new OrderTables(단체_지정된_주문_테이블_목록))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
