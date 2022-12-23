@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
@@ -12,6 +13,8 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,19 +41,29 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(final Order order) {
+    public OrderResponse create(final OrderRequest request) {
+        Order order = request.toOrder(getOrderLineItems(request.getOrderLineItems()));
 
-        validateOrderLineItem(order);
-
-        long menuSize = menuDao.countByIdIn(getOrderLineIds(order));
-        validateOrderLine(order, menuSize);
-
+        //FIXME: 입력하는식으로 처리
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
         order(order, orderTable);
         final Order savedOrder = orderDao.save(order);
 
         return OrderResponse.from(savedOrder);
+    }
+
+    private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> requests){
+        if(Objects.isNull(requests) || requests.isEmpty()){
+            throw new IllegalArgumentException("주문 항목 정보 없음");
+        }
+        return requests.stream()
+            .map(request -> request.toOrderLineItem(findMenuById(request.getMenuId())))
+            .collect(Collectors.toList());
+    }
+
+    private Menu findMenuById(Long id){
+        return menuDao.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
     }
 
     private void order(Order order, OrderTable orderTable) {
@@ -62,16 +75,10 @@ public class OrderService {
         order.setOrderedTime(LocalDateTime.now());
     }
 
-    private List<Long> getOrderLineIds(Order order) {
-        return order.getOrderLineItems().stream()
-            .map(OrderLineItem::getMenuId)
+    private List<Long> getOrderLineIds(OrderRequest request) {
+        return request.getOrderLineItems().stream()
+            .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
-    }
-
-    private void validateOrderLine(Order order, long menuSize) {
-        if (order.getOrderLineItems().size() != menuSize) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private void validateOrderLineItem(Order order) {
@@ -104,13 +111,6 @@ public class OrderService {
     }
 
     private void changeOrderStatus(Order order, Order savedOrder) {
-        validateStatus(savedOrder);
         savedOrder.setOrderStatus(order.getOrderStatus());
-    }
-
-    private void validateStatus(Order order) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), order.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
     }
 }
