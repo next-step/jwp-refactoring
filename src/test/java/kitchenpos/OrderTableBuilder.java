@@ -4,20 +4,20 @@ import kitchenpos.domain.OrderTable;
 
 public class OrderTableBuilder {
 
-    public static OrderTable emptyOrderTableWithGuestNo(Long id, int numberOfGuests) {
-        return new OrderTable(id, numberOfGuests, true);
+    public static OrderTable emptyOrderTableWithIdAndGuestNo(Long id, int numberOfGuests) {
+        return new OrderTable(id, null, numberOfGuests, true);
     }
 
     public static OrderTable emptyOrderTableWithGuestNo(int numberOfGuests) {
-        return new OrderTable(numberOfGuests, true);
+        return new OrderTable(null, null, numberOfGuests, true);
     }
 
-    public static OrderTable nonEmptyOrderTableWithGuestNo(Long id, int numberOfGuests) {
-        return new OrderTable(id, numberOfGuests, false);
+    public static OrderTable nonEmptyOrderTableWithIdAndGuestNo(Long id, int numberOfGuests) {
+        return new OrderTable(id, null, numberOfGuests, false);
     }
 
     public static OrderTable nonEmptyOrderTableWithGuestNo(int numberOfGuests) {
-        return new OrderTable(numberOfGuests, false);
+        return new OrderTable(null, null, numberOfGuests, false);
     }
 
 }

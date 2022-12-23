@@ -1,7 +1,5 @@
 package kitchenpos.ui;
 
-import static kitchenpos.OrderTableBuilder.emptyOrderTableWithGuestNo;
-import static kitchenpos.OrderTableBuilder.nonEmptyOrderTableWithGuestNo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -12,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import kitchenpos.OrderTableBuilder;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +33,8 @@ class TableRestControllerTest extends ControllerTest {
     protected void setUp() {
         super.setUp();
 
-        emptyOrderTable = emptyOrderTableWithGuestNo(1L, 2);
-        nonEmptyOrderTable = nonEmptyOrderTableWithGuestNo(2L, 4);
+        emptyOrderTable = OrderTableBuilder.emptyOrderTableWithIdAndGuestNo(1L, 2);
+        nonEmptyOrderTable = OrderTableBuilder.nonEmptyOrderTableWithIdAndGuestNo(2L, 4);
     }
 
     @DisplayName("[POST] 주문테이블 생성")

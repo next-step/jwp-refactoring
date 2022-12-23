@@ -1,6 +1,5 @@
 package kitchenpos.ui;
 
-import static kitchenpos.OrderTableBuilder.emptyOrderTableWithGuestNo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -10,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import kitchenpos.OrderTableBuilder;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -33,8 +33,8 @@ class TableGroupRestControllerTest extends ControllerTest {
     protected void setUp() {
         super.setUp();
 
-        emptyOrderTable1 = emptyOrderTableWithGuestNo(1L, 2);
-        emptyOrderTable2 = emptyOrderTableWithGuestNo(2L, 4);
+        emptyOrderTable1 = OrderTableBuilder.emptyOrderTableWithIdAndGuestNo(1L, 2);
+        emptyOrderTable2 = OrderTableBuilder.emptyOrderTableWithIdAndGuestNo(2L, 4);
         tableGroup = new TableGroup(1L, Arrays.asList(emptyOrderTable1, emptyOrderTable2));
     }
 

@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import static kitchenpos.OrderBuilder.anOrder;
-import static kitchenpos.OrderTableBuilder.nonEmptyOrderTableWithGuestNo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -13,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.Collections;
+import kitchenpos.OrderTableBuilder;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
@@ -39,13 +39,13 @@ class OrderRestControllerTest extends ControllerTest {
         orderWithCookingStatus = anOrder()
             .withId(1L)
             .withStatus(OrderStatus.COOKING)
-            .withOrderTable(nonEmptyOrderTableWithGuestNo(1L, 2))
+            .withOrderTable(OrderTableBuilder.nonEmptyOrderTableWithIdAndGuestNo(1L, 2))
             .withOrderLineItems(Collections.emptyList())
             .build();
         orderWithMealStatus = anOrder()
             .withId(2L)
             .withStatus(OrderStatus.MEAL)
-            .withOrderTable(nonEmptyOrderTableWithGuestNo(2L, 4))
+            .withOrderTable(OrderTableBuilder.nonEmptyOrderTableWithIdAndGuestNo(2L, 4))
             .withOrderLineItems(Collections.emptyList())
             .build();
     }
