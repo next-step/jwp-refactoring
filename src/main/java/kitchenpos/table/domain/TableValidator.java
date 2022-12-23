@@ -4,6 +4,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,5 +32,11 @@ public class TableValidator {
     private boolean hasUncompletedOrder(List<Long> orderTableIds) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
             orderTableIds, OrderStatus.getNotCompletedStatuses());
+    }
+
+    public void validUncompletedOrder(Long orderTableId) {
+        if (hasUncompletedOrder(Arrays.asList(orderTableId))) {
+            throw new IllegalArgumentException();
+        }
     }
 }

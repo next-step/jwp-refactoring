@@ -1,9 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.EmptyRequest;
 import kitchenpos.table.dto.NumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -16,13 +15,12 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -37,15 +35,9 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, EmptyRequest request) {
         OrderTable orderTable = findById(orderTableId);
-        if (hasUncompletedOrder(orderTableId)) {
-            throw new IllegalArgumentException();
-        }
+        tableValidator.validUncompletedOrder(orderTableId);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
-    }
-
-    private boolean hasUncompletedOrder(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, OrderStatus.getNotCompletedStatuses());
     }
 
     @Transactional
