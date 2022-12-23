@@ -15,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -26,7 +27,6 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(tableGroupRequest.getOrderTables());
         if (tableGroupRequest.getOrderTables().size() != orderTables.size()) {
@@ -35,7 +35,6 @@ public class TableGroupService {
         return TableGroupResponse.of(tableGroupRepository.save(TableGroupRequest.toTableGroup(orderTables)));
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new EntityNotFoundException());

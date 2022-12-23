@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -27,7 +28,6 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderResponse create(OrderRequest request) {
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(() -> new EntityNotFoundException());
@@ -37,6 +37,7 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
+    @Transactional(readOnly = true)
     private List<Menu> findAllMenuById(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findAllById(menuIds);
         if (menuIds.size() != menus.size()) {
@@ -50,7 +51,6 @@ public class OrderService {
         return OrderResponse.list(orderRepository.findAll());
     }
 
-    @Transactional
     public OrderResponse changeOrderStatus(Long orderId, OrderStatus request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException());

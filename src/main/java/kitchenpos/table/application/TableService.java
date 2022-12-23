@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -22,7 +23,6 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(OrderTableRequest request) {
         return OrderTableResponse.of(orderTableRepository.save(request.toOrderTable()));
     }
@@ -32,7 +32,6 @@ public class TableService {
         return OrderTableResponse.list(orderTableRepository.findAll());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new EntityNotFoundException());
@@ -43,7 +42,6 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, OrderTableRequest request) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new EntityNotFoundException());

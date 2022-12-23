@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
@@ -17,7 +18,6 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional
     public MenuGroupResponse create(final MenuGroupRequest request) {
         return MenuGroupResponse.of(menuGroupRepository.save(new MenuGroup(request.getName())));
     }
