@@ -89,11 +89,6 @@ public class Order {
         orderLineItem.addOrder(this);
     }
 
-    public void setOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems = orderLineItems;
-        orderLineItems.setOrder(this);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

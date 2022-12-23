@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -28,11 +26,6 @@ public class MenuRequest {
 
     public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
-    }
-
-    public Menu createMenu(MenuGroup menuGroup, List<Product> products) {
-        Menu menu = new Menu(name, price, menuGroup.getId(), createMenuProducts(products));
-        return menu;
     }
 
     private MenuProducts createMenuProducts(List<Product> products) {
@@ -58,18 +51,8 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProductRequests;
-    }
-
     public List<MenuProductRequest> getMenuProductRequests() {
         return menuProductRequests;
-    }
-
-    public List<Long> getMenuProductIds() {
-        return menuProductRequests.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
     }
 
 }

@@ -27,10 +27,4 @@ public class OrderRequest {
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
-
-    public List<Long> findAllMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(toList());
-    }
 }

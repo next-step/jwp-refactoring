@@ -61,10 +61,6 @@ public class Menu {
         return new Menu(null, name, price, menuGroupId, MenuProducts.of(menuProducts));
     }
 
-   public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(null, name, price, menuGroup.getId(), menuProducts);
-    }
-
     private void validateMenu(Long menuGroupId) {
         if (menuGroupId == null) {
             throw new IllegalArgumentException(ErrorEnum.REQUIRED_MENU.message());
@@ -75,10 +71,6 @@ public class Menu {
         if (price.isBiggerThan(totalPrice)) {
             throw new IllegalArgumentException(ErrorEnum.MENU_PRICE_OVER_TOTAL_PRICE.message());
         }
-    }
-
-    public void create(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(this::addMenuProduct);
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
@@ -93,16 +85,8 @@ public class Menu {
         return name;
     }
 
-    public void setName(final Name name) {
-        this.name = name;
-    }
-
     public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final Price price) {
-        this.price = price;
     }
 
     public Long getMenuGroupId() {

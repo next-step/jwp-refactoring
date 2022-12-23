@@ -41,19 +41,11 @@ public class OrderResponse {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public List<OrderLineItemResponse> getOrderLineItems() {
-        return orderLineItems;
     }
 }
