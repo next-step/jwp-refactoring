@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuValidator;
@@ -19,27 +18,19 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuValidator menuValidator;
-    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuService(MenuRepository menuRepository, MenuValidator menuValidator, MenuGroupRepository menuGroupRepository) {
+    public MenuService(MenuRepository menuRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuValidator = menuValidator;
-        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        validateMenuGroup(request);
+        menuValidator.validateMenuGroup(request);
         menuValidator.validProductsAndPrice(request);
         Menu savedMenu = menuRepository.save(request.toMenu());
         savedMenu.addMenuProduct(toMenuProducts(request));
         return MenuResponse.from(savedMenu);
-    }
-
-    private void validateMenuGroup(MenuRequest request) {
-        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private List<MenuProduct> toMenuProducts(MenuRequest request) {

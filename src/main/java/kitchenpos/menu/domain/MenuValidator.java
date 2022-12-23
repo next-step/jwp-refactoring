@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class MenuValidator {
 
     private final ProductRepository productRepository;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuValidator(ProductRepository productRepository) {
+    public MenuValidator(ProductRepository productRepository, MenuGroupRepository menuGroupRepository) {
         this.productRepository = productRepository;
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     public void validProductsAndPrice(MenuRequest request) {
@@ -56,6 +58,12 @@ public class MenuValidator {
         for (MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다. id=" + menuProductRequest.getProductId()));
+        }
+    }
+
+    public void validateMenuGroup(MenuRequest request) {
+        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
+            throw new IllegalArgumentException();
         }
     }
 }
