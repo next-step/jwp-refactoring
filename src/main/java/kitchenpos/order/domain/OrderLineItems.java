@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.ErrorCode;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -13,6 +16,20 @@ public class OrderLineItems {
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {}
+
+    public OrderLineItems(List<OrderLineItem> orderLineItems) {
+        validate(orderLineItems);
+        this.orderLineItems = new ArrayList<>(orderLineItems);
+    }
+    public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+        return new OrderLineItems(orderLineItems);
+    }
+
+    private void validate(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException(ErrorCode.ORDER_LINE_ITEMS_CANNOT_BE_EMPTY.getErrorMessage());
+        }
+    }
 
     public void addOrderLineItem(Order order, OrderLineItem orderLineItem) {
         if (!hasOrderLineItem(orderLineItem)) {

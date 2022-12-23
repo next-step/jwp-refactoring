@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,14 +34,23 @@ public class Order extends BaseEntity {
 
     protected Order() {}
 
-    public Order(Long orderTableId, OrderStatus orderStatus) {
+    private Order(Long orderTableId) {
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.COOKING;
     }
 
-    public void order(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(this::addOrderLineItem);
+    private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
+        this.orderStatus = OrderStatus.COOKING;
     }
+
+    public static Order fromDefault(Long orderTableId) {
+        return new Order(orderTableId);
+    }
+//    public static Order ofDefault(Long orderTableId, List<OrderLineItem> orderLineItems) {
+//        return new Order(orderTableId, orderLineItems);
+//    }
 
     void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.addOrderLineItem(this, orderLineItem);
@@ -80,6 +90,10 @@ public class Order extends BaseEntity {
         if(orderStatus.isCooking() || orderStatus.isMeal()) {
             throw new IllegalArgumentException(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
         }
+    }
+
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     @Override

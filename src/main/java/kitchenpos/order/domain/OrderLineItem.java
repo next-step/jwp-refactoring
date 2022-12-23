@@ -1,7 +1,11 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.ErrorCode;
+import kitchenpos.common.Price;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,23 +25,33 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    private Long menuId;
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "menu_id"))
+    private OrderMenu orderMenu;
 
     private long quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Order order, Long menuId, long quantity) {
-        validate(order, quantity);
+    private OrderLineItem(Order order, OrderMenu orderMenu, long quantity) {
+        validate(order, orderMenu, quantity);
 
         updateOrder(order);
-        this.menuId = menuId;
+        this.order = order;
+        this.orderMenu = orderMenu;
         this.quantity = quantity;
     }
 
-    private void validate(Order order, long quantity) {
+    public static OrderLineItem of(Order order, OrderMenu menu, long quantity) {
+        return new OrderLineItem(order, menu, quantity);
+    }
+
+    private void validate(Order order, OrderMenu orderMenu, long quantity) {
         if (Objects.isNull(order)) {
             throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_ORDER.getErrorMessage());
+        }
+        if (Objects.isNull(orderMenu)) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU.getErrorMessage());
         }
         if (isNotPositiveNumber(quantity)) {
             throw new IllegalArgumentException(ErrorCode.INVALID_QUANTITY.getErrorMessage());
@@ -60,11 +74,15 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return menuId;
+        return orderMenu.getId();
     }
 
     public long getQuantity() {
         return quantity;
+    }
+
+    private boolean isNotPositiveNumber(long quantity) {
+        return quantity < ZERO;
     }
 
     @Override
@@ -73,20 +91,16 @@ public class OrderLineItem {
             return true;
         }
 
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass() || Objects.isNull(orderMenu)) {
             return false;
         }
 
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId);
+        return Objects.equals(order, that.order) && Objects.equals(orderMenu.getId(), that.orderMenu.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, menuId);
-    }
-
-    private boolean isNotPositiveNumber(long quantity) {
-        return quantity < ZERO;
+        return Objects.hash(order, orderMenu.getId());
     }
 }

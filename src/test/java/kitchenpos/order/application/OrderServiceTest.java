@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.common.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -46,6 +46,9 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private MenuRepository menuRepository;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -62,11 +65,11 @@ class OrderServiceTest {
     void setUp() {
         주문테이블 = new OrderTable(2, false);
         ReflectionTestUtils.setField(주문테이블, "id", 1L);
-        주문 = new Order(주문테이블.getId(), OrderStatus.COOKING);
 
         양식 = new MenuGroup("양식");
         양식_세트1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);
         양식_세트2 = new Menu("양식 세트2", new BigDecimal(50000), 양식);
+        주문 = Order.fromDefault(주문테이블.getId());
 
         ReflectionTestUtils.setField(주문테이블, "id", 1L);
         ReflectionTestUtils.setField(주문, "id", 1L);
@@ -74,11 +77,11 @@ class OrderServiceTest {
         ReflectionTestUtils.setField(양식_세트1, "id", 1L);
         ReflectionTestUtils.setField(양식_세트2, "id", 2L);
 
-        주문_메뉴1 = new OrderLineItem(주문, 양식_세트1.getId(), 1L);
-        주문_메뉴2 = new OrderLineItem(주문, 양식_세트2.getId(), 1L);
+        주문_메뉴1 = OrderLineItem.of(주문, OrderMenu.of(양식_세트1), 1L);
+        주문_메뉴2 = OrderLineItem.of(주문, OrderMenu.of(양식_세트2), 1L);
+        주문.addOrderLineItems(Arrays.asList(주문_메뉴1, 주문_메뉴2));
 
         주문_메뉴_목록 = Arrays.asList(주문_메뉴1, 주문_메뉴2);
-        주문.order(주문_메뉴_목록);
     }
 
     @Test
@@ -87,6 +90,8 @@ class OrderServiceTest {
                 OrderLineItemRequest.list(Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
         willDoNothing().given(orderValidator).validateToCreateOrder(anyLong(), anyList());
+        given(menuRepository.findById(양식_세트1.getId())).willReturn(Optional.ofNullable(양식_세트1));
+        given(menuRepository.findById(양식_세트2.getId())).willReturn(Optional.ofNullable(양식_세트2));
         given(orderRepository.save(any(Order.class))).willReturn(주문);
 
         OrderResponse orderResponse = orderService.create(request);

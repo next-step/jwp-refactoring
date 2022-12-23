@@ -1,12 +1,12 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static kitchenpos.order.domain.Order.fromDefault;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -21,13 +21,8 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder(Long orderTableId, OrderStatus orderStatus) {
-        Order order = new Order(orderTableId, orderStatus);
-        List<OrderLineItem> items = orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.toOrderLineItem(order))
-                .collect(toList());
-        order.order(items);
-
+    public Order toInitOrder(Long orderTableId) {
+        Order order = fromDefault(orderTableId);
         return order;
     }
 

@@ -65,27 +65,12 @@ public class Menu {
         this.menuProducts.validatePrice(this.price.getPrice());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Menu menu = (Menu) o;
-        return Objects.equals(name, menu.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    public BigDecimal getPrice() {
+    public BigDecimal getPriceToDecimal() {
         return price.getPrice();
+    }
+
+    public Price getPrice() {
+        return price;
     }
 
     public Long getMenuGroupId() {
@@ -121,5 +106,24 @@ public class Menu {
 
     public MenuGroup getMenuGroup() {
         return menuGroup;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Menu menu = (Menu) o;
+        return Objects.equals(name, menu.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

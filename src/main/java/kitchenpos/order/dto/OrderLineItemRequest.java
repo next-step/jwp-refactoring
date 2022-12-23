@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 import java.util.List;
 
@@ -26,8 +27,8 @@ public class OrderLineItemRequest {
                 .collect(toList());
     }
 
-    public OrderLineItem toOrderLineItem(Order order) {
-        return new OrderLineItem(order, menuId, quantity);
+    public OrderLineItem toOrderLineItem(Order order, OrderMenu menu) {
+        return OrderLineItem.of(order, menu, quantity);
     }
 
     public Long getMenuId() {
