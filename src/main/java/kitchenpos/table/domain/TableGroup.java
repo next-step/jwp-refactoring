@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,6 +42,12 @@ public class TableGroup {
     private void validateTableGroup() {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_NUMBER_OF_GROUP) {
             throw new IllegalArgumentException("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
+        }
+
+        for (final OrderTable orderTable : orderTables) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+                throw new IllegalArgumentException("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
+            }
         }
     }
 

@@ -45,6 +45,17 @@ class TableGroupTest {
     }
 
     @Test
+    @DisplayName("단체 지정 성공")
+    void createTableGroup(){
+        //given
+        OrderTable 테이블 = new OrderTable(1L, null, 0, true, Collections.emptyList());
+        OrderTable 테이블2 = new OrderTable(2L, null, 0, true, Collections.emptyList());
+
+        //when & then
+        new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블, 테이블2));
+    }
+
+    @Test
     @DisplayName("단체 지정할 테이블이 없거나 2 미만일 경우 단체 지정 실패")
     void groupFailWhenTableEmptyOrLessThan2(){
         //when & then
@@ -59,6 +70,28 @@ class TableGroupTest {
         assertThatThrownBy(() -> new TableGroup(1L, LocalDateTime.now(), Collections.singletonList(식사중테이블)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
+    }
+
+    @Test
+    @DisplayName("테이블이 비어있지 않거나, 이미 단체 지정된 테이블일 경우 단체 지정 실패")
+    void groupFailWhenTableNotEmptyOrAlreadyGrouped(){
+        //given
+        OrderTable 테이블 = new OrderTable(1L, null, 0, false, Collections.emptyList());
+        OrderTable 테이블2 = new OrderTable(2L, null, 0, true, Collections.emptyList());
+
+        //when & then
+        assertThatThrownBy(() -> new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블, 테이블2)))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
+
+        //given
+        OrderTable 테이블3 = new OrderTable(3L, 1L, 0, true, Collections.emptyList());
+        OrderTable 테이블4 = new OrderTable(4L, 1L, 0, true, Collections.emptyList());
+
+        //when & then
+        assertThatThrownBy(() -> new TableGroup(2L, LocalDateTime.now(), Arrays.asList(테이블3, 테이블4)))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
     }
 
 }

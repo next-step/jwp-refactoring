@@ -34,9 +34,6 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         List<OrderTable> savedOrderTables = getOrderTables(request);
         TableGroup tableGroup = request.toTableGroup(savedOrderTables);
-        //validateTableGroup(tableGroup);
-
-        validateOrderTablesStatus(savedOrderTables);
 
         tableGroup.setCreatedDate(LocalDateTime.now());
 
@@ -52,14 +49,6 @@ public class TableGroupService {
             savedOrderTable.setTableGroupId(tableGroupId);
             savedOrderTable.setEmpty(false);
             orderTableDao.save(savedOrderTable);
-        }
-    }
-
-    private void validateOrderTablesStatus(List<OrderTable> orderTables) {
-        for (final OrderTable savedOrderTable : orderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
         }
     }
 
