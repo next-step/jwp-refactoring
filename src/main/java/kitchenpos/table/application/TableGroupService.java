@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -13,20 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository,
-        TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -62,26 +58,7 @@ public class TableGroupService {
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(IllegalArgumentException::new);
-        validateUngroup(tableGroupId);
+        tableValidator.validateUngroup(tableGroup);
         tableGroup.ungroup();
-    }
-
-    private void validateUngroup(Long tableGroupId) {
-        List<Long> orderTableIds = findOrderTableIdsByTableGroupId(tableGroupId);
-        if (hasUncompletedOrder(orderTableIds)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private boolean hasUncompletedOrder(List<Long> orderTableIds) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, OrderStatus.getNotCompletedStatuses());
-    }
-
-    private List<Long> findOrderTableIdsByTableGroupId(Long tableGroupId) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        return orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
     }
 }
