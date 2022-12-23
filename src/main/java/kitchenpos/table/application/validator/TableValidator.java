@@ -4,10 +4,8 @@ import static kitchenpos.exception.ErrorCode.NOT_BEEN_UNGROUP;
 import static kitchenpos.exception.ErrorCode.PEOPLE_LESS_THAN_ZERO;
 import static kitchenpos.exception.ErrorCode.TABLE_IS_EMPTY;
 
-import java.util.Arrays;
 import java.util.Objects;
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.springframework.stereotype.Component;
@@ -32,8 +30,7 @@ public class TableValidator {
     }
 
     private void existsCookingOrMeal(Long orderTableId) {
-        orderStatusValidator.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        orderStatusValidator.existsByOrderTableIdAndOrderStatusIn(orderTableId);
     }
 
     public void validateNumberOfGuests(int numberOfGuests) {

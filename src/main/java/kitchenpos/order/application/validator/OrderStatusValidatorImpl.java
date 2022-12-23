@@ -3,7 +3,6 @@ package kitchenpos.order.application.validator;
 import static kitchenpos.exception.ErrorCode.EXISTS_NOT_COMPLETION_STATUS;
 
 import java.util.Arrays;
-import java.util.List;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -18,7 +17,7 @@ public class OrderStatusValidatorImpl implements kitchenpos.table.application.va
     }
 
     @Override
-    public void existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList) {
+    public void existsByOrderTableIdAndOrderStatusIn(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
