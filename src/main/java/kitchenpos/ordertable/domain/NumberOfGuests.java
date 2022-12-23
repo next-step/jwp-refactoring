@@ -13,7 +13,7 @@ public class NumberOfGuests {
     private int numberOfGuests;
 
     public NumberOfGuests() {
-        this.numberOfGuests = 0;
+        this.numberOfGuests = MIN_NUMBER_OF_GUESTS;
     }
 
     public NumberOfGuests(int numberOfGuests) {
