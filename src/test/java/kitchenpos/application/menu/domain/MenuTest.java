@@ -15,7 +15,7 @@ class MenuTest {
 
     @DisplayName("메뉴 생성 시 가격은 음수가 나올 수 없다.")
     @Test
-    void menu_price_not_negative_number() {
+    void menuPriceNotNegativeNumber() {
         // given && when && then
         Assertions.assertThatThrownBy(() -> new Menu("name", BigDecimal.valueOf(-1000), null))
             .isInstanceOf(IllegalArgumentException.class);
@@ -23,7 +23,7 @@ class MenuTest {
 
     @DisplayName("메뉴의 가격이 메뉴 상품 가격의 합보다 크다면 등록할 수 없다")
     @Test
-    void menu_price_less_then_menu_product_sum() {
+    void menuPriceLessThenMenuProductSum() {
         // given
         MenuGroup menuGroup = new MenuGroup("menuGroup");
         Menu menu = new Menu("name", BigDecimal.valueOf(1000), menuGroup);

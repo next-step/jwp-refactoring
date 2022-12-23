@@ -11,7 +11,7 @@ class PriceTest {
 
     @DisplayName("가격은 0보다 큰수를 입력해야 한다.")
     @Test
-    void not_zero_price() {
+    void notZeroPrice() {
         // given && when && then
         Assertions.assertThatThrownBy(() -> Price.of(BigDecimal.valueOf(-1000)))
             .isInstanceOf(IllegalArgumentException.class);
@@ -19,7 +19,7 @@ class PriceTest {
 
     @DisplayName("기존 가격이 전체 가격보다 크면 안된다.")
     @Test
-    void the_price_must_be_less_than_the_total_price() {
+    void thePriceMustBeLessThanTheTotalPrice() {
         // given
         Price price = Price.of(BigDecimal.valueOf(10_000));
 

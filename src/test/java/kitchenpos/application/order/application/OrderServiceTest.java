@@ -104,7 +104,7 @@ class OrderServiceTest {
 
     @DisplayName("주문 항목이 없으면 주문할 수 없다.")
     @Test
-    void create_error_without_order_item() {
+    void createErrorWithoutOrderItem() {
         // given && when && then
         assertThatThrownBy(() -> orderService.create(주문_요청))
             .isInstanceOf(IllegalArgumentException.class);
@@ -112,7 +112,7 @@ class OrderServiceTest {
 
     @DisplayName("주문 항목의 메뉴의 개수가 일치하지 않으면 주문 할 수 없다.")
     @Test
-    void create_error_duplicated_order_item() {
+    void createErrorDuplicatedOrderItem() {
         // given
         when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(메뉴, 메뉴));
@@ -124,7 +124,7 @@ class OrderServiceTest {
 
     @DisplayName("주문 테이블의 값이 저장되어 있지 않으면 주문 할 수 없다.")
     @Test
-    void create_error_order_table_empty() {
+    void createErrorOrderTableEmpty() {
         // given
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -149,7 +149,7 @@ class OrderServiceTest {
     @DisplayName("주문의 주문 상태가 조리 또는 식사중 일 경우 상태를 변경할 수 있다.")
     @ParameterizedTest(name = "#{index} - 주문 상태를 {2}에서 {3}로 변경할 수 있다.")
     @MethodSource("order_status_info")
-    void update_order_status(OrderStatus 기존주문상태, OrderStatus 변경주문상태, String s, String s2) {
+    void updateOrderStatus(OrderStatus 기존주문상태, OrderStatus 변경주문상태, String s, String s2) {
         // given
         OrderStatusRequest 주문상태_식사중_변경 = new OrderStatusRequest(변경주문상태);
 
@@ -174,7 +174,7 @@ class OrderServiceTest {
 
     @DisplayName("주문이 저장되어 있지 않으면 주문의 상태를 변경할 수 없다.")
     @Test
-    void update_fail_order_status_not_save_order() {
+    void updateFailOrderStatusNotSaveOrder() {
         // given
         OrderStatusRequest 주문상태_식사중_변경 = new OrderStatusRequest(OrderStatus.MEAL);
 
@@ -184,7 +184,7 @@ class OrderServiceTest {
 
     @DisplayName("주문의 상태가 완료인 경우 주문의 상태를 변경할 수 없다.")
     @Test
-    void update_fail_not_change_order_complete() {
+    void updateFailNotChangeOrderComplete() {
         // given
         OrderStatusRequest 주문상태_식사중_변경 = new OrderStatusRequest(OrderStatus.MEAL);
         주문.changeOrderStatus(OrderStatus.COMPLETION);
