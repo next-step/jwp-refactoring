@@ -42,15 +42,16 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        Order order = request.toOrder(getOrderLineItems(request.getOrderLineItems()));
-
-        //FIXME: 입력하는식으로 처리
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
-        order(order, orderTable);
+        Order order = request.toOrder(getOrderTable(request.getOrderTableId()), getOrderLineItems(request.getOrderLineItems()));
+        order(order);
         final Order savedOrder = orderDao.save(order);
 
         return OrderResponse.from(savedOrder);
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+            .orElseThrow(IllegalArgumentException::new);
     }
 
     private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> requests){
@@ -66,11 +67,7 @@ public class OrderService {
         return menuDao.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
     }
 
-    private void order(Order order, OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        order.setOrderTableId(orderTable.getId());
+    private void order(Order order) {
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
     }
@@ -100,17 +97,17 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
         final Order savedOrder = orderDao.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
-        changeOrderStatus(order, savedOrder);
+        changeOrderStatus(savedOrder, orderStatus);
 
         orderDao.save(savedOrder);
         return OrderResponse.from(savedOrder);
     }
 
-    private void changeOrderStatus(Order order, Order savedOrder) {
-        savedOrder.setOrderStatus(order.getOrderStatus());
+    private void changeOrderStatus(Order savedOrder, String orderStatus) {
+        savedOrder.setOrderStatus(orderStatus);
     }
 }

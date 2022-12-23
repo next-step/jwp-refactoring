@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.util.CollectionUtils;
@@ -19,7 +22,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,10 +33,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -44,6 +49,10 @@ public class Order {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문 항목이 없습니다.");
         }
+
+        if (Objects.isNull(orderTable) || orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블 정보가 없습니다.");
+        }
     }
 
     public Long getId() {
@@ -54,12 +63,11 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public Long orderTableId() {
+        if(Objects.isNull(orderTable)){
+            return null;
+        }
+        return orderTable.getId();
     }
 
     public String getOrderStatus() {
@@ -92,5 +100,5 @@ public class Order {
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
-    
+
 }

@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.text.html.Option;
-import kitchenpos.menu.MenuFixture;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderDao;
@@ -31,7 +29,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -70,6 +67,9 @@ class OrderServiceTest {
 
     @Test
     void 주문_항목이_없으면_주문중_에러_발생() {
+        when(orderTableDao.findById(any()))
+            .thenReturn(Optional.of(일번테이블));
+
         //when & then
         Assertions.assertThatThrownBy(() -> orderService.create(from(new Order())))
             .isInstanceOf(IllegalArgumentException.class)
@@ -81,6 +81,7 @@ class OrderServiceTest {
         //given
         Order order = new Order();
         order.setOrderLineItems(Collections.singletonList(new OrderLineItem()));
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(일번테이블));
         when(menuDao.findById(any())).thenReturn(Optional.empty());
 
         //when & then
@@ -93,7 +94,6 @@ class OrderServiceTest {
         //given
         Order order = new Order();
         order.setOrderLineItems(Collections.singletonList(new OrderLineItem()));
-        when(menuDao.findById(any())).thenReturn(Optional.of(더블강정치킨));
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         //when & then
@@ -119,11 +119,11 @@ class OrderServiceTest {
 
     public static final OrderLineItem 주문항목 = new OrderLineItem(1L, null, 더블강정치킨,
         2L);
-    public static final Order 주문 = new Order(1L, 일번테이블.getId(), null, null,
+    public static final Order 주문 = new Order(1L, 일번테이블, null, null,
         Collections.singletonList(주문항목));
 
     private OrderRequest from(Order order){
-        return new OrderRequest(order.getOrderTableId(), order.getOrderStatus(), from(order.getOrderLineItems()));
+        return new OrderRequest(order.orderTableId(), order.getOrderStatus(), from(order.getOrderLineItems()));
     }
 
     private List<OrderLineItemRequest> from(List<OrderLineItem> orderLineItem){

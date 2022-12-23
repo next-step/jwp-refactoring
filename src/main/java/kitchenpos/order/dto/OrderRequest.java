@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderTable;
 
 public class OrderRequest {
 
@@ -39,10 +40,10 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder(List<OrderLineItem> orderLineItems) {
+    public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         return new Order(
             id,
-            orderTableId,
+            orderTable,
             orderStatus,
             orderedTime,
             orderLineItems
