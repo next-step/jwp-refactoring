@@ -1,10 +1,14 @@
-package kitchenpos.order.domain;
+package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import kitchenpos.fixture.OrderFixture;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 class OrderTest {
     @DisplayName("주문 상태 변경 - 이미 완료된 주문")

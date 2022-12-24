@@ -1,7 +1,6 @@
-package kitchenpos.order.application;
+package kitchenpos.application;
 
-import static kitchenpos.order.domain.OrderFixture.*;
-import static kitchenpos.order.domain.OrderLineItemFixture.*;
+import static kitchenpos.fixture.OrderFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -20,6 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.fixture.OrderLineItemFixture;
+import kitchenpos.order.application.OrderLineItemGenerator;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -45,8 +48,9 @@ class OrderServiceTest {
     void create() {
         // given
         Long orderTableId = 1L;
-        OrderRequest orderRequest = orderRequest(orderTableId, Collections.singletonList(orderLineItemRequest(1L, 1)));
-        OrderLineItem savedOrderLineItem = savedOrderLineItem(1L, 1L, 5);
+        OrderRequest orderRequest = orderRequest(orderTableId, Collections.singletonList(
+            OrderLineItemFixture.orderLineItemRequest(1L, 1)));
+        OrderLineItem savedOrderLineItem = OrderLineItemFixture.savedOrderLineItem(1L, 1L, 5);
         Order savedOrder = savedOrder(1L, orderTableId, Collections.singletonList(savedOrderLineItem));
 
         given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
@@ -72,8 +76,8 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        OrderLineItem savedOrderLineItem1 = savedOrderLineItem(1L);
-        OrderLineItem savedOrderLineItem2 = savedOrderLineItem(2L);
+        OrderLineItem savedOrderLineItem1 = OrderLineItemFixture.savedOrderLineItem(1L);
+        OrderLineItem savedOrderLineItem2 = OrderLineItemFixture.savedOrderLineItem(2L);
         Order savedOrder = savedOrder(1L, OrderStatus.COOKING, Arrays.asList(savedOrderLineItem1, savedOrderLineItem2));
         given(orderRepository.findAll()).willReturn(Collections.singletonList(savedOrder));
 
@@ -106,7 +110,7 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
         Order order = orderRequest(orderStatus);
-        List<OrderLineItem> savedOrderLineItems = Collections.singletonList(savedOrderLineItem(1L));
+        List<OrderLineItem> savedOrderLineItems = Collections.singletonList(OrderLineItemFixture.savedOrderLineItem(1L));
         Order savedOrder = savedOrder(orderId, OrderStatus.COOKING, savedOrderLineItems);
         given(orderRepository.findById(orderId)).willReturn(Optional.of(savedOrder));
 

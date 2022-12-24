@@ -1,8 +1,7 @@
-package kitchenpos.order.application;
+package kitchenpos.application;
 
+import static kitchenpos.fixture.OrderFixture.*;
 import static kitchenpos.fixture.OrderTableFixture.*;
-import static kitchenpos.order.domain.OrderFixture.*;
-import static kitchenpos.order.domain.OrderLineItemFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -17,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.fixture.OrderLineItemFixture;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTableRepository;
 
@@ -34,8 +35,8 @@ public class OrderValidatorTest {
     void create_order_table_not_exists() {
         // given
         OrderRequest orderRequest = orderRequest(1L, Arrays.asList(
-            orderLineItemRequest(1L, 1L),
-            orderLineItemRequest(2L, 2L))
+            OrderLineItemFixture.orderLineItemRequest(1L, 1L),
+            OrderLineItemFixture.orderLineItemRequest(2L, 2L))
         );
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -61,10 +62,11 @@ public class OrderValidatorTest {
     void create_order_table_is_empty() {
         // given
         OrderRequest orderRequest = orderRequest(1L, Arrays.asList(
-            orderLineItemRequest(1L, 1L),
-            orderLineItemRequest(2L, 2L)
+            OrderLineItemFixture.orderLineItemRequest(1L, 1L),
+            OrderLineItemFixture.orderLineItemRequest(2L, 2L)
         ));
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(savedOrderTable(1L, true)));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(
+            savedOrderTable(1L, true)));
 
         // when, then
         assertThatThrownBy(() -> orderValidator.validateSave(orderRequest))
