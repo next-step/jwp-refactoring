@@ -4,4 +4,6 @@ include 'kitchenpos-menu'
 include 'kitchenpos-order'
 include 'kitchenpos-product'
 
-
+rootProject.children.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+}
