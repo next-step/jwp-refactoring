@@ -2,7 +2,6 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.product.dto.MenuProductResponse;
 
 import java.util.List;
 

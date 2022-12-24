@@ -2,12 +2,11 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.exception.NoSuchDataException;
 import kitchenpos.menu.domain.*;
-import kitchenpos.product.application.MenuProductService;
-import kitchenpos.product.domain.MenuProductRepository;
-import kitchenpos.product.dto.MenuProductRequest;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 

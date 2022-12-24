@@ -1,8 +1,6 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.product.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.MenuProduct;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class MenuProductFixture {

@@ -1,10 +1,13 @@
-package kitchenpos.product.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.NoSuchDataException;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.*;
-import kitchenpos.product.dto.MenuProductRequest;
-import kitchenpos.product.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
