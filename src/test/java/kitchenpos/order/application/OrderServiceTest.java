@@ -1,10 +1,11 @@
 package kitchenpos.order.application;
 
-import common.exception.NoSuchDataException;
+import kitchenpos.common.exception.NoSuchDataException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -17,10 +18,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static kitchenpos.menu.domain.MenuFixture.메뉴;
 import static kitchenpos.order.domain.OrderFixture.주문;
@@ -32,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +47,8 @@ public class OrderServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderLineItemRepository orderLineItemRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -57,8 +62,9 @@ public class OrderServiceTest {
     private OrderTable 테이블2;
     private OrderTable 빈테이블;
 
-    private OrderLineItem 풀코스_주문;
-    private OrderLineItem 오일2인세트_주문;
+    private OrderLineItem 풀코스_주문1;
+    private OrderLineItem 오일2인세트_주문1;
+    private OrderLineItem 오일2인세트_주문2;
 
 
     @BeforeEach
@@ -68,14 +74,15 @@ public class OrderServiceTest {
         테이블2 = 주문테이블(2L, null, 2, false);
         빈테이블 = 빈주문테이블(3L);
 
-        주문1 = 주문(1L, OrderStatus.COOKING.name(), 테이블1);
-        주문2 = 주문(2L, OrderStatus.COMPLETION.name(), 테이블2);
+        주문1 = 주문(1L, OrderStatus.COOKING.name(), 테이블1.getId());
+        주문2 = 주문(2L, OrderStatus.COMPLETION.name(), 테이블2.getId());
 
         오일2인세트 = 메뉴(1L, "오일2인세트", 34000, null);
         풀코스 = 메뉴(2L, "풀코스", 62000, null);
 
-        풀코스_주문 = 주문라인아이템(1L, 주문1, 풀코스, 1);
-        오일2인세트_주문 = 주문라인아이템(2L, 주문1, 오일2인세트, 1);
+        풀코스_주문1 = 주문라인아이템(1L, 주문1, 풀코스.getId(), 1);
+        오일2인세트_주문1 = 주문라인아이템(2L, 주문1, 오일2인세트.getId(), 1);
+        오일2인세트_주문2 = 주문라인아이템(3L, 주문2, 오일2인세트.getId(), 2);
     }
 
     @DisplayName("주문을 생성한다")
@@ -83,23 +90,25 @@ public class OrderServiceTest {
     void 주문_생성() {
         // given
         given(orderTableRepository.findById(테이블1.getId())).willReturn(Optional.ofNullable(테이블1));
-        given(menuRepository.findById(풀코스_주문.getMenu().getId())).willReturn(Optional.ofNullable(풀코스));
-        given(menuRepository.findById(오일2인세트_주문.getMenu().getId())).willReturn(Optional.ofNullable(풀코스));
-
-        주문1.addOrderLineItems(Arrays.asList(풀코스_주문, 오일2인세트_주문));
         given(orderRepository.save(any())).willReturn(주문1);
+        given(menuRepository.findById(풀코스_주문1.getMenuId())).willReturn(Optional.ofNullable(풀코스));
+        given(menuRepository.findById(오일2인세트_주문1.getMenuId())).willReturn(Optional.ofNullable(풀코스));
+        given(orderLineItemRepository.saveAll(any())).willReturn(Arrays.asList(풀코스_주문1, 오일2인세트_주문1));
 
         // when
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문), OrderLineItemRequest.of(오일2인세트_주문));
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문1), OrderLineItemRequest.of(오일2인세트_주문1));
         OrderRequest orderRequest = new OrderRequest(테이블1.getId(), OrderStatus.COOKING.name(), orderLineItemRequests);
         OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
         verify(orderRepository).save(any());
+        verify(orderLineItemRepository).saveAll(any());
         assertAll(
                 () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
                 () -> assertThat(orderResponse.getOrderLineItems()).hasSize(2),
-                () -> assertThat(orderResponse.getOrderLineItems()).containsExactly(풀코스_주문, 오일2인세트_주문)
+                () -> assertThat(orderResponse.getOrderLineItems().stream()
+                        .map(OrderLineItemResponse::getOrder)
+                        .collect(Collectors.toList())).containsOnly(주문1)
         );
     }
 
@@ -108,15 +117,16 @@ public class OrderServiceTest {
     void 전체_주문_목록_조회() {
         // given
         given(orderRepository.findAll()).willReturn(Arrays.asList(주문1, 주문2));
-
+        given(orderLineItemRepository.findOrderLineItemsByOrderId(주문1.getId())).willReturn(Arrays.asList(풀코스_주문1, 오일2인세트_주문1));
+        given(orderLineItemRepository.findOrderLineItemsByOrderId(주문2.getId())).willReturn(Arrays.asList(오일2인세트_주문2));
         // when
         List<OrderResponse> orders = orderService.list();
 
         //then
         assertAll(
                 () -> assertThat(orders).hasSize(2),
-                () -> assertThat(orders.get(0).getOrderLineItems()).isEqualTo(주문1.getOrderLineItems()),
-                () -> assertThat(orders.get(1).getOrderLineItems()).isEqualTo(주문2.getOrderLineItems())
+                () -> assertThat(orders.get(0).getOrderLineItems().stream().map(OrderLineItemResponse::getOrder).collect(Collectors.toList())).contains(주문1),
+                () -> assertThat(orders.get(1).getOrderLineItems().stream().map(OrderLineItemResponse::getOrder).collect(Collectors.toList())).contains(주문2)
         );
     }
 
@@ -125,6 +135,7 @@ public class OrderServiceTest {
     void 주문_상태_갱신() {
         // given
         given(orderRepository.findById(주문1.getId())).willReturn(Optional.ofNullable(주문1));
+        given(orderLineItemRepository.findOrderLineItemsByOrderId(주문1.getId())).willReturn(Arrays.asList(오일2인세트_주문1, 풀코스_주문1));
 
         // when
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
@@ -150,7 +161,7 @@ public class OrderServiceTest {
     @Test
     void 존재하지_않는_메뉴가_포함된_주문_생성() {
         // given
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문), null);
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문1), null);
         OrderRequest orderRequest = new OrderRequest(테이블1.getId(), OrderStatus.COOKING.name(), orderLineItemRequests);
 
         // when & then
@@ -163,7 +174,7 @@ public class OrderServiceTest {
     @Test
     void 주문테이블_정보가_없는_주문_생성() {
         // given
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문), null);
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문1), null);
         OrderRequest orderRequest = new OrderRequest(테이블1.getId(), OrderStatus.COOKING.name(), orderLineItemRequests);
         given(orderTableRepository.findById(테이블1.getId())).willReturn(Optional.ofNullable(null));
 
@@ -177,7 +188,7 @@ public class OrderServiceTest {
     @Test
     void 빈_주문테이블에_주문_생성() {
         // given
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문), null);
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문1), null);
         OrderRequest orderRequest = new OrderRequest(빈테이블.getId(), OrderStatus.COOKING.name(), orderLineItemRequests);
         given(orderTableRepository.findById(빈테이블.getId())).willReturn(Optional.ofNullable(빈테이블));
 
