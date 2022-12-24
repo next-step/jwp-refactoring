@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -14,8 +12,8 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    @Embedded
+    private OrderMenu orderMenu;
 
     private long quantity;
 
@@ -23,24 +21,30 @@ public class OrderLineItem {
 
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
-        this(order, menu, quantity);
+    public OrderLineItem(Long seq, Order order, OrderMenu orderMenu, long quantity) {
+        this(order, orderMenu, quantity);
         this.seq = seq;
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
+    public OrderLineItem(Order order, OrderMenu orderMenu, long quantity) {
+        this(orderMenu, quantity);
         if (Objects.isNull(order)) {
             throw new IllegalArgumentException();
         }
-        if (Objects.isNull(menu)) {
+        updateOrder(order);
+        this.orderMenu = orderMenu;
+        this.quantity = quantity;
+    }
+
+    public OrderLineItem(OrderMenu orderMenu, long quantity) {
+        if (Objects.isNull(orderMenu)) {
             throw new IllegalArgumentException();
         }
         if (quantity < 0) {
             throw new IllegalArgumentException();
         }
 
-        updateOrder(order);
-        this.menu = menu;
+        this.orderMenu = orderMenu;
         this.quantity = quantity;
     }
 
@@ -56,8 +60,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public OrderMenu getOrderMenu() {
+        return orderMenu;
     }
 
     public long getQuantity() {

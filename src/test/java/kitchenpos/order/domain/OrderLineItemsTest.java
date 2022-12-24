@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static kitchenpos.application.OrderServiceTest.orderMenu;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderLineItemsTest {
@@ -35,7 +36,7 @@ class OrderLineItemsTest {
         뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
                 new MenuProduct(뿌링클_세트, 치즈볼, 2L)));
 
-        뿌링클_세트_주문 = new OrderLineItem(주문, 뿌링클_세트, 1L);
+        뿌링클_세트_주문 = new OrderLineItem(주문, orderMenu(뿌링클_세트.getId(), 뿌링클_세트.getName(), 뿌링클_세트.getPrice()), 1L);
     }
 
     @DisplayName("주문 상품을 추가한다.")

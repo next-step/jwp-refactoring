@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static kitchenpos.application.OrderServiceTest.orderMenu;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -55,7 +56,7 @@ class OrderTest {
     @Test
     void 주문_상품_추가() {
         Order 주문 = new Order(주문테이블, OrderStatus.COOKING);
-        OrderLineItem 뿌링클_세트_주문 = new OrderLineItem(주문, 뿌링클_세트, 1L);
+        OrderLineItem 뿌링클_세트_주문 = new OrderLineItem(주문, orderMenu(뿌링클_세트.getId(), 뿌링클_세트.getName(), 뿌링클_세트.getPrice()), 1L);
 
         주문.order(Arrays.asList(뿌링클_세트_주문));
 
@@ -66,7 +67,7 @@ class OrderTest {
     @Test
     void 기주문한_주문_상품_추가() {
         Order 주문 = new Order(주문테이블, OrderStatus.COOKING);
-        OrderLineItem 뿌링클_세트_주문 = new OrderLineItem(주문, 뿌링클_세트, 1L);
+        OrderLineItem 뿌링클_세트_주문 = new OrderLineItem(주문, orderMenu(뿌링클_세트.getId(), 뿌링클_세트.getName(), 뿌링클_세트.getPrice()), 1L);
 
         주문.order(Arrays.asList(뿌링클_세트_주문));
         주문.order(Arrays.asList(뿌링클_세트_주문));
