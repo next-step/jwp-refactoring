@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
 import kitchenpos.common.Price;
+import kitchenpos.menu.exception.MenuExceptionConstants;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -51,7 +51,7 @@ public class Product {
 
     private void validation(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRODUCT_NAME.getErrorMessage());
+            throw new IllegalArgumentException(MenuExceptionConstants.INVALID_FORMAT_PRODUCT_NAME.getErrorMessage());
         }
     }
 

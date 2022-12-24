@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.menu.exception.MenuExceptionConstants;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.CascadeType;
@@ -39,7 +39,7 @@ public class MenuProducts {
     public void validatePrice(BigDecimal price) {
         BigDecimal totalAmount = getTotalAmount();
         if(isMenuPriceGreaterThanTotalAmount(price, totalAmount)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_ADD_MENU_PRICE.getErrorMessage());
+            throw new IllegalArgumentException(MenuExceptionConstants.INVALID_ADD_MENU_PRICE.getErrorMessage());
         }
     }
 

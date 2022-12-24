@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static kitchenpos.exception.CommonConstants.INVALID_FORMAT_PRICE;
+import static kitchenpos.exception.CommonConstants.INVALID_FORMAT_PRICE_IS_NEGATIVE;
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_ADD_MENU_PRICE;
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_GROUP;
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +49,7 @@ public class MenuTest {
         assertThatThrownBy(() -> {
             new Menu(name, new BigDecimal(43000), 한식);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_MENU_NAME.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_MENU_NAME.getErrorMessage());
     }
 
     @DisplayName("메뉴그룹이 null이면 예외처리 된다.")
@@ -54,7 +58,7 @@ public class MenuTest {
         assertThatThrownBy(() -> {
             new Menu("한정식_A", new BigDecimal(43000), null);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_MENU_GROUP.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_MENU_GROUP.getErrorMessage());
     }
 
     @DisplayName("메뉴가격이 null이면 예외처리 된다.")
@@ -63,7 +67,7 @@ public class MenuTest {
         assertThatThrownBy(() -> {
             new Menu("한정식_A", null, 한식);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_PRICE.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_PRICE.getErrorMessage());
     }
 
     @DisplayName("메뉴가격이 음수이면 예외처리 된다.")
@@ -73,7 +77,7 @@ public class MenuTest {
         assertThatThrownBy(() -> {
             new Menu("한정식_A", new BigDecimal(price), 한식);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_PRICE_IS_NEGATIVE.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_PRICE_IS_NEGATIVE.getErrorMessage());
     }
 
     @DisplayName("메뉴상품을 추가하면 메뉴에 추가된다.")
@@ -99,6 +103,6 @@ public class MenuTest {
         assertThatThrownBy(() -> {
             한정식_B세트.create(Arrays.asList(불고기, 용포탕));
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_ADD_MENU_PRICE.getErrorMessage());
+                .hasMessage(INVALID_ADD_MENU_PRICE.getErrorMessage());
     }
 }

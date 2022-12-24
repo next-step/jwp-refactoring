@@ -1,11 +1,10 @@
-package kitchenpos.menugroup.domain;
+package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
-import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_GROUP_NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuGroupTest {
@@ -17,6 +16,6 @@ public class MenuGroupTest {
         assertThatThrownBy(() -> {
             new MenuGroup(name);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_MENU_GROUP_NAME.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_MENU_GROUP_NAME.getErrorMessage());
     }
 }

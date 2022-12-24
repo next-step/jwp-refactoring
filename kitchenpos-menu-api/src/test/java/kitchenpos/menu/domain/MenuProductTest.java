@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU;
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_QUANTITY;
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_PRODUCT;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,7 +39,7 @@ public class MenuProductTest {
         assertThatThrownBy(() -> {
             new MenuProduct(null, 스테이크, 1);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_MENU.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_MENU.getErrorMessage());
     }
 
     @DisplayName("상품이 없는 메뉴 상품을 등록할 수 없다.")
@@ -46,7 +48,7 @@ public class MenuProductTest {
         assertThatThrownBy(() -> {
             new MenuProduct(양식_세트, null, 1);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_PRODUCT.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_PRODUCT.getErrorMessage());
     }
 
     @DisplayName("수량이 음수인 메뉴 상품을 등록할 수 없다.")
@@ -56,6 +58,6 @@ public class MenuProductTest {
         assertThatThrownBy(() -> {
             new MenuProduct(양식_세트, 스테이크, quantity);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_MENU_QUANTITY.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_MENU_QUANTITY.getErrorMessage());
     }
 }

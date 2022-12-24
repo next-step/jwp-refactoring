@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
 import kitchenpos.common.Price;
+import kitchenpos.menu.exception.MenuExceptionConstants;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_GROUP;
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_NAME;
 
 @Entity
 public class Menu {
@@ -54,10 +57,10 @@ public class Menu {
 
     private void validation(String name, MenuGroup menuGroup) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_NAME.getErrorMessage());
+            throw new IllegalArgumentException(INVALID_FORMAT_MENU_NAME.getErrorMessage());
         }
         if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_GROUP.getErrorMessage());
+            throw new IllegalArgumentException(INVALID_FORMAT_MENU_GROUP.getErrorMessage());
         }
     }
 

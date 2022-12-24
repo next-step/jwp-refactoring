@@ -1,7 +1,5 @@
-package kitchenpos.product.domain;
+package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
-import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,6 +8,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.math.BigDecimal;
 
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_PRODUCT_NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,7 +28,7 @@ public class ProductTest {
         assertThatThrownBy(() -> {
             new Product(name, new BigDecimal(18000));
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_FORMAT_PRODUCT_NAME.getErrorMessage());
+                .hasMessage(INVALID_FORMAT_PRODUCT_NAME.getErrorMessage());
     }
 
     @DisplayName("메뉴의 최대 가격은 메뉴에 속한 총 가격의 합이다.")

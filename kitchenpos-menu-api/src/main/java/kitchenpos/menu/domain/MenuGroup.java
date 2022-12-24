@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.menu.exception.MenuExceptionConstants;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
+
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_FORMAT_MENU_GROUP_NAME;
 
 @Entity
 public class MenuGroup {
@@ -27,7 +29,7 @@ public class MenuGroup {
 
     private void validation(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_GROUP_NAME.getErrorMessage());
+            throw new IllegalArgumentException(INVALID_FORMAT_MENU_GROUP_NAME.getErrorMessage());
         }
     }
 

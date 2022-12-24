@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.menu.exception.MenuExceptionConstants;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -70,13 +70,13 @@ public class MenuProduct {
 
     private void validation(Menu menu, Product product, long quantity) {
         if (Objects.isNull(menu)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU.getErrorMessage());
+            throw new IllegalArgumentException(MenuExceptionConstants.INVALID_FORMAT_MENU.getErrorMessage());
         }
         if (Objects.isNull(product)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRODUCT.getErrorMessage());
+            throw new IllegalArgumentException(MenuExceptionConstants.INVALID_FORMAT_PRODUCT.getErrorMessage());
         }
         if (isNegative(quantity)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_MENU_QUANTITY.getErrorMessage());
+            throw new IllegalArgumentException(MenuExceptionConstants.INVALID_FORMAT_MENU_QUANTITY.getErrorMessage());
         }
     }
 

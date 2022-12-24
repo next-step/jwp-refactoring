@@ -1,12 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static kitchenpos.menu.exception.MenuExceptionConstants.INVALID_ADD_MENU_PRICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -54,6 +54,6 @@ public class MenuProductsTest {
         assertThatThrownBy(() -> {
             양식_세트_목록.validatePrice(양식_세트.getPriceToDecimal());
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_ADD_MENU_PRICE.getErrorMessage());
+                .hasMessage(INVALID_ADD_MENU_PRICE.getErrorMessage());
     }
 }

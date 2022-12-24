@@ -1,9 +1,9 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.EntityNotFoundExceptionConstants;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.common.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -11,6 +11,7 @@ import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.MenuExceptionConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -88,7 +89,7 @@ public class MenuServiceTest {
         assertThatThrownBy(() -> {
             menuService.create(request);
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
+                .hasMessage(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID.getErrorMessage());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class MenuServiceTest {
         assertThatThrownBy(() -> {
             menuService.create(request);
         }).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
+                .hasMessage(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID.getErrorMessage());
     }
 
     @Test
@@ -116,7 +117,7 @@ public class MenuServiceTest {
         assertThatThrownBy(() -> {
             menuService.create(request);
         }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.INVALID_ADD_MENU_PRICE.getErrorMessage());
+                .hasMessage(MenuExceptionConstants.INVALID_ADD_MENU_PRICE.getErrorMessage());
     }
 
     @Test

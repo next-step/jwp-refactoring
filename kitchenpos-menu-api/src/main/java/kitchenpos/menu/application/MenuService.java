@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.ErrorCode;
+import kitchenpos.exception.EntityNotFoundException;
+import kitchenpos.exception.EntityNotFoundExceptionConstants;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Product;
@@ -12,7 +13,6 @@ import kitchenpos.menu.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -40,13 +40,13 @@ public class MenuService {
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID));
     }
 
     private List<Product> findAllProductByIds(List<Long> productIds) {
         List<Product> products = productRepository.findAllById(productIds);
         if (productIds.size() != products.size()) {
-            throw new EntityNotFoundException(ErrorCode.NOT_FOUND_BY_ID.getErrorMessage());
+            throw new EntityNotFoundException(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID);
         }
 
         return products;
