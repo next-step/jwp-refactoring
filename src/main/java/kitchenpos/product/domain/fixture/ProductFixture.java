@@ -8,10 +8,10 @@ import static kitchenpos.common.fixture.PriceFixture.priceProductA;
 public class ProductFixture {
 
     public static Product createProductA() {
-        return new Product(nameProductA(), priceProductA());
+        return new Product(NameFixture.nameProductA(), PriceFixture.priceProductA());
     }
 
     public static Product productA() {
-        return new Product(1L, nameProductA(), priceProductA());
+        return new Product(1L, NameFixture.nameProductA(), PriceFixture.priceProductA());
     }
 }

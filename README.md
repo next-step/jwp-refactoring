@@ -209,7 +209,7 @@
     - TableGroupServiceTest [x]
     - TableServiceTest [x]
     - ProductServiceTest [x]
-- kitchenpos-product [ ]
+- kitchenpos-product [x]
 - kitchenpos-order [ ]
 - kitchenpos-menu [x]
 - kitchenpos-table [x]

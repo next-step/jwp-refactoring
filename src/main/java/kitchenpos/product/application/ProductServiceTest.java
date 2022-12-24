@@ -40,11 +40,11 @@ class ProductServiceTest {
 
         Product product = productA();
 
-        given(productRepository.save(any())).willReturn(product);
+        BDDMockito.given(productRepository.save(ArgumentMatchers.any())).willReturn(product);
 
         ProductResponse response = productService.create(new ProductCreateRequest(product.getName().getName(), product.getPrice()));
 
-        assertAll(
+        Assertions.assertAll(
                 () -> assertEquals(0, response.getPrice().compareTo(product.getPrice())),
                 () -> assertThat(response.getName()).isEqualTo(product.getName())
         );
@@ -53,7 +53,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성 / 가격을 필수로 갖는다.")
     @Test
     void create_fail_priceNull() {
-        assertThatThrownBy(() -> productService.create(new ProductCreateRequest("상품A", null)))
+        Assertions.assertThatThrownBy(() -> productService.create(new ProductCreateRequest("상품A", null)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -61,7 +61,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성 / 가격은 0원보다 작을 수 없다.")
     @Test
     void create_fail_minimumPrice() {
-        assertThatThrownBy(() -> productService.create(new ProductCreateRequest("상품A", BigDecimal.valueOf(-1))))
+        Assertions.assertThatThrownBy(() -> productService.create(new ProductCreateRequest("상품A", BigDecimal.valueOf(-1))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
     }
@@ -69,7 +69,7 @@ class ProductServiceTest {
     @DisplayName("상품 목록 조회")
     @Test
     void list() {
-        given(productRepository.findAll()).willReturn(Collections.singletonList(productA()));
+        BDDMockito.given(productRepository.findAll()).willReturn(Collections.singletonList(productA()));
         assertThat(productService.list()).hasSize(1);
     }
 }

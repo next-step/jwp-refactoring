@@ -15,20 +15,20 @@ class ProductTest {
     @DisplayName("상품 생성")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(ProductFixture::productA);
+        Assertions.assertThatNoException().isThrownBy(ProductFixture::productA);
     }
 
     @DisplayName("이름을 필수로 갖는다.")
     @Test
     void name() {
-        assertThatThrownBy(() -> new Product(1L, null, priceProductA()))
+        Assertions.assertThatThrownBy(() -> new Product(1L, null, PriceFixture.priceProductA()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("가격을 필수로 갖는다.")
     @Test
     void price() {
-        assertThatThrownBy(() -> new Product(1L, nameProductA(), null))
+        Assertions.assertThatThrownBy(() -> new Product(1L, NameFixture.nameProductA(), null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
