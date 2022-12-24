@@ -24,9 +24,6 @@ public class ProductAcceptanceTestFixture extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        /*떡볶이 = 상품_생성_되어있음(new ProductRequest("떡볶이", BigDecimal.valueOf(4500)));
-        튀김 = 상품_생성_되어있음(new ProductRequest("튀김", BigDecimal.valueOf(2500)));
-        순대 = 상품_생성_되어있음(new ProductRequest("순대", BigDecimal.valueOf(4000)));*/
         떡볶이 = new ProductRequest("떡볶이", BigDecimal.valueOf(4500));
         튀김 = new ProductRequest("튀김", BigDecimal.valueOf(2500));
         순대 = new ProductRequest("순대", BigDecimal.valueOf(4000));
