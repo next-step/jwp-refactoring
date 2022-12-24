@@ -1,7 +1,6 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.application;
 
-import static kitchenpos.table.domain.OrderTableFixture.*;
-import static kitchenpos.tablegroup.domain.TableGroupFixture.*;
+import static kitchenpos.fixture.TableGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -16,20 +15,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.fixture.TableGroupFixture;
+import kitchenpos.tablegroup.application.OrderTableSupport;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 
 @DisplayName("단체 지정 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderTableSupport orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @Mock
@@ -43,10 +44,10 @@ class TableGroupServiceTest {
         // given
         Long orderTableId1 = 1L;
         Long orderTableId2 = 2L;
-        OrderTable savedOrderTable1 = savedOrderTable(orderTableId1, 1L, false);
-        OrderTable savedOrderTable2 = savedOrderTable(orderTableId2, 1L, false);
+        OrderTableResponse savedOrderTable1 = savedOrderTableResponse(orderTableId1, 1L, false);
+        OrderTableResponse savedOrderTable2 = savedOrderTableResponse(orderTableId2, 1L, false);
         TableGroupRequest tableGroupRequest = tableGroupRequest(Arrays.asList(orderTableId1, orderTableId2));
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(orderTableId1, orderTableId2)))
+        given(orderTableRepository.findOrderTables(Arrays.asList(orderTableId1, orderTableId2)))
             .willReturn(Arrays.asList(savedOrderTable1, savedOrderTable2));
         TableGroup savedTableGroup = savedTableGroup(1L);
         given(tableGroupRepository.save(any())).willReturn(savedTableGroup);

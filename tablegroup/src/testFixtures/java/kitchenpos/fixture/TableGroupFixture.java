@@ -1,8 +1,10 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.fixture;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
@@ -25,5 +27,9 @@ public class TableGroupFixture {
 
     public static TableGroupUngroupedEvent tableGroupUngroupEvent(Long tableGroupId) {
         return new TableGroupUngroupedEvent(tableGroupId);
+    }
+
+    public static OrderTableResponse savedOrderTableResponse(Long id, Long tableGroupId, boolean empty) {
+        return OrderTableResponse.of(id, tableGroupId, 0, empty);
     }
 }

@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.fixture.TableGroupFixture.*;
 import static kitchenpos.table.domain.OrderTableFixture.*;
-import static kitchenpos.tablegroup.domain.TableGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;

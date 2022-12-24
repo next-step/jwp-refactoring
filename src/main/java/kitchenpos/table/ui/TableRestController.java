@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.table.application.TableService;
-import kitchenpos.tablegroup.dto.OrderTableRequest;
-import kitchenpos.tablegroup.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @RequestMapping("/api/tables")
 @RestController

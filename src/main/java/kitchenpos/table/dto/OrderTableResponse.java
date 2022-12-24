@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.dto;
+package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
 

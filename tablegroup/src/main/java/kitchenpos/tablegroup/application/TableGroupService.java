@@ -6,28 +6,27 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
+import kitchenpos.tablegroup.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 
 @Transactional(readOnly = true)
 @Service
 public class TableGroupService {
-    private final OrderTableRepository orderTableRepository;
+    private final OrderTableSupport orderTableSupport;
     private final TableGroupRepository tableGroupRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public TableGroupService(
-        final OrderTableRepository orderTableRepository,
+        final OrderTableSupport orderTableSupport,
         final TableGroupRepository tableGroupRepository,
         final ApplicationEventPublisher applicationEventPublisher
     ) {
-        this.orderTableRepository = orderTableRepository;
+        this.orderTableSupport = orderTableSupport;
         this.tableGroupRepository = tableGroupRepository;
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -38,12 +37,12 @@ public class TableGroupService {
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.generate());
         applicationEventPublisher.publishEvent(new TableGroupCreatedEvent(orderTableIds, savedTableGroup.getId()));
 
-        List<OrderTable> savedOrderTables = findSavedTables(orderTableIds);
+        List<OrderTableResponse> savedOrderTables = findSavedTables(orderTableIds);
         return TableGroupResponse.of(savedTableGroup, savedOrderTables);
     }
 
-    private List<OrderTable> findSavedTables(List<Long> orderTableIds) {
-        return orderTableRepository.findAllByIdIn(orderTableIds);
+    private List<OrderTableResponse> findSavedTables(List<Long> orderTableIds) {
+        return orderTableSupport.findOrderTables(orderTableIds);
     }
 
     @Transactional

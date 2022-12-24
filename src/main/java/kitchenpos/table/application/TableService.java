@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.dto.OrderTableRequest;
-import kitchenpos.tablegroup.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Transactional(readOnly = true)
 @Service

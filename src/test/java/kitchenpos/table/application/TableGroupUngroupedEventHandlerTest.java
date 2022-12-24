@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.fixture.TableGroupFixture.*;
 import static kitchenpos.table.domain.OrderTableFixture.*;
-import static kitchenpos.tablegroup.domain.TableGroupFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.fixture.TableGroupFixture;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
