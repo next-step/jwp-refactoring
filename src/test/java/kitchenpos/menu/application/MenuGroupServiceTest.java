@@ -33,7 +33,7 @@ class MenuGroupServiceTest {
 
         given(menuGroupRepository.save(any())).willReturn(MenuGroupFixture.menuGroupA());
 
-        assertThat(menuGroupService.create(new MenuGroupCreateRequest(MENU_GROUP_A_NAME)).getName())
+        assertThat(menuGroupService.create(new MenuGroupCreateRequest(MenuGroupFixture.menuGroupA().getName())).getName())
                 .isEqualTo(MENU_GROUP_A_NAME);
     }
 
