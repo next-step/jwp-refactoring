@@ -6,7 +6,7 @@ import kitchenpos.order.domain.OrderStatus;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static kitchenpos.order.domain.Order.fromDefault;
+import static kitchenpos.order.domain.Order.from;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -22,7 +22,7 @@ public class OrderRequest {
     }
 
     public Order toInitOrder(Long orderTableId) {
-        Order order = fromDefault(orderTableId);
+        Order order = from(orderTableId);
         return order;
     }
 

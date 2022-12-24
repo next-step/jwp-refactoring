@@ -45,7 +45,7 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public static Order fromDefault(Long orderTableId) {
+    public static Order from(Long orderTableId) {
         return new Order(orderTableId);
     }
 

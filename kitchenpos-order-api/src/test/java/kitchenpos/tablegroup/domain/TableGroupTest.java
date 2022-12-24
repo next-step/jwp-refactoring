@@ -86,8 +86,8 @@ public class TableGroupTest {
         Menu menu1 = new Menu("양식 세트1", new BigDecimal(43000), menuGroup);
         Menu menu2 = new Menu("양식 세트2", new BigDecimal(50000), menuGroup);
 
-        Order 주문1 = Order.fromDefault(단체_주문_테이블1.getId());
-        Order 주문2 = Order.fromDefault(단체_주문_테이블2.getId());
+        Order 주문1 = Order.from(단체_주문_테이블1.getId());
+        Order 주문2 = Order.from(단체_주문_테이블2.getId());
 
         OrderLineItem orderLineItem1 = OrderLineItem.of(주문1, OrderMenu.of(menu1), 1L);
         OrderLineItem orderLineItem2 = OrderLineItem.of(주문2, OrderMenu.of(menu2), 1L);

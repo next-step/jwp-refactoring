@@ -38,7 +38,7 @@ public class OrderTest {
 
     @Test
     void 주문_상품_추가() {
-        Order 주문 = Order.fromDefault(주문테이블.getId());
+        Order 주문 = Order.from(주문테이블.getId());
         OrderLineItem 양식_세트_주문 = OrderLineItem.of(주문, OrderMenu.of(양식_세트), 1L);
         주문.addOrderLineItems(Arrays.asList(양식_세트_주문));
         주문.addOrderLineItems(Arrays.asList(양식_세트_주문));
@@ -48,7 +48,7 @@ public class OrderTest {
 
     @Test
     void 기존에_포함되어_있는_주문_상품은_추가되지_않음() {
-        Order 주문 = Order.fromDefault(주문테이블.getId());
+        Order 주문 = Order.from(주문테이블.getId());
         OrderLineItem 양식_세트_주문 = OrderLineItem.of(주문, OrderMenu.of(양식_세트), 1L);
         주문.addOrderLineItems(Arrays.asList(양식_세트_주문));
 
@@ -61,7 +61,7 @@ public class OrderTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void 조리중이거나_식사중인_주문_테이블은_변경할_수_없음(OrderStatus orderStatus) {
-        Order 주문 = Order.fromDefault(주문테이블.getId());
+        Order 주문 = Order.from(주문테이블.getId());
         OrderLineItem 양식_세트_주문 = OrderLineItem.of(주문, OrderMenu.of(양식_세트), 1L);
         주문.addOrderLineItems(Arrays.asList(양식_세트_주문));
         주문.changeOrderStatus(orderStatus);
@@ -74,7 +74,7 @@ public class OrderTest {
 
     @Test
     void 이미_완료된_주문은_변경할_수_없음() {
-        Order 주문 = Order.fromDefault(주문테이블.getId());
+        Order 주문 = Order.from(주문테이블.getId());
         OrderLineItem 양식_세트_주문 = OrderLineItem.of(주문, OrderMenu.of(양식_세트), 1L);
         주문.addOrderLineItems(Arrays.asList(양식_세트_주문));
         주문.changeOrderStatus(OrderStatus.COMPLETION);

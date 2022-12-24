@@ -12,7 +12,6 @@ import kitchenpos.tablegroup.application.OrderTableValidator;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.exception.TableExceptionConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -133,7 +132,7 @@ public class OrderValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void modifyOrderTableValidation_tableStatus(OrderStatus orderStatus) {
-        Order order = Order.fromDefault(주문테이블.getId());
+        Order order = Order.from(주문테이블.getId());
         OrderLineItem orderLineItem1 = OrderLineItem.of(order, OrderMenu.of(양식_세트1), 1L);
         OrderLineItem orderLineItem2 = OrderLineItem.of(order, OrderMenu.of(양식_세트2), 1L);
         order.addOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
@@ -150,7 +149,7 @@ public class OrderValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = { "COOKING", "MEAL" })
     void deleteOrderTableValidation_tableStatus(OrderStatus orderStatus) {
-        Order order = Order.fromDefault(주문테이블.getId());
+        Order order = Order.from(주문테이블.getId());
         OrderLineItem orderLineItem1 = OrderLineItem.of(order, OrderMenu.of(양식_세트1), 1L);
         OrderLineItem orderLineItem2 = OrderLineItem.of(order, OrderMenu.of(양식_세트2), 1L);
         order.addOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));

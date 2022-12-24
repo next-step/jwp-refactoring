@@ -70,7 +70,7 @@ class OrderServiceTest {
         양식 = new MenuGroup("양식");
         양식_세트1 = new Menu("양식 세트1", new BigDecimal(43000), 양식);
         양식_세트2 = new Menu("양식 세트2", new BigDecimal(50000), 양식);
-        주문 = Order.fromDefault(주문테이블.getId());
+        주문 = Order.from(주문테이블.getId());
 
         ReflectionTestUtils.setField(주문테이블, "id", 1L);
         ReflectionTestUtils.setField(주문, "id", 1L);
