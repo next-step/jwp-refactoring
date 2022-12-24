@@ -1,11 +1,12 @@
 package kitchenpos.common;
 
-import kitchenpos.common.ErrorCode;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+import static kitchenpos.exception.CommonConstants.INVALID_FORMAT_PRICE;
+import static kitchenpos.exception.CommonConstants.INVALID_FORMAT_PRICE_IS_NEGATIVE;
 
 @Embeddable
 public class Price {
@@ -23,10 +24,10 @@ public class Price {
 
     private void validation(BigDecimal price) {
         if (Objects.isNull(price)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRICE.getErrorMessage());
+            throw new IllegalArgumentException(INVALID_FORMAT_PRICE.getErrorMessage());
         }
         if (isNegative(price)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FORMAT_PRICE_IS_NEGATIVE.getErrorMessage());
+            throw new IllegalArgumentException(INVALID_FORMAT_PRICE_IS_NEGATIVE.getErrorMessage());
         }
     }
 
