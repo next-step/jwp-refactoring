@@ -5,9 +5,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.domain.MenuProducts;
 
-import java.util.Arrays;
-import java.util.Map;
-
 public class OrderLineItemResponse {
 
     private Long seq;

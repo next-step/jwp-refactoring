@@ -1,13 +1,10 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.ExceptionMessage;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
