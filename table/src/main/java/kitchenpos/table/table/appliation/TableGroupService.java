@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.OrderTableRepository;
 import kitchenpos.table.table.domain.TableGroup;
 import kitchenpos.table.table.domain.TableGroupRepository;
@@ -47,7 +47,7 @@ public class TableGroupService {
 		return TableGroup.from(orderTables);
 	}
 
-	private List<OrderTable> orderTables(List<OrderTableIdRequest> requests) {
+	private List<OrderTable> orderTables(List<TableGroupRequest.OrderTableIdRequest> requests) {
 		return requests.stream()
 			.map(request -> orderTable(request.getId()))
 			.collect(Collectors.toList());

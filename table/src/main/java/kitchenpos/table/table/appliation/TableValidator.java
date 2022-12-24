@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kitchenpos.order.application.OrderValidator;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.table.domain.OrderTableRepository;
 import kitchenpos.table.table.domain.TableGroup;
 
@@ -36,7 +33,6 @@ public class TableValidator implements OrderValidator {
 		}
 	}
 
-
 	private boolean isCookingOrMeal(Long orderTableId) {
 		return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, cookingAndMealStatus());
 	}
@@ -46,6 +42,7 @@ public class TableValidator implements OrderValidator {
 			tableGroup.orderTableIds(),
 			cookingAndMealStatus());
 	}
+
 	private List<OrderStatus> cookingAndMealStatus() {
 		return Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
 	}

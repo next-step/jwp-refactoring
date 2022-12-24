@@ -8,8 +8,6 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
 
-import kitchenpos.order.domain.OrderTable;
-
 @Embeddable
 public class OrderTables {
 
