@@ -1,14 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exception.NoSuchDataException;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-
+import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.exception.NoSuchDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +23,7 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.domain.MenuFixture.메뉴;
 import static kitchenpos.domain.MenuGroupFixture.메뉴그룹;
-import static kitchenpos.product.domain.MenuProductFixture.메뉴상품;
-import static kitchenpos.product.domain.ProductFixture.상품;
+import static kitchenpos.domain.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -64,8 +61,8 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setup() {
-        알리오올리오 = ProductFixture.상품(1L, "알리오올리오", 17000);
-        봉골레오일 = ProductFixture.상품(2L, "봉골레오일", 19000);
+        알리오올리오 = 상품(1L, "알리오올리오", 17000);
+        봉골레오일 = 상품(2L, "봉골레오일", 19000);
 
         세트 = 메뉴그룹(1L, "세트");
         코스 = 메뉴그룹(2L, "코스");

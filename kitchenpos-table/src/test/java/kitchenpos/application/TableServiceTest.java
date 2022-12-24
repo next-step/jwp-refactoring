@@ -1,14 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exception.NoSuchDataException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.NoSuchDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.order.domain.OrderFixture.주문;
 import static kitchenpos.domain.OrderTableFixture.*;
 import static kitchenpos.domain.TableGroupFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,8 +29,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 @DisplayName("테이블 테스트")
 public class TableServiceTest {
-    @MockBean
-    private OrderRepository orderRepository;
+
     @MockBean
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -100,9 +95,7 @@ public class TableServiceTest {
     @Test
     void 빈_테이블_여부_값_갱신() {
         // given
-        Order 주문 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블2.getId());
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블2));
-        given(orderRepository.findOrderByOrderTableId(any())).willReturn(Arrays.asList(주문));
 
         // when
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 0, true);
@@ -146,31 +139,13 @@ public class TableServiceTest {
     @Test
     void 테이블그룹_지정된_테이블_빈_테이블_여부_값_갱신() {
         // given
-        Order 주문 = 주문(1L, OrderStatus.COOKING.name(), 테이블4.getId());
         given(orderTableRepository.findById(테이블4.getId())).willReturn(Optional.ofNullable(테이블4));
-        given(orderRepository.findOrderByOrderTableId(any())).willReturn(Arrays.asList(주문));
 
         // when & then
         OrderTableRequest orderTableRequest = OrderTableRequest.of(테이블4);
 
         assertThatThrownBy(
                 () -> tableService.changeEmpty(테이블4.getId(), orderTableRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문상태가 완료가 아닌 주문이 있는 테이블의 빈 테이블 여부 값을 갱신한다")
-    @Test
-    void 주문상태가_완료_아닌_주문_가진_테이블_빈_테이블_여부_값_갱신() {
-        // given
-        Order 주문 = 주문(1L, OrderStatus.MEAL.name(), 테이블2.getId());
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블2));
-        given(orderRepository.findOrderByOrderTableId(any())).willReturn(Arrays.asList(주문));
-
-        // when & then
-        OrderTableRequest orderTableRequest = new OrderTableRequest(null, 0, true);
-
-        assertThatThrownBy(
-                () -> tableService.changeEmpty(테이블2.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

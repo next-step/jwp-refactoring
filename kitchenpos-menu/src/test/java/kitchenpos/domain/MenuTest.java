@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static kitchenpos.domain.MenuFixture.메뉴;
-import static kitchenpos.product.domain.MenuProductFixture.메뉴상품;
-import static kitchenpos.product.domain.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

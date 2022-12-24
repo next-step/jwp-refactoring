@@ -1,7 +1,9 @@
 package kitchenpos.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.domin.Order;
+import kitchenpos.domin.OrderLineItem;
+import kitchenpos.domin.OrderLineItems;
+import kitchenpos.domin.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.table.domain.OrderTableFixture.주문테이블;
-import static kitchenpos.menu.domain.MenuFixture.메뉴;
+import static kitchenpos.domain.MenuFixture.메뉴;
 import static kitchenpos.domain.OrderFixture.주문;
 import static kitchenpos.domain.OrderLineItemFixture.주문라인아이템;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,5 +1,6 @@
 package kitchenpos.domin;
 
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Quantity;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = Order.class, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id")
     private Order order;
 

@@ -1,7 +1,7 @@
 package kitchenpos.domin;
 
-import kitchenpos.table.domain.TableChangeEmptyEvent;
-import kitchenpos.table.domain.TableUngroupedEvent;
+import kitchenpos.domain.TableChangeEmptyEvent;
+import kitchenpos.domain.TableUngroupedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

@@ -1,11 +1,8 @@
 package kitchenpos.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.order.domain.OrderFixture.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -18,7 +15,6 @@ public class OrderTableTest {
     void 빈_테이블_여부_갱신_테스트() {
         // given
         OrderTable 테이블1 = new OrderTable(null, 5, false);
-        Order 주문 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1.getId());
 
         // when
         테이블1.updateEmpty(true);
@@ -33,7 +29,6 @@ public class OrderTableTest {
         // given
         TableGroup 테이블그룹 = TableGroupFixture.테이블그룹(1L);
         OrderTable 테이블1 = new OrderTable(테이블그룹, 5, false);
-        Order 주문 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1.getId());
 
         // when & then
         assertThatThrownBy(
@@ -46,7 +41,6 @@ public class OrderTableTest {
     void 손님_수_갱신_테스트() {
         // given
         OrderTable 테이블1 = new OrderTable(null, 3, false);
-        Order 주문 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1.getId());
 
         // when
         테이블1.updateNumberOfGuests(7);
@@ -102,7 +96,6 @@ public class OrderTableTest {
         // given
         TableGroup 테이블그룹 = new TableGroup();
         OrderTable 테이블1 = new OrderTable(테이블그룹, 5, false);
-        Order 주문 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1.getId());
 
         // when
         테이블1.unGroup();

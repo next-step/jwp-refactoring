@@ -17,7 +17,7 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = MenuGroup.class, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 

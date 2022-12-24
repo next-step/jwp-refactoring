@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.domin.Order;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;

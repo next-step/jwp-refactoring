@@ -1,16 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exception.NoSuchDataException;
-import kitchenpos.domain.OrderFixture;
-import kitchenpos.domain.OrderLineItemFixture;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderLineItemResponse;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.domain.*;
+import kitchenpos.domin.*;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.NoSuchDataException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,9 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menu.domain.MenuFixture.메뉴;
-import static kitchenpos.table.domain.OrderTableFixture.빈주문테이블;
-import static kitchenpos.table.domain.OrderTableFixture.주문테이블;
+import static kitchenpos.domain.MenuFixture.메뉴;
+import static kitchenpos.domain.OrderFixture.주문;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,8 +65,8 @@ public class OrderServiceTest {
         테이블2 = OrderTableFixture.주문테이블(2L, null, 2, false);
         빈테이블 = OrderTableFixture.빈주문테이블(3L);
 
-        주문1 = OrderFixture.주문(1L, OrderStatus.COOKING.name(), 테이블1.getId());
-        주문2 = OrderFixture.주문(2L, OrderStatus.COMPLETION.name(), 테이블2.getId());
+        주문1 = 주문(1L, OrderStatus.COOKING.name(), 테이블1.getId());
+        주문2 = 주문(2L, OrderStatus.COMPLETION.name(), 테이블2.getId());
 
         오일2인세트 = 메뉴(1L, "오일2인세트", 34000, null);
         풀코스 = 메뉴(2L, "풀코스", 62000, null);

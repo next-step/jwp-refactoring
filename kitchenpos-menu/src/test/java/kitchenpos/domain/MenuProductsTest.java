@@ -1,10 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +7,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.domain.MenuFixture.메뉴;
-import static kitchenpos.menu.domain.MenuGroupFixture.메뉴그룹;
+import static kitchenpos.domain.MenuFixture.메뉴;
+import static kitchenpos.domain.MenuGroupFixture.메뉴그룹;
 import static kitchenpos.domain.MenuProductFixture.메뉴상품;
 import static kitchenpos.domain.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("MenuProducts 클래스 테스트")
 public class MenuProductsTest {

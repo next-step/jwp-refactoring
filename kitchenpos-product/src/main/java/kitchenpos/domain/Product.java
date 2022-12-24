@@ -1,4 +1,4 @@
-package domain;
+package kitchenpos.domain;
 
 import kitchenpos.domain.Price;
 
@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 
 @Entity
 public class Product {
-
-    private static final String INVALID_PRICE = "유요하지 않은 가격입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

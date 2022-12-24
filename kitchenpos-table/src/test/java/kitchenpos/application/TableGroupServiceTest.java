@@ -1,15 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exception.NoSuchDataException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.NoSuchDataException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +18,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static kitchenpos.order.domain.OrderFixture.주문;
 import static kitchenpos.domain.OrderTableFixture.주문테이블;
 import static kitchenpos.domain.TableGroupFixture.테이블그룹;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,8 +30,6 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("테이블 그룹 테스트")
 public class TableGroupServiceTest {
 
-    @MockBean
-    private OrderRepository orderRepository;
     @MockBean
     private OrderTableRepository orderTableRepository;
     @MockBean
@@ -88,18 +82,8 @@ public class TableGroupServiceTest {
         // given
         테이블그룹 = 테이블그룹(1L);
 
-        Order 주문1 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1.getId());
-        Order 주문2 = 주문(2L, OrderStatus.COMPLETION.name(), 테이블2.getId());
-        Order 주문3 = 주문(3L, OrderStatus.COMPLETION.name(), 테이블3.getId());
-
         given(tableGroupRepository.findById(테이블그룹.getId())).willReturn(Optional.ofNullable(테이블그룹));
         given(orderTableRepository.findOrderTablesByTableGroupId(테이블그룹.getId())).willReturn(Arrays.asList(테이블1, 테이블2, 테이블3));
-//        given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(테이블1));
-//        given(orderTableRepository.findById(2L)).willReturn(Optional.ofNullable(테이블2));
-//        given(orderTableRepository.findById(3L)).willReturn(Optional.ofNullable(테이블3));
-        given(orderRepository.findOrderByOrderTableId(테이블1.getId())).willReturn(Arrays.asList(주문1));
-        given(orderRepository.findOrderByOrderTableId(테이블2.getId())).willReturn(Arrays.asList(주문2));
-        given(orderRepository.findOrderByOrderTableId(테이블3.getId())).willReturn(Arrays.asList(주문3));
 
 
         // when
@@ -152,29 +136,6 @@ public class TableGroupServiceTest {
 
         assertThatThrownBy(
                 () -> tableGroupService.create(tableGroupRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문상태가 완료가 아닌 주문이 있는 테이블이 포함된 테이블 그룹을 해제한다")
-    @Test
-    void 주문상태_완료가_아닌_주문이_있는_테이블의_테이블그룹_해제() {
-        // given
-        테이블그룹 = 테이블그룹(1L);
-
-        Order 주문1 = 주문(1L, OrderStatus.COMPLETION.name(), 테이블1.getId());
-        Order 주문2 = 주문(2L, OrderStatus.COOKING.name(), 테이블2.getId());
-
-        given(tableGroupRepository.findById(테이블그룹.getId())).willReturn(Optional.ofNullable(테이블그룹));
-        given(orderTableRepository.findOrderTablesByTableGroupId(테이블그룹.getId())).willReturn(Arrays.asList(테이블1, 테이블2));
-        given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(테이블1));
-        given(orderTableRepository.findById(2L)).willReturn(Optional.ofNullable(테이블2));
-//        given(orderRepository.findById(주문1.getId())).willReturn(Optional.of(주문1));
-//        given(orderRepository.findById(주문2.getId())).willReturn(Optional.of(주문2));
-
-
-        // when & then
-        assertThatThrownBy(
-                () -> tableGroupService.ungroup(테이블그룹.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -15,7 +15,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = TableGroup.class, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 

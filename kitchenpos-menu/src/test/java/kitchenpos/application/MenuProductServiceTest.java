@@ -1,16 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuProductFixture;
-import kitchenpos.domain.ProductFixture;
-import kitchenpos.menu.application.MenuProductService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menu.domain.MenuFixture.메뉴;
-import static kitchenpos.menu.domain.MenuGroupFixture.메뉴그룹;
+import static kitchenpos.domain.MenuFixture.메뉴;
+import static kitchenpos.domain.MenuGroupFixture.메뉴그룹;
+import static kitchenpos.domain.MenuProductFixture.메뉴상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,8 +51,8 @@ public class MenuProductServiceTest {
         알리오올리오 = ProductFixture.상품(1L, "알리오올리오", 17000);
         봉골레오일 = ProductFixture.상품(2L, "봉골레오일", 19000);
 
-        오일2인세트_알리오올리오 = MenuProductFixture.메뉴상품(1L, 오일2인세트.getId(), 알리오올리오, 1);
-        오일2인세트_봉골레오일 = MenuProductFixture.메뉴상품(2L, 오일2인세트.getId(), 봉골레오일, 1);
+        오일2인세트_알리오올리오 = 메뉴상품(1L, 오일2인세트.getId(), 알리오올리오, 1);
+        오일2인세트_봉골레오일 = 메뉴상품(2L, 오일2인세트.getId(), 봉골레오일, 1);
 
     }
 

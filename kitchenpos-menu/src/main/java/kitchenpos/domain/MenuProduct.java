@@ -1,8 +1,5 @@
 package kitchenpos.domain;
 
-import domain.Product;
-import kitchenpos.domain.Quantity;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -15,7 +12,7 @@ public class MenuProduct {
 
     private Long menuId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(targetEntity = Product.class, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id")
     private Product product;
 

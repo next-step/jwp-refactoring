@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.domin.Order;
+import kitchenpos.domin.OrderLineItem;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class OrderLineItemFixture {

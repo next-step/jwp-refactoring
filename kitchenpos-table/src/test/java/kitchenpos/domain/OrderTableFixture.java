@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class OrderTableFixture {

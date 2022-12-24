@@ -1,19 +1,17 @@
 package kitchenpos.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.domin.Order;
+import kitchenpos.domin.OrderLineItem;
+import kitchenpos.domin.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static kitchenpos.table.domain.OrderTableFixture.빈주문테이블;
-import static kitchenpos.table.domain.OrderTableFixture.주문테이블;
-import static kitchenpos.menu.domain.MenuFixture.메뉴;
+import static kitchenpos.domain.MenuFixture.메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Order 클래스 테스트")
 public class OrderTest {

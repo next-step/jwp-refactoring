@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exception.NoSuchDataException;
-import kitchenpos.table.domain.*;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.domain.*;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.NoSuchDataException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
