@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain.fixture;
 
-import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Quantity;
 
 import java.util.Arrays;
 import java.util.List;

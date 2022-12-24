@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menu.domain.MenuProductValidator;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.fixture.MenuGroupFixture;
 import kitchenpos.menu.domain.fixture.MenuProductsFixture;
@@ -25,10 +25,13 @@ import java.util.Optional;
 
 import static kitchenpos.menu.application.MenuService.MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.Menu.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
-import static kitchenpos.menu.domain.MenuValidator.MENU_PRICE_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @DisplayName("MenuService")
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +47,7 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuValidator menuValidator;
+    private MenuProductValidator menuProductValidator;
 
     @DisplayName("가격을 필수값으로 갖는다.")
     @ParameterizedTest
@@ -77,9 +80,14 @@ class MenuServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"3"})
     void create_fail_priceSum(BigDecimal price) {
+
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(MenuGroupFixture.menuGroupA()));
+
+        doThrow(new IllegalArgumentException("메뉴의 가격이 메뉴 상품의 합보다 클 수 없다."))
+                .when(menuProductValidator).validate(any());
+
         Assertions.assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "menuA")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(MENU_PRICE_EXCEPTION_MESSAGE);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -87,11 +95,11 @@ class MenuServiceTest {
     @ValueSource(strings = {"1, A"})
     void create_success(BigDecimal price, String name) {
 
-        BDDMockito.given(menuGroupRepository.findById(1L)).willReturn(Optional.of(MenuGroupFixture.menuGroupA()));
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(MenuGroupFixture.menuGroupA()));
 
         MenuResponse response = menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, name));
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(response.getId()).isNotNull(),
                 () -> assertThat(response.getName()).isEqualTo(name),
                 () -> assertEquals(0, response.getPrice().compareTo(price)),
@@ -102,7 +110,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() {
-        BDDMockito.given(menuRepository.findAll()).willReturn(Collections.singletonList(menuA(1L)));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(menuA(1L)));
         assertThat(menuService.list()).hasSize(1);
     }
 }

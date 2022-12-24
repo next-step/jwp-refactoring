@@ -21,18 +21,18 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-//    private final MenuValidator menuValidator;
+    private final MenuProductValidator menuProductValidator;
 
-    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository/*, MenuValidator menuValidator*/) {
+    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository, MenuProductValidator menuProductValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-//        this.menuValidator = menuValidator;
+        this.menuProductValidator = menuProductValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
         Menu menu = new Menu(new Name(request.getName()), new Price(request.getPrice()), findMenuGroup(request), new MenuProducts(request.getMenuProducts()));
-//        menu.validate(menuValidator);
+        menu.validate(menuProductValidator);
         return MenuResponse.of(menuRepository.save(menu));
     }
 

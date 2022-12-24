@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain.fixture;
 
-import kitchenpos.common.vo.Name;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Name;
 
 public class MenuGroupFixture {
 

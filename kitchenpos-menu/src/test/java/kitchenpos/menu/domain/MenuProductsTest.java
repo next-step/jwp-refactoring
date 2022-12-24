@@ -1,12 +1,12 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.domain.fixture.MenuFixture;
+import kitchenpos.menu.domain.fixture.MenuProductFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static kitchenpos.menu.domain.fixture.MenuProductFixture.menuProductA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
@@ -16,7 +16,7 @@ class MenuProductsTest {
     @DisplayName("메뉴 상품 일급 콜렉션을 생성한다.")
     @Test
     void create() {
-        Assertions.assertThatNoException().isThrownBy(MenuProducts::new);
+        assertThatNoException().isThrownBy(MenuProducts::new);
     }
 
     @DisplayName("메뉴 상품 일급 콜렉션의 empty 여부를 반환한다. / false")

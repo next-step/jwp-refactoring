@@ -1,11 +1,11 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.domain.fixture.MenuGroupFixture;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("메뉴 그룹")
 class MenuGroupTest {
@@ -13,7 +13,7 @@ class MenuGroupTest {
     @DisplayName("메뉴 그룹 생성")
     @Test
     void constructor() {
-        Assertions.assertThatNoException().isThrownBy(() -> new MenuGroup(NameFixture.nameMenuGroupA()));
+        assertThatNoException().isThrownBy(MenuGroupFixture::menuGroupA);
     }
 
     @DisplayName("메뉴 그룹 생성 / 이름이 없을 수 없다.")

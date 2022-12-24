@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.fixture.MenuGroupFixture;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 
-import static kitchenpos.common.fixture.NameFixture.MENU_GROUP_A_NAME;
+import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("MenuGroupServiceTest")
@@ -31,17 +30,17 @@ class MenuGroupServiceTest {
     @Test
     void create() {
 
-        BDDMockito.given(menuGroupRepository.save(ArgumentMatchers.any())).willReturn(MenuGroupFixture.menuGroupA());
+        BDDMockito.given(menuGroupRepository.save(ArgumentMatchers.any())).willReturn(menuGroupA());
 
-        assertThat(menuGroupService.create(new MenuGroupCreateRequest(MenuGroupFixture.menuGroupA().getName())).getName())
-                .isEqualTo(NameFixture.MENU_GROUP_A_NAME);
+        assertThat(menuGroupService.create(new MenuGroupCreateRequest(menuGroupA().getName())).getName())
+                .isEqualTo(menuGroupA().getName());
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void name() {
 
-        BDDMockito.given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(MenuGroupFixture.menuGroupA()));
+        BDDMockito.given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(menuGroupA()));
 
         assertThat(menuGroupService.list()).hasSize(1);
     }

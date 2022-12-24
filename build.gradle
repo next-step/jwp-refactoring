@@ -65,40 +65,21 @@ dependencies {
     implementation project(':kitchenpos-menu')
 }
 
-
-project(':kitchenpos-table') {
+project(':kitchenpos-menu') {
     dependencies {
-//        implementation project(':kitchenpos-product')
-//        implementation project(':kitchenpos-menu')
-//        implementation project(':kitchenpos-table')
-//        implementation project(':kitchenpos-order')
     }
 }
 
 project(':kitchenpos-order') {
     dependencies {
-//        implementation project(':kitchenpos-product')
         implementation project(':kitchenpos-menu')
-        implementation project(':kitchenpos-table')
-//        implementation project(':kitchenpos-order')
-    }
-}
-
-project(':kitchenpos-menu') {
-    dependencies {
         implementation project(':kitchenpos-product')
-//        implementation project(':kitchenpos-menu')
-        implementation project(':kitchenpos-table')
-//        implementation project(':kitchenpos-order')
+        testImplementation project(':kitchenpos-menu')
     }
 }
 
 project(':kitchenpos-product') {
     dependencies {
-//        implementation project(':kitchenpos-product')
-//        implementation project(':kitchenpos-menu')
-//        implementation project(':kitchenpos-table')
-//        implementation project(':kitchenpos-order')
+        implementation project(':kitchenpos-menu')
     }
 }
-

@@ -32,40 +32,40 @@ public class Menu {
         menuProducts.mapMenu(this);
     }
 
-    private static void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validateNullName(name);
         validateNullMenuGroup(menuGroup);
         validateNullPrice(price);
         validateEmptyMenuProducts(menuProducts);
     }
 
-    private static void validateNullName(Name name) {
+    private void validateNullName(Name name) {
         if (Objects.isNull(name)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private static void validateNullMenuGroup(MenuGroup menuGroup) {
+    private void validateNullMenuGroup(MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
         }
     }
 
-    private static void validateNullPrice(Price price) {
+    private void validateNullPrice(Price price) {
         if (Objects.isNull(price)) {
             throw new IllegalArgumentException(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
         }
     }
 
-    private static void validateEmptyMenuProducts(MenuProducts menuProducts) {
+    private void validateEmptyMenuProducts(MenuProducts menuProducts) {
         if (menuProducts.isEmpty()) {
             throw new IllegalArgumentException("메뉴 상품이 없습니다.");
         }
     }
 
-//    public void validate(MenuValidator menuValidator) {
-//        menuValidator.validate(this);
-//    }
+    public void validate(MenuProductValidator menuProductValidator) {
+        menuProductValidator.validate(this);
+    }
 
     public Long getId() {
         return id;
