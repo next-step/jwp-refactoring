@@ -54,7 +54,7 @@ class OrderServiceTest {
         OrderResponse orderResponse = orderService.create(createOrderRequest(주문));
 
         //then
-        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(orderResponse.getOrderedTime()).isNotNull();
     }
 
@@ -112,10 +112,10 @@ class OrderServiceTest {
 
         //when
         OrderResponse orderResponse = orderService
-            .changeOrderStatus(1L, OrderStatus.COOKING.name());
+            .changeOrderStatus(1L, OrderStatus.COOKING);
 
         //then
-        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
@@ -126,7 +126,7 @@ class OrderServiceTest {
 
         //when
         assertThatThrownBy(() -> orderService
-            .changeOrderStatus(1L, OrderStatus.COOKING.name()))
+            .changeOrderStatus(1L, OrderStatus.COOKING))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("주문 정보가 없습니다");
     }

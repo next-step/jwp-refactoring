@@ -28,11 +28,11 @@ class OrderTest {
     @DisplayName("주문이 계산 완료된 이후 상태 변경시 에러 발생")
     void changeOrderStatusWhenItCompleted() {
         //given
-        Order 주문 = new Order(1L, 일번테이블, COMPLETION.name(), null,
+        Order 주문 = new Order(1L, 일번테이블, COMPLETION, null,
             Collections.singletonList(주문항목));
 
         //when & then
-        assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL.name()))
+        assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
     }
@@ -57,7 +57,7 @@ class OrderTest {
         주문.order();
 
         //then
-        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(주문.getOrderedTime()).isNotNull();
     }
 
@@ -69,31 +69,31 @@ class OrderTest {
             Collections.singletonList(주문항목));
 
         //when
-        주문.changeOrderStatus(OrderStatus.COOKING.name());
+        주문.changeOrderStatus(OrderStatus.COOKING);
 
         //then
-        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
     @DisplayName("조리중이거나 식사중 여부 확인")
     void onCookingOrMeal() {
         //given
-        Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null,
+        Order 조리중 = new Order(1L, 일번테이블, COOKING, null,
             Collections.singletonList(주문항목));
 
         //when & then
         assertThat(조리중.onCookingOrMeal()).isTrue();
 
         //given
-        Order 식사중 = new Order(1L, 일번테이블, MEAL.name(), null,
+        Order 식사중 = new Order(1L, 일번테이블, MEAL, null,
             Collections.singletonList(주문항목));
 
         //when & then
         assertThat(식사중.onCookingOrMeal()).isTrue();
 
         //given
-        Order 계산완료 = new Order(1L, 일번테이블, COMPLETION.name(), null,
+        Order 계산완료 = new Order(1L, 일번테이블, COMPLETION, null,
             Collections.singletonList(주문항목));
 
         //when & then

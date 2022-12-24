@@ -84,7 +84,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         OrderResponse 식사_상태_주문 = 주문_상태_수정(orderResponse.as(OrderResponse.class).getId(),
             OrderStatus.MEAL).as(OrderResponse.class);
         //then
-        assertThat(식사_상태_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(식사_상태_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 
         //when
         List<OrderResponse> 주문_목록 = 주문_목록_조회().jsonPath().getList(".", OrderResponse.class);
@@ -119,7 +119,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         OrderResponse 계산_완료_상태_주문 = 주문_상태_수정(orderResponse.as(OrderResponse.class).getId(),
             OrderStatus.COMPLETION).as(OrderResponse.class);
         //then
-        assertThat(계산_완료_상태_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(계산_완료_상태_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
 
         //when
         ExtractableResponse<Response> changeStatusResponse = 주문_상태_수정(

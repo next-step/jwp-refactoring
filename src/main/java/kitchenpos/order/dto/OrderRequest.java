@@ -6,25 +6,26 @@ import java.util.List;
 import java.util.Objects;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 
 public class OrderRequest {
 
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemRequest> orderLineItems;
 
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus,
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus,
         List<OrderLineItemRequest> orderLineItems) {
         this(null, orderTableId, orderStatus, null, orderLineItems);
     }
 
-    public OrderRequest(String orderStatus) {
+    public OrderRequest(OrderStatus orderStatus) {
         this(null, null, orderStatus, null, Collections.emptyList());
     }
 
@@ -32,7 +33,7 @@ public class OrderRequest {
         this(null, orderTableId, null, null, orderLineItems);
     }
 
-    public OrderRequest(Long id, Long orderTableId, String orderStatus,
+    public OrderRequest(Long id, Long orderTableId, OrderStatus orderStatus,
         LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -67,11 +68,11 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +28,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -34,7 +37,7 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
         List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
@@ -57,22 +60,21 @@ public class Order {
     }
 
     public void order() {
-        orderStatus = OrderStatus.COOKING.name();
+        orderStatus = OrderStatus.COOKING;
         orderedTime = LocalDateTime.now();
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         validateStatus();
         this.orderStatus = orderStatus;
     }
 
     public boolean onCookingOrMeal() {
-        return OrderStatus.COOKING.name().equals(orderStatus) || OrderStatus.MEAL.name()
-            .equals(orderStatus);
+        return OrderStatus.COOKING.equals(orderStatus) || OrderStatus.MEAL.equals(orderStatus);
     }
 
     private void validateStatus() {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
             throw new IllegalArgumentException("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
         }
     }
@@ -88,7 +90,7 @@ public class Order {
         return orderTable.getId();
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

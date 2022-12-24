@@ -24,7 +24,7 @@ public class OrderFixture {
         2L);
     public static final Order 주문 = new Order(1L, 일번테이블, null, null,
         Collections.singletonList(주문항목));
-    public static final Order 조리중주문 = new Order(1L, 일번테이블, COOKING.name(), null,
+    public static final Order 조리중주문 = new Order(1L, 일번테이블, COOKING, null,
         Collections.singletonList(주문항목));
 
     public static ExtractableResponse<Response> 주문(Long orderTableId,
@@ -52,7 +52,7 @@ public class OrderFixture {
 
     public static ExtractableResponse<Response> 주문_상태_수정(Long orderId,
         OrderStatus orderStatus) {
-        OrderRequest order = new OrderRequest(orderStatus.name());
+        OrderRequest order = new OrderRequest(orderStatus);
 
         return RestAssured
             .given().log().all()

@@ -91,9 +91,9 @@
 * Entity 기본생성자를 protected 로 변경 [완료]
 * 필요 없는 Getter, Setter 제거 [완료]
 * 일급 컬렉션등 초기화 [완료]
-* 컨트롤러 RequestMapping 으로 통합 가능한 부분 통합
-* Enum -> String 으로 변환하는 부분 제거 후 순수하게 Enum 사용
-* Enum 에 description 추가
+* 컨트롤러 RequestMapping 으로 통합 가능한 부분 통합 [완료]
+* Enum -> String 으로 변환하는 부분 제거 후 순수하게 Enum 사용 [완료]
+* Enum 에 description 추가 [완료]
 * Indent 두개 이상 한개로 변경
 * price 등 의미를 갖는 변수 객체로 래핑
 * 생성자가 지나치게 많은경우 전체 생성자 생성후 원하는 부분을 제외하고 null 전달
