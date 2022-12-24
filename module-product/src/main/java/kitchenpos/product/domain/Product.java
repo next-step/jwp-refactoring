@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 

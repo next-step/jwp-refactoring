@@ -1,5 +1,6 @@
 package kitchenpos.product.validator;
 
+import kitchenpos.menu.domain.*;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;

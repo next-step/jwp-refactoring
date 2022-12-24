@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
