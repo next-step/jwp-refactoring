@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.application.TableGroupValidator;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,5 +47,9 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return this.orderTables.getOrderTables();
+    }
+
+    public void validateUnGroup(TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.validateUnGroup(this);
     }
 }

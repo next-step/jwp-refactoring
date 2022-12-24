@@ -16,14 +16,14 @@ import java.util.List;
 @Service
 public class TableGroupService {
     public static final String ORDER_STATUS_EXCEPTION_MESSAGE = "주문상태가 완료일 경우에만 해제가능합니다.";
-//    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(/*final OrderRepository orderRepository, */final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-//        this.orderRepository = orderRepository;
+    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository, final TableGroupValidator tableGroupValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
@@ -35,7 +35,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);
-//        validateOrderStatus(tableGroup);
+        tableGroup.validateUnGroup(tableGroupValidator);
         tableGroup.upGroup();
     }
 
@@ -50,11 +50,4 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
     }
-//
-//    private void validateOrderStatus(TableGroup tableGroup) {
-//        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-//                tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-//            throw new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE);
-//        }
-//    }
 }

@@ -45,6 +45,17 @@ public class Order {
         this.id = id;
     }
 
+    public Order(long id, Long orderTableId, OrderLineItems orderLineItems, OrderStatus status) {
+        validate(orderTableId, orderLineItems);
+        this.orderTableId = orderTableId;
+        orderLineItems.mapOrder(this);
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.id = id;
+        this.orderStatus = status;
+    }
+
     public Long getId() {
         return id;
     }

@@ -56,14 +56,15 @@ subprojects {
     }
 }
 
-
-project(':module-table') {
-    dependencies {
-        implementation project(':module-order')
-    }
-}
 project(':module-product') {
     dependencies {
         implementation project(':module-menu')
+    }
+}
+
+project(':module-order') {
+    dependencies {
+        implementation project(':module-table')
+        testImplementation project(':module-table')
     }
 }

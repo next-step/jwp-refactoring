@@ -1,11 +1,14 @@
 package kitchenpos.order.application;
 
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.fixture.OrderFixture;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
-import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
+import static java.util.Collections.singletonList;
+import static kitchenpos.order.application.OrderService.*;
 import static kitchenpos.order.domain.fixture.OrderFixture.orderA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,5 +109,40 @@ class OrderServiceTest {
 
         List<OrderResponse> list = orderService.list();
         assertThat(list.size()).isEqualTo(1);
+    }
+
+
+    @DisplayName("주문상태를 식사중으로 변경한다.")
+    @Test
+    void statusMeal_success() {
+
+        given(orderRepository.findById(1L)).willReturn(Optional.of(OrderFixture.orderA(1L)));
+
+        OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.MEAL);
+
+        assertThat(orderService.changeOrderStatus(1L, request).getOrderStatus())
+                .isEqualTo(OrderStatus.MEAL);
+    }
+
+    @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
+    @Test
+    void changeStatus_fail() {
+
+        given(orderRepository.findById(1L)).willReturn(Optional.of(OrderFixture.orderA(1L, OrderStatus.COMPLETION)));
+
+        OrderStatusChangeRequest request = new OrderStatusChangeRequest(OrderStatus.COMPLETION);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("주문상태를 완료로 변경한다.")
+    @Test
+    void name() {
+
+        given(orderRepository.findById(1L)).willReturn(Optional.of(OrderFixture.orderA(1L)));
+
+        orderService.changeOrderStatus(1L, new OrderStatusChangeRequest(OrderStatus.COMPLETION));
     }
 }

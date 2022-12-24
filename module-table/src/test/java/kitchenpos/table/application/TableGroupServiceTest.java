@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.fixture.OrderTableFixture;
@@ -27,13 +26,12 @@ import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEP
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @DisplayName("TableGroupService")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
-    @Mock
-    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -41,8 +39,8 @@ class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
-//    @Mock
-//    private TableGroupOrderValidator tableGroupOrderValidator;
+    @Mock
+    private TableGroupValidator tableGroupValidator;
 
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
@@ -68,35 +66,40 @@ class TableGroupServiceTest {
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
 
-    @DisplayName("테이블 그룹을 해제한다.")
-    @Test
-    void unGroup_success() {
-
-        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(menuGroupA()));
-
-        tableGroupService.ungroup(1L);
-
-//        테이블_그룹_해제_검증됨(tableGroup);
-    }
-
-
-//    @DisplayName("테이블 그룹을 해제한다. / 요리중일 경우 해제할 수 없다.")
+//    @DisplayName("테이블 그룹을 해제한다.")
 //    @Test
-//    void unGroup_fail_cooking() {
+//    void unGroup_success() {
 //
-//        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroupFixture.tableGroupA()));
+//        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(menuGroupA()));
 //
-//        doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
-//                .when(tableGroupOrderValidator).validateComplete(any());
+//        tableGroupService.ungroup(1L);
 //
-//        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
+//        테이블_그룹_해제_검증됨(tableGroup);
 //    }
+
+
+    @DisplayName("테이블 그룹을 해제한다. / 요리중일 경우 해제할 수 없다.")
+    @Test
+    void unGroup_fail_cooking() {
+
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroupFixture.tableGroupA()));
+
+        doThrow(new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE))
+                .when(tableGroupValidator).validateUnGroup(any());
+
+        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
+    }
 
     @DisplayName("테이블 그룹을 해제한다. / 식사중일 경우 해제할 수 없다.")
     @Test
     void unGroup_fail_meal() {
+
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroupFixture.tableGroupA()));
+
+        doThrow(new IllegalArgumentException(ORDER_STATUS_EXCEPTION_MESSAGE))
+                .when(tableGroupValidator).validateUnGroup(any());
 
         Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -9,6 +9,7 @@ import kitchenpos.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class OrderService {
         savedOrder.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }
-
+//
 //    private void validateOrderItems(OrderLineItems orderLineItems) {
 //        if (orderLineItems.size() != menuRepository.findAllById(orderLineItems.getMenuIds()).size()) {
 //            throw new IllegalArgumentException(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
@@ -63,6 +64,6 @@ public class OrderService {
 
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 }
