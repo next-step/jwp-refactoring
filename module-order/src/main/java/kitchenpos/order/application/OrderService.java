@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
+
     public static final String COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE = "주문완료일 경우 주문상태를 변경할 수 없다.";
     public static final String ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE = "주문 항목이 비어있을 수 없다.";
 

@@ -60,12 +60,11 @@ class OrderServiceTest {
     @Test
     void create_fail_orderLineItemSize() {
 
-        doThrow(new IllegalArgumentException(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE))
-                .when(orderValidator).validate(any());
+        doThrow(new IllegalArgumentException())
+                .when(orderValidator).validateCreate(any());
 
         assertThatThrownBy(() -> orderService.create(new OrderCreateRequest(1L, orderLineItemsA())))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 생성한다. / 주문 테이블은 비어있을 수 없다.")
@@ -75,7 +74,7 @@ class OrderServiceTest {
         OrderCreateRequest request = new OrderCreateRequest(NOT_EXIST_ORDER_TABLE_ID, orderLineItemsA());
 
         doThrow(new IllegalArgumentException("메뉴의 가격이 메뉴 상품의 합보다 클 수 없다."))
-                .when(orderValidator).validate(any());
+                .when(orderValidator).validateCreate(any());
 
         assertThatThrownBy(() -> orderService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +84,7 @@ class OrderServiceTest {
     @Test
     void create() {
 
-        doNothing().when(orderValidator).validate(any());
+        doNothing().when(orderValidator).validateCreate(any());
         given(orderRepository.save(any())).willReturn(orderA(1L));
 
         OrderResponse orderResponse = orderService.create(new OrderCreateRequest(1L, orderLineItemsA()));
