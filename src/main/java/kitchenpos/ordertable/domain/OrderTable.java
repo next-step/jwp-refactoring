@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 import kitchenpos.ordertable.event.OderTableUngroupedEvent;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -54,10 +54,10 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     public void checkOrderTableGroupSetAble() {
         if (!empty) {
-            throw new IllegalArgumentException(ErrorMessages.NOT_EMPTY_TABLE_CAN_SET_GROUP);
+            throw new IllegalArgumentException(OrderErrorMessages.NOT_EMPTY_TABLE_CAN_SET_GROUP);
         }
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException(ErrorMessages.TABLE_ALREADY_SET_GROUP);
+            throw new IllegalArgumentException(OrderErrorMessages.TABLE_ALREADY_SET_GROUP);
         }
     }
 
@@ -95,13 +95,13 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     private void checkNumberOfGuestsChangeAble() {
         if (empty) {
-            throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_NUMBER_OF_GUESTS_IF_ORDER_TABLE_EMPTY);
+            throw new IllegalArgumentException(OrderErrorMessages.CANNOT_CHANGE_NUMBER_OF_GUESTS_IF_ORDER_TABLE_EMPTY);
         }
     }
 
     public void checkOrderTableGrouped() {
         if (isGrouped()) {
-            throw new IllegalArgumentException(ErrorMessages.GROUPED_ORDER_TABLE_CANNOT_CHANGE_EMPTY);
+            throw new IllegalArgumentException(OrderErrorMessages.GROUPED_ORDER_TABLE_CANNOT_CHANGE_EMPTY);
         }
     }
 

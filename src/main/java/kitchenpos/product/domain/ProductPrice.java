@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.constants.ErrorMessages;
 import kitchenpos.menu.domain.MenuProductQuantity;
+import kitchenpos.menuconstants.MenuErrorMessages;
 
 @Embeddable
 public class ProductPrice implements Comparable<ProductPrice> {
@@ -28,10 +28,10 @@ public class ProductPrice implements Comparable<ProductPrice> {
 
     private void validatePrice(BigDecimal val) {
         if (Objects.isNull(val)) {
-            throw new IllegalArgumentException(ErrorMessages.PRODUCT_PRICE_IS_NULL);
+            throw new IllegalArgumentException(MenuErrorMessages.PRODUCT_PRICE_IS_NULL);
         }
         if (val.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(ErrorMessages.PRODUCT_PRICE_CANNOT_BE_LESS_THAN_ZERO);
+            throw new IllegalArgumentException(MenuErrorMessages.PRODUCT_PRICE_CANNOT_BE_LESS_THAN_ZERO);
         }
     }
 

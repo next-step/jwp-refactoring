@@ -1,8 +1,8 @@
 package kitchenpos.order.event;
 
-import kitchenpos.constants.ErrorMessages;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.orderconstants.OrderErrorMessages;
 import kitchenpos.ordertable.event.OderTableUngroupedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class OrderTableUngroupedEventHandler {
     public void handle(OderTableUngroupedEvent event) {
         if (orderRepository.findByOrderTableId(event.getOrderTableId()).stream()
                 .anyMatch(Order::isOrderStatusNotComplete)) {
-            throw new IllegalArgumentException(ErrorMessages.NOT_COMPLETED_ORDER_EXIST);
+            throw new IllegalArgumentException(OrderErrorMessages.NOT_COMPLETED_ORDER_EXIST);
         }
     }
 }

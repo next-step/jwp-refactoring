@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.menuconstants.MenuErrorMessages;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
@@ -27,7 +27,7 @@ public class MenuValidator {
 
     private void checkMenuGroupExist(Menu menu) {
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException(ErrorMessages.MENU_GROUP_DOES_NOT_EXIST);
+            throw new IllegalArgumentException(MenuErrorMessages.MENU_GROUP_DOES_NOT_EXIST);
         }
     }
 

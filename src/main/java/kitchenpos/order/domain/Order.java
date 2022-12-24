@@ -13,7 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -105,7 +105,7 @@ public class Order {
 
     private void checkOrderStatusChangeAble() {
         if (isOrderStatusComplete()) {
-            throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER);
+            throw new IllegalArgumentException(OrderErrorMessages.CANNOT_CHANGE_STATUS_OF_COMPLETED_ORDER);
         }
     }
 

@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableConditionValidator;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class OrderStateValidator implements OrderTableConditionValidator {
     public void checkNotCompletedOrderExist(OrderTable orderTable) {
         if (orderRepository.findByOrderTableId(orderTable.getId()).stream()
                 .anyMatch(Order::isOrderStatusNotComplete)) {
-            throw new IllegalArgumentException(ErrorMessages.CANNOT_CHANGE_EMPTY_IF_NOT_COMPLETED_ORDER_EXIST);
+            throw new IllegalArgumentException(OrderErrorMessages.CANNOT_CHANGE_EMPTY_IF_NOT_COMPLETED_ORDER_EXIST);
         }
     }
 }

@@ -9,7 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 
 @Embeddable
 public class OrderLineItems {
@@ -43,7 +43,7 @@ public class OrderLineItems {
 
     public void checkOrderLineItemEmpty() {
         if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessages.ORDER_LINE_ITEM_EMPTY);
+            throw new IllegalArgumentException(OrderErrorMessages.ORDER_LINE_ITEM_EMPTY);
         }
     }
 

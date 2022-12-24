@@ -1,8 +1,8 @@
 package kitchenpos.order.domain;
 
 import java.util.List;
-import kitchenpos.constants.ErrorMessages;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.orderconstants.OrderErrorMessages;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
@@ -34,9 +34,9 @@ public class OrderValidator {
 
     private void checkOrderTableExist(Order order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.ORDER_TABLE_DOES_NOT_EXIST));
+                .orElseThrow(() -> new IllegalArgumentException(OrderErrorMessages.ORDER_TABLE_DOES_NOT_EXIST));
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessages.CANNOT_CREATE_ORDER_WHEN_ORDER_TABLE_EMPTY);
+            throw new IllegalArgumentException(OrderErrorMessages.CANNOT_CREATE_ORDER_WHEN_ORDER_TABLE_EMPTY);
         }
     }
 }

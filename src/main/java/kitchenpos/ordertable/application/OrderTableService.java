@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTableValidator;
@@ -49,6 +49,6 @@ public class OrderTableService {
 
     private OrderTable getSavedOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.ORDER_TABLE_DOES_NOT_EXIST));
+                .orElseThrow(() -> new IllegalArgumentException(OrderErrorMessages.ORDER_TABLE_DOES_NOT_EXIST));
     }
 }

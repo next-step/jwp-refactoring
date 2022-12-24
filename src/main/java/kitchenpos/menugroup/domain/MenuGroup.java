@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.menuconstants.MenuErrorMessages;
 
 @Entity
 public class MenuGroup {
@@ -34,7 +34,7 @@ public class MenuGroup {
 
     private static void validateName(String name) {
         if (name.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessages.MENU_GROUP_NAME_CANNOT_BE_EMPTY);
+            throw new IllegalArgumentException(MenuErrorMessages.MENU_GROUP_NAME_CANNOT_BE_EMPTY);
         }
     }
 

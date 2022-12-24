@@ -3,7 +3,7 @@ package kitchenpos.order.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 
 @Embeddable
 public class OrderLineItemQuantity {
@@ -20,7 +20,7 @@ public class OrderLineItemQuantity {
 
     private void validateQuantity(long quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException(ErrorMessages.ORDER_LINE_ITEM_QUANTITY_BELOW_ZERO);
+            throw new IllegalArgumentException(OrderErrorMessages.ORDER_LINE_ITEM_QUANTITY_BELOW_ZERO);
         }
     }
 

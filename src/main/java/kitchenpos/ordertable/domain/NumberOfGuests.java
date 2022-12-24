@@ -3,7 +3,7 @@ package kitchenpos.ordertable.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.orderconstants.OrderErrorMessages;
 
 @Embeddable
 public class NumberOfGuests {
@@ -23,7 +23,7 @@ public class NumberOfGuests {
 
     private void validateNumberOfGuests(int number) {
         if (number < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException(ErrorMessages.NUMBER_OF_GUESTS_CANNOT_BE_LESS_THAN_ZERO);
+            throw new IllegalArgumentException(OrderErrorMessages.NUMBER_OF_GUESTS_CANNOT_BE_LESS_THAN_ZERO);
         }
     }
 

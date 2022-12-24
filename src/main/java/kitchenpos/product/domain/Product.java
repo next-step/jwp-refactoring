@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.constants.ErrorMessages;
+import kitchenpos.menuconstants.MenuErrorMessages;
 
 @Entity
 public class Product {
@@ -69,7 +69,7 @@ public class Product {
 
     public void validateName() {
         if (name.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessages.PRODUCT_NAME_CANNOT_BE_EMPTY);
+            throw new IllegalArgumentException(MenuErrorMessages.PRODUCT_NAME_CANNOT_BE_EMPTY);
         }
     }
 }
