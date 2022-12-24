@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.vo.Name;
 import kitchenpos.common.vo.Price;
+import kitchenpos.order.domain.fixture.OrderFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,6 @@ import static kitchenpos.common.fixture.QuantityFixture.quantityOrderLineItemA;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Order.COMPLETION_CHANGE_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.Order.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
-import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.orderTableA;
 import static org.assertj.core.api.Assertions.*;
 
@@ -38,7 +38,7 @@ class OrderTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void name() {
-        assertThatNoException().isThrownBy(() -> new Order(orderTableA(null, true).getId(), orderLineItemsA(OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)))));
+        assertThatNoException().isThrownBy(() -> OrderFixture.orderA(1L));
     }
 
     @DisplayName("주문상태를 식사중으로 변경한다.")

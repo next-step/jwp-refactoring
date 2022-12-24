@@ -205,7 +205,7 @@
 - Spring Boot Test Mock Test 변환 [ ]
   - MenuGroupServiceTest [x]
   - MenuServiceTest [x]
-  - OrderServiceTest [ ]
+  - OrderServiceTest [x]
   - TableGroupServiceTest [x]
   - TableServiceTest [x]
   - ProductServiceTest [x]
