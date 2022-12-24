@@ -31,17 +31,29 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public TableGroup(Long id, List<OrderTable> orderTables) {
+        this.id = id;
+        orderTables.forEach(it -> addOrderTable(it));
+    }
+
     public void addOrderTable(OrderTable orderTable) {
         this.orderTables.addOrderTable(this, orderTable);
     }
 
     public void group(List<OrderTable> target) {
+        if (target.size() <= 1) {
+            throw new IllegalArgumentException();
+        }
         orderTables.group(this, target);
     }
 
     public void ungroup(List<Order> orders) {
         orders.forEach(Order::checkOngoingOrderTable);
         this.orderTables.ungroup();
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
     }
 
     public List<Long> getOrderTableIds() {

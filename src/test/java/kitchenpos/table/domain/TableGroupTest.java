@@ -81,8 +81,8 @@ class TableGroupTest {
         단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
 
         assertAll(
-                () -> assertThat(단체_주문_테이블1.getTableGroup()).isNull(),
-                () -> assertThat(단체_주문_테이블2.getTableGroup()).isNull()
+                () -> assertThat(단체_주문_테이블1.getTableGroupId()).isNull(),
+                () -> assertThat(단체_주문_테이블2.getTableGroupId()).isNull()
         );
     }
 

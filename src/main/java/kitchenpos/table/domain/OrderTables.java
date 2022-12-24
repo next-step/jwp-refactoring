@@ -2,8 +2,7 @@ package kitchenpos.table.domain;
 
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
-    private static final int MIN_ORDER_TABLES_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
@@ -33,16 +32,12 @@ public class OrderTables {
         if (CollectionUtils.isEmpty(target)) {
             throw new IllegalArgumentException();
         }
-
-        if (target.size() < MIN_ORDER_TABLES_SIZE) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public void addOrderTable(TableGroup tableGroup, OrderTable orderTable) {
         if (!hasOrderTable(orderTable)) {
             this.orderTables.add(orderTable);
-            orderTable.updateTableGroup(tableGroup);
+            orderTable.updateTableGroupId(tableGroup.getId());
         }
     }
 

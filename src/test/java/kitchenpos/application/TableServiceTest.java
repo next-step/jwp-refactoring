@@ -119,6 +119,7 @@ class TableServiceTest {
     void updateOrderTableEmpty3() {
         ReflectionTestUtils.setField(주문테이블1, "empty", true);
         ReflectionTestUtils.setField(주문테이블2, "empty", true);
+        ReflectionTestUtils.setField(단체테이블, "id", 1L);
         단체테이블.group(Arrays.asList(주문테이블1, 주문테이블2));
 
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +45,7 @@ class OrderTableTest {
     void 테이블_그룹_해제() {
         단체_주문_테이블1.ungroup();
 
-        assertThat(단체_주문_테이블1.getTableGroup()).isNull();
+        assertThat(단체_주문_테이블1.getTableGroupId()).isNull();
     }
 
     @DisplayName("빈 테이블로 변경한다.")
@@ -61,6 +62,8 @@ class OrderTableTest {
     @DisplayName("테이블 그룹에 포함된 테이블은 빈 테이블로 변경할 수 없다.")
     @Test
     void 테이블_그룹에_포함된_테이블_빈_테이블_변경() {
+        ReflectionTestUtils.setField(단체_주문_테이블1, "tableGroupId", 1L);
+
         assertThatThrownBy(() -> 단체_주문_테이블1.changeEmpty(true, Collections.emptyList()))
                 .isInstanceOf(IllegalArgumentException.class);
     }

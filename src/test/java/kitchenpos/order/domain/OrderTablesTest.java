@@ -117,8 +117,8 @@ class OrderTablesTest {
         주문_테이블_목록.ungroup();
 
         assertAll(
-                () -> assertThat(단체_주문_테이블3.getTableGroup()).isNull(),
-                () -> assertThat(단체_주문_테이블4.getTableGroup()).isNull()
+                () -> assertThat(단체_주문_테이블3.getTableGroupId()).isNull(),
+                () -> assertThat(단체_주문_테이블4.getTableGroupId()).isNull()
         );
     }
 }

@@ -23,4 +23,8 @@ public class TableGroupRequest {
     public List<Long> getOrderTables() {
         return orderTables;
     }
+
+    public List<Long> getOrderTableIds() {
+        return this.orderTables;
+    }
 }
