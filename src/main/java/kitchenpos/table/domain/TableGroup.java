@@ -27,7 +27,7 @@ public class TableGroup {
     @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {

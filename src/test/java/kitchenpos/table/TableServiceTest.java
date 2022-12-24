@@ -113,7 +113,7 @@ class TableServiceTest {
 
         //when
         assertThatThrownBy(
-            () -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
+            () -> tableService.changeNumberOfGuests(1L, 0))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("변경하고자 하는 테이블 정보가 없습니다.");
     }

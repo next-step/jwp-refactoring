@@ -12,7 +12,7 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
-    public MenuProducts() {
+    protected MenuProducts() {
     }
 
     public MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
