@@ -21,7 +21,7 @@ class ProductTest {
     void name() {
         Assertions.assertThatThrownBy(() -> new Product(1L, null, new Price(BigDecimal.ONE)))
                 .isInstanceOf(IllegalArgumentException.class);
-    }git
+    }
 
     @DisplayName("가격을 필수로 갖는다.")
     @Test
