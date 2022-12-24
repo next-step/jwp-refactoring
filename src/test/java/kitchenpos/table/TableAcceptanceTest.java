@@ -16,15 +16,11 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import jdk.javadoc.internal.doclets.formats.html.markup.Table;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -87,7 +83,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문_후_주문_테이블을_빈_테이블로_변경(){
+    void 주문_후_주문_테이블을_빈_테이블로_변경() {
         //given
         OrderTableResponse 일번테이블 = 주문_테이블_추가(new OrderTableRequest()).as(OrderTableResponse.class);
         MenuGroupResponse 추천_메뉴 = 메뉴_그룹_등록("추천 메뉴").as(MenuGroupResponse.class);
@@ -102,6 +98,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 주문_테이블_빈_테이블_상태_변경 = 주문_테이블_빈_테이블_상태_변경(일번테이블.getId(), true);
 
         //then
-        assertThat(주문_테이블_빈_테이블_상태_변경.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(주문_테이블_빈_테이블_상태_변경.statusCode())
+            .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

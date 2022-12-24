@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -18,6 +17,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //FIXME: 연관관계 생성
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
@@ -27,13 +27,11 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this(id, tableGroupId, numberOfGuests, empty, Collections.emptyList());
-    }
-
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty, List<Order> orders) {
+    public OrderTable(Long id, int numberOfGuests, boolean empty,
+        List<Order> orders) {
+        //FIXME : 객체로 감싼다
+        validateNumberOfGuest(numberOfGuests);
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
         this.orders = orders;
@@ -41,10 +39,6 @@ public class OrderTable {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getTableGroupId() {
@@ -57,10 +51,6 @@ public class OrderTable {
 
     public int getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
@@ -76,18 +66,9 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public boolean onCookingOrMeal() {
-        for (Order order : orders) {
-            if (order.onCookingOrMeal()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void validateChangeEmpty() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정된 테이블은 비울 수 없습니다.");
         }
 
         orders.forEach(
@@ -99,14 +80,27 @@ public class OrderTable {
         );
     }
 
-    public void changeNumberOfGuest(int numberOfGuests) {
-        if (numberOfGuests < MIN_NUMBER_OF_GUEST) {
-            throw new IllegalArgumentException("손님의 수는 0명 이하일 수 없습니다.");
+    public boolean onCookingOrMeal() {
+        for (Order order : orders) {
+            if (order.onCookingOrMeal()) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    public void changeNumberOfGuest(int numberOfGuests) {
+        validateNumberOfGuest(numberOfGuests);
 
         if (empty) {
             throw new IllegalArgumentException("빈 테이블의 손님 수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateNumberOfGuest(int numberOfGuests) {
+        if (numberOfGuests < MIN_NUMBER_OF_GUEST) {
+            throw new IllegalArgumentException("손님의 수는 0명 이하일 수 없습니다.");
+        }
     }
 }

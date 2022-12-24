@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import kitchenpos.menu.domain.Menu;
 
 @Entity
@@ -28,11 +27,10 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this(null, null, menu, quantity);
-    }
-
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException("주문 항목에 메뉴가 없습니다.");
+        }
         this.seq = seq;
         this.order = order;
         this.menu = menu;
@@ -43,12 +41,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Long orderId() {
-        if(Objects.isNull(order)){
+        if (Objects.isNull(order)) {
             return null;
         }
         return order.getId();
@@ -59,7 +53,7 @@ public class OrderLineItem {
     }
 
     public Long menuId() {
-        if(Objects.isNull(menu)){
+        if (Objects.isNull(menu)) {
             return null;
         }
         return menu.getId();
@@ -67,9 +61,5 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

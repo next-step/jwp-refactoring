@@ -13,7 +13,6 @@ public class MenuProducts {
     private List<MenuProduct> menuProducts;
 
     public MenuProducts() {
-
     }
 
     public MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
@@ -21,10 +20,10 @@ public class MenuProducts {
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 
-    public BigDecimal sumOfProducts() {
+    public BigDecimal sumOfProductsPrice() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getTotalPrice());
+            sum = sum.add(menuProduct.calculateTotalPrice());
         }
         return sum;
     }

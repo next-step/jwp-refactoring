@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
@@ -26,7 +25,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "tableGroupId")
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
     }
@@ -57,10 +56,6 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -75,7 +70,7 @@ public class TableGroup {
 
     public void ungroup() {
         for (final OrderTable orderTable : orderTables) {
-            if(orderTable.onCookingOrMeal()){
+            if (orderTable.onCookingOrMeal()) {
                 throw new IllegalArgumentException("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
             }
             orderTable.setTableGroupId(null);

@@ -9,11 +9,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.order.OrderFixture;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.Test;
@@ -60,7 +58,7 @@ class TableServiceTest {
         //given
         Order order = new Order(1L, 일번테이블, MEAL.name(), null,
             Collections.singletonList(주문항목));
-        OrderTable orderTable = new OrderTable(1L, null, 0, false, Collections.singletonList(order));
+        OrderTable orderTable = new OrderTable(1L, 0, false, Collections.singletonList(order));
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
 
         //when & then
@@ -70,12 +68,9 @@ class TableServiceTest {
 
     @Test
     void 주문테이블의_방문한_손님_수_0미만으로_변경_불가능() {
-        //given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(-1);
-
         //when & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable.getNumberOfGuests()))
+        assertThatThrownBy(
+            () -> tableService.changeNumberOfGuests(1L, -1))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -85,7 +80,8 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         //when
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
+        assertThatThrownBy(
+            () -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -97,7 +93,8 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
 
         //when
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
+        assertThatThrownBy(
+            () -> tableService.changeNumberOfGuests(1L, new OrderTable().getNumberOfGuests()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

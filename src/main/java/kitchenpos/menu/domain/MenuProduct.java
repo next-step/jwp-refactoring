@@ -43,20 +43,12 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Long menuId() {
         return menu.getId();
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public void setMenu(Menu menu) {
@@ -71,7 +63,7 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public BigDecimal getTotalPrice() {
+    public BigDecimal calculateTotalPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }

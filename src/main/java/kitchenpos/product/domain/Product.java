@@ -27,14 +27,16 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = price;
-        validatePrice(this);
+        validateProduct();
     }
 
-    public void validatePrice(Product product) {
-        final BigDecimal price = product.getPrice();
+    private void validateProduct() {
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException("상품명이 없습니다");
+        }
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격정보가 없거나 음수 입니다.");
         }
     }
 
@@ -42,23 +44,11 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 }

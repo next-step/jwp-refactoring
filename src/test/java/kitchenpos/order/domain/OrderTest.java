@@ -9,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collections;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,8 @@ class OrderTest {
 
     @Test
     @DisplayName("주문항목이 없는경우 에러 발생")
-    void noOrderLineItemException(){
+    void noOrderLineItemException() {
+        //when & then
         assertThatThrownBy(() -> new Order(1L, 일번테이블, null, null,
             Collections.emptyList()))
             .isInstanceOf(IllegalArgumentException.class)
@@ -26,9 +26,12 @@ class OrderTest {
 
     @Test
     @DisplayName("주문이 계산 완료된 이후 상태 변경시 에러 발생")
-    void changeOrderStatusWhenItCompleted(){
+    void changeOrderStatusWhenItCompleted() {
+        //given
         Order 주문 = new Order(1L, 일번테이블, COMPLETION.name(), null,
             Collections.singletonList(주문항목));
+
+        //when & then
         assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL.name()))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("계산이 완료 되었습니다. 주문 상태 변경이 불가능 합니다.");
@@ -36,7 +39,8 @@ class OrderTest {
 
     @Test
     @DisplayName("주문 테이블정보가 없으면 에러 발생")
-    void noOrderTableException(){
+    void noOrderTableException() {
+        //when
         assertThatThrownBy(() -> new Order(1L, null, null, null, Collections.singletonList(주문항목)))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("주문 테이블 정보가 없습니다.");
@@ -44,28 +48,36 @@ class OrderTest {
 
     @Test
     @DisplayName("주문 테스트")
-    void order(){
+    void order() {
+        //given
         Order 주문 = new Order(1L, 일번테이블, null, null,
             Collections.singletonList(주문항목));
+
+        //when
         주문.order();
 
+        //then
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(주문.getOrderedTime()).isNotNull();
     }
 
     @Test
     @DisplayName("주문 상태 변경 테스트")
-    void changeOrderStatus(){
+    void changeOrderStatus() {
+        //given
         Order 주문 = new Order(1L, 일번테이블, null, null,
             Collections.singletonList(주문항목));
+
+        //when
         주문.changeOrderStatus(OrderStatus.COOKING.name());
 
+        //then
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     @Test
     @DisplayName("조리중이거나 식사중 여부 확인")
-    void onCookingOrMeal(){
+    void onCookingOrMeal() {
         //given
         Order 조리중 = new Order(1L, 일번테이블, COOKING.name(), null,
             Collections.singletonList(주문항목));

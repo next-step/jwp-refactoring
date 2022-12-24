@@ -23,7 +23,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -40,10 +40,10 @@ public class Menu {
 
     private void validateMenu() {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격정보가 없거나 0원이하면 안됩니다.");
+            throw new IllegalArgumentException("가격정보가 없거나 0원미만이면 안됩니다.");
         }
 
-        if (price.compareTo(menuProducts.sumOfProducts()) > 0) {
+        if (price.compareTo(menuProducts.sumOfProductsPrice()) > 0) {
             throw new IllegalArgumentException("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
         }
     }
