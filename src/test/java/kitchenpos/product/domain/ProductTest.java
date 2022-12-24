@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import kitchenpos.common.Price;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class ProductTest {
 
         //then
         assertThat(치킨.getName()).isEqualTo("치킨");
-        assertThat(치킨.getPrice()).isEqualTo(new BigDecimal(100L));
+        assertThat(치킨.getPrice()).isEqualTo(new Price(BigDecimal.valueOf(100L)));
     }
 
     @Test
@@ -32,7 +33,7 @@ class ProductTest {
         //when & then
         assertThatThrownBy(() -> new Product("치킨", null))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("가격정보가 없거나 음수 입니다.");
+            .hasMessage("가격정보가 없거나 0원미만이면 안됩니다.");
     }
 
     @Test
@@ -40,6 +41,6 @@ class ProductTest {
         //when & then
         assertThatThrownBy(() -> new Product("치킨", new BigDecimal(-1)))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("가격정보가 없거나 음수 입니다.");
+            .hasMessage("가격정보가 없거나 0원미만이면 안됩니다.");
     }
 }

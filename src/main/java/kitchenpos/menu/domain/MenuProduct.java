@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -63,7 +64,7 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public BigDecimal calculateTotalPrice() {
+    public Price calculateTotalPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }

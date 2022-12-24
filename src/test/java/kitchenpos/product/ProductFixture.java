@@ -36,6 +36,6 @@ public class ProductFixture {
     }
 
     public static ProductRequest createProductRequest(Product product) {
-        return new ProductRequest(product.getId(), product.getName(), product.getPrice());
+        return new ProductRequest(product.getId(), product.getName(), product.getPrice().price());
     }
 }

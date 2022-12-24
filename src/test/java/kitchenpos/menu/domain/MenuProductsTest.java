@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,10 @@ class MenuProductsTest {
         MenuProducts 메뉴상품들 = new MenuProducts(null, Arrays.asList(강정치킨메뉴상품, 후라이드메뉴상품));
 
         //when
-        BigDecimal sumOfProductsPrice = 메뉴상품들.sumOfProductsPrice();
+        Price sumOfProductsPrice = 메뉴상품들.sumOfProductsPrice();
 
         //then
-        assertThat(sumOfProductsPrice).isEqualTo(new BigDecimal(115_000));
+        assertThat(sumOfProductsPrice).isEqualTo(new Price(BigDecimal.valueOf(115_000)));
 
     }
 }

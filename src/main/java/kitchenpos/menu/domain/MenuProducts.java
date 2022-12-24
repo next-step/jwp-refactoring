@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.common.Price;
 
 @Embeddable
 public class MenuProducts {
@@ -21,8 +22,8 @@ public class MenuProducts {
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
     }
 
-    public BigDecimal sumOfProductsPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
+    public Price sumOfProductsPrice() {
+        Price sum = new Price(BigDecimal.ZERO);
         for (final MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.calculateTotalPrice());
         }

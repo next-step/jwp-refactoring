@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.Price;
 
 @Entity
 public class Menu {
@@ -18,7 +18,8 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    @Embedded
+    private Price price = new Price(BigDecimal.ZERO);
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
@@ -32,18 +33,15 @@ public class Menu {
         List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
         validateMenu();
     }
 
     private void validateMenu() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격정보가 없거나 0원미만이면 안됩니다.");
-        }
-
-        if (price.compareTo(menuProducts.sumOfProductsPrice()) > 0) {
+        Price sumOfProductsPrice = menuProducts.sumOfProductsPrice();
+        if (price.isGreaterThan(sumOfProductsPrice)) {
             throw new IllegalArgumentException("메뉴의 가격이 상품들의 가격 합보다 크면 안된다");
         }
     }
@@ -57,7 +55,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.price();
     }
 
     public Long menuGroupId() {
