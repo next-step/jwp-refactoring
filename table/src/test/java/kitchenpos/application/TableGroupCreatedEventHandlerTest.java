@@ -1,7 +1,7 @@
-package kitchenpos.table.application;
+package kitchenpos.application;
 
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static kitchenpos.fixture.TableGroupFixture.*;
-import static kitchenpos.table.domain.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.table.application.TableGroupCreatedEventHandler;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupCreatedEvent;

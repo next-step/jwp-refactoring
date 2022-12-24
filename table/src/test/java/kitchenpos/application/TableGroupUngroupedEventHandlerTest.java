@@ -1,7 +1,7 @@
-package kitchenpos.table.application;
+package kitchenpos.application;
 
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static kitchenpos.fixture.TableGroupFixture.*;
-import static kitchenpos.table.domain.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -15,9 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.fixture.TableGroupFixture;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.OrderSupport;
+import kitchenpos.table.application.TableGroupUngroupedEventHandler;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
@@ -26,7 +25,7 @@ import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 @ExtendWith(MockitoExtension.class)
 class TableGroupUngroupedEventHandlerTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderSupport orderSupport;
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -39,8 +38,7 @@ class TableGroupUngroupedEventHandlerTest {
         TableGroupUngroupedEvent tableGroupUngroupedEvent = tableGroupUngroupEvent(1L);
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(
             Collections.singletonList(savedOrderTable(1L, 1L)));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Collections.singletonList(1L),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
+        given(orderSupport.validateOrderChangeable(Collections.singletonList(1L))).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableGroupUngroupedEventHandler.handle(tableGroupUngroupedEvent))
@@ -57,8 +55,7 @@ class TableGroupUngroupedEventHandlerTest {
 
         given(orderTableRepository.findAllByTableGroupId(anyLong()))
             .willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
+        given(orderSupport.validateOrderChangeable(Arrays.asList(1L, 2L))).willReturn(false);
 
         // when
         tableGroupUngroupedEventHandler.handle(tableGroupUngroupedEvent);

@@ -27,10 +27,12 @@ dependencies {
     implementation project(':kitchenpos-product')
     implementation project(':kitchenpos-menu')
     implementation project(':tablegroup')
+    implementation project(':table')
 
     testImplementation(testFixtures(project(':kitchenpos-product')))
     testImplementation(testFixtures(project(':kitchenpos-menu')))
     testImplementation(testFixtures(project(':tablegroup')))
+    testImplementation(testFixtures(project(':table')))
 }
 
 test {

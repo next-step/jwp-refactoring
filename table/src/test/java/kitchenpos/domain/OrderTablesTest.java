@@ -1,12 +1,14 @@
-package kitchenpos.table.domain;
+package kitchenpos.domain;
 
-import static kitchenpos.table.domain.OrderTableFixture.*;
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import kitchenpos.table.domain.OrderTables;
 
 class OrderTablesTest {
     @DisplayName("비어있지 않은 주문 테이블 존재")

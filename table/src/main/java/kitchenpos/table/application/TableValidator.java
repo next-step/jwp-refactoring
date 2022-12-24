@@ -1,19 +1,16 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
 @Component
 public class TableValidator {
-    private final OrderRepository orderRepository;
+    private final OrderSupport orderRepository;
 
-    public TableValidator(OrderRepository orderRepository) {this.orderRepository = orderRepository;}
+    public TableValidator(OrderSupport orderSupport) {this.orderRepository = orderSupport;}
 
     public void validateChangeEmpty(OrderTable orderTable) {
         validateTableGroup(orderTable);
@@ -27,8 +24,7 @@ public class TableValidator {
     }
 
     private void validateOrderStatus(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.validateOrderChangeable(orderTable.getId())) {
             throw new IllegalArgumentException("변경할 수 없는 주문 상태입니다.");
         }
     }

@@ -1,10 +1,13 @@
-package kitchenpos.table.domain;
+package kitchenpos.domain;
 
-import static kitchenpos.table.domain.OrderTableFixture.*;
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import kitchenpos.fixture.OrderTableFixture;
+import kitchenpos.table.domain.OrderTable;
 
 class OrderTableTest {
 

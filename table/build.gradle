@@ -1,0 +1,4 @@
+dependencies {
+    implementation project(':tablegroup')
+    testImplementation(testFixtures(project(':tablegroup')))
+}

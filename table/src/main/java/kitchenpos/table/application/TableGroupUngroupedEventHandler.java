@@ -1,25 +1,20 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.dto.TableGroupUngroupedEvent;
 
 @Component
 public class TableGroupUngroupedEventHandler {
-    private final OrderRepository orderRepository;
+    private final OrderSupport orderSupport;
     private final OrderTableRepository orderTableRepository;
 
-    public TableGroupUngroupedEventHandler(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupUngroupedEventHandler(OrderSupport orderSupport, OrderTableRepository orderTableRepository) {
+        this.orderSupport = orderSupport;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -37,8 +32,7 @@ public class TableGroupUngroupedEventHandler {
     }
 
     private void validate(OrderTables orderTables) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.toIds(),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderSupport.validateOrderChangeable(orderTables.toIds())) {
             throw new IllegalArgumentException("변경할 수 없는 주문 상태입니다.");
         }
     }

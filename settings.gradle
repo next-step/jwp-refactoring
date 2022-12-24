@@ -4,4 +4,5 @@ include 'kitchenpos-menugroup'
 include 'kitchenpos-product'
 include 'kitchenpos-menu'
 include 'tablegroup'
+include 'table'
 

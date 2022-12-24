@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static kitchenpos.order.domain.OrderFixture.*;
 import static kitchenpos.order.domain.OrderLineItemFixture.*;
-import static kitchenpos.table.domain.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
