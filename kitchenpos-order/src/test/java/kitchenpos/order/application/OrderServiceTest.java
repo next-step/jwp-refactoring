@@ -1,11 +1,11 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.repository.MenuRepository;
+//import kitchenpos.menu.repository.MenuRepository;
+
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,14 +30,14 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    @Mock
-    private MenuRepository menuRepository;
+//    @Mock
+//    private MenuRepository menuRepository;
 
     @Mock
     private OrderRepository orderRepository;
 
-    @Mock
-    private OrderTableRepository orderTableRepository;
+//    @Mock
+//    private OrderTableRepository orderTableRepository;
 
     @DisplayName("주문을 생성한다. / 주문 항목이 비어있을 수 없다.")
     @Test

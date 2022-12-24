@@ -1,8 +1,8 @@
 package kitchenpos.order.domain.fixture;
 
-import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.Quantity;
 
 import java.util.Collections;
 import java.util.List;

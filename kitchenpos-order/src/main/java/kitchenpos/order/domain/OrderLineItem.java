@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.vo.Quantity;
-
 import javax.persistence.*;
 import java.util.Objects;
 

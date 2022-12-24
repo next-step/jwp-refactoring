@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.dto.OrderCreateRequest;
@@ -19,13 +18,13 @@ public class OrderService {
     public static final String COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE = "주문완료일 경우 주문상태를 변경할 수 없다.";
     public static final String ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE = "주문 항목이 비어있을 수 없다.";
     public static final String ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE = "주문 항목의 수와 메뉴의 수는 같아야 한다.";
-    private final MenuRepository menuRepository;
+//    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 //    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderValidator orderValidator) {
-        this.menuRepository = menuRepository;
+    public OrderService(/*final MenuRepository menuRepository,*/ final OrderRepository orderRepository, final OrderValidator orderValidator) {
+//        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
@@ -35,7 +34,7 @@ public class OrderService {
         final OrderLineItems orderLineItems = request.toOrderLineItems();
         Order createOrder = new Order(request.getOrderTableId(), request.toOrderLineItems());
         createOrder.validate(orderValidator);
-        validateOrderItems(orderLineItems);
+//        validateOrderItems(orderLineItems);
         Order savedOrder = orderRepository.save(createOrder);
         return OrderResponse.of(savedOrder);
     }
@@ -54,11 +53,11 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    private void validateOrderItems(OrderLineItems orderLineItems) {
-        if (orderLineItems.size() != menuRepository.findAllById(orderLineItems.getMenuIds()).size()) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
-        }
-    }
+//    private void validateOrderItems(OrderLineItems orderLineItems) {
+//        if (orderLineItems.size() != menuRepository.findAllById(orderLineItems.getMenuIds()).size()) {
+//            throw new IllegalArgumentException(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
+//        }
+//    }
 //
 //    private OrderTable findOrderTable(Long orderTableId) {
 //        return orderTableRepository.findById(orderTableId)

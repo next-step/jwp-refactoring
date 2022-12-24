@@ -1,8 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.vo.Name;
-import kitchenpos.common.vo.Price;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -35,24 +32,6 @@ public class OrderMenu {
         return new OrderMenu(menuId, menuName, price);
     }
 
-    public Long getMenuId() {
-        return this.menuId;
-    }
-
-    public Price getPrice() {
-        return this.price;
-    }
-
-    public Name getName() {
-        return this.name;
-    }
-
-    private void validate(Long menuId, Name name, Price price) {
-        validateNullMenuId(menuId);
-        validateNullName(name);
-        validateNullPrice(price);
-    }
-
     private static void validateNullMenuId(Long menuId) {
         if (Objects.isNull(menuId)) {
             throw new IllegalArgumentException();
@@ -69,5 +48,23 @@ public class OrderMenu {
         if (Objects.isNull(price)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Long getMenuId() {
+        return this.menuId;
+    }
+
+    public Price getPrice() {
+        return this.price;
+    }
+
+    public Name getName() {
+        return this.name;
+    }
+
+    private void validate(Long menuId, Name name, Price price) {
+        validateNullMenuId(menuId);
+        validateNullName(name);
+        validateNullPrice(price);
     }
 }

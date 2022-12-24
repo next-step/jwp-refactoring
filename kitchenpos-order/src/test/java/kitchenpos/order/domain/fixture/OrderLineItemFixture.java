@@ -1,10 +1,6 @@
 package kitchenpos.order.domain.fixture;
 
-import kitchenpos.common.vo.Name;
-import kitchenpos.common.vo.Price;
-import kitchenpos.common.vo.Quantity;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.domain.*;
 
 import java.math.BigDecimal;
 
