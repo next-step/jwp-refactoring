@@ -198,3 +198,11 @@
     - [x] MenuProduct Product 의존성 제거
     - [x] Orders OrderTable 의존성 제거
     - [x] OrderService TableService 결합도 줄이기
+
+## STEP4
+
+- 멀티 모듈 적용 [ ]
+- Spring Boot Test Mock Test 변환 [ ]
+- kitchenpos-product [ ]
+- kitchenpos-order [ ]
+- kitchenpos-menu [ ]
