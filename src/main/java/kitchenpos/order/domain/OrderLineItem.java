@@ -23,9 +23,8 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
-    private Menu menu;
+    @Column(nullable = false)
+    private Long menuId;
 
     @Column(nullable = false)
     private long quantity;
@@ -33,14 +32,14 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        validation(order, menu, quantity);
+    public OrderLineItem(Order order, Long menuId, long quantity) {
+        validation(order, menuId, quantity);
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    private void validation(Order order, Menu menu, long quantity) {
+    private void validation(Order order, Long menu, long quantity) {
         if (Objects.isNull(order)) {
             throw new IllegalArgumentException("주문 내역이 없습니다.");
         }
@@ -52,6 +51,13 @@ public class OrderLineItem {
         }
     }
 
+    void updateOrder(Order order) {
+        if (this.order != order) {
+            this.order = order;
+            order.addOrderLineItem(this);
+        }
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -60,15 +66,12 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public Long getMenuId() {
-        return menu.getId();
-    }
 }

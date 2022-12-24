@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
+
     private Long seq;
     private Long orderId;
     private Long menuId;
@@ -20,10 +21,10 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
-                orderLineItem.getSeq(),
-                orderLineItem.getOrder().getId(),
-                orderLineItem.getMenu().getId(),
-                orderLineItem.getQuantity()
+            orderLineItem.getSeq(),
+            orderLineItem.getOrder().getId(),
+            orderLineItem.getMenuId(),
+            orderLineItem.getQuantity()
         );
     }
 

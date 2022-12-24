@@ -28,7 +28,7 @@ public class Product {
 
     public Product(String name, BigDecimal price) {
         this.name = name;
-        this.price =  Price.of(price);
+        this.price = Price.of(price);
     }
 
     public Long getId() {
@@ -39,8 +39,8 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
+    public Price getPrice() {
+        return price;
     }
 
 }

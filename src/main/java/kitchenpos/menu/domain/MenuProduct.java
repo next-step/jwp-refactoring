@@ -1,14 +1,7 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -18,12 +11,10 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    private Long productId;
 
     @Column(nullable = false)
     private long quantity;
@@ -31,20 +22,33 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        validateProduct(product);
-        this.product = product;
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        validate(menu, product, quantity);
+
+        updateMenu(menu);
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    private void validateProduct(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("상품을 등록해주세요.");
+    private void validate(Menu menu, Product product, long quantity) {
+        if (Objects.isNull(menu)) {
+            throw new IllegalArgumentException("메뉴 상품에는 메뉴가 필수값 입니다.");
+        }
+
+        if (Objects.isNull(product)) {
+            throw new IllegalArgumentException("메뉴 상품에는 상품이 필수값 입니다.");
+        }
+
+        if (quantity < 0) {
+            throw new IllegalArgumentException("수량은 1개 이상이여야 합니다.");
         }
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    void updateMenu(Menu menu) {
+        if (this.menu != menu) {
+            this.menu = menu;
+            menu.addMenuProduct(this);
+        }
     }
 
     public Long getSeq() {
@@ -55,8 +59,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
