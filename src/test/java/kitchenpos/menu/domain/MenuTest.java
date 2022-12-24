@@ -1,16 +1,14 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-
 import static kitchenpos.menu.domain.MenuFixture.메뉴;
 import static kitchenpos.menu.domain.MenuGroupFixture.메뉴그룹;
-import static kitchenpos.menu.domain.MenuProductFixture.메뉴상품;
+import static kitchenpos.product.domain.MenuProductFixture.메뉴상품;
 import static kitchenpos.product.domain.ProductFixture.상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,11 +39,12 @@ public class MenuTest {
         레드와인 = 상품(5L, "레드와인", 9000);
 
         코스 = 메뉴그룹(2L, "코스");
+        풀코스 = 메뉴(2L, "풀코스", 62000, 코스);
 
-        풀코스_카프레제샐러드 = 메뉴상품(3L, 풀코스, 카프레제샐러드, 1);
-        풀코스_알리오올리오 = 메뉴상품(4L, 풀코스, 알리오올리오, 1);
-        풀코스_쉬림프로제 = 메뉴상품(5L, 풀코스, 쉬림프로제, 1);
-        풀코스_레드와인 = 메뉴상품(6L, 풀코스, 레드와인, 2);
+        풀코스_카프레제샐러드 = 메뉴상품(3L, 풀코스.getId(), 카프레제샐러드, 1);
+        풀코스_알리오올리오 = 메뉴상품(4L, 풀코스.getId(), 알리오올리오, 1);
+        풀코스_쉬림프로제 = 메뉴상품(5L, 풀코스.getId(), 쉬림프로제, 1);
+        풀코스_레드와인 = 메뉴상품(6L, 풀코스.getId(), 레드와인, 2);
     }
 
     @DisplayName("메뉴 클래스를 생성한다")
@@ -53,15 +52,13 @@ public class MenuTest {
     void 메뉴_클래스_생성() {
         // when
         풀코스 = 메뉴(2L, "풀코스", 62000, 코스);
-        풀코스.addMenuProducts(Arrays.asList(풀코스_카프레제샐러드, 풀코스_알리오올리오, 풀코스_쉬림프로제, 풀코스_레드와인));
 
         // then
         assertAll(
                 () -> assertThat(풀코스).isNotNull(),
                 () -> assertThat(풀코스.getName()).isEqualTo("풀코스"),
                 () -> assertThat(풀코스.getMenuGroup()).isEqualTo(코스),
-                () -> assertThat(풀코스.getPrice().intValue()).isEqualTo(62000),
-                () -> assertThat(풀코스.getMenuProducts()).hasSize(4)
+                () -> assertThat(풀코스.getPrice().intValue()).isEqualTo(62000)
         );
     }
 
@@ -71,18 +68,6 @@ public class MenuTest {
         // when & then
         assertThatThrownBy(
                 () -> 풀코스 = 메뉴(2L, "풀코스", -62000, 코스)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("전체 메뉴상품 가격 합보다 큰 가격의 메뉴 클래스를 생성한다")
-    @Test
-    void 메뉴_상품_가격_합보다_큰_가격의_메뉴_클래스_생성() {
-        //given
-        풀코스 = 메뉴(2L, "풀코스", 100000, 코스);
-
-        // when & then
-        assertThatThrownBy(
-                () -> 풀코스.addMenuProducts(Arrays.asList(풀코스_카프레제샐러드, 풀코스_알리오올리오, 풀코스_쉬림프로제, 풀코스_레드와인))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

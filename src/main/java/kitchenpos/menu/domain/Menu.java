@@ -1,10 +1,9 @@
 package kitchenpos.menu.domain;
 
-import common.domain.Price;
+import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 public class Menu {
@@ -25,9 +24,6 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
-
     protected Menu() {
 
     }
@@ -36,17 +32,6 @@ public class Menu {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-    }
-
-    private void validateMenuPrice() {
-        if (price.compareTo(menuProducts.getMenuProductPriceSum()) > 0) {
-            throw new IllegalArgumentException(INVALID_PRICE);
-        }
-    }
-
-    public void addMenuProducts(List<MenuProduct> menuProductList) {
-        menuProducts.addList(menuProductList);
-        validateMenuPrice();
     }
 
     public Long getId() {
@@ -63,10 +48,6 @@ public class Menu {
 
     public MenuGroup getMenuGroup() {
         return menuGroup;
-    }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
     }
 
 }
