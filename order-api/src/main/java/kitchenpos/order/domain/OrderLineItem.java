@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
@@ -13,26 +12,26 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
-    private Long menuId;
-    private String menuName;
     @Embedded
-    @AttributeOverride(name = "price", column = @Column(name = "menu_price"))
-    private Price menuPrice;
+    @AttributeOverrides({
+            @AttributeOverride(name = "menuId", column = @Column(name = "menu_id")),
+            @AttributeOverride(name = "name.name", column = @Column(name = "menu_name")),
+            @AttributeOverride(name = "price.price", column = @Column(name = "menu_price"))
+    })
+    private OrderMenu orderMenu;
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Long menuId, long quantity, String menuName, Price menuPrice) {
-        this.menuId = menuId;
-        this.menuName = menuName;
-        this.menuPrice = menuPrice;
+    private OrderLineItem(OrderMenu orderMenu, long quantity) {
+        this.orderMenu = orderMenu;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Long menuId, long quantity, String menuName, Price menuPrice) {
-        return new OrderLineItem(menuId, quantity, menuName, menuPrice);
+    public static OrderLineItem of(OrderMenu orderMenu, long quantity) {
+        return new OrderLineItem(orderMenu, quantity);
     }
 
     public Long getSeq() {
@@ -47,19 +46,11 @@ public class OrderLineItem {
         return order;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
     public long getQuantity() {
         return quantity.value();
     }
 
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public Price getPrice() {
-        return menuPrice;
+    public OrderMenu getOrderMenu() {
+        return orderMenu;
     }
 }

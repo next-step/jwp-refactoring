@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 import java.math.BigDecimal;
 
@@ -20,9 +21,10 @@ public class OrderLineItemResponse {
     }
 
     public static OrderLineItemResponse from(final OrderLineItem orderLineItem) {
+        OrderMenu orderMenu = orderLineItem.getOrderMenu();
         return new OrderLineItemResponse(
-                orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity(),
-                orderLineItem.getMenuName(), orderLineItem.getPrice().value()
+                orderLineItem.getSeq(), orderMenu.getMenuId(), orderLineItem.getQuantity(),
+                orderMenu.getName(), orderMenu.getPrice().value()
         );
     }
 

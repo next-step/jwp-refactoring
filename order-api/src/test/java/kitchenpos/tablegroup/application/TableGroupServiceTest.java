@@ -1,15 +1,17 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.common.domain.Price;
-import kitchenpos.order.fixture.OrderLineItemTestFixture;
-import kitchenpos.ordertable.fixture.OrderTableTestFixture;
-import kitchenpos.tablegroup.fixture.TableGroupTestFixture;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.fixture.OrderLineItemTestFixture;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.fixture.OrderTableTestFixture;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.fixture.TableGroupTestFixture;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,17 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.repository.TableGroupRepository;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
+import static kitchenpos.order.fixture.OrderLineItemTestFixture.주문정보;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -132,8 +130,8 @@ class TableGroupServiceTest {
         TableGroupTestFixture.setId(1L, tableGroup);
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
         when(orderTableRepository.findAllByTableGroupId(단체1.getId())).thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        Order 주문1 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(1L, 10, "메뉴이름", Price.from(BigDecimal.ONE))))));
-        Order 주문2 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(OrderLineItem.of(2L, 10, "메뉴이름", Price.from(BigDecimal.ONE))))));
+        Order 주문1 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(주문정보(1L, 1)))));
+        Order 주문2 = Order.of(주문테이블1.getId(), OrderLineItemTestFixture.주문정보목록(OrderLineItemTestFixture.주문정보요청목록(Collections.singletonList(주문정보(2L,1)))));
         when(orderRepository.findAllByOrderTableIdIn(any())).thenReturn(Arrays.asList(주문1, 주문2));
         // when
         tableGroupService.ungroup(단체1.getId());

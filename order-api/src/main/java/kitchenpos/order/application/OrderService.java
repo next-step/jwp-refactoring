@@ -1,16 +1,16 @@
 package kitchenpos.order.application;
 
 import kitchenpos.common.ErrorMessage;
-import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +48,7 @@ public class OrderService {
                 .map(orderLineItem -> {
                     Menu menu = findMenuById(orderLineItem.getMenuId());
                     return OrderLineItem.of(
-                            menu.getId(), orderLineItem.getQuantity(), menu.getName(), Price.from(menu.getPrice())
-                    );
+                            OrderMenu.from(menu), orderLineItem.getQuantity());
                 })
                 .collect(Collectors.toList());
     }
