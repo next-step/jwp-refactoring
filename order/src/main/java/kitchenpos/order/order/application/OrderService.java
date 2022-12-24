@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.order.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,15 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.event.OrderCreatedEvent;
-import kitchenpos.order.ui.request.OrderLineItemRequest;
-import kitchenpos.order.ui.request.OrderRequest;
-import kitchenpos.order.ui.request.OrderStatusRequest;
-import kitchenpos.order.ui.response.OrderResponse;
+import kitchenpos.order.order.domain.Order;
+import kitchenpos.order.order.domain.OrderLineItem;
+import kitchenpos.order.order.domain.OrderLineItems;
+import kitchenpos.order.order.domain.OrderRepository;
+import kitchenpos.order.order.domain.event.OrderCreatedEvent;
+import kitchenpos.order.order.ui.request.OrderLineItemRequest;
+import kitchenpos.order.order.ui.request.OrderRequest;
+import kitchenpos.order.order.ui.request.OrderStatusRequest;
+import kitchenpos.order.order.ui.response.OrderResponse;
 
 @Service
 public class OrderService {

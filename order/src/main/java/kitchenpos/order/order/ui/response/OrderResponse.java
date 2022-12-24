@@ -1,10 +1,10 @@
-package kitchenpos.order.ui.response;
+package kitchenpos.order.order.ui.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.order.domain.Order;
 
 public class OrderResponse {
 

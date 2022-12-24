@@ -1,6 +1,6 @@
-package kitchenpos.order.domain.event;
+package kitchenpos.order.order.domain.event;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.order.domain.Order;
 
 public class OrderCreatedEvent {
 

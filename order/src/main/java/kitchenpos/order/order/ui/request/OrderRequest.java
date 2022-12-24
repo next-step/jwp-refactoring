@@ -1,4 +1,4 @@
-package kitchenpos.order.ui.request;
+package kitchenpos.order.order.ui.request;
 
 import java.util.List;
 

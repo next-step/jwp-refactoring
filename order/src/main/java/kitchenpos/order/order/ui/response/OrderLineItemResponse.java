@@ -1,8 +1,8 @@
-package kitchenpos.order.ui.response;
+package kitchenpos.order.order.ui.response;
 
 import java.util.List;
 
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
 

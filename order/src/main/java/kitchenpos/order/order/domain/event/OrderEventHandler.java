@@ -1,4 +1,4 @@
-package kitchenpos.order.domain.event;
+package kitchenpos.order.order.domain.event;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
