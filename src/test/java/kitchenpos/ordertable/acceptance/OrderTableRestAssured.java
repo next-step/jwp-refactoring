@@ -3,16 +3,10 @@ package kitchenpos.ordertable.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderEmpty;
-import kitchenpos.domain.OrderGuests;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import org.springframework.http.HttpStatus;
+import kitchenpos.tablegroup.domain.OrderTableEmpty;
+import kitchenpos.tablegroup.domain.OrderTableGuests;
+import kitchenpos.tablegroup.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +30,7 @@ public class OrderTableRestAssured {
     }
 
     public static ExtractableResponse<Response> 테이블_empty_수정_요청(Long orderTableId, boolean empty) {
-        OrderEmpty request = new OrderEmpty(empty);
+        OrderTableEmpty request = new OrderTableEmpty(empty);
 
         return RestAssured.given().log().all()
                 .body(request)
@@ -47,7 +41,7 @@ public class OrderTableRestAssured {
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_수정_요청(Long orderTableId, int numberOfGuests) {
-        OrderGuests request = new OrderGuests(numberOfGuests);
+        OrderTableGuests request = new OrderTableGuests(numberOfGuests);
 
         return RestAssured.given().log().all()
                 .body(request)

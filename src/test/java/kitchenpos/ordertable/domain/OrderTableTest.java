@@ -1,17 +1,16 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,29 +51,16 @@ public class OrderTableTest {
     @Test
     void 다른_테이블_그룹에_포함되어_있으면_빈_테이블로_변경할_수_없음() {
         assertThatThrownBy(() -> {
-            단체_주문_테이블1.changeEmpty(true, Collections.emptyList());
+            단체_주문_테이블1.changeEmpty(true);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP.getErrorMessage());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 요리중이거나_식사중인_주문이_있다면_빈_테이블로_변경할_수_없음(OrderStatus orderStatus) {
-        OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, orderStatus);
-
-        assertThatThrownBy(() -> {
-            주문_테이블.changeEmpty(true, Arrays.asList(order));
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
     }
 
     @Test
     void 빈_테이블로_변경() {
         OrderTable 주문_테이블 = new OrderTable(5, false);
-        Order order = new Order(주문_테이블, OrderStatus.COMPLETION);
 
-        주문_테이블.changeEmpty(true, Arrays.asList(order));
+        주문_테이블.changeEmpty(true);
 
         assertTrue(주문_테이블.isEmpty());
     }

@@ -1,17 +1,19 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderEmpty;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
+import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -58,8 +60,8 @@ public class TableGroupTest {
         TableGroup 새로운_단체_테이블 = new TableGroup();
         단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
 
-        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderEmpty(true));
-        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderEmpty(true));
+        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderTableEmpty(true));
+        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderTableEmpty(true));
 
         assertThatThrownBy(() -> {
             새로운_단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
@@ -77,28 +79,26 @@ public class TableGroupTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 조리중이거나_식사중인_주문_테이블이_있으면_단체_테이블을_해제할_수_없음(OrderStatus orderStatus) {
-        단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
-
-        Order 주문1 = new Order(단체_주문_테이블1, orderStatus);
-        Order 주문2 = new Order(단체_주문_테이블2, OrderStatus.COMPLETION);
-
-        assertThatThrownBy(() -> {
-            단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.CANNOT_BE_CHANGED_ORDER_STATUS.getErrorMessage());
-    }
-
     @Test
     void 단체_테이블_해제() {
         단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
+        MenuGroup menuGroup = new MenuGroup("양식");
+        Menu menu1 = new Menu("양식 세트1", new BigDecimal(43000), menuGroup);
+        Menu menu2 = new Menu("양식 세트2", new BigDecimal(50000), menuGroup);
 
-        Order 주문1 = new Order(단체_주문_테이블1, OrderStatus.COMPLETION);
-        Order 주문2 = new Order(단체_주문_테이블2, OrderStatus.COMPLETION);
+        Order 주문1 = Order.fromDefault(단체_주문_테이블1.getId());
+        Order 주문2 = Order.fromDefault(단체_주문_테이블2.getId());
 
-        단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
+        OrderLineItem orderLineItem1 = OrderLineItem.of(주문1, OrderMenu.of(menu1), 1L);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(주문2, OrderMenu.of(menu2), 1L);
+
+        주문1.addOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
+        주문2.addOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
+
+        주문1.changeOrderStatus(OrderStatus.COMPLETION);
+        주문2.changeOrderStatus(OrderStatus.COMPLETION);
+
+        단체_테이블.ungroup();
 
         assertAll(
                 () -> assertThat(단체_주문_테이블1.getTableGroup()).isNull(),

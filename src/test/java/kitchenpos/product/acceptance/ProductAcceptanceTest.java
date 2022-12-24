@@ -3,15 +3,12 @@ package kitchenpos.product.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductResponse;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_생성_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_조회_요청;

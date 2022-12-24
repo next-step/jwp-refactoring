@@ -3,16 +3,10 @@ package kitchenpos.tablegroup.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.TableGroupRequest;
-import org.springframework.http.HttpStatus;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

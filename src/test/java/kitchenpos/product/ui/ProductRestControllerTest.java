@@ -1,11 +1,11 @@
 package kitchenpos.product.ui;
 
 import kitchenpos.ControllerTest;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
-import kitchenpos.ui.ProductRestController;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.ui.ProductRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

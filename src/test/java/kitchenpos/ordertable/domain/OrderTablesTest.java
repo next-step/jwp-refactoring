@@ -1,10 +1,10 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.OrderEmpty;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.OrderTableEmpty;
+import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -70,8 +70,8 @@ public class OrderTablesTest {
     void 다른_테이블_그룹에_포함되어_있으면_테이블_그룹을_생성할_수_없음() {
         OrderTables 주문_테이블_목록 = new OrderTables();
 
-        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderEmpty(true));
-        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderEmpty(true));
+        ReflectionTestUtils.setField(단체_주문_테이블1, "empty", new OrderTableEmpty(true));
+        ReflectionTestUtils.setField(단체_주문_테이블2, "empty", new OrderTableEmpty(true));
 
         assertThatThrownBy(() -> {
             주문_테이블_목록.group(새로운_단체_테이블, Arrays.asList(단체_주문_테이블1, 단체_주문_테이블3));

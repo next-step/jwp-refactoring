@@ -3,17 +3,10 @@ package kitchenpos.menugroup.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.dto.MenuGroupResponse;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_생성_요청;
 import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_조회_요청;

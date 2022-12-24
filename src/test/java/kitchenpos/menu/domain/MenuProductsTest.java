@@ -1,11 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.ErrorCode;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProducts;
-import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +52,7 @@ public class MenuProductsTest {
     @Test
     void validateMenuPrice() {
         assertThatThrownBy(() -> {
-            양식_세트_목록.validatePrice(양식_세트.getPrice());
+            양식_세트_목록.validatePrice(양식_세트.getPriceToDecimal());
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.INVALID_ADD_MENU_PRICE.getErrorMessage());
     }
