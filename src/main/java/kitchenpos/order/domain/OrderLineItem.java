@@ -47,7 +47,6 @@ public class OrderLineItem {
             throw new IllegalArgumentException(ErrorEnum.QUANTITY_UNDER_ZERO.message());
         }
 
-        updateOrder(order);
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
