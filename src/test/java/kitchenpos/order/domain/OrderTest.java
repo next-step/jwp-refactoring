@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static kitchenpos.application.OrderServiceTest.orderMenu;
+import static kitchenpos.application.OrderServiceTest.메뉴상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,8 +35,8 @@ class OrderTest {
         치즈볼 = new Product("치즈볼", BigDecimal.valueOf(4000));
         주문테이블 = new OrderTable(1, false);
 
-        뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
-                new MenuProduct(뿌링클_세트, 치즈볼, 2L)));
+        뿌링클_세트.create(Arrays.asList(메뉴상품_생성(null, 뿌링클, 1L),
+                메뉴상품_생성(null, 치즈볼, 2L)));
     }
 
     @DisplayName("등록되지 않은 주문 테이블로 주문을 생성할 수 없다.")

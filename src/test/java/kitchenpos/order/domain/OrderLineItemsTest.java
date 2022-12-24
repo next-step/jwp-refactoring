@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static kitchenpos.application.OrderServiceTest.orderMenu;
+import static kitchenpos.application.OrderServiceTest.메뉴상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderLineItemsTest {
@@ -33,8 +34,8 @@ class OrderLineItemsTest {
         주문테이블 = new OrderTable(1, false);
         주문 = new Order(주문테이블, OrderStatus.COOKING);
 
-        뿌링클_세트.create(Arrays.asList(new MenuProduct(뿌링클_세트, 뿌링클, 1L),
-                new MenuProduct(뿌링클_세트, 치즈볼, 2L)));
+        뿌링클_세트.create(Arrays.asList(메뉴상품_생성(null, 뿌링클, 1L),
+                메뉴상품_생성(null, 치즈볼, 2L)));
 
         뿌링클_세트_주문 = new OrderLineItem(주문, orderMenu(뿌링클_세트.getId(), 뿌링클_세트.getName(), 뿌링클_세트.getPrice()), 1L);
     }

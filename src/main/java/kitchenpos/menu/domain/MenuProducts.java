@@ -1,13 +1,17 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id", nullable = false)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {}
@@ -16,10 +20,9 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void addMenuProduct(Menu menu, MenuProduct menuProduct) {
+    public void addMenuProduct(MenuProduct menuProduct) {
         if (!menuProducts.contains(menuProduct)) {
             this.menuProducts.add(menuProduct);
-            menuProduct.updateMenu(menu);
         }
     }
 }

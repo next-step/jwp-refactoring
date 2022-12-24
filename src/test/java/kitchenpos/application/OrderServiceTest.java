@@ -68,8 +68,8 @@ class OrderServiceTest {
         한식 = new MenuGroup(1L, "한식");
         삼겹살세트메뉴1 = new Menu(1L, "삼겹살세트메뉴1", BigDecimal.valueOf(8_000), 한식);
         삼겹살세트메뉴2 = new Menu(2L, "삼겹살세트메뉴2", BigDecimal.valueOf(8_000), 한식);
-        삼겹살메뉴상품 = new MenuProduct(1L, 삼겹살세트메뉴1, 삼겹살, 1L);
-        김치메뉴상품 = new MenuProduct(2L, 삼겹살세트메뉴2, 김치, 1L);
+        삼겹살메뉴상품 = 메뉴상품_생성(1L, 삼겹살, 1L);
+        김치메뉴상품 = 메뉴상품_생성(2L, 김치, 1L);
         주문테이블 = new OrderTable(1L, 0, false);
         주문 = new Order(주문테이블, OrderStatus.COOKING);
 
@@ -185,6 +185,10 @@ class OrderServiceTest {
                 .menuName(menuName)
                 .menuPrice(menuPrice)
                 .build();
+    }
+
+    public static MenuProduct 메뉴상품_생성(Long seq, Product product, long quantity) {
+        return new MenuProduct(seq, product, quantity);
     }
 
 }

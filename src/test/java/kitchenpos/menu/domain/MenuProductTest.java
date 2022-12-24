@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static kitchenpos.application.OrderServiceTest.메뉴상품_생성;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class MenuProductTest {
@@ -15,7 +16,7 @@ class MenuProductTest {
         MenuGroup 메뉴그룹 = new MenuGroup("맛있는 메뉴");
         Menu 햄버거세트 = new Menu("햄버거세트", BigDecimal.valueOf(12000), 메뉴그룹);
         Product 햄버거 = new Product("햄버거", BigDecimal.valueOf(5000));
-        MenuProduct 메뉴상품 = new MenuProduct(햄버거세트, 햄버거, 2);
+        MenuProduct 메뉴상품 = 메뉴상품_생성(null, 햄버거, 2);
 
         assertThat(메뉴상품.getPrice()).isEqualTo(BigDecimal.valueOf(10000));
     }
