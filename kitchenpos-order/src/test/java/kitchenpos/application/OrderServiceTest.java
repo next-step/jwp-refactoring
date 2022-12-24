@@ -85,11 +85,14 @@ public class OrderServiceTest {
         given(menuRepository.findById(풀코스_주문1.getMenuId())).willReturn(Optional.ofNullable(풀코스));
         given(menuRepository.findById(오일2인세트_주문1.getMenuId())).willReturn(Optional.ofNullable(풀코스));
         given(orderLineItemRepository.saveAll(any())).willReturn(Arrays.asList(풀코스_주문1, 오일2인세트_주문1));
+        given(orderRepository.findById(주문1.getId())).willReturn(Optional.ofNullable(주문1));
+        given(orderLineItemRepository.findOrderLineItemsByOrderId(주문1.getId())).willReturn(Arrays.asList(풀코스_주문1, 오일2인세트_주문1));
 
         // when
         List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(OrderLineItemRequest.of(풀코스_주문1), OrderLineItemRequest.of(오일2인세트_주문1));
         OrderRequest orderRequest = new OrderRequest(테이블1.getId(), OrderStatus.COOKING.name(), orderLineItemRequests);
-        OrderResponse orderResponse = orderService.create(orderRequest);
+        Long orderId = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.convertOrderResponse(orderId);
 
         // then
         verify(orderRepository).save(any());
@@ -97,9 +100,7 @@ public class OrderServiceTest {
         assertAll(
                 () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
                 () -> assertThat(orderResponse.getOrderLineItems()).hasSize(2),
-                () -> assertThat(orderResponse.getOrderLineItems().stream()
-                        .map(OrderLineItemResponse::getOrder)
-                        .collect(Collectors.toList())).containsOnly(주문1)
+                () -> assertThat(checkOrderInOrderLineItems(orderResponse, 주문1)).isTrue()
         );
     }
 
@@ -116,8 +117,8 @@ public class OrderServiceTest {
         //then
         assertAll(
                 () -> assertThat(orders).hasSize(2),
-                () -> assertThat(getOrderInOrderLineItems(orders.get(0))).isEqualTo(주문1),
-                () -> assertThat(getOrderInOrderLineItems(orders.get(1))).isEqualTo(주문2)
+                () -> assertThat(checkOrderInOrderLineItems(orders.get(0), 주문1)).isTrue(),
+                () -> assertThat(checkOrderInOrderLineItems(orders.get(1), 주문2)).isTrue()
         );
     }
 
@@ -215,11 +216,11 @@ public class OrderServiceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private Order getOrderInOrderLineItems(OrderResponse orderResponse) {
+    private boolean checkOrderInOrderLineItems(OrderResponse orderResponse, Order order) {
         Set<Order> orderSet = orderResponse.getOrderLineItems().stream()
                 .map(OrderLineItemResponse::getOrder)
                 .collect(Collectors.toSet());
 
-        return new ArrayList<>(orderSet).get(0);
+        return new ArrayList<>(orderSet).contains(order);
     }
 }

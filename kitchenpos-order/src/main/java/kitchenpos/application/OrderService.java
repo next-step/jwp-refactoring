@@ -40,7 +40,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest orderRequest) {
+    public Long create(final OrderRequest orderRequest) {
 
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
 
@@ -53,7 +53,7 @@ public class OrderService {
 
         List<OrderLineItem> orderLineItemList = orderLineItemRepository.saveAll(generateOrderLineItems(orderRequest.getOrderLineItems(), order));
 
-        return OrderResponse.of(savedOrder, new OrderLineItems(orderLineItemList));
+        return savedOrder.getId();
     }
 
     public List<OrderResponse> list() {
@@ -97,5 +97,11 @@ public class OrderService {
     private OrderLineItems findOrderLineItemsByOrderId(Long orderId) {
         List<OrderLineItem> orderLineItemList = orderLineItemRepository.findOrderLineItemsByOrderId(orderId);
         return new OrderLineItems(orderLineItemList);
+    }
+
+    public OrderResponse convertOrderResponse(Long orderId) {
+        Order order = findOrderById(orderId);
+        OrderLineItems orderLineItems = findOrderLineItemsByOrderId(orderId);
+        return OrderResponse.of(order, orderLineItems);
     }
 }
