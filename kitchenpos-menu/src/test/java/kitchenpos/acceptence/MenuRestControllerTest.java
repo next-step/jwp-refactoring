@@ -3,7 +3,6 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceSupport;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
@@ -32,9 +31,7 @@ import static kitchenpos.acceptence.MenuGroupRestControllerTest.메뉴그룹을_
 import static kitchenpos.acceptence.ProductRestControllerTest.상품을_등록한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MenuRestControllerTest extends AcceptanceSupport {
-    private ProductResponse 후라이드치킨;
-    private ProductResponse 제로콜라;
+public class MenuRestControllerTest extends AcceptanceSupport {
     private MenuGroupResponse 치킨;
     private MenuProduct 후라이드_이인분;
     private MenuProduct 제로콜라_삼인분;
@@ -44,14 +41,13 @@ class MenuRestControllerTest extends AcceptanceSupport {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        Product productA = new Product(new ProductPrice(BigDecimal.valueOf(3_000)), "후라이드치킨");
-        Product productB = new Product(new ProductPrice(BigDecimal.valueOf(2_000)), "제로콜라");
-        후라이드치킨 = 상품을_등록한다(new ProductRequest("후라이드치킨", BigDecimal.valueOf(3_000))).as(ProductResponse.class);
-        제로콜라 = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(2_000))).as(ProductResponse.class);
+        ProductResponse responseA = 상품을_등록한다(new ProductRequest("치킨", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        ProductResponse responseB = 상품을_등록한다(new ProductRequest("제로콜라", BigDecimal.valueOf(1_000))).as(ProductResponse.class);
+
 
         치킨 = 메뉴그룹을_생성한다(new MenuGroupRequest("치킨")).as(MenuGroupResponse.class);
 
-        MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(productA.getId(), 2L), new MenuProduct(productB.getId(), 2L)));
+        MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProduct(responseA.getId(), 2L), new MenuProduct(responseB.getId(), 2L)));
 
         후치콜세트 = new Menu("후치콜세트", new MenuPrice(BigDecimal.valueOf(10_000)), 치킨.getId(), menuProducts);
 

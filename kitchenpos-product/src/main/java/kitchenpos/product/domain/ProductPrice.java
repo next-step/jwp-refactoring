@@ -5,7 +5,8 @@ import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static kitchenpos.common.constants.ErrorCodeType.PRICE_NOT_NULL_AND_ZERO;
+import static kitchenpos.product.exceptions.ProductErrorCode.PRICE_NOT_NULL_AND_ZERO;
+
 
 @Embeddable
 public class ProductPrice {

@@ -1,16 +1,17 @@
 package kitchenpos.order.validator;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.port.OrderPort;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.port.OrderTableValidatorPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-import static kitchenpos.common.constants.ErrorCodeType.GUEST_NOT_NULL_AND_ZERO;
-import static kitchenpos.common.constants.ErrorCodeType.TABLE_GROUP_NOT_NULL;
+import static kitchenpos.order.exceptions.OrderErrorCode.GUEST_NOT_NULL_AND_ZERO;
+import static kitchenpos.order.exceptions.OrderErrorCode.TABLE_GROUP_NOT_NULL;
+
 
 @Service
 @Transactional(readOnly = true)

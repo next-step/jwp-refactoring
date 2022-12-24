@@ -1,18 +1,18 @@
 package kitchenpos.unit;
 
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.port.MenuPort;
 import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.port.MenuPort;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.port.ProductPort;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.common.constants.ErrorCodeType.NOT_FOUND_ORDER_TABLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -111,7 +110,7 @@ class MenuServiceTest {
         스테이크_파스타_빅세트 = new Menu("스테이크_파스타_빅세트", new MenuPrice(BigDecimal.valueOf(200_000)), 스파빅그륩.getId(), new MenuProducts(Arrays.asList()));
         given(productPort.findById(any())).willReturn(스테이크);
 
-        doThrow(new IllegalArgumentException(NOT_FOUND_ORDER_TABLE.getMessage()))
+        doThrow(new IllegalArgumentException())
                 .when(menuValidator).validCheckMakeMenu(any());
 
         List<MenuProductRequest> productRequest = Arrays.asList(new MenuProductRequest(스테이크.getId(), 1L), new MenuProductRequest(파스타.getId(), 1L));

@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.common.constants.ErrorCodeType.COOKING_MEAL_NOT_UNGROUP;
+import static kitchenpos.order.exceptions.OrderErrorCode.COOKING_MEAL_NOT_UNGROUP;
+
 
 @Entity
 @Table(name = "orders")

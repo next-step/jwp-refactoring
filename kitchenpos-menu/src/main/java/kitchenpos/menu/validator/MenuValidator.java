@@ -3,6 +3,7 @@ package kitchenpos.menu.validator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.exceptions.MenuErrorCode;
 import kitchenpos.menugroup.port.MenuGroupPort;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-
-import static kitchenpos.common.constants.ErrorCodeType.MENU_PRICE_NOT_OVER_SUM_PRICE;
 
 @Service
 @Transactional
@@ -40,7 +39,7 @@ public class MenuValidator {
         MenuPrice menuPrice = new MenuPrice(menu.getMenuPrice());
 
         if (menuPrice.isBiggerThen(productPrice)) {
-            throw new IllegalArgumentException(MENU_PRICE_NOT_OVER_SUM_PRICE.getMessage());
+            throw new IllegalArgumentException(MenuErrorCode.MENU_PRICE_NOT_OVER_SUM_PRICE.getMessage());
         }
     }
 

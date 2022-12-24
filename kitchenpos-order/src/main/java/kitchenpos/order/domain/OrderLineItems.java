@@ -1,10 +1,10 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.constants.ErrorCodeType;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static kitchenpos.order.exceptions.OrderErrorCode.ORDER_LINE_ITEM_REQUEST;
 
 
 @Embeddable
@@ -17,7 +17,7 @@ public class OrderLineItems {
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCodeType.ORDER_LINE_ITEM_REQUEST.getMessage());
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
         }
 
         this.orderLineItems = new ArrayList<>(orderLineItems);

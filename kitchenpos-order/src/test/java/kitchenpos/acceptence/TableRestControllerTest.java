@@ -3,9 +3,8 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceSupport;
-import kitchenpos.order.dto.ChaneNumberOfGuestRequest;
-import kitchenpos.order.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.ChaneNumberOfGuestRequest;
+import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TableRestControllerTest extends AcceptanceSupport {
+public class TableRestControllerTest extends AcceptanceSupport {
 
     private TableRequest 주문테이블_일번;
     private TableRequest 주문테이블_이번;

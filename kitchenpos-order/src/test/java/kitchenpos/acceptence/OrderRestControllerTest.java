@@ -3,7 +3,6 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceSupport;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
@@ -25,7 +24,6 @@ import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +50,6 @@ class OrderRestControllerTest extends AcceptanceSupport {
     private TableResponse 주문테이블;
     private OrderTable 주문테이블_일번;
     private OrderTable 주문테이블_이번;
-    private TableGroup 테이블_그륩;
     private OrderLineItem 후치콜_세트_주문_아이템;
     private Order 주문;
     private Menu 치킨_콜라_정식_메뉴;
@@ -89,7 +86,6 @@ class OrderRestControllerTest extends AcceptanceSupport {
 
         주문테이블_일번 = new OrderTable(1L, null, 3, true);
         주문테이블_이번 = new OrderTable(2L, null, 7, true);
-        테이블_그륩 = new TableGroup();
         후치콜_세트_주문_아이템 = new OrderLineItem(치킨_콜라_정식_메뉴.getId(), 1L);
         주문 = new Order(주문테이블_일번.getId(), OrderStatus.COOKING);
     }

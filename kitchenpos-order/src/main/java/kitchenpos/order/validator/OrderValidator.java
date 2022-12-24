@@ -1,6 +1,5 @@
 package kitchenpos.order.validator;
 
-import kitchenpos.common.constants.ErrorCodeType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -11,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static kitchenpos.common.constants.ErrorCodeType.ORDER_STATUS_NOT_COMPLETION;
+import static kitchenpos.order.exceptions.OrderErrorCode.ORDER_LINE_ITEM_REQUEST;
+import static kitchenpos.order.exceptions.OrderErrorCode.ORDER_STATUS_NOT_COMPLETION;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,7 +34,7 @@ public class OrderValidator {
 
     private void validCheckMenuSize(List<OrderLineItemRequest> orderLineItemRequest, List<Menu> menus) {
         if (orderLineItemRequest.size() != menus.size()) {
-            throw new IllegalArgumentException(ErrorCodeType.ORDER_LINE_ITEM_REQUEST.getMessage());
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUEST.getMessage());
         }
     }
 

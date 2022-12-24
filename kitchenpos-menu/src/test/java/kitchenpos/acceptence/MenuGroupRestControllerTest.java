@@ -3,7 +3,6 @@ package kitchenpos.acceptence;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceSupport;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
