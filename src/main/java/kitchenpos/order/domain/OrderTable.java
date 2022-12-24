@@ -57,8 +57,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void occupied() {
+        this.empty = false;
     }
 
     public void changeEmpty(final boolean empty) {

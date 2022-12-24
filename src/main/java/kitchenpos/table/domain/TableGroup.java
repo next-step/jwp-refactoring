@@ -36,7 +36,7 @@ public class TableGroup {
         this.orderTables = orderTables;
         validateTableGroup();
         for (final OrderTable savedOrderTable : orderTables) {
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.occupied();
         }
     }
 
@@ -62,10 +62,6 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 
     public void ungroup() {

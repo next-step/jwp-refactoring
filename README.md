@@ -89,8 +89,8 @@
 * 예외에 대한 상세 메시지 제공 [완료]
 * DAO Suffix Repository로 변경 [완료]
 * Entity 기본생성자를 protected 로 변경 [완료]
-* 필요 없는 Getter, Setter 제거
-* 일급 컬렉션등 초기화
+* 필요 없는 Getter, Setter 제거 [완료]
+* 일급 컬렉션등 초기화 [완료]
 * 컨트롤러 RequestMapping 으로 통합 가능한 부분 통합
 * Enum -> String 으로 변환하는 부분 제거 후 순수하게 Enum 사용
 * Enum 에 description 추가
