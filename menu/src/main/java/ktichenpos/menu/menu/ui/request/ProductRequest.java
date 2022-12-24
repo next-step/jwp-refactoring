@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Product;
 
 public class ProductRequest {
 

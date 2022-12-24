@@ -8,6 +8,8 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
 
+import kitchenpos.common.domain.Price;
+
 @Embeddable
 public class MenuProducts {
 

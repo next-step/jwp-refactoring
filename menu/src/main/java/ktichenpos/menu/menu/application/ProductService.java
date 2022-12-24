@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.ui.request.ProductRequest;
-import kitchenpos.menu.ui.response.ProductResponse;
+import ktichenpos.menu.menu.domain.Product;
+import ktichenpos.menu.menu.domain.ProductRepository;
+import ktichenpos.menu.menu.ui.request.ProductRequest;
+import ktichenpos.menu.menu.ui.response.ProductResponse;
 
 @Service
 public class ProductService {

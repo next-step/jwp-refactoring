@@ -3,7 +3,7 @@ package ktichenpos.menu.menu.ui.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import kitchenpos.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuGroup;
 
 public class MenuGroupRequest {
 

@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.util.Assert;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 
 @Entity

@@ -6,17 +6,17 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.ui.request.MenuProductRequest;
-import kitchenpos.menu.ui.request.MenuRequest;
-import kitchenpos.menu.ui.response.MenuResponse;
+import ktichenpos.menu.menu.domain.Menu;
+import ktichenpos.menu.menu.domain.MenuGroupRepository;
+import ktichenpos.menu.menu.domain.MenuRepository;
+import ktichenpos.menu.menu.domain.ProductRepository;
+import ktichenpos.menu.menu.ui.request.MenuRequest;
+import ktichenpos.menu.menu.ui.response.MenuResponse;
 
 @Service
 public class MenuService {

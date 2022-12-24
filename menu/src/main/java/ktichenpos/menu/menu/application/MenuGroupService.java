@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.ui.request.MenuGroupRequest;
-import kitchenpos.menu.ui.response.MenuGroupResponse;
+import ktichenpos.menu.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuGroupRepository;
+import ktichenpos.menu.menu.ui.request.MenuGroupRequest;
+import ktichenpos.menu.menu.ui.response.MenuGroupResponse;
 
 @Service
 public class MenuGroupService {

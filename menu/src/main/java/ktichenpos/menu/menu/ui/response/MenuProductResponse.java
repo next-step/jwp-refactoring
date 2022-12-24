@@ -3,8 +3,8 @@ package ktichenpos.menu.menu.ui.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
+import ktichenpos.menu.menu.domain.MenuProduct;
+import ktichenpos.menu.menu.domain.MenuProducts;
 
 public class MenuProductResponse {
 
