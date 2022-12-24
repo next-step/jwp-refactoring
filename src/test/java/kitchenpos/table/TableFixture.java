@@ -42,7 +42,7 @@ public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블_빈_테이블_상태_변경(Long orderTableId,
         boolean empty) {
-        OrderTableRequest orderTable = new OrderTableRequest(empty);
+        OrderTableRequest orderTable = new OrderTableRequest(null, null, 0, empty);
 
         return RestAssured
             .given().log().all()
@@ -55,7 +55,7 @@ public class TableFixture {
 
     public static ExtractableResponse<Response> 주문_테이블의_방문한_손님_수_변경(Long orderTableId,
         int numberOfGuest) {
-        OrderTableRequest orderTable = new OrderTableRequest(numberOfGuest);
+        OrderTableRequest orderTable = new OrderTableRequest(null, null, numberOfGuest, false);
 
         return RestAssured
             .given().log().all()
