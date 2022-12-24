@@ -62,3 +62,19 @@ project(':kitchenpos-table') {
         implementation project(':kitchenpos-product')
     }
 }
+
+project(':kitchenpos-order') {
+    dependencies {
+    }
+}
+
+project(':kitchenpos-menu') {
+    dependencies {
+    }
+}
+
+project(':kitchenpos-product') {
+    dependencies {
+    }
+}
+

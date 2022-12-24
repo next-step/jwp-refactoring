@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static kitchenpos.common.fixture.NameFixture.nameProductA;
 import static kitchenpos.common.fixture.PriceFixture.priceProductA;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("상품")

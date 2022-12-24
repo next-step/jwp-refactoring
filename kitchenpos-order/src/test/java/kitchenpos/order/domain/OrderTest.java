@@ -30,7 +30,7 @@ class OrderTest {
     @DisplayName("주문 테이블은 비어있을 수 없다.")
     @Test
     void constructor_fail_orderTable() {
-        assertThatThrownBy(() -> new Order(null, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA())))))
+        assertThatThrownBy(() -> new Order(null, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), QuantityFixture.quantityOrderLineItemA())))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_NULL_EXCEPTION_MESSAGE);
     }
@@ -44,7 +44,7 @@ class OrderTest {
     @DisplayName("주문상태를 식사중으로 변경한다.")
     @Test
     void changeMeal_success() {
-        Order order = new Order(orderTableA(null, true).getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA()))));
+        Order order = new Order(orderTableA(null, true).getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), QuantityFixture.quantityOrderLineItemA()))));
         order.meal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
@@ -52,7 +52,7 @@ class OrderTest {
     @DisplayName("주문완료일 경우 주문상태를 변경할 수 없다.")
     @Test
     void changeMeal_fail_completion() {
-        Order order = new Order(orderTableA(null, true).getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA()))));
+        Order order = new Order(orderTableA(null, true).getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), QuantityFixture.quantityOrderLineItemA()))));
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
         assertThatThrownBy(order::meal)
@@ -63,7 +63,7 @@ class OrderTest {
     @DisplayName("주문상태를 완료로 변경한다.")
     @Test
     void nameCompletion() {
-        Order order = new Order(orderTableA(null, true).getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), quantityOrderLineItemA()))));
+        Order order = new Order(orderTableA(null, true).getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(1L, new Name("a"), new Price(BigDecimal.ONE)), QuantityFixture.quantityOrderLineItemA()))));
         order.complete();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }

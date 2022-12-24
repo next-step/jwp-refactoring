@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -55,7 +54,7 @@ class ProductServiceTest {
     void create_fail_priceNull() {
         Assertions.assertThatThrownBy(() -> productService.create(new ProductCreateRequest("상품A", null)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
+                .hasMessageContaining(Price.PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("상품 생성 / 가격은 0원보다 작을 수 없다.")
@@ -63,7 +62,7 @@ class ProductServiceTest {
     void create_fail_minimumPrice() {
         Assertions.assertThatThrownBy(() -> productService.create(new ProductCreateRequest("상품A", BigDecimal.valueOf(-1))))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
+                .hasMessageContaining(Price.PRICE_MINIMUM_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("상품 목록 조회")
