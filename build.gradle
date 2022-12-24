@@ -68,3 +68,10 @@ project(':module-order') {
         testImplementation project(':module-table')
     }
 }
+
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-order')
+        testImplementation project(':module-order')
+    }
+}

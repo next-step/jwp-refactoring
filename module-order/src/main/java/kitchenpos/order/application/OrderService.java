@@ -6,6 +6,7 @@ import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.validator.OrderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 public class OrderService {
     public static final String COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE = "주문완료일 경우 주문상태를 변경할 수 없다.";
     public static final String ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE = "주문 항목이 비어있을 수 없다.";
-    public static final String ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE = "주문 항목의 수와 메뉴의 수는 같아야 한다.";
 
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
@@ -32,7 +32,7 @@ public class OrderService {
     public OrderResponse create(final OrderCreateRequest request) {
         final OrderLineItems orderLineItems = request.toOrderLineItems();
         Order createOrder = new Order(request.getOrderTableId(), request.toOrderLineItems());
-        createOrder.validate(orderValidator);
+        createOrder.validateCreate(orderValidator);
         Order savedOrder = orderRepository.save(createOrder);
         return OrderResponse.of(savedOrder);
     }
@@ -50,17 +50,6 @@ public class OrderService {
         savedOrder.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }
-//
-//    private void validateOrderItems(OrderLineItems orderLineItems) {
-//        if (orderLineItems.size() != menuRepository.findAllById(orderLineItems.getMenuIds()).size()) {
-//            throw new IllegalArgumentException(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
-//        }
-//    }
-//
-//    private OrderTable findOrderTable(Long orderTableId) {
-//        return orderTableRepository.findById(orderTableId)
-//                .orElseThrow(IllegalArgumentException::new);
-//    }
 
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)

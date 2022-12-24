@@ -4,11 +4,13 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.application.TableGroupValidator;
 import kitchenpos.table.domain.TableGroup;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
 
+@Component
 public class TableGroupValidatorImpl implements TableGroupValidator {
 
     private final OrderRepository orderRepository;

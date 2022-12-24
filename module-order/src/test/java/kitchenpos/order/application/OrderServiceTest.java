@@ -1,14 +1,13 @@
 package kitchenpos.order.application;
 
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.fixture.OrderFixture;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.validator.OrderValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.singletonList;
 import static kitchenpos.order.application.OrderService.*;
 import static kitchenpos.order.domain.fixture.OrderFixture.orderA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;

@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.order.validator;
 
 import kitchenpos.order.domain.Order;
 import org.springframework.stereotype.Component;
@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface OrderValidator {
 
-    void validate(Order order);
+    void validateCreate(Order order);
 }

@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.application.OrderValidator;
+import kitchenpos.order.validator.OrderValidator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -132,7 +132,7 @@ public class Order {
         return this.orderStatus.equals(OrderStatus.COMPLETION);
     }
 
-    public void validate(OrderValidator orderValidator) {
-        orderValidator.validate(this);
+    public void validateCreate(OrderValidator orderValidator) {
+        orderValidator.validateCreate(this);
     }
 }
