@@ -1,4 +1,4 @@
-package kitchenpos.table.ui;
+package kitchenpos;
 
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.IntegrationTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroupRepository;

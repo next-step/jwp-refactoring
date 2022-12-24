@@ -1,4 +1,4 @@
-package kitchenpos.menu.ui;
+package kitchenpos;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.IntegrationTest;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;

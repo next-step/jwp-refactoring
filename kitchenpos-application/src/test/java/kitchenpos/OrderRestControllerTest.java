@@ -1,4 +1,4 @@
-package kitchenpos.order.ui;
+package kitchenpos;
 
 import static kitchenpos.order.domain.OrderStatus.*;
 import static org.assertj.core.api.Assertions.*;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.IntegrationTest;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;

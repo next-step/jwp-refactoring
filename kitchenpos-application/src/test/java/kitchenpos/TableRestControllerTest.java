@@ -1,4 +1,4 @@
-package kitchenpos.table.ui;
+package kitchenpos;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.IntegrationTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
