@@ -1,34 +1,40 @@
 package kitchenpos.product.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.vo.Name;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.vo.Price.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.product.domain.fixture.ProductFixture.productA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스")
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest extends ServiceTest {
 
 
-    @Autowired
+    @InjectMocks
     private ProductService productService;
 
-    @Autowired
+    @Mock
     private ProductRepository productRepository;
 
     @BeforeEach
@@ -37,14 +43,19 @@ class ProductServiceTest extends ServiceTest {
         productService = new ProductService(productRepository);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"상품A"})
     @DisplayName("상품 생성")
-    void create(String name) {
-        ProductResponse product = productService.create(new ProductCreateRequest(name, BigDecimal.ONE));
+    @Test
+    void create() {
+
+        Product product = productA();
+
+        given(productRepository.save(any())).willReturn(product);
+
+        ProductResponse response = productService.create(new ProductCreateRequest(product.getName().getName(), product.getPrice()));
+
         assertAll(
-                () -> assertEquals(0, product.getPrice().compareTo(BigDecimal.ONE)),
-                () -> assertThat(product.getName()).isEqualTo(new Name(name))
+                () -> assertEquals(0, response.getPrice().compareTo(product.getPrice())),
+                () -> assertThat(response.getName()).isEqualTo(product.getName())
         );
     }
 
@@ -67,7 +78,7 @@ class ProductServiceTest extends ServiceTest {
     @DisplayName("상품 목록 조회")
     @Test
     void list() {
-        productService.create(new ProductCreateRequest("상품A", BigDecimal.ONE));
+        given(productRepository.findAll()).willReturn(Collections.singletonList(productA()));
         assertThat(productService.list()).hasSize(1);
     }
 }
