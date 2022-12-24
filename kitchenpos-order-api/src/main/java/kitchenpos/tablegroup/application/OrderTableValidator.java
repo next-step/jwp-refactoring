@@ -13,6 +13,7 @@ import kitchenpos.tablegroup.exception.TableExceptionConstants;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static kitchenpos.tablegroup.exception.TableExceptionConstants.ALREADY_INCLUDED_IN_ANOTHER_TABLE_GROUP;
 import static kitchenpos.tablegroup.exception.TableExceptionConstants.MUST_BE_GREATER_THAN_MINIMUM_ORDER_MENU_SIZE;
@@ -60,6 +61,11 @@ public class OrderTableValidator implements OrderValidator {
         orders.forEach(Order::checkCookingOrEatingMealOrder);
     }
 
+    public Menu findMenuByMenuId(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID));
+    }
+
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID));
@@ -84,5 +90,4 @@ public class OrderTableValidator implements OrderValidator {
     private List<Order> findAllOrderByOrderTableIds(List<Long> orderTableIds) {
         return orderRepository.findAllByOrderTableIds(orderTableIds);
     }
-
 }

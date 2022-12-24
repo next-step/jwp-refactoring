@@ -10,8 +10,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.tablegroup.application.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,18 +22,16 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuRepository menuRepository;
-    private final OrderValidator orderValidator;
+    private final OrderTableValidator orderTableValidator;
 
-    public OrderService(OrderRepository orderRepository, MenuRepository menuRepository, OrderValidator orderValidator) {
+    public OrderService(OrderRepository orderRepository, OrderTableValidator orderTableValidator) {
         this.orderRepository = orderRepository;
-        this.orderValidator = orderValidator;
-        this.menuRepository = menuRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        orderValidator.validateToCreateOrder(request.getOrderTableId(), request.toMenuIds());
+        orderTableValidator.validateToCreateOrder(request.getOrderTableId(), request.toMenuIds());
         Order order = request.toInitOrder(request.getOrderTableId());
         List<OrderLineItem> orderLineItems = orderLineItemByMenuId(order, request.getOrderLineItems());
         order.addOrderLineItems(orderLineItems);
@@ -58,8 +56,7 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID));
     }
     private Menu findMenuById(Long menuId) {
-        return menuRepository.findById(menuId)
-                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundExceptionConstants.NOT_FOUND_BY_ID));
+        return orderTableValidator.findMenuByMenuId(menuId);
     }
 
     private List<OrderLineItem> orderLineItemByMenuId(Order order, List<OrderLineItemRequest> orderLineItemsRequest) {
