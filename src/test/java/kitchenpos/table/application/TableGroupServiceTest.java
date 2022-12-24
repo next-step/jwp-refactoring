@@ -1,17 +1,16 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Name;
+import kitchenpos.common.vo.Price;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -27,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -69,7 +69,7 @@ class TableGroupServiceTest extends ServiceTest {
 
     private TableGroup tableGroupA;
     private TableGroup tableGroupB;
-    private Orders order;
+    private Order order;
     private Menu menu;
     private OrderLineItems orderLineItemsA;
 
@@ -77,9 +77,9 @@ class TableGroupServiceTest extends ServiceTest {
     public void setUp() {
         super.setUp();
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
-        Product product = productRepository.save(new Product(nameProductA(), priceProductA()));
-        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
-        orderLineItemsA = orderLineItemsA();
+        Product product = productRepository.save(new Product(1L, nameProductA(), priceProductA()));
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(new MenuProduct(product.getId(), new Quantity(1))))));
+        orderLineItemsA = orderLineItemsA(OrderMenu.of(menu.getId(), new Name("a"), new Price(BigDecimal.ONE)));
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
@@ -116,7 +116,7 @@ class TableGroupServiceTest extends ServiceTest {
         테이블_그룹_존재_검증(tableGroup);
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
+        Order order = new Order(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -136,7 +136,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, orderLineItemsA);
+        Order order = new Order(orderTableA.getId(), orderLineItemsA);
         order.setOrderStatus(OrderStatus.COOKING);
         orderRepository.save(order);
 
@@ -159,7 +159,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         orderTableA.setEmpty(false);
 
-        Orders order = new Orders(orderTableA, orderLineItemsA);
+        Order order = new Order(orderTableA.getId(), orderLineItemsA);
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
@@ -176,8 +176,8 @@ class TableGroupServiceTest extends ServiceTest {
         return orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), true));
     }
 
-    private void 주문_요리중_상태_검증(Orders order) {
-        Orders order1 = orderRepository.findById(order.getId()).get();
+    private void 주문_요리중_상태_검증(Order order) {
+        Order order1 = orderRepository.findById(order.getId()).get();
         assertThat(order1.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 

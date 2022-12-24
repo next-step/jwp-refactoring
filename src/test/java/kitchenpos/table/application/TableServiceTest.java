@@ -1,17 +1,14 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.fixture.ProductFixture;
@@ -24,6 +21,7 @@ import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,14 +33,14 @@ import java.util.Collections;
 import static java.util.Collections.singletonList;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
 import static kitchenpos.common.fixture.NameFixture.nameMenuGroupA;
-import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
-import static kitchenpos.table.application.TableService.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.notEmptyOrderTable;
+import static kitchenpos.table.validator.TableValidator.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -71,6 +69,9 @@ class TableServiceTest extends ServiceTest {
     @Autowired
     private TableGroupRepository tableGroupRepository;
 
+    @Autowired
+    private TableValidator tableValidator;
+
     private MenuGroup menuGroupA;
     private OrderTable orderTableA;
     private OrderTable orderTableB;
@@ -82,12 +83,12 @@ class TableServiceTest extends ServiceTest {
         super.setUp();
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         Product product = productRepository.save(ProductFixture.productA());
-        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(product, new Quantity(1))))));
+        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(new MenuProduct(product.getId(), new Quantity(1))))));
         tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(changeEmptyOrder(), changeEmptyOrder()))));
         menuGroupA = menuGroupRepository.save(new MenuGroup(nameMenuGroupA()));
         orderTableA = orderTableRepository.save(notEmptyOrderTable());
         orderTableB = orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderTableRepository, tableValidator);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -145,7 +146,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_success() {
 
-        Orders order = new Orders(orderTableA, new OrderLineItems(Collections.singletonList(new OrderLineItem(null, menu.getId(), new Quantity(1)))));
+        Order order = new Order(orderTableA.getId(), new OrderLineItems(Collections.singletonList(new OrderLineItem(null, OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), new Quantity(1)))));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -156,7 +157,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void changeEmpty_fail_notTableGroup() {
 
-        Orders order = new Orders(orderTableB, orderLineItemsA());
+        Order order = new Order(orderTableB.getId(), orderLineItemsA(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice())));
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
@@ -168,7 +169,12 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("공석 상태로 변경한다. / 요리중일 경우 변경할 수 없다.")
     @Test
     void empty_fail_cooking() {
-        assertThatThrownBy(() -> tableService.changeEmpty(notEmptyOrder().getOrderTable().getId()))
+
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, initNumberOfGuests(), false));
+
+        notEmptyOrder(orderTable.getId());
+
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -177,11 +183,11 @@ class TableServiceTest extends ServiceTest {
     @Test
     void empty_fail_meal() {
 
-        Orders order = new Orders(orderTableA, orderLineItemsA());
+        Order order = new Order(orderTableA.getId(), orderLineItemsA(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice())));
         order.setOrderStatus(OrderStatus.MEAL);
         orderRepository.save(order);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(order.getOrderTable().getId()))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableA.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -197,9 +203,8 @@ class TableServiceTest extends ServiceTest {
         return orderTableRepository.save(orderTable1);
     }
 
-    private Orders notEmptyOrder() {
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, initNumberOfGuests(), false));
-        return orderRepository.save(new Orders(orderTable, orderLineItemsA()));
+    private Order notEmptyOrder(Long orderTableId) {
+        return orderRepository.save(new Order(orderTableId, orderLineItemsA(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()))));
     }
 
     private void 테이블_공석_상태_확인됨() {

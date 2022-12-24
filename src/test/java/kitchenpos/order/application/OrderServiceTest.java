@@ -1,17 +1,20 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -33,6 +36,7 @@ import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.menu.domain.fixture.MenuProductFixture.menuProductA;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE;
+import static kitchenpos.product.domain.fixture.ProductFixture.createProductA;
 import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.emptyOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,14 +65,19 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private MenuGroupRepository menuGroupRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     private OrderTable orderTableA;
-    private Menu menu;
+    private OrderMenu orderMenu;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
+        Product product = productRepository.save(createProductA());
         MenuGroup menuGroup = menuGroupRepository.save(menuGroupA());
-        menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(menuProductA()))));
+        Menu menu = menuRepository.save(new Menu(nameMenuA(), priceMenuA(), menuGroup, new MenuProducts(singletonList(menuProductA(product)))));
+        orderMenu = OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
         orderTableA = orderTableRepository.save(new OrderTable(tableGroup, initNumberOfGuests(), false));
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
@@ -127,14 +136,14 @@ class OrderServiceTest extends ServiceTest {
 
     private List<OrderLineItem> orderLineItemsA() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(null, menu.getId(), new Quantity(3)));
+        orderLineItems.add(new OrderLineItem(null, orderMenu, new Quantity(3)));
         return orderLineItems;
     }
 
     private List<OrderLineItem> notExistMenuOrderLineItem() {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(null, menu.getId(), new Quantity(3)));
-        orderLineItems.add(new OrderLineItem(null, 30L, new Quantity(3)));
+        orderLineItems.add(new OrderLineItem(null, orderMenu, new Quantity(3)));
+        orderLineItems.add(new OrderLineItem(null, OrderMenu.of(30L, orderMenu.getName(), orderMenu.getPrice()), new Quantity(3)));
         return orderLineItems;
     }
 }

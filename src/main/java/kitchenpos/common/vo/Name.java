@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.common.vo;
 
 import org.apache.logging.log4j.util.Strings;
 

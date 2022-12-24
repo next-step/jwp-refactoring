@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ class OrderLineItemTest {
         OrderLineItem orderLineItem = OrderLineItem();
 
         assertAll(
-                () -> assertThat(orderLineItem.getMenuId()).isNotNull(),
+                () -> assertThat(orderLineItem.getMenu().getMenuId()).isNotNull(),
                 () -> assertThat(orderLineItem.getQuantity()).isNotNull()
         );
     }

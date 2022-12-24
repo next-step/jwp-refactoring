@@ -1,6 +1,6 @@
 package kitchenpos.common.fixture;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.vo.Price;
 
 import java.math.BigDecimal;
 

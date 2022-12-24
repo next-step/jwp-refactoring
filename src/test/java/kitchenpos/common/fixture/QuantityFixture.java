@@ -1,6 +1,6 @@
 package kitchenpos.common.fixture;
 
-import kitchenpos.common.Quantity;
+import kitchenpos.common.vo.Quantity;
 
 public class QuantityFixture {
 

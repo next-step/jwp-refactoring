@@ -1,18 +1,15 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Name;
-import kitchenpos.common.Price;
+import kitchenpos.common.vo.Name;
+import kitchenpos.common.vo.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Menu {
     public static final String MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE = "메뉴 그룹이 없을 수 없습니다.";
     public static final String PRICE_NOT_NULL_EXCEPTION_MESSAGE = "가격은 필수입니다.";
-    public static final String MENU_PRICE_EXCEPTION_MESSAGE = "메뉴의 가격이 메뉴 상품의 합보다 클 수 없다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +40,6 @@ public class Menu {
         validateNullMenuGroup(menuGroup);
         validateNullPrice(price);
         validateEmptyMenuProducts(menuProducts);
-        validatePrice(price, menuProducts);
     }
 
     private static void validateNullName(Name name) {
@@ -70,25 +66,23 @@ public class Menu {
         }
     }
 
-    private static void validatePrice(Price price, MenuProducts menuProducts) {
-        if (price.getPrice().compareTo(menuProducts.sum()) > 0) {
-            throw new IllegalArgumentException(MENU_PRICE_EXCEPTION_MESSAGE);
-        }
+    public void validate(MenuValidator menuValidator) {
+        menuValidator.validate(this);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return this.name.getName();
+    public Name getName() {
+        return this.name;
     }
 
-    public BigDecimal getPrice() {
-        return this.price.getPrice();
+    public Price getPrice() {
+        return this.price;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return this.menuProducts.getMenuProducts();
+    public MenuProducts getMenuProducts() {
+        return this.menuProducts;
     }
 }

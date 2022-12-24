@@ -1,11 +1,12 @@
 package kitchenpos.common;
 
+import kitchenpos.common.vo.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static kitchenpos.common.Name.NAME_NOT_EMPTY_EXCEPTION_MESSAGE;
+import static kitchenpos.common.vo.Name.NAME_NOT_EMPTY_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

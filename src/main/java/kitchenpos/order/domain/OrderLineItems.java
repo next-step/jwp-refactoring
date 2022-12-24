@@ -24,6 +24,12 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
+    private static void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
+        }
+    }
+
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems;
     }
@@ -33,12 +39,12 @@ public class OrderLineItems {
     }
 
     public List<Long> getMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+        return this.orderLineItems.stream()
+                .map(orderLineItem -> orderLineItem.getMenu().getMenuId())
                 .collect(Collectors.toList());
     }
 
-    public void mapOrder(Orders order) {
+    public void mapOrder(Order order) {
         for (OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.setOrder(order);
         }
@@ -46,11 +52,5 @@ public class OrderLineItems {
 
     public boolean isEmpty() {
         return this.orderLineItems.isEmpty();
-    }
-
-    private static void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException(ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE);
-        }
     }
 }

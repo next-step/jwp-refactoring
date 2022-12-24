@@ -18,7 +18,15 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     private boolean empty;
 
+    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public OrderTable(TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
+        this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;

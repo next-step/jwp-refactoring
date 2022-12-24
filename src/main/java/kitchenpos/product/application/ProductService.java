@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -19,7 +21,8 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductCreateRequest request) {
-        return ProductResponse.of(productRepository.save(request.toProduct()));
+        Product product = productRepository.save(request.toProduct());
+        return ProductResponse.of(product);
     }
 
     public List<ProductResponse> list() {

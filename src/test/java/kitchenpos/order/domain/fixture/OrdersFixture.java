@@ -1,15 +1,13 @@
 package kitchenpos.order.domain.fixture;
 
-import kitchenpos.order.domain.Orders;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderMenu;
 
 import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
-import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.numberOfGuests;
 
 public class OrdersFixture {
 
-    public static Orders orderA() {
-        return new Orders(new OrderTable(new TableGroup(), numberOfGuests(), false), orderLineItemsA());
+    public static Order orderA(Long orderTableId, OrderMenu orderMenu) {
+        return new Order(orderTableId, orderLineItemsA(orderMenu));
     }
 }

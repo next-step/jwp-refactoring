@@ -3,7 +3,6 @@ package kitchenpos.table.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.order.domain.Orders.ORDER_TABLE_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTable.*;
 import static kitchenpos.table.domain.fixture.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;

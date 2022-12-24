@@ -1,20 +1,21 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
-import kitchenpos.menu.domain.fixture.MenuFixture;
+import kitchenpos.common.vo.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static java.util.Collections.singletonList;
+import static kitchenpos.common.vo.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.fixture.NameFixture.nameMenuA;
-import static kitchenpos.common.Price.PRICE_MINIMUM_EXCEPTION_MESSAGE;
 import static kitchenpos.common.fixture.PriceFixture.priceMenuA;
 import static kitchenpos.menu.domain.Menu.MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.menu.domain.Menu.PRICE_NOT_NULL_EXCEPTION_MESSAGE;
+import static kitchenpos.menu.domain.fixture.MenuFixture.menuA;
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static kitchenpos.menu.domain.fixture.MenuProductFixture.menuProductA;
+import static kitchenpos.product.domain.fixture.ProductFixture.productA;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -24,13 +25,13 @@ class MenuTest {
     @DisplayName("메뉴")
     @Test
     void constructor() {
-        assertThatNoException().isThrownBy(MenuFixture::menuA);
+        assertThatNoException().isThrownBy(() -> menuA(productA()));
     }
 
     @DisplayName("이름이 없을 수 없다.")
     @Test
     void name() {
-        assertThatThrownBy(() -> new Menu(null, priceMenuA(), menuGroupA(), new MenuProducts(singletonList(menuProductA()))))
+        assertThatThrownBy(() -> new Menu(null, priceMenuA(), menuGroupA(), new MenuProducts(singletonList(menuProductA(productA())))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

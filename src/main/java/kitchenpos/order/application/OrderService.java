@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class OrderService {
     public static final String COMPLETION_NOT_CHANGE_EXCEPTION_MESSAGE = "주문완료일 경우 주문상태를 변경할 수 없다.";
@@ -34,7 +35,8 @@ public class OrderService {
     public OrderResponse create(final OrderCreateRequest request) {
         final OrderLineItems orderLineItems = request.toOrderLineItems();
         validateOrderItems(orderLineItems);
-        return OrderResponse.of(orderRepository.save(new Orders(findOrderTable(request), request.toOrderLineItems())));
+        Order order = orderRepository.save(new Order(findOrderTable(request).getId(), request.toOrderLineItems()));
+        return OrderResponse.of(order);
     }
 
     public List<OrderResponse> list() {
@@ -46,7 +48,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
-        final Orders savedOrder = findOrder(orderId);
+        final Order savedOrder = findOrder(orderId);
         savedOrder.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }
@@ -62,7 +64,7 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private Orders findOrder(Long orderId) {
+    private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
     }

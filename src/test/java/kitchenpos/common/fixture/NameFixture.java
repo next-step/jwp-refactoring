@@ -1,6 +1,6 @@
 package kitchenpos.common.fixture;
 
-import kitchenpos.common.Name;
+import kitchenpos.common.vo.Name;
 
 public class NameFixture {
 
