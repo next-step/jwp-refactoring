@@ -1,34 +1,38 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.ServiceTest;
-import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.domain.fixture.MenuGroupFixture;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Collections;
 
 import static kitchenpos.common.fixture.NameFixture.MENU_GROUP_A_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @DisplayName("MenuGroupServiceTest")
-class MenuGroupServiceTest extends ServiceTest {
+@ExtendWith(MockitoExtension.class)
+class MenuGroupServiceTest {
 
-    @Autowired
+    @InjectMocks
     private MenuGroupService menuGroupService;
 
-    @Autowired
+    @Mock
     private MenuGroupRepository menuGroupRepository;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        menuGroupService = new MenuGroupService(menuGroupRepository);
-    }
 
     @DisplayName("메뉴 그룹 생성")
     @Test
     void create() {
+
+        given(menuGroupRepository.save(any())).willReturn(MenuGroupFixture.menuGroupA());
+
         assertThat(menuGroupService.create(new MenuGroupCreateRequest(MENU_GROUP_A_NAME)).getName())
                 .isEqualTo(MENU_GROUP_A_NAME);
     }
@@ -36,7 +40,9 @@ class MenuGroupServiceTest extends ServiceTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void name() {
-        menuGroupService.create(new MenuGroupCreateRequest(MENU_GROUP_A_NAME));
+
+        given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(MenuGroupFixture.menuGroupA()));
+
         assertThat(menuGroupService.list()).hasSize(1);
     }
 }
