@@ -24,16 +24,23 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation project(':kitchenpos-menugroup')
+    implementation project(':kitchenpos-product')
+
+    testImplementation(testFixtures(project(':kitchenpos-product')))
 }
 
 test {
     useJUnitPlatform()
+    subprojects.each {
+        dependsOn("${it.name}:test")
+    }
 }
 
 subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
+    apply plugin: 'java-test-fixtures'
 
     group = 'camp.nextstep.edu'
     version = '0.0.1-SNAPSHOT'

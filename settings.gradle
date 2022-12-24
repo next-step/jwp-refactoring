@@ -1,4 +1,4 @@
 rootProject.name = 'kitchenpos'
 
 include 'kitchenpos-menugroup'
-
+include 'kitchenpos-product'
