@@ -66,4 +66,7 @@ public class TableService {
 			.orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블 id(%d)를 찾을 수 없습니다.", orderTableId)));
 	}
 
+	public OrderTableResponse getTable(Long orderTableId) {
+		return OrderTableResponse.from(orderTableRepository.orderTable(orderTableId));
+	}
 }

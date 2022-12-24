@@ -55,4 +55,10 @@ public class TableRestController {
         return ResponseEntity.ok()
                 .body(tableService.changeNumberOfGuests(orderTableId, request));
     }
+
+    @GetMapping("/api/tables/{orderTableId}")
+    public ResponseEntity<OrderTableResponse> getTable(@PathVariable final Long orderTableId) {
+        return ResponseEntity.ok()
+                .body(tableService.getTable(orderTableId));
+    }
 }

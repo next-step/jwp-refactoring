@@ -13,7 +13,7 @@ public interface TableClient {
 	@PostMapping("/api/tables/ungroup/{orderTableId}")
 	void ungroup(@PathVariable long orderTableId);
 
-	@PostMapping("/api/tables/empty/{orderTableId}")
+	@PostMapping("/api/tables/{orderTableId}/empty")
 	void changeEmpty(@PathVariable("orderTableId") long orderTableId);
 
 	@GetMapping("/api/table/{orderTableId}")
