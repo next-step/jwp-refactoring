@@ -2,10 +2,10 @@ package kitchenpos.order.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "orders")
 public class Order {
 
     private static final String ORDER_ALREADY_COMPLETED_EXCEPTION = "해당 주문은 이미 완료되었습니다.";
@@ -57,5 +57,8 @@ public class Order {
 
     public Long getOrderTableId() {
         return orderTableId;
+    }
+
+    public void checkCookingOrMealing() {
     }
 }

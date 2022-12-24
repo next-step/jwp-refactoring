@@ -26,9 +26,9 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public List<OrderLineItemResponse> getOrderLineItemResponses() {
-        return orderLineItems.stream()
-                .map(OrderLineItemResponse::of)
-                .collect(Collectors.toList());
-    }
+//    public List<OrderLineItemResponse> getOrderLineItemResponses() {
+//        return orderLineItems.stream()
+//                .map(OrderLineItemResponse::of)
+//                .collect(Collectors.toList());
+//    }
 }

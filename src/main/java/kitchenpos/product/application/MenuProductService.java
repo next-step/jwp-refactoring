@@ -24,21 +24,18 @@ public class MenuProductService {
 
     @Transactional
     public List<MenuProductResponse> createAll(List<MenuProductRequest> menuProductRequests, Long menuId, int menuPrice) {
+        System.out.println("TEST");
         List<MenuProduct> menuProductList = menuProductRequests.stream()
                 .map(menuProductRequest -> generateMenuProduct(menuProductRequest, menuId))
                 .collect(Collectors.toList());
 
         MenuProducts menuProducts = new MenuProducts(menuProductList);
         menuProducts.validateMenuPrice(new BigDecimal(menuPrice));
+        MenuProducts savedMenuProducts = new MenuProducts(menuProductRepository.saveAll(menuProductList));
 
-        menuProductRepository.saveAll(menuProductList);
+        System.out.println("DEBUG!!!!");
 
-        return menuProducts.getMenuProductResponses();
-    }
-
-    public MenuProduct generateMenuProduct(final MenuProductRequest menuProductRequest, Long menuId) {
-        Product product = findProductById(menuProductRequest.getProductId());
-        return new MenuProduct(menuId, product, menuProductRequest.getQuantity());
+        return savedMenuProducts.getMenuProducts().stream().map(MenuProductResponse::of).collect(Collectors.toList());
     }
 
     public List<MenuProductResponse> findMenuProductsByMenuId(Long menuId) {
@@ -46,6 +43,11 @@ public class MenuProductService {
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList())
                 ;
+    }
+
+    private MenuProduct generateMenuProduct(final MenuProductRequest menuProductRequest, Long menuId) {
+        Product product = findProductById(menuProductRequest.getProductId());
+        return new MenuProduct(menuId, product, menuProductRequest.getQuantity());
     }
 
     private Product findProductById(Long productId) {

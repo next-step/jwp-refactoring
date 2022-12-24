@@ -1,10 +1,7 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.product.dto.MenuProductResponse;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuProducts {
     private static final String INVALID_PRICE = "메뉴 가격은 구성 메뉴 단품 가격의 합보다 클 수 없습니다.";
@@ -34,9 +31,4 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public List<MenuProductResponse> getMenuProductResponses() {
-        return menuProducts.stream()
-                .map(MenuProductResponse::of)
-                .collect(Collectors.toList());
-    }
 }

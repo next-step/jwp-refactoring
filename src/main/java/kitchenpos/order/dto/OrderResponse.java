@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderLineItems;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderResponse {
     private Long id;
@@ -27,7 +28,10 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order, OrderLineItems orderLineItems) {
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItems.getOrderLineItemResponses());
+        List<OrderLineItemResponse> orderLineItemResponses = orderLineItems.getOrderLineItems().stream()
+                .map(OrderLineItemResponse::of)
+                .collect(Collectors.toList());
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemResponses);
     }
 
     public Long getId() {
