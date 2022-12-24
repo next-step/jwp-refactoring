@@ -1,7 +1,7 @@
-package kitchenpos.generator;
+package kitchenpos.order.generator.generator;
 
-import static kitchenpos.generator.OrderLineItemGenerator.*;
 import static kitchenpos.generator.OrderTableGenerator.*;
+import static kitchenpos.order.generator.generator.OrderLineItemGenerator.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Collections;

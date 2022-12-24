@@ -1,7 +1,8 @@
-package kitchenpos.generator;
+package kitchenpos.order.generator.generator;
 
 import static org.mockito.BDDMockito.*;
 
+import kitchenpos.generator.MenuGenerator;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemGenerator {
