@@ -45,8 +45,8 @@ class TableGroupServiceTest {
     @Test
     void create() {
 
-        given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(OrderTableFixture.orderTableA(null, true), OrderTableFixture.orderTableA(null, true)));
-        given(tableGroupRepository.save(any())).willReturn(tableGroupA());
+        BDDMockito.given(orderTableRepository.findAllById(ArgumentMatchers.any())).willReturn(Arrays.asList(OrderTableFixture.orderTableA(null, true), OrderTableFixture.orderTableA(null, true)));
+        BDDMockito.given(tableGroupRepository.save(ArgumentMatchers.any())).willReturn(TableGroupFixture.tableGroupA());
 
         TableGroupResponse saveTableGroup = tableGroupService.create(new CreateTableGroupRequest(Arrays.asList(1L, 2L)));
         assertThat(saveTableGroup.getCreatedDate()).isNotNull();
@@ -56,9 +56,9 @@ class TableGroupServiceTest {
     @Test
     void create_fail_minimumSize() {
 
-        given(orderTableRepository.findAllById(any())).willReturn(Collections.singletonList(OrderTableFixture.orderTableA(null, true)));
+        BDDMockito.given(orderTableRepository.findAllById(ArgumentMatchers.any())).willReturn(Collections.singletonList(OrderTableFixture.orderTableA(null, true)));
 
-        assertThatThrownBy(() -> {
+        Assertions.assertThatThrownBy(() -> {
             tableGroupService.create(new CreateTableGroupRequest(Collections.singletonList(1L)));
         })
                 .isInstanceOf(IllegalArgumentException.class)
@@ -78,12 +78,12 @@ class TableGroupServiceTest {
     @Test
     void unGroup_fail_cooking() {
 
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroupA()));
+        BDDMockito.given(tableGroupRepository.findById(ArgumentMatchers.any())).willReturn(Optional.of(TableGroupFixture.tableGroupA()));
 
 //        doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
 //                .when(tableGroupOrderValidator).validateComplete(any());
 
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }
@@ -92,7 +92,7 @@ class TableGroupServiceTest {
     @Test
     void unGroup_fail_meal() {
 
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+        Assertions.assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_EXCEPTION_MESSAGE);
     }

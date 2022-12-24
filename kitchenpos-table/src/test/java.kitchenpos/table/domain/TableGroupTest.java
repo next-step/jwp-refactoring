@@ -19,7 +19,7 @@ class TableGroupTest {
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(() -> new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
+        Assertions.assertThatNoException().isThrownBy(() -> new TableGroup(new OrderTables(Arrays.asList(emptyOrderTable(), emptyOrderTable()))));
     }
 
     @DisplayName("주문 테이블의 갯수가 2보다 작을 수 없다.")
@@ -27,7 +27,7 @@ class TableGroupTest {
     void name() {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(null, initNumberOfGuests(), true));
-        assertThatThrownBy(() -> new TableGroup(new OrderTables(orderTables)))
+        Assertions.assertThatThrownBy(() -> new TableGroup(new OrderTables(orderTables)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }

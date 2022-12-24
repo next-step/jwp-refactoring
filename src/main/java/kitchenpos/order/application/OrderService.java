@@ -7,8 +7,6 @@ import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,20 +21,23 @@ public class OrderService {
     public static final String ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE = "주문 항목의 수와 메뉴의 수는 같아야 한다.";
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
+//    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository, final OrderValidator orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderCreateRequest request) {
         final OrderLineItems orderLineItems = request.toOrderLineItems();
+        Order createOrder = new Order(request.getOrderTableId(), request.toOrderLineItems());
+        createOrder.validate(orderValidator);
         validateOrderItems(orderLineItems);
-        Order order = orderRepository.save(new Order(findOrderTable(request).getId(), request.toOrderLineItems()));
-        return OrderResponse.of(order);
+        Order savedOrder = orderRepository.save(createOrder);
+        return OrderResponse.of(savedOrder);
     }
 
     public List<OrderResponse> list() {
@@ -58,11 +59,11 @@ public class OrderService {
             throw new IllegalArgumentException(ORDER_LINE_ITEMS_SIZE_MENU_SIZE_NOT_EQUAL_EXCEPTION_MESSAGE);
         }
     }
-
-    private OrderTable findOrderTable(OrderCreateRequest request) {
-        return orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-    }
+//
+//    private OrderTable findOrderTable(Long orderTableId) {
+//        return orderTableRepository.findById(orderTableId)
+//                .orElseThrow(IllegalArgumentException::new);
+//    }
 
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)

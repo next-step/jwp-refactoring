@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.fixture.TableGroupFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +17,13 @@ class OrderTablesTest {
     @DisplayName("주문 테이블 일급 콜렉션을 생성한다.")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(OrderTables::new);
+        Assertions.assertThatNoException().isThrownBy(OrderTables::new);
     }
 
     @DisplayName("주문 테이블들이 empty 일 수 없다.")
     @Test
     void create_notEmpty() {
-        assertThatThrownBy(() -> new OrderTables(Arrays.asList(notEmptyOrderTable(), emptyOrderTable())))
+        Assertions.assertThatThrownBy(() -> new OrderTables(Arrays.asList(notEmptyOrderTable(), emptyOrderTable())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_EMPTY_EXCEPTION_MESSAGE);
     }
@@ -32,7 +31,7 @@ class OrderTablesTest {
     @DisplayName("주문 테이블의 갯수가 2보다 작을 수 없다.")
     @Test
     void create_orderTableMinimumSize() {
-        assertThatThrownBy(() -> new OrderTables(Collections.singletonList(emptyOrderTable())))
+        Assertions.assertThatThrownBy(() -> new OrderTables(Collections.singletonList(emptyOrderTable())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
@@ -40,7 +39,7 @@ class OrderTablesTest {
     @DisplayName("주문 테이블의 상태가 empty 가 아니면 안된다.")
     @Test
     void create_empty() {
-        assertThatThrownBy(() -> new OrderTables(Arrays.asList(notEmptyOrderTable(), notEmptyOrderTable())))
+        Assertions.assertThatThrownBy(() -> new OrderTables(Arrays.asList(notEmptyOrderTable(), notEmptyOrderTable())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_TABLE_EMPTY_EXCEPTION_MESSAGE);
     }

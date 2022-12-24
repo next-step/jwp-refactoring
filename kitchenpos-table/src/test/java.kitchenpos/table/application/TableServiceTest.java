@@ -46,11 +46,11 @@ class TableServiceTest {
     @Test
     void create() {
 
-        given(orderTableRepository.save(any())).willReturn(new OrderTable(null, new NumberOfGuests(0), false));
+        BDDMockito.given(orderTableRepository.save(ArgumentMatchers.any())).willReturn(new OrderTable(null, new NumberOfGuests(0), false));
 
         OrderTableResponse orderTable = tableService.create(new OrderTable(null, initNumberOfGuests(), false));
 
-        assertAll(
+        Assertions.assertAll(
                 () -> assertThat(orderTable.getTableGroup()).isNull(),
                 () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(0)),
                 () -> assertThat(orderTable.isEmpty()).isFalse()
@@ -61,7 +61,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_success() {
 
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(1);
 
         assertThat(tableService.changeNumberOfGuests(1L, changeNumberOfGuestsRequest).getNumberOfGuests()).isEqualTo(new NumberOfGuests(1));
@@ -71,10 +71,10 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_fail_minimum() {
 
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(-1);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeNumberOfGuestsRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, changeNumberOfGuestsRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE);
     }
@@ -85,7 +85,7 @@ class TableServiceTest {
 
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(1);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(100L, changeNumberOfGuestsRequest))
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(100L, changeNumberOfGuestsRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -93,16 +93,16 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuest_fail_notEmptyTable() {
 
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(null, new NumberOfGuests(0), true)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(null, new NumberOfGuests(0), true)));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new ChangeNumberOfGuestsRequest(1)))
+        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new ChangeNumberOfGuestsRequest(1)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("공석 상태로 변경한다.")
     @Test
     void empty_success() {
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
         assertThat(tableService.changeEmpty(1L).isEmpty()).isTrue();
     }
 
@@ -110,9 +110,9 @@ class TableServiceTest {
     @Test
     void changeEmpty_fail_notTableGroup() {
 
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(TableGroupFixture.tableGroupA(), new NumberOfGuests(0), true)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(TableGroupFixture.tableGroupA(), new NumberOfGuests(0), true)));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -121,12 +121,12 @@ class TableServiceTest {
     @Test
     void empty_fail_cooking() {
 
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
 
-        doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
-                .when(tableValidator).validateNotComplete(any());
+        Mockito.doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
+                .when(tableValidator).validateNotComplete(ArgumentMatchers.any());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -135,12 +135,12 @@ class TableServiceTest {
     @Test
     void empty_fail_meal() {
 
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
 
-        doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
-                .when(tableValidator).validateNotComplete(any());
+        Mockito.doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
+                .when(tableValidator).validateNotComplete(ArgumentMatchers.any());
 
-        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
     }
@@ -149,7 +149,7 @@ class TableServiceTest {
     @Test
     void list() {
 
-        given(orderTableRepository.findAll()).willReturn(Arrays.asList(OrderTableFixture.orderTableA(null, true), OrderTableFixture.orderTableA(null, true)));
+        BDDMockito.given(orderTableRepository.findAll()).willReturn(Arrays.asList(OrderTableFixture.orderTableA(null, true), OrderTableFixture.orderTableA(null, true)));
 
         assertThat(tableService.list()).hasSize(2);
     }
