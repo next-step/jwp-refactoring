@@ -47,3 +47,10 @@ project(':kitchenpos-common') {
     dependencies {
     }
 }
+
+project(':kitchenpos-product') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        testCompile project(':kitchenpos-common').sourceSets.test.output
+    }
+}
