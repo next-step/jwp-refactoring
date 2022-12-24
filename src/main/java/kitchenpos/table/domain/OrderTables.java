@@ -32,6 +32,8 @@ public class OrderTables {
         if (CollectionUtils.isEmpty(target)) {
             throw new IllegalArgumentException();
         }
+
+        TableGroupCreateValidator.validateOrderTableMinSize(target);
     }
 
     public void addOrderTable(TableGroup tableGroup, OrderTable orderTable) {

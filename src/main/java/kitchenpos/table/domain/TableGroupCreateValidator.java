@@ -21,7 +21,7 @@ public class TableGroupCreateValidator {
         }
     }
 
-    private static void validateOrderTableMinSize(List<OrderTable> orderTables) {
+    public static void validateOrderTableMinSize(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN) {
             throw new IllegalArgumentException("주문 테이블이 존재하지 않거나 부족합니다.");
         }
