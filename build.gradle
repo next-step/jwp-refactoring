@@ -25,8 +25,10 @@ dependencies {
 
     implementation project(':kitchenpos-menugroup')
     implementation project(':kitchenpos-product')
+    implementation project(':kitchenpos-menu')
 
     testImplementation(testFixtures(project(':kitchenpos-product')))
+    testImplementation(testFixtures(project(':kitchenpos-menu')))
 }
 
 test {
@@ -48,6 +50,13 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 
     test {

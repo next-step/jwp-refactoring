@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':kitchenpos-menugroup')
+    implementation project(':kitchenpos-product')
+
+    testImplementation(testFixtures(project(':kitchenpos-product')))
+}

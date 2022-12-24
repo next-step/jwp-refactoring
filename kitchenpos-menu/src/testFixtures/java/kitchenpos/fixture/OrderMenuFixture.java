@@ -1,6 +1,8 @@
-package kitchenpos.menu.domain;
+package kitchenpos.fixture;
 
 import java.math.BigDecimal;
+
+import kitchenpos.menu.domain.OrderMenu;
 
 public class OrderMenuFixture {
     private OrderMenuFixture() {

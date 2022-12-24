@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.menu.domain.MenuFixture.*;
-import static kitchenpos.menu.domain.OrderMenuFixture.*;
+import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.OrderMenuFixture.*;
 import static kitchenpos.order.domain.OrderLineItemFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.fixture.MenuProductFixture.*;
 import static kitchenpos.fixture.ProductFixture.*;
-import static kitchenpos.menu.domain.MenuProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.*;
 import static org.mockito.BDDMockito.*;
@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.fixture.ProductFixture;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;

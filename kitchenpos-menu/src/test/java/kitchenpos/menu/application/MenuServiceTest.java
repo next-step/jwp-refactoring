@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.menu.domain.MenuFixture.*;
-import static kitchenpos.menu.domain.MenuProductFixture.*;
+import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.MenuProductFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
