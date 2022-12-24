@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.domain.fixture.OrderLineItemFixture;
 import kitchenpos.order.domain.fixture.OrderLineItemsFixture;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,6 @@ import java.util.Collections;
 
 import static kitchenpos.order.application.OrderService.ORDER_LINE_ITEMS_EMPTY_EXCEPTION_MESSAGE;
 import static kitchenpos.order.domain.fixture.OrderFixture.orderA;
-import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineItemsA;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("주문 항목 일급 콜렉션")
@@ -53,12 +51,6 @@ class OrderLineItemsTest {
         for (OrderLineItem orderLineItem : orderLineItems.getOrderLineItems()) {
             assertThat(orderLineItem.getOrder()).isEqualTo(order);
         }
-    }
-
-    @DisplayName("주문 항목의 empty 여부를 반환한다. / true")
-    @Test
-    void isEmpty_true() {
-        Assertions.assertThat(orderLineItemsA()).isEmpty();
     }
 
     @DisplayName("주문 항목의 empty 여부를 반환한다. / false")

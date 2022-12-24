@@ -8,6 +8,6 @@ import static kitchenpos.order.domain.fixture.OrderLineItemsFixture.orderLineIte
 public class OrderFixture {
 
     public static Order orderA(Long orderTableId) {
-        return new Order(orderTableId, new OrderLineItems(orderLineItemsA()));
+        return new Order(1L, orderTableId, new OrderLineItems(orderLineItemsA()));
     }
 }

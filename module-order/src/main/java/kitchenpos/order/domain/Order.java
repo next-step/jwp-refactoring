@@ -34,6 +34,17 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
+
+    public Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+        validate(orderTableId, orderLineItems);
+        this.orderTableId = orderTableId;
+        orderLineItems.mapOrder(this);
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
