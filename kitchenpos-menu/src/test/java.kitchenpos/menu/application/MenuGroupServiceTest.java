@@ -31,17 +31,17 @@ class MenuGroupServiceTest {
     @Test
     void create() {
 
-        given(menuGroupRepository.save(any())).willReturn(MenuGroupFixture.menuGroupA());
+        BDDMockito.given(menuGroupRepository.save(ArgumentMatchers.any())).willReturn(MenuGroupFixture.menuGroupA());
 
         assertThat(menuGroupService.create(new MenuGroupCreateRequest(MenuGroupFixture.menuGroupA().getName())).getName())
-                .isEqualTo(MENU_GROUP_A_NAME);
+                .isEqualTo(NameFixture.MENU_GROUP_A_NAME);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void name() {
 
-        given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(MenuGroupFixture.menuGroupA()));
+        BDDMockito.given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(MenuGroupFixture.menuGroupA()));
 
         assertThat(menuGroupService.list()).hasSize(1);
     }

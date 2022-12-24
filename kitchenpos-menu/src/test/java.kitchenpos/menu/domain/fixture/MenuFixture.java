@@ -12,6 +12,6 @@ import static kitchenpos.menu.domain.fixture.MenuProductFixture.menuProductA;
 public class MenuFixture {
 
     public static Menu menuA(Long productId) {
-        return new Menu(nameMenuA(), priceMenuA(), menuGroupA(), new MenuProducts(singletonList(menuProductA(productId))));
+        return new Menu(NameFixture.nameMenuA(), PriceFixture.priceMenuA(), menuGroupA(), new MenuProducts(Collections.singletonList(MenuProductFixture.menuProductA(productId))));
     }
 }

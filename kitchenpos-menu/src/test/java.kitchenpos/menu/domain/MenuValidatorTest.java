@@ -29,13 +29,13 @@ class MenuValidatorTest {
     @DisplayName("메뉴 상품 합 검증 성공")
     @Test
     void validate_success() {
-        assertThatNoException().isThrownBy(() -> MenuFixture.menuA(1L).validate(menuValidator));
+        Assertions.assertThatNoException().isThrownBy(() -> MenuFixture.menuA(1L).validate(menuValidator));
     }
 
     @DisplayName("메뉴 상품 합 검증 실패")
     @Test
     void validate_fail() {
-        assertThatThrownBy(() -> MenuFixture.menuA(1L).validate(menuValidator))
+        Assertions.assertThatThrownBy(() -> MenuFixture.menuA(1L).validate(menuValidator))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

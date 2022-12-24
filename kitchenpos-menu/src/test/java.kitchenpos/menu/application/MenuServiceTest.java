@@ -52,7 +52,7 @@ class MenuServiceTest {
     @ParameterizedTest
     @NullSource
     void create_fail_MenuGroupNull(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "A")))
+        Assertions.assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "A")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -61,16 +61,16 @@ class MenuServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"-1"})
     void create_fail_minimumPrice(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "A")))
+        Assertions.assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "A")))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
+                .hasMessageContaining(Price.PRICE_MINIMUM_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("메뉴 그룹이 없을 경우 메뉴를 생성할 수 없다.")
     @ParameterizedTest
     @ValueSource(strings = {"1"})
     void create_fail_menuGroup(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), null, price, "menuA")))
+        Assertions.assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), null, price, "menuA")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_GROUP_NOT_EXIST_EXCEPTION_MESSAGE);
     }
@@ -79,7 +79,7 @@ class MenuServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"3"})
     void create_fail_priceSum(BigDecimal price) {
-        assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "menuA")))
+        Assertions.assertThatThrownBy(() -> menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, "menuA")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_PRICE_EXCEPTION_MESSAGE);
     }
@@ -89,11 +89,11 @@ class MenuServiceTest {
     @ValueSource(strings = {"1, A"})
     void create_success(BigDecimal price, String name) {
 
-        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(MenuGroupFixture.menuGroupA()));
+        BDDMockito.given(menuGroupRepository.findById(1L)).willReturn(Optional.of(MenuGroupFixture.menuGroupA()));
 
         MenuResponse response = menuService.create(new MenuCreateRequest(MenuProductsFixture.menuProducts(1L), 1L, price, name));
 
-        assertAll(
+        Assertions.assertAll(
                 () -> assertThat(response.getId()).isNotNull(),
                 () -> assertThat(response.getName()).isEqualTo(name),
                 () -> assertEquals(0, response.getPrice().compareTo(price)),
@@ -104,7 +104,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() {
-        given(menuRepository.findAll()).willReturn(Collections.singletonList(menuA(1L)));
+        BDDMockito.given(menuRepository.findAll()).willReturn(Collections.singletonList(menuA(1L)));
         assertThat(menuService.list()).hasSize(1);
     }
 }

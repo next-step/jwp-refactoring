@@ -13,13 +13,13 @@ class MenuGroupTest {
     @DisplayName("메뉴 그룹 생성")
     @Test
     void constructor() {
-        assertThatNoException().isThrownBy(() -> new MenuGroup(nameMenuGroupA()));
+        Assertions.assertThatNoException().isThrownBy(() -> new MenuGroup(NameFixture.nameMenuGroupA()));
     }
 
     @DisplayName("메뉴 그룹 생성 / 이름이 없을 수 없다.")
     @Test
     void name() {
-        assertThatThrownBy(() -> new MenuGroup(null))
+        Assertions.assertThatThrownBy(() -> new MenuGroup(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

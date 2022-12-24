@@ -24,20 +24,20 @@ class MenuTest {
     @DisplayName("메뉴")
     @Test
     void constructor() {
-        assertThatNoException().isThrownBy(() -> menuA(1L));
+        Assertions.assertThatNoException().isThrownBy(() -> MenuFixture.menuA(1L));
     }
 
     @DisplayName("이름이 없을 수 없다.")
     @Test
     void name() {
-        assertThatThrownBy(() -> new Menu(null, priceMenuA(), menuGroupA(), new MenuProducts(singletonList(menuProductA(1L)))))
+        Assertions.assertThatThrownBy(() -> new Menu(null, PriceFixture.priceMenuA(), MenuGroupFixture.menuGroupA(), new MenuProducts(Collections.singletonList(MenuProductFixture.menuProductA(1L)))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 그룹이 없을 경우 메뉴를 생성할 수 없다.")
     @Test
     void constructor_fail_menuGroup() {
-        assertThatThrownBy(() -> new Menu(nameMenuA(), priceMenuA(), null, null))
+        Assertions.assertThatThrownBy(() -> new Menu(NameFixture.nameMenuA(), PriceFixture.priceMenuA(), null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(MENU_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -45,7 +45,7 @@ class MenuTest {
     @DisplayName("가격이 없을 경우 메뉴를 생성할 수 없다.")
     @Test
     void constructor_fail_price() {
-        assertThatThrownBy(() -> new Menu(nameMenuA(), null, menuGroupA(), null))
+        Assertions.assertThatThrownBy(() -> new Menu(NameFixture.nameMenuA(), null, MenuGroupFixture.menuGroupA(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRICE_NOT_NULL_EXCEPTION_MESSAGE);
     }
@@ -53,8 +53,8 @@ class MenuTest {
     @DisplayName("가격이 0원보다 작을 경우 메뉴를 생성할 수 없다.")
     @Test
     void constructor_fail_price_negative() {
-        assertThatThrownBy(() -> new Menu(nameMenuA(), new Price(BigDecimal.valueOf(-1)), menuGroupA(), null))
+        Assertions.assertThatThrownBy(() -> new Menu(NameFixture.nameMenuA(), new Price(BigDecimal.valueOf(-1)), MenuGroupFixture.menuGroupA(), null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(PRICE_MINIMUM_EXCEPTION_MESSAGE);
+                .hasMessageContaining(Price.PRICE_MINIMUM_EXCEPTION_MESSAGE);
     }
 }

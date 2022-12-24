@@ -16,13 +16,13 @@ class MenuProductsTest {
     @DisplayName("메뉴 상품 일급 콜렉션을 생성한다.")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(MenuProducts::new);
+        Assertions.assertThatNoException().isThrownBy(MenuProducts::new);
     }
 
     @DisplayName("메뉴 상품 일급 콜렉션의 empty 여부를 반환한다. / false")
     @Test
     void isEmpty_false() {
-        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(menuProductA(1L)));
+        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(MenuProductFixture.menuProductA(1L)));
         assertThat(menuProducts.isEmpty()).isFalse();
     }
 
@@ -36,7 +36,7 @@ class MenuProductsTest {
     @DisplayName("메뉴와 매핑한다.")
     @Test
     void mapMenu() {
-        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(menuProductA(1L)));
+        MenuProducts menuProducts = new MenuProducts(Collections.singletonList(MenuProductFixture.menuProductA(1L)));
         menuProducts.mapMenu(MenuFixture.menuA(1L));
         for (MenuProduct menuProduct : menuProducts.getMenuProducts()) {
             assertThat(menuProduct.getMenu()).isNotNull();

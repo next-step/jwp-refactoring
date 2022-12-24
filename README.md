@@ -211,5 +211,5 @@
     - ProductServiceTest [x]
 - kitchenpos-product [ ]
 - kitchenpos-order [ ]
-- kitchenpos-menu [ ]
+- kitchenpos-menu [x]
 - kitchenpos-table [x]

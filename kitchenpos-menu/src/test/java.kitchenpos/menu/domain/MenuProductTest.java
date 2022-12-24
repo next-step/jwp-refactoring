@@ -17,13 +17,13 @@ class MenuProductTest {
     @DisplayName("메뉴 상품을 생성한다.")
     @Test
     void create() {
-        assertThatNoException().isThrownBy(() -> menuProductA(1L));
+        Assertions.assertThatNoException().isThrownBy(() -> MenuProductFixture.menuProductA(1L));
     }
 
     @DisplayName("메뉴 상품을 생성한다. / 상품을 필수로 갖는다.")
     @Test
     void create_fail_product() {
-        assertThatThrownBy(() -> new MenuProduct(null, quantityMenuProductA()))
+        Assertions.assertThatThrownBy(() -> new MenuProduct(null, QuantityFixture.quantityMenuProductA()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PRODUCT_NULL_EXCEPTION_MESSAGE);
     }
@@ -31,7 +31,7 @@ class MenuProductTest {
     @DisplayName("메뉴 상품을 생성한다. / 갯수를 필수로 갖는다.")
     @Test
     void create_fail_quantity() {
-        assertThatThrownBy(() -> new MenuProduct(productA().getId(), null))
+        Assertions.assertThatThrownBy(() -> new MenuProduct(ProductFixture.productA().getId(), null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(QUANTITY_NULL_EXCEPTION_MESSAGE);
     }
