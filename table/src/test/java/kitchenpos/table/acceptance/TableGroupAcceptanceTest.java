@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
-import static kitchenpos.acceptance.utils.TableAcceptanceUtils.*;
-import static kitchenpos.acceptance.utils.TableGroupAcceptanceUtils.*;
+import static kitchenpos.table.acceptance.utils.TableAcceptanceUtils.*;
+import static kitchenpos.table.acceptance.utils.TableGroupAcceptanceUtils.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.table.ui.response.OrderTableResponse;
-import kitchenpos.table.ui.response.TableGroupResponse;
+import kitchenpos.table.table.ui.response.OrderTableResponse;
+import kitchenpos.table.table.ui.response.TableGroupResponse;
 
 @DisplayName("단체 지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {

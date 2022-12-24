@@ -1,6 +1,6 @@
-package kitchenpos.acceptance.utils;
+package kitchenpos.table.acceptance.utils;
 
-import static kitchenpos.acceptance.utils.RestAssuredUtils.*;
+import static kitchenpos.table.acceptance.utils.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,9 +14,10 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.table.ui.request.TableGroupRequest;
-import kitchenpos.table.ui.response.OrderTableResponse;
-import kitchenpos.table.ui.response.TableGroupResponse;
+import kitchenpos.table.table.ui.request.TableGroupRequest;
+import kitchenpos.table.table.ui.request.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.table.ui.response.OrderTableResponse;
+import kitchenpos.table.table.ui.response.TableGroupResponse;
 
 public class TableGroupAcceptanceUtils {
 

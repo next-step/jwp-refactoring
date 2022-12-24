@@ -1,14 +1,14 @@
 package kitchenpos.table.domain;
 
-import static kitchenpos.generator.OrderTableGenerator.*;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.*;
-
 import java.util.Arrays;
 import java.util.Collections;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import kitchenpos.generator.OrderTableGenerator;
+import kitchenpos.table.table.domain.OrderTables;
 
 @DisplayName("주문 테이블 목록 테스트")
 class OrderTablesTest {
@@ -18,7 +18,7 @@ class OrderTablesTest {
 	void createOrderTablesTest() {
 		Assertions.assertThatNoException()
 			.isThrownBy(() -> OrderTables.from(
-				Collections.singletonList(비어있지_않은_5명_테이블())
+				Collections.singletonList(OrderTableGenerator.비어있지_않은_5명_테이블())
 			));
 	}
 
@@ -46,7 +46,7 @@ class OrderTablesTest {
 	@DisplayName("그룹이 없고 빈 상태 체크 - true")
 	void isEmptyAndNotGroupTest() {
 		OrderTables orderTables = OrderTables.from(
-			Collections.singletonList(비어있는_다섯명_테이블())
+			Collections.singletonList(OrderTableGenerator.비어있는_다섯명_테이블())
 		);
 
 		assertThat(orderTables.emptyAndNoGroup()).isTrue();
@@ -56,7 +56,7 @@ class OrderTablesTest {
 	@DisplayName("그룹이 있고 빈 상태 체크 - false")
 	void isEmptyAndGroupTest() {
 		OrderTables orderTables = OrderTables.from(
-			Collections.singletonList(비어있지_않은_5명_테이블())
+			Collections.singletonList(OrderTableGenerator.비어있지_않은_5명_테이블())
 		);
 
 		assertThat(orderTables.emptyAndNoGroup()).isFalse();
@@ -66,7 +66,7 @@ class OrderTablesTest {
 	@DisplayName("그룹 해제 가능")
 	void ungroupTest() {
 		OrderTables orderTables = OrderTables.from(
-			Arrays.asList(비어있지_않은_5명_테이블(), 비어있지_않은_2명_테이블())
+			Arrays.asList(OrderTableGenerator.비어있지_않은_5명_테이블(), OrderTableGenerator.비어있지_않은_2명_테이블())
 		);
 
 		orderTables.ungroup();

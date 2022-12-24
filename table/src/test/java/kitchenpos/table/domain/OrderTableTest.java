@@ -1,13 +1,15 @@
 package kitchenpos.table.domain;
 
-import static kitchenpos.generator.TableGroupGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import kitchenpos.generator.TableGroupGenerator;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.table.domain.NumberOfGuests;
+import kitchenpos.table.table.domain.TableEmpty;
 
 @DisplayName("주문 테이블 테스트")
 class OrderTableTest {
@@ -59,7 +61,7 @@ class OrderTableTest {
 		OrderTable orderTable = OrderTable.of(
 			NumberOfGuests.from(2),
 			TableEmpty.from(false));
-		ReflectionTestUtils.setField(orderTable, "tableGroup", 다섯명_두명_테이블그룹());
+		ReflectionTestUtils.setField(orderTable, "tableGroup", TableGroupGenerator.다섯명_두명_테이블그룹());
 
 		assertThatThrownBy(() -> orderTable.updateEmpty(true))
 			.isInstanceOf(IllegalArgumentException.class)

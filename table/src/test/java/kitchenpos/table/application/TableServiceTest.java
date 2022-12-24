@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.generator.OrderTableGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -18,13 +17,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.ui.request.NumberOfGuestsRequest;
-import kitchenpos.table.ui.request.OrderTableRequest;
-import kitchenpos.table.ui.request.TableStatusRequest;
-import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.generator.OrderTableGenerator;
+import kitchenpos.table.table.appliation.TableService;
+import kitchenpos.table.table.appliation.TableValidator;
+import kitchenpos.table.table.domain.OrderTable;
+import kitchenpos.table.table.domain.OrderTableRepository;
+import kitchenpos.table.table.domain.TableGroup;
+import kitchenpos.table.table.ui.request.NumberOfGuestsRequest;
+import kitchenpos.table.table.ui.request.OrderTableRequest;
+import kitchenpos.table.table.ui.request.TableStatusRequest;
+import kitchenpos.table.table.ui.response.OrderTableResponse;
 
 @DisplayName("테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,7 @@ class TableServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		주문테이블 = 주문테이블(2, false);
+		주문테이블 = OrderTableGenerator.주문테이블(2, false);
 	}
 
 	@DisplayName("테이블을 등록할 수 있다.")
@@ -107,8 +109,8 @@ class TableServiceTest {
 	void updateTableStatusWithExistGroupTableTest() {
 		// given
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
-		OrderTable 빈_한명_테이블 = 빈_한명_테이블();
-		OrderTable 비어있는_두명_테이블 = 비어있는_두명_테이블();
+		OrderTable 빈_한명_테이블 = OrderTableGenerator.빈_한명_테이블();
+		OrderTable 비어있는_두명_테이블 = OrderTableGenerator.비어있는_두명_테이블();
 		TableGroup.from(Arrays.asList(빈_한명_테이블, 비어있는_두명_테이블));
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(빈_한명_테이블));
 
@@ -177,10 +179,10 @@ class TableServiceTest {
 	void updateNumberOfGuestsWithEmptyStatusTest() {
 		// given
 		NumberOfGuestsRequest request = new NumberOfGuestsRequest(5);
-		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(빈_두명_테이블()));
+		given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.of(OrderTableGenerator.빈_두명_테이블()));
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeNumberOfGuests(비어있는_다섯명_테이블().id(), request));
+			.isThrownBy(() -> tableService.changeNumberOfGuests(OrderTableGenerator.비어있는_다섯명_테이블().id(), request));
 	}
 }

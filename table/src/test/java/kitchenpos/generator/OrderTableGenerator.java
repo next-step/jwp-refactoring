@@ -2,9 +2,9 @@ package kitchenpos.generator;
 
 import static org.mockito.Mockito.*;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.domain.NumberOfGuests;
-import kitchenpos.table.domain.TableEmpty;
+import kitchenpos.table.table.domain.NumberOfGuests;
+import kitchenpos.table.table.domain.OrderTable;
+import kitchenpos.table.table.domain.TableEmpty;
 
 public class OrderTableGenerator {
 

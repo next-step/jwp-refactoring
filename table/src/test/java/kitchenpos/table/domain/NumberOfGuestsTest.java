@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import kitchenpos.table.table.domain.NumberOfGuests;
+
 @DisplayName("고객 수 테스트")
 class NumberOfGuestsTest {
 

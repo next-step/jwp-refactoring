@@ -1,7 +1,5 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.generator.OrderTableGenerator.*;
-import static kitchenpos.generator.TableGroupGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -17,13 +15,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.ui.request.TableGroupRequest;
-import kitchenpos.table.ui.request.TableGroupRequest.OrderTableIdRequest;
-import kitchenpos.table.ui.response.TableGroupResponse;
+import kitchenpos.generator.OrderTableGenerator;
+import kitchenpos.generator.TableGroupGenerator;
+import kitchenpos.table.table.appliation.TableGroupService;
+import kitchenpos.table.table.appliation.TableValidator;
+import kitchenpos.table.table.domain.OrderTable;
+import kitchenpos.table.table.domain.OrderTableRepository;
+import kitchenpos.table.table.domain.TableGroup;
+import kitchenpos.table.table.domain.TableGroupRepository;
+import kitchenpos.table.table.ui.request.TableGroupRequest;
+import kitchenpos.table.table.ui.request.TableGroupRequest.OrderTableIdRequest;
+import kitchenpos.table.table.ui.response.TableGroupResponse;
 
 @DisplayName("단체 지정 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -45,13 +47,13 @@ class TableGroupServiceTest {
 		long 주문테이블1_아이디 = 1L;
 		long 주문테이블2_아이디 = 2L;
 		// given
-		OrderTable 비어있는_다섯명_테이블 = 비어있는_다섯명_테이블();
+		OrderTable 비어있는_다섯명_테이블 = OrderTableGenerator.비어있는_다섯명_테이블();
 		given(orderTableRepository.orderTable(주문테이블1_아이디)).willReturn(비어있는_다섯명_테이블);
 
-		OrderTable 비어있는_두명_테이블 = 비어있는_두명_테이블();
+		OrderTable 비어있는_두명_테이블 = OrderTableGenerator.비어있는_두명_테이블();
 		given(orderTableRepository.orderTable(주문테이블2_아이디)).willReturn(비어있는_두명_테이블);
 
-		TableGroup 단체_지정 = 다섯명_두명_테이블그룹();
+		TableGroup 단체_지정 = TableGroupGenerator.다섯명_두명_테이블그룹();
 		given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_지정);
 
 		TableGroupRequest tableGroupRequest = new TableGroupRequest(
@@ -89,10 +91,10 @@ class TableGroupServiceTest {
 		long 주문테이블1_아이디 = 1L;
 		long 주문테이블2_아이디 = 2L;
 		// given
-		OrderTable 비어있는_다섯명_테이블 = 비어있지_않은_5명_테이블();
+		OrderTable 비어있는_다섯명_테이블 = OrderTableGenerator.비어있지_않은_5명_테이블();
 		given(orderTableRepository.orderTable(주문테이블1_아이디)).willReturn(비어있는_다섯명_테이블);
 
-		OrderTable 비어있는_두명_테이블 = 비어있는_두명_테이블();
+		OrderTable 비어있는_두명_테이블 = OrderTableGenerator.비어있는_두명_테이블();
 		given(orderTableRepository.orderTable(주문테이블2_아이디)).willReturn(비어있는_두명_테이블);
 
 		TableGroupRequest tableGroupRequest = new TableGroupRequest(
@@ -113,10 +115,10 @@ class TableGroupServiceTest {
 		long 주문테이블1_아이디 = 1L;
 		long 주문테이블2_아이디 = 2L;
 		// given
-		OrderTable 비어있는_다섯명_테이블 = 비어있지_않은_5명_테이블();
+		OrderTable 비어있는_다섯명_테이블 = OrderTableGenerator.비어있지_않은_5명_테이블();
 		given(orderTableRepository.orderTable(주문테이블1_아이디)).willReturn(비어있는_다섯명_테이블);
 
-		OrderTable 그룹_지정된_테이블 = 다섯명_두명_테이블그룹().orderTables().list().get(0);
+		OrderTable 그룹_지정된_테이블 = TableGroupGenerator.다섯명_두명_테이블그룹().orderTables().list().get(0);
 		given(orderTableRepository.orderTable(주문테이블2_아이디)).willReturn(그룹_지정된_테이블);
 
 		TableGroupRequest tableGroupRequest = new TableGroupRequest(
@@ -134,7 +136,7 @@ class TableGroupServiceTest {
 	void ungroupTest() {
 		// given
 		long 단체_아이디 = 1L;
-		TableGroup 다섯명_두명_테이블그룹 = 다섯명_두명_테이블그룹();
+		TableGroup 다섯명_두명_테이블그룹 = TableGroupGenerator.다섯명_두명_테이블그룹();
 		given(tableGroupRepository.tableGroup(단체_아이디)).willReturn(다섯명_두명_테이블그룹);
 		willDoNothing().given(tableValidator).validateUngroup(any());
 
@@ -153,7 +155,7 @@ class TableGroupServiceTest {
 	void ungroupWithNotCompletionOrderTableTest() {
 		// given
 		long 단체_아이디 = 1L;
-		TableGroup 다섯명_두명_테이블그룹 = 다섯명_두명_테이블그룹();
+		TableGroup 다섯명_두명_테이블그룹 = TableGroupGenerator.다섯명_두명_테이블그룹();
 		given(tableGroupRepository.tableGroup(단체_아이디)).willReturn(다섯명_두명_테이블그룹);
 		willThrow(IllegalArgumentException.class).given(tableValidator).validateUngroup(any());
 

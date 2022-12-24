@@ -1,13 +1,13 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
-import static kitchenpos.acceptance.utils.TableAcceptanceUtils.*;
+import static kitchenpos.table.acceptance.utils.TableAcceptanceUtils.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.table.ui.response.OrderTableResponse;
+import kitchenpos.table.table.ui.response.OrderTableResponse;
 
 @DisplayName("주문 테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {

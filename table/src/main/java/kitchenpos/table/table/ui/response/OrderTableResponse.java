@@ -3,7 +3,7 @@ package kitchenpos.table.table.ui.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.TableGroup;
 
 public class OrderTableResponse {
