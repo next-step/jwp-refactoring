@@ -67,4 +67,3 @@ project(':module-product') {
         implementation project(':module-menu')
     }
 }
-

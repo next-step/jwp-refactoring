@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static kitchenpos.table.application.TableGroupService.ORDER_STATUS_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.OrderTables.ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE;
@@ -71,10 +72,13 @@ class TableGroupServiceTest {
     @Test
     void unGroup_success() {
 
+        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(menuGroupA()));
+
         tableGroupService.ungroup(1L);
 
 //        테이블_그룹_해제_검증됨(tableGroup);
     }
+
 
 //    @DisplayName("테이블 그룹을 해제한다. / 요리중일 경우 해제할 수 없다.")
 //    @Test
