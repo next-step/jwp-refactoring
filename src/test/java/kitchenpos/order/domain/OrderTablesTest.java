@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,9 +50,11 @@ class OrderTablesTest {
         OrderTables 주문_테이블_목록 = new OrderTables();
         주문_테이블_목록.group(새로운_단체_테이블, Arrays.asList(단체_주문_테이블3, 단체_주문_테이블4));
 
+        assertThat(주문_테이블_목록.getOrderTables()).hasSize(2);
+
         assertAll(
-                () -> assertThat(새로운_단체_테이블.getOrderTables().getOrderTables()).hasSize(2),
-                () -> assertTrue(새로운_단체_테이블.getOrderTables().getOrderTables().stream().noneMatch(OrderTable::isEmpty))
+                () -> assertThat(주문_테이블_목록.getOrderTables()).hasSize(2),
+                () -> assertTrue(주문_테이블_목록.getOrderTables().stream().noneMatch(OrderTable::isEmpty))
         );
     }
 
@@ -90,7 +95,7 @@ class OrderTablesTest {
         주문_테이블_목록.addOrderTable(새로운_단체_테이블, 단체_주문_테이블3);
         주문_테이블_목록.addOrderTable(새로운_단체_테이블, 단체_주문_테이블4);
 
-        assertThat(새로운_단체_테이블.getOrderTables().getOrderTables()).hasSize(2);
+        assertThat(주문_테이블_목록.getOrderTables()).hasSize(2);
     }
 
     @DisplayName("이미 등록된 주문 테이블은 추가되지 않는다.")
@@ -101,7 +106,7 @@ class OrderTablesTest {
         주문_테이블_목록.addOrderTable(새로운_단체_테이블, 단체_주문_테이블4);
         주문_테이블_목록.addOrderTable(새로운_단체_테이블, 단체_주문_테이블4);
 
-        assertThat(새로운_단체_테이블.getOrderTables().getOrderTables()).hasSize(2);
+        assertThat(주문_테이블_목록.getOrderTables()).hasSize(2);
     }
 
     @DisplayName("테이블 그룹을 해제한다.")
@@ -114,8 +119,8 @@ class OrderTablesTest {
         주문_테이블_목록.ungroup();
 
         assertAll(
-                () -> assertThat(단체_주문_테이블3.getTableGroup()).isNull(),
-                () -> assertThat(단체_주문_테이블4.getTableGroup()).isNull()
+                () -> assertThat(단체_주문_테이블3.getTableGroupId()).isNull(),
+                () -> assertThat(단체_주문_테이블4.getTableGroupId()).isNull()
         );
     }
 }

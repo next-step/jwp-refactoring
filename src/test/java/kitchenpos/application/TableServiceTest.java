@@ -3,12 +3,12 @@ package kitchenpos.application;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -119,6 +119,7 @@ class TableServiceTest {
     void updateOrderTableEmpty3() {
         ReflectionTestUtils.setField(주문테이블1, "empty", true);
         ReflectionTestUtils.setField(주문테이블2, "empty", true);
+        ReflectionTestUtils.setField(단체테이블, "id", 1L);
         단체테이블.group(Arrays.asList(주문테이블1, 주문테이블2));
 
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));

@@ -1,7 +1,7 @@
-package kitchenpos.order.dto;
+package kitchenpos.table.dto;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 import java.util.List;
 
@@ -22,5 +22,9 @@ public class TableGroupRequest {
 
     public List<Long> getOrderTables() {
         return orderTables;
+    }
+
+    public List<Long> getOrderTableIds() {
+        return this.orderTables;
     }
 }

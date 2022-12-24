@@ -25,7 +25,7 @@ public class MenuProductRequest {
             throw new IllegalArgumentException();
         }
 
-        return new MenuProduct(menu, target.get(), quantity);
+        return new MenuProduct(target.get(), quantity);
     }
 
     private Optional<Product> findProductByProductId(List<Product> products) {

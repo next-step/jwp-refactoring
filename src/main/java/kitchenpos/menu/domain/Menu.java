@@ -85,6 +85,6 @@ public class Menu {
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.addMenuProduct(this, menuProduct);
+        this.menuProducts.addMenuProduct(menuProduct);
     }
 }

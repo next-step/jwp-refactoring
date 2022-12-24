@@ -1,4 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
+
+import kitchenpos.order.domain.Order;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,8 +12,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -27,7 +29,6 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.tableGroup = null;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -38,15 +39,14 @@ public class OrderTable {
         }
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
-        if (this.tableGroup != tableGroup) {
-            this.tableGroup = tableGroup;
-            tableGroup.addOrderTable(this);
+    public void updateTableGroupId(Long tableGroupId) {
+        if (this.tableGroupId != tableGroupId) {
+            this.tableGroupId = tableGroupId;
         }
     }
 
     public void changeEmpty(boolean empty, List<Order> orders) {
-        if (Objects.nonNull(this.tableGroup)) {
+        if (Objects.nonNull(this.tableGroupId)) {
             throw new IllegalArgumentException();
         }
         orders.forEach(Order::checkOngoingOrderTable);
@@ -64,15 +64,15 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

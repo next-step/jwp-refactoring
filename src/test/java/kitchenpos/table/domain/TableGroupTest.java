@@ -2,8 +2,6 @@ package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,8 +81,8 @@ class TableGroupTest {
         단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
 
         assertAll(
-                () -> assertThat(단체_주문_테이블1.getTableGroup()).isNull(),
-                () -> assertThat(단체_주문_테이블2.getTableGroup()).isNull()
+                () -> assertThat(단체_주문_테이블1.getTableGroupId()).isNull(),
+                () -> assertThat(단체_주문_테이블2.getTableGroupId()).isNull()
         );
     }
 

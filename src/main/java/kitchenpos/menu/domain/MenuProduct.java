@@ -12,9 +12,6 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
     private long quantity;
@@ -23,13 +20,12 @@ public class MenuProduct {
 
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        this(menu, product, quantity);
+    public MenuProduct(Long seq, Product product, long quantity) {
+        this(product, quantity);
         this.seq = seq;
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
+    public MenuProduct(Product product, long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -42,22 +38,11 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
     public Product getProduct() {
         return product;
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void updateMenu(Menu menu) {
-        if (this.menu != menu) {
-            this.menu = menu;
-            menu.addMenuProduct(this);
-        }
     }
 }
