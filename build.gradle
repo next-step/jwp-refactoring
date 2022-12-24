@@ -4,10 +4,6 @@ plugins {
     id 'java'
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
 repositories {
     mavenCentral()
 }
@@ -16,15 +12,94 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
-    // JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation project(':kitchenpos-product')
+    implementation project(':kitchenpos-menugroup')
+    implementation project(':kitchenpos-order')
+    implementation project(':kitchenpos-table')
+    implementation project(':kitchenpos-tablegroup')
+    implementation project(':kitchenpos-menu')
 }
 
-test {
-    useJUnitPlatform()
+
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
+project(':kitchenpos-menu') {
+    dependencies {
+        implementation project(':kitchenpos-product')
+        implementation project(':kitchenpos-menugroup')
+
+        testCompile project(':kitchenpos-menugroup').sourceSets.test.output
+        testCompile project(':kitchenpos-product').sourceSets.test.output
+    }
+}
+
+project(':kitchenpos-menugroup') {
+    dependencies {
+    }
+}
+
+project(':kitchenpos-order') {
+    dependencies {
+        implementation project(':kitchenpos-product')
+        implementation project(':kitchenpos-menu')
+        implementation project(':kitchenpos-table')
+
+        testCompile project(':kitchenpos-menu').sourceSets.test.output
+        testCompile project(':kitchenpos-product').sourceSets.test.output
+        testCompile project(':kitchenpos-table').sourceSets.test.output
+    }
+}
+
+
+project(':kitchenpos-product') {
+    dependencies {
+    }
+}
+
+project(':kitchenpos-table') {
+    dependencies {
+    }
+}
+
+
+project(':kitchenpos-tablegroup') {
+    dependencies {
+        implementation project(':kitchenpos-order')
+        implementation project(':kitchenpos-table')
+
+        testCompile project(':kitchenpos-order').sourceSets.test.output
+        testCompile project(':kitchenpos-table').sourceSets.test.output
+    }
+}
+
+
