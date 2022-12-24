@@ -21,7 +21,8 @@ public class MenuGroupService {
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest request) {
         MenuGroup menuGroup = request.toMenuGroup();
-        return MenuGroupResponse.from(menuGroupDao.save(menuGroup));
+        MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+        return MenuGroupResponse.from(savedMenuGroup);
     }
 
     public List<MenuGroupResponse> list() {

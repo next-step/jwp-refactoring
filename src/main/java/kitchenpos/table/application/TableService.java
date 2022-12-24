@@ -21,7 +21,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
-        return OrderTableResponse.from(orderTableDao.save(orderTable));
+        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     public List<OrderTableResponse> list() {

@@ -39,8 +39,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         List<MenuProductRequest> menuProducts = request.getMenuProducts();
-        Menu menu = request
-            .toMenu(getMenuProducts(menuProducts), getMenuGroup(request.getMenuGroupId()));
+        Menu menu = request.toMenu(getMenuProducts(menuProducts), getMenuGroup(request.getMenuGroupId()));
         final Menu savedMenu = menuDao.save(menu);
         return MenuResponse.from(savedMenu);
     }

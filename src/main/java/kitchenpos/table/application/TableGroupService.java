@@ -27,7 +27,8 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         List<OrderTable> savedOrderTables = getOrderTables(request);
         TableGroup tableGroup = request.toTableGroup(savedOrderTables);
-        return TableGroupResponse.from(tableGroupDao.save(tableGroup));
+        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        return TableGroupResponse.from(savedTableGroup);
     }
 
     private List<OrderTable> getOrderTables(TableGroupRequest request) {
