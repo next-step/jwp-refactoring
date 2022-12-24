@@ -2,7 +2,6 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.EmptyRequest;
 import kitchenpos.table.dto.NumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -16,11 +15,9 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final TableValidator tableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -35,7 +32,6 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, EmptyRequest request) {
         OrderTable orderTable = findById(orderTableId);
-        tableValidator.validUncompletedOrder(orderTableId);
         orderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }

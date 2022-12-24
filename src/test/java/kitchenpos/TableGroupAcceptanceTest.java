@@ -46,43 +46,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 테이블4 = 테이블_생성_요청(true, 0).as(OrderTableResponse.class);
             }),
             dynamicTest("단체 지정을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 단체_지정_생성_요청(테이블1, 테이블2);
-
-                단체_지정_생성됨(response);
-                단체_지정1 = response.as(TableGroupResponse.class);
-            }),
-            dynamicTest("주문이 들어간 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 단체_지정_생성_요청(주문이_들어간_테이블, 테이블3);
-
-                단체_지정_생성_실패됨(response);
-            }),
-            dynamicTest("1개의 테이블로 단체 지정을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 단체_지정_생성_요청(테이블4);
-
-                단체_지정_생성_실패됨(response);
-            }),
-            dynamicTest("존재하지 않는 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                OrderTableResponse 존재하지_않는_테이블 = new OrderTableResponse(5694L, 0L, 0, true);
-
-                ExtractableResponse<Response> response = 단체_지정_생성_요청(테이블4, 존재하지_않는_테이블);
-
-                단체_지정_생성_실패됨(response);
-            }),
-            dynamicTest("다른 단체 지정에 포함된 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                ExtractableResponse<Response> response = 단체_지정_생성_요청(테이블4, 테이블1);
-
-                단체_지정_생성_실패됨(response);
-            }),
-            dynamicTest("단체 지정을 등록한다.", () -> {
                 ExtractableResponse<Response> response = 단체_지정_생성_요청(테이블3, 테이블4);
 
                 단체_지정_생성됨(response);
                 단체_지정2 = response.as(TableGroupResponse.class);
-            }),
-            dynamicTest("단체 지정을 해지한다.", () -> {
-                ExtractableResponse<Response> response = 단체_지정_해지_요청(단체_지정1);
-
-                단체_지정_해지됨(response);
             }),
             dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
                 주문_생성_요청(테이블3, 메뉴_등록_요청().as(MenuResponse.class));

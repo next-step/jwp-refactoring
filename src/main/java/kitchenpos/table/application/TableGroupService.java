@@ -4,7 +4,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,10 @@ import java.util.List;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final TableValidator tableValidator;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, TableValidator tableValidator) {
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -58,7 +55,7 @@ public class TableGroupService {
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(IllegalArgumentException::new);
-        tableValidator.validateUngroup(tableGroup);
         tableGroup.ungroup();
+        tableGroupRepository.save(tableGroup);
     }
 }
