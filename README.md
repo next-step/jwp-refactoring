@@ -207,7 +207,7 @@
   - MenuServiceTest [ ]
   - OrderServiceTest [ ]
   - TableGroupServiceTest [ ]
-  - TableServiceTest [ ]
+  - TableServiceTest [x]
   - ProductServiceTest [x]
 - kitchenpos-product [ ]
 - kitchenpos-order [ ]

@@ -24,7 +24,7 @@ public class OrderTableFixture {
         return new OrderTable(new TableGroup(), numberOfGuests(), false);
     }
 
-    public static OrderTable orderTableA() {
-        return new OrderTable(1L, null, numberOfGuests(), true);
+    public static OrderTable orderTableA(TableGroup tableGroup, boolean empty) {
+        return new OrderTable(1L, tableGroup, numberOfGuests(), empty);
     }
 }

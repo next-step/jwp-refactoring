@@ -1,11 +1,9 @@
 package kitchenpos.product.application;
 
-import kitchenpos.ServiceTest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductCreateRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.repository.ProductRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,20 +26,13 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스")
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest extends ServiceTest {
-
+class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
 
     @Mock
     private ProductRepository productRepository;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        productService = new ProductService(productRepository);
-    }
 
     @DisplayName("상품 생성")
     @Test
