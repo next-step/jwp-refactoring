@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.error.ErrorEnum;
-import kitchenpos.order.domain.Order;
 
 @Entity
 public class OrderTable {

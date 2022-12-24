@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.common.error.ErrorEnum;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "orders")
@@ -20,6 +21,7 @@ public class Order {
     private Long id;
     @Enumerated
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     private Long orderTableId;
     @Embedded

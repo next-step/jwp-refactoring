@@ -1,7 +1,5 @@
 package kitchenpos.order.dto;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 
 public class OrderRequest {
