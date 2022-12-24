@@ -204,7 +204,7 @@
 - 멀티 모듈 적용 [ ]
 - Spring Boot Test Mock Test 변환 [ ]
   - MenuGroupServiceTest [x]
-  - MenuServiceTest [ ]
+  - MenuServiceTest [x]
   - OrderServiceTest [ ]
   - TableGroupServiceTest [x]
   - TableServiceTest [x]
