@@ -11,10 +11,4 @@ public class TableGroupFixture {
         ReflectionTestUtils.setField(tableGroup, "id", id);
         return tableGroup;
     }
-
-    public static TableGroup 테이블그룹(Long id, List<OrderTable> orderTableList) {
-        TableGroup tableGroup = new TableGroup(orderTableList);
-        ReflectionTestUtils.setField(tableGroup, "id", id);
-        return tableGroup;
-    }
 }

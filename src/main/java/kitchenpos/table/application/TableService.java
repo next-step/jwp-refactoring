@@ -1,12 +1,12 @@
 package kitchenpos.table.application;
 
-import common.exception.NoSuchDataException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.common.exception.NoSuchDataException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableUngroupedEvent;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher publisher;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository,
+                        final ApplicationEventPublisher publisher) {
         this.orderTableRepository = orderTableRepository;
+        this.publisher = publisher;
     }
 
     @Transactional
@@ -39,8 +40,9 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
-        final Order order = findOrderByOrderTableId(orderTableId);
-        persistOrderTable.updateEmpty(order, orderTableRequest.isEmpty());
+
+        publisher.publishEvent(new TableUngroupedEvent(persistOrderTable.getId()));
+        persistOrderTable.updateEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(persistOrderTable);
     }
@@ -55,9 +57,5 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId).orElseThrow(NoSuchDataException::new);
-    }
-
-    private Order findOrderByOrderTableId(Long orderTableId) {
-        return orderRepository.findOrderByOrderTableId(orderTableId).orElseThrow(NoSuchDataException::new);
     }
 }
