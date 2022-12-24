@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.error.ErrorEnum;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 
 @Entity
@@ -45,6 +44,16 @@ public class Menu {
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
         menuProducts.setMenu(this);
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        validateMenu(menuGroupId);
+        validatePrice(price);
+        menuProducts.setMenu(this);
+
+        this.name = new Name(name);
+        this.price = new Price(price);
+        this.menuGroupId = menuGroupId;
     }
 
     private void validatePrice(BigDecimal price) {
@@ -96,11 +105,6 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.get();
     }
-//    public void setMenuProducts(MenuProducts menuProducts) {
-//        validatePrice(menuProducts.totalMenuPrice());
-//        menuProducts.setMenu(this);
-//    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -118,5 +122,9 @@ public class Menu {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroupId, menuProducts);
+    }
+
+    public void create(List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
     }
 }

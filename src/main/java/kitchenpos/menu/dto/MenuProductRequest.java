@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import java.util.List;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
@@ -44,7 +45,14 @@ public class MenuProductRequest {
                 .get();
     }
 
-    public MenuProduct toMenuProduct(Product product) {
-        return MenuProduct.of(product, quantity);
+    public MenuProduct toMenuProducts(Menu menu, List<Product> products) {
+        Product target = findProductByProductId(products);
+        return new MenuProduct(menu, quantity, target);
+    }
+
+    private Product findProductByProductId(List<Product> products) {
+        return products.stream()
+                .filter(product -> product.getId().equals(productId))
+                .findFirst().get();
     }
 }

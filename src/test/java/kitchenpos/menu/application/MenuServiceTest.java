@@ -80,8 +80,7 @@ class MenuServiceTest {
 
         MenuRequest 치킨_스파게티_더블세트_메뉴 = MenuRequest.of(양념치킨.getName().value(), 양념치킨.getPrice().value(), 양식.getId(), menuProductRequests);
         given(menuGroupRepository.findById(치킨_스파게티_더블세트_메뉴.getMenuGroupId())).willReturn(Optional.of(양식));
-        when(productRepository.findById(양념치킨.getId())).thenReturn(Optional.of(양념치킨));
-        when(productRepository.findById(스파게티.getId())).thenReturn(Optional.of(스파게티));
+        given(productRepository.findAllById(치킨_스파게티_더블세트_메뉴.getMenuProductIds())).willReturn(Arrays.asList(양념치킨, 스파게티));
         given(menuRepository.save(any())).willReturn(양념치킨_두마리_세트);
 
         MenuResponse result = menuService.create(치킨_스파게티_더블세트_메뉴);

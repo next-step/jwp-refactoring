@@ -39,12 +39,17 @@ public class MenuProduct {
         this.product = product;
     }
 
-    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    private MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
+        this(menu, quantity, product);
         this.seq = seq;
-        this.menu = menu;
-        this.product = product;
-        this.quantity = new Quantity(quantity);
     }
+
+    public MenuProduct(Menu menu, Long quantity, Product product) {
+        this.menu = menu;
+        this.quantity = new Quantity(quantity);
+        this.product = product;
+    }
+
     public static MenuProduct of(Product product, Long quantity) {
         return new MenuProduct(null, null, product, quantity);
     }

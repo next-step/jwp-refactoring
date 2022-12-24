@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
@@ -13,7 +14,7 @@ public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-     private List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+    private List<MenuProductRequest> menuProductRequests = new ArrayList<>();
 
     protected MenuRequest() {}
 
@@ -28,15 +29,13 @@ public class MenuRequest {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    private MenuProducts createMenuProducts(List<Product> products) {
-        return new MenuProducts(menuProductRequests.stream()
-                .map(menuProduct -> menuProduct.createMenuProduct(products))
-                .collect(Collectors.toList())
-        );
-    }
-
-    public Menu toMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-        return Menu.of(name, price, menuGroup.getId(), menuProducts.get());
+    public Menu toMenu(MenuGroup menuGroup, List<Product> products) {
+        Menu menu = new Menu(name, price, menuGroup.getId());
+        List<MenuProduct> allMenuProducts = menuProductRequests.stream()
+                .map(request -> request.toMenuProducts(menu, products))
+                .collect(Collectors.toList());
+        menu.create(allMenuProducts);
+        return menu;
     }
 
     public String getName() {
@@ -55,4 +54,9 @@ public class MenuRequest {
         return menuProductRequests;
     }
 
+    public List<Long> getMenuProductIds() {
+        return menuProductRequests.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
 }
