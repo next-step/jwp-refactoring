@@ -54,6 +54,12 @@ public class TableGroupRequest {
         return orderTables;
     }
 
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+            .map(OrderTableRequest::getId)
+            .collect(Collectors.toList());
+    }
+
     public void setOrderTables(final List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }

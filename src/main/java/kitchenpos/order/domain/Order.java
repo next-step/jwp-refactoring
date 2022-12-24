@@ -44,8 +44,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-        orderLineItems
-            .forEach(orderLineItem -> orderLineItem.setOrder(this));
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
         validateOrder();
     }
 

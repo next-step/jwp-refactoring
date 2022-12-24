@@ -73,6 +73,7 @@ public class OrderService {
     }
 
     private Menu findMenuById(Long id) {
-        return menuRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
+        return menuRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
     }
 }

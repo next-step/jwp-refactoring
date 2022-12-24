@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.dao.TableGroupRepository;
@@ -32,10 +31,12 @@ public class TableGroupService {
     }
 
     private List<OrderTable> getOrderTables(TableGroupRequest request) {
-        return request.getOrderTables().stream()
-            .map(orderTableRequest -> orderTableRepository.findById(orderTableRequest.getId()).orElseThrow(
-                () -> new IllegalArgumentException("단체 지정할 테이블 중 존재하지 않는 테이블이 존재 합니다.")))
-            .collect(Collectors.toList());
+        List<Long> orderTableIds = request.getOrderTableIds();
+        List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
+        if (orderTables.size() != orderTableIds.size()) {
+            throw new IllegalArgumentException("단체 지정할 테이블 중 존재하지 않는 테이블이 존재 합니다.");
+        }
+        return orderTables;
     }
 
     @Transactional

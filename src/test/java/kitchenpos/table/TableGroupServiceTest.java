@@ -48,7 +48,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 생성 성공")
     void createTableGroup() {
         //given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(빈테이블));
+        when(orderTableRepository.findAllById(any())).thenReturn(Arrays.asList(빈테이블, 빈테이블));
         when(tableGroupRepository.save(any())).then(returnsFirstArg());
         TableGroupRequest tableGroupRequest = createTableGroupRequest(단체지정);
 
@@ -66,7 +66,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블이 없어서 그룹 생성 실패")
     void noTableException() {
         //given
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findAllById(any())).thenReturn(Collections.emptyList());
         TableGroupRequest tableGroupRequest = createTableGroupRequest(단체지정);
 
         //when & then

@@ -2,9 +2,9 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -39,7 +39,8 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         List<MenuProductRequest> menuProducts = request.getMenuProducts();
-        Menu menu = request.toMenu(getMenuProducts(menuProducts), getMenuGroup(request.getMenuGroupId()));
+        Menu menu = request
+            .toMenu(getMenuProducts(menuProducts), getMenuGroup(request.getMenuGroupId()));
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.from(savedMenu);
     }
@@ -51,8 +52,10 @@ public class MenuService {
 
     private List<MenuProduct> getMenuProducts(List<MenuProductRequest> requests) {
         return requests.stream()
-            .map(menuProductRequest -> menuProductRequest
-                .toMenuProduct(findProductById(menuProductRequest.getProductId())))
+            .map(menuProductRequest -> {
+                Product product = findProductById(menuProductRequest.getProductId());
+                return menuProductRequest.toMenuProduct(product);
+            })
             .collect(Collectors.toList());
     }
 
