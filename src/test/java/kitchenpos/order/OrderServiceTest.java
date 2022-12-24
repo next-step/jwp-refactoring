@@ -14,10 +14,10 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
@@ -32,11 +32,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -44,11 +44,11 @@ class OrderServiceTest {
     @DisplayName("주문 생성")
     void createOrder() {
         //given
-        when(orderTableDao.findById(any()))
+        when(orderTableRepository.findById(any()))
             .thenReturn(Optional.of(일번테이블));
-        when(menuDao.findById(any()))
+        when(menuRepository.findById(any()))
             .thenReturn(Optional.of(더블강정치킨));
-        when(orderDao.save(any())).then(returnsFirstArg());
+        when(orderRepository.save(any())).then(returnsFirstArg());
 
         //when
         OrderResponse orderResponse = orderService.create(createOrderRequest(주문));
@@ -62,7 +62,7 @@ class OrderServiceTest {
     @DisplayName("주문시 테이블이 없으면 에러 발생")
     void noTableException() {
         //given
-        when(orderTableDao.findById(any()))
+        when(orderTableRepository.findById(any()))
             .thenReturn(Optional.empty());
 
         //when & then
@@ -75,9 +75,9 @@ class OrderServiceTest {
     @DisplayName("주문시 메뉴 정보가 없으면 에러 발생")
     void noMenuException() {
         //given
-        when(orderTableDao.findById(any()))
+        when(orderTableRepository.findById(any()))
             .thenReturn(Optional.of(일번테이블));
-        when(menuDao.findById(any()))
+        when(menuRepository.findById(any()))
             .thenReturn(Optional.empty());
 
         //when & then
@@ -90,7 +90,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록 조회")
     void getMenuList() {
         //given
-        when(orderDao.findAll()).thenReturn(Collections.singletonList(주문));
+        when(orderRepository.findAll()).thenReturn(Collections.singletonList(주문));
 
         //when
         List<OrderResponse> list = orderService.list();
@@ -107,8 +107,8 @@ class OrderServiceTest {
         //given
         Order order = new Order(1L, 일번테이블, null, null,
             Collections.singletonList(주문항목));
-        when(orderDao.findById(any())).thenReturn(Optional.of(order));
-        when(orderDao.save(any())).then(returnsFirstArg());
+        when(orderRepository.findById(any())).thenReturn(Optional.of(order));
+        when(orderRepository.save(any())).then(returnsFirstArg());
 
         //when
         OrderResponse orderResponse = orderService
@@ -122,7 +122,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태 변경할 주문이 없으면 에러 발생")
     void noOrderException() {
         //given
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         //when
         assertThatThrownBy(() -> orderService

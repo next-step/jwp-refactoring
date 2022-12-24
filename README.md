@@ -87,7 +87,7 @@
 * given / when / then 방식으로 표기 [완료]
 * 라인 하나에 너무 많은 로직이 있는 경우 찾아서 분리 진행 [완료]
 * 예외에 대한 상세 메시지 제공 [완료]
-* DAO Suffix Repository로 변경
+* DAO Suffix Repository로 변경 [완료]
 * Entity 기본생성자를 protected 로 변경
 * 필요 없는 Getter, Setter 제거
 * 일급 컬렉션등 초기화

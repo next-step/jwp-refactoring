@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.api.Assertions;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -31,7 +31,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성")
     void createProduct() {
         //given
-        when(productDao.save(any())).thenReturn(강정치킨);
+        when(productRepository.save(any())).thenReturn(강정치킨);
         ProductRequest productRequest = createProductRequest(강정치킨);
 
         //when
@@ -45,7 +45,7 @@ class ProductServiceTest {
     @DisplayName("상품 목록 조회")
     void productList() {
         //given
-        when(productDao.findAll()).thenReturn(Collections.singletonList(강정치킨));
+        when(productRepository.findAll()).thenReturn(Collections.singletonList(강정치킨));
 
         //when
         List<ProductResponse> list = productService.list();

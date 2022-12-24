@@ -12,11 +12,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
+import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.dao.MenuGroupRepository;
+import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.dao.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,13 +28,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -42,11 +42,11 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성")
     void createMenu() {
         //given
-        when(menuGroupDao.findById(any()))
+        when(menuGroupRepository.findById(any()))
             .thenReturn(Optional.of(추천메뉴));
-        when(productDao.findById(any()))
+        when(productRepository.findById(any()))
             .thenReturn(Optional.of(강정치킨));
-        when(menuDao.save(any()))
+        when(menuRepository.save(any()))
             .thenReturn(더블강정치킨);
 
         //when
@@ -60,9 +60,9 @@ class MenuServiceTest {
     @DisplayName("존재 하지 않는 메뉴 그룹이면 에러 발생")
     void noMenuGroupException() {
         //given
-        when(menuGroupDao.findById(any()))
+        when(menuGroupRepository.findById(any()))
             .thenReturn(Optional.empty());
-        when(productDao.findById(any()))
+        when(productRepository.findById(any()))
             .thenReturn(Optional.of(강정치킨));
 
         //when & then
@@ -75,7 +75,7 @@ class MenuServiceTest {
     @DisplayName("존재 하지 않는 상품이면 에러 발생")
     void noProductException() {
         //given
-        when(productDao.findById(any()))
+        when(productRepository.findById(any()))
             .thenReturn(Optional.empty());
 
         //when & then
@@ -88,7 +88,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록 조회")
     void getList() {
         //given
-        when(menuDao.findAll())
+        when(menuRepository.findAll())
             .thenReturn(Collections.singletonList(더블강정치킨));
 
         //when

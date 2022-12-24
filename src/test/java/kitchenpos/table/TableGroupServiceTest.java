@@ -11,10 +11,10 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.table.dao.TableGroupRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -31,9 +31,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -48,8 +48,8 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 생성 성공")
     void createTableGroup() {
         //given
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(빈테이블));
-        when(tableGroupDao.save(any())).then(returnsFirstArg());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(빈테이블));
+        when(tableGroupRepository.save(any())).then(returnsFirstArg());
         TableGroupRequest tableGroupRequest = createTableGroupRequest(단체지정);
 
         //when
@@ -66,7 +66,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블이 없어서 그룹 생성 실패")
     void noTableException() {
         //given
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
         TableGroupRequest tableGroupRequest = createTableGroupRequest(단체지정);
 
         //when & then
@@ -80,7 +80,7 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         TableGroup 단체지정 = new TableGroup(1L, Arrays.asList(빈테이블, 빈테이블));
-        when(tableGroupDao.findById(any())).thenReturn(Optional.of(단체지정));
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(단체지정));
 
         //when & then
         tableGroupService.ungroup(1L);
@@ -90,7 +90,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정이 없으면 에러 발생")
     void noGroupException() {
         //given
-        when(tableGroupDao.findById(any())).thenReturn(Optional.empty());
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

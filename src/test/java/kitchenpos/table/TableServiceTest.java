@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private TableService tableService;
 
@@ -37,7 +37,7 @@ class TableServiceTest {
     @DisplayName("테이블 생성")
     void createTable() {
         //given
-        when(orderTableDao.save(any())).thenReturn(일번테이블);
+        when(orderTableRepository.save(any())).thenReturn(일번테이블);
         OrderTableRequest orderTableRequest = createOrderTableRequest(일번테이블);
 
         //when
@@ -51,7 +51,7 @@ class TableServiceTest {
     @DisplayName("테이블 목록 조회")
     void getList() {
         //given
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(일번테이블, 빈테이블));
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(일번테이블, 빈테이블));
 
         //when
         List<OrderTableResponse> list = tableService.list();
@@ -70,8 +70,8 @@ class TableServiceTest {
     void emptyTable() {
         //given
         OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(일번테이블));
-        when(orderTableDao.save(any())).then(returnsFirstArg());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(일번테이블));
+        when(orderTableRepository.save(any())).then(returnsFirstArg());
 
         //when
         OrderTableResponse orderTableResponse = tableService.changeEmpty(1L, true);
@@ -83,7 +83,7 @@ class TableServiceTest {
     @Test
     void 변경할_테이블이_존재하지_않으면__변경_불가능() {
         //given
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         //when
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
@@ -96,8 +96,8 @@ class TableServiceTest {
     void changeNumberOfGuest() {
         //given
         OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(일번테이블));
-        when(orderTableDao.save(any())).then(returnsFirstArg());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(일번테이블));
+        when(orderTableRepository.save(any())).then(returnsFirstArg());
 
         //when
         OrderTableResponse orderTableResponse = tableService.changeNumberOfGuests(1L, 5);
@@ -109,7 +109,7 @@ class TableServiceTest {
     @Test
     void 방문한_손님수를_변경할_주문_테이블이_없으면_변경_불가능() {
         //given
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         //when
         assertThatThrownBy(
