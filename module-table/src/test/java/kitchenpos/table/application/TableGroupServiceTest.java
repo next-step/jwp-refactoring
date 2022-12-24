@@ -66,18 +66,6 @@ class TableGroupServiceTest {
                 .hasMessageContaining(ORDER_TABLE_MINIMUM_SIZE_EXCEPTION_MESSAGE);
     }
 
-//    @DisplayName("테이블 그룹을 해제한다.")
-//    @Test
-//    void unGroup_success() {
-//
-//        given(menuGroupRepository.findById(1L)).willReturn(Optional.of(menuGroupA()));
-//
-//        tableGroupService.ungroup(1L);
-//
-//        테이블_그룹_해제_검증됨(tableGroup);
-//    }
-
-
     @DisplayName("테이블 그룹을 해제한다. / 요리중일 경우 해제할 수 없다.")
     @Test
     void unGroup_fail_cooking() {

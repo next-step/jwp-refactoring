@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.fixture.OrderTableFixture;
+import kitchenpos.table.domain.fixture.TableGroupFixture;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -11,17 +12,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 import static kitchenpos.table.application.TableService.CHANGE_NUMBER_OF_GUESTS_MINIMUM_NUMBER_EXCEPTION_MESSAGE;
+import static kitchenpos.table.domain.OrderTable.TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE;
 import static kitchenpos.table.domain.fixture.NumberOfGuestsFixture.initNumberOfGuests;
+import static kitchenpos.table.validator.TableValidator.ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -102,44 +102,44 @@ class TableServiceTest {
         assertThat(tableService.changeEmpty(1L).isEmpty()).isTrue();
     }
 
-//    @DisplayName("공석 상태로 변경한다. / 테이블 그룹이 있을 수 없다.")
-//    @Test
-//    void changeEmpty_fail_notTableGroup() {
-//
-//        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(TableGroupFixture.tableGroupA(), new NumberOfGuests(0), true)));
-//
-//        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
-//    }
+    @DisplayName("공석 상태로 변경한다. / 테이블 그룹이 있을 수 없다.")
+    @Test
+    void changeEmpty_fail_notTableGroup() {
 
-//    @DisplayName("공석 상태로 변경한다. / 요리중일 경우 변경할 수 없다.")
-//    @Test
-//    void empty_fail_cooking() {
-//
-//        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
-//
-//        Mockito.doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
-//                .when(tableValidator).validateNotComplete(ArgumentMatchers.any());
-//
-//        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
-//    }
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(TableGroupFixture.tableGroupA(), new NumberOfGuests(0), true)));
 
-//    @DisplayName("공석 상태로 변경한다. / 식사중일 경우 변경할 수 없다.")
-//    @Test
-//    void empty_fail_meal() {
-//
-//        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
-//
-//        Mockito.doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
-//                .when(tableValidator).validateNotComplete(ArgumentMatchers.any());
-//
-//        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(1L))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
-//    }
+        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(TABLE_GROUP_NOT_NULL_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("공석 상태로 변경한다. / 요리중일 경우 변경할 수 없다.")
+    @Test
+    void empty_fail_cooking() {
+
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+
+        Mockito.doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
+                .when(tableValidator).validateNotComplete(ArgumentMatchers.any());
+
+        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("공석 상태로 변경한다. / 식사중일 경우 변경할 수 없다.")
+    @Test
+    void empty_fail_meal() {
+
+        BDDMockito.given(orderTableRepository.findById(1L)).willReturn(Optional.of(OrderTableFixture.orderTableA(null, false)));
+
+        Mockito.doThrow(new IllegalArgumentException(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE))
+                .when(tableValidator).validateNotComplete(ArgumentMatchers.any());
+
+        assertThatThrownBy(() -> tableService.changeEmpty(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ORDER_STATUS_NOT_COMPLETION_EXCEPTION_MESSAGE);
+    }
 
     @DisplayName("주문 테이블을 조회한다.")
     @Test
