@@ -1,13 +1,10 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.common.exception.NoSuchDataException;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,52 +13,51 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final ApplicationEventPublisher publisher;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(final OrderTableRepository orderTableRepository,
+                             final TableGroupRepository tableGroupRepository,
+                             final ApplicationEventPublisher publisher) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.publisher = publisher;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-
-        List<OrderTable> orderTables = tableGroupRequest.getOrderTableIds().stream()
+        List<OrderTable> orderTableList = tableGroupRequest.getOrderTableIds().stream()
                 .map(this::findOrderTableById)
                 .collect(Collectors.toList());
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.group(orderTables);
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
+        final OrderTables orderTables = new OrderTables(orderTableList);
+        orderTables.groupTables(savedTableGroup);
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        return TableGroupResponse.of(savedTableGroup);
+        return TableGroupResponse.of(savedTableGroup, orderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup persistTableGroup = findTableGroupById(tableGroupId);
-        final List<OrderTable> orderTables = persistTableGroup.getOrderTables();
-        orderTables.stream()
+        final OrderTables orderTables = findOrderTablesByTableGroupId(persistTableGroup.getId());
+        orderTables.getOrderTables().stream()
                 .forEach(orderTable -> {
-                    Order order = findOrderByOrderTableId(orderTable.getId());
-                    orderTable.unGroup(order);
+                    publisher.publishEvent(new TableUngroupedEvent(orderTable.getId()));
+                    orderTable.unGroup();
                 });
         }
 
     private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId).orElseThrow(NoSuchDataException::new);
+    }
+
+    private OrderTables findOrderTablesByTableGroupId(Long tableGroupId) {
+        return new OrderTables(orderTableRepository.findOrderTablesByTableGroupId(tableGroupId));
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
-    }
-
-    private Order findOrderByOrderTableId(Long orderTableId) {
-        return orderRepository.findOrderByOrderTableId(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(NoSuchDataException::new);
     }
 }

@@ -18,7 +18,7 @@ public class ProductRequest {
     }
 
     public Product toProduct() {
-        return new Product(name, new BigDecimal(price));
+        return new Product(name, price);
     }
 
     public static ProductRequest of(Product product) {

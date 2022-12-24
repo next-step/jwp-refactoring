@@ -34,7 +34,7 @@ public class TableRestController {
                 ;
     }
 
-    @PutMapping(name = "/{orderTableId}/empty")
+    @PutMapping("/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(
             @PathVariable final Long orderTableId,
             @RequestBody final OrderTableRequest orderTableRequest
@@ -44,7 +44,7 @@ public class TableRestController {
                 ;
     }
 
-    @PutMapping(name = "/{orderTableId}/number-of-guests")
+    @PutMapping("/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
             @RequestBody final OrderTableRequest orderTableRequest

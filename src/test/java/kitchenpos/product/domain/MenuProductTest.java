@@ -1,5 +1,6 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
+import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class MenuProductTest {
     @Test
     void MenuProduct의_가격_계산_테스트() {
         // given
-        Product 레드와인 = 상품(5L, "레드와인", new BigDecimal(9000));
+        Product 레드와인 = 상품(5L, "레드와인", 9000);
         MenuProduct 풀코스_레드와인 = new MenuProduct(null, 레드와인, 2);
 
         // when

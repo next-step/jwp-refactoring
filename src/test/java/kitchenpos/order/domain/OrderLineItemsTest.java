@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,13 +35,13 @@ public class OrderLineItemsTest {
     void setup() {
         테이블1 = 주문테이블(1L, null, 6, false);
 
-        주문 = 주문(1L, OrderStatus.COOKING.name(), 테이블1);
+        주문 = 주문(1L, OrderStatus.COOKING.name(), 테이블1.getId());
 
-        오일2인세트 = 메뉴(1L, "오일2인세트", new BigDecimal(34000), null);
-        풀코스 = 메뉴(2L, "풀코스", new BigDecimal(62000), null);
+        오일2인세트 = 메뉴(1L, "오일2인세트", 34000, null);
+        풀코스 = 메뉴(2L, "풀코스", 62000, null);
 
-        풀코스_주문 = 주문라인아이템(1L, 주문, 풀코스, 1);
-        오일2인세트_주문 = 주문라인아이템(2L, 주문, 오일2인세트, 1);
+        풀코스_주문 = 주문라인아이템(1L, 주문, 풀코스.getId(), 1);
+        오일2인세트_주문 = 주문라인아이템(2L, 주문, 오일2인세트.getId(), 1);
     }
 
     @DisplayName("OrderLineItem 리스트를 추가한다")
@@ -50,8 +51,7 @@ public class OrderLineItemsTest {
         List<OrderLineItem> orderLineItemList = Arrays.asList(풀코스_주문, 오일2인세트_주문);
 
         // when
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.addList(orderLineItemList);
+        OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
 
         // then
         assertThat(orderLineItems.getOrderLineItems()).containsExactly(풀코스_주문, 오일2인세트_주문);
@@ -61,11 +61,10 @@ public class OrderLineItemsTest {
     @Test
     void 빈_리스트_추가_테스트() {
         // given
-        OrderLineItems orderLineItems = new OrderLineItems();
 
         // when & then
         assertThatThrownBy(
-                () -> orderLineItems.addList(Arrays.asList())
+                () -> new OrderLineItems(new ArrayList<>())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }
