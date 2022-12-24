@@ -1,4 +1,4 @@
-package common.exception;
+package kitchenpos.common.exception;
 
 public class NoSuchDataException extends RuntimeException {
 
