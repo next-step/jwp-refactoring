@@ -21,8 +21,9 @@ import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
     private static Product 참치김밥;
@@ -60,15 +61,15 @@ public class OrderServiceTest {
     public static OrderTable 주문테이블;
     public static Order 주문;
 
-    @MockBean
+    @Mock
     private MenuRepository menuRepository;
-    @MockBean
+    @Mock
     private OrderRepository orderRepository;
-    @MockBean
+    @Mock
     private OrderLineItemRepository orderLineItemRepository;
-    @MockBean
+    @Mock
     private OrderTableRepository orderTableRepository;
-    @MockBean
+    @Mock
     private MenuProductRepository menuProductRepository;
     private OrderMapper orderMapper;
     private OrderService orderService;
@@ -108,8 +109,6 @@ public class OrderServiceTest {
         //given
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(주문);
-        when(orderLineItemRepository.saveAll(주문항목들))
-                .thenReturn(주문항목들);
         when(orderLineItemRepository.findAllByOrderId(주문.getId()))
                 .thenReturn(주문항목들);
         when(orderTableRepository.findById(주문테이블.getId()))
@@ -182,8 +181,6 @@ public class OrderServiceTest {
         //given
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(주문);
-        when(orderLineItemRepository.saveAll(주문항목들))
-                .thenReturn(주문항목들);
         when(orderLineItemRepository.findAllByOrderId(주문.getId()))
                 .thenReturn(주문항목들);
         when(orderTableRepository.findById(주문테이블.getId()))
@@ -205,8 +202,6 @@ public class OrderServiceTest {
         //given
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(주문);
-        when(orderLineItemRepository.saveAll(주문항목들))
-                .thenReturn(주문항목들);
         when(orderLineItemRepository.findAllByOrderId(주문.getId()))
                 .thenReturn(주문항목들);
         when(orderTableRepository.findById(주문테이블.getId()))
@@ -229,8 +224,6 @@ public class OrderServiceTest {
 
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(주문);
-        when(orderLineItemRepository.saveAll(주문항목들))
-                .thenReturn(주문항목들);
         when(orderLineItemRepository.findAllByOrderId(주문.getId()))
                 .thenReturn(주문항목들);
         when(orderTableRepository.findById(주문테이블.getId()))

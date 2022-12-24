@@ -60,9 +60,8 @@ project(':kitchenpos-menu') {
         implementation project(':kitchenpos-common')
         implementation project(':kitchenpos-product')
 
+        testImplementation project(':kitchenpos-common')
         testImplementation project(':kitchenpos-product')
-        testImplementation project(':kitchenpos-table')
-        testImplementation project(':kitchenpos-order')
     }
 }
 
@@ -70,9 +69,7 @@ project(':kitchenpos-table') {
     dependencies {
         implementation project(':kitchenpos-common')
 
-        testImplementation project(':kitchenpos-product')
-        testImplementation project(':kitchenpos-menu')
-        testImplementation project(':kitchenpos-order')
+        testImplementation project(':kitchenpos-common')
     }
 }
 
@@ -83,6 +80,7 @@ project(':kitchenpos-order') {
         implementation project(':kitchenpos-menu')
         implementation project(':kitchenpos-table')
 
+        testImplementation project(':kitchenpos-common')
         testImplementation project(':kitchenpos-product')
         testImplementation project(':kitchenpos-menu')
         testImplementation project(':kitchenpos-table')
