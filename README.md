@@ -130,6 +130,27 @@ completePayment() vs setOrderState()
 
 ### 의존성 점검 및 개선
 - `/src/main/resources/static/dependency_diagram.JPG` 이미지 파일에 첨부하였습니다.
-  ![다이어그램](./src/main/resources/static/dependency_diagram.JPG)
+  ![다이어그램](kitchenpos-application/src/main/resources/static/dependency_diagram.JPG)
 - 참고 자료로 포함되어 있는 조영호님의 우아한 객체지향 강의 학습하고,   
   `절차지향적 Validation Logic`과 `인터페이스를 이용한 의존성 역전`을 적용해 보았습니다.
+### Step3 회고
+- 의존성 개선이 미션의 주요 목표였음에도 모호하게 구현
+- 아직 `의존성 개선`, `의존성 역전`이라는 말은 많이 들었으나, 실제 구현에는 생경함
+- 프로그램 구현하면서 중간 중간 설계한 그림과 대조해볼 필요가 있음 
+
+## Step4 멀티 모듈 적용
+### 요구사항 정리
+
+---
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+    - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+    - 계층 간의 독립된 모듈로 만들 수 있다. 
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+--- 
+### 모듈 분리 계획
+- 공통영역
+- web(application) 영역
+- api(data 조회) 영역
+    - order 영역
+    - menu 영역
+---
