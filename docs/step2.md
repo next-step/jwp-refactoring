@@ -7,7 +7,7 @@
 
 - Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션을 필수로 준다
 - 데이터베이스 스키마 변경 및 마이그레이션이 필요하다면 아래 문서를 적극 활용한다
-  - [DB도 형상관리를 해보자!]
+  - [DB도 형상관리를 해보자!](https://meetup.toast.com/posts/173)
 
 
 ### 프로그래밍 요구 사항

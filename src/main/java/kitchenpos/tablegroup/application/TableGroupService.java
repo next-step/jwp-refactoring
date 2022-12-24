@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
@@ -41,7 +40,6 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(orderTableRepository.findByTableGroupId(tableGroupId));
-        tableGroupValidator.validateBeforeUngroup(orderTables);
         orderTables.ungroupOrderTables();
         orderTables.stream().forEach(orderTableRepository::save);
     }

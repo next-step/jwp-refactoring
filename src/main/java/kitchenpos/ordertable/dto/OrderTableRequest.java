@@ -46,7 +46,7 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public void updateNumberOfGuests(int i) {
-        numberOfGuests = i;
+    public void updateNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 }

@@ -27,10 +27,6 @@ public class OrderLineItems {
         return orderLineItems.size();
     }
 
-    public boolean isEmpty() {
-        return orderLineItems.isEmpty();
-    }
-
     public Stream<OrderLineItem> stream() {
         return orderLineItems.stream();
     }
