@@ -5,8 +5,6 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.menu.domain.Price;
-
 @Embeddable
 public class Quantity {
 
