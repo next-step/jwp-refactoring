@@ -101,24 +101,4 @@ class TableGroupTest {
             .hasMessage("단체 지정할 테이블이 없거나 단체 지정 할 테이블 2개 미만 입니다.");
     }
 
-    @Test
-    @DisplayName("테이블이 비어있지 않거나, 이미 단체 지정된 테이블일 경우 단체 지정 실패")
-    void groupFailWhenTableNotEmptyOrAlreadyGrouped() {
-        //when & then
-        assertThatThrownBy(() -> new TableGroup(1L, Arrays.asList(일번빈테이블, 주문테이블)))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
-
-        //given
-        OrderTable 테이블3 = new OrderTable(3L, 0, true, Collections.emptyList());
-        테이블3.setTableGroupId(1L);
-        OrderTable 테이블4 = new OrderTable(4L, 0, true, Collections.emptyList());
-        테이블4.setTableGroupId(1L);
-
-        //when & then
-        assertThatThrownBy(() -> new TableGroup(2L, Arrays.asList(테이블3, 테이블4)))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("테이블이 비어있지 않거나, 이미 단체 지정된 테이블 입니다.");
-    }
-
 }

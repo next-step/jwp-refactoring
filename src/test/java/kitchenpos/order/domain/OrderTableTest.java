@@ -7,11 +7,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -152,5 +154,43 @@ class OrderTableTest {
 
         //then
         assertThat(식사중테이블.getNumberOfGuests()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("단체 지정 가능 여부 확인")
+    void ableToGroup() {
+        //given
+        OrderTable orderTable = new OrderTable(1L, 0, true, Collections.singletonList(식사중));
+
+        //when
+        boolean ableToGroup = orderTable.ableToGroup();
+
+        //then
+        assertThat(ableToGroup).isTrue();
+    }
+
+    @Test
+    @DisplayName("단체 지정 해제 성공")
+    void ungroup() {
+        //given
+        OrderTable orderTable = new OrderTable(1L, 0, true, Collections.emptyList());
+
+        //when
+        orderTable.ungroup();
+
+        //then
+        assertThat(orderTable.getTableGroupId()).isNull();
+    }
+
+    @Test
+    @DisplayName("단체 지정 해제 실패")
+    void ungroupFail() {
+        //given
+        OrderTable orderTable = new OrderTable(1L, 0, true, Arrays.asList(식사중, 조리중));
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> orderTable.ungroup())
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
     }
 }

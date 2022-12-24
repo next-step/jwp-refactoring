@@ -45,8 +45,15 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
+    public void setTableGroupId(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
+    }
+
+    public void ungroup() {
+        if (onCookingOrMeal()) {
+            throw new IllegalArgumentException("조리중이거나 식사중에는 단체 지정해제할 수 없습니다.");
+        }
+        this.tableGroupId = null;
     }
 
     public int getNumberOfGuests() {
@@ -71,31 +78,29 @@ public class OrderTable {
             throw new IllegalArgumentException("단체 지정된 테이블은 비울 수 없습니다.");
         }
 
-        orders.forEach(
-            order -> {
-                if (order.onCookingOrMeal()) {
-                    throw new IllegalArgumentException("조리중 이거나 식사중에는 테이블을 비울 수 없습니다.");
-                }
-            }
-        );
+        orders.stream()
+            .filter(Order::onCookingOrMeal)
+            .findFirst()
+            .ifPresent(order -> {
+                throw new IllegalArgumentException("조리중 이거나 식사중에는 테이블을 비울 수 없습니다.");
+            });
     }
 
     public boolean onCookingOrMeal() {
-        for (Order order : orders) {
-            if (order.onCookingOrMeal()) {
-                return true;
-            }
-        }
-        return false;
+        return orders.stream()
+            .anyMatch(Order::onCookingOrMeal);
     }
 
     public void changeNumberOfGuest(int numberOfGuests) {
         validateNumberOfGuest(numberOfGuests);
-
         if (empty) {
             throw new IllegalArgumentException("빈 테이블의 손님 수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public boolean ableToGroup() {
+        return empty && tableGroupId == null;
     }
 
     private void validateNumberOfGuest(int numberOfGuests) {
