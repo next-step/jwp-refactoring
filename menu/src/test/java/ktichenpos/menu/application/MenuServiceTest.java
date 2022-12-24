@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package ktichenpos.menu.application;
 
 import static kitchenpos.generator.MenuGenerator.*;
 import static kitchenpos.generator.MenuGroupGenerator.*;

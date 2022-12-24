@@ -1,11 +1,11 @@
-package kitchenpos.generator;
+package ktichenpos.menu.generator;
 
-import static kitchenpos.generator.ProductGenerator.*;
+import static ktichenpos.menu.generator.ProductGenerator.*;
 import static org.mockito.Mockito.*;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import ktichenpos.menu.menu.domain.MenuProduct;
+import ktichenpos.menu.menu.domain.Product;
 
 public class MenuProductGenerator {
 

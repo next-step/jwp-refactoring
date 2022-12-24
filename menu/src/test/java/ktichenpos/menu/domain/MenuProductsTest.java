@@ -1,6 +1,6 @@
-package kitchenpos.menu.domain;
+package ktichenpos.menu.domain;
 
-import static kitchenpos.generator.ProductGenerator.*;
+import static ktichenpos.menu.generator.ProductGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -10,7 +10,10 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import ktichenpos.menu.menu.domain.MenuProduct;
+import ktichenpos.menu.menu.domain.MenuProducts;
 
 @DisplayName("메뉴 상품들 테스트")
 class MenuProductsTest {

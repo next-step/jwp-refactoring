@@ -1,6 +1,6 @@
-package kitchenpos.acceptance;
+package ktichenpos.menu.acceptance;
 
-import static kitchenpos.acceptance.utils.ProductAcceptanceUtils.*;
+import static ktichenpos.menu.acceptance.utils.ProductAcceptanceUtils.*;
 
 import java.math.BigDecimal;
 
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.ui.response.ProductResponse;
+import ktichenpos.menu.menu.ui.response.ProductResponse;
 
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends AcceptanceTest {

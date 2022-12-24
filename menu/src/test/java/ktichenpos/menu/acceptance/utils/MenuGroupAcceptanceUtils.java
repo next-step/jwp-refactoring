@@ -1,14 +1,14 @@
-package kitchenpos.acceptance.utils;
+package ktichenpos.menu.acceptance.utils;
 
-import static kitchenpos.acceptance.utils.RestAssuredUtils.*;
+import static ktichenpos.menu.acceptance.utils.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.ui.request.MenuGroupRequest;
-import kitchenpos.menu.ui.response.MenuGroupResponse;
+import ktichenpos.menu.menu.ui.request.MenuGroupRequest;
+import ktichenpos.menu.menu.ui.response.MenuGroupResponse;
 
 public class MenuGroupAcceptanceUtils {
 

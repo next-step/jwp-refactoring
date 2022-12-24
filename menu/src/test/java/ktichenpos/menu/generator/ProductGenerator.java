@@ -1,11 +1,11 @@
-package kitchenpos.generator;
+package ktichenpos.menu.generator;
 
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Product;
 
 public class ProductGenerator {
 

@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package ktichenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Product;
 
 @DisplayName("상품 테스트")
 class ProductTest {

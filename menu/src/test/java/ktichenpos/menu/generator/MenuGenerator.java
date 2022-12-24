@@ -1,16 +1,16 @@
-package kitchenpos.generator;
+package ktichenpos.menu.generator;
 
-import static kitchenpos.generator.MenuGroupGenerator.*;
-import static kitchenpos.generator.MenuProductGenerator.*;
+import static ktichenpos.menu.generator.MenuGroupGenerator.*;
+import static ktichenpos.menu.generator.MenuProductGenerator.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Menu;
+import ktichenpos.menu.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuProducts;
 
 public class MenuGenerator {
 

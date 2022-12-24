@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package ktichenpos.menu.acceptance;
 
 import static kitchenpos.acceptance.utils.MenuGroupAcceptanceUtils.*;
 

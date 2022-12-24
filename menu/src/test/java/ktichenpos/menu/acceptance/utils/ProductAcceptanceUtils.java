@@ -1,6 +1,6 @@
-package kitchenpos.acceptance.utils;
+package ktichenpos.menu.acceptance.utils;
 
-import static kitchenpos.acceptance.utils.RestAssuredUtils.*;
+import static ktichenpos.menu.acceptance.utils.RestAssuredUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.ui.request.ProductRequest;
-import kitchenpos.menu.ui.response.ProductResponse;
+import ktichenpos.menu.menu.ui.request.ProductRequest;
+import ktichenpos.menu.menu.ui.response.ProductResponse;
 
 public class ProductAcceptanceUtils {
 

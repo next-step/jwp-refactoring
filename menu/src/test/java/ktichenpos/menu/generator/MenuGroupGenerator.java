@@ -1,8 +1,8 @@
-package kitchenpos.generator;
+package ktichenpos.menu.generator;
 
 import static org.mockito.Mockito.*;
 
-import kitchenpos.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuGroup;
 
 public class MenuGroupGenerator {
 

@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package ktichenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -16,6 +16,7 @@ import kitchenpos.generator.ProductGenerator;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.ui.request.ProductRequest;
+import ktichenpos.menu.menu.application.ProductService;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

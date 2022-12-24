@@ -1,5 +1,6 @@
-package kitchenpos.menu.domain;
+package ktichenpos.menu.domain;
 
+import static ktichenpos.menu.generator.ProductGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -8,8 +9,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.generator.ProductGenerator;
+import ktichenpos.menu.menu.domain.MenuProduct;
+import ktichenpos.menu.menu.domain.Product;
 
 @DisplayName("메뉴 상품 테스트")
 class MenuProductTest {
@@ -18,7 +21,7 @@ class MenuProductTest {
 	@DisplayName("메뉴 상품 생성")
 	void createMenuProductTest() {
 		// given
-		Product 후라이드_치킨 = ProductGenerator.후라이드_치킨();
+		Product 후라이드_치킨 = 후라이드_치킨();
 		Quantity 수량 = Quantity.from(1L);
 
 		// when, then
@@ -43,7 +46,7 @@ class MenuProductTest {
 	@DisplayName("메뉴 상품 생성 - 수량이 없으면 예외 발생")
 	void createMenuProductWithNullQuantityTest() {
 		// given
-		Product 후라이드_치킨 = ProductGenerator.후라이드_치킨();
+		Product 후라이드_치킨 = 후라이드_치킨();
 		Quantity 수량 = null;
 
 		// when, then
@@ -56,7 +59,7 @@ class MenuProductTest {
 	@DisplayName("수량 * 가격 = 금액")
 	void calculatePriceTest() {
 		// given
-		Product 후라이드_치킨 = ProductGenerator.후라이드_치킨();
+		Product 후라이드_치킨 = 후라이드_치킨();
 		Quantity 수량 = Quantity.from(2L);
 		MenuProduct menuProduct = MenuProduct.of(후라이드_치킨, 수량);
 

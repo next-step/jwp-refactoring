@@ -1,6 +1,6 @@
-package kitchenpos.menu.application;
+package ktichenpos.menu.application;
 
-import static kitchenpos.generator.MenuGroupGenerator.*;
+import static ktichenpos.menu.generator.MenuGroupGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -12,10 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.ui.request.MenuGroupRequest;
-import kitchenpos.menu.ui.response.MenuGroupResponse;
+import ktichenpos.menu.menu.application.MenuGroupService;
+import ktichenpos.menu.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuGroupRepository;
+import ktichenpos.menu.menu.ui.request.MenuGroupRequest;
+import ktichenpos.menu.menu.ui.response.MenuGroupResponse;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)

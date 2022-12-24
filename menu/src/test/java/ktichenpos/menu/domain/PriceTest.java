@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package ktichenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import kitchenpos.common.domain.Price;
 
 @DisplayName("가격 테스트")
 class PriceTest {

@@ -3,7 +3,7 @@ package ktichenpos.menu.menu.ui.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuGroup;
 
 public class MenuGroupResponse {
 	private Long id;
