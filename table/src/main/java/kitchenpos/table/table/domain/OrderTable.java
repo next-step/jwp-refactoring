@@ -1,13 +1,17 @@
 package kitchenpos.table.table.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.springframework.util.Assert;
 
@@ -27,6 +31,11 @@ public class OrderTable {
 	@Embedded
 	private TableEmpty tableEmpty;
 
+	@Transient
+	@Column(nullable = false, length = 10)
+	@Enumerated(EnumType.STRING)
+	private TableStatus status;
+
 	protected OrderTable() {
 	}
 
@@ -35,6 +44,7 @@ public class OrderTable {
 		Assert.notNull(tableEmpty, "테이블 상태는 필수입니다.");
 		this.numberOfGuests = numberOfGuests;
 		this.tableEmpty = tableEmpty;
+		this.status = TableStatus.EMPTY;
 	}
 
 	public static OrderTable of(NumberOfGuests numberOfGuests, TableEmpty tableEmpty) {
@@ -68,7 +78,6 @@ public class OrderTable {
 		this.tableEmpty = TableEmpty.from(empty);
 	}
 
-
 	public NumberOfGuests numberOfGuests() {
 		return numberOfGuests;
 	}
@@ -84,15 +93,27 @@ public class OrderTable {
 		}
 	}
 
-	public boolean isFull() {
-		return tableEmpty.isFull();
-	}
-
 	public void updateGroup(TableGroup tableGroup) {
 		this.tableGroup = tableGroup;
+		this.status = TableStatus.SEATED;
 	}
 
 	public boolean emptyAndNoGroup() {
 		return isEmpty() && !hasTableGroup();
+	}
+
+	public void ordered() {
+		if (this.status.isEmpty()) {
+			throw new IllegalArgumentException(String.format("비어있는 테이블(%s)에서 주문을 받을 수 없습니다.", this));
+		}
+		this.status = TableStatus.ORDERED;
+	}
+
+	public boolean isOrdered() {
+		return this.status.isOrdered();
+	}
+
+	public TableStatus status() {
+		return this.status;
 	}
 }

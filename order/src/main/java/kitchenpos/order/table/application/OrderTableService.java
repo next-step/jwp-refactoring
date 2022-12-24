@@ -14,15 +14,15 @@ public class OrderTableService {
 		this.tableClient = tableClient;
 	}
 
-	public void changeEmpty(long orderTableId) {
-		tableClient.changeEmpty(orderTableId);
-	}
-
 	public void ungroup(long orderTableId) {
 		tableClient.ungroup(orderTableId);
 	}
 
 	public TableDto getTable(long orderTableId) {
 		return tableClient.getTable(orderTableId);
+	}
+
+	public void ordered(long tableId) {
+		tableClient.ordered(tableId);
 	}
 }

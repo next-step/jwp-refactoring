@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.generator.OrderTableGenerator;
 import kitchenpos.table.table.appliation.TableService;
-import kitchenpos.table.table.appliation.TableValidator;
 import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.OrderTableRepository;
 import kitchenpos.table.table.domain.TableGroup;
@@ -32,8 +31,6 @@ import kitchenpos.table.table.ui.response.OrderTableResponse;
 class TableServiceTest {
 	@Mock
 	private OrderTableRepository orderTableRepository;
-	@Mock
-	private TableValidator tableValidator;
 
 	@InjectMocks
 	private TableService tableService;
@@ -122,13 +119,12 @@ class TableServiceTest {
 	@Test
 	void updateTableStatusWithCookingOrMealOrderStatusTest() {
 		// given
-		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
-		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		// willThrow(IllegalArgumentException.class).given(tableValidator).validateChangeEmpty(any());
+		new TableStatusRequest(true);
+		OrderTable value = OrderTableGenerator.비어있지_않은_5명_테이블();
 
 		// when, then
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
+			.isThrownBy(value::ordered);
 	}
 
 	@DisplayName("방문한 손님 수를 변경할 수 있다.")

@@ -17,16 +17,13 @@ import kitchenpos.table.table.ui.response.TableGroupResponse;
 public class TableGroupService {
 	private final TableGroupRepository tableGroupRepository;
 	private final OrderTableRepository orderTableRepository;
-	private final TableValidator tableValidator;
 
 	public TableGroupService(
 		final TableGroupRepository tableGroupRepository,
-		final OrderTableRepository orderTableRepository,
-		final TableValidator tableValidator
+		final OrderTableRepository orderTableRepository
 	) {
 		this.tableGroupRepository = tableGroupRepository;
 		this.orderTableRepository = orderTableRepository;
-		this.tableValidator = tableValidator;
 	}
 
 	@Transactional

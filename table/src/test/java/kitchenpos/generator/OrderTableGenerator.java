@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import kitchenpos.table.table.domain.NumberOfGuests;
 import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.TableEmpty;
+import kitchenpos.table.table.domain.TableStatus;
 
 public class OrderTableGenerator {
 
@@ -20,6 +21,7 @@ public class OrderTableGenerator {
 	public static OrderTable 비어있지_않은_5명_테이블() {
 		OrderTable spy = spy(OrderTable.of(NumberOfGuests.from(2), TableEmpty.from(false)));
 		lenient().when(spy.id()).thenReturn(1L);
+		lenient().when(spy.status()).thenReturn(TableStatus.ORDERED);
 		return spy;
 	}
 

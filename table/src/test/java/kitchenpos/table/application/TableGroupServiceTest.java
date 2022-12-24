@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.generator.OrderTableGenerator;
 import kitchenpos.generator.TableGroupGenerator;
 import kitchenpos.table.table.appliation.TableGroupService;
-import kitchenpos.table.table.appliation.TableValidator;
 import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.OrderTableRepository;
 import kitchenpos.table.table.domain.TableGroup;
@@ -33,8 +32,6 @@ class TableGroupServiceTest {
 
 	@Mock
 	private TableGroupRepository tableGroupRepository;
-	@Mock
-	private TableValidator tableValidator;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 

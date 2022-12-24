@@ -16,15 +16,9 @@ import kitchenpos.table.table.ui.response.OrderTableResponse;
 @Service
 public class TableService {
 	private final OrderTableRepository orderTableRepository;
-	private final TableValidator tableValidator;
 
-	public TableService(
-		final OrderTableRepository orderTableRepository,
-		final TableValidator tableValidator
-	) {
-		this.orderTableRepository = orderTableRepository;
-		this.tableValidator = tableValidator;
-	}
+	public TableService(final OrderTableRepository orderTableRepository) {
+		this.orderTableRepository = orderTableRepository;}
 
 	@Transactional
 	public OrderTableResponse create(final OrderTableRequest request) {
@@ -39,7 +33,6 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final TableStatusRequest request) {
 		final OrderTable savedOrderTable = findById(orderTableId);
-		// tableValidator.validateChangeEmpty(orderTableId);
 		savedOrderTable.updateEmpty(request.isEmpty());
 		return OrderTableResponse.from(savedOrderTable);
 	}
@@ -68,5 +61,10 @@ public class TableService {
 
 	public OrderTableResponse getTable(Long orderTableId) {
 		return OrderTableResponse.from(orderTableRepository.orderTable(orderTableId));
+	}
+
+	public void changeOrdered(long orderTableId) {
+		orderTableRepository.orderTable(orderTableId)
+			.ordered();
 	}
 }

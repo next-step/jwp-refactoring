@@ -18,6 +18,6 @@ public class OrderEventHandler {
 	@EventListener
 	@Async
 	public void handle(OrderCreatedEvent event) {
-		orderTableService.changeEmpty(event.tableId());
+		orderTableService.ordered(event.tableId());
 	}
 }
