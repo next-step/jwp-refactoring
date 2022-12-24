@@ -1,2 +1,6 @@
 bootJar { enabled = false }
 jar { enabled = true }
+
+dependencies {
+    testCompile project(':module-order')
+}
