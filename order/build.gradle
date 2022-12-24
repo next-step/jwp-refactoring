@@ -1,7 +1,0 @@
-dependencies {
-    implementation project(':table')
-    implementation project(':kitchenpos-menu')
-
-    testImplementation(testFixtures(project(':table')))
-    testImplementation(testFixtures(project(':kitchenpos-menu')))
-}

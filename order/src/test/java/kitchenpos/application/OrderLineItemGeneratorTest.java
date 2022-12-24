@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.OrderLineItemFixture.*;
 import static kitchenpos.fixture.OrderMenuFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.fixture.OrderLineItemFixture;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.OrderMenuRepository;
 import kitchenpos.order.application.OrderLineItemGenerator;
@@ -42,8 +42,8 @@ class OrderLineItemGeneratorTest {
     void generate_not_exists() {
         // given
         List<OrderLineItemRequest> orderLineItems = Arrays.asList(
-            OrderLineItemFixture.orderLineItemRequest(1L, 1L),
-            OrderLineItemFixture.orderLineItemRequest(2L, 2L)
+            orderLineItemRequest(1L, 1L),
+            orderLineItemRequest(2L, 2L)
         );
         given(menuRepository.findAllById(anyList())).willReturn(Collections.singletonList(
             savedMenu(1L, "메뉴", BigDecimal.valueOf(13000))
@@ -66,7 +66,7 @@ class OrderLineItemGeneratorTest {
         BigDecimal menuPrice = BigDecimal.valueOf(13000);
         long quantity = 2L;
         List<OrderLineItemRequest> orderLineItems = Collections.singletonList(
-            OrderLineItemFixture.orderLineItemRequest(menuId, quantity));
+            orderLineItemRequest(menuId, quantity));
         given(menuRepository.findAllById(anyList())).willReturn(Collections.singletonList(
             savedMenu(menuId, menuName, menuPrice)
         ));
