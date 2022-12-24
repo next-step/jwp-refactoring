@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static kitchenpos.menu.domain.MenuFixture.메뉴;
 import static kitchenpos.menu.domain.MenuGroupFixture.메뉴그룹;
 import static kitchenpos.product.domain.MenuProductFixture.메뉴상품;
@@ -58,7 +60,7 @@ public class MenuTest {
                 () -> assertThat(풀코스).isNotNull(),
                 () -> assertThat(풀코스.getName()).isEqualTo("풀코스"),
                 () -> assertThat(풀코스.getMenuGroup()).isEqualTo(코스),
-                () -> assertThat(풀코스.getPrice().intValue()).isEqualTo(62000)
+                () -> assertThat(풀코스.getPrice().value()).isEqualTo(new BigDecimal(62000))
         );
     }
 

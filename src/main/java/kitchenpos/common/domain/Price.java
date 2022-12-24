@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
-public class Price implements Comparable<BigDecimal> {
+public class Price {
 
     private static final String INVALID_PRICE = "유요하지 않은 가격입니다.";
 
@@ -27,16 +27,15 @@ public class Price implements Comparable<BigDecimal> {
         }
     }
 
+    public boolean isGreaterThan(Price price) {
+        return this.price.compareTo(price.value()) > 0;
+    }
+
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public BigDecimal getPrice() {
+    public BigDecimal value() {
         return price;
-    }
-
-    @Override
-    public int compareTo(BigDecimal o) {
-        return price.compareTo(o);
     }
 }

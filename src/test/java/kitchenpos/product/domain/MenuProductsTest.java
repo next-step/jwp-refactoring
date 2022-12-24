@@ -1,12 +1,12 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,23 +62,22 @@ public class MenuProductsTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-//    @DisplayName("MenuProducts 전체 금액을 계산한다")
-//    @Test
-//    void MenuProducts_전체_금액_계산_테스트() {
-//        // given
-//        MenuProduct 풀코스_카프레제샐러드 = 메뉴상품(3L, 풀코스, 카프레제샐러드, 1);
-//        MenuProduct 풀코스_알리오올리오 = 메뉴상품(4L, 풀코스, 알리오올리오, 1);
-//        MenuProduct 풀코스_쉬림프로제 = 메뉴상품(5L, 풀코스, 쉬림프로제, 1);
-//        MenuProduct 풀코스_레드와인 = 메뉴상품(6L, 풀코스, 레드와인, 2);
-//
-//        List<MenuProduct> menuProductList = Arrays.asList(풀코스_카프레제샐러드, 풀코스_알리오올리오, 풀코스_쉬림프로제, 풀코스_레드와인);
-//        MenuProducts menuProducts = new MenuProducts();
-//        menuProducts.addList(menuProductList);
-//
-//        // when
-//        BigDecimal menuProductPriceSum = menuProducts.getMenuProductPriceSum();
-//
-//        // then
-//        assertThat(menuProductPriceSum.intValue()).isEqualTo(66000);
-//    }
+    @DisplayName("MenuProducts 전체 금액을 계산한다")
+    @Test
+    void MenuProducts_전체_금액_계산_테스트() {
+        // given
+        MenuProduct 풀코스_카프레제샐러드 = 메뉴상품(3L, 풀코스.getId(), 카프레제샐러드, 1);
+        MenuProduct 풀코스_알리오올리오 = 메뉴상품(4L, 풀코스.getId(), 알리오올리오, 1);
+        MenuProduct 풀코스_쉬림프로제 = 메뉴상품(5L, 풀코스.getId(), 쉬림프로제, 1);
+        MenuProduct 풀코스_레드와인 = 메뉴상품(6L, 풀코스.getId(), 레드와인, 2);
+
+        List<MenuProduct> menuProductList = Arrays.asList(풀코스_카프레제샐러드, 풀코스_알리오올리오, 풀코스_쉬림프로제, 풀코스_레드와인);
+        MenuProducts menuProducts = new MenuProducts(menuProductList);
+
+        // when
+        Price menuProductPriceSum = menuProducts.getMenuProductPriceSum();
+
+        // then
+        assertThat(menuProductPriceSum.value().intValue()).isEqualTo(66000);
+    }
 }

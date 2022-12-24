@@ -10,7 +10,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.dto.MenuProductResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -95,14 +95,14 @@ public class MenuServiceTest {
         given(menuProductRepository.saveAll(any())).willReturn(Arrays.asList(오일2인세트_알리오올리오, 오일2인세트_봉골레오일));
 
         // when
-        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().intValue(), 세트.getId(), convertRequest(menuProduct));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().value().intValue(), 세트.getId(), convertRequest(menuProduct));
         MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
         verify(menuRepository).save(any());
         assertAll(
                 () -> assertThat(menuResponse.getMenuGroupId()).isEqualTo(세트.getId()),
-                () -> assertThat(menuResponse.getPrice().intValue()).isEqualTo(34000),
+                () -> assertThat(menuResponse.getPrice().value()).isEqualTo(new BigDecimal(34000)),
                 () -> assertThat(menuResponse.getMenuProducts()).hasSize(2)
         );
     }
@@ -145,7 +145,7 @@ public class MenuServiceTest {
     void 메뉴_그룹_정보가_없는_메뉴_생성() {
         // given
         List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(오일2인세트_알리오올리오), MenuProductRequest.of(오일2인세트_봉골레오일));
-        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().intValue(), 100L, menuProductRequests);
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().value().intValue(), 100L, menuProductRequests);
         given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.ofNullable(null));
 
         // when & then
@@ -165,7 +165,7 @@ public class MenuServiceTest {
 
         // when
         List<MenuProduct> menuProducts = Arrays.asList(오일2인세트_알리오올리오, 오일2인세트_봉골레오일);
-        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().intValue(), 세트.getId(), convertRequest(menuProducts));
+        MenuRequest menuRequest = new MenuRequest(오일2인세트.getName(), 오일2인세트.getPrice().value().intValue(), 세트.getId(), convertRequest(menuProducts));
 
         // then
         assertThatThrownBy(

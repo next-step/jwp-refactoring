@@ -1,11 +1,8 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.dto.OrderTableResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class OrderTables {
 
@@ -35,10 +32,12 @@ public class OrderTables {
             throw new IllegalArgumentException(INVALID_LIST_SIZE_EXCEPTION);
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException(INVALID_ORDER_TABLE_EXCEPTION);
-            }
+        orderTables.stream().forEach(this::validateOrderTable);
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+            throw new IllegalArgumentException(INVALID_ORDER_TABLE_EXCEPTION);
         }
     }
 

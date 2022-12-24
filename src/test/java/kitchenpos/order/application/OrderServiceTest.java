@@ -18,10 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static kitchenpos.menu.domain.MenuFixture.메뉴;
@@ -34,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -125,8 +121,8 @@ public class OrderServiceTest {
         //then
         assertAll(
                 () -> assertThat(orders).hasSize(2),
-                () -> assertThat(orders.get(0).getOrderLineItems().stream().map(OrderLineItemResponse::getOrder).collect(Collectors.toList())).contains(주문1),
-                () -> assertThat(orders.get(1).getOrderLineItems().stream().map(OrderLineItemResponse::getOrder).collect(Collectors.toList())).contains(주문2)
+                () -> assertThat(getOrderInOrderLineItems(orders.get(0))).isEqualTo(주문1),
+                () -> assertThat(getOrderInOrderLineItems(orders.get(1))).isEqualTo(주문2)
         );
     }
 
@@ -222,5 +218,13 @@ public class OrderServiceTest {
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(주문2.getId(), orderRequest)
         ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private Order getOrderInOrderLineItems(OrderResponse orderResponse) {
+        Set<Order> orderSet = orderResponse.getOrderLineItems().stream()
+                .map(OrderLineItemResponse::getOrder)
+                .collect(Collectors.toSet());
+
+        return new ArrayList<>(orderSet).get(0);
     }
 }

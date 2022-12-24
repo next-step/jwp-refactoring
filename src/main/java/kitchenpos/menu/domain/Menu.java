@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class Menu {
@@ -42,8 +41,8 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
+    public Price getPrice() {
+        return price;
     }
 
     public MenuGroup getMenuGroup() {

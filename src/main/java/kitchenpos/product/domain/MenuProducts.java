@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
-import java.math.BigDecimal;
+import kitchenpos.common.domain.Price;
+
 import java.util.List;
 
 public class MenuProducts {
@@ -12,19 +13,19 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public void validateMenuPrice(BigDecimal menuPrice) {
-        BigDecimal menuProductPriceSum = getMenuProductPriceSum();
+    public void validateMenuPrice(Price menuPrice) {
+        Price menuProductPriceSum = getMenuProductPriceSum();
 
-        if (menuPrice.compareTo(menuProductPriceSum) > 0) {
+        if (menuPrice.isGreaterThan(menuProductPriceSum)) {
             throw new IllegalArgumentException(INVALID_PRICE);
         }
     }
 
-    public BigDecimal getMenuProductPriceSum() {
+    public Price getMenuProductPriceSum() {
         int productsPriceSum = menuProducts.stream()
                 .mapToInt(menuProduct -> menuProduct.getMenuProductPrice().intValue())
                 .sum();
-        return new BigDecimal(productsPriceSum);
+        return new Price(productsPriceSum);
     }
 
     public List<MenuProduct> getMenuProducts() {

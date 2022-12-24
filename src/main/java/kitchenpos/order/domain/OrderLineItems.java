@@ -1,9 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.dto.OrderLineItemResponse;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderLineItems {
 
@@ -26,9 +23,4 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-//    public List<OrderLineItemResponse> getOrderLineItemResponses() {
-//        return orderLineItems.stream()
-//                .map(OrderLineItemResponse::of)
-//                .collect(Collectors.toList());
-//    }
 }

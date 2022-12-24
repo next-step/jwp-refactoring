@@ -70,7 +70,7 @@ public class MenuProductServiceTest {
 
         // when
         List<MenuProductRequest> menuProductRequests = convertRequest(Arrays.asList(오일2인세트_알리오올리오, 오일2인세트_봉골레오일));
-        List<MenuProductResponse> menuProductResponses = menuProductService.createAll(menuProductRequests, 오일2인세트.getId(), 오일2인세트.getPrice().intValue());
+        List<MenuProductResponse> menuProductResponses = menuProductService.createAll(menuProductRequests, 오일2인세트.getId(), 오일2인세트.getPrice().value().intValue());
 
         // then
         assertAll(

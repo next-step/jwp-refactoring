@@ -23,7 +23,7 @@ public class MenuRequest {
     }
 
     public static MenuRequest of(Menu menu, List<MenuProductRequest> menuProductRequests) {
-        return new MenuRequest(menu.getName(), menu.getPrice().intValue(), menu.getMenuGroup().getId(), menuProductRequests);
+        return new MenuRequest(menu.getName(), menu.getPrice().value().intValue(), menu.getMenuGroup().getId(), menuProductRequests);
     }
 
     public void setName(String name) {
