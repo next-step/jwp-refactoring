@@ -1,5 +1,6 @@
 package kitchenpos.table.dto;
 
+import java.util.Objects;
 import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableResponse {
@@ -58,5 +59,23 @@ public class OrderTableResponse {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderTableResponse that = (OrderTableResponse) o;
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects
+            .equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

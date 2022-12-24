@@ -3,7 +3,7 @@ package kitchenpos.order.dto;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderTable;
@@ -19,7 +19,8 @@ public class OrderRequest {
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, String orderStatus,
+        List<OrderLineItemRequest> orderLineItems) {
         this(null, orderTableId, orderStatus, null, orderLineItems);
     }
 
@@ -83,6 +84,9 @@ public class OrderRequest {
     }
 
     public List<OrderLineItemRequest> getOrderLineItems() {
+        if (Objects.isNull(orderLineItems)) {
+            return Collections.emptyList();
+        }
         return orderLineItems;
     }
 

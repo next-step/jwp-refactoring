@@ -34,4 +34,8 @@ public class ProductFixture {
             .then().log().all()
             .extract();
     }
+
+    public static ProductRequest createProductRequest(Product product) {
+        return new ProductRequest(product.getId(), product.getName(), product.getPrice());
+    }
 }

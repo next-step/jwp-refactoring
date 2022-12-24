@@ -11,8 +11,7 @@ import org.springframework.http.MediaType;
 public class TableFixture {
 
     public static final OrderTable 일번테이블 = new OrderTable(1L, 0, false, Collections.emptyList());
-    public static final OrderTable 이번테이블 = new OrderTable(2L, 0, false, Collections.emptyList());
-    public static final OrderTable 삼번테이블 = new OrderTable(3L, 0, false, Collections.emptyList());
+    public static final OrderTable 빈테이블 = new OrderTable(2L, 0, true, Collections.emptyList());
 
     public static ExtractableResponse<Response> 주문_테이블_추가(Long tableGroupId, int numberOfGuest,
         boolean empty) {
@@ -65,5 +64,10 @@ public class TableFixture {
             .when().put("/api/tables/" + orderTableId + "/number-of-guests")
             .then().log().all()
             .extract();
+    }
+
+    public static OrderTableRequest createOrderTableRequest(OrderTable orderTable) {
+        return new OrderTableRequest(orderTable.getId(), orderTable.getNumberOfGuests(),
+            orderTable.isEmpty());
     }
 }

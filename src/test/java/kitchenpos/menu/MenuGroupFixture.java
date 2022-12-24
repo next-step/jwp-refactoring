@@ -31,4 +31,8 @@ public class MenuGroupFixture {
             .then().log().all()
             .extract();
     }
+
+    public static MenuGroupRequest createRequest(MenuGroup menuGroup) {
+        return new MenuGroupRequest(menuGroup.getName());
+    }
 }

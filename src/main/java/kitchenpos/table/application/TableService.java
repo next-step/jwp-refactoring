@@ -1,13 +1,10 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +19,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTable orderTable) {
+    public OrderTableResponse create(final OrderTableRequest request) {
+        OrderTable orderTable = request.toOrderTable();
         return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
 
@@ -35,7 +33,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final boolean isEmpty) {
-        final OrderTable orderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = getOrderTable(orderTableId);
         orderTable.changeEmpty(isEmpty);
         return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
@@ -43,8 +41,13 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
         final int numberOfGuests) {
-        final OrderTable orderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = getOrderTable(orderTableId);
         orderTable.changeNumberOfGuest(numberOfGuests);
         return OrderTableResponse.from(orderTableDao.save(orderTable));
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+            .orElseThrow(() -> new IllegalArgumentException("변경하고자 하는 테이블 정보가 없습니다."));
     }
 }

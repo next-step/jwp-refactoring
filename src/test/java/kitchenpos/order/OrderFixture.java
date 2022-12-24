@@ -1,5 +1,6 @@
 package kitchenpos.order;
 
+import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.table.TableFixture.일번테이블;
 
 import io.restassured.RestAssured;
@@ -7,6 +8,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import kitchenpos.menu.MenuFixture;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -20,6 +23,8 @@ public class OrderFixture {
     public static final OrderLineItem 주문항목 = new OrderLineItem(1L, null, MenuFixture.더블강정치킨,
         2L);
     public static final Order 주문 = new Order(1L, 일번테이블, null, null,
+        Collections.singletonList(주문항목));
+    public static final Order 조리중주문 = new Order(1L, 일번테이블, COOKING.name(), null,
         Collections.singletonList(주문항목));
 
     public static ExtractableResponse<Response> 주문(Long orderTableId,
@@ -58,4 +63,18 @@ public class OrderFixture {
             .extract();
     }
 
+    public static OrderRequest createOrderRequest(Order order) {
+        return new OrderRequest(order.orderTableId(), order.getOrderStatus(),
+            createOrderLineItemRequest(order.getOrderLineItems()));
+    }
+
+    public static List<OrderLineItemRequest> createOrderLineItemRequest(
+        List<OrderLineItem> orderLineItem) {
+        if (Objects.isNull(orderLineItem)) {
+            return null;
+        }
+        return orderLineItem.stream()
+            .map(domain -> new OrderLineItemRequest(domain.menuId(), domain.getQuantity()))
+            .collect(Collectors.toList());
+    }
 }

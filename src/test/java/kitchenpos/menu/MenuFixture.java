@@ -10,6 +10,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -44,5 +45,18 @@ public class MenuFixture {
             .when().get("/api/menus")
             .then().log().all()
             .extract();
+    }
+
+    public static MenuRequest createMenuRequest(Menu menu) {
+        return new MenuRequest(menu.getName(), menu.getPrice(), menu.menuGroupId(),
+            createMenuProductReqeust(menu.menuProducts()));
+    }
+
+    public static List<MenuProductRequest> createMenuProductReqeust(
+        List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+            .map(menuProduct -> new MenuProductRequest(menuProduct.getProduct().getId(),
+                menuProduct.getQuantity()))
+            .collect(Collectors.toList());
     }
 }

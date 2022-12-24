@@ -59,7 +59,7 @@ public class MenuService {
 
     private Product findProductById(Long productId) {
         return productDao.findById(productId)
-            .orElseThrow(() -> new IllegalArgumentException(""));
+            .orElseThrow(() -> new IllegalArgumentException("존재 하지 않는 상품 입니다."));
     }
 
     public List<MenuResponse> list() {

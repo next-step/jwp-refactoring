@@ -1,6 +1,7 @@
 package kitchenpos.product.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
@@ -44,5 +45,23 @@ public class ProductResponse {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProductResponse that = (ProductResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+            && Objects.equals(price, that.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
     }
 }
