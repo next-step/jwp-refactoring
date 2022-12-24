@@ -2,10 +2,10 @@ package kitchenpos.order.menu.applciation;
 
 import org.springframework.stereotype.Service;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.order.menu.client.MenuClient;
 import kitchenpos.order.menu.client.dto.MenuDto;
 import kitchenpos.order.menu.domain.Menu;
+import kitchenpos.order.order.domain.Price;
 
 @Service
 public class OrderMenuService {

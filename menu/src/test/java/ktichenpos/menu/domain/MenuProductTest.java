@@ -9,10 +9,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
 import ktichenpos.menu.menu.domain.MenuProduct;
+import ktichenpos.menu.menu.domain.Price;
 import ktichenpos.menu.menu.domain.Product;
+import ktichenpos.menu.menu.domain.Quantity;
 
 @DisplayName("메뉴 상품 테스트")
 class MenuProductTest {

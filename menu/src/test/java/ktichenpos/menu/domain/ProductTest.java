@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Price;
 import ktichenpos.menu.menu.domain.Product;
 
 @DisplayName("상품 테스트")

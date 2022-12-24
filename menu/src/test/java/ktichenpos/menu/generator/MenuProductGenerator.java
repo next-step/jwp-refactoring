@@ -3,9 +3,9 @@ package ktichenpos.menu.generator;
 import static ktichenpos.menu.generator.ProductGenerator.*;
 import static org.mockito.Mockito.*;
 
-import kitchenpos.common.domain.Quantity;
 import ktichenpos.menu.menu.domain.MenuProduct;
 import ktichenpos.menu.menu.domain.Product;
+import ktichenpos.menu.menu.domain.Quantity;
 
 public class MenuProductGenerator {
 

@@ -11,8 +11,10 @@ import kitchenpos.order.menu.applciation.OrderMenuService;
 import kitchenpos.order.menu.domain.Menu;
 import kitchenpos.order.order.domain.Order;
 import kitchenpos.order.order.domain.OrderLineItem;
+import kitchenpos.order.order.domain.OrderLineItemMenu;
 import kitchenpos.order.order.domain.OrderLineItems;
 import kitchenpos.order.order.domain.OrderRepository;
+import kitchenpos.order.order.domain.Price;
 import kitchenpos.order.order.domain.event.OrderCreatedEvent;
 import kitchenpos.order.order.ui.request.OrderLineItemRequest;
 import kitchenpos.order.order.ui.request.OrderRequest;
@@ -41,6 +43,7 @@ public class OrderService {
 
 	@Transactional
 	public OrderResponse create(final OrderRequest request) {
+		orderValidator.validateCreateOrder(request.getOrderTableId());
 		Order order = orderRepository.save(newOrder(request));
 		eventPublisher.publishEvent(OrderCreatedEvent.from(order));
 		return OrderResponse.from(order);
@@ -71,8 +74,9 @@ public class OrderService {
 		return OrderLineItem.of(menu(request.getMenuId()), request.getQuantity());
 	}
 
-	private Menu menu(long menuId) {
-		return menuService.menu(menuId);
+	private OrderLineItemMenu menu(long menuId) {
+		Menu menu = menuService.menu(menuId);
+		return OrderLineItemMenu.of(menu.id(), menu.name(), Price.from(menu.price()));
 	}
 
 	private Order newOrder(OrderRequest request) {

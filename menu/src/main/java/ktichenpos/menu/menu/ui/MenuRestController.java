@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.ui.request.MenuRequest;
-import kitchenpos.menu.ui.response.MenuResponse;
+import ktichenpos.menu.menu.application.MenuService;
+import ktichenpos.menu.menu.ui.request.MenuRequest;
+import ktichenpos.menu.menu.ui.response.MenuResponse;
 
 @RestController
 public class MenuRestController {

@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.generator.OrderTableGenerator;
 import kitchenpos.table.table.appliation.TableService;
 import kitchenpos.table.table.appliation.TableValidator;
@@ -80,7 +79,7 @@ class TableServiceTest {
 	void updateTableStatusTest() {
 		// given
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		willDoNothing().given(tableValidator).validateChangeEmpty(any());
+		// willDoNothing().given(tableValidator).validateChangeEmpty(any());
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 
 		// when
@@ -101,7 +100,7 @@ class TableServiceTest {
 		Throwable throwable = catchThrowable(() -> tableService.changeEmpty(주문테이블.id(), tableStatusRequest));
 
 		// then
-		assertThat(throwable).isInstanceOf(NotFoundException.class);
+		// assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("테이블 그룹에 속해있으면 빈 테이블로 변경할 수 없다.")
@@ -125,7 +124,7 @@ class TableServiceTest {
 		// given
 		TableStatusRequest tableStatusRequest = new TableStatusRequest(true);
 		given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문테이블));
-		willThrow(IllegalArgumentException.class).given(tableValidator).validateChangeEmpty(any());
+		// willThrow(IllegalArgumentException.class).given(tableValidator).validateChangeEmpty(any());
 
 		// when, then
 		assertThatIllegalArgumentException()
@@ -171,7 +170,7 @@ class TableServiceTest {
 		Throwable throwable = catchThrowable(() -> tableService.changeNumberOfGuests(주문테이블.id(), request));
 
 		// then
-		assertThat(throwable).isInstanceOf(NotFoundException.class);
+		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("방문 손님 수를 변경하려는 주문 테이블은 비어있지 않은 상태여야 한다.")

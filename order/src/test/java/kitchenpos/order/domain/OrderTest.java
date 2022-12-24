@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.generator.OrderLineItemGenerator.*;
-import static kitchenpos.generator.OrderTableGenerator.*;
+import static kitchenpos.order.generator.generator.OrderLineItemGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collections;
@@ -9,6 +8,10 @@ import java.util.Collections;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import kitchenpos.order.order.domain.Order;
+import kitchenpos.order.order.domain.OrderLineItems;
+import kitchenpos.order.order.domain.OrderStatus;
 
 @DisplayName("주문 테스트")
 class OrderTest {
@@ -18,7 +21,7 @@ class OrderTest {
 	void createOrderTest() {
 		assertThatNoException()
 			.isThrownBy(() -> Order.of(
-				비어있지_않은_5명_테이블().id(),
+				1L,
 				OrderLineItems.fromSingle(주문_품목())));
 	}
 
@@ -27,7 +30,7 @@ class OrderTest {
 	void createOrderWithNullOrderLineItemsTest() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> Order.of(
-				비어있지_않은_5명_테이블().id(),
+				1L,
 				null))
 			.withMessage("주문 항목들은 필수입니다.");
 	}
@@ -37,7 +40,7 @@ class OrderTest {
 	void createOrderWithEmptyOrderLineItemsTest() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> Order.of(
-				비어있지_않은_5명_테이블().id(),
+				1L,
 				OrderLineItems.from(Collections.emptyList())))
 			.withMessage("주문 항목들이 비어있을 수 없습니다.");
 	}
@@ -46,7 +49,7 @@ class OrderTest {
 	@DisplayName("주문 상태 변경")
 	void changeOrderStatusTest() {
 		Order order = Order.of(
-			비어있지_않은_5명_테이블().id(),
+			1L,
 			OrderLineItems.fromSingle(주문_품목()));
 
 		order.updateStatus(OrderStatus.COMPLETION);
@@ -58,7 +61,7 @@ class OrderTest {
 	@DisplayName("주문 상태 변경 - 이미 완료 된 주문은 변경 불가")
 	void changeOrderStatusWithCompletionTest() {
 		Order order = Order.of(
-			비어있지_않은_5명_테이블().id(),
+			1L,
 			OrderLineItems.fromSingle(주문_품목()));
 		order.updateStatus(OrderStatus.COMPLETION);
 

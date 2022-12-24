@@ -8,8 +8,6 @@ import javax.persistence.Id;
 
 import org.springframework.util.Assert;
 
-import kitchenpos.common.domain.Price;
-
 @Entity
 public class Product {
 

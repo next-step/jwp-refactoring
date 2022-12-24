@@ -6,7 +6,7 @@ import javax.persistence.Embedded;
 
 import org.springframework.util.Assert;
 
-import kitchenpos.common.domain.Price;
+import kitchenpos.order.order.domain.Price;
 
 public class Menu {
 	private Long id;

@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.generator.MenuGenerator;
+import kitchenpos.generator.OrderLineItemMenuGenerator;
 import kitchenpos.order.order.domain.OrderLineItem;
+import kitchenpos.order.order.domain.Quantity;
 
 @DisplayName("주문 항목 테스트")
 class OrderLineItemTest {
@@ -17,7 +17,7 @@ class OrderLineItemTest {
 	void createOrderLineItemTest() {
 		assertThatNoException()
 			.isThrownBy(() -> OrderLineItem.of(
-				MenuGenerator.후라이드_세트(),
+				OrderLineItemMenuGenerator.주문_품목_메뉴(),
 				Quantity.from(1L)
 			));
 	}
@@ -38,7 +38,7 @@ class OrderLineItemTest {
 	void createOrderLineItemTest_quantityIsNull() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> OrderLineItem.of(
-				MenuGenerator.후라이드_세트(),
+				OrderLineItemMenuGenerator.후라이드_세트(),
 				null
 			))
 			.withMessage("수량은 필수입니다.");

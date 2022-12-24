@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.util.Assert;
 
-import kitchenpos.common.domain.Price;
 
 @Entity
 public class Menu {

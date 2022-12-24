@@ -7,10 +7,10 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import kitchenpos.common.domain.Price;
 import ktichenpos.menu.menu.domain.Menu;
 import ktichenpos.menu.menu.domain.MenuGroup;
 import ktichenpos.menu.menu.domain.MenuProducts;
+import ktichenpos.menu.menu.domain.Price;
 
 public class MenuGenerator {
 

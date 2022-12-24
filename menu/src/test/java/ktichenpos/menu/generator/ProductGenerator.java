@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
-import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Price;
 import ktichenpos.menu.menu.domain.Product;
 
 public class ProductGenerator {

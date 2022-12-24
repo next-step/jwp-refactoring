@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.generator.OrderTableGenerator;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.OrderTables;
 import kitchenpos.table.table.domain.TableGroup;
 

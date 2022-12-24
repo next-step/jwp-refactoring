@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import javassist.NotFoundException;
 import kitchenpos.order.menu.applciation.OrderMenuService;
 import kitchenpos.order.menu.domain.Menu;
 import kitchenpos.order.order.application.OrderService;
@@ -95,13 +94,13 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		given(orderMenuService.menu(anyLong())).willThrow(new NotFoundException("no menu"));
+		given(orderMenuService.menu(anyLong())).willThrow(new IllegalArgumentException("no menu"));
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
 
 		// then
-		assertThat(throwable).isInstanceOf(NotFoundException.class);
+		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("주문 테이블이 등록되어 있지 않으면 주문을 등록할 수 없다.")
@@ -113,13 +112,13 @@ class OrderServiceTest {
 		long quantity = 1L;
 		OrderRequest orderRequest = new OrderRequest(orderTableId,
 			Collections.singletonList(new OrderLineItemRequest(menuId, quantity)));
-		willThrow(NotFoundException.class).given(orderValidator).validateCreateOrder(anyLong());
+		willThrow(IllegalArgumentException.class).given(orderValidator).validateCreateOrder(anyLong());
 
 		// when
 		Throwable throwable = catchThrowable(() -> orderService.create(orderRequest));
 
 		// then
-		assertThat(throwable).isInstanceOf(NotFoundException.class);
+		assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("주문을 조회할 수 있다.")

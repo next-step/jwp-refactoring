@@ -138,7 +138,7 @@ class TableGroupServiceTest {
 		long 단체_아이디 = 1L;
 		TableGroup 다섯명_두명_테이블그룹 = TableGroupGenerator.다섯명_두명_테이블그룹();
 		given(tableGroupRepository.tableGroup(단체_아이디)).willReturn(다섯명_두명_테이블그룹);
-		willDoNothing().given(tableValidator).validateUngroup(any());
+		// willDoNothing().given(tableValidator).validateUngroup(any());
 
 		// when
 		tableGroupService.ungroup(단체_아이디);
@@ -157,7 +157,7 @@ class TableGroupServiceTest {
 		long 단체_아이디 = 1L;
 		TableGroup 다섯명_두명_테이블그룹 = TableGroupGenerator.다섯명_두명_테이블그룹();
 		given(tableGroupRepository.tableGroup(단체_아이디)).willReturn(다섯명_두명_테이블그룹);
-		willThrow(IllegalArgumentException.class).given(tableValidator).validateUngroup(any());
+		// willThrow(IllegalArgumentException.class).given(tableValidator).validateUngroup(any());
 
 		// when
 		Throwable throwable = catchThrowable(() -> tableGroupService.ungroup(단체_아이디));

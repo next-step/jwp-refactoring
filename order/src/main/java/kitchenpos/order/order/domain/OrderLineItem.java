@@ -11,9 +11,6 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.util.Assert;
 
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.order.menu.domain.Menu;
-
 @Entity
 public class OrderLineItem {
 	@Id
@@ -24,9 +21,9 @@ public class OrderLineItem {
 	@JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_to_order"))
 	private Order order;
 
-	@ManyToOne
-	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_to_menu"))
-	private Menu menu;
+	@Embedded
+	private OrderLineItemMenu menu;
+
 
 	@Embedded
 	private Quantity quantity;
@@ -34,18 +31,18 @@ public class OrderLineItem {
 	protected OrderLineItem() {
 	}
 
-	private OrderLineItem(Menu menu, Quantity quantity) {
+	private OrderLineItem(OrderLineItemMenu menu, Quantity quantity) {
 		Assert.notNull(menu, "메뉴는 필수입니다.");
 		Assert.notNull(quantity, "수량은 필수입니다.");
 		this.menu = menu;
 		this.quantity = quantity;
 	}
 
-	public static OrderLineItem of(Menu menu, Quantity quantity) {
+	public static OrderLineItem of(OrderLineItemMenu menu, Quantity quantity) {
 		return new OrderLineItem(menu, quantity);
 	}
 
-	public static OrderLineItem of(Menu menu, long quantity) {
+	public static OrderLineItem of(OrderLineItemMenu menu, long quantity) {
 		return new OrderLineItem(menu, Quantity.from(quantity));
 	}
 
@@ -57,7 +54,7 @@ public class OrderLineItem {
 		return order.getId();
 	}
 
-	public Menu menu() {
+	public OrderLineItemMenu menu() {
 		return menu;
 	}
 

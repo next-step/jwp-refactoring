@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.Collections;
 

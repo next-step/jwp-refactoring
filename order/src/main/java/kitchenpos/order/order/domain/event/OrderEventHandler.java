@@ -4,23 +4,20 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.table.application.OrderTableService;
 
 @Component
 public class OrderEventHandler {
 
-	private final OrderTableRepository orderTableRepository;
+	private final OrderTableService orderTableService;
 
-	public OrderEventHandler(OrderTableRepository orderTableRepository) {
-		this.orderTableRepository = orderTableRepository;
+	public OrderEventHandler(OrderTableService orderTableService) {
+		this.orderTableService = orderTableService;
 	}
 
 	@EventListener
 	@Async
 	public void handle(OrderCreatedEvent event) {
-		orderTableRepository.findById(event.tableId())
-			.orElseThrow(() -> new NotFoundException(String.format("주문 테이블 id(%d)를 찾을 수 없습니다.", event.tableId())))
-			.updateEmpty(false);
+		orderTableService.changeEmpty(event.tableId());
 	}
 }

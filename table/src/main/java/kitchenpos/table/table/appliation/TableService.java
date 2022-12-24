@@ -6,8 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.OrderTableRepository;
 import kitchenpos.table.table.ui.request.NumberOfGuestsRequest;
 import kitchenpos.table.table.ui.request.OrderTableRequest;
@@ -40,7 +39,7 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final TableStatusRequest request) {
 		final OrderTable savedOrderTable = findById(orderTableId);
-		tableValidator.validateChangeEmpty(orderTableId);
+		// tableValidator.validateChangeEmpty(orderTableId);
 		savedOrderTable.updateEmpty(request.isEmpty());
 		return OrderTableResponse.from(savedOrderTable);
 	}
@@ -64,7 +63,7 @@ public class TableService {
 
 	private OrderTable findById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId)
-			.orElseThrow(() -> new NotFoundException(String.format("주문 테이블 id(%d)를 찾을 수 없습니다.", orderTableId)));
+			.orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블 id(%d)를 찾을 수 없습니다.", orderTableId)));
 	}
 
 }

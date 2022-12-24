@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.generator.OrderLineItemMenuGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -7,10 +8,9 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.generator.MenuGenerator;
 import kitchenpos.order.order.domain.OrderLineItem;
 import kitchenpos.order.order.domain.OrderLineItems;
+import kitchenpos.order.order.domain.Quantity;
 
 @DisplayName("주문 항목들 테스트")
 class OrderLineItemsTest {
@@ -20,7 +20,7 @@ class OrderLineItemsTest {
 	void createOrderLineItemsTest() {
 		assertThatNoException()
 			.isThrownBy(() -> OrderLineItems.fromSingle(
-				OrderLineItem.of(MenuGenerator.후라이드_세트(), Quantity.from(1L))
+				OrderLineItem.of(후라이드_세트(), Quantity.from(1L))
 			));
 	}
 
@@ -38,7 +38,7 @@ class OrderLineItemsTest {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> OrderLineItems.from(
 				Arrays.asList(
-					OrderLineItem.of(MenuGenerator.후라이드_세트(), Quantity.from(1L)),
+					OrderLineItem.of(후라이드_세트(), Quantity.from(1L)),
 					null
 				)
 			))

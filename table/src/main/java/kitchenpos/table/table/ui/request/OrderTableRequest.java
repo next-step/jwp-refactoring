@@ -1,7 +1,7 @@
 package kitchenpos.table.table.ui.request;
 
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.table.domain.NumberOfGuests;
+import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.TableEmpty;
 
 public class OrderTableRequest {

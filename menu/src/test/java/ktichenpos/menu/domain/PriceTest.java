@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Price;
 
 @DisplayName("가격 테스트")
 class PriceTest {

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import kitchenpos.common.domain.Price;
+import ktichenpos.menu.menu.domain.Price;
 import ktichenpos.menu.menu.domain.Product;
 
 public class ProductRequest {

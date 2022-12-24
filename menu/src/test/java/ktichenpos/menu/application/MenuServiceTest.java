@@ -1,8 +1,8 @@
 package ktichenpos.menu.application;
 
-import static kitchenpos.generator.MenuGenerator.*;
-import static kitchenpos.generator.MenuGroupGenerator.*;
-import static kitchenpos.generator.ProductGenerator.*;
+import static ktichenpos.menu.generator.MenuGenerator.*;
+import static ktichenpos.menu.generator.MenuGroupGenerator.*;
+import static ktichenpos.menu.generator.ProductGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -16,16 +16,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.ui.request.MenuProductRequest;
-import kitchenpos.menu.ui.request.MenuRequest;
-import kitchenpos.menu.ui.response.MenuResponse;
+import ktichenpos.menu.menu.application.MenuService;
+import ktichenpos.menu.menu.domain.Menu;
+import ktichenpos.menu.menu.domain.MenuGroup;
+import ktichenpos.menu.menu.domain.MenuGroupRepository;
+import ktichenpos.menu.menu.domain.MenuRepository;
+import ktichenpos.menu.menu.domain.Product;
+import ktichenpos.menu.menu.domain.ProductRepository;
+import ktichenpos.menu.menu.ui.request.MenuProductRequest;
+import ktichenpos.menu.menu.ui.request.MenuRequest;
+import ktichenpos.menu.menu.ui.response.MenuResponse;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -125,13 +125,13 @@ class MenuServiceTest {
 		MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
 		MenuRequest menuRequest = new MenuRequest("후라이드 세트", BigDecimal.valueOf(20000), 1L,
 			Collections.singletonList(menuProductRequest));
-		given(menuGroupRepository.menuGroup(anyLong())).willThrow(NotFoundException.class);
+		given(menuGroupRepository.menuGroup(anyLong())).willThrow(IllegalArgumentException.class);
 
 		// when
 		Throwable actual = catchThrowable(() -> menuService.create(menuRequest));
 
 		// then
-		assertThat(actual).isInstanceOf(NotFoundException.class);
+		assertThat(actual).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("메뉴의 상품은 이미 저장되어 있어야 한다.")

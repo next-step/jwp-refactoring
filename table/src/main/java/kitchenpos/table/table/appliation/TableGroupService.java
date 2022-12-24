@@ -38,7 +38,7 @@ public class TableGroupService {
 	@Transactional
 	public void ungroup(final Long tableGroupId) {
 		final TableGroup tableGroup = tableGroup(tableGroupId);
-		tableValidator.validateUngroup(tableGroup);
+		// tableValidator.validateUngroup(tableGroup);
 		tableGroup.ungroup();
 	}
 
