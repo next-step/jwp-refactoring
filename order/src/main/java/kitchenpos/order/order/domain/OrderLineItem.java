@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.util.Assert;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {

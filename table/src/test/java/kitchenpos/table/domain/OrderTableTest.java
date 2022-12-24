@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import kitchenpos.generator.TableGroupGenerator;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.table.domain.NumberOfGuests;
+import kitchenpos.table.table.domain.OrderTable;
 import kitchenpos.table.table.domain.TableEmpty;
 
 @DisplayName("주문 테이블 테스트")

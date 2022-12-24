@@ -16,7 +16,7 @@ public class Menu {
 	@Embedded
 	private Price price;
 
-	protected Menu() {
+	public Menu() {
 	}
 
 	private Menu(long id, String name, Price price) {

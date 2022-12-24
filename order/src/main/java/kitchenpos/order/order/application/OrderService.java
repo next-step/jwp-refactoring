@@ -7,8 +7,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.menu.applciation.OrderMenuService;
+import kitchenpos.order.menu.domain.Menu;
 import kitchenpos.order.order.domain.Order;
 import kitchenpos.order.order.domain.OrderLineItem;
 import kitchenpos.order.order.domain.OrderLineItems;
@@ -23,25 +23,24 @@ import kitchenpos.order.order.ui.response.OrderResponse;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final MenuRepository menuRepository;
 	private final OrderValidator orderValidator;
 	private final ApplicationEventPublisher eventPublisher;
+	private final OrderMenuService menuService;
 
 	public OrderService(
 		final OrderRepository orderRepository,
-		final MenuRepository menuRepository,
 		final OrderValidator orderValidator,
-		final ApplicationEventPublisher eventPublisher
+		final ApplicationEventPublisher eventPublisher,
+		final OrderMenuService menuService
 	) {
 		this.orderRepository = orderRepository;
-		this.menuRepository = menuRepository;
 		this.orderValidator = orderValidator;
 		this.eventPublisher = eventPublisher;
+		this.menuService = menuService;
 	}
 
 	@Transactional
 	public OrderResponse create(final OrderRequest request) {
-		orderValidator.validateCreateOrder(request.getOrderTableId());
 		Order order = orderRepository.save(newOrder(request));
 		eventPublisher.publishEvent(OrderCreatedEvent.from(order));
 		return OrderResponse.from(order);
@@ -73,7 +72,7 @@ public class OrderService {
 	}
 
 	private Menu menu(long menuId) {
-		return menuRepository.menu(menuId);
+		return menuService.menu(menuId);
 	}
 
 	private Order newOrder(OrderRequest request) {

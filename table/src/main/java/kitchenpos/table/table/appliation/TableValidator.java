@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.table.domain.OrderTableRepository;
 import kitchenpos.table.table.domain.TableGroup;
 
@@ -37,13 +36,6 @@ public class TableValidator implements OrderValidator {
 		}
 	}
 
-	@Override
-	public void validateCreateOrder(long orderTableId) {
-		OrderTable orderTable = orderTableRepository.orderTable(orderTableId);
-		if (orderTable.isEmpty()) {
-			throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
-		}
-	}
 
 	private boolean isCookingOrMeal(Long orderTableId) {
 		return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, cookingAndMealStatus());
