@@ -13,6 +13,6 @@ import static kitchenpos.menu.domain.fixture.MenuProductsFixture.menuProducts;
 public class MenuFixture {
 
     public static Menu menuA(Long productId) {
-        return new Menu(new Name("a"), new Price(BigDecimal.ONE), menuGroupA(), new MenuProducts(menuProducts(1L)));
+        return new Menu(1L, new Name("a"), new Price(BigDecimal.ONE), menuGroupA(), new MenuProducts(menuProducts(1L)));
     }
 }

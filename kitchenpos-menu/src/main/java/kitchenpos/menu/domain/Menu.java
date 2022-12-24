@@ -32,6 +32,16 @@ public class Menu {
         menuProducts.mapMenu(this);
     }
 
+    public Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(name, price, menuGroup, menuProducts);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+        menuProducts.mapMenu(this);
+        this.id = id;
+    }
+
     private void validate(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validateNullName(name);
         validateNullMenuGroup(menuGroup);

@@ -15,6 +15,7 @@ import java.util.Collections;
 
 import static kitchenpos.menu.domain.fixture.MenuGroupFixture.menuGroupA;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 @DisplayName("MenuGroupServiceTest")
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +31,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
 
-        BDDMockito.given(menuGroupRepository.save(ArgumentMatchers.any())).willReturn(menuGroupA());
+        given(menuGroupRepository.save(ArgumentMatchers.any())).willReturn(menuGroupA());
 
         assertThat(menuGroupService.create(new MenuGroupCreateRequest(menuGroupA().getName())).getName())
                 .isEqualTo(menuGroupA().getName());
@@ -40,7 +41,7 @@ class MenuGroupServiceTest {
     @Test
     void name() {
 
-        BDDMockito.given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(menuGroupA()));
+        given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(menuGroupA()));
 
         assertThat(menuGroupService.list()).hasSize(1);
     }
