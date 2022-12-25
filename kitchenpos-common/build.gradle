@@ -2,12 +2,14 @@ bootJar { enabled = false }
 jar { enabled = true }
 
 dependencies {
-    implementation project(':kitchenpos-menu')
     implementation project(':kitchenpos-product')
+    implementation project(':kitchenpos-menu')
+    implementation project(':kitchenpos-order')
     implementation project(':kitchenpos-table')
 
-    testImplementation project(':kitchenpos-menu').sourceSets.test.output
     testImplementation project(':kitchenpos-product').sourceSets.test.output
+    testImplementation project(':kitchenpos-menu').sourceSets.test.output
+    testImplementation project(':kitchenpos-order').sourceSets.test.output
     testImplementation project(':kitchenpos-table').sourceSets.test.output
 
 }

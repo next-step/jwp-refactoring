@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_생성_요청;
+import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
+import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
+import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
+import static kitchenpos.acceptance.TableAcceptanceTest.테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
