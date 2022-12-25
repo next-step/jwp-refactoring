@@ -46,6 +46,16 @@ project(':kitchenpos-app') {
     dependencies {
         compile project(':kitchenpos-common')
         compile project(':kitchenpos-product')
+        compile project(':kitchenpos-menu')
+    }
+}
+
+project(':kitchenpos-menu') {
+    dependencies {
+        compile project(':kitchenpos-common')
+        compile project(':kitchenpos-product')
+
+        testImplementation project(':kitchenpos-product').sourceSets.test.output
     }
 }
 
