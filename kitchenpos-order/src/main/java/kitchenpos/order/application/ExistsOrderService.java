@@ -18,7 +18,7 @@ public class ExistsOrderService implements ExistsOrderPort {
 
     @Override
     public boolean existsOrderStatusCookingOrMeal(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
     @Override

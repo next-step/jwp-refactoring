@@ -149,18 +149,6 @@ class TableGroupServiceTest {
         assertThat(주문테이블2.getTableGroupId()).isNull();
     }
 
-    @DisplayName("단체 지정 해제 테스트 - 단체 내 주문 테이블들의 상태가 조리, 식사일 경우")
-    @Test
-    void ungroupTest2() {
-        // given
-        when(tableGroupRepository.findById(단체그룹.getId())).thenReturn(Optional.of(단체그룹));
-
-        // when & then
-        Assertions.assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체그룹.getId())
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
     public static TableGroup 단체_생성(Long id, List<OrderTable> orderTables) {
         return new TableGroup(id, orderTables);
     }

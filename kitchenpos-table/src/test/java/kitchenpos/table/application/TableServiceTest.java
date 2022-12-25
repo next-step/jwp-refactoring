@@ -97,40 +97,6 @@ class TableServiceTest {
         assertThat(response.isEmpty()).isTrue();
     }
 
-    @DisplayName("주문 테이블 상태 변경 테스트 - 등록되지 않은 주문 테이블일 경우")
-    @Test
-    void updateOrderTableEmpty2() {
-        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.empty());
-
-        Assertions.assertThatThrownBy(
-                () -> tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
-        ).isInstanceOf(EntityNotFoundException.class);
-    }
-
-    @DisplayName("주문 테이블 상태 변경 테스트 - 단체지정되있는 테이블일 경우")
-    @Test
-    void updateOrderTableEmpty3() {
-        ReflectionTestUtils.setField(주문테이블1, "empty", true);
-        ReflectionTestUtils.setField(주문테이블2, "empty", true);
-        ReflectionTestUtils.setField(단체테이블, "id", 1L);
-
-        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-
-        Assertions.assertThatThrownBy(() ->
-                tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블 상태 변경 테스트 - 주문 테이블의 상태가 조리또는 식사 중이면 비어있는 상태일 경우")
-    @Test
-    void updateOrderTableEmpty4() {
-        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-
-        Assertions.assertThatThrownBy(() ->
-                tableService.changeEmpty(주문테이블1.getId(), new OrderTableRequest(0, true))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 테이블 손님수 변경 테스트")
     @Test
     void updateOrderTableNumberOfGuest() {
@@ -162,15 +128,5 @@ class TableServiceTest {
         Assertions.assertThatThrownBy(() ->
                 tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderTableRequest(5, false))
         ).isInstanceOf(EntityNotFoundException.class);
-    }
-
-    @DisplayName("주문 테이블 손님수 변경 테스트 - 빈 주문 테이블의 경우")
-    @Test
-    void updateOrderTableNumberOfGuest4() {
-        when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
-
-        Assertions.assertThatThrownBy(() ->
-                tableService.changeNumberOfGuests(주문테이블1.getId(), new OrderTableRequest(5, false))
-        ).isInstanceOf(IllegalArgumentException.class);
     }
 }

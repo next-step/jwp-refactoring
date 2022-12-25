@@ -42,7 +42,17 @@ public class TableGroup {
         orderTables.group(id);
     }
 
-    public void ungroup() {
+    public void group(List<OrderTable> target) {
+        if (target.size() <= 1) {
+            throw new IllegalArgumentException();
+        }
+
+        for (OrderTable orderTable : target) {
+            orderTables.group(orderTable.getTableGroupId());
+        }
+    }
+
+    public void ungroup(Long TableGroupId) {
         orderTables.ungroup();
     }
 

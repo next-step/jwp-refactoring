@@ -14,7 +14,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.orderTable.id IN :orderTableIds")
     List<Order> findAllByOrderTableIdIn(List<Long> orderTableIds);
 
-    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatus);
+    boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatus);
 
-    boolean existsByOrderTableIdInAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatus);
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatus);
 }

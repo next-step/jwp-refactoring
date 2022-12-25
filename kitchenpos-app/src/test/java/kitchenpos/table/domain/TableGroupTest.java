@@ -69,33 +69,4 @@ class TableGroupTest {
         assertThatThrownBy(() -> 새로운_단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-    @DisplayName("단체 테이블을 해제한다.")
-    @Test
-    void 단체_테이블_해제() {
-        단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
-
-        Order 주문1 = new Order(단체_주문_테이블1, OrderStatus.COMPLETION);
-        Order 주문2 = new Order(단체_주문_테이블2, OrderStatus.COMPLETION);
-
-        단체_테이블.ungroup(Arrays.asList(주문1, 주문2));
-
-        assertAll(
-                () -> assertThat(단체_주문_테이블1.getTableGroupId()).isNull(),
-                () -> assertThat(단체_주문_테이블2.getTableGroupId()).isNull()
-        );
-    }
-
-    @DisplayName("조리중, 식사중인 테이블은 단체 지정을 해제할 수 없다.")
-    @ParameterizedTest
-    @ValueSource(strings = { "COOKING", "MEAL" })
-    void 조리중_식사중_테이블_단체_지정_해제(OrderStatus orderStatus) {
-        단체_테이블.group(Arrays.asList(단체_주문_테이블1, 단체_주문_테이블2));
-
-        Order 주문1 = new Order(단체_주문_테이블1, orderStatus);
-        Order 주문2 = new Order(단체_주문_테이블2, OrderStatus.COMPLETION);
-
-        assertThatThrownBy(() -> 단체_테이블.ungroup(Arrays.asList(주문1, 주문2)))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 }

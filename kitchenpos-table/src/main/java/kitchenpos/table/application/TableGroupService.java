@@ -34,9 +34,9 @@ public class TableGroupService {
 
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        boolean completedOrderTable = existsByOrderTableIdInAndOrderStatusIn(tableGroup.getOrderTableIds());
+        boolean completedOrderTable = existsOrderStatusCookingOrMeal(tableGroup.getOrderTableIds());
         TableGroupUnGroupValidator.validate(completedOrderTable);
-        tableGroup.ungroup();
+        tableGroup.ungroup(tableGroupId);
     }
 
     private TableGroup findTableGroupById(Long id) {
@@ -44,7 +44,7 @@ public class TableGroupService {
                 .orElseThrow(() -> new IllegalArgumentException("단체가 존재하지 않습니다."));
     }
 
-    private boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds) {
+    private boolean existsOrderStatusCookingOrMeal(List<Long> orderTableIds) {
         return existsOrderPort.existsOrderStatusCookingOrMeal(orderTableIds);
     }
 }

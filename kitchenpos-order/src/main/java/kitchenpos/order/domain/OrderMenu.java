@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 

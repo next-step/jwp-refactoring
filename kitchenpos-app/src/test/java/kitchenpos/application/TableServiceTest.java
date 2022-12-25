@@ -178,7 +178,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블 손님수 변경 테스트 - 빈 주문 테이블의 경우")
     @Test
     void updateOrderTableNumberOfGuest4() {
-        주문테이블1.changeEmpty(true, Collections.emptyList());
+        주문테이블1.changeEmpty(true, true);
         when(orderTableRepository.findById(주문테이블1.getId())).thenReturn(Optional.of(주문테이블1));
 
         Assertions.assertThatThrownBy(() ->
