@@ -167,8 +167,8 @@
 * validator 가 하나만 역활만 진행하도록 변경.
 * request 에서 생성하는게 아닌 service layer 에서 생성하도록 일부 변화 [완료]
 * 너무 길게 이어지는 함수형 간소화 [MenuRequest] [완료]
-* dao 패키지명 repository 로 변경
-* order와 Ordertable 패키지
+* dao 패키지명 repository 로 변경 [완료]
+* order와 Ordertable 패키지 분리
 * Menugroup validator 로 위임
 
 

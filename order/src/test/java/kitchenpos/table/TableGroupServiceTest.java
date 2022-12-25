@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.dao.TableGroupRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;

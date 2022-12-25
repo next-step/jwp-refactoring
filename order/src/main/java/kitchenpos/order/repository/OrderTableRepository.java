@@ -1,4 +1,4 @@
-package kitchenpos.order.dao;
+package kitchenpos.order.repository;
 
 import java.util.List;
 import kitchenpos.order.domain.OrderTable;

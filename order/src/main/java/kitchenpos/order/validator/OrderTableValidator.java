@@ -2,7 +2,7 @@ package kitchenpos.order.validator;
 
 import java.util.Objects;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
 import org.springframework.stereotype.Component;

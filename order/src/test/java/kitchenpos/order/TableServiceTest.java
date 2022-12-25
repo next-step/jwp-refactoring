@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.application.TableService;
-import kitchenpos.order.dao.OrderTableRepository;
+import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;

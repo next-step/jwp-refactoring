@@ -4,7 +4,7 @@ import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.dao.ProductRepository;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Component;
 

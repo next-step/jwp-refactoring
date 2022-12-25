@@ -2,8 +2,8 @@ package kitchenpos.table.validator;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderRepository;
-import kitchenpos.order.dao.OrderTableRepository;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dao.ProductRepository;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.api.Assertions;

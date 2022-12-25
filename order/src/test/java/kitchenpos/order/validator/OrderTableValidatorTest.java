@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.Optional;
 import kitchenpos.order.OrderFixture;
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

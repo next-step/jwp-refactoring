@@ -1,7 +1,7 @@
 package kitchenpos.order.listener;
 
 import java.util.List;
-import kitchenpos.order.dao.OrderTableRepository;
+import kitchenpos.order.repository.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.event.TableGroupCreateEvent;
 import kitchenpos.table.event.TableUnGroupEvent;

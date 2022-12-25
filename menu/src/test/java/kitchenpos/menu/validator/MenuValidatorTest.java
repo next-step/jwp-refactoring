@@ -8,7 +8,7 @@ import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.dao.ProductRepository;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
