@@ -1,4 +1,4 @@
-package kitchenpos.exception;
+package kitchenpos.common;
 
 public enum ErrorMessage {
     //menu
