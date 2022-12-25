@@ -12,6 +12,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("테이블 그룹 관련 기능 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -49,7 +49,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = TableGroupAcceptance.create_table_group(Arrays.asList(-1L, -2L));
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -63,7 +63,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = TableGroupAcceptance.create_table_group(Collections.emptyList());
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -79,7 +79,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 TableGroupAcceptance.create_table_group(Arrays.asList(빈_주문_테이블1.getId()));
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -95,7 +95,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 TableGroupAcceptance.create_table_group(Arrays.asList(비어있지_않은_주문_테이블1.getId(), 빈_주문_테이블2.getId()));
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -125,7 +125,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = TableGroupAcceptance.ungroup(-1L);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -156,7 +156,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = TableGroupAcceptance.ungroup(테이블그룹.getId());
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -176,6 +176,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = TableGroupAcceptance.ungroup(테이블그룹.getId());
 
         // then
-        assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
     }
 }

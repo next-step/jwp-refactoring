@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("주문 관련 기능 인수 테스트")
@@ -136,7 +135,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = OrderAcceptance.list();
 
         // then
-        assertThat(response.jsonPath().getList(".", OrderResponse.class)).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(response.jsonPath().getList(".", OrderResponse.class)).hasSize(1);
     }
 
     /**

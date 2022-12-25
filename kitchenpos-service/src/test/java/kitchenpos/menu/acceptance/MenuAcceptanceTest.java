@@ -7,6 +7,7 @@ import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.dto.ProductResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,6 @@ import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("메뉴 관련 기능 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -55,7 +53,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu("양식 세트", 50_000, 양식.getId(), menuProducts);
 
         // then
-        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
     /**
@@ -71,7 +69,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu("양식 세트", 50_000, null, menuProducts);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -91,7 +89,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu("양식 세트", 50_000, 양식.getId(), menuProducts);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -108,7 +106,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu(null, 50_000, 양식.getId(), menuProducts);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -125,7 +123,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu("양식 세트", null, 양식.getId(), menuProducts);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -142,7 +140,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu("양식 세트", -50_000, 양식.getId(), menuProducts);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -159,7 +157,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 MenuAcceptance.create_menu("양식 세트", 60_000, 양식.getId(), menuProducts);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -178,6 +176,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = MenuAcceptance.menu_list_has_been_queried();
 
         // then
-        assertThat(response.jsonPath().getList(".", MenuResponse.class)).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(response.jsonPath().getList(".", MenuResponse.class)).hasSize(1);
     }
 }

@@ -4,12 +4,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.ProductResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("상품 관련 기능 인수 테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
@@ -26,7 +24,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 ProductAcceptance.create_product("스테이크", 25_000);
 
         // then
-        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
     /**
@@ -41,7 +39,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 ProductAcceptance.create_product(null, 25_000);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -56,7 +54,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 ProductAcceptance.create_product("스테이크", null);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -71,7 +69,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 ProductAcceptance.create_product("스테이크", -25_000);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -90,6 +88,6 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = ProductAcceptance.product_list_has_been_queried();
 
         // then
-        assertThat(response.jsonPath().getList(".", ProductResponse.class)).hasSize(2);
+        org.assertj.core.api.Assertions.assertThat(response.jsonPath().getList(".", ProductResponse.class)).hasSize(2);
     }
 }

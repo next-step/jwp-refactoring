@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -67,7 +66,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = TableAcceptance.table_list_has_been_queried();
 
         // then
-        assertThat(response.jsonPath().getList(".", OrderTableResponse.class)).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(response.jsonPath().getList(".", OrderTableResponse.class)).hasSize(1);
     }
 
     /**

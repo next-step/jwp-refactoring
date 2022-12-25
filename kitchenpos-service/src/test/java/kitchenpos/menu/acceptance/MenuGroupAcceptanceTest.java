@@ -4,12 +4,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("메뉴 그룹 관련 기능 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -25,7 +23,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = MenuGroupAcceptance.create_menu_group("양식");
 
         // then
-        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
     }
 
     /**
@@ -39,7 +37,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = MenuGroupAcceptance.create_menu_group(null);
 
         // then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -58,6 +56,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = MenuGroupAcceptance.menu_group_list_has_been_queried();
 
         // then
-        assertThat(response.jsonPath().getList(".", MenuGroupResponse.class)).hasSize(2);
+        org.assertj.core.api.Assertions.assertThat(response.jsonPath().getList(".", MenuGroupResponse.class)).hasSize(2);
     }
 }
