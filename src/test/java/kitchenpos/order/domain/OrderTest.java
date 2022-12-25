@@ -1,10 +1,8 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Order 테스트")
 class OrderTest {
-    private final Menu menu = new Menu("테스트메뉴", BigDecimal.valueOf(1000L), 1L);
     private final List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L));
 
     @DisplayName("주문을 생성한다.")
