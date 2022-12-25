@@ -159,7 +159,18 @@
             * MenuProduct 가 Product 참조중
 
               ![img_5.png](img_5.png)
-            
+
+## 4단계
+* 컨텍스트간 모듈화 진행 [완료]
+
+### 피드백 사항 정리
+* validator 가 하나만 역활만 진행하도록 변경.
+* request 에서 생성하는게 아닌 service layer 에서 생성하도록 일부 변화
+* 너무 길게 이어지는 함수형 간소화 [MenuRequest]
+* dao 패키지명 repository 로 변경
+* order와 Ordertable 패키지
+* Menugroup validator 로 위임
+
 
 ## 용어 사전
 
