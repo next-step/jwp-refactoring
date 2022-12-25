@@ -54,11 +54,4 @@ class OrderLineItemTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-//    @DisplayName("음수 수량으로 주문 상품을 생성할 수 없다.")
-//    @ParameterizedTest
-//    @ValueSource(ints = { -1, -5, -10, -15 })
-//    void 음수_수량_주문_상품_생성(long quantity) {
-//        assertThatThrownBy(() -> new OrderLineItem(주문, 뿌링클_세트, quantity))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
 }
