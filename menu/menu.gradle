@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':menugroup')
+    implementation project(':product')
+
+    testImplementation(testFixtures(project(':product')))
+}
