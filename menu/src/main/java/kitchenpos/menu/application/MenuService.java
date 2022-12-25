@@ -6,6 +6,8 @@ import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.validator.MenuValidator;
@@ -31,10 +33,22 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        Menu menu = request.toMenu(getMenuGroup(request.getMenuGroupId()));
+        MenuGroup menuGroup = getMenuGroup(request.getMenuGroupId());
+        Menu menu = createMenu(request, menuGroup);
         validator.validate(menu);
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.from(savedMenu);
+    }
+
+    private Menu createMenu(MenuRequest request, MenuGroup menuGroup) {
+        return new Menu(request.getId(), request.getName(), request.getPrice(), menuGroup,
+            createMenuProduct(request.getMenuProducts()));
+    }
+
+    private List<MenuProduct> createMenuProduct(List<MenuProductRequest> menuProducts) {
+        return menuProducts.stream()
+            .map(MenuProductRequest::toMenuProduct)
+            .collect(Collectors.toList());
     }
 
     private MenuGroup getMenuGroup(Long menuGroupId) {
